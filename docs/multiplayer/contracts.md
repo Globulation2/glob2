@@ -50,7 +50,7 @@ rule is required, so there are no defaults for two builds to disagree on.
 | MatchSetup | GameHeader |
 | --- | --- |
 | `seed` | `setRandomSeed` |
-| `seats[i]` (numbered 0..k-1) | `BasePlayer` _i_: `human` → `P_IP` on every client and in the verifier (as networked games do today, so heavy checksums agree), `ai` → `P_AI + id`; `name`, `team`; `setNumberOfPlayers(k)` |
+| `seats[i]` (numbered 0..k-1) | `BasePlayer` _i_: `human` → `P_IP` on every client and in the verifier (so remote-session checksum coverage agrees), `ai` → `P_AI + id`; `name`, `team`; `setNumberOfPlayers(k)` |
 | `seats[i].aiConfig` | `setAIConfig(i, …)` |
 | `teams[t].alliance` (teams listed 0..n-1, n = map team count) | `setAllyTeamNumber(t, alliance + 1)` |
 | `rules.prestigeVictory`, `rules.suddenDeathMinutes` | prestige and sudden-death winning conditions (minutes × 60 × 30 ticks) |

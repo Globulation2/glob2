@@ -44,31 +44,36 @@ reorders population membership.
 
 ## Routine desynchronization checksums
 
-Routine checks cover live units/buildings, both RNG state words, team/player state,
-and deterministic scheduling metadata every tick. Entity traversal uses the live
-lists; its normal path omits diagnostic field-vector branches. RNG fingerprints
-and periodic statistics use MurmurHash3 x86_32 with seed zero over explicit
-little-endian words (64-bit scalars feed the low half first), avoiding byte
-extraction and serializer names. Its rotations and final avalanche avoid the
-paired high-bit cancellation of a word-wise XOR/multiply mixer. This remains a
-non-cryptographic error detector; collisions are possible.
+Routine checks run from existing immutable world snapshots on the shared compute
+executor, with a one-tick delivery deadline. Their field selection and cheap
+XOR/rotate mixing follow the original routine path: selected entity state,
+entity RNG fingerprints, relationship counts/presence and team facts. Immutable
+unit/resource/terrain catalog fingerprints contribute without definition walks.
+Pointers, padding and capture identities are excluded. Zero-worker configurations
+compute at admission; worker configurations wait for workers at a missed
+deadline. This is a non-cryptographic error detector with the original mixer's
+collision limitations.
 
-Secondary coverage runs when the absolute simulation tick is divisible by 32:
-AI-relevant aggregate statistics, all 32 smoothing entries and coverage-building
-records; remote games also sweep map cells and material-field contents on that
-boundary. Queue timing remains covered every tick. Persistent secondary-only
-divergence is detected at the next boundary (up to 31 additional ticks); transient
-differences that disappear between samples may escape unless they affect core
-state. Diagnostic statistics ledgers stay outside routine coverage. Full
-verification (`heavy=true`) retains
-exhaustive map/statistics and pending-result coverage on every invocation.
-Immutable behavior fingerprints remain cached by their catalogs and contribute
-without reserializing definitions. No cadence counter is stored in saves.
+Local and AI-only games omit map-cell sweeps. Remote sessions sample the captured
+subset of the original map checksum at absolute simulation ticks divisible by
+32: terrain, resources and stock, building/ground/air occupancy and forbidden/farm
+masks. Live games and replay loading derive this policy from the same recorded
+player types; AI-only turn sessions omit map sweeps. Map sampling can lag a change
+by up to 31 simulation ticks, but network detection also depends on report cadence.
+With continuous advancement and the default 25-turn report interval, map samples
+are reported every 800 turns (the common multiple of 32 and 25); pauses change
+that alignment. Transient changes may escape. Visibility, fertility and guard/clear
+masks are not added to routine
+coverage. Scripts, world RNG, scheduling and uncaptured bookkeeping also remain
+outside it. Explicit `Game::checkSum(..., heavy=true)` retains the existing deep
+live-world diagnostic, including the statistics/RNG word mixer.
+See [routine and deep checksums](../development/headless-replays.md#routine-and-deep-checksums)
+for coverage and developer controls.
 
-Format 165 changes checksum values and replay acceptance without changing save
-encodings or the minimum supported save version. Its simulation-version key
-separates peers using the earlier checksum scheme. The explicit pre-refactor
-checksum adapter retains its historical entity/RNG representation for fixtures.
+Format 168 changes routine checksum values, delayed delivery and replay/network
+acceptance while preserving the minimum supported save version. Its simulation
+version separates peers using the earlier checksum scheme. The explicit legacy
+checksum adapter remains available for diagnostic fixtures.
 
 ## Deterministic randomness
 
@@ -86,7 +91,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   seeds, immediate reference growth, resource stocks, placement and smoothing.
   Each SGSL story has its own stream, salted by its source-order index. All streams
   are seeded directly with the match/request seed and fixed domains; no parent
-  stream is consumed. Both words participate in ordinary simulation checksums.
+  stream is consumed. Both words participate in deep diagnostic checksums;
+  routine snapshot checks omit these world-owned streams.
   Older saves initialize missing streams once. Fresh match headers reset template
   progress; resumed saves retain it. Resource-growth jobs retain a private MT19937
   scan stream, with separate PCG32 decisions per source tile. Additional decisions
@@ -355,8 +361,10 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   approached from an adjacent accessible cell. Historical flying action values
   remain readable and select the same direct/constrained policy. Format 171
   appends air routing slots and remaps historical seven/eight-class strides;
-  unreleased draft formats 168–170 are
-  rejected. The released save floor remains 58. Replay acceptance begins at 171.
+  unreleased draft formats 169–170 are
+  rejected. Format 172 adds tagged order checksum metadata while reading both master-168
+  and earlier air-routing-171 saves. The released save floor remains 58. Replay
+  acceptance begins at 172.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost

@@ -20,6 +20,11 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer)
 
 void NetEngine::advanceStep(Uint32 checksum)
 {
+    publishChecksum({Uint32(step),checksum});
+    advanceStep();
+}
+void NetEngine::advanceStep()
+{
 	step+=1;
 	std::shared_ptr<Order> localOrder;
 
@@ -33,7 +38,12 @@ void NetEngine::advanceStep(Uint32 checksum)
 		outgoing.pop();
 	}
 
-	localOrder->gameCheckSum = checksum;
+	localOrder->hasGameCheckSum = !outgoingChecksums.empty();
+    localOrder->gameCheckSum = ORDER_CHECKSUM_NONE;
+    if (!outgoingChecksums.empty()) {
+        auto sample=outgoingChecksums.front(); outgoingChecksums.pop();
+        localOrder->gameCheckSum=sample.value; localOrder->gameCheckSumTick=sample.sourceTick;
+    }
 	pushOrder(localOrder, localPlayer, false);
 }
 
@@ -126,6 +136,7 @@ void NetEngine::flushAllOrders()
 		localOrder = outgoing.front();
 		outgoing.pop();
 		localOrder->gameCheckSum = ORDER_CHECKSUM_NONE;
+        localOrder->hasGameCheckSum=false;
 		pushOrder(localOrder, localPlayer, false);
 	}
 }
@@ -159,23 +170,14 @@ Uint32 NetEngine::getWaitingOnMask()
 
 bool NetEngine::matchCheckSums()
 {
-	Uint32 checksum = ORDER_CHECKSUM_NONE;
-	for(int p=0; p<numberOfPlayers; ++p)
-	{
-		if(!orders[p].empty())
-		{
-			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
-			if(playerCheckSum != ORDER_CHECKSUM_NONE)
-			{
-				if(checksum == ORDER_CHECKSUM_NONE)
-					checksum = playerCheckSum;
-				else if(playerCheckSum != checksum)
-				{
-					return false;
-				}
-			}
-		}
-	}
+    for (int p=0;p<numberOfPlayers;++p) if (!orders[p].empty()) {
+        const auto& order=*orders[p].front();
+        if (!order.hasGameCheckSum) continue;
+        const auto [sample,inserted]=receivedChecksums.emplace(order.gameCheckSumTick,order.gameCheckSum);
+        if (!inserted && sample->second!=order.gameCheckSum) return false;
+    }
+    // NetEngine serves local/replay games; retain a bounded recent comparison window.
+    while (receivedChecksums.size()>256) receivedChecksums.erase(receivedChecksums.begin());
 	return true;
 }
 

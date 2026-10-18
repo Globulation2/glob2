@@ -136,9 +136,9 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::HeadlessGlobals globals(options);
 	// Format 171 changes flyer routing and adds the shared air movement class.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 171);
-	CHECK(VERSION_MINOR == 171);
-	CHECK(NET_PROTOCOL_VERSION == 71);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 172);
+	CHECK(VERSION_MINOR == 172);
+	CHECK(NET_PROTOCOL_VERSION == 72);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;

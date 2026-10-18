@@ -291,5 +291,15 @@ static constexpr int FILE_FORMAT_VERSION_INTRUSIVE_POPULATION = 166;
 // One immutable world observation per owner boundary; persisted admission phase.
 static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
 
+// Tagged snapshot checksums in order/replay envelopes, including saved AI queues.
+static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;
+
 // Shared air movement class; eight-class historical routing remains readable.
 static constexpr int FILE_FORMAT_VERSION_UNIFIED_MOVEMENT = 171;
+
+// Air-routing draft saves at 171 predate tagged order metadata. Master saves
+// at 168 already carry it; 172 combines both layouts without misreading either.
+inline constexpr bool hasSnapshotChecksumMetadata(unsigned version)
+{
+    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version >= 172;
+}

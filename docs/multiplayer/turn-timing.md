@@ -175,10 +175,12 @@ then show "reconnecting" instead of stalling silently.
 ## Desync arbitration
 
 Each client sends `ChecksumReport(t, checksum)` for every tick `t` with
-`t % checksumInterval == 0` (every 25 ticks, about every 0.83 seconds). The reports travel out
-of band and never block execution. For each tick, the relay arbitrates once every seat
+`t % checksumInterval == 0` (every 25 ticks, about every 0.83 seconds). Background
+snapshot jobs deliver results one executed turn later, still tagged with source
+turn `t`. Report transmission travels out of band; the simulation waits only if
+its local checksum job misses that delivery deadline. For each tick, the relay arbitrates once every seat
 that is not left, reconnecting or resyncing has reported. If some reports are still
-missing 250 ticks after tick `t`, it arbitrates with what it has.
+missing 250 ticks after the one-turn delivery deadline, it arbitrates with what it has.
 
 | Reports | Outcome |
 | --- | --- |

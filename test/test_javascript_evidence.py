@@ -190,6 +190,7 @@ class SaveHeaderTests(unittest.TestCase):
         self.assertEqual(header_checksum_delta(before, after, 155), 0x1c800000)
         self.assertEqual(header_checksum_delta(before, after), 0x1c800000)
         self.assertEqual(header_checksum_delta(after, after, 153), 0)
+        self.assertEqual(header_checksum_delta(before, after, 168), 0x1c800000)
         with self.assertRaises(AssertionError):
             header_checksum_delta(before, after, 154)
 
@@ -206,6 +207,20 @@ class SaveHeaderTests(unittest.TestCase):
                 record = bytearray(changed[128]); record[offset] ^= 1
                 changed[128] = bytes(record)
                 self.assertFalse(continuation_matches(expected, changed, 'initial', 'saved', 128))
+
+    def test_deep168_continuation_keeps_aggregate_and_entity_coverage(self):
+        expected = {tick: struct.pack('<III', tick, 0x12345678, 0x87654321)
+                    for tick in range(128, 256)}
+        actual = {tick: struct.pack('<III', tick, 0x12345678 ^ 0x06e00000, 0x87654321)
+                  for tick in expected}
+        with patch('check_javascript.save_header', side_effect=lambda path:
+                   (0, 159 if path == 'initial' else 168, 2, 2)):
+            self.assertTrue(continuation_matches(expected, actual, 'initial', 'saved', 128, 168))
+            for offset in (0, 4, 8):
+                changed = dict(actual)
+                record = bytearray(changed[128]); record[offset] ^= 1
+                changed[128] = bytes(record)
+                self.assertFalse(continuation_matches(expected, changed, 'initial', 'saved', 128, 168))
 
     @staticmethod
     def fixture(version, resource_declarations=None, required=(), ai_delay=0, building_gradient_delay=4,
@@ -243,7 +258,7 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 167):
+        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 159, 167, 168):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
@@ -279,7 +294,7 @@ class SaveHeaderTests(unittest.TestCase):
                          (0, 153, 2, 3))
 
     def test_current_header_rejects_every_truncated_prefix(self):
-        raw = gzip.decompress(self.fixture(153, [('custom-crops', 'Crops', 'Help')], ['custom-crops']))
+        raw = gzip.decompress(self.fixture(168, [('custom-crops', 'Crops', 'Help')], ['custom-crops']))
         for end in range(len(raw)):
             with self.subTest(end=end), self.assertRaises(AssertionError):
                 self.parse(gzip.compress(raw[:end]))
@@ -299,7 +314,9 @@ class SaveHeaderTests(unittest.TestCase):
                 with self.subTest(offset=offset, value=value), self.assertRaises(AssertionError):
                     self.parse(gzip.compress(malformed))
         with self.assertRaises(AssertionError):
-            self.parse(self.fixture(168))
+            self.parse(self.fixture(168, statistics_delay=9))
+        with self.assertRaises(AssertionError):
+            self.parse(self.fixture(169))
 
 
 if __name__ == '__main__':

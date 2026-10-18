@@ -1710,7 +1710,7 @@ TEST_CASE("authored air blockers constrain the common point router while forbidd
 
 TEST_CASE("unreleased routing draft formats are rejected before reading runtime state" * doctest::test_suite("GradientPreparation"))
 {
-    for(Sint32 version:{168,169,170,VERSION_MINOR+1}) {
+    for(Sint32 version:{169,170,VERSION_MINOR+1}) {
         auto* bytes=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(bytes);
         output.writeText("draft routing","mapName");

@@ -26,6 +26,7 @@
 
 class SimulationRunner;
 class ScenePreparation;
+namespace SimulationChecksum { class Pipeline; }
 struct SceneInputs;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
@@ -419,6 +420,8 @@ private:
 	/// session. The Engine itself stays alive for a possible
 	/// reload (see finishSessionForHost).
 	void teardownSession();
+    // Drain delayed checksum results without executing another simulation tick.
+    void flushChecksums();
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
@@ -430,6 +433,11 @@ private:
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.
 	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
+    std::unique_ptr<SimulationChecksum::Pipeline> checksumPipeline;
+    std::optional<ChecksumSample> latestChecksum;
+    void collectChecksums(bool flush = false);
+    bool routineMapChecksums() const;
+    bool sessionMapChecksums = false;
 	//! Non-owning view of `net` when it is a turn-protocol session; null otherwise.
 	Turn::TurnLockstepSession* turn = nullptr;
 	//! What a turn game reloads after TurnSession::needsReload().

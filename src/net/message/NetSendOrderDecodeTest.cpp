@@ -40,6 +40,7 @@ void check(bool cond, const char* tc, const char* what)
 
 // Build a BinaryInputStream containing one NetSendOrder envelope:
 //   Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum
+//   | Uint8 hasChecksum | Uint32 checksumTick
 // Mirrors the testSerialize() copy-via-fresh-backend pattern in
 // NetTestSuite.cpp so we don't have to chase ownership of the writer's
 // backend after BinaryOutputStream's dtor runs. Caller owns the returned
@@ -48,7 +49,7 @@ BinaryInputStream* makeStream(Uint32 declaredSize,
                               const Uint8* payload,
                               size_t payloadSize,
                               Uint8 sender,
-                              Uint32 checksum)
+                              Uint32 checksum, bool metadata = true)
 {
 	MemoryStreamBackend* writeBackend = new MemoryStreamBackend;
 	MemoryStreamBackend* readBackend = nullptr;
@@ -60,6 +61,11 @@ BinaryInputStream* makeStream(Uint32 declaredSize,
 			out.write(payload, payloadSize, "data");
 		out.writeUint8(sender, "sender");
 		out.writeUint32(checksum, "checksum");
+        if (metadata) {
+            out.writeUint8(1,"hasChecksum");
+            out.writeUint32(17,"checksumTick");
+        }
+        out.writeUint32(0x1234abcd,"nextRecord");
 		out.writeLeaveSection();
 
 		const size_t totalLen = writeBackend->getPosition();
@@ -164,4 +170,24 @@ TEST_SUITE("NetSendOrderDecode")
 {
 	TEST_CASE("rejects oversized size before allocating") { tc1_rejectsOversizedSize(); }
 	TEST_CASE("accepts a valid NullOrder envelope") { tc2_acceptsValidNullOrder(); }
+}
+
+TEST_CASE("saved order envelopes retain master and air draft layouts" * doctest::test_suite("NetSendOrderDecode"))
+{
+    const Uint8 payload[1]={ORDER_NULL};
+    for (unsigned version : {167u,168u,171u,172u}) {
+        CAPTURE(version);
+        const bool tagged=version==168 || version>=172;
+        std::unique_ptr<BinaryInputStream> stream(makeStream(1,payload,1,7,0x12345678,tagged));
+        NetSendOrder message;
+        message.setDecodeVersionMinor(version);
+        REQUIRE_NOTHROW(message.decodeData(stream.get()));
+        const auto order=message.getOrder();
+        REQUIRE(order);
+        CHECK(order->sender==7);
+        CHECK(order->gameCheckSum==0x12345678);
+        CHECK(order->hasGameCheckSum==tagged);
+        CHECK(order->gameCheckSumTick==(tagged ? 17 : 0));
+        CHECK(stream->readUint32("nextRecord")==0x1234abcd);
+    }
 }

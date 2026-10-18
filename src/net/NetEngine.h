@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <queue>
+#include <map>
 
 ///The local order queue for single player and replay playback: it sorts
 ///Orders and hands them out in the correct time slot. The engine drives it
@@ -21,6 +22,8 @@ public:
 
 	///Advances the step
 	void advanceStep(Uint32 checksum) override;
+    void advanceStep() override;
+    void publishChecksum(ChecksumSample sample) override { outgoingChecksums.push(sample); }
 
 	///Clears all the orders at the top of the queues
 	void clearTopOrders() override;
@@ -69,7 +72,9 @@ private:
 	///This queue stores all of the local orders that have to be sent out
 	///on their turn
 	std::queue<std::shared_ptr<Order> > outgoing;
-	int step;
+	std::queue<ChecksumSample> outgoingChecksums;
+    std::map<Uint32, Uint32> receivedChecksums;
+    int step;
 	int numberOfPlayers;
 	int localPlayer;
 	///Latency of the recorded legacy network game, which AdjustLatency

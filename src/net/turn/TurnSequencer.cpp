@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "TurnSequencer.h"
+#include "ChecksumSample.h"
 
 #include <algorithm>
 #include <stdexcept>
@@ -812,7 +813,7 @@ void TurnSequencer::update(std::uint64_t nowMicros)
 	if (tick + 1 >= sentHorizon + config.bundleInterval)
 		emitUpTo(tick + 1);
 
-	while (!openReports.empty() && *openReports.begin() + config.arbitrationTimeoutTicks <= tick)
+	while (!openReports.empty() && Uint64(*openReports.begin()) + ChecksumDeliveryDelay + config.arbitrationTimeoutTicks <= tick)
 		arbitrate(*openReports.begin(), true);
 
 	if (presenceDirty || tick >= lastPresenceTick + config.presenceRefreshTicks)

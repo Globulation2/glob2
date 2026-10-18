@@ -177,6 +177,7 @@ struct Handle
 	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;
+    Handle checksumView(bool mapChecksums = false) const;
     Handle turretView() const;
     // Retain map inputs only on spatial-diagnostic sample ticks.
     Handle statisticsView() const;

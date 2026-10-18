@@ -1022,6 +1022,8 @@ TEST_SUITE("TurnSequencer")
 		g.report(2, 25, 7);
 		g.atTick(274);
 		CHECK_FALSE(g.relay.agreedChecksum(25));
+		g.atTick(275);
+		CHECK_FALSE(g.relay.agreedChecksum(25));
 		g.atTick(276);
 		REQUIRE(g.relay.agreedChecksum(25));
 		CHECK(*g.relay.agreedChecksum(25) == 7);
@@ -1278,6 +1280,10 @@ TEST_SUITE("TurnSession")
 		session.update(3);
 		CHECK(session.getWaitingOnMask() == 0b001);
 		CHECK(link.sentOf<ChecksumReport>(MSG_CHECKSUM_REPORT).empty()); // only every 25 ticks
+        session.advanceStep(); // Advancing orders does not report a current-state hash.
+        session.publishChecksum({0,0xDDDD}); session.publishChecksum({1,0xEEEE});
+        auto delayed=link.sentOf<ChecksumReport>(MSG_CHECKSUM_REPORT);
+        REQUIRE(delayed.size()==1); CHECK(delayed[0]->tick==0); CHECK(delayed[0]->checksum==0xDDDD);
 	}
 
 	TEST_CASE("local orders are submitted, and resubmitted after a reconnect")

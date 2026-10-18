@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #pragma once
+#include "ChecksumSample.h"
 
 // Client side of the turn protocol (docs/multiplayer/turn-protocol.md). TurnSession
 // implements the lockstep method set EngineRun uses from NetEngine, so it can stand
@@ -120,6 +121,8 @@ namespace Turn
 		void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI);
 		/// Called once before each tick executes with the current state checksum.
 		void advanceStep(Uint32 checksum);
+        void advanceStep() { ++step; }
+        void publishChecksum(ChecksumSample sample);
 		/// True when the next tick is authorized and every AI seat has its order.
 		bool tickReady();
 		/// True if the player's order for the next tick is available.

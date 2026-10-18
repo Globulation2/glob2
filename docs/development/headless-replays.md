@@ -428,16 +428,88 @@ The `ReplayWriter` records live during gameplay:
 [u16 VERSION_MAJOR]          — replay format version
 [u16 VERSION_MINOR]
 [order stream]               — repeating until NullOrder:
-  u16 stepsSinceLastOrder    — tick delta since previous order
+  u32 stepsSinceLastOrder    — tick delta since previous order
   NetSendOrder:
     u32 size                 — byte count of order data
     u8  orderType            — order type ID (see Order.h)
     [order data bytes]       — type-specific payload
     u8  sender               — player index
-    u32 checksum             — game state checksum at this tick
+    u32 checksum             — routine snapshot checksum for source tick
+    u8  hasChecksum          — explicit presence; zero is a valid hash
+    u32 checksumTick         — source simulation tick
   ...
-[u16 0 + NullOrder]          — end marker
+[u32 delta + NullOrder]          — end marker
 ```
+
+## Routine and deep checksums
+
+Format 168 rejects older replays and uses schema-3 snapshot checksums. Existing
+save loaders and their minimum format remain supported, including the older order
+envelope layout in saved AI queues. Routine hashing runs on the shared compute
+executor with a one-tick deadline; zero-worker configurations compute immediately
+so the delivery delay retains only the scalar result. Results retain their source
+tick. Replays buffer recorded orders until the matching result is ready, and
+playback validates expected hashes when local results arrive. Paused network
+turns may edit the same simulation tick; their recorded orders share that tick's
+first snapshot hash, because playback applies them together. Network reports
+continue to distinguish those turns and validate their intermediate worlds.
+Finalization drains all remaining work before reporting playback success or
+completing a recording.
+
+Routine hashing follows the original lightweight field-XOR/rotate approach,
+reading selected unit/building fields directly from frozen records. It retains
+entity RNG fingerprints, staffing/list counts, stock, production/funding facts
+and team alliances/vision masks, prestige and player masks. Only immutable
+unit/resource/terrain catalog fingerprints are included; there is no authored
+building catalog or rule-value walk. RNG fingerprints retain their existing
+word mixer. The field mixer has the original non-cryptographic collision
+limitations. Neither padding, pointers nor native byte order enter the result.
+
+Local and AI-only games skip map-cell hashing. Games started with remote players
+include the original captured map subset every 32 absolute simulation ticks:
+terrain vertices, resource values and may-grow flags, building/ground/air
+occupancy, forbidden/farm masks and referenced resource stock. Replay loading
+preserves that policy from the recorded player types before replacing them with
+replay-driven AI. Live capture and replay loading use the same setup-based policy:
+an AI-only turn session skips map sweeps too. Choosing a turn transport does not
+change checksum coverage. The policy remains fixed for a remote session even when
+seats leave. It does not add fertility, immobile markers, guard/clear masks, visibility
+or source-count sweeps. Interned terrain-rule indices and stock allocation slots
+are excluded. No map hash tree, canonical packing buffer or configuration digest
+cache is maintained. Completed jobs release their snapshot leases immediately;
+this adds no snapshot capture payload.
+
+Sampling cadence is not a bound on remote detection latency. Network reports use
+only their source turn's checksum. At the default 25-turn report interval and
+with continuous simulation advancement, reports include a map sweep every 800
+turns, the common multiple of 25 and 32. Pauses change the relationship between
+source turns and simulation ticks. Delivery delay and network arbitration add
+latency after a sampled result; transient map differences can escape entirely.
+
+The routine tier deliberately omits live relationships beyond captured counts
+and attachment/target presence, extra entity fields not covered by the original
+selection, scripts, world RNG, projectiles, uncaptured team bookkeeping, authored
+building definitions and rules, pending jobs and scheduling/cache metadata.
+Differences there can be detected later when they affect captured state, or may
+remain undetected. `Game::checkSum` remains an explicit live-world diagnostic API;
+its heavy mode retains comprehensive existing coverage and can join pending work.
+`GLOB2_CHECKSUM_SIDECAR=1` opts into that heavy calculation and detailed entity
+breakdowns. It does not change the routine hash or require peers to opt in.
+With headless checksum telemetry, `world.checksums` contains deep live-world hashes
+and `snapshot.checksums` contains `source_turn world_tick routine_hash` rows. The
+binary `.checksums` sidecar's total is the deep hash (header flag bit 0). Deep and
+routine hashes use different algorithms and observation boundaries and must not
+be compared directly.
+`game run` result fields `initialChecksum` and `finalChecksum` use the routine
+snapshot schema, identified by `checksum_algorithm: "snapshot-v3"`. They do not
+trigger deep verification. `match verify`'s `checksums.txt` always contains routine
+source-turn hashes, including the terminal samples.
+
+Matching routine hashes establishes agreement only on the selected observation
+fields. For simulation-equivalence evidence, compare deep per-tick traces and
+save/replay continuations separately: routine reports cannot establish agreement
+on the omitted state. Evaluate changes in coverage separately from worker
+offloading when measuring checksum optimizations.
 
 ## AI Types
 
