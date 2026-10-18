@@ -5,6 +5,7 @@
 #include "GenerationService.h"
 #include <algorithm>
 #include <iostream>
+#include <memory>
 #include <ThreadSupport.h>
 
 LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, int threads,
@@ -181,7 +182,10 @@ LandscapePreviewer::Preview LandscapePreviewer::rollAttempt(const GenerationRequ
 	GenerationService generator;
 	auto roll = request;
 	roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
-	Game game(nullptr);
+	// A Game consumes much of a macOS worker's stack, and generators may need
+	// another scratch Game. Keep the preview owner off that bounded stack.
+	auto owner = std::make_unique<Game>(nullptr);
+	auto &game = *owner;
 	const auto outcome = generator.generate(game, roll);
 	if (!outcome || game.teamsCount() != request.nbTeams)
 	{
