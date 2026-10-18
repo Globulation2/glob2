@@ -115,7 +115,7 @@ void isolateEnvironment()
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
-		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
+		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL", "GLOB2_RESOURCE_GRADIENT_PROBE",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
@@ -295,6 +295,8 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", std::to_string(Cli::DefaultGradientDelay)), 1, 16);
+		if (one(options,"--resource-gradient-probe","false")=="true")
+			setHeadlessEnvironment("GLOB2_RESOURCE_GRADIENT_PROBE",(output/"gradient-quality.csv").string().c_str());
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);

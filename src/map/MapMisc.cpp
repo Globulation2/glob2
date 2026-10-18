@@ -26,7 +26,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         ? (gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
           | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
         : 0u;
-    Uint32 cs = worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    Uint32 cs = (legacy152 ? 0 : gradientRuntime->resources.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)
@@ -89,6 +89,17 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 
 
     }
+    // Suspended freshness changes the next explicit query, so it is simulation state.
+    for (int t=0; !legacy152 && game && t<game->teamsCount(); ++t)
+        for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+            Uint32 stale=Uint32(forbiddenGradientStale[t][sw])
+                | (Uint32(guardGradientStale[t][sw])<<1) | (Uint32(clearGradientStale[t][sw])<<2);
+            for (int r=0; r<MaterialCount; ++r) {
+                stale |= Uint32(materialGradientStale[t][r][sw]) << (3+r);
+                stale |= Uint32(marketMaterialGradientStale[t][r][sw]) << (3+MaterialCount+r);
+            }
+            if (stale) mix64((Uint64(t*SWIM_CLASS_COUNT+sw)<<32)|stale);
+        }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)

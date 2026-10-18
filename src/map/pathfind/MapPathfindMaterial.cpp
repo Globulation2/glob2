@@ -19,6 +19,19 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 	assert(resourceType<MaterialCount);
 	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
 	if (!gradient) { *stopWork=false; return false; }
+    // Only owner queries of ground natural fields enter the adaptive model.
+    // Cold reads may be null; air and consumer fields retain their own policies.
+    const bool naturalGround=game && !compute.insideJob() && swimClass<SWIM_CLASS_COUNT
+        && gradient==materialGradients[teamNumber][resourceType][swimClass];
+    std::optional<EntityRandom> before;
+    if (naturalGround && gradientRuntime->qualityProbe) before.emplace(random);
+    if (naturalGround) {
+        gradientRuntime->initializeResourcePolicy(*this);
+        auto& field=gradientRuntime->resources.fields[(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass];
+        field.queried(game->stepCounter,gradient[coordToIndex(x,y)]!=GRADIENT_FORBIDDEN);
+    }
+    const auto move=[&]() {
+
 	size_t hereIndex=coordToIndex(x, y);
     Uint16 here=gradient[hereIndex];
     // Resolve the already-selected destination instead of repeating supplier
@@ -57,8 +70,12 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
     if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false)) return true;
     refresh();
     return false;
+    };
+    const bool moved=move();
+    if (naturalGround && gradientRuntime->qualityProbe && gradient[coordToIndex(x,y)]!=GRADIENT_FORBIDDEN)
+        gradientRuntime->qualityProbe->observe(*this,teamNumber,resourceType,swimClass,x,y,gradient,*before);
+    return moved;
 }
-
 
 void Map::pathfindRandom(Unit *unit)
 {

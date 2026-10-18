@@ -26,11 +26,12 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	const bool blockedGround = resourceBlocksGround(index);
 	const bool blockedAir = resourceBlocksAir(index);
 	const auto before = resourceMaterialMaskAt(index);
+    const auto beforeAvailable=materialMaskAt(index);
 	releaseResourceStock(index);
 	resourceCells[index].resource = resource;
 	markResource(index);
 	initializeResourceStock(index, stocks);
-	materialStockChanged(index, before);
+	materialStockChanged(index, before, beforeAvailable);
     if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));

@@ -1199,7 +1199,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
                 for(int material=0;material<MaterialSlotCount;++material) {
                     historical.writeEnterSection(material);
                     gradient(map.materialGradients[team][material][swim]);
-                    historical.writeUint8(map.gradientUpdated[team][material][swim],"updated");
+                    historical.writeUint8(0,"updated");
                     historical.writeEnterSection("markets");
                     gradient(map.marketMaterialGradients[team][material][swim]);
                     historical.writeUint8(map.marketGradientDirty[team][material][swim],"dirty");

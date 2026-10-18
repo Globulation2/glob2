@@ -286,6 +286,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l save -r
 complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums team-timeline maxima'
 complete -c glob2 -n "__glob2_at 'game run'" -l write-replay
 complete -c glob2 -n "__glob2_at 'game run'" -l benchmark-warmup -r
+complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-probe
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-fields -r -f -a 'maxima'
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-interval -r
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-png

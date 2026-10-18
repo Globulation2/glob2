@@ -281,6 +281,9 @@ struct GameplayMeasurements
 	Uint64 critical{};
 	Uint64 feeding{};
 	Uint64 healing{};
+    // Instantaneous population by run/swim class, retained in chart history.
+    bool movementClassesKnown = false;
+    std::array<Uint32, SWIM_CLASS_COUNT> groundUnitsByMovementClass{};
 	// Snapshot diagnostics. Structural counts ignore temporary unit occupancy.
 	std::array<UnitStatistics<Uint64>,2> trappedUnits;
 	Uint64 trappedBuildings[2][2][IntBuildingType::NB_BUILDING]{}; // blockage, swim ability, type
@@ -363,6 +366,9 @@ namespace SimulationSnapshot { struct Handle; }
 class TeamStats
 {
 public:
+    // Unknown on startup/legacy loads: retain periodic work until a sample arrives.
+    bool usesGroundMovementClass(int swim) const
+    { const auto& m=measurements(); return !m.movementClassesKnown || m.groundUnitsByMovementClass[swim] != 0; }
     std::size_t unitTypeCount=NB_UNIT_TYPE;
     void configureUnits(std::size_t count);
 

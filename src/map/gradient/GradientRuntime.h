@@ -10,6 +10,9 @@
 #include "SnapshotGradient.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
+#include "ResourceGradientProbe.h"
+#include "ResourceGradientPolicy.h"
+#include <cstdlib>
 #include "field/GradientWorkspace.h"
 
 #include <vector>
@@ -25,6 +28,9 @@
 
 struct GradientRuntime
 {
+    std::unique_ptr<ResourceGradientProbe> qualityProbe;
+    ResourceGradientPolicy resources;
+    void initializeResourcePolicy(const Map&);
 	struct Workspace
 	{
 		GradientWorkspace propagation;
@@ -96,14 +102,15 @@ struct GradientRuntime
 		++synchronousByReason[std::size_t(std::exchange(syncReason, Map::BuildingSyncReason::Other))];
 	}
     ResourceGrowth::Pipeline growth;
-	// One simulation-owned reservation, consumed once during the observation phase.
+	// Owner reservations, consumed together at the immutable observation boundary.
 	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.
 	struct Preparation {
 		using Kind = gradient_preparation::Kind;
 		GradientPipeline::Job *job = nullptr;
 		Kind kind = Kind::Materials;
 		int team = 0, material = 0, swim = 0;
-	} preparation;
+	};
+    std::vector<Preparation> preparations;
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
@@ -122,6 +129,10 @@ struct GradientRuntime
         if (backendSession) backendSession = std::make_shared<gradient_kernel::BackendSession>();
         shareBackendSession();
     }
-    GradientRuntime() { shareBackendSession(); }
+    GradientRuntime() {
+        shareBackendSession();
+        if (const char* path=std::getenv("GLOB2_RESOURCE_GRADIENT_PROBE"))
+            if (*path) qualityProbe=std::make_unique<ResourceGradientProbe>(path);
+    }
 
 };

@@ -70,6 +70,7 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     }
     finishGradientPipeline();
     gradientRuntime->growth.reset();
+    gradientRuntime->resources={};
     terrainRegistryValue = std::move(terrain);
     assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
@@ -197,8 +198,9 @@ void Map::refreshResourceTotal(size_t index)
     markResource(index);
 }
 
-void Map::materialStockChanged(size_t index, MaterialMask before)
+void Map::materialStockChanged(size_t index, MaterialMask before, MaterialMask beforeAvailable)
 {
+    gradientRuntime->resources.stockChanged(beforeAvailable,materialMaskAt(index));
     const auto after=resourceMaterialMaskAt(index);
     // Renewable membership may include empty stocks, but all such yields are
     // intrinsically mutable. For the static subset these masks are exactly the
@@ -217,6 +219,7 @@ void Map::materialStockChanged(size_t index, MaterialMask before)
 void Map::rebuildResourceState()
 {
     resourceChanges.markAll();
+    gradientRuntime->resources={};
     bumpStaticMaterialSourceGeneration();
     resourceStockIndices.clear(); resourceStocks.clear(); freeResourceStocks.clear(); materialSourceCounts.fill(0);
     for (size_t i=0;i<cellCount();++i)
@@ -242,10 +245,11 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     // Only availability transitions affect counters; capture renewable membership
     // before mutation, including an empty persistent stock that can regrow.
     const auto before=crossesZero ? resourceMaterialMaskAt(index) : MaterialMask(0);
+    const auto beforeAvailable=crossesZero ? materialMaskAt(index) : MaterialMask(0);
     markResource(index);
     if (std::has_single_bit(p.materialMask)) r.amount=amount;
     else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
-    if (crossesZero) materialStockChanged(index,before);
+    if (crossesZero) materialStockChanged(index,before,beforeAvailable);
     if (!r.amount && !p.persistsWhenEmpty) replaceResource(index,Resource{});
 }
 

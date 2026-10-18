@@ -367,7 +367,9 @@ checksum adapter remains available for diagnostic fixtures.
   is rejected. Format 172 adds tagged order checksum metadata. Format 173
   combines delayed-ground demand with air slots, reading master formats 168/169
   and earlier air formats 171/172 with their independent layout gates. The
-  released save floor remains 58; replay acceptance begins at 173.
+  released save floor remains 58; format 174 appends adaptive resource scheduling
+  and ground movement counts without changing released layouts. Replay acceptance
+  begins at 174.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
@@ -453,7 +455,7 @@ checksum adapter remains available for diagnostic fixtures.
   Earlier supported saves retain their completed pending outputs and historical
   deadlines, including zero-delay outputs; they are never regenerated from the
   loaded world. New admissions use the new timing rule. The current replay floor
-  is 173, also requiring integrated air and delayed gradient publication; simulation revisions keep
+  is 174, also requiring adaptive resource scheduling and integrated air/delayed publication; simulation revisions keep
   these trajectories separate from earlier executions.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
   areas, visibility, entities, teams, rules, published resource fields, growth and
@@ -480,7 +482,40 @@ checksum adapter remains available for diagnostic fixtures.
   standalone inspection cache does not revoke an established owner observation;
   live entity helpers and orders cannot refresh that retained handle.
   Named views drop unwanted extras.
+- TeamStats counts living non-flying units with ground movement by their actual
+  run/swim ratio class during its existing per-tick snapshot scan. Published
+  counts gate periodic material, market, guard, clear and forbidden refreshes;
+  team aliveness does not gate surviving units. Unused fields are suspended. Natural-resource fields use adaptive demand
+  scheduling; market, guard and clear fields retain their round robin.
+  Counts arrive at the fixed
+  `teamStatsDelay` deadline (eight ticks by default). Until the first known sample,
+  including after loading older saves, all classes remain eligible.
+  Inactive classes retain their allocated fields marked stale and cancel pending
+  periodic work. An explicit query enrolls a missing or suspended stale ground field in the
+  existing FIFO, including during the statistics delay; known-zero class counts
+  do not cancel first-use requests. Air routing keeps its existing policy. Counts, pending samples
+  and suspended freshness flags are saved for exact continuation. The Population
+  statistics chart retains those same counts as ground-movement bands; history
+  predating their collection is unavailable rather than zero. Building fields
+  retain their existing query-triggered refresh and idle-expiry rules.
+
 ## Scheduled gradient work
+
+- Natural-resource fields use one fixed policy, adaptive 32. A movement query
+  requests a refresh; after a minimum eight ticks since submission the integer
+  model predicts the benefit of refreshing. A score of at least 32 direction-cost
+  units admits the field, and demand forces admission at 128 ticks. All accepted
+  fields are submitted together in stable key order as one executor batch per
+  observation. This removes the old global one-resource-field-per-tick cap.
+  The seven features are serving capture age, query counts over 32 and 128 ticks,
+  added and removed positive-stock source tiles since capture, and those two
+  changes divided by captured source count. Material identity is excluded.
+  Rolling tick buckets and source zero crossings provide these features without
+  scanning units or the map each tick. Cold and suspended ground fields keep the existing FIFO admission and
+  delayed publication. One FIFO ticket and accepted warm natural fields share
+  the same prepared batch. Publication retains its configured fixed delay. Capture epochs,
+  pending jobs and rolling demand are saved; diagnostics never are.
+  See [collecting and fitting the model](../development/resource-gradient-model.md).
 
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map

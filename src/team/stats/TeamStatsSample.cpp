@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TeamStat.h"
+#include "Map.h"
 #include "sim/snapshot/TeamRecords.h"
 #include "Bullet.h"
 #include "ai/observation/AIWorldView.h"
@@ -334,6 +335,8 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
 	{
 		if (!u.isDead)
 		{
+            if (!u.performance[FLY] && (u.performance[WALK] || u.performance[SWIM]))
+                ++m.groundUnitsByMovementClass[Map::swimClass(u.performance[WALK], u.performance[SWIM])];
 			if (!u.widePrimaryCargo() && u.carriedMaterial >= 0 &&
 				u.carriedMaterial < MaterialSlotCount)
 				++m.carried[u.carriedMaterial];
@@ -380,6 +383,7 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
 			smooth.totalNeededPerLevel[t.semantics.requiredWorkerLevel] += need;
 		}
 	}
+    m.movementClassesKnown=true;
 	if (sample.periodic)
 		periodic(world, teamId, sample);
 	if (!aggregate)

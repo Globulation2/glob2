@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "features": [
+    "age",
+    "q32",
+    "q128",
+    "source_added",
+    "source_removed",
+    "source_added_frac_q12",
+    "source_removed_frac_q12"
+  ],
+  "threshold": 32000,
+  "positive_probability": {
+    "coef": [
+      10906522,
+      50963554,
+      8002868,
+      15818148,
+      -2098851,
+      4610415,
+      12336586
+    ],
+    "bias": -1699099422241,
+    "shift": 28,
+    "accumulator_bound": 10249718793457
+  },
+  "negative_probability": {
+    "coef": [
+      12905991,
+      27361518,
+      11464461,
+      5726834,
+      -2743230,
+      -3495566,
+      6404282
+    ],
+    "bias": -1700061298223,
+    "shift": 28,
+    "accumulator_bound": 7423108842821
+  },
+  "positive_mean": {
+    "coef": [
+      65316629,
+      1200833680,
+      140367024,
+      145917934,
+      -328221262,
+      140898898,
+      224088167
+    ],
+    "bias": -12377900823466,
+    "shift": 28,
+    "accumulator_bound": 195709998194032
+  },
+  "negative_mean": {
+    "coef": [
+      -4407263,
+      204441602,
+      37329544,
+      -20383320,
+      2904264,
+      249952,
+      96605360
+    ],
+    "bias": 198080225015,
+    "shift": 28,
+    "accumulator_bound": 30104185243910
+  },
+  "provenance": {
+    "development_episodes": 187627,
+    "development_states": 32,
+    "heldout_episodes": 59297,
+    "heldout_states": 8,
+    "weighting": "equal format, then starting state, then policy, then episode",
+    "regularization": {
+      "logistic_C": 1,
+      "ridge_alpha": 100
+    },
+    "note": "Frozen diverse seven-feature refit selected in research. Material and movement-class identities excluded. Runtime threshold 32 selected on separate online comparisons. Historical validation was inspected during research and is not an untouched prospective test."
+  }
+}

@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 173
+#define VERSION_MINOR 174
+// version 174 appends adaptive resource-gradient state and ground movement counts.
 // version 173 integrates delayed ground guidance with the air routing layout.
 // version 172 combines air routing with tagged snapshot checksum metadata.
 // version 171 appends one shared air routing class and preserves released save layouts.

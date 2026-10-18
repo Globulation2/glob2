@@ -254,6 +254,34 @@ The rendering thread polls pending artwork with the application's 2 ms budget,
 including when simulation runs on a separate thread, so HD reloads finish during
 automatic matches too.
 
+## Resource gradient quality probe
+
+`game run --resource-gradient-probe` writes `gradient-quality.csv` and
+`gradient-episodes.csv` in the output directory. The first compares sampled live
+natural-resource movement decisions with freshly rebuilt private CPU fields;
+market and consumer-specific fields are excluded. Reachability disagreements,
+depleted goals, missed moves and additional selected-step cost are recorded.
+Equal-cost alternative moves score zero. Extra cost alone excludes unreachable
+neighbors, so inspect the flags alongside it.
+
+The second records seven scheduler inputs and a 32-tick counterfactual label:
+additional direction cost from retaining the serving field versus refreshing at
+capture, with the configured publication delay. These are comparisons along the
+live trajectory, not simulations of two different future games. Complete quiet
+episodes are retained, including zero-query examples; interrupted episodes are
+marked incomplete and excluded from training. Sampling uses one deterministic
+hash group out of eight during the first 1024 ticks of each 4096-tick window,
+with 256 ticks of warmup per sampled field. It uses private RNG copies and
+private fields and must produce identical simulation checksums with probing off.
+
+The observer adds substantial reference computation and CSV I/O. Its objects and
+buffers exist only when enabled; disabled movement paths perform a null check.
+Never use collector-enabled runs for performance comparisons. Legacy entry points
+can enable it with `GLOB2_RESOURCE_GRADIENT_PROBE` set to a quality CSV path;
+structured jobs clear that variable and require the explicit flag. Diagnostic
+histories are deliberately absent from saves and checksums. See
+[the model workflow](resource-gradient-model.md) for tournaments and fitting.
+
 ## Verifying a match record
 
 ```sh

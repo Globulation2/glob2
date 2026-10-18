@@ -847,7 +847,7 @@ static void measurementReplayBoundaries()
 	// Format 166 makes append-order populations authoritative; format 167
 	// changes completed-observation timing. Format 171 unifies flyer routing.
 	// Network and saved-game floors remain.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 173 && NET_PROTOCOL_VERSION == 72,
+	require(REPLAY_MINIMUM_VERSION_MINOR == 174 && NET_PROTOCOL_VERSION == 72,
 
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
@@ -1170,6 +1170,9 @@ static void measurementScreenshots(const std::string &directory)
 										   stats.measurementHistory.begin() + 2);
 		for (auto &sample : stats.measurementHistory)
 		{
+            sample.movementClassesKnown=true;
+            for (int c=0;c<SWIM_CLASS_COUNT;++c)
+                sample.groundUnitsByMovementClass[c]=(c+1)*(1+t%3)+sample.tick/512;
 			sample.growthGlobal[1][WHEAT] = Uint64(t+1) * sample.tick;
 			sample.growthAmount[1][WHEAT] = Uint64(t+1) * sample.tick / 2;
 			sample.trappedUnits[1][WORKER] = t+1;
@@ -1198,7 +1201,7 @@ static void measurementScreenshots(const std::string &directory)
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
-															{"hunger", false},	 {"net growth", false}, {"growth map", false}};
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}};
 			screen.selectMetric(EndGameScreen::OVERVIEW);
 			screen.paintFrame(0);
 			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),

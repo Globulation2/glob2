@@ -6104,3 +6104,25 @@ Left hand
 Right hand
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.
+[stat ground movement]
+Ground movement
+[stat ground movement about]
+Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.
+[stat view by movement]
+By movement
+[stat band land only]
+Land only
+[stat band swim twice run]
+Swim 2x
+[stat band swim faster run]
+Swim 1.4x
+[stat band swim equals run]
+Equal
+[stat band run faster swim]
+Run 1.3x
+[stat band run twice swim]
+Run 2x
+[stat band run triple swim]
+Run 3x
+[stat band water only]
+Water only

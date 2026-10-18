@@ -13,6 +13,9 @@
 #include "Version.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
 
 #include <algorithm>
 #include <array>
@@ -885,7 +888,18 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     map.fogOfWar[a]=map.fogOfWar[b]=0;
     std::vector<Uint16> direct(map.size),cached(map.size);
     gradient_preparation::MaterialSeedCache snapshotCache;
+    map.gradientRuntime->initializeResourcePolicy(map);
+    const auto initial=map.gradientRuntime->resources.sources;
     auto compare=[&](int material) {
+        // Independently recount positive stocks after depletion and regrowth:
+        // renewable membership includes empty tiles, model turnover does not.
+        for (unsigned m=0;m<MaterialCount;++m) {
+            unsigned actual=0;
+            for (size_t i=0;i<map.size;++i) actual+=map.materialAmountAtSlot(i,m)>0;
+            const auto& count=map.gradientRuntime->resources.sources[m];
+            CHECK(count.count==actual);
+            CHECK(count.count==initial[m].count+count.added-count.removed);
+        }
         map.seedMaterialGradientDirect(0,material,0,direct.data(),nullptr);
         for (int repeat=0;repeat<32;++repeat) map.seedMaterialGradient(0,material,0,cached.data(),false);
         REQUIRE(map.gradientRuntime->resourceSeeds.valid);
@@ -930,6 +944,42 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
 
 TEST_SUITE("RuntimeResources")
 {
+TEST_CASE("legacy pending natural publication can be saved before any movement query")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool text : {false,true}) {
+        glob2test::HeadlessGame original({.wDec=6,.hDec=6,.header=true});
+        auto& map=original.game.map;
+        map.setResourceByIndex(20,20,WHEAT,10);
+        const auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
+        REQUIRE(field);
+        map.configureGradientPipeline(0,2);
+        auto data=std::make_unique<Uint16[]>(map.size);
+        std::copy_n(field,map.size,data.get());
+        // Match the pre-169 loader: completed old jobs have no capture metadata,
+        // and source bookkeeping remains uninitialized until first use.
+        map.gradientRuntime->resources={};
+        map.gradientRuntime->pipeline.restoreCompleted({
+            &map.materialGradients[0][WHEAT][0],0,1,false,std::move(data),{}});
+        map.advanceGradientPipeline();
+        REQUIRE(map.gradientRuntime->resources.initialized);
+        REQUIRE(map.gradientRuntime->resources.fields.size()==1);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text
+            ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory))
+            : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+        original.game.save(out.get(),false,"legacy pending publication"); out->flush();
+        auto backend=std::make_unique<GAGCore::MemoryStreamBackend>(memory->getBuffer(),memory->getPosition());
+        backend->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text
+            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend.get()))
+            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend.release())));
+        Game restored(nullptr);
+        REQUIRE(restored.load(in.get()));
+        CHECK(map.checkSum(true)==restored.map.checkSum(true));
+    }
+}
+
 TEST_CASE("unused catalog definitions allocate no material gradients and schedule no extra work")
 {
     glob2test::HeadlessGlobals globals;
@@ -973,7 +1023,7 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     }
     original.finishGradientPipeline();
     candidate.finishGradientPipeline();
-    CHECK(original.gradientPipelineStatus().jobs>0);
+    CHECK(original.gradientPipelineStatus().jobs==0); // allocated but never queried by movement
     CHECK(original.gradientPipelineStatus().published==candidate.gradientPipelineStatus().published);
     CHECK(original.gradientRuntime->resourceSeeds.allocatedBytes()==candidate.gradientRuntime->resourceSeeds.allocatedBytes());
     for (unsigned material=0;material<MaterialCount;++material)

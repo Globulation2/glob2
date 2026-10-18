@@ -257,6 +257,7 @@ _glob2() {
       '*--telemetry[telemetry]:value:(checksums team-timeline maxima)' \
       '--write-replay[write-replay]' \
       '--benchmark-warmup[benchmark-warmup]:value:' \
+      '--resource-gradient-probe[resource-gradient-probe]' \
       '--diagnostic-fields[diagnostic-fields]:value:(maxima)' \
       '--diagnostic-interval[diagnostic-interval]:value:' \
       '--diagnostic-png[diagnostic-png]' \

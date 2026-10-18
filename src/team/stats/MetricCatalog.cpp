@@ -95,6 +95,18 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "population", .group = Group::Population, .sampled = EndOfGameStat::TYPE_UNITS});
 		m.shareable = true;
 	}
+    {
+        Metric &m = add({.id = "ground movement", .group = Group::Population,
+                        .value = [](const M &s) { return total(s.groundUnitsByMovementClass); }});
+        const char* labels[SWIM_CLASS_COUNT]={
+            "[stat band land only]", "[stat band swim twice run]", "[stat band swim faster run]",
+            "[stat band swim equals run]", "[stat band run faster swim]", "[stat band run twice swim]",
+            "[stat band run triple swim]", "[stat band water only]"};
+        for (int c=0;c<SWIM_CLASS_COUNT;++c)
+            m.bands.push_back({labels[c], [c](const M &s) { return double(s.groundUnitsByMovementClass[c]); }});
+        m.composition=m.movementClasses=true;
+        m.splitKey="[stat view by movement]";
+    }
 	{
 		Metric &m = add({.id = "births", .group = Group::Population, .kind = Metric::Counter, .value = births});
 		m.splitKey = "[stat view by unit type]";
@@ -466,6 +478,8 @@ bool covered(const Metric &metric, const View &view, const TeamHistory &history,
 		return true;
 	if (!point.measurements)
 		return false;
+    if (metric.movementClasses && !point.measurements->movementClassesKnown)
+        return false;
 	// Later additions are zero in samples taken before a save gained them.
 	if (metric.extended && history.extendedCoverageStartTick != 0 && point.tick <= history.extendedCoverageStartTick)
 		return false;

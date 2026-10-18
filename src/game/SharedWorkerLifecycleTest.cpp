@@ -69,6 +69,7 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     REQUIRE(map.materialAmountAt(index, MaterialId::Gold) == 2);
     REQUIRE(map.materialAmountAt(index, MaterialId::Food) == 3);
     map.getMaterialGradient(0, MaterialId::Gold, 0);
+    map.getClearAreasGradient(0,0); // area work remains periodic without movement demand
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.stagePeriodicGradientPreparation();
@@ -103,9 +104,15 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     map.getClearAreasGradient(0, 0);
     map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
+    for (int r:{WHEAT,WOOD}) map.getMaterialGradientSlot(0,r,0);
+    source.game.stepCounter=128;
+    EntityRandom random;random.initialize(123456,EntityRandom::Kind::Unit,0,1);
+    int dx=0,dy=0;bool stop=false;
+    for (int r:{WHEAT,WOOD}) map.pathfindMaterial(random,0,r,0,10,10,&dx,&dy,&stop,nullptr);
     source.game.observeCompletedWorld();
     REQUIRE_FALSE(map.hasPendingGradientPreparation());
-    REQUIRE(map.gradientPipelineStatus().jobs > 0);
+    REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
+    REQUIRE(map.gradientPipelineStatus().pending >= 3);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
     source.save(&writer, "pending worker continuation");

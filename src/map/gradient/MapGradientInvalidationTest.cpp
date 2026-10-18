@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
+#include <nlohmann/json.hpp>
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
+#include <algorithm>
+#include <iostream>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Map.h"
@@ -19,6 +25,8 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include "gradient/ResourceGradientProbe.h"
+#include <fstream>
 
 namespace
 {

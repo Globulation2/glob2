@@ -478,6 +478,7 @@ const std::vector<Command> &commands()
 					{"checksums", "team-timeline", "maxima"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
+			 flag("--resource-gradient-probe", "Write sampled natural-resource pathfinding quality comparisons"),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,
 					 std::to_string(DefaultDiagnosticInterval)),

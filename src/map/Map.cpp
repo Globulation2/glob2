@@ -58,7 +58,6 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 			{
 				materialGradients[t][r][s] = NULL;
-				gradientUpdated[t][r][s] = false;
 				marketMaterialGradients[t][r][s] = NULL;
 				marketGradientDirty[t][r][s] = false;
 				marketGradientUpdated[t][r][s] = false;
@@ -590,7 +589,11 @@ void Map::clear()
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
-	gradientRuntime->preparation={};
+    gradientRuntime->preparations.clear();
+    gradientRuntime->resources={};
+    if (auto& probe=gradientRuntime->qualityProbe) {
+        probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;
+    }
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
 	// Retires into the buffer pool, so before the pool is cleared below.
@@ -648,9 +651,10 @@ void Map::clear()
 			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				delete[] materialGradients[t][r][swim];
+				materialGradientStale[t][r][swim]=false;
 				materialGradients[t][r][swim] = NULL;
-				gradientUpdated[t][r][swim] = false;
 				delete[] marketMaterialGradients[t][r][swim];
+				marketMaterialGradientStale[t][r][swim]=false;
 				marketMaterialGradients[t][r][swim] = NULL;
 				marketGradientDirty[t][r][swim] = false;
 				marketGradientUpdated[t][r][swim] = false;
@@ -658,10 +662,13 @@ void Map::clear()
 		for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 		{
 			delete[] forbiddenGradient[t][swim];
+			forbiddenGradientStale[t][swim]=false;
 			forbiddenGradient[t][swim] = NULL;
 			delete[] guardAreasGradient[t][swim];
+			guardGradientStale[t][swim]=false;
 			guardAreasGradient[t][swim] = NULL;
 			delete[] clearAreasGradient[t][swim];
+			clearGradientStale[t][swim]=false;
 			clearAreasGradient[t][swim] = NULL;
 			guardGradientUpdated[t][swim] = false;
 			clearGradientUpdated[t][swim] = false;

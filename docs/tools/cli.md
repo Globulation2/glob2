@@ -681,6 +681,7 @@ Platform: all.
 | `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
+| `--resource-gradient-probe` | flag; default false | Write sampled natural-resource pathfinding quality comparisons. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |

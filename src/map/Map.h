@@ -106,6 +106,7 @@ enum AreaType
 class Map
 {
 	friend class ResourceSeedCache;
+	friend struct ResourceGradientProbe;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
@@ -160,7 +161,7 @@ class Map
 	void releaseResourceStock(size_t index);
 	void refreshResourceTotal(size_t index);
 	void rebuildResourceState();
-	void materialStockChanged(size_t index, MaterialMask before);
+	void materialStockChanged(size_t index, MaterialMask before, MaterialMask beforeAvailable);
 	bool harvestMaterial(size_t index, int material);
 	// Terrain is stored once per vertex, and only there: vertex (x,y) is the
 	// top-left corner of cell (x,y). Each cell's rules are derived from its four
@@ -1299,6 +1300,14 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
+    // Suspended ground fields keep their storage; renewed demand queues a refresh.
+    bool materialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool marketMaterialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool forbiddenGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool guardGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool clearGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool periodicGradientClassActive(int team, int swim) const;
+    void suspendUnusedGradientClasses();
 	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
 	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];

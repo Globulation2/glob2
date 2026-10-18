@@ -110,6 +110,8 @@ struct Metric
 	//! `ratioOf` counts what `value` sums: the metric is their quotient (the
 	//! mean distance of a walk), not a percentage.
 	bool mean = false;
+    //! Requires movement-class history introduced with gradient demand tracking.
+    bool movementClasses = false;
 	//! Factor on a counter's rate. Worker time is counted in worker-ticks, so
 	//! its rate per minute times 1 / TICKS_PER_MINUTE is the number of workers
 	//! doing something, on average. Such a counter has no meaningful total.
