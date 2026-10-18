@@ -1750,7 +1750,7 @@ TEST_CASE("authored air blockers constrain the common point router while forbidd
 
 TEST_CASE("unreleased routing draft formats are rejected before reading runtime state" * doctest::test_suite("GradientPreparation"))
 {
-    for(Sint32 version:{169,170,VERSION_MINOR+1}) {
+    for(Sint32 version:{170,VERSION_MINOR+1}) {
         auto* bytes=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(bytes);
         output.writeText("draft routing","mapName");
@@ -1792,9 +1792,9 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         CHECK(map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8));
         CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,0,8,8));
         CHECK(map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,20)]==GRADIENT_AT_GOAL);
-        CHECK(map.getClearAreasGradient(0,0)[map.coordToIndex(18,20)]==GRADIENT_FORBIDDEN);
+        CHECK(glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,0); })[map.coordToIndex(18,20)]==GRADIENT_FORBIDDEN);
         CHECK(map.getGuardAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,16)]==GRADIENT_AT_GOAL);
-        CHECK(map.getGuardAreasGradient(0,0)[map.coordToIndex(18,16)]==GRADIENT_FORBIDDEN);
+        CHECK(glob2test::awaitGradient(world.game,[&] { return map.getGuardAreasGradient(0,0); })[map.coordToIndex(18,16)]==GRADIENT_FORBIDDEN);
         CHECK(map.pathfindPointToPoint(8,8,12,8,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
         CHECK(dx==1);CHECK(dy==0);
         CHECK_FALSE(map.pathfindPointToPoint(8,8,12,8,&dx,&dy,0,1,100));
@@ -2316,4 +2316,29 @@ TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stab
         map.finishGradientPipeline();
 
     }
+}
+
+TEST_CASE("released ground and air draft routing layouts remain independent" * doctest::test_suite("GradientPreparation"))
+{
+    CHECK(hasSnapshotChecksumMetadata(168));
+    CHECK(hasSnapshotChecksumMetadata(169));
+    CHECK_FALSE(hasSnapshotChecksumMetadata(171));
+    CHECK(hasSnapshotChecksumMetadata(172));
+    CHECK(hasSnapshotChecksumMetadata(173));
+    CHECK(hasDelayedGradientState(169));
+    CHECK_FALSE(hasDelayedGradientState(171));
+    CHECK_FALSE(hasDelayedGradientState(172));
+    CHECK(hasDelayedGradientState(173));
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=2,.header=true});
+    auto& map=world.game.map;
+    for (int team=0;team<2;++team) for (int movement=0;movement<SWIM_CLASS_COUNT;++movement) {
+        const unsigned oldMaterial=(team*(MaterialSlotCount+2)+WHEAT)*SWIM_CLASS_COUNT+movement;
+        CHECK(map.gradientDestination(oldMaterial,SWIM_CLASS_COUNT)==&map.materialGradients[team][WHEAT][movement]);
+        CHECK(map.gradientDestination(5000+team*SWIM_CLASS_COUNT+movement,SWIM_CLASS_COUNT)==&map.forbiddenGradient[team][movement]);
+        auto* slot=&map.materialGradients[team][WHEAT][movement];
+        CHECK(map.gradientDestination(map.gradientDestination(slot))==slot);
+    }
+    auto* air=&map.materialGradients[1][WHEAT][AIR_MOVEMENT_CLASS];
+    CHECK(map.gradientDestination(map.gradientDestination(air))==air);
 }
