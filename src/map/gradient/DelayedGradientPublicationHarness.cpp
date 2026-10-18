@@ -74,6 +74,45 @@ TEST_CASE("all natural visitation flags initialize and clear including reserved 
     map->~Map();
 }
 
+TEST_CASE("successful planning reads leave warm natural fields idle beyond the demanded age cap")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    map.configureGradientPipeline(0,3);
+    auto* worker=world.addUnit(WORKER,8,8);REQUIRE(worker);
+    auto* inn=world.addBuilding("inn",10,8);REQUIRE(inn);
+    map.setResourceByIndex(20,20,WHEAT,1);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    for(unsigned tick=0;tick<4;++tick) advanceFields(game);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    const auto& field=map.gradientRuntime->resources.fields.at(WHEAT*SWIM_CLASS_COUNT);
+    const auto submitted=field.submitted, serving=field.serving.tick;
+    const auto jobs=map.gradientPipelineStatus().jobs;
+    const auto* published=map.lookupMaterialGradientSlot(0,WHEAT,0);
+    REQUIRE(published);
+    // Recruiters repeatedly inspect this route, but no unit actually moves.
+    // Keeping it queried past 128 ticks must not convert the demanded age cap
+    // into a fixed refresh interval for every field the planner inspects.
+    for(unsigned tick=0;tick<ResourceGradientPolicy::MaximumInterval+16;++tick) {
+        int distance=-1;Sint32 targetX=-1,targetY=-1;
+        CHECK(map.queryMaterialDistance(0,WHEAT,0,8,8,&distance)==RouteResult::Reachable);
+        CHECK(map.materialAvailableSlot(0,WHEAT,0,8,8));
+        CHECK(map.materialAvailableSlot(0,WHEAT,0,8,8,&distance));
+        CHECK(map.materialAvailableUpdateSlot(0,WHEAT,0,8,8,&targetX,&targetY,&distance));
+        CHECK(inn->considerUnitForMaterial(worker,WHEAT,&distance));
+        CHECK_FALSE(field.requested);
+        CHECK(field.count32==0);CHECK(field.count128==0);
+        advanceFields(game);
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+    }
+    CHECK(Uint32(game.stepCounter-field.submitted)>ResourceGradientPolicy::MaximumInterval);
+    CHECK(field.submitted==submitted);CHECK(field.serving.tick==serving);
+    CHECK(map.lookupMaterialGradientSlot(0,WHEAT,0)==published);
+    CHECK(map.gradientRuntime->fieldRequests.empty());
+    CHECK(map.gradientPipelineStatus().pending==0);
+}
+
 TEST_CASE("recruitment-only demand recovers a published unreachable natural field after terrain opens")
 {
     glob2test::HeadlessGlobals globals;
@@ -88,18 +127,34 @@ TEST_CASE("recruitment-only demand recovers a published unreachable natural fiel
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
     for(unsigned tick=0;tick<4;++tick) advanceFields(game);
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Unreachable);
+    REQUIRE(map.hasMaterialSourceSlot(WHEAT));
+    const auto jobs=map.gradientPipelineStatus().jobs;
+    const auto delay=map.gradientPipelineStatus().delay;
+    const auto& field=map.gradientRuntime->resources.fields.at(WHEAT*SWIM_CLASS_COUNT);
+    CHECK(field.requested);
+    CHECK(field.count32==0);CHECK(field.count128==0);
     int distance=0;
     CHECK_FALSE(inn->considerUnitForMaterial(worker,WHEAT,&distance));
     for(int y=19;y<=21;++y) for(int x=19;x<=21;++x) map.paintCell(x,y,GRASS);
     bool recruited=false;
-    for(unsigned tick=0;tick<ResourceGradientPolicy::MaximumInterval+4 && !recruited;++tick) {
+    unsigned admittedAt=0;
+    for(unsigned tick=0;tick<ResourceGradientPolicy::MaximumInterval+delay+4 && !recruited;++tick) {
         // No movement query is made: recruitment itself must request upkeep.
         recruited=inn->considerUnitForMaterial(worker,WHEAT,&distance);
         advanceFields(game);
+        if(map.gradientPipelineStatus().jobs>jobs) {
+            if(!admittedAt) admittedAt=game.stepCounter;
+            CHECK(map.gradientPipelineStatus().jobs==jobs+1);
+            // A failed planning read enrolls normal delayed maintenance: it
+            // must not make freshly computed guidance visible before c+K.
+            if(Uint32(game.stepCounter-admittedAt)<delay)
+                CHECK(map.lookupMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(8,8)]<=GRADIENT_UNREACHABLE);
+        }
     }
     REQUIRE(recruited);
+    REQUIRE(admittedAt!=0);
+    CHECK(map.gradientPipelineStatus().jobs==jobs+1);
     CHECK(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
-    const auto& field=map.gradientRuntime->resources.fields.at(WHEAT*SWIM_CLASS_COUNT);
     CHECK(field.count32==0);CHECK(field.count128==0);
 }
 

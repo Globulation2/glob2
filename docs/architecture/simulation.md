@@ -511,9 +511,11 @@ checksum adapter remains available for diagnostic fixtures.
   added and removed positive-stock source tiles since capture, and those two
   changes divided by captured source count. Material identity is excluded.
   Rolling tick buckets and source zero crossings provide these features without
-  scanning units or the map each tick. Owner distance/availability queries also
-  request upkeep, so a stale unreachable field cannot prevent recruitment
-  forever; these reads do not increment the model's movement-query counts.
+  scanning units or the map each tick. Unreachable owner distance/availability
+  answers also request upkeep, so a stale negative field cannot prevent
+  recruitment forever. Successful planning reads do not request upkeep: they
+  must not force idle fields through the movement policy's age cap. Neither
+  kind of planning read increments the model's movement-query counts.
   Cold and suspended ground fields keep the existing FIFO admission and
   delayed publication. One FIFO ticket and accepted warm natural fields share
   the same prepared batch. Publication retains its configured fixed delay. Capture epochs,

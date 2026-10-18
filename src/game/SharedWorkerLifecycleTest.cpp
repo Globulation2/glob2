@@ -13,6 +13,7 @@
 #include <thread>
 #include <nlohmann/json.hpp>
 #include "Brush.h"
+#include "EntityRandom.h"
 #include <algorithm>
 
 TEST_SUITE("SharedWorkerLifecycle") {
@@ -111,7 +112,13 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     map.configureGradientPipeline(2,3);
     map.getClearAreasGradient(0,0);
     source.game.stepCounter+=128;
-    for (int r:{WHEAT,WOOD}) map.queryMaterialDistance(0,r,0,10,10);
+    // Successful planning reads are deliberately passive. Exercise actual
+    // movement demand so both warm fields join the cold area's saved batch.
+    EntityRandom random;
+    for (int r:{WHEAT,WOOD}) {
+        int dx=0,dy=0;bool stop=false;
+        map.pathfindMaterial(random,0,r,0,10,10,&dx,&dy,&stop,nullptr);
+    }
     source.game.observeCompletedWorld();
     REQUIRE_FALSE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
