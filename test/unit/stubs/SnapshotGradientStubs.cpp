@@ -31,3 +31,4 @@ ResourceGradientProbe::~ResourceGradientProbe() = default;
 void ResourceGradientProbe::stageEpisodes(Map&) { throw std::logic_error("Resource probing requires the engine binary"); }
 
 void ResourceGradientProbe::finishStudy(unsigned) {}
+void ResourceGradientProbe::writeMovementTotals() {}
