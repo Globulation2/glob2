@@ -63,7 +63,7 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
         return empty.data();
     }
     Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-    if (!gradient && (!game || swimClass==AIR_MOVEMENT_CLASS)) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
+    if (!gradient && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
     if (!gradient && !compute.insideJob())
         requestGradientField(&gradient, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass);
 	return gradient;

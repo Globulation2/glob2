@@ -22,7 +22,7 @@
 const Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 {
     auto& field=forbiddenGradient[teamNumber][swimClass];
-    if (!field && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateForbiddenGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateForbiddenGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass);
     return field;
 }
@@ -30,7 +30,7 @@ const Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 const Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 {
     auto& field=guardAreasGradient[teamNumber][swimClass];
-    if (!field && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateGuardAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateGuardAreasGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass);
     return field;
 }
@@ -38,7 +38,7 @@ const Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 const Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 {
     auto& field=clearAreasGradient[teamNumber][swimClass];
-    if (!field && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateClearAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateClearAreasGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass);
     return field;
 }
