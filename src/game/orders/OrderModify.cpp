@@ -290,7 +290,7 @@ OrderAlterArea::OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *a
 	assert(acc);
 
 	BrushAccumulator::AreaDimensions dim;
-	acc->getBitmap(&mask, &dim, map);
+	acc->getOrderBitmap(&mask, &dim, ORDER_AREA_BRUSH_MAX_SIDE);
 	this->teamNumber = teamNumber;
 	this->type = type;
 	centerX = dim.centerX;

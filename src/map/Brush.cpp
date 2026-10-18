@@ -252,6 +252,9 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 
 void BrushAccumulator::applyBrush(const BrushApplication &brush, int mapWidth, int mapHeight)
 {
+	assert(applications.empty() || (this->mapWidth == mapWidth && this->mapHeight == mapHeight));
+	this->mapWidth = mapWidth;
+	this->mapHeight = mapHeight;
 	// the first application defines the center, so its offset is zero
 	int px = 0;
 	int py = 0;
@@ -328,6 +331,30 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 		return true;
 	}
 	return false;
+}
+
+bool BrushAccumulator::getOrderBitmap(Utilities::BitArray *array, AreaDimensions *dimensions, int maximumSide)
+{
+    if (!getBitmap(array, dimensions)) return false;
+    const int width = dimensions->maxX - dimensions->minX;
+    const int height = dimensions->maxY - dimensions->minY;
+    // Preserve ordinary packet bytes. A wrapped stroke plus its brush footprint
+    // can exceed the map side: those extra cells alias cells already in the map.
+    // Fold them with OR, preserving precisely the painted world tiles, rather
+    // than clipping either edge or weakening the untrusted packet size limit.
+    const int foldedWidth = width > maximumSide ? std::min(width, mapWidth) : width;
+    const int foldedHeight = height > maximumSide ? std::min(height, mapHeight) : height;
+    if (foldedWidth == width && foldedHeight == height) return true;
+    Utilities::BitArray folded;
+    folded.resize(static_cast<size_t>(foldedWidth) * foldedHeight, false);
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
+            if (array->get(static_cast<size_t>(y) * width + x))
+                folded.set(static_cast<size_t>(y % foldedHeight) * foldedWidth + x % foldedWidth, true);
+    *array = folded;
+    dimensions->maxX = dimensions->minX + foldedWidth;
+    dimensions->maxY = dimensions->minY + foldedHeight;
+    return true;
 }
 
 unsigned BrushAccumulator::getAreaSurface(void)
