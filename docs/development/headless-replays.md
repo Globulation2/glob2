@@ -598,7 +598,10 @@ propagation both execute privately and retain the existing publication deadlines
 `--compute-threads auto|N` controls the shared pool for all sessions; native `auto`
 prefers physical cores, filtered by affinity where topology discovery supports it.
 Fallbacks are eligible logical CPUs, the hardware thread hint, then one participant.
-Browser auto retains its logical-CPU hint capped at eight. See
+For a selected count below four CPUs, auto adds the owner as an extra participant
+so each CPU can have a background worker. At four or more, the total participant
+count equals the selected CPU count. Unknown counts retain the serial fallback.
+Browser auto applies the same rule to its logical-CPU hint, capped at eight. See
 [compute sizing](compute-benchmarks.md) for platform detection and limitations.
 N is a positive unsigned participant count including the owner. Explicit counts
 remain unchanged unless the platform cannot run threads, when execution uses one
