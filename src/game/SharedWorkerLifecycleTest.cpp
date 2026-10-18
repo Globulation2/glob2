@@ -101,14 +101,17 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
-    map.getClearAreasGradient(0, 0);
     map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
-    for (int r:{WHEAT,WOOD}) map.getMaterialGradientSlot(0,r,0);
-    source.game.stepCounter=128;
-    EntityRandom random;random.initialize(123456,EntityRandom::Kind::Unit,0,1);
-    int dx=0,dy=0;bool stop=false;
-    for (int r:{WHEAT,WOOD}) map.pathfindMaterial(random,0,r,0,10,10,&dx,&dy,&stop,nullptr);
+    // Establish the first delayed generations before testing a warm batch.
+    for (int r:{WHEAT,WOOD}) glob2test::awaitGradient(source.game,[&] {
+        return map.getMaterialGradientSlot(0,r,0);
+    });
+    map.resetGradientPipeline();
+    map.configureGradientPipeline(2,3);
+    map.getClearAreasGradient(0,0);
+    source.game.stepCounter+=128;
+    for (int r:{WHEAT,WOOD}) map.queryMaterialDistance(0,r,0,10,10);
     source.game.observeCompletedWorld();
     REQUIRE_FALSE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
