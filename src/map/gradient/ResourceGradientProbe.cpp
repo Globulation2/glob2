@@ -8,22 +8,37 @@
 #include <filesystem>
 #include <stdexcept>
 
-ResourceGradientProbe::ResourceGradientProbe(const char* path):output(path),
+ResourceGradientProbe::ResourceGradientProbe(const char* path):movementHistory(TEAM_MAX_COUNT*MaterialCount*SWIM_CLASS_COUNT),output(path),
     study(std::filesystem::path(path).parent_path()/"gradient-episodes.csv"),
-    planning(std::filesystem::path(path).parent_path()/"gradient-planning-quality.csv")
+    planning(std::filesystem::path(path).parent_path()/"gradient-planning-quality.csv"),
+    movement(std::filesystem::path(path).parent_path()/"gradient-contradictions.csv")
 {
-    if (!output || !study || !planning) throw std::runtime_error("Cannot open resource gradient training outputs");
+    if (!output || !study || !planning || !movement) throw std::runtime_error("Cannot open resource gradient training outputs");
     output<<"query,tick,window,window_elapsed,team,resource,swim,extra_cost,false_unreachable,false_reachable,depleted_goal,missed_move,unreachable_step,left_fresh_goal,flagged\n";
-    study<<"tick,key,complete,queries,defer_extra,refresh_extra,age,q32,q128,source_added,source_removed,source_added_frac_q12,source_removed_frac_q12,planning_queries,defer_planning_false_negative,defer_planning_false_positive,refresh_planning_false_negative,refresh_planning_false_positive,behavior_interval,behavior_seed,movement_observed\n";
+    study<<"tick,key,complete,queries,defer_extra,refresh_extra,age,q32,q128,source_added,source_removed,source_added_frac_q12,source_removed_frac_q12,planning_queries,defer_planning_false_negative,defer_planning_false_positive,refresh_planning_false_negative,refresh_planning_false_positive,behavior_interval,behavior_seed,movement_observed,since_capture_empty_goal,since_capture_persistent_progress_blocked,since_capture_unit_progress_blocked,since_capture_sidestep_used,since_capture_reachable_no_move,since_capture_movement_queries,contradiction_capture_known,defer_stalls,refresh_stalls\n";
     planning<<"query,tick,window,team,resource,swim,false_unreachable,false_reachable,live_value,fresh_value\n";
+    movement<<"epoch,key,empty_goal,persistent_progress_blocked,unit_progress_blocked,sidestep_used,reachable_no_move,movement_queries\n";
 }
-ResourceGradientProbe::~ResourceGradientProbe() { finishStudy(lastTick); }
+ResourceGradientProbe::~ResourceGradientProbe() { finishStudy(lastTick);writeMovementTotals(); }
+void ResourceGradientProbe::writeMovementTotals()
+{
+    for (unsigned key=0;key<movementHistory.size();++key) {
+        const auto& counts=movementHistory[key].total.values;
+        if (!counts[5]) continue;
+        movement<<movementEpoch<<','<<key;
+        for (auto value:counts) movement<<','<<value;
+        movement<<'\n';
+    }
+    movement.flush();
+}
 void ResourceGradientProbe::writeEpisode(int key,const Episode& e,bool complete)
 {
     study<<e.tick<<','<<key<<','<<complete<<','<<e.queries<<','<<e.deferExtra<<','<<e.refreshExtra;
     for (auto v:e.inputs) study<<','<<v;
     study<<','<<e.planningQueries<<','<<e.deferFalseNegative<<','<<e.deferFalsePositive
-        <<','<<e.refreshFalseNegative<<','<<e.refreshFalsePositive<<','<<e.behaviorInterval<<','<<e.behaviorSeed<<','<<e.movementObserved<<'\n';
+        <<','<<e.refreshFalseNegative<<','<<e.refreshFalsePositive<<','<<e.behaviorInterval<<','<<e.behaviorSeed<<','<<e.movementObserved;
+    for (auto value:e.contradictions.values) study<<','<<value;
+    study<<','<<e.contradictionCaptureKnown<<','<<e.deferStalls<<','<<e.refreshStalls<<'\n';
 }
 void ResourceGradientProbe::finishStudy(unsigned tick)
 {
@@ -60,6 +75,12 @@ void ResourceGradientProbe::stageEpisodes(Map& map)
         auto state=found==map.gradientRuntime->resources.fields.end()
             ? ResourceGradientPolicy::Field{} : found->second;
         e.inputs=state.inputs(lastTick,map.gradientRuntime->resources.sources[resource]);
+        // Freeze causal features at the decision, separately from the episode's
+        // future oracle labels. The baseline belongs to serving capture time,
+        // not its delayed publication or the most recent submitted job.
+        const auto& history=movementHistory[key];
+        e.contradictions=history.total.since(history.serving);
+        e.contradictionCaptureKnown=history.servingKnown;
         e.movementObserved=field.movementObserved || state.count128>0;
         if (const auto& behavior=map.gradientRuntime->exploration) {
             e.behaviorInterval=behavior->intervalFor(key);e.behaviorSeed=behavior->seed;
@@ -108,11 +129,14 @@ void ResourceGradientProbe::observe(Map& map,int team,int resource,int swim,int 
             const bool unreachable=oldMoves&&(sx||sy)&&fresh[n]<=GRADIENT_UNREACHABLE;
             const bool leftGoal=oldMoves&&(sx||sy)&&b==GRADIENT_AT_GOAL;
             const bool flagged=ar!=br||missed||goal||regret>0||unreachable||leftGoal;
-            return std::array<long long,6>{flagged,regret,missed,goal,unreachable,leftGoal};
+            const bool stalled=ar && a!=GRADIENT_AT_GOAL && !oldMoves;
+            return std::array<long long,7>{flagged,regret,missed,goal,unreachable,leftGoal,stalled};
         };
 
     for (auto& e:field.episodes) if (unsigned(tick-e.tick)>=e.delay && unsigned(tick-e.tick)<32) {
-        ++e.queries;e.deferExtra+=quality(e.deferred.data())[1];e.refreshExtra+=quality(e.refreshed.data())[1];
+        const auto deferred=quality(e.deferred.data()),refreshed=quality(e.refreshed.data());
+        ++e.queries;e.deferExtra+=deferred[1];e.refreshExtra+=refreshed[1];
+        e.deferStalls+=deferred[6];e.refreshStalls+=refreshed[6];
     }
     const auto flags=quality(live);const auto a=live[here],b=fresh[here];
     output<<query<<','<<tick<<','<<window<<','<<unsigned(tick-field.firstTick)<<','<<team<<','<<resource<<','<<swim

@@ -593,7 +593,7 @@ void Map::clear()
     gradientRuntime->preparations.clear();
     gradientRuntime->resources={};
     if (auto& probe=gradientRuntime->qualityProbe) {
-        probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;
+        probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;probe->resetMovement();
     }
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();

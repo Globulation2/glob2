@@ -25,6 +25,9 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
         && gradient==materialGradients[teamNumber][resourceType][swimClass];
     std::optional<EntityRandom> before;
     if (naturalGround && gradientRuntime->qualityProbe) before.emplace(random);
+    std::optional<GradientMovementEvidence> evidence;
+    if (before) evidence.emplace();
+    auto* collected=evidence ? &*evidence : nullptr;
     if (naturalGround) {
         gradientRuntime->initializeResourcePolicy(*this);
         auto& field=gradientRuntime->resources.fields[(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass];
@@ -62,16 +65,28 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 	}
 	*stopWork=false;
     if (here==GRADIENT_AT_GOAL) {
-        if (!materialAmountAtSlot(hereIndex,resourceType)) refresh();
+        if (!materialAmountAtSlot(hereIndex,resourceType)) {
+            if (collected) collected->emptyGoal=true;
+            refresh();
+        }
         return false;
     }
-	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true))
-		return true;
-    if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false)) return true;
+    const auto select=[&](bool strict) {
+        if (collected) return directionByGradientObserved(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,*collected);
+        return directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,strict);
+    };
+    if (select(true)) return true;
+    if (select(false)) return true;
     refresh();
     return false;
     };
     const bool moved=move();
+    if (collected) {
+        const auto here=gradient[coordToIndex(x,y)];
+        collected->reachableNoMove=!moved && here>GRADIENT_UNREACHABLE && here!=GRADIENT_AT_GOAL;
+        const int key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;
+        gradientRuntime->qualityProbe->recordMovement(key,*collected);
+    }
     if (naturalGround && gradientRuntime->qualityProbe && gradient[coordToIndex(x,y)]!=GRADIENT_FORBIDDEN)
         gradientRuntime->qualityProbe->observe(*this,teamNumber,resourceType,swimClass,x,y,gradient,*before);
     return moved;

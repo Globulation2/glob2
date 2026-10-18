@@ -9,6 +9,7 @@ The coordinator provides leases, retries, host eligibility and artifact receipts
 from __future__ import annotations
 import argparse
 import collections
+import csv
 import gzip
 import hashlib
 import json
@@ -66,6 +67,15 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
             or contract.get('future_offsets')!=[8,31] or contract.get('benefit_unit')!='direction-cost'
             or contract.get('request_type')!='movement'):
             raise ValueError('Collection requires the current eight-tick movement label contract')
+        if 'contradictions' in contract:
+            from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
+            if contract['contradictions'] != CONTRADICTION_CONTRACT:
+                raise ValueError('Unknown contradiction measurement contract')
+            # Explicit frozen build metadata prevents an old collector bundle
+            # being accidentally relabelled as the augmented collector.
+            for supplied in bundles:
+                if supplied.get('build_options',{}).get('contradiction_contract_sha256') != canonical_hash(CONTRADICTION_CONTRACT):
+                    raise ValueError('Supplied bundle does not pin the contradiction contract')
         policy=metadata['policy'];intervals=policy.get('intervals',[])
         if 'model_sha256' not in policy or 'header_sha256' not in metadata:
             raise ValueError('Cohort must pin explicit model_sha256 and header_sha256')
@@ -84,6 +94,12 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         if by_build[build]['platform']['os']=='darwin':collection['threads']=1
         from tools.tournaments.jobs import resource_gradient_collection_outputs
         outputs=resource_gradient_collection_outputs(collection)
+        if 'contradictions' in contract:
+            # Keep non-overlapping whole-game rates as well as the overlapping
+            # since-capture histories used by episode features.
+            outputs['gradient-contradictions.csv']={'epoch','key','empty_goal',
+                'persistent_progress_blocked','unit_progress_blocked','sidestep_used',
+                'reachable_no_move','movement_queries'}
         roster=actual.get('ais') or [actual.get('ai','Nicowar')]*actual['players']
         config=dict(players=roster,alliances=actual['alliances'],ticks=ticks,resource_gradient_collection=collection)
         labels=dict(resource_gradient=dict(logical_group=group,ordinal=ordinal,planned_spec=planned,
@@ -171,6 +187,23 @@ def export(directory, output, allow_partial=False):
             else:raise ValueError('Unknown encoding')
             artifacts[name]=dict(path=str(target.resolve()),sha256=file_hash(target),decoded_sha256=decoded.hexdigest(),decoded_bytes=decoded_bytes,transport=info)
         episode=artifacts['gradient-episodes.csv']
+        if 'contradictions' in metadata['contract']:
+            from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
+            if metadata['contract']['contradictions'] != CONTRADICTION_CONTRACT:
+                raise ValueError('Unknown exported contradiction measurement contract')
+            with gzip.open(episode['path'],'rt') as stream:
+                columns=set(next(csv.reader(stream),[]))
+            required=set(CONTRADICTION_CONTRACT['counters'])|{CONTRADICTION_CONTRACT['capture_known']}|set(CONTRADICTION_CONTRACT['future_stall_columns'])
+            if not required <= columns:
+                raise ValueError('Augmented collector is missing contradiction episode columns')
+            totals=artifacts.get('gradient-contradictions.csv')
+            if not totals:
+                raise ValueError('Augmented collector is missing contradiction totals')
+            with gzip.open(totals['path'],'rt') as stream:
+                columns=set(next(csv.reader(stream),[]))
+            if not {'epoch','key','empty_goal','persistent_progress_blocked','unit_progress_blocked',
+                    'sidestep_used','reachable_no_move','movement_queries'}<=columns:
+                raise ValueError('Augmented collector is missing contradiction totals columns')
         receipt=destination/(record['id']+'.accepted-attempt.json')
         if receipt.exists() and json.loads(receipt.read_text())!=record:raise ValueError('Accepted attempt receipt changed')
         if not receipt.exists():atomic_json(receipt,record)

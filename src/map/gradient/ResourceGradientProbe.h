@@ -2,7 +2,11 @@
 #pragma once
 #include "EntityRandom.h"
 #include "ResourceGradientPolicy.h"
+#include "ResourceGradientContradictions.h"
+#include "TeamCapacity.h"
+#include "UnitConsts.h"
 #include "field/GradientWorkspace.h"
+#include <algorithm>
 #include <deque>
 #include <fstream>
 #include <map>
@@ -21,6 +25,9 @@ struct ResourceGradientProbe
         unsigned behaviorInterval=0, behaviorSeed=0;
         bool movementObserved=false;
         // Reachability errors are counts, never added to movement direction cost.
+        unsigned deferStalls=0,refreshStalls=0;
+        ResourceGradientContradictionCounts contradictions;
+        bool contradictionCaptureKnown=false;
         unsigned deferFalseNegative=0, deferFalsePositive=0;
         unsigned refreshFalseNegative=0, refreshFalsePositive=0;
         std::array<std::int64_t,7> inputs{};
@@ -32,7 +39,31 @@ struct ResourceGradientProbe
         bool episodeKnown=false, movementObserved=false;
         std::deque<Episode> episodes;
     };
-    std::ofstream output,study,planning;
+    struct MovementHistory {
+        ResourceGradientContradictionCounts total,serving,pending;
+        unsigned pendingTick=0;
+        bool servingKnown=false,pendingKnown=false;
+    };
+    // Fixed indexed storage exists only with collection enabled. Movement
+    // recording never allocates, including the first query for a new field.
+    std::vector<MovementHistory> movementHistory;
+    void recordMovement(int key,const GradientMovementEvidence& e) { movementHistory[key].total.record(e); }
+    // requestGradientField coalesces each destination until publication. A
+    // superseded ticket never publishes, so only one live capture per key needs
+    // storage; replacement captures may overwrite superseded pending metadata.
+    void capturedMovement(int key,unsigned tick) {
+        auto& h=movementHistory[key];h.pending=h.total;h.pendingTick=tick;h.pendingKnown=true;
+    }
+    void publishedMovement(int key,unsigned captureTick) {
+        auto& h=movementHistory[key];
+        h.servingKnown=h.pendingKnown && h.pendingTick==captureTick;
+        h.serving=h.servingKnown ? h.pending : h.total;
+        if (h.servingKnown) h.pendingKnown=false;
+    }
+    void resetMovement() { writeMovementTotals();std::fill(movementHistory.begin(),movementHistory.end(),MovementHistory{});++movementEpoch; }
+    void writeMovementTotals();
+    std::ofstream output,study,planning,movement;
+    unsigned movementEpoch=0;
     GradientWorkspace scratch;
     std::map<int,Field> fields;
     unsigned window=UINT32_MAX,lastTick=0;

@@ -65,7 +65,9 @@ def truncdiv(n, d):
 
 
 def predict(model, raw):
-    x = [log_integer(v) for v in raw]
+    transforms=model.get('transforms',['log1p_q12']*len(model.get('features',FEATURES)))
+    if len(raw)!=len(transforms):raise ValueError('Predictor feature vector length mismatch')
+    x = [log_integer(v) if transform=='log1p_q12' else max(0,min(LIMIT,int(v))) for v,transform in zip(raw,transforms)]
     def linear(name):
         head = model[name]
         return max(-10**9, min(10**9, truncdiv(head['bias'] + sum(a*b for a, b in zip(x, head['coef'])), 1 << head['shift'])))
@@ -78,15 +80,26 @@ def predict(model, raw):
     return max(-10**9, min(10**9, value))
 
 
-def validate_model(model):
-    if model.get('schema')!=1 or model.get('threshold')!=32000:raise ValueError('Expected the official adaptive-32 model schema')
-    if tuple(model['features']) != FEATURES: raise ValueError('Model feature order mismatch')
-    bound = log_integer(LIMIT)
+def validate_heads(model, research=False):
+    features=tuple(model.get('features',()))
+    if model.get('threshold')!=32000:raise ValueError('Expected adaptive-32 threshold')
+    if research:
+        if model.get('schema')!=2 or not model.get('research_only'):raise ValueError('Expected research-only model schema')
+        if not features or len(set(features))!=len(features):raise ValueError('Invalid research features')
+    elif model.get('schema')!=1 or features!=FEATURES:raise ValueError('Expected the official adaptive-32 model feature schema')
+    transforms=model.get('transforms',['log1p_q12']*len(features))
+    if len(transforms)!=len(features) or any(t not in ('log1p_q12','identity_q12') for t in transforms):raise ValueError('Invalid feature transforms')
+    if not research and any(t!='log1p_q12' for t in transforms):raise ValueError('Official model requires log transforms')
+    bounds=[log_integer(LIMIT) if t=='log1p_q12' else LIMIT for t in transforms]
     for name in HEADS:
-        h = model[name]
-        if len(h['coef']) != 7 or h['shift'] not in (28,24,20,16,12,8): raise ValueError('Invalid linear head')
-        if not all(type(v) is int for v in [h['bias'], *h['coef']]): raise ValueError('Noninteger coefficients')
-        if abs(h['bias']) + sum(abs(c)*bound for c in h['coef']) >= 1 << 61: raise ValueError('Unsafe accumulator')
+        h=model[name]
+        if len(h['coef'])!=len(features) or h['shift'] not in (28,24,20,16,12,8):raise ValueError('Invalid linear head')
+        if not all(type(v) is int for v in [h['bias'],*h['coef']]):raise ValueError('Noninteger coefficients')
+        if abs(h['bias'])+sum(abs(c)*bound for c,bound in zip(h['coef'],bounds))>=1<<61:raise ValueError('Unsafe accumulator')
+
+
+def validate_model(model):
+    validate_heads(model)
 
 
 def emit(model, path):
@@ -215,6 +228,7 @@ def run(args):
     exploration_seed = getattr(args, 'exploration_seed', 5101)
     if not 0 <= exploration_seed <= 2**32-1: raise ValueError('Exploration seed must be uint32')
     from tools.resource_gradient_experiments import intervals, exploration_seed_for_game
+    from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
     selected_intervals = intervals(exploration) if exploration else []
     policy = dict(name='seeded-field-intervals' if exploration else 'adaptive32',
                   intervals=selected_intervals, seed=exploration_seed,
@@ -238,7 +252,7 @@ def run(args):
                   sampling=document if isinstance(document, dict) else None, policy=policy)
     cohort = dict(id=getattr(args, 'cohort', None) or digest(frozen),
                   role='exploration' if any(selected_intervals) else 'candidate', policy=policy,
-                  contract=dict(features=list(FEATURES), label='movement-direction-extra-cost',
+                  contract=dict(features=list(FEATURES), contradictions=CONTRADICTION_CONTRACT, label='movement-direction-extra-cost',
                                 future_offsets=[8,31], benefit_unit='direction-cost', request_type='movement'))
     frozen['cohort'] = cohort
     frozen_path = out/'plan.json'
@@ -293,7 +307,7 @@ def run(args):
             raise RuntimeError('No episode data: binary lacks the collector')
         # Reference-query CSVs can be large. Compression runs only after the
         # game exits and uses a fixed header so retained evidence is reproducible.
-        for name in ['gradient-episodes.csv','gradient-quality.csv','gradient-planning-quality.csv','gradient-decisions.csv']:
+        for name in ['gradient-episodes.csv','gradient-quality.csv','gradient-planning-quality.csv','gradient-decisions.csv','gradient-contradictions.csv']:
             raw=directory/name
             if not raw.exists():continue
             compressed=raw.with_suffix('.csv.gz');temp=compressed.with_suffix('.gz.tmp')
@@ -303,7 +317,10 @@ def run(args):
             temp.replace(compressed);raw.unlink()
         episode=episode.with_suffix('.csv.gz')
         diagnostics={p.name:sha(p) for p in directory.glob('gradient-*.csv.gz')}
-        return dict(behavior_seed=behavior_seed if exploration else None,diagnostics=diagnostics,cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
+        diagnostic_artifacts={p.name.removesuffix('.gz'):dict(path=str(p.relative_to(out)),sha256=sha(p))
+                              for p in directory.glob('gradient-*.csv.gz')}
+        return dict(behavior_seed=behavior_seed if exploration else None,diagnostics=diagnostics,
+                    provenance=dict(artifacts=diagnostic_artifacts),cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
                     binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
                     ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
     failure_path=out/'failures.json'
@@ -343,20 +360,25 @@ def weights(rows):
     return balanced_weights(rows)
 
 
-def fit_heads(rows):
+def fit_heads(rows, features=FEATURES, transforms=None):
     rows=[r for r in rows if r.get('movement_label_available',1)]
     if not rows:raise ValueError('No observed movement labels to fit')
     import numpy as np
     from sklearn.linear_model import LogisticRegression,Ridge
-    x=np.array([[log_integer(r[k]) for k in FEATURES] for r in rows],dtype=np.int64)
+    features=tuple(features);transforms=transforms or ['log1p_q12']*len(features)
+    if len(transforms)!=len(features) or any(t not in ('log1p_q12','identity_q12') for t in transforms):raise ValueError('Invalid feature transforms')
+    x=np.array([[log_integer(r[k]) if t=='log1p_q12' else max(0,min(LIMIT,int(r[k]))) for k,t in zip(features,transforms)] for r in rows],dtype=np.int64)
     y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float);w=weights(rows)
     mu=np.average(x,axis=0,weights=w);sd=np.sqrt(np.average((x-mu)**2,axis=0,weights=w));sd[sd<1e-12]=1
     z=(x-mu)/sd
-    model=dict(schema=1,features=list(FEATURES),threshold=32000)
+    research=features!=FEATURES or any(t!='log1p_q12' for t in transforms)
+    model=dict(schema=2 if research else 1,features=list(features),threshold=32000)
+    if research:model.update(research_only=True,transforms=list(transforms))
+    bounds=[log_integer(LIMIT) if t=='log1p_q12' else LIMIT for t in transforms]
     def export(beta,intercept):
         for shift in (28,24,20,16,12,8):
             scale=1000*(1<<shift);coef=[round(float(v)*scale) for v in beta];bias=round(float(intercept)*scale)
-            bound=abs(bias)+sum(abs(c)*log_integer(LIMIT) for c in coef)
+            bound=abs(bias)+sum(abs(c)*bound for c,bound in zip(coef,bounds))
             if bound<1<<61:return dict(coef=coef,bias=bias,shift=shift,accumulator_bound=bound)
         raise ValueError('Unsafe coefficient accumulator')
     for sign,name in [(1,'positive'),(-1,'negative')]:
@@ -364,15 +386,15 @@ def fit_heads(rows):
         # Small campaigns may have only one outcome class. Fit the constant
         # head explicitly instead of inventing labels or dropping examples.
         if mask.all() or not mask.any():
-            model[name+'_probability']=export(np.zeros(7),12 if mask.all() else -12)
+            model[name+'_probability']=export(np.zeros(len(features)),12 if mask.all() else -12)
         else:
             est=LogisticRegression(C=1,max_iter=250,random_state=713).fit(z,mask,sample_weight=w)
             beta=est.coef_.ravel()/sd;model[name+'_probability']=export(beta,float(est.intercept_[0])-float(beta@mu))
         if mask.any():
             est=Ridge(alpha=100).fit(z[mask],sign*y[mask],sample_weight=w[mask])
             beta=est.coef_/sd;model[name+'_mean']=export(beta,float(est.intercept_)-float(beta@mu))
-        else:model[name+'_mean']=export(np.zeros(7),0)
-    validate_model(model)
+        else:model[name+'_mean']=export(np.zeros(len(features)),0)
+    validate_heads(model,research=research)
     return model
 
 
@@ -381,7 +403,7 @@ def metrics(rows,model):
     if not rows:return dict(episodes=0,states=0,note='No observed movement labels')
     import numpy as np
     y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float)
-    pred=np.array([predict(model,[r[k] for k in FEATURES])/1000 for r in rows]);w=weights(rows)
+    pred=np.array([predict(model,[r[k] for k in model.get('features',FEATURES)])/1000 for r in rows]);w=weights(rows)
     threshold=model['threshold']/1000
     take=pred>=threshold;ideal=y>=threshold;positive=np.maximum(y,0)
     # The threshold is the decision's opportunity cost in the same benefit
@@ -500,6 +522,8 @@ def main():
             p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1)
             p.add_argument('--timeout-seconds',type=int,default=7200)
     p=sub.add_parser('fit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--header');p.add_argument('--split-registry',required=True,help='Preserve map holdout/fold assignments across collection generations');p.set_defaults(action=fit)
+    from tools.resource_gradient_contradictions import add_command
+    add_command(sub)
     from tools.resource_gradient_dataset import audit_cli
     p=sub.add_parser('audit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.set_defaults(action=audit_cli)
     from tools.resource_gradient_experiments import add_commands

@@ -177,6 +177,90 @@ TEST_CASE("planning probe observes scalar-only counterfactuals without changing 
     CHECK_FALSE(probe.fields.at(key).episodes.front().movementObserved);
 }
 
+TEST_CASE("contradiction counters follow capture epochs through delayed publication and freeze episode features [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    map.configureGradientPipeline(0,3);
+    REQUIRE(world.addUnit(WORKER,8,8));
+    map.setResourceByIndex(20,20,WHEAT,1);
+    const auto path=(glob2test::artifactDir()/"capture-contradiction-probe.csv").string();
+    map.gradientRuntime->qualityProbe=std::make_unique<ResourceGradientProbe>(path.c_str());
+    auto& probe=*map.gradientRuntime->qualityProbe;
+    const int key=WHEAT*SWIM_CLASS_COUNT;
+    GradientMovementEvidence evidence;evidence.unitProgressBlocked=true;
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    probe.recordMovement(key,evidence);
+    advanceFields(game); // Capture at tick 1, publication due at tick 4.
+    auto& history=probe.movementHistory[key];
+    REQUIRE(history.pendingKnown);CHECK(history.pendingTick==game.stepCounter);
+    CHECK(history.pending.values[5]==1);CHECK_FALSE(history.servingKnown);
+    // Ticket coalescing is what makes the probe's one-pending-capture slot safe.
+    CHECK_FALSE(map.requestGradientField(&map.materialGradients[0][WHEAT][0],
+        int(gradient_preparation::Kind::Materials),0,WHEAT,0));
+    CHECK(map.gradientPipelineStatus().pending==1);
+    probe.recordMovement(key,evidence);
+    advanceFields(game);advanceFields(game);
+    CHECK_FALSE(history.servingKnown);CHECK(history.total.values[5]==2);
+    advanceFields(game);
+    REQUIRE(history.servingKnown);CHECK_FALSE(history.pendingKnown);
+    CHECK(history.serving.values[5]==1);
+    CHECK(history.total.since(history.serving).values[5]==1); // Includes the capture-to-publication query.
+    CHECK(map.gradientRuntime->resources.fields.at(key).serving.tick==1);
+    // A restored capture has no measurement history. Mark it unknown rather
+    // than inventing zeros or consuming a newer pending capture's metadata.
+    probe.capturedMovement(key,10);probe.publishedMovement(key,9);
+    CHECK_FALSE(history.servingKnown);CHECK(history.pendingKnown);
+    probe.publishedMovement(key,10);CHECK(history.servingKnown);CHECK_FALSE(history.pendingKnown);
+    unsigned window=0;
+    for(;;++window) {
+        const unsigned hash=(unsigned(key)^window*2246822519u)*2654435761u;
+        if(((hash^(hash>>16))%8)==0) break;
+    }
+    game.stepCounter=window*4096+16;
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    game.stepCounter+=255;
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    ++game.stepCounter;
+    probe.stageEpisodes(map);
+    REQUIRE(probe.fields.at(key).episodes.size()==1);
+    const auto frozen=probe.fields.at(key).episodes.front().contradictions.values;
+    probe.recordMovement(key,evidence);
+    CHECK(probe.fields.at(key).episodes.front().contradictions.values==frozen);
+    CHECK(history.total.values[5]==3);
+}
+
+TEST_CASE("movement contradiction counters count goals stalls and unreachable queries once without owning RNG [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    map.configureGradientPipeline(0,3);
+    REQUIRE(world.addUnit(WORKER,8,8));
+    map.setResourceByIndex(20,20,WHEAT,1);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    for(unsigned tick=0;tick<4;++tick) advanceFields(game);
+    auto* cells=map.materialGradients[0][WHEAT][0];REQUIRE(cells);
+    const auto path=(glob2test::artifactDir()/"live-contradiction-probe.csv").string();
+    map.gradientRuntime->qualityProbe=std::make_unique<ResourceGradientProbe>(path.c_str());
+    auto& probe=*map.gradientRuntime->qualityProbe;
+    const int key=WHEAT*SWIM_CLASS_COUNT;
+    EntityRandom random,reference;random.seed(123,456);reference=random;
+    int dx=0,dy=0;bool stop=false;
+    cells[map.coordToIndex(8,8)]=GRADIENT_AT_GOAL; // No material here.
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    CHECK(random==reference);
+    cells[map.coordToIndex(8,8)]=100;
+    for(int y=7;y<=9;++y) for(int x=7;x<=9;++x) if(x!=8 || y!=8)
+        cells[map.coordToIndex(x,y)]=GRADIENT_UNREACHABLE;
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    cells[map.coordToIndex(8,8)]=GRADIENT_UNREACHABLE;
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    CHECK(random==reference);
+    CHECK((probe.movementHistory[key].total.values==std::array<std::uint64_t,6>{1,0,0,0,1,3}));
+}
+
 TEST_CASE("recruitment-only demand recovers a published unreachable natural field after terrain opens")
 {
     glob2test::HeadlessGlobals globals;

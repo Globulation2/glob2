@@ -18,6 +18,16 @@ from pathlib import Path
 
 FEATURES = ('age', 'q32', 'q128', 'source_added', 'source_removed',
             'source_added_frac_q12', 'source_removed_frac_q12')
+CONTRADICTION_COUNTERS = ('since_capture_empty_goal', 'since_capture_persistent_progress_blocked',
+    'since_capture_unit_progress_blocked', 'since_capture_sidestep_used',
+    'since_capture_reachable_no_move', 'since_capture_movement_queries')
+CONTRADICTION_KNOWN = 'contradiction_capture_known'
+CONTRADICTION_STALL_COLUMNS = ('defer_stalls','refresh_stalls')
+CONTRADICTION_CONTRACT = dict(version=1, scope='natural-ground-resource-movement',
+    counters=list(CONTRADICTION_COUNTERS), window='since-field-capture',
+    classification='first-rejection-existing-check-order',capture_known=CONTRADICTION_KNOWN,
+    denominator=CONTRADICTION_COUNTERS[-1],future_stall_columns=list(CONTRADICTION_STALL_COLUMNS),
+    future_stall_definition='reachable-non-goal-selector-no-move')
 
 
 def canonical_hash(value):
@@ -89,6 +99,9 @@ def load(manifests):
             else:
                 cohort = 'legacy:' + record['binary_sha256']; policy = {'name': 'legacy-unspecified'}; role='unspecified'
                 contract = {'label': 'legacy-unspecified', 'request_type': 'movement'}
+            contradictions=contract.get('contradictions')
+            if contradictions is not None and contradictions!=CONTRADICTION_CONTRACT:
+                raise ValueError('Incompatible contradiction telemetry contract')
             declaration = dict(policy=policy, contract=contract,role=role)
             if cohort in cohorts and cohorts[cohort] != declaration: raise ValueError('Cohort identity reused with different policy/contract')
             cohorts[cohort] = declaration; contracts.add(canonical_hash(contract))
@@ -104,6 +117,8 @@ def load(manifests):
                 reader = csv.DictReader(stream)
                 if not {'complete', 'defer_extra', 'refresh_extra', *FEATURES} <= set(reader.fieldnames or ()):
                     raise ValueError(f'Missing movement episode columns: {p}')
+                if contradictions is not None and not {*CONTRADICTION_COUNTERS,CONTRADICTION_KNOWN,*CONTRADICTION_STALL_COLUMNS}<=set(reader.fieldnames or ()):
+                    raise ValueError(f'Missing contradiction episode columns: {p}')
                 for line in reader:
                     if int(line['complete']) != 1: continue
                     row = {k: int(v) for k, v in line.items()}
@@ -111,9 +126,14 @@ def load(manifests):
                     # fields. Only explicit planning-only origin lacks this target.
                     row['movement_label_available'] = int(row.get('movement_observed', 1) > 0)
                     if any(row[k] < 0 for k in FEATURES): raise ValueError('Negative feature value')
+                    if contradictions is not None:
+                        if row[CONTRADICTION_KNOWN] not in (0,1):raise ValueError('Invalid contradiction capture-known flag')
+                        if any(row[k]<0 for k in (*CONTRADICTION_COUNTERS,*CONTRADICTION_STALL_COLUMNS)):raise ValueError('Negative contradiction counter/outcome')
+                        if 'queries' not in row or any(row[k]>row['queries'] for k in CONTRADICTION_STALL_COLUMNS):raise ValueError('Stall count exceeds observed movement-query labels')
+                        if any(row[k]>row[CONTRADICTION_COUNTERS[-1]] for k in CONTRADICTION_COUNTERS[:-1]):raise ValueError('Contradiction event count exceeds movement-query denominator')
                     row.update(group=group or record['group'], format=record['format'], collection='|'.join(identity),
                                cohort=cohort, cohort_role=role, policy=json.dumps(policy, sort_keys=True), request_type='movement',
-                               label_contract=canonical_hash(contract), generator=spec.get('generator', 'unknown'),
+                               label_contract=canonical_hash(contract), contradiction_contract=canonical_hash(contradictions) if contradictions else None, generator=spec.get('generator', 'unknown'),
                                dimensions=f"{spec.get('width', spec.get('size', '?'))}x{spec.get('height', spec.get('size', '?'))}")
                     rows.append(row)
     if not rows: raise ValueError('No complete episodes')

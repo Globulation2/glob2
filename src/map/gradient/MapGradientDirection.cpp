@@ -39,7 +39,8 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 	return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
-bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
+template<bool Track>
+bool Map::directionByGradientImpl(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask, GradientMovementEvidence* evidence) const
 {
 	PERF_SCOPE_TIME(PathDirection);
 	const bool canSwim = swimClass > 0;
@@ -64,8 +65,24 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 		int ddy = tabClose[d][1];
 		size_t n = coordToIndex(x + ddx, y + ddy);
 		Uint16 g = gradient[n];
-		if (g <= GRADIENT_UNREACHABLE || !isFreeForMovement(x + ddx, y + ddy, swimClass, teamMask))
-			continue;
+        if (g <= GRADIENT_UNREACHABLE) continue;
+        if constexpr (Track) {
+            bool free;
+            MovementRejection rejected=MovementRejection::None;
+            // Reuse exactly the normal selector's short-circuited predicates.
+            // Classification exists only in this collection specialization.
+            if (swimClass==AIR_MOVEMENT_CLASS) free=isFreeForMovement(x+ddx,y+ddy,swimClass,teamMask);
+            else if (swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(x+ddx,y+ddy).swimmable) {
+                free=false;rejected=MovementRejection::Persistent;
+            } else free=checkTileClassified(x+ddx,y+ddy,{true,true,true,false,true},canSwim,teamMask,NOGBID,rejected);
+            if (!free) {
+                if (g>here) {
+                    evidence->persistentProgressBlocked|=rejected==MovementRejection::Persistent;
+                    evidence->unitProgressBlocked|=rejected==MovementRejection::Unit;
+                }
+                continue;
+            }
+        } else if (!isFreeForMovement(x+ddx,y+ddy,swimClass,teamMask)) continue;
 		if (guardAreaMask && !(areaCells[n].guard & guardAreaMask))
 			continue;
 		if (g > here)
@@ -92,8 +109,23 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 	// Blocked: sidestep to a random neighbour no farther from the goal, so two
 	// units blocking each other do not mirror each other forever. The caller's private stream
 	// keeps the choice deterministic.
+    if constexpr (Track) evidence->sidestepUsed=true;
 	int pick = sidesteps[random.nextU32() % sidestepCount];
 	*dx = tabClose[pick][0];
 	*dy = tabClose[pick][1];
 	return true;
+}
+
+// The off specialization retains the original public ABI. In an optimized build
+// its wrapper inlines the original selector with no evidence branches/arguments
+// passed to its occupancy predicate. Diagnostic work has a separate entry point.
+bool Map::directionByGradient(EntityRandom& random,Uint32 teamMask,int swimClass,int x,int y,
+    const Uint16* gradient,int* dx,int* dy,bool strict,Uint32 guardAreaMask) const
+{
+    return directionByGradientImpl<false>(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,guardAreaMask,nullptr);
+}
+bool Map::directionByGradientObserved(EntityRandom& random,Uint32 teamMask,int swimClass,int x,int y,
+    const Uint16* gradient,int* dx,int* dy,bool strict,GradientMovementEvidence& evidence,Uint32 guardAreaMask) const
+{
+    return directionByGradientImpl<true>(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,guardAreaMask,&evidence);
 }

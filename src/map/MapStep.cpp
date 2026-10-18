@@ -275,6 +275,10 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
         if (preparation.kind==gradient_preparation::Kind::Materials && preparation.swim<SWIM_CLASS_COUNT) {
             gradientRuntime->initializeResourcePolicy(*this);
             job->capture={unsigned(foundation.tick),gradientRuntime->resources.sources[preparation.material]};
+            if (auto& probe=gradientRuntime->qualityProbe) {
+                const int key=(preparation.team*MaterialCount+preparation.material)*SWIM_CLASS_COUNT+preparation.swim;
+                probe->capturedMovement(key,unsigned(foundation.tick));
+            }
         }
         jobs.push_back(job);
     }
@@ -333,6 +337,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
                 gradientRuntime->initializeResourcePolicy(*this);
                 const int field=(id.team*MaterialCount+id.resource)*SWIM_CLASS_COUNT+id.swim;
                 gradientRuntime->resources.fields[field].serving=job.capture;
+                if (auto& probe=gradientRuntime->qualityProbe) probe->publishedMovement(field,job.capture.tick);
             }
             (id.market ? marketMaterialGradientStale[id.team][id.resource][id.swim]
                        : materialGradientStale[id.team][id.resource][id.swim])=false;

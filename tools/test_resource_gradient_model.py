@@ -129,8 +129,9 @@ int main(){std::array<ResourceGradientModel::I,7>x;while(std::cin>>x[0]){for(int
                     self.assertEqual([command[i+1] for i,v in enumerate(command) if v=='--player'],['nicowar','cortex'])
                     out=Path(command[command.index('--output-dir')+1])
                     (out/'result.json').write_text('{"status":"completed","ticks":2048}')
-                    (out/'gradient-episodes.csv').write_text('complete,queries,defer_extra,refresh_extra,'+','.join(m.FEATURES)+'\n'+
-                                                          '1,2,10,3,'+','.join(['1']*7)+'\n')
+                    from tools.resource_gradient_dataset import CONTRADICTION_COUNTERS, CONTRADICTION_KNOWN, CONTRADICTION_STALL_COLUMNS
+                    (out/'gradient-episodes.csv').write_text('complete,queries,defer_extra,refresh_extra,'+','.join((*m.FEATURES,*CONTRADICTION_COUNTERS,CONTRADICTION_KNOWN,*CONTRADICTION_STALL_COLUMNS))+'\n'+
+                                                          '1,2,10,3,'+','.join(['1']*16)+'\n')
                 return SimpleNamespace(returncode=0)
             with mock.patch.object(m.subprocess,'run',side_effect=execute),mock.patch.object(m.subprocess,'check_output',return_value='revision\n'),contextlib.redirect_stdout(io.StringIO()):m.run(args)
             manifest=p/'results/manifest.json';before=json.loads(manifest.read_text())

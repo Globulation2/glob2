@@ -15,9 +15,9 @@ class DistributedTests(unittest.TestCase):
             contract={'features':list(d.FEATURES),'label':'movement-direction-extra-cost','future_offsets':[8,31],
                       'benefit_unit':'direction-cost','request_type':'movement'})
 
-    def bundle(self,root,platform):
+    def bundle(self,root,platform,extra_options=None):
         folder=root/platform;folder.mkdir();binary=folder/'glob2';binary.write_bytes(platform.encode());binary.chmod(0o755)
-        value=dict(schema_version=1,cli_version=2,source_revision='a'*40,dirty_identity=None,build_options={'model_sha256':'c'*64,'header_sha256':'d'*64},
+        value=dict(schema_version=1,cli_version=2,source_revision='a'*40,dirty_identity=None,build_options={'model_sha256':'c'*64,'header_sha256':'d'*64,**(extra_options or {})},
             platform={'os':platform,'arch':'arm64' if platform=='darwin' else 'x86_64'},executable='glob2',
             capabilities={'schema_version':1,'commands':['game'],'sim_version':{'revision':81}},
             files=[{'path':'glob2','bytes':binary.stat().st_size,'sha256':file_hash(binary),'mode':0o755}])
@@ -66,12 +66,45 @@ class DistributedTests(unittest.TestCase):
             maps[0]['spec']=plan['games'][0];Path(maps[0]['path']).write_bytes(b'changed')
             with self.assertRaisesRegex(ValueError,'bytes changed'):d.make_experiment(plan,maps,[linux],self.cohort())
 
-    def result(self,root,job,bundle):
+    def test_augmented_contract_requires_explicit_instrumented_build(self):
+        from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);linux=self.bundle(root,'linux');plan,maps=self.plan(root,1)
+            cohort=self.cohort();cohort['contract']['contradictions']=CONTRADICTION_CONTRACT
+            with self.assertRaisesRegex(ValueError,'does not pin'):
+                d.make_experiment(plan,maps,[linux],cohort)
+            linux['build_options']['contradiction_contract_sha256']=d.canonical_hash(CONTRADICTION_CONTRACT)
+            manifest=d.make_experiment(plan,maps,[linux],cohort)
+            self.assertEqual(manifest['jobs'][0]['labels']['resource_gradient']['cohort'],cohort)
+            cohort['contract']['contradictions']={**CONTRADICTION_CONTRACT,'version':999}
+            with self.assertRaisesRegex(ValueError,'Unknown contradiction'):
+                d.make_experiment(plan,maps,[linux],cohort)
+
+    def test_export_rejects_old_columns_for_augmented_contract(self):
+        from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);bundles=root/'builds';bundles.mkdir()
+            linux=self.bundle(bundles,'linux',{'contradiction_contract_sha256':d.canonical_hash(CONTRADICTION_CONTRACT)})
+            plan,maps=self.plan(root,1);cohort=self.cohort();cohort['contract']['contradictions']=CONTRADICTION_CONTRACT
+            manifest=d.make_experiment(plan,maps,[linux],cohort);atomic_json(root/'experiment.json',manifest)
+            self.result(root,manifest['jobs'][0],linux)
+            with self.assertRaisesRegex(ValueError,'missing contradiction episode columns'):
+                d.export(root,root/'export')
+
+    def result(self,root,job,bundle,instrumented=False):
         artifacts=[]
         for name in job['outputs']['required']:
             path=root/name
             if name=='gradient-episodes.csv':
-                path.write_text('complete,defer_extra,refresh_extra,queries,movement_observed,'+','.join(d.FEATURES)+'\n1,40,0,3,1,256,8,16,0,0,0,0\n')
+                header='complete,defer_extra,refresh_extra,queries,movement_observed,'+','.join(d.FEATURES)
+                row='1,40,0,3,1,256,8,16,0,0,0,0'
+                if instrumented:
+                    from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT as contract
+                    header+=','+','.join([*contract['counters'],contract['capture_known'],*contract['future_stall_columns']])
+                    row+=',0,1,1,0,0,3,1,1,0'
+                path.write_text(header+'\n'+row+'\n')
+            elif name=='gradient-contradictions.csv':
+                path.write_text('epoch,key,empty_goal,persistent_progress_blocked,unit_progress_blocked,sidestep_used,reachable_no_move,movement_queries\n0,4,0,1,1,0,0,3\n')
             else:path.write_text('header\n')
             meta=store_artifact(path,root/'artifacts');meta['path']=name;artifacts.append(meta)
         value=dict(id='acceptedattempt',host='linux-worker',package_id='package',accepted=True,category='success',job=job,
@@ -79,6 +112,20 @@ class DistributedTests(unittest.TestCase):
         (root/'results').mkdir(exist_ok=True);atomic_json(root/'results'/f"{job['id']}.json",value)
         (root/'attempts').mkdir(exist_ok=True);atomic_json(root/'attempts'/'accepted.json',value)
         return value
+
+    def test_augmented_export_retains_counter_and_stall_contract(self):
+        from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);bundles=root/'builds';bundles.mkdir()
+            linux=self.bundle(bundles,'linux',{'contradiction_contract_sha256':d.canonical_hash(CONTRADICTION_CONTRACT)})
+            plan,maps=self.plan(root,1);cohort=self.cohort();cohort['contract']['contradictions']=CONTRADICTION_CONTRACT
+            manifest=d.make_experiment(plan,maps,[linux],cohort);atomic_json(root/'experiment.json',manifest)
+            self.result(root,manifest['jobs'][0],linux,instrumented=True)
+            status=d.export(root,root/'export');rows=load(status['manifests'])
+            self.assertEqual(rows[0]['since_capture_movement_queries'],3)
+            self.assertEqual(rows[0]['defer_stalls'],1)
+            sealed=json.loads(Path(status['manifests'][0]).read_text())
+            self.assertIn('gradient-contradictions.csv',sealed['records'][0]['provenance']['artifacts'])
 
     def test_export_preserves_episode_receipt_and_shared_cohort(self):
         with tempfile.TemporaryDirectory() as tmp:

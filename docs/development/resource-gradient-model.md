@@ -84,6 +84,90 @@ The policy's demand and turnover counters are required by gameplay regardless of
 whether data is being collected. The collector reads copies of policy state and
 unit RNG state; it must never advance those live inputs.
 
+## Contradiction telemetry experiments
+
+The seven production inputs remain the baseline. Optional collection also records
+contradictions observed while natural ground-resource movement queries follow a
+cached field. These remain diagnostic features until a held-out comparison and
+prospective games justify paying for them in production.
+
+Each query contributes at most once to each category; categories can overlap:
+
+| Counter | Observation |
+| --- | --- |
+| `empty_goal` | The serving field reports a goal, but the requested resource has zero stock on that tile. |
+| `persistent_progress_blocked` | An inspected gradient-improving neighbor is rejected by an existing persistent-world check. |
+| `unit_progress_blocked` | An inspected gradient-improving neighbor is rejected by temporary unit occupancy. |
+| `sidestep_used` | Strict progress fails and the equal-value fallback succeeds. |
+| `reachable_no_move` | The serving field is reachable and not at goal, but both direction passes fail. |
+| `movement_queries` | Observed natural ground-resource movement queries, the event-rate denominator. |
+
+Enrollment follows the existing adaptive field: owner queries using that team's
+natural ground-field pointer, including goal, unreachable and forbidden entries.
+Null cold reads, the shared known-absent-material plane, air, consumer/market
+fields and worker reads do not enter this denominator.
+
+The observations reuse normal direction checks. They are not counts of blocked
+neighbors and require no reference gradient of their own. The existing training
+probe still builds reference fields for its benefit labels. A rejected improving
+neighbor can be counted even if another neighbor
+permits progress. Classifications follow the existing first-rejection order;
+a transient blocker can hide a later persistent rejection. Do not add scans or
+change that order to obtain a more complete diagnosis. Congestion and entrapment
+can produce these events without a stale field; an empty goal is a direct
+contradiction. Some events already trigger reactive refreshes, so feature value
+must be incremental to the existing seven inputs and behavior.
+
+Keep cumulative counters and capture snapshots in the optional observer. Capture
+baselines must follow the field through pending computation and delayed
+publication. Episode features use current totals minus the serving field's
+capture baseline; never substitute the publication tick or include future
+observations in a feature. Diagnostic counters do not affect scheduling, saves,
+checksums or gameplay RNG. A future production feature requires a separate
+review of persistence, checksums, simulation version and overhead.
+
+Episode columns use the `since_capture_` prefix for the six counters above.
+`contradiction_capture_known` distinguishes a measured capture from a field that
+already existed when observation began; unknown captures are excluded from all
+paired fits, including their baseline. `defer_stalls` and `refresh_stalls` count
+reachable, non-goal direction-selection failures in the episode's existing
+future scoring window. They are separate outcomes. `gradient-contradictions.csv`
+contains unsampled cumulative field totals, emitted once per world epoch, for
+actual event rates. Do not sum overlapping episode histories to estimate those
+rates.
+
+A counter/schema change starts a fresh immutable dataset contract. Drain and seal
+old collection separately, preserving planned slots, attempts, binaries, models,
+maps and receipts. Never invent zeros for old rows or relabel an old cohort as
+instrumented. Compare baseline seven inputs, transformed counts, event fractions
+and their combination on identical new rows, weights and persistent whole-map
+splits. Report incremental held-out performance, individual additions and
+removals, plus slices by format, generator and map dimensions. Movement cost
+remains the target; report stalls and planning reachability errors separately.
+
+```sh
+python3 tools/resource_gradient_model.py compare-contradictions \
+  --manifest artifacts/gradient-contradictions/cohort.json \
+  --split-registry artifacts/gradient-splits.json \
+  --output artifacts/gradient-contradictions/comparison.json
+```
+
+The command compares the baseline, integer-log counts, Q12 event fractions,
+log-transformed fractions and their combinations, with individual additions and
+leave-event-out ablations. Its research-only models cannot be emitted into the
+production header. All variants use the same eligible rows, balanced weights,
+held-out maps and validation folds. Passing this comparison does not implement
+production counter bookkeeping or authorize replacing the incumbent.
+
+Before collection, compare old/new binaries and probing off/on on exact held-out
+states and orders, including asynchronous publication and save continuation.
+Record per-tick checksum parity and repeated, interleaved CPU per tick. Separate
+normal probing cost from new bookkeeping/classification cost. Collection
+throughput cannot establish production CPU savings. After each refit, compare
+promising candidates against the incumbent and original model with probing
+disabled; use separate diagnostic repeats for quality. Preserve the incumbent
+unless prospective results establish a useful improvement.
+
 ## Collect a tournament
 
 Use a release binary and run from the repository root. No runtime dependencies
