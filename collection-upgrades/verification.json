@@ -1,0 +1,27 @@
+{
+  "source": "46392e5fa96d125d68c4531207ff54558c5359e4",
+  "base": "3d896cbb95293da6d24caddd247a62c9ca99d77f",
+  "binary_sha256": "25f87bfd325924101c5600d6cb1532e536dfecfb7764b18f1ca93eebf6c09510",
+  "platform": "macOS ARM64 / Apple Clang21",
+  "build": "scons release=1 --build=build/gradient-throughput-release -j4 build/gradient-throughput-release/src/glob2 engine-tests; ordinary O3, no dev_fast/PCH/unity",
+  "python_tests": 36,
+  "native_tests": 25,
+  "collection_games": 8,
+  "movement_episodes": 94,
+  "maps": 8,
+  "maximum_observed_age": 552,
+  "high_demand_old": 0,
+  "planning_queries": 3751,
+  "production_model_changed": false,
+  "sim_revision_changed": false,
+  "default_vectors": "4096 ticks world/snapshot/full replay match previous2bb binary, probe off/on and1/4threads",
+  "exploration_vectors": "interval0 matches official4096ticks, fixed512 matches1/4threads2048ticks",
+  "save_continuation": "174 checkpoint512 vs2048 ->4096 overlaps2048+ rawworld/snapshot rows",
+  "limitations": [
+    "No new Windows/Linux/browser/GPU verification for these collection upgrades",
+    "Eightgames verify tooling only; no adequate high-demand old-field training coverage",
+    "Same-binary comparison smoke is not a performance measurement or CPU gain claim",
+    "No new coefficients fitted into engine; production age cap retained"
+  ],
+  "review": "Independent component and final delta review approved; fixed executed-intervention, provenance, holdout stability, fork nonresumability and field-assignment correlation findings"
+}
