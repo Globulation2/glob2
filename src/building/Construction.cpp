@@ -464,8 +464,13 @@ void Building::updateCallLists(int desiredWorkers, bool resourceFull)
 			// mutates the bucket mid-iteration.
 			else
 			{
-				owner->removeBuildingNeedingWork(this, oldPriority);
-				owner->addBuildingNeedingWork(this, priority);
+				if (oldPriority == priority)
+					owner->repositionBuildingNeedingWork(this, priority);
+				else
+				{
+					owner->removeBuildingNeedingWork(this, oldPriority);
+					owner->addBuildingNeedingWork(this, priority);
+				}
 				oldPriority = priority;
 			}
 		}

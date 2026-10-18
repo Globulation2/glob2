@@ -118,6 +118,8 @@ public:
 	//! Strict ordering of buildings competing for units: true if lhs should be served first.
 	static bool buildingHasHigherPriority(Building* lhs, Building* rhs);
 	void addBuildingNeedingWork(Building* b, Sint32 priority);
+	//! Preserve remove/reinsert ordering without shifting a bucket twice.
+	void repositionBuildingNeedingWork(Building* b, Sint32 priority);
 	void removeBuildingNeedingWork(Building* b, Sint32 priority);
 	//! Update every building in buildingsNeedingUnits, highest priority first.
 	void updateAllBuildingTasks();

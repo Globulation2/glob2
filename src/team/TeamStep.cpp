@@ -107,27 +107,43 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 
 void Team::addBuildingNeedingWork(Building* b, Sint32 priority)
 {
-	bool did_find_position=false;
-	Sint32 p = priority;
-	std::vector<Building*>& blist = buildingsNeedingUnits[p];
-	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
+	auto& bucket = buildingsNeedingUnits[priority];
+	for (auto position = bucket.begin(); position != bucket.end(); ++position)
 	{
-		if(buildingHasHigherPriority(b, *i))
+		if (buildingHasHigherPriority(b, *position))
 		{
-			buildingsNeedingUnits[p].insert(i, b);
-			did_find_position=true;
-			break;
+			bucket.insert(position, b);
+			return;
 		}
 	}
-	if(!did_find_position)
-		buildingsNeedingUnits[p].push_back(b);
+	bucket.push_back(b);
+}
+
+void Team::repositionBuildingNeedingWork(Building* b, Sint32 priority)
+{
+	auto& bucket = buildingsNeedingUnits[priority];
+	const auto current = std::find(bucket.begin(), bucket.end(), b);
+	assert(current != bucket.end());
+	// Another building's staffing or wishes can change without reordering this
+	// bucket. Reproduce insertion before the first lower-ranked entry even if
+	// the bucket is unsorted; a neighbor check or binary search is not enough.
+	auto position = bucket.begin();
+	while (position != bucket.end())
+	{
+		if (position != current && buildingHasHigherPriority(b, *position)) break;
+		++position;
+	}
+	if (position < current)
+		std::rotate(position, current, current + 1);
+	else if (position > current + 1)
+		std::rotate(current, current + 1, position);
 }
 
 
 void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 {
-	Sint32 p = priority;
-	buildingsNeedingUnits[p].erase(std::find(buildingsNeedingUnits[p].begin(), buildingsNeedingUnits[p].end(), b));
+	auto& bucket = buildingsNeedingUnits[priority];
+	bucket.erase(std::find(bucket.begin(), bucket.end(), b));
 }
 
 
