@@ -490,8 +490,9 @@ checksum adapter remains available for diagnostic fixtures.
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- Material/market (including consumer-specific supply), guard/clear and forbidden
-  fields publish complete immutable generations. A cold read enrolls one deterministic request and returns
+- Ground material/market (including consumer-specific supply), guard/clear and
+  forbidden fields publish complete immutable generations. A cold read enrolls one
+  deterministic request and returns
   `Pending`; cache absence never proves a destination inaccessible.
   An authoritative zero natural-source count returns a shared unreachable field
   immediately and skips periodic natural-material work. The owner keeps
@@ -504,7 +505,7 @@ checksum adapter remains available for diagnostic fixtures.
   additional demand. Clearing/combat preparation, refresh scheduling, supersession
   and save completion retain their previous behavior. The building refresh queue
   retains its 64-request limit; overflow serves the oldest request synchronously.
-  Material and area demand fields share one FIFO admission per tick and the
+  Ground material and area demand share one FIFO admission per tick and the
   configured delay; queue waiting precedes that delay. This applies to edits of
   already-used clearing, guard and forbidden areas as well as cold demand. Zone
   membership changes immediately; replacement guidance publishes later. Requests
@@ -513,15 +514,19 @@ checksum adapter remains available for diagnostic fixtures.
   a subsequent refresh and never restart its deadline. The configured delay is
   therefore not a maximum response time from the latest edit. Soft dirtiness
   preserves later refresh demand; destination identity rejects reconfigured consumers.
-  Consumer-specific material fields also refresh through this queue on stock or
+  Consumer-specific ground material fields also refresh through this queue on stock or
   topology changes and at their existing 128-tick age, serving the previous field
   while replacement work waits.
 - Units retain targets, activities and reservations through Pending and wait with
   the existing zero-displacement movement state on their normal decision cadence.
   Hunger, health and local combat/adjacent interactions continue. This introduces
-  first-use latency for material and area guidance (about 267 ms after admission
+  first-use latency for ground material and area guidance (about 267 ms after admission
   at delay 8), changing fetching, idle clearing and responses to painted areas.
   Cold building routes retain their previous immediate lazy initialization.
+  Air resource/area cold reads and explicit air refreshes retain immediate owner
+  preparation; consumer-specific air supply fields retain synchronous refresh.
+  Periodic warm air planes still use the scheduled queue. Workers may borrow
+  published air fields but cannot initialize them.
   Explicit one-participant execution runs the same jobs with the same publication
   boundaries; explicit editor/reference builders remain available.
   Format 169 persists material/area FIFO requests and complete unpublished outputs
@@ -530,7 +535,7 @@ checksum adapter remains available for diagnostic fixtures.
   separate from pending jobs, so text saves retain both inventories independently.
   Older supported saves still load.
 - Consumer-specific material caches use deterministic LRU admission. Queued and
-  admitted destinations cannot be evicted. A newly published result also keeps a
+  admitted destinations cannot be evicted. A newly published ground result also keeps a
   first-read opportunity for at most 256 simulation ticks (the ordinary action
   cadence bound), released earlier by its owner reader. This bounded logical hold
   prevents an earlier reader from continually evicting a later reader's result,
