@@ -58,6 +58,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 			{
 				materialGradients[t][r][s] = NULL;
+				gradientUpdated[t][r][s] = false;
 				marketMaterialGradients[t][r][s] = NULL;
 				marketGradientDirty[t][r][s] = false;
 				marketGradientUpdated[t][r][s] = false;
@@ -696,7 +697,7 @@ void Map::clear()
 	displayedTeam = NO_DISPLAYED_TEAM;
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MaterialCount; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 				gradientUpdated[t][r][s]=false;
 }

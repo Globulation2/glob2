@@ -52,6 +52,28 @@ template<class Values> std::string evidenceHash(const Values& values)
 
 TEST_SUITE("DelayedGradientPublication")
 {
+TEST_CASE("all natural visitation flags initialize and clear including reserved material slots")
+{
+    glob2test::HeadlessGlobals globals;
+    // A reused allocation must not silently supply zeroes for uninitialized
+    // reserved bytes: those bytes are still serialized for the AIR cycle.
+    alignas(Map) std::array<std::byte,sizeof(Map)> storage;
+    storage.fill(std::byte{0x7f});
+    auto* map=::new(storage.data()) Map;
+    for(int team=0;team<Team::MAX_COUNT;++team)
+        for(int material=0;material<MaterialSlotCount;++material)
+            for(int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
+                CHECK_FALSE(map->gradientUpdated[team][material][swim]);
+                map->gradientUpdated[team][material][swim]=true;
+            }
+    map->clear();
+    for(int team=0;team<Team::MAX_COUNT;++team)
+        for(int material=0;material<MaterialSlotCount;++material)
+            for(int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim)
+                CHECK_FALSE(map->gradientUpdated[team][material][swim]);
+    map->~Map();
+}
+
 TEST_CASE("recruitment-only demand recovers a published unreachable natural field after terrain opens")
 {
     glob2test::HeadlessGlobals globals;
