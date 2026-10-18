@@ -116,7 +116,7 @@ TEST_SUITE("CommandLine")
 				if (o.required)
 				{
 					args.push_back(o.name);
-					args.push_back("fixture");
+                    if (o.type!="flag") args.push_back("fixture");
 				}
 			if (c.path == "map generate" || c.path == "map preview")
 				args.insert(args.end(), {"--output", "fixture"});

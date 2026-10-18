@@ -85,7 +85,10 @@ TEST_CASE("map conversion preserves encoded construction until ordinary gameplay
     const int siteType=game.buildingsTypes.getTypeNum("swarm",0,true);
     auto* site=game.addBuilding(20,20,siteType,0);REQUIRE(site);
     REQUIRE(site->type->isBuildingSite);
-    site->constructionReserved=site->constructionBudget;
+    for (int material=0;material<MaterialSlotCount;++material)
+        site->setMaterial(material,site->constructionBudget[material]);
+    site->fundConstructionFromInventory();
+    REQUIRE(site->constructionReserved==site->constructionBudget);
     const auto gid=site->gid;
     auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(memory);
     game.save(&out,true,"conversion-construction-map");out.flush();
@@ -140,6 +143,15 @@ TEST_CASE("successful planning reads leave warm natural fields idle beyond the d
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
     for(unsigned tick=0;tick<4;++tick) advanceFields(game);
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    // Building routes now initialize lazily too. Warm that independent route
+    // before asserting that repeated successful recruitment reads stay idle.
+    int buildingDistance=0;
+    auto buildingRoute=map.queryBuildingDistance(inn,worker->movementClass(),8,8,&buildingDistance,BuildingRoute::Footprint);
+    for (unsigned wait=0;buildingRoute==RouteResult::Pending && wait<unsigned(game.gameHeader.getBuildingGradientDelay())+4;++wait) {
+        advanceFields(game);
+        buildingRoute=map.queryBuildingDistance(inn,worker->movementClass(),8,8,&buildingDistance,BuildingRoute::Footprint);
+    }
+    REQUIRE(buildingRoute==RouteResult::Reachable);
     const auto& field=map.gradientRuntime->resources.fields.at(WHEAT*SWIM_CLASS_COUNT);
     const auto submitted=field.submitted, serving=field.serving.tick;
     const auto jobs=map.gradientPipelineStatus().jobs;

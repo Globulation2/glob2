@@ -458,10 +458,12 @@ const std::vector<Command> &commands()
 			 integer("--variation", "Gallery variation", 0, 3, "0")},
 			"Validation JSON and optional PNG");
         auto migrate=profile();append(migrate,assets());
-        append(migrate,{value("--input","file","Private format174 map or saved game"),
+        append(migrate,{value("--input","file","Private format174 map or saved game","",false,true),
             flag("--legacy-adaptive-174","Explicitly select the private adaptive174 binary layout; never inferred")});
+        migrate.back().required=true;
         add("game migrate","Convert a private adaptive174 file without advancing simulation",{},0,migrate,
-            "migrated.map or migrated.game, result.json with provenance and verified state");
+            "migrated.map or migrated.game, result.json with provenance and verified state",
+            {"glob2 game migrate --input private174.game.gz --legacy-adaptive-174 --output-dir artifacts/migration"});
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());
