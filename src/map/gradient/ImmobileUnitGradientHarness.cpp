@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for immobile bookkeeping and weighted building routes.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -56,8 +57,22 @@ struct World
 				game.map.clearImmobileUnit(x, y);
 	}
 
+	void settle(int swimClass)
+	{
+        // These field tests inspect the replacement after fixed publication,
+        // without moving units or changing occupancy during the wait.
+        glob2test::awaitGradient(game,[&]() -> const Uint16* {
+            game.map.requestBuildingField(inn,swimClass,BuildingRoute::Footprint);
+            return inn->dirtyGradient[swimClass] || inn->refreshRequested.test(swimClass)
+                ? nullptr : game.map.lookupBuildingField(inn,swimClass,BuildingRoute::Footprint);
+        });
+	}
+
 	Uint16 value(int swimClass, int x, int y)
 	{
+        settle(swimClass);
+        int distance=0;
+        game.map.buildingAvailable(inn,swimClass,x,y,&distance); // Settle the queried cell of the lazy field.
 		const Uint16* gradient = game.map.buildingGradient(inn, swimClass);
 		require(gradient != nullptr, "inn has an accessible entrance");
 		return gradient[game.map.coordToIndex(x, y)];
@@ -141,6 +156,7 @@ static void paintingForbiddenAreaRefreshesGradients()
 	int dist = -1, dx = 0, dy = 0;
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
+        world.settle(c);
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "near route uses the gap");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "distant route uses the gap");
 		require(world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
@@ -148,9 +164,10 @@ static void paintingForbiddenAreaRefreshesGradients()
 	forbidRow(world, 23, -1);
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
-		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
+		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "painting invalidates or dirties every cached swim class immediately");
 		if (world.game.map.pathfindBuilding(random,world.inn,c,20,24,&dx,&dy))
 			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "building guidance cannot step onto freshly forbidden paint");
+        world.settle(c);
 		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
 		require(!world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "closing the gap cuts off the distant route");
 		require(!world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");
@@ -160,7 +177,8 @@ static void paintingForbiddenAreaRefreshesGradients()
 	alterForbidden(world, BrushTool::MODE_DEL, gap);
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
-		require(world.inn->globalGradient[c] == nullptr, "erasing invalidates every cached swim class immediately");
+		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "erasing invalidates or dirties every cached swim class immediately");
+        world.settle(c);
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "erasing restores the near route");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "erasing restores the distant route");
 	}

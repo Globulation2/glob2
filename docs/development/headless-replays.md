@@ -55,7 +55,12 @@ with delay 0. Compare the same initial state, seed, delay and orders across work
 counts and platforms when checking determinism.
 
 `--rule buildingGradientDelay=N` (1 through 8, default 8) sets how many ticks a
-scheduled building walking field waits between capture and publication. It cannot
+scheduled building walking-field refresh waits between capture and publication.
+Missing-field initialization instead publishes one tick after admission, including
+first use after idle eviction; this fixed delay has no additional user setting.
+Initialization and refreshes use separate batches ordered by publication deadline,
+while their shared admission limit remains four requests per observation. FIFO
+waiting before admission adds to either delay. The match rule cannot
 change while scheduled building fields are pending. Format 148 saves the pending
 fields and the request queue; older saves restore none and start the pipeline at
 the delay their header implies (8 before format 148).
@@ -73,8 +78,10 @@ overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
 Scheduled building fields retain the production depth predictor and lazy
-reader/hiring expansion. Their initialization, refresh and save behavior are
-unchanged. Material and area cold requests, recurring refreshes and zone-edit
+reader/hiring expansion. Missing fields, including those evicted while idle, use
+the fixed one-tick initialization delay; warm refreshes use `buildingGradientDelay`.
+Saving preserves queued work and pending publication deadlines without publishing
+early. Material and area cold requests, recurring refreshes and zone-edit
 rebuilds use FIFO admission and fixed publication deadlines. Natural-material
 queries with authoritative zero source counts retain their immediate shared
 negative answer and skip periodic rebuilds. Format 169 saves that queued demand and completed
@@ -176,7 +183,7 @@ Turns custom-game rules on for `dev random-games --display` and `dev random-game
 | `noPermadeath` | 0-1 | No permadeath |
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
-| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking field (default 8) |
+| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking-field refresh (default 8); missing fields initialize one tick after admission |
 | `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
 | `winProbabilityPermille` | 0 or 501-1000 | Estimated win-probability condition (0 = off); distinct from the sudden-death timer |
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |

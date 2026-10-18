@@ -269,8 +269,9 @@ public:
 	void cancelAI(unsigned player);
 	void drainAI();
     void drainHiring();
+    bool preparingBuildingGradient(const Building&, int slot) const;
     void saveHiring(GAGCore::OutputStream*);
-    void loadHiring(GAGCore::InputStream*);
+    void loadHiring(GAGCore::InputStream*, int versionMinor);
     Uint32 hiringChecksum() const;
     std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
     const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;

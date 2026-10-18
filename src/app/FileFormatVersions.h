@@ -301,11 +301,21 @@ static constexpr int FILE_FORMAT_VERSION_UNIFIED_MOVEMENT = 171;
 // at 168/169 already carry it; 172 combines the air and tagged layouts.
 inline constexpr bool hasSnapshotChecksumMetadata(unsigned version)
 {
-    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version == 169 || version >= 172;
+    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version == 169 || (version >= 172 && version != 174);
 }
 // Cold gradient demand, stable cache destinations and unpublished complete fields.
 static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 169;
 
 // Air-only drafts 171/172 predate the released delayed-ground state.
 inline constexpr bool hasDelayedGradientState(unsigned version)
-{ return version == FILE_FORMAT_VERSION_DELAYED_GRADIENTS || version >= 173; }
+{ return version == FILE_FORMAT_VERSION_DELAYED_GRADIENTS || (version >= 173 && version != 174); }
+
+// The published building-gradient draft174 predates the air/ground integration.
+// Keep its save layout distinct from released master173 and integrated175+.
+inline constexpr bool hasUnifiedMovement(unsigned version)
+{ return version >= FILE_FORMAT_VERSION_UNIFIED_MOVEMENT && version != 174; }
+static constexpr int FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT = 174;
+inline constexpr bool hasInitialBuildingGradient(unsigned version)
+{ return version == 170 || version >= FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT; }
+static constexpr int FILE_FORMAT_VERSION_HIRING_GRADIENTS = 174;
+static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 174;

@@ -2,6 +2,7 @@
 // Dense reference formulas stay independent of the optimized production calculation.
 #include "EngineFixtures.h"
 #include "BuildingType.h"
+#include "BuildingGradientSearch.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -411,14 +412,21 @@ TEST_CASE("failed live admission preserves route queries and a later successful 
     glob2test::publishCurrentHiringSuggestions(world.game);
     REQUIRE(world.game.hiringCandidates(*b));
     const auto slot=b->routeSlot(unit->swimClass(),BuildingRoute::Footprint);
-    REQUIRE(b->globalGradient[slot]==nullptr);
+    // Fixture publication prepares the route just as the live hiring pipeline
+    // does. Its worker query must not stand in for the later owner admission.
+    REQUIRE(b->globalGradient[slot]!=nullptr);
+    auto* search=b->globalGradientSearch[slot].get();
+    REQUIRE(search);
+    const int preparationDemand=search->requiredCost();
     // The published suggestion becomes too hungry to travel. Live admission
-    // must still resolve its route before rejecting it, without hiring.
+    // must still query its route before rejecting it, without hiring.
     unit->hungriness=1;
     unit->hungry=unit->trigHungry;
     const auto expected=referenceDemand(*b);
     CHECK_FALSE(b->subscribeToBringMaterialsStep());
     CHECK(b->globalGradient[slot]!=nullptr);
+    CHECK(search->requiredCost()>preparationDemand);
+    CHECK(b->unitsFailingRequirements[Building::UnitTooFarFromBuilding]==1);
     CHECK(b->unitsWorking.empty());
     CHECK(b->desiredMaxUnitWorking==expected.workers);
     checkDemand(*b);

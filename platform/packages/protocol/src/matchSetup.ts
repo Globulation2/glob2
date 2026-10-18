@@ -194,7 +194,7 @@ export const MatchRules = Strict(
         minimum: 1,
         maximum: 8,
         description:
-          'Ticks between capturing and publishing a scheduled building walking field; absent means eight.',
+          'Ticks between capturing and publishing a building walking-field refresh; absent means eight. Missing fields initialize after one tick.',
       }),
     ),
     instantConstruction: Type.Boolean(),

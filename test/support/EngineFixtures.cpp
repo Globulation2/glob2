@@ -216,6 +216,23 @@ class HiringPipelineHarness
 						if (building->materialDeliveryNeed(material)>0)
 							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(record.team,material,swim,false,building); });
 				}
+			const auto& type = setup.catalogs->buildings->at(record.typeNum).resolvedType;
+			const bool footprint = std::any_of(std::begin(type.maxMaterial),std::begin(type.maxMaterial)+MaterialCount,[](int value){return value>0;}) ||
+				std::any_of(std::begin(record.wishedMaterials),std::begin(record.wishedMaterials)+MaterialCount,[](int value){return value>0;});
+			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+				if (setup.entities->availableMovementClasses[record.team] & (1u<<swim))
+				{
+					for (auto route : {BuildingRoute::Footprint,BuildingRoute::Clearing,BuildingRoute::Combat})
+					{
+						if ((route==BuildingRoute::Footprint && !footprint) ||
+							(route==BuildingRoute::Clearing && !type.attractsRole(0)) ||
+							(route==BuildingRoute::Combat && !type.attractsRole(1) && !type.attractsRole(2))) continue;
+						glob2test::awaitGradient(game,[&] {
+							game.map.requestBuildingField(building,swim,route);
+							return game.map.lookupBuildingField(building,swim,route);
+						});
+					}
+				}
 		}
 		game.snapshotStore().invalidateBoundary();
 		auto input = HiringPipeline::bindRoutes(game, game.captureReadBoundary());

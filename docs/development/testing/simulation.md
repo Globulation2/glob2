@@ -429,3 +429,8 @@ and CLI tests cover GUI/headless defaults, local persistence and binary override
 Run the affected unit and engine suites through `test/run_tests.py`, then compare
 real saved-game and replay checksums with GPU off/on. See
 [GPU verification](../gradient-benchmarks.md#gpu-correctness-and-performance).
+
+The `InitialBuildingGradient/*` engine suite covers delayed cold initialization,
+retained lazy frontiers across participant counts, FIFO saturation, and binary/text
+continuation. `UnitContinuation/a pending building route*` checks assignment and
+movement RNG while steering with a pending route and after publication.

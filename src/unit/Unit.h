@@ -24,6 +24,7 @@
 class Team;
 class Race;
 class Building;
+enum class BuildingRoute : unsigned char;
 struct TerrainProperties;
 struct BuildingTrainingSpec;
 
@@ -37,6 +38,7 @@ namespace GAGCore
 class Unit : public UnitUtils, public UnitState
 {
 	friend struct TeamStatsMeasurementFixture;
+	friend struct UnitActivityAccess;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
 	// Owner-thread hooks; excluded from immutable state record copies.
@@ -103,6 +105,7 @@ public:
 	// Pending fields preserve every assignment and retry on the ordinary action cadence.
 	// The existing zero-displacement movement is already saved and checksummed.
 	void waitForGradient();
+	void followPendingBuildingRoute(Building&, BuildingRoute);
 	template<class Search> StepResult findGradientDisplacement(Search search)
 	{
 		int x=dx, y=dy;

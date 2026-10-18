@@ -747,12 +747,12 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("buildingGradientPipeline");
 	stream->writeUint8(rt.buildings.delayTicks(), "delay");
 	stream->writeEnterSection("queue");
-	stream->writeUint16(rt.buildingRequests.size(), "count");
+	stream->writeUint32(rt.buildingRequests.size(), "count");
 	unsigned index=0;
 	for (const auto &request : rt.buildingRequests)
 	{
 		const Building *b=buildingGradientDestination(request.team, request.building, request.identity);
-		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch || !b->globalGradient[request.slot];
+		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch;
 		stream->writeEnterSection(index++);
 		stream->writeUint8(request.team, "team");
 		stream->writeUint16(request.building, "building");
@@ -768,7 +768,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	rt.buildings.visitPending([&](BuildingGradientJobPipeline::Job &job, unsigned remaining) {
 		auto &p=job.payload;
 		const Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch || !b->globalGradient[p.slot];
+		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch;
 		if (!superseded && p.search && !p.locked) p.search->finish();
 		stream->writeEnterSection(index++);
 		stream->writeUint8(p.team, "team");
@@ -794,7 +794,8 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 	stream->readEnterSection("buildingGradientPipeline");
 	const unsigned delay=stream->readUint8("delay");
 	stream->readEnterSection("queue");
-	const unsigned requests=stream->readUint16("count");
+	const unsigned requests=hasInitialBuildingGradient(versionMinor) ? stream->readUint32("count") : stream->readUint16("count");
+	if (requests>GradientRuntime::BuildingRequestLimit) throw std::runtime_error("Too many saved building gradient requests");
 	ensureBuildingGradientPipeline();
 	// An empty pipeline carries no deadlines, so it follows the header even when
 	// the saved delay predates a fork or a header change; saved work must match.
@@ -815,7 +816,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		request.building=stream->readUint16("building");
 		request.identity=stream->readUint32("identity");
 		request.slot=stream->readUint8("slot");
-		if (versionMinor<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+		if (!hasUnifiedMovement(versionMinor)) {
             const unsigned savedClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG ? SWIM_CLASS_COUNT : LEGACY_SWIM_CLASS_COUNT;
 			if (request.slot>=BUILDING_ROUTE_COUNT*savedClasses) throw std::runtime_error("Invalid saved building gradient destination");
 			request.slot=(request.slot/savedClasses)*MOVEMENT_CLASS_COUNT+request.slot%savedClasses;
@@ -846,7 +847,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		p.buildingId=stream->readUint16("building");
 		p.scriptIdentity=stream->readUint32("identity");
 		p.slot=stream->readUint8("slot");
-		if (versionMinor<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+		if (!hasUnifiedMovement(versionMinor)) {
             const unsigned savedClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG ? SWIM_CLASS_COUNT : LEGACY_SWIM_CLASS_COUNT;
 			if (p.slot>=BUILDING_ROUTE_COUNT*savedClasses) throw std::runtime_error("Invalid saved building gradient destination");
 			p.slot=(p.slot/savedClasses)*MOVEMENT_CLASS_COUNT+p.slot%savedClasses;
@@ -1059,8 +1060,8 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	const unsigned savedSwimClasses=versionMinor>=FILE_FORMAT_VERSION_UNIFIED_MOVEMENT?MOVEMENT_CLASS_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-	const unsigned savedAccessVariants=versionMinor>=FILE_FORMAT_VERSION_UNIFIED_MOVEMENT?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
+	const unsigned savedSwimClasses=hasUnifiedMovement(versionMinor)?MOVEMENT_CLASS_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+	const unsigned savedAccessVariants=hasUnifiedMovement(versionMinor)?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
@@ -1452,7 +1453,7 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         entry.builtStep=stream->readUint32("builtStep"); entry.sourceRevision=read64("sourceRevision"); entry.recency=read64("recency");
         entry.team=stream->readUint8("team"); entry.resource=stream->readUint8("resource");
         entry.swim=stream->readUint8("swim"); entry.modes=stream->readUint8("modes");
-        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=(versionMinor>=FILE_FORMAT_VERSION_UNIFIED_MOVEMENT?MOVEMENT_CLASS_COUNT:SWIM_CLASS_COUNT)
+        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=(hasUnifiedMovement(versionMinor)?MOVEMENT_CLASS_COUNT:SWIM_CLASS_COUNT)
             || entry.consumer < -1 || entry.consumer>=Team::MAX_COUNT*Building::MAX_COUNT
             || (entry.consumer>=0 && Building::GIDtoTeam(entry.consumer)!=entry.team)
             || entry.type < -1 || entry.type>=int(game->buildingsTypes.size())

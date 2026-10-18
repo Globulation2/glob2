@@ -86,8 +86,19 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
             cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
         });
-
-
+        const auto mix=[&](Uint32 value) { cs=rotl1(cs)^value; };
+        mix(gradientRuntime->buildingRequests.size());
+        for (const auto& r:gradientRuntime->buildingRequests) {
+            const auto* b=buildingGradientDestination(r.team,r.building,r.identity);
+            mix(r.team); mix(r.building); mix(r.identity); mix(r.slot);
+            mix(r.stale || !b || b->refreshEpoch[r.slot]!=r.epoch);
+        }
+        gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
+            const auto* b=buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
+            mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);
+            mix(p.captureTick); mix(p.generation); mix(remaining);
+            mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
+        });
     }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
