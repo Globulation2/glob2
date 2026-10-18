@@ -107,20 +107,20 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
             {"multi_material",multi},{"deposits",deposits.size()},
             {"registry_ns",registryNs},{"placement_ns",placementNs},{"repeats",Json::array()}};
         // Cold demand, snapshot capture and complete publication are setup, not
-        // part of the lookup measurement. Missing-source planes also publish a
-        // real completed Unreachable field through the same delayed pipeline.
+        // part of the lookup measurement. Absent natural materials use the
+        // shared negative field immediately and never enroll a ticket.
         for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
             map.getMaterialGradientSlot(team,material,0);
         glob2test::awaitGradient(world.game,[&]() -> const Uint16* {
             for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-                if(!map.lookupMaterialGradientSlot(team,material,0)) return nullptr;
-            return map.lookupMaterialGradientSlot(0,0,0);
+                if(!map.getMaterialGradientSlot(team,material,0)) return nullptr;
+            return map.getMaterialGradientSlot(0,0,0);
         });
         std::uint64_t digest=0;
         for(int repeat=0;repeat<3;++repeat) {
             start=Clock::now();
             for(int team=0;team<8;++team) for(unsigned m=0;m<MaterialCount;++m) {
-                const auto* field=map.lookupMaterialGradientSlot(team,m,0);
+                const auto* field=map.getMaterialGradientSlot(team,m,0);
                 REQUIRE(field);
                 digest+=field[(team*313+repeat)%cells];
             }
@@ -149,11 +149,11 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         unsigned fields=0;
         for(int team=0;team<8;++team) for(unsigned m=0;m<MaterialCount;++m)
             for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) fields+=map.materialGradients[team][m][swim]!=nullptr;
-        CHECK(fields==8*MaterialCount);
+        CHECK(fields==8*(multi?3:1));
         CHECK(map.materialSourceCounts[materialIndex(MaterialId::Food)]==deposits.size());
         row["allocated_material_fields"]=fields;
         row["material_field_bytes"]=fields*cells*sizeof(Uint16);
-        row["completed_no_source_fields"]=8*(MaterialCount-(multi?3:1));
+        row["absent_shared_field_bytes"]=map.gradientRuntime->absentMaterialField.capacity()*sizeof(Uint16);
         row["consumer_cache_fields"]=map.gradientRuntime->materialFields.size();
         row["consumer_cache_bytes"]=map.materialRoutingCacheBytes();
         row["seed_cache_bytes"]=map.gradientRuntime->resourceSeeds.allocatedBytes();
