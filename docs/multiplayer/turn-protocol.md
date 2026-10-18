@@ -28,9 +28,14 @@ Relay-sequenced lockstep provides one order stream for every participant. For by
 
 Ticks are counted as executions. Tick `t` is the `(t+1)`-th call to the engine's
 execute step: `retrieveOrder` for each seat, then `clearTopOrders`. Tick 0 is the first
-tick of the match. The state checksum for tick `t` is the one the engine passes to
-`advanceStep` just before executing tick `t`, after `t` ticks have run. Pause orders
-pause the simulation in the usual way, and ticks keep counting while it is paused.
+tick of the match. The state checksum for turn `t` describes the completed world
+observed before that turn's orders. A background job computes it from immutable
+snapshot inputs, and `publishChecksum({t, value})` normally delivers it one executed
+turn later. Reports always carry the source turn, not their delivery turn. Relay
+arbitration adds that turn to its report timeout. Pause orders pause the
+simulation in the usual way, while network turns keep counting; ordinary polling
+between turns does not age checksum deadlines. The terminal drain reports the
+last samples without executing further orders.
 
 
 ## AI order scheduling

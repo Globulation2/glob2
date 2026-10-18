@@ -40,7 +40,7 @@ public:
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
-	/// Wire format: Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum.
+	/// Wire format: Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum | Uint8 hasChecksum | Uint32 checksumTick.
 	/// Throws std::ios_base::failure for an oversized or invalid order payload.
 	/// ReplayReader rejects the replay; NetConnection catches decode exceptions
 	/// at the receive boundary and closes the malformed peer. The generic

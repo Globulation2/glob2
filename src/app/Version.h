@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 167
+#define VERSION_MINOR 168
+// version 168 uses delayed snapshot checksums and tagged order checksum metadata.
 // version 167 uses one completed observation per owner boundary and saves boundary phase markers.
 // version 166 saves append-ordered entity populations and the live task cursor.
 // version 165 changes routine checksum coverage/mixing, not save encodings.
@@ -206,7 +207,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 71
+#define NET_PROTOCOL_VERSION 72
+// Protocol 72 adds explicit presence and source ticks to order checksum envelopes.
 // Protocol 71 applies private-stock and cached-performance caps (format 160).
 // Protocol 70 transfers complete delayed measurement frames (format 158).
 // Protocol 68 transfers area-effect funding and fractional services.

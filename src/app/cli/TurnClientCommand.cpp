@@ -162,6 +162,8 @@ static int play(const Options& options, const fs::path& output)
 		throw Usage("the match runs sim version " + setup.simVersion.key() + " but this client is " + local.key());
 
 	auto transport = std::make_shared<Online::RelayTransport>(relayUrl);
+    std::map<std::uint32_t, Uint32> checksums;
+    int reloads = 0;
 	Engine engine;
 	Engine::TurnMatchStart start;
 	start.setup = setup;
@@ -178,8 +180,6 @@ static int play(const Options& options, const fs::path& output)
 	if (engine.initTurnMatch(start) != Engine::EE_NO_ERROR)
 		throw Usage("cannot start the match: " + engine.getInitializationDiagnostic());
 	Turn::TurnLockstepSession& lockstep = *engine.turnLockstep();
-	std::map<std::uint32_t, Uint32> checksums;
-	int reloads = 0;
 	lockstep.onChecksum = [&](std::uint32_t tick, Uint32 checksum) {
 		if (tick == 0 && !checksums.empty())
 			++reloads;

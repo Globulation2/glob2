@@ -76,6 +76,8 @@ public:
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
 	Uint32 gameCheckSum;
+    Uint32 gameCheckSumTick = 0;
+    bool hasGameCheckSum = false;
 	// Local engine transport metadata. Replay/network payloads still encode
 	// actual orders only; independently generated AI streams tag their outputs.
 	// Local admission guard, stripped by the existing wire/replay serializers.

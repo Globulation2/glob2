@@ -10,6 +10,7 @@
 #include <array>
 #include <bit>
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
 #include "BuildingArtwork.h"
@@ -497,7 +498,14 @@ struct HeadlessRunner
 			if (player && player->ai && player->ai->implementationID == AI::JAVASCRIPT)
 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
 		}
-		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
+        // Endpoint reports use the same snapshot schema as routine engine samples.
+        // Complete this reporting-only sample during setup. A serial executor
+        // otherwise retains the initial world for the entire match.
+        SimulationChecksum::Pipeline initialHash(engine.gui.game.map.computeExecutor());
+        const auto& initialWorld=engine.gui.game.observeCompletedWorld();
+        initialHash.submit(initialWorld,initialWorld.tick,engine.routineMapChecksums());
+        const auto initialSamples=initialHash.collect(initialWorld.tick,true);
+        if (initialSamples.size()!=1) throw std::runtime_error("Missing initial snapshot checksum");
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
@@ -531,8 +539,10 @@ struct HeadlessRunner
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
-		if (engine.diagnostics) engine.diagnostics->finish();
-		const auto runEnd = std::chrono::steady_clock::now();
+        if (!engine.latestChecksum) throw std::runtime_error("Missing terminal snapshot checksum");
+        const auto initialChecksum=initialSamples.front().sample.value;
+        if (engine.diagnostics) engine.diagnostics->finish();
+        const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
 		const auto saveCpu=benchmark?processCpuNs()-saveCpuStart:0;
@@ -571,7 +581,8 @@ struct HeadlessRunner
 		}
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
-			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
+			<< ",\"finalChecksum\":" << engine.latestChecksum->value
+            << ",\"checksum_algorithm\":\"snapshot-v3\""
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu

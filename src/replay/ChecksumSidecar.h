@@ -15,7 +15,7 @@ class Game;
 //!   [4..7]   numTeams (Uint32)
 //!   [8..11]  numPlayers (Uint32)
 //!   [12..15] total_ticks (Uint32)        <-- this offset
-//!   [16..19] flags (Uint32, reserved)
+//!   [16..19] flags (Uint32, bit 0: exhaustive live-world total hash)
 //! Patched at close() once the final tick count is known. If the header
 //! layout changes, this offset must change too. See ChecksumSidecar.cpp.
 static constexpr long CHECKSUM_SIDECAR_TOTALTICKS_OFFSET = 12;

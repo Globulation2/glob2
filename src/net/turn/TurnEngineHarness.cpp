@@ -38,6 +38,7 @@
 #include "ConnectionOverlay.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "FileFormatVersions.h"
 #include "render/ColonySkinPreview.h"
 #include "Game.h"
@@ -353,11 +354,13 @@ public:
 		lockstep->onChecksum = [this](std::uint32_t tick, Uint32 checksum) {
 			if (tick == 0 && !lives.back().empty())
 			{
-				// Reload must establish its observation before the first checksum,
-				// order delivery and advancement of the replacement run.
+				// Delayed reports can retire just before the next capture. The
+				// established observation must belong to the replacement world,
+				// at most one completed boundary behind the live simulation.
 				const auto& game = engine->gui.game;
 				const auto& world = game.observation();
-				CHECK(world.tick == game.stepCounter);
+				CHECK(world.tick <= game.stepCounter);
+				CHECK(game.stepCounter-world.tick <= 1);
 				CHECK(world.worldIdentity == game.map.identity());
 				CHECK(world.observationRevision == game.snapshots().revision());
 				++observedReloads;
@@ -620,10 +623,10 @@ struct EngineMatch
 		for (auto& c : clients)
 			if (!c->stopped)
 				REQUIRE(c->session().executedTick() == end);
-		// A little longer: each client takes the checksum before tick `end` at its next
-		// step, as the verifier does.
-		run(200 * MS);
-		return end;
+        // Drain terminal checksum work without executing further orders.
+        for (auto& c:clients) if (!c->stopped) { RngScope scope(c->rng); c->engine->flushChecksums(); }
+        run(200 * MS); // Deliver final reports through the simulated links.
+        return end;
 	}
 
 	Turn::MatchRecord record(const std::string& id) const
@@ -892,6 +895,62 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 
 TEST_SUITE("TurnEngineHarness")
 {
+    GLOB2_TEST_CASE("map checksum coverage survives the last human quitting", "[network-sim]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        const auto map = mapPath("FourSquares1");
+        const auto setup = makeSetup(map, 1, {"nicowar", "nicowar", "nicowar"}, 2026);
+        Turn::MatchRecord record;
+        record.humanSeatMask = setup.humanSeatMask();
+        Engine engine;
+        Engine::TurnMatchStart start;
+        start.setup = setup;
+        start.mapFile = map;
+        start.localSeat = -1;
+        start.transport = std::make_shared<Turn::RecordTransport>(record, 0);
+        REQUIRE(engine.initTurnMatch(start) == Engine::EE_NO_ERROR);
+        CHECK(engine.routineMapChecksums());
+        REQUIRE(engine.gui.game.executePlayerQuitGame(PlayerQuitsGameOrder(0)));
+        CHECK_FALSE(SimulationChecksum::mapChecksumsFor(engine.gui.game.gameHeader));
+        CHECK(engine.routineMapChecksums());
+    }
+
+    GLOB2_TEST_CASE("AI-only turn recordings replay through their terminal checksum",
+                    "[network-sim][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        globals->automaticEndingGame = false;
+        const auto map = mapPath("FourSquares1");
+        const auto setup = makeSetup(map, 0, {"nicowar", "nicowar", "nicowar", "nicowar"}, 2026);
+        Turn::MatchRecord record;
+        record.matchId = "ai-only-checksum-policy";
+        record.simVersion = setup.simVersion.key();
+        record.setupJson = setup.toJson().dump();
+        record.humanSeatMask = setup.humanSeatMask();
+        record.endTick = 256;
+        const auto directory = glob2test::artifactDir();
+        REQUIRE(record.humanSeatMask == 0);
+        const auto verdict = MatchVerifier::verify(record, setup, map, directory);
+        // A report-free record is unverifiable, but its generated replay is valid.
+        REQUIRE(verdict.verdict == "unverifiable");
+
+        Engine playback;
+        REQUIRE(playback.loadReplayTask((directory / "match.replay").string()).run());
+        auto& reader = *globalContainer->replayReader;
+        REQUIRE(reader.getNumStepsTotal() == record.endTick);
+        playback.beginSession(0);
+        for (Uint32 tick = 0; tick <= record.endTick; ++tick)
+        {
+            // Include the terminator: it carries the final sampled map boundary.
+            playback.stepSession(Uint64(tick) * 40, {});
+            REQUIRE(reader.isValid());
+        }
+        REQUIRE(reader.isFinished());
+        CHECK_NOTHROW(reader.finishChecksumValidation());
+        playback.gui.isRunning = false;
+        playback.finishSession();
+    }
+
 	GLOB2_TEST_CASE("embedded terrain definitions travel with shared matches and verifier replays",
 					"[network-sim][artifacts]")
 	{
