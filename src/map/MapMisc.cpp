@@ -65,8 +65,30 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 		const auto& entry=gradientRuntime->materialFields.at(key);
 		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
-		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
+        if (!legacy152) {
+            cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1)^Uint32(entry.excludesShared<<2);
+            cs=rotl1(cs)^entry.publishedStep;
+        }
+        if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];
 	}
+
+    // The explicit historical representation predates delayed publication.
+    // Keep its checksum layout stable even when the new queues are empty.
+    if (!legacy152) {
+        cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
+        for (const auto& queued:gradientRuntime->fieldRequests) {
+            const auto& request=queued.request;
+            // Hash stored request metadata without reverse-looking up its slot
+            // in the destination registry on every tick.
+            cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
+            cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+        }
+        if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
+            cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
+        });
+
+
+    }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)

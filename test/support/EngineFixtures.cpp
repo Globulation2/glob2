@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "HiringPipeline.h"
 #include "render/scene/SceneExtract.h"
 
@@ -199,6 +200,23 @@ class HiringPipelineHarness
 	static void publish(Game &game)
 	{
 		game.drainHiring();
+		game.snapshotStore().invalidateBoundary();
+		const auto setup = game.captureReadBoundary();
+		// Immediate-ranking fixtures establish the same published inputs that real
+		// matches obtain over their normal ticks; no unit actions run during setup.
+		for (const auto& record : setup.entities->buildings)
+		{
+			if (!HiringPlanner::needsCandidates(record)) continue;
+			auto* building = game.resolveBuilding(record.identity);
+			if (!building) continue;
+			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+				if (setup.entities->availableGroundClasses[record.team] & (1u<<swim))
+				{
+					for (int material=0; material<MaterialCount; ++material)
+						if (building->materialDeliveryNeed(material)>0)
+							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(record.team,material,swim,false,building); });
+				}
+		}
 		game.snapshotStore().invalidateBoundary();
 		auto input = HiringPipeline::bindRoutes(game, game.captureReadBoundary());
 		if (!game.hiringPipeline)
