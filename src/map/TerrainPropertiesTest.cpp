@@ -21,6 +21,20 @@
 #include <iterator>
 #include <queue>
 
+namespace {
+// Terrain tests need a demanded field: allocation alone no longer schedules
+// periodic natural-resource work. Advance beyond the forced-refresh interval.
+void demandMaterialRefresh(Map& map,int swim,int x,int y)
+{
+    map.game->stepCounter=128;
+    EntityRandom random;
+    random.initialize(1,EntityRandom::Kind::Unit,0,1);
+    int dx=0,dy=0;bool stop=false;
+    REQUIRE(map.getMaterialGradientSlot(0,WHEAT,swim)[map.coordToIndex(x,y)]==GRADIENT_AT_GOAL);
+    map.pathfindMaterial(random,0,WHEAT,swim,x,y,&dx,&dy,&stop,nullptr,false);
+}
+}
+
 TEST_SUITE("TerrainProperties")
 {
 TEST_CASE("exclusive movement modes and bounded compile-time definitions")
@@ -137,6 +151,7 @@ TEST_CASE("terrain edits refresh escape costs after captured routes publish at t
     map.getMaterialGradientSlot(0,WHEAT,0);
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
+    demandMaterialRefresh(map,0,15,15);
     map.stagePeriodicGradientPreparation();
     map.game->snapshotStore().invalidateBoundary();
     map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
@@ -555,6 +570,7 @@ TEST_SUITE("TerrainRuntime")
 				map.configureGradientPipeline(workers, 2);
 				map.advanceGradientPipeline();
 				map.syncStep(0);
+				demandMaterialRefresh(map,6,20,20);
 				map.stagePeriodicGradientPreparation();
 				map.preparePendingGradient(world.game.snapshotStore().captureBoundary(world.game));
 				REQUIRE(map.gradientRuntime->pipeline.pendingCount() == 1);
@@ -676,6 +692,7 @@ TEST_SUITE("TerrainRuntime")
 		map.getMaterialGradientSlot(0, WHEAT, 6);
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
+		demandMaterialRefresh(map,6,15,15);
 		map.stagePeriodicGradientPreparation();
 		map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
 		auto *bytes = new GAGCore::MemoryStreamBackend;
