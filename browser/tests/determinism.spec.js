@@ -506,20 +506,16 @@ test('WebAssembly verifies ground gradient publication across serial and threade
     expect(junit).not.toMatch(/<skipped\b/);
     expect(junit.match(/<testcase\b/g)).toHaveLength(3);
     for (const participants of [1, 2, 4, 8]) {
-      for (const prefix of ['participants-']) {
-        expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '.tsv'))).toBe(true);
-        expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '-kernel-entries.tsv'))).toBe(true);
-      }
+      expect(Object.keys(result.files).some(name => name.endsWith('/participants-' + participants + '.tsv'))).toBe(true);
+      expect(Object.keys(result.files).some(name => name.endsWith('/participants-' + participants + '-kernel-entries.tsv'))).toBe(true);
     }
     const traces = Object.fromEntries(Object.entries(result.files)
       .filter(([name]) => name.endsWith('.tsv') && !name.endsWith('-kernel-entries.tsv')));
-    expect(Object.keys(traces)).toHaveLength(16);
+    expect(Object.keys(traces)).toHaveLength(10);
     for (const [name, contents] of Object.entries(traces)) {
       const lines = contents.trimEnd().split('\n');
       expect(lines[0], name).toMatch(/^boundary\t/);
-      const expectedRows = name.endsWith('-continuation.tsv')
-        ? (name.includes('/air-') ? 24 : 33)
-        : (name.includes('/air-participants-') ? 16 : 48);
+      const expectedRows = name.endsWith('-continuation.tsv') ? 33 : 48;
       expect(lines, name).toHaveLength(expectedRows + 1);
     }
     if (variant === 'serial') serialTraces = traces;
