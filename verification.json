@@ -1,0 +1,106 @@
+{
+  "base_sha": "64c792a61c4b5a7cdbfc49f33e7c846127645056",
+  "source_identity": "source-identity.json",
+  "patch": "change.patch",
+  "release_build": "passed",
+  "build_command": "PYTHONPATH=\"$PWD${PYTHONPATH:+:$PYTHONPATH}\" python3 tools/dev_build.py dev_fast=0 release=1 linker=default -j3 engine-tests build/darwin/client/release/src/glob2",
+  "build_log": "macos-build-verified.log",
+  "focused_tests": {
+    "passed": 60,
+    "failed": 0,
+    "skipped": 0,
+    "junit": "canonical-tests.xml"
+  },
+  "behavior_comparisons": [
+    {
+      "base": "base12k",
+      "optimized": "canonical12k",
+      "ticks": 13153,
+      "routine_final_checksum": 1613458751,
+      "world.checksums": {
+        "identical": true,
+        "rows": 1153,
+        "sha256": "ee54b0223ff8ba90d9e5880c0134b7594009b5b6904d8e531a9b9543a56d05ed"
+      },
+      "snapshot.checksums": {
+        "identical": true,
+        "rows": 1154,
+        "sha256": "a43efe1b29b77e5ec44a8edea6935d879c36f1a9426cbc976131bd57a2abbcc2"
+      },
+      "final_save_identical": true
+    },
+    {
+      "base": "base24k",
+      "optimized": "canonical24k",
+      "ticks": 25153,
+      "routine_final_checksum": 2044332837,
+      "world.checksums": {
+        "identical": true,
+        "rows": 1153,
+        "sha256": "736872c695cf91be08959496442ad7e2aca01499e259172b83b5ebcb2decbb6d"
+      },
+      "snapshot.checksums": {
+        "identical": true,
+        "rows": 1154,
+        "sha256": "44e7816874696e461ee3f1e008ca8cab912d3b0306d5ee87c91dc118755c93ac"
+      },
+      "final_save_identical": true
+    },
+    {
+      "base": "base24k-serial",
+      "optimized": "canonical24k-serial",
+      "ticks": 25153,
+      "routine_final_checksum": 2044332837,
+      "world.checksums": {
+        "identical": true,
+        "rows": 1153,
+        "sha256": "736872c695cf91be08959496442ad7e2aca01499e259172b83b5ebcb2decbb6d"
+      },
+      "snapshot.checksums": {
+        "identical": true,
+        "rows": 1154,
+        "sha256": "44e7816874696e461ee3f1e008ca8cab912d3b0306d5ee87c91dc118755c93ac"
+      },
+      "final_save_identical": true
+    }
+  ],
+  "golden_match": {
+    "verdict": "verified",
+    "full_trace_matches_committed_fixture": true
+  },
+  "work_counters": {
+    "recruitment": {
+      "calls": 54994,
+      "noops": 54866,
+      "earlier": 48,
+      "later": 80,
+      "old_shift_slots": 256777,
+      "rotation_slots": 403,
+      "max_bucket": 14
+    },
+    "apportionment": {
+      "calls": 27727,
+      "sites": 18453,
+      "old_slots": 415905,
+      "evaluated_slots": 295266
+    }
+  },
+  "coverage_rationale": "Ordering and membership, sparse/dense material accounting, construction/repair and reserved slots, shared stock, candidate admission, fair hiring rounds, transfers, per-tick state and RNG, whole-game save/load continuation and multiplayer golden trace. Team header adds a nonvirtual method without layout or saved-state changes; all production objects rebuilt in the regular release target.",
+  "omissions": [
+    "Fresh Linux Callgrind: Docker daemon unresponsive.",
+    "Windows, browser and mobile execution not available."
+  ],
+  "performance_conclusion": "Deterministic work reductions demonstrated. Native CPU timing under compiler load was inconclusive; no total owner-thread or whole-engine speedup claimed.",
+  "status": "Committed and pushed on codex/building-recruitment-churn; draft PR #1222. No runtime profiling hooks or simulation/save-format changes.",
+  "replay_equivalence": {
+    "game.replay": {
+      "identical_to_base": true,
+      "sha256": "0cc7efdee47c72fe9b798c864a7215119aa634c34edd7a4595c4243915fdbdde"
+    },
+    "game.replay.checksums": {
+      "identical_to_base": true,
+      "sha256": "648b8acda7f5b1529b16a24b4aa7f289342c8b4b4bc5b63971add73fac592b7d"
+    }
+  },
+  "commit_sha": "0e36aee51be98cc297d3f6a72fe6438209d0eb9a"
+}

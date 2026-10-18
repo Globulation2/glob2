@@ -1,0 +1,21 @@
+{
+  "base_sha": "64c792a61c4b5a7cdbfc49f33e7c846127645056",
+  "branch": "codex/building-recruitment-churn",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "files": {
+    "src/team/Team.h": "10ff78f6b7cb15ae520e5d9039f52a6b54abba00c8ecdb7af30de9a0bc6c17a3",
+    "src/team/TeamStep.cpp": "c1a0c9c0ae6ad6b8450b6f2d0b794af96d741dea7c3a087c6be2fcb88c2500ad",
+    "src/building/Construction.cpp": "92a78448eed170ef60b569f55a0503e9023daa80925866b93dab5d72f496b933",
+    "src/building/Step.cpp": "e4c2539b41da45b4e5a9e6cf41d423af4176409fdf4063bf14aab362f2e4d594",
+    "src/building/MaterialDemandTest.cpp": "38a5950603e426fa4eead0458cd4659aad7a687a1830e77ccf38e225f27ee3f2",
+    "docs/architecture/simulation.md": "e4d302b55004c7cd6f06362a2c4bb99bcb3fc1fd3a657fbeacd984cf06a523dd"
+  },
+  "baseline_binary_sha256": "5ecd7020e9eddbd781cb95d786e827ce84eb366c9fe5fd24907a8d2ad0e9a2c9",
+  "patch_sha256": "67576fd447f68a4201d07037033920b9fd3ffa1b420e6bd73c8770e37eef2567",
+  "canonical_binary_sha256": "5ad031345d336858bc6901a07875fb9575f054c1fdbdf57e921b84dadeaf715a",
+  "canonical_test_binary_sha256": "d0b557216eb7b7d638d9f857c329a04f0bdcff4190743bc0fc362bcdb182b0c8",
+  "current_master_sha": "64c792a61c4b5a7cdbfc49f33e7c846127645056",
+  "commit_sha": "0e36aee51be98cc297d3f6a72fe6438209d0eb9a"
+}
