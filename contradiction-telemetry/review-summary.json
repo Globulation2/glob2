@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "result": "53 tests passed",
+  "command": "training-venv/bin/python -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_dataset tools.test_resource_gradient_contradictions tools.test_resource_gradient_experiments tools.test_resource_gradient_distributed tools.test_resource_gradient_tournament -v",
+  "elapsed_seconds": 5.105,
+  "host": "therig.local",
+  "remote_directory": "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/python-contradictions-validation",
+  "source_identity": "Exact source hashes are in validation-source-sha256.txt; validated-source.tar.gz contains the tested Python source and official model header.",
+  "coverage": [
+    "Official seven-feature integer predictor matches C++ over 4100 input vectors with undefined-behavior sanitization.",
+    "Research-only integer heads support count and Q12 fraction feature transforms; production header emission refuses research models.",
+    "Baseline seven features and all augmented variants use identical known-capture movement rows, role/cohort weights and frozen map-group splits.",
+    "Unknown capture histories and planning-only episodes cannot become invented zero-valued contradiction features.",
+    "Contract schema, required columns, event/query bounds and future stall labels are checked; old unmeasured telemetry cannot enter augmented comparisons.",
+    "Per-game unsampled totals have verified hashes and reject duplicate field/epoch rows; overlapping episode histories are not presented as actual event rates.",
+    "Planning reachability and failed-movement outcomes remain separate from the direction-cost benefit target.",
+    "Grouped split expansion, immutable cohort provenance, policy-role balancing, distributed gzip/input receipts, partial/failing campaign accounting and legacy baseline fitting are covered."
+  ],
+  "independent_coverage_finding": {
+    "problem": "Filtering unknown captures could remove an entire format before split validation, and formats with zero complete episode rows could disappear entirely.",
+    "fix": "Expected formats come from manifests and loaded rows. Reports include manifest games/maps, observed and eligible maps/episodes, unknown captures and planning-only counts. Fewer than four eligible maps in any expected format fails before writing the split registry.",
+    "regression_test": "test_comparison_cannot_drop_an_unsupported_or_zero_episode_format covers both all-unknown and manifest-only formats."
+  },
+  "cpp_source_review": {
+    "result": "Approved v2 source; no edits by reviewer.",
+    "findings": [
+      "Original checkTile and directionByGradient signatures restored; named classified/observed entry points share template<bool Track> implementations.",
+      "Compile-time false paths eliminate evidence handling; original predicate order, WATER_ONLY first check, selector scan/scoring/ties, strict fallback and RNG operations are preserved.",
+      "Owner natural-ground field scope and once-per-category evidence accumulation are maintained.",
+      "Capture snapshots follow preparation capture ticks and actual publication; unknown/restored captures remain explicitly unknown; episode features are copied before future labels."
+    ],
+    "caveat": "Source review establishes correctness reasoning. Optimized code generation, disabled release performance and actual new-engine gameplay parity are separate parent-owned validation gates."
+  },
+  "limitations": [
+    "No production coefficients were changed or promoted.",
+    "These are tooling checks and source review, not a claim of improved gameplay, CPU usage or an augmented C++ runtime model.",
+    "No Windows/browser execution or gameplay/save compatibility tests were performed by this reviewer.",
+    "Repeated holdout comparisons still require fresh prospective game validation before policy promotion."
+  ]
+}
