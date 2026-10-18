@@ -214,10 +214,12 @@ def run(args):
     exploration = getattr(args, 'exploration', None)
     exploration_seed = getattr(args, 'exploration_seed', 5101)
     if not 0 <= exploration_seed <= 2**32-1: raise ValueError('Exploration seed must be uint32')
-    from tools.resource_gradient_experiments import intervals
+    from tools.resource_gradient_experiments import intervals, exploration_seed_for_game
     selected_intervals = intervals(exploration) if exploration else []
     policy = dict(name='seeded-field-intervals' if exploration else 'adaptive32',
-                  intervals=selected_intervals, seed=exploration_seed, model_sha256=sha(DEFAULT_MODEL))
+                  intervals=selected_intervals, seed=exploration_seed,
+                  assignment='sha256(master-seed:planned-game-group) low32, then unsigned field hash',
+                  model_sha256=sha(DEFAULT_MODEL))
     if isinstance(document, dict) and document.get('schema') != 1: raise ValueError('Unsupported tournament plan schema')
     plan = document['games'] if isinstance(document, dict) else document
     if isinstance(document, dict) and digest(document['catalog']) != document['catalog_sha256']:
@@ -253,9 +255,10 @@ def run(args):
         command=[str(binary),'game','run','--map-file',str(map_path),'--game-seed',str(spec['game_seed']),
                  '--ticks',str(args.ticks),'--compute-threads',str(args.threads),'--gpu','off',
                  '--compute-telemetry','off','--output-dir',str(directory),'--resource-gradient-probe']
+        behavior_seed = exploration_seed_for_game(exploration_seed,group)
         if exploration:
             command += ['--resource-gradient-exploration', ','.join(map(str, selected_intervals)),
-                        '--resource-gradient-exploration-seed', str(exploration_seed)]
+                        '--resource-gradient-exploration-seed', str(behavior_seed)]
         roster = spec.get('ais', [spec.get('ai', 'nicowar')]*spec['players'])
         for ai, alliance in zip(roster, spec['alliances']): command+=['--player',ai,'--alliance',str(alliance)]
         env={k:v for k,v in os.environ.items() if not k.startswith('GLOB2_RESOURCE_')}
@@ -295,7 +298,7 @@ def run(args):
             temp.replace(compressed);raw.unlink()
         episode=episode.with_suffix('.csv.gz')
         diagnostics={p.name:sha(p) for p in directory.glob('gradient-*.csv.gz')}
-        return dict(diagnostics=diagnostics,cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
+        return dict(behavior_seed=behavior_seed if exploration else None,diagnostics=diagnostics,cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
                     binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
                     ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
     failure_path=out/'failures.json'

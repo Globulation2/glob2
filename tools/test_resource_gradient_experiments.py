@@ -16,6 +16,13 @@ class ExperimentsTest(unittest.TestCase):
         for value in ['', '32,32', '1,32','-1','65537','x']:
             with self.subTest(value=value), self.assertRaises(ValueError): e.intervals(value)
 
+    def test_per_game_seeds_are_reproducible_and_vary_field_assignments(self):
+        seeds=[e.exploration_seed_for_game(181022,str(i)) for i in range(256)]
+        self.assertEqual(seeds,[e.exploration_seed_for_game(181022,str(i)) for i in range(256)])
+        self.assertEqual(len(set(seeds)),256)
+        self.assertTrue(all(0 <= seed <= 2**32-1 for seed in seeds))
+        self.assertNotEqual(seeds[0],e.exploration_seed_for_game(181023,"0"))
+
     def test_immutable_config(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)

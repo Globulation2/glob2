@@ -206,8 +206,11 @@ python3 tools/resource_gradient_model.py audit \
   --output artifacts/gradient-exploration/support.json
 ```
 
-A fixed unsigned hash of field key and exploration seed assigns each field to
-one interval, uniformly over the listed entries. Zero means the ordinary
+The runner hashes the master exploration seed with each planned game identity
+to derive a reproducible per-game seed. A fixed unsigned hash of field key and
+that per-game seed assigns each field to one interval, uniformly over the listed
+entries. This varies a common field's assignment across games and avoids tying
+resource or team slots to one fixed policy throughout a tournament. Zero means the ordinary
 adaptive32 policy, including its demanded-field age cap. Other entries replace
 that field's adaptive admission rule with a demanded fixed interval. They can
 exceed the production cap. This is a collection intervention; it is available

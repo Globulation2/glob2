@@ -7,6 +7,7 @@ CPU comparisons disable all probes; diagnostic repeats verify simulation parity.
 from __future__ import annotations
 import csv
 import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -22,6 +23,11 @@ def intervals(value):
     if not result or len(set(result)) != len(result) or any(v != 0 and not 8 <= v <= 65536 for v in result):
         raise ValueError('Intervals must be unique: 0 (adaptive) or 8..65536 ticks')
     return result
+
+
+def exploration_seed_for_game(seed, group):
+    """Change field assignments across games without using gameplay RNG."""
+    return int(hashlib.sha256(f'{seed}:{group}'.encode()).hexdigest()[-8:],16)
 
 
 def _helpers():
