@@ -22,7 +22,6 @@
 #include "IntBuildingType.h"
 #include "FixedPoint.h"
 #include <algorithm>
-#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
@@ -31,8 +30,6 @@
 class FetchHiringScoreHarness
 {
 public:
-    static bool considerExplorer(Building* building, Unit* unit, int* distance)
-        { return building->considerUnitForExplorerFlag(unit,distance); }
     static std::vector<Unit*> candidates(Building* building)
     {
         building->resetFailureTallies();
@@ -299,9 +296,9 @@ TEST_SUITE("FetchHiringScore")
             return world.game.map.getMaterialGradientSlot(0,WHEAT,team->myUnits[3]->swimClass());
         });
         world.game.map.prepareBuildingGradient(inn,team->myUnits[3]->swimClass(),BuildingRoute::Footprint);
-        // Eligibility scans retain population order; the ranked delivery
-        // choice above independently proves that equal scores prefer low gid.
-        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[Unit::MAX_COUNT-1], team->myUnits[3]});
+        // Membership is sorted by gid; the ranked delivery choice above
+        // independently proves that equal scores prefer low gid.
+        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
         team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3]});
         CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);
