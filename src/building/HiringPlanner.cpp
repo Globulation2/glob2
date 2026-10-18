@@ -434,7 +434,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			const auto resolvedRoute = route;
 			for (const auto &captured : *input.routes)
 				if (captured.building == b.identity &&
-					captured.slot / MOVEMENT_CLASS_COUNT == int(resolvedRoute))
+					captured.slot / MOVEMENT_CLASS_COUNT == int(resolvedRoute) &&
+					!captured.estimateForRanking)
 					buildings[captured.slot % MOVEMENT_CLASS_COUNT] = captured.field;
 			const unsigned vacancies =
 				key.material >= 0 ? supply->vacancies[key.material] : supply->seats;
@@ -684,6 +685,9 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				const auto n = std::min(
 					capacity,
 					(list.key.material >= 0 ? need.vacancies[list.key.material] : need.seats) + 2u);
+				list.primaryCount = std::min<unsigned>(
+					list.candidates.size(),
+					list.key.material >= 0 ? need.vacancies[list.key.material] : need.seats);
 				if (list.candidates.size() > n)
 					std::vector<Candidate>(list.candidates.begin(), list.candidates.begin() + n)
 						.swap(list.candidates);
@@ -792,6 +796,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				for (const auto &c : primary[bi][j].entries)
 					if (published.size() < limit)
 						published.push_back(c);
+				list.primaryCount = published.size();
 				for (const auto &c : list.candidates)
 					if (published.size() < limit && !chosen[Unit::GIDtoID(c.unit.gid)])
 						published.push_back(c);

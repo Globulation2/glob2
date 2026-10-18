@@ -74,10 +74,10 @@ const SimulationSnapshot::Handle& Game::observeCompletedWorld(SimulationSnapshot
     if (submittedObservation != stepCounter)
     {
         const auto& world = *completedObservation;
+        hiringPipeline->observe(*this, world);
         map.submitWorldWork(world);
         statsPipeline->prepareBoundary(*this, world);
         turretTargetingPipeline->admit(*this, world, false);
-        hiringPipeline->observe(*this, world);
         submittedObservation = stepCounter;
     }
     return *completedObservation;
@@ -213,9 +213,13 @@ std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
  return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_peak_pending",m.peakPending}};
 }
 
+bool Game::preparingBuildingGradient(const Building& building, int slot) const
+{
+    return hiringPipeline && hiringPipeline->preparing(building, slot);
+}
 void Game::drainHiring(){if(hiringPipeline)hiringPipeline->drain(JoinReason::Reconfigure);}
 void Game::saveHiring(GAGCore::OutputStream* s){if(!hiringPipeline)hiringPipeline=std::make_unique<HiringPipeline>(map.computeExecutor());hiringPipeline->save(s);}
-void Game::loadHiring(GAGCore::InputStream* s){auto p=std::make_unique<HiringPipeline>(map.computeExecutor());p->load(*this,s);hiringPipeline=std::move(p);}
+void Game::loadHiring(GAGCore::InputStream* s, int versionMinor){auto p=std::make_unique<HiringPipeline>(map.computeExecutor());p->load(*this,s,versionMinor);hiringPipeline=std::move(p);}
 Uint32 Game::hiringChecksum() const {return hiringPipeline ? hiringPipeline->checkSum() : 0;}
 const HiringPlanner::BuildingLists* Game::hiringCandidates(const Building& b) const {return hiringPipeline ? hiringPipeline->suggestions(b) : nullptr;}
 std::vector<std::pair<std::string,Uint64>> Game::hiringMetrics() const {

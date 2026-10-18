@@ -102,8 +102,11 @@ bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding
     if (unit->performance[FLY] && !map->hasAirRoutingConstraints()) {
         *distBuilding=airDistance>=0 ? airDistance : map->warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
         accessible=*distBuilding!=INT_MAX;
-    } else accessible=map->buildingAvailable(&building,unit->movementClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
-
+    } else {
+        const auto route=map->queryBuildingDistance(&building,unit->movementClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
+        if (route==RouteResult::Pending) return false;
+        accessible=route==RouteResult::Reachable;
+    }
     if(!accessible)
 	{
 		building.noteUnitFailing(unit, Building::UnitCantAccessBuilding);
@@ -352,8 +355,9 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
     if (!unit->performance[FLY] || owner->map->hasAirRoutingConstraints())
     {
         int distance=0;
-        if(!owner->map->buildingAvailable(this,unit->movementClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat)) {
-
+        const auto route=owner->map->queryBuildingDistance(this,unit->movementClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat);
+        if (route==RouteResult::Pending) return false;
+        if (route!=RouteResult::Reachable) {
             noteUnitFailing(unit,UnitCantAccessBuilding);return false;
         }
         terrainDistance=distance;
@@ -409,7 +413,9 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	// check in subscribeToBringMaterialsStep uses the same pairing.
 	int timeLeft = remainingFoodTime(*unit);
 	bool canSwim = unit->performance[SWIM];
-	if (!owner->map->buildingAvailable(this, unit->movementClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Clearing))
+	const auto route=owner->map->queryBuildingDistance(this, unit->movementClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Clearing);
+	if (route==RouteResult::Pending) return false;
+	if (route!=RouteResult::Reachable)
 	{
 		noteUnitFailing(unit, UnitCantAccessBuilding);
 		return false;
@@ -450,14 +456,12 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 	// linear gradient steps respectively); compare as-is. The corresponding
 	// check in subscribeToBringMaterialsStep uses the same pairing.
 	int timeLeft = remainingFoodTime(*unit);
-    if (unit->performance[FLY] && !owner->map->hasAirRoutingConstraints())
-        distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
-    else if (!owner->map->buildingAvailable(this, unit->movementClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Combat))
-	{
-		noteUnitFailing(unit, UnitCantAccessBuilding);
-		return false;
-	}
-
+	if (unit->performance[FLY] && !owner->map->hasAirRoutingConstraints()) distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
+    else {
+        const auto route=owner->map->queryBuildingDistance(this,unit->movementClass(),unit->posX,unit->posY,&distBuilding,BuildingRoute::Combat);
+        if (route==RouteResult::Pending) return false;
+        if (route!=RouteResult::Reachable) { noteUnitFailing(unit,UnitCantAccessBuilding); return false; }
+    }
 	if ((!unit->performance[FLY] && !unit->performance[WALK] && !unit->performance[SWIM] && distBuilding>0) || distBuilding >= timeLeft)
 	{
 		noteUnitFailing(unit, UnitTooFarFromBuilding);

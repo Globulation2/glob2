@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Controlled mechanism test on unmodified generated terrain, not an AI balance test.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <utility>
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -274,6 +275,19 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	worker->hungry = worker->trigHungry;
 	worker->medical = Unit::MED_HUNGRY;
 	worker->setNeedToRecheckMedical(true);
+	// This fixture isolates stocked-inn diet/advertising choices, so compare
+	// candidates after their lazily requested walking fields have published.
+	const auto prepareFoodRoutes = [&](Game &match)
+	{
+		for (const auto *original : {friendly, rival})
+		{
+			auto *inn = match.teams[original->owner->teamNumber]
+						->myBuildings[Building::GIDtoID(original->gid)];
+			require(inn != nullptr, "scenario inn exists before routing");
+			glob2test::awaitBuildingGradient(match, inn, worker->swimClass(), BuildingRoute::Footprint);
+		}
+	};
+	prepareFoodRoutes(game);
 	Building *chosen = game.teams[0]->findNearestFood(worker);
 	require(chosen == (scenario.converts ? rival : friendly),
 			"normal food routing selects expected inn");
@@ -301,6 +315,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 		for (auto *inn : restored.game.teams[team]->liveBuildings.entries())
 				for (int tick = 0; tick < 256; ++tick)
 					inn->step();
+	prepareFoodRoutes(restored.game);
 	chosen = restored.game.teams[0]->findNearestFood(worker);
 	require(chosen && chosen->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"food choice survives save/load");

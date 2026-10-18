@@ -131,8 +131,8 @@ public:
 	//! has the bytes in memory (a freshly generated custom game) skips the file entirely.
 	GAGCore::CooperativeTask loadFromStreamTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, GAGCore::InputStream *stream);
 	//!
-	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
+	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
 	void save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1 = nullptr);
 
 	void processEvent(SDL_Event *event);

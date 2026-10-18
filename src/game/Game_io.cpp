@@ -154,13 +154,13 @@ namespace
 	// checksum mixers in the codebase share one definition.
 }
 
-bool Game::load(GAGCore::InputStream *stream)
+bool Game::load(GAGCore::InputStream *stream,SaveLoadProfile profile,MapLoadInitialization initialization)
 {
 	PERF_SCOPE_TIME(Load);
-    return loadTask(stream).run();
+    return loadTask(stream,profile,initialization).run();
 }
 
-GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
+GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadProfile profile,MapLoadInitialization initialization)
 {
 	assert(stream);
 	GAGCore::BinaryInputStream::CheckedReads checkedInput(stream);
@@ -180,6 +180,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		printf("Loading map header\n");
 	if (!tempMapHeader.load(stream))
 		co_return false;
+	tempMapHeader.applyLoadProfile(profile);
 	mapHeader=tempMapHeader;
 	mapHeader.resolveGrowthLayout(stream);
 	Sint32 versionMinor=mapHeader.loadingVersion();
@@ -318,12 +319,17 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
     }
 
 	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
-    if(versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING && mapHeader.getIsSavedGame())loadHiring(stream);
+    if(versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING && mapHeader.getIsSavedGame())loadHiring(stream,versionMinor);
 
 	// Legacy saves reconstruct service lists by running building updates. That
 	// changes tie-breaking order and can even advance construction. New saved
 	// games carry the live lists and bookkeeping instead.
-	if (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION || !mapHeader.getIsSavedGame())
+    // Migration must not initialize a map twice (once while converting, then
+    // again when playing it). Modern maps already encode service/call lists.
+    // Legacy reconstruction and ordinary gameplay retain their existing path.
+    const bool preserveEncodedMap=initialization==MapLoadInitialization::PreserveEncoded
+        && !mapHeader.getIsSavedGame() && versionMinor>=FILE_FORMAT_VERSION_SIMULATION_CONTINUATION;
+	if (!preserveEncodedMap && (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION || !mapHeader.getIsSavedGame()))
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->update();
 

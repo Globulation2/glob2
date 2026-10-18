@@ -27,6 +27,7 @@ MapHeader::MapHeader()
 
 void MapHeader::reset()
 {
+    privateAdaptive174=false;
 	historicalGrowthLayout = false;
 	versionMajor = VERSION_MAJOR;
 	versionMinor = VERSION_MINOR;
@@ -45,6 +46,7 @@ void MapHeader::reset()
 
 bool MapHeader::load(GAGCore::InputStream *stream)
 {
+    privateAdaptive174=false;
 	// The same header is read from local files, imports and network messages.
 	// Do not expose partially read fields if validation fails.
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);

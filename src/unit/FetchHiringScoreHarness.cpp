@@ -32,6 +32,8 @@ class FetchHiringScoreHarness
 public:
     static std::vector<Unit*> candidates(Building* building)
     {
+        for(auto* unit:building->owner->liveUnits.entries())
+            glob2test::awaitBuildingGradient(*building->owner->game,building,unit->swimClass(),BuildingRoute::Footprint);
         building->resetFailureTallies();
         std::vector<Unit*> units;
         for(auto* unit:building->owner->liveUnits.entries()) {
@@ -107,6 +109,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	game.map.buildingGradient(site,swimClass);
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
+	glob2test::awaitBuildingGradient(game,site,swimClass);
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
@@ -175,6 +178,7 @@ static void theScoreEstimatesTheWholeTrip()
 	game.map.buildingGradient(site,swimClass);
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
+	glob2test::awaitBuildingGradient(game,site,swimClass);
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
@@ -211,6 +215,7 @@ TEST_SUITE("FetchHiringScore")
         world.game.map.buildingGradient(inn,unit->swimClass());
         glob2test::awaitGradient(world.game, [&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,unit->swimClass()); });
         int buildingDistance=0,resourceDistance=0;
+        glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
         REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
         REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));
         REQUIRE(buildingDistance<resourceDistance);

@@ -290,7 +290,7 @@ public:
 	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the
 	// observation boundary, built on workers and published
-	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// buildingGradientDelay ticks later. Cold fields queue an initial resumable search; area and
 	// team-wide resets keep old walking fields serving instead of making them
 	// cold (Building::keepsStaleGradients).
 	//! Why a building walking field was built on the owner. cold_* name what
@@ -318,9 +318,9 @@ public:
 	//! Follow the header's buildingGradientDelay now; throws with pending work.
 	void ensureBuildingGradientPipeline();
 	bool buildingGradientPipelineActive() const;
-	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! Queue initialization or refresh of a walking field (slot = routeSlot). False
 	//! when the caller must rebuild synchronously (no pipeline: a map without
-	//! a game, or no existing field).
+	//! a game).
 	bool requestBuildingRefresh(Building *building, int slot);
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
@@ -1200,6 +1200,13 @@ public:
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
+
+	//! Request a lazy building field. A fresh field is Pending until publication;
+	//! point reads then extend its retained frontier and buildingGradient completes it.
+    FieldReadiness requestBuildingField(Building*,int,BuildingRoute = BuildingRoute::Automatic);
+    const Uint16* lookupBuildingField(const Building*,int,BuildingRoute = BuildingRoute::Automatic) const;
+    RouteResult queryBuildingDistance(Building*,int,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
+    StepResult queryBuildingStep(EntityRandom&,Building*,int,int,int,int*,int*,BuildingRoute = BuildingRoute::Automatic);
 	//! Allocate/refresh and mark use without completing the lazy generation.
 	//! Warm fields retain their published guidance while a refresh is queued.
 	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);

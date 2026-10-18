@@ -62,7 +62,8 @@ public:
     void setTeamStatsDelay(unsigned ticks) { if(ticks>8) throw std::invalid_argument("Team statistics delay must be 0..8 ticks"); teamStatsDelay=ticks; ++observationRevisionValue; }
 	unsigned getAIOrderDelay() const { return aiOrderDelay; }
 	void setAIOrderDelay(unsigned ticks) { if (ticks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
-	///Ticks between capturing a scheduled building walking field and publishing it (1..8).
+	///Ticks between capturing a building walking-field refresh and publishing it (1..8).
+	///Missing fields initialize one tick after admission independently of this rule.
 	static constexpr unsigned DEFAULT_BUILDING_GRADIENT_DELAY = 8;
 	unsigned getBuildingGradientDelay() const { return buildingGradientDelay; }
 	void setBuildingGradientDelay(unsigned ticks) { if (ticks < 1 || ticks > 8) throw std::invalid_argument("Building gradient delay must be 1..8 ticks"); buildingGradientDelay = ticks; ++observationRevisionValue; }

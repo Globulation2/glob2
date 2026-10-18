@@ -262,7 +262,7 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 		for (unsigned t = 0; t < teams; ++t)
 		{
 			if (versionMinor>=TeamSectionsVersion) s->readEnterSection(t);
-            auto sample = TeamStats::loadSample(s, versionMinor);
+            auto sample = TeamStats::loadSample(s, versionMinor,game.mapHeader.privateAdaptive174);
             if (versionMinor>=TeamSectionsVersion) s->readLeaveSection();
 			if (sample.tick != b->tick ||
 				sample.measurementFrame().births.size() != game.unitCatalog().size() ||

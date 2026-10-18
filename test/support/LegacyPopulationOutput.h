@@ -39,7 +39,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND; }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -60,13 +60,15 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
                 const auto* building=game->teams[team]->myBuildings[id];
                 return building && building->scriptIdentity==identity && building->globalGradient[slot];
             };
-            for (const auto& request:runtime.buildingRequests)
-                if (!request.stale && !publishedBuilding(request.team,request.building,request.identity,request.slot))
-                    throw std::logic_error("Historical building request has no published generation");
-            runtime.buildings.visitLogical([&](const auto& job,unsigned,bool superseded) {
-                if (!superseded && !publishedBuilding(job.team,job.buildingId,job.scriptIdentity,job.slot))
-                    throw std::logic_error("Historical building job has no published generation");
-            });
+            if (!hasInitialBuildingGradient(formatVersion)) {
+                for (const auto& request:runtime.buildingRequests)
+                    if (!request.stale && !publishedBuilding(request.team,request.building,request.identity,request.slot))
+                        throw std::logic_error("Historical building request has no published generation");
+                runtime.buildings.visitLogical([&](const auto& job,unsigned,bool superseded) {
+                    if (!superseded && !publishedBuilding(job.team,job.buildingId,job.scriptIdentity,job.slot))
+                        throw std::logic_error("Historical building job has no published generation");
+                });
+            }
             return;
         }
         if (!runtime.materialFields.empty()
@@ -168,12 +170,18 @@ public:
                     BinaryOutputStream::writeUint8(0,"count");
                 } else if (name=="buildingGradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) {
                     BinaryOutputStream::writeUint8(game->map.gradientRuntime->buildings.delayTicks(),"delay");
-                    BinaryOutputStream::writeUint16(0,"count"); // Historical queue count width.
+                    if (hasInitialBuildingGradient(formatVersion)) BinaryOutputStream::writeUint32(0,"count");
+                    else BinaryOutputStream::writeUint16(0,"count");
                     BinaryOutputStream::writeUint8(0,"count"); // No admitted results.
                 }
                 suppressedAt=sections.size();
                 return;
             }
+        }
+        if ((name=="preparedGradients" && formatVersion<FILE_FORMAT_VERSION_HIRING_GRADIENTS)
+            || (name=="initializationRequests" && formatVersion<FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS)) {
+            suppressedAt=sections.size();
+            return;
         }
         if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
             suppressedAt=sections.size();
@@ -199,7 +207,7 @@ public:
         const bool mapRuntime=std::find(sections.begin(),sections.end(),"mapRuntime")!=sections.end();
         const bool building=std::find(sections.begin(),sections.end(),"buildings")!=sections.end();
         sections.emplace_back(std::to_string(index));
-        if(!suppressed() && mapRuntime && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+        if(!suppressed() && mapRuntime && !hasUnifiedMovement(formatVersion)) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             const unsigned variants=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
             const bool numeric=!parent.empty() && std::all_of(parent.begin(),parent.end(),[](char c){return c>='0'&&c<='9';});
@@ -228,14 +236,28 @@ public:
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT)) BinaryOutputStream::write(data,size,name); }
+    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && !hasUnifiedMovement(formatVersion))) BinaryOutputStream::write(data,size,name); }
     void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT)) BinaryOutputStream::writeEndianIndependent(data,size,name); }
+    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && !hasUnifiedMovement(formatVersion))) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
         if (formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="movementClassesKnown") return;
-        if (name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+        const bool hiring=std::find(sections.begin(),sections.end(),"HiringPipeline")!=sections.end();
+        if (!injecting && hiring
+            && ((name=="gradients" && formatVersion<FILE_FORMAT_VERSION_HIRING_GRADIENTS)
+                || (name=="initializations" && formatVersion<FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS))) {
+            if (value) throw std::logic_error("Historical hiring fixture cannot discard prepared or proactive gradients");
+            return;
+        }
+        if (!hasInitialBuildingGradient(formatVersion) && name=="count"
+            && sections.size()>=2 && sections.back()=="queue"
+            && sections[sections.size()-2]=="buildingGradientPipeline") {
+            if (value>65535) throw std::logic_error("Historical building queue exceeds its encoding");
+            BinaryOutputStream::writeUint16(Uint16(value),name);
+            return;
+        }
+        if (name=="destination" && !hasUnifiedMovement(formatVersion)) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if (value<5000) { if (value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Historical air destination"); value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT; }
             else if (value<10000) { const unsigned key=value-5000; if (key%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Historical air escape destination"); value=5000+(key/MOVEMENT_CLASS_COUNT)*classes+key%MOVEMENT_CLASS_COUNT; }
@@ -249,7 +271,7 @@ public:
                 && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end();
             const bool buildingQueueCount=name=="count" && sections.size()>=2 && sections.back()=="queue"
                 && sections[sections.size()-2]=="buildingGradientPipeline";
-            if (periodicDestination || buildingQueueCount) {
+            if (periodicDestination || (buildingQueueCount && !hasInitialBuildingGradient(formatVersion))) {
                 if (value>0xffff) throw std::logic_error("Historical gradient field exceeds its 16-bit encoding");
                 BinaryOutputStream::writeUint16(Uint16(value),name);
                 return;
@@ -284,7 +306,7 @@ public:
         if(suppressed()) return;
         if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND
             && (name=="suspendedStale" || name=="movementClassesKnown")) return;
-        if(name=="slot" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT
+        if(name=="slot" && !hasUnifiedMovement(formatVersion)
             && std::find(sections.begin(),sections.end(),"buildingGradientPipeline")!=sections.end()) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");
@@ -302,7 +324,7 @@ public:
             BinaryOutputStream::writeUint8(Uint8(value),name);
             return;
         }
-        if(name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+        if(name=="destination" && !hasUnifiedMovement(formatVersion)) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");
             value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT;

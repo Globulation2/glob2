@@ -45,13 +45,18 @@ void configure(glob2test::HeadlessGame& world)
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
 }
 
-// Initialize the synchronous building route before adding a unit whose exact
-// position and clocks the fixture controls.
+// Publish the service route before adding the unit whose exact position and
+// clocks the fixture controls. Normal ticks also publish other scheduled owners.
 void prepareUnitBuildingGradient(Game& game,Building* building,int type,int team)
 {
     const auto* definition=game.teams[team]->race.getUnitType(type,0);
-    const int swim=Map::swimClass(definition->performance[WALK],definition->performance[SWIM]);
-    game.map.prepareBuildingGradient(building,swim,BuildingRoute::Footprint);
+    const int access=definition->performance[FLY] ? AIR_MOVEMENT_CLASS
+        : Map::swimClass(definition->performance[WALK],definition->performance[SWIM]);
+    for (unsigned tick=0; !game.map.lookupBuildingField(building,access,BuildingRoute::Footprint) && tick<4096; ++tick) {
+        game.map.requestBuildingField(building,access,BuildingRoute::Footprint);
+        game.step(0);
+    }
+    REQUIRE(game.map.lookupBuildingField(building,access,BuildingRoute::Footprint));
 }
 
 // The steering fixtures combine existing guard/exploration policies with
@@ -2332,7 +2337,7 @@ TEST_SUITE("UnitCustomization")
             glob2test::awaitGradient(game,[&] { return map.getMaterialGradient(0,MaterialId::Algae,WATER_ONLY_CLASS); });
             game.map.prepareBuildingGradient(inn,WATER_ONLY_CLASS);
             REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
-            REQUIRE(map.buildingGradient(inn,WATER_ONLY_CLASS));
+            glob2test::awaitBuildingGradient(game,inn,WATER_ONLY_CLASS);
             const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
             const auto probe=map.coordToIndex(13,y);
             REQUIRE(inn->globalGradient[slot][probe]!=GRADIENT_FORBIDDEN);
@@ -2508,7 +2513,7 @@ TEST_SUITE("UnitCustomization")
                 glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,material,unit->swimClass()); });
                 world.game.map.prepareBuildingGradient(inn,unit->swimClass());
                 REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
-                REQUIRE(world.game.map.buildingGradient(inn,unit->swimClass()));
+                glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
                 if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
                 for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.step(0);
                 REQUIRE(unit->displacement==phase);

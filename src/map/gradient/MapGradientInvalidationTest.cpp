@@ -115,14 +115,14 @@ TEST_CASE("forbidden painting delays complete routes across passable resources")
         map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",nlohmann::json::array({definition})}}.dump());
         map.setResource(20,20,*map.resourceRegistry().find("test-passable-fabric"),1);
         REQUIRE_FALSE(map.resourceBlocksGround(map.coordToIndex(20,20)));
-        REQUIRE(map.buildingGradient(building,swim)!=nullptr);
+        REQUIRE(glob2test::awaitBuildingGradient(f.game,building,swim)!=nullptr);
         const auto* published=map.buildingGradient(building,swim);
         const std::vector<Uint16> old(published,published+map.cellCount());
         edit(f,20,20,true);
         REQUIRE(map.requestBuildingRefresh(building,building->routeSlot(swim,BuildingRoute::Automatic)));
         REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,swim)));
-        // A cold or warm request cannot publish during the first K-1
-        // advances, including when the serial executor has already finished it.
+        // A warm refresh cannot publish during the first K-1 advances,
+        // including when the serial executor has already finished it.
         for (unsigned advance=1;advance<map.gradientPipelineStatus().delay;++advance) {
             boundary(f);
             REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,swim)));

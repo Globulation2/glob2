@@ -421,7 +421,7 @@ public:
   static Uint32 measurementChecksum(const GameplayMeasurements&);
   void printEconomy(const Team*, Uint32 tick) const;
   static void saveSample(GAGCore::OutputStream*, const TeamStatsSample&);
-  static TeamStatsSample loadSample(GAGCore::InputStream*, int versionMinor = VERSION_MINOR);
+  static TeamStatsSample loadSample(GAGCore::InputStream*, int versionMinor = VERSION_MINOR,bool privateAdaptive174=false);
 
 
   std::shared_ptr<const TeamStats> frozenDisplay() const;
@@ -477,7 +477,7 @@ private:
 	
 	std::vector<EndOfGameStat> endOfGameStats;
 	
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174=false);
 	void save(GAGCore::OutputStream *stream);
 
 public:

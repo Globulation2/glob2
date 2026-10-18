@@ -52,6 +52,60 @@ template<class Values> std::string evidenceHash(const Values& values)
 
 TEST_SUITE("DelayedGradientPublication")
 {
+TEST_CASE("private174 migration profile is explicit and does not replace published layouts")
+{
+    class HeaderVersionOutput final : public GAGCore::BinaryOutputStream {
+    public:
+        using BinaryOutputStream::BinaryOutputStream;
+        void writeSint32(Sint32 value,std::string_view name) override {
+            BinaryOutputStream::writeSint32(name=="versionMinor" ? 174 : value,name);
+        }
+    };
+    MapHeader current;
+    CHECK_THROWS_AS(current.applyLoadProfile(SaveLoadProfile::PrivateAdaptive174),std::runtime_error);
+    current.applyLoadProfile(SaveLoadProfile::Published);
+    auto* memory=new GAGCore::MemoryStreamBackend;HeaderVersionOutput out(memory);
+    current.save(&out);out.flush();
+    auto* copy=new GAGCore::MemoryStreamBackend(memory->getBuffer(),memory->getPosition());copy->seekFromStart(0);
+    GAGCore::BinaryInputStream in(copy);MapHeader old;
+    REQUIRE(old.load(&in));CHECK(old.loadingVersion()==174);CHECK_FALSE(old.privateAdaptive174);
+    old.applyLoadProfile(SaveLoadProfile::PrivateAdaptive174);
+    CHECK(old.getVersionMinor()==174);CHECK(old.loadingVersion()==173);CHECK(old.privateAdaptive174);
+    old.applyLoadProfile(SaveLoadProfile::Published);
+    CHECK(old.loadingVersion()==174);CHECK_FALSE(old.privateAdaptive174);
+    for (unsigned version:{173u,174u,175u}) CHECK_FALSE(hasAdaptiveGradientState(version));
+    CHECK(hasAdaptiveGradientState(FILE_FORMAT_VERSION_GRADIENT_DEMAND));
+    CHECK(hasAdaptiveGradientState(173,true));
+}
+TEST_CASE("map conversion preserves encoded construction until ordinary gameplay initializes it")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame source({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=source.game;
+    const int siteType=game.buildingsTypes.getTypeNum("swarm",0,true);
+    auto* site=game.addBuilding(20,20,siteType,0);REQUIRE(site);
+    REQUIRE(site->type->isBuildingSite);
+    site->constructionReserved=site->constructionBudget;
+    const auto gid=site->gid;
+    auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(memory);
+    game.save(&out,true,"conversion-construction-map");out.flush();
+    const auto bytes=memory->takeContents();
+    GameGUI preserved(false),ordinary(false);
+    const auto load=[&](Game& into,MapLoadInitialization initialization) {
+        auto* data=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());data->seekFromStart(0);
+        GAGCore::BinaryInputStream input(data);
+        return into.load(&input,SaveLoadProfile::Published,initialization);
+    };
+    REQUIRE(load(preserved.game,MapLoadInitialization::PreserveEncoded));
+    REQUIRE(load(ordinary.game,MapLoadInitialization::Normal));
+    auto* unchanged=preserved.game.teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+    auto* initialized=ordinary.game.teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+    REQUIRE(unchanged);REQUIRE(initialized);
+    CHECK(unchanged->typeNum==siteType);
+    CHECK(unchanged->constructionReserved==site->constructionReserved);
+    CHECK(initialized->typeNum!=siteType);
+    CHECK(preserved.game.stepCounter==game.stepCounter);
+}
 TEST_CASE("all natural visitation flags initialize and clear including reserved material slots")
 {
     glob2test::HeadlessGlobals globals;

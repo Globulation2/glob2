@@ -28,6 +28,14 @@ TEST_SUITE("CommandLine")
 				CHECK_FALSE(o.description.empty());
 		}
 	}
+    TEST_CASE("private save migration requires an explicit profile and input") {
+        const auto request=Cli::parse({"game","migrate","--input","private.game","--legacy-adaptive-174","--output-dir","artifacts/migration"});
+        CHECK(request.command=="game migrate");CHECK(request.has("--legacy-adaptive-174"));
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--input","private.game","--output-dir","artifacts/migration"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--legacy-adaptive-174","--output-dir","artifacts/migration"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","run","--legacy-adaptive-174"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--input","private.txt","--input-format","text","--legacy-adaptive-174","--output-dir","artifacts/migration"}),std::invalid_argument);
+    }
 	TEST_CASE("default launch groups URLs and help paths")
 	{
 		CHECK_EQ(Cli::parse(std::vector<std::string>{}).command, "play");

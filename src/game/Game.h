@@ -204,8 +204,8 @@ public:
 	virtual ~Game();
 
 	///Loads data from a stream
-	bool load(GAGCore::InputStream *stream);
-    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
 
 	//! Check some available integrity constraints
 	bool integrity(void);
@@ -269,8 +269,9 @@ public:
 	void cancelAI(unsigned player);
 	void drainAI();
     void drainHiring();
+    bool preparingBuildingGradient(const Building&, int slot) const;
     void saveHiring(GAGCore::OutputStream*);
-    void loadHiring(GAGCore::InputStream*);
+    void loadHiring(GAGCore::InputStream*, int versionMinor);
     Uint32 hiringChecksum() const;
     std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
     const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;

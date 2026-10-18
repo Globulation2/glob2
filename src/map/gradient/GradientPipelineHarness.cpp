@@ -1297,3 +1297,83 @@ TEST_CASE("malformed captured configurations decline and recover once" * doctest
     for(const auto& c:contexts){CHECK(c.field->phase.load()==OwnedGradientField::Phase::Complete);CHECK(c.field->data[0]==177);}
     service->stop();
 }
+
+TEST_CASE("building initialization deadlines overtake refreshes and survive pending saves" * doctest::test_suite("GradientPipeline"))
+{
+    for (unsigned workers : {0u,1u,3u,7u}) {
+        CAPTURE(workers);
+        TestBuildingPipeline original, restored;
+        original.configure(workers,8,[](auto&){});
+        std::vector<unsigned> published, resumed;
+        original.publish=[&](auto& job){published.push_back(job.payload.key);return true;};
+        original.advance();
+        auto* warm=original.reserve(8);warm->payload.key=8;
+        auto* initial=original.reserve(1);initial->payload.key=1;
+        TestBuildingPipelineBase::Job* staged[]={warm,initial};
+        original.prepare(staged);
+        CHECK(original.metrics.batches==2);
+        restored.configure(0,8,[](auto&){});
+        restored.publish=[&](auto& job){resumed.push_back(job.payload.key);return true;};
+        std::vector<unsigned> deadlines;
+        original.visitPending([&](auto& job,unsigned remaining){
+            deadlines.push_back(remaining);
+            restored.restoreCompleted(remaining,job.superseded,job.payload);
+        });
+        CHECK(deadlines==std::vector<unsigned>{1,8});
+        for(unsigned step=1;step<=8;++step) {
+            original.advance();restored.advance();
+            CHECK(published==resumed);
+            if(step<8) CHECK(published==std::vector<unsigned>{1});
+            else CHECK(published==std::vector<unsigned>{1,8});
+        }
+        original.reset();restored.reset();
+    }
+}
+
+TEST_CASE("mixed building deadlines retain bounded admission across the full executor horizon" * doctest::test_suite("GradientPipeline"))
+{
+    ComputeExecutor executor;executor.configure(8);
+    TestBuildingPipelineBase pipeline;
+    pipeline.configure(executor,8,[](auto&){});
+    unsigned published=0;
+    pipeline.publish=[&](auto&){++published;return true;};
+    for(unsigned tick=1;tick<=32;++tick) {
+        pipeline.advance();
+        TestBuildingPipelineBase::Job* staged[]={pipeline.reserve(8),pipeline.reserve(1)};
+        pipeline.prepare(staged);
+    }
+    for(unsigned tick=0;tick<8;++tick)pipeline.advance();
+    CHECK(published==64);
+    CHECK(pipeline.pendingCount()==0);
+    pipeline.reset();
+    pipeline.configure(executor,8,[](auto&){});pipeline.advance();
+    std::vector<TestBuildingPipelineBase::Job*> staged;
+    for(unsigned i=0;i<TestBuildingPipelineBase::MaxJobsPerTick;++i)staged.push_back(pipeline.reserve(8));
+    pipeline.prepare(staged);
+    for(unsigned tick=0;tick<7;++tick)pipeline.advance();
+    CHECK_FALSE(pipeline.canReserve(1));
+    CHECK(pipeline.canReserve(8));
+    CHECK_FALSE(pipeline.canReserve(9));
+    pipeline.finish();pipeline.reset();
+}
+
+TEST_CASE("an unfinished refresh batch cannot hold up an initial building field" * doctest::test_suite("GradientPipeline"))
+{
+    if(!GAGCore::ThreadSupport::available)return;
+    TestBuildingPipeline pipeline;
+    std::promise<void> warmStarted, releaseWarm, initialPublished;
+    auto release=releaseWarm.get_future().share();
+    auto initialDone=initialPublished.get_future();
+    std::atomic<bool> opened=false;
+    pipeline.configure(2,8,[&](auto& job){if(job.payload.key==8){warmStarted.set_value();release.wait();}});
+    pipeline.publish=[&](auto& job){if(job.payload.key==1){CHECK_FALSE(opened.load());initialPublished.set_value();}return true;};
+    pipeline.advance();
+    auto* warm=pipeline.reserve(8);warm->payload.key=8;
+    auto* initial=pipeline.reserve(1);initial->payload.key=1;
+    TestBuildingPipelineBase::Job* staged[]={warm,initial};pipeline.prepare(staged);
+    warmStarted.get_future().wait();
+    // Release on a failed implementation too, so a coupled batch fails instead
+    // of hanging the test runner.
+    std::thread opener([&]{initialDone.wait_for(std::chrono::milliseconds(200));opened=true;releaseWarm.set_value();});
+    pipeline.advance();opener.join();pipeline.finish();pipeline.reset();
+}

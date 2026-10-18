@@ -34,6 +34,8 @@
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
 #include <BinaryStream.h>
+#include <StreamBackend.h>
+#include "GameGUI.h"
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -276,6 +278,67 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 
 struct HeadlessRunner
 {
+    static int migrate(const Options& options,const fs::path& output)
+    {
+        if (one(options,"--legacy-adaptive-174","false")!="true")
+            throw std::invalid_argument("Migration requires explicit --legacy-adaptive-174");
+        const auto inputPath=fs::absolute(one(options,"--input"));
+        if (one(options,"--input").empty()) throw std::invalid_argument("Migration requires --input");
+        GlobalContainer globals(one(options,"--profile","glob2-save-migration").c_str(),one(options,"--building-catalog"));
+        globalContainer=&globals;globals.runNoX=true;globals.structuredHeadless=true;
+        for (const auto& directory:many(options,"--data-dir")) globals.fileManager->addDir(directory);
+        globals.load();
+        Online::Sha256 inputHash;
+        {
+            std::ifstream file(inputPath,std::ios::binary);if (!file) throw std::invalid_argument("Cannot read migration input");
+            std::array<char,65536> block;
+            while (file) {file.read(block.data(),block.size());inputHash.update(block.data(),file.gcount());}
+            if (!file.eof()) throw std::runtime_error("Failed reading migration input");
+        }
+        std::unique_ptr<GAGCore::StreamBackend> backend(glob2OpenMapOrSaveInputStreamBackend(*globals.fileManager,inputPath.string()));
+        if (!backend || !backend->isValid()) throw std::invalid_argument("Cannot open migration input");
+        auto input=std::make_unique<GAGCore::BinaryInputStream>(backend.release());
+        GameGUI loaded(false);
+        if (!loaded.load(input.get(),false,SaveLoadProfile::PrivateAdaptive174,MapLoadInitialization::PreserveEncoded))
+            throw std::runtime_error("Cannot decode private adaptive174 input");
+        if (!input->isEndOfStream()) throw std::invalid_argument("Migration input has trailing binary data");
+        const bool saved=loaded.game.mapHeader.getIsSavedGame();
+        const auto tick=loaded.game.stepCounter;
+        const auto mapName=loaded.game.mapHeader.getMapName();
+        const auto state=[](Game& game) {
+            std::vector<Uint32> world,buildings,units;
+            game.checkSum(&world,&buildings,&units,true);
+            if (!world.empty()) world.erase(world.begin()); // Saved-format identity only.
+            return std::array{world,buildings,units};
+        };
+        const auto original=state(loaded.game);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream encoded(memory);
+        if (saved) loaded.save(&encoded,mapName);
+        else loaded.game.save(&encoded,true,mapName);
+        encoded.flush();const auto bytes=memory->takeContents();
+        if (state(loaded.game)!=original) throw std::runtime_error("Serialization changed decoded simulation state");
+        GameGUI verified(false);
+        auto* copy=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());copy->seekFromStart(0);
+        GAGCore::BinaryInputStream reload(copy);
+        if (!verified.load(&reload,false,SaveLoadProfile::Published,MapLoadInitialization::PreserveEncoded) || verified.game.stepCounter!=tick
+            || verified.game.mapHeader.getIsSavedGame()!=saved || state(verified.game)!=original)
+            throw std::runtime_error("Migrated file did not preserve decoded simulation state");
+        const auto destination=output/(saved ? "migrated.game" : "migrated.map");
+        if (fs::exists(destination)) throw std::invalid_argument("Migration destination already exists");
+        const auto temporary=destination.string()+".tmp";
+        {std::ofstream file(temporary,std::ios::binary);file.write(bytes.data(),bytes.size());file.close();
+            if (!file) throw std::runtime_error("Cannot write migrated file");}
+        fs::rename(temporary,destination);
+        nlohmann::json result={{"schema_version",1},{"status","completed"},{"profile","private-adaptive-174"},
+            {"input",inputPath.string()},{"input_sha256",Online::Sha256::toHex(inputHash.finish())},
+            {"output",destination.filename().string()},{"output_sha256",Online::Sha256::hex(bytes)},
+            {"input_format","binary"},{"source_version",174},{"save_version",VERSION_MINOR},
+            {"tick",tick},{"ticks_advanced",0},{"map_initialization_deferred",!saved},{"is_saved_game",saved},{"map_name",mapName},
+            {"normalized_state",original},{"reload_state_equal",true}};
+        Headless::writeJson((output/"result.json").string(),result.dump(2));
+        return 0;
+    }
 	static int game(const Options &options, const fs::path &output)
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
@@ -759,7 +822,7 @@ struct HeadlessRunner
 int runHeadlessCommand(const Cli::Request &request)
 {
     const auto &command = request.command;
-    if(command!="info catalog" && command!="game run" && command!="map study"
+    if(command!="info catalog" && command!="game migrate" && command!="game run" && command!="map study"
         && command!="match verify" && command!="info sim-version" && command!="online turn-client" && command!="assets compose-buildings") return -1;
 	fs::path output;
 	try
@@ -903,7 +966,8 @@ int runHeadlessCommand(const Cli::Request &request)
 		if (fs::exists(output / "result.json"))
 			throw std::invalid_argument("output directory already contains a result");
 		int code;
-		if (command == "game run")
+        if (command=="game migrate") code=HeadlessRunner::migrate(options,output);
+        else if (command == "game run")
 		{
 			if (options.count("--generator"))
 			{

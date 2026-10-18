@@ -301,6 +301,10 @@ void constraints(const Request &r)
 		if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos)
 			throw std::invalid_argument("--videoshot requires a bare recording name");
 	}
+    if (r.command=="game migrate") {
+        if (!r.has("--input") || !r.has("--legacy-adaptive-174"))
+            throw std::invalid_argument("game migrate requires --input and --legacy-adaptive-174");
+    }
 	if (r.command == "game run")
 	{
 		const unsigned sources = r.has("--generator") + r.has("--map-file") + r.has("--load-game");
@@ -453,6 +457,11 @@ const std::vector<Command> &commands()
 			 integer("--phase", "Gallery phase", 0, 3, "0"),
 			 integer("--variation", "Gallery variation", 0, 3, "0")},
 			"Validation JSON and optional PNG");
+        auto migrate=profile();append(migrate,assets());
+        append(migrate,{value("--input","file","Private format174 map or saved game"),
+            flag("--legacy-adaptive-174","Explicitly select the private adaptive174 binary layout; never inferred")});
+        add("game migrate","Convert a private adaptive174 file without advancing simulation",{},0,migrate,
+            "migrated.map or migrated.game, result.json with provenance and verified state");
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());

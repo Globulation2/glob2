@@ -23,6 +23,39 @@ void Unit::waitForGradient()
 	movement=MOV_GOING_DX_DY;
 }
 
+void Unit::followPendingBuildingRoute(Building &building, BuildingRoute route)
+{
+	waitForGradient();
+	assert(!performance[FLY]);
+	if (!performance[WALK] && !performance[SWIM])
+		return;
+	const bool footprint = building.resolveRoute(route) == BuildingRoute::Footprint;
+	int headingX, headingY;
+	simplifyDirection((footprint ? building.getMidX() : building.posX) - posX,
+					  (footprint ? building.getMidY() : building.posY) - posY, &headingX,
+					  &headingY);
+	if (!headingX && !headingY)
+		return;
+	const int preferred = Unit::directionFromDxDy(headingX, headingY);
+	const int access = swimClass();
+	// Match flyToTarget's preference order, but respect ground occupancy and terrain.
+	for (const int offset : {0, 1, 7, 2, 6, 3, 5, 4})
+	{
+		const int candidate = (preferred + offset) & UNIT_DIRECTION_MASK;
+		int stepX, stepY;
+		Unit::dxDyFromDirection(candidate, &stepX, &stepY);
+		if ((access == WATER_ONLY_CLASS &&
+			 !owner->map->terrainPropertiesAt(posX + stepX, posY + stepY).swimmable) ||
+			!owner->map->isFreeForGroundUnit(posX + stepX, posY + stepY, performance[SWIM] > 0,
+											 owner->me))
+			continue;
+		dx = Sint8(stepX);
+		dy = Sint8(stepY);
+		direction = candidate;
+		return;
+	}
+}
+
 void Unit::handleMovement(void)
 {
 	gradientDecisionPending=false;
@@ -470,6 +503,10 @@ void Unit::handleMovementClearingResources()
         bool source=validTarget() && map->warpDistSquare(targetX,targetY,bx,by)<=usr2
             && map->isClearableResourceForMaterials(targetX,targetY,attachedBuilding->clearingMaterialMask);
         if (!source) {
+            if (map->requestBuildingField(attachedBuilding,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing)==FieldReadiness::Pending) {
+                waitForGradient();
+                return;
+            }
             const auto* field=map->buildingGradient(attachedBuilding,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
             source=field && map->getGlobalGradientDestination(field,posX,posY,&targetX,&targetY);
         }
@@ -478,13 +515,19 @@ void Unit::handleMovementClearingResources()
         else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
         return;
     }
-	// Commit displacement only on success, including for synchronous routes.
-	const auto route = findGradientDisplacement([&](int* pathDx, int* pathDy) {
-		return map->pathfindBuilding(entityRandom, attachedBuilding, movementClass(), posX, posY,
-			pathDx, pathDy, BuildingRoute::Clearing) ? StepResult::Step : StepResult::Blocked;
-	});
-	if (route == StepResult::Step)
-
+	const auto route = findGradientDisplacement(
+		[&](int *pathDx, int *pathDy)
+		{
+			return map->queryBuildingStep(entityRandom, attachedBuilding, movementClass(), posX, posY,
+										  pathDx, pathDy, BuildingRoute::Clearing);
+		});
+	if (route == StepResult::Pending)
+	{
+        if (performance[FLY]) waitForGradient();
+        else followPendingBuildingRoute(*attachedBuilding, BuildingRoute::Clearing);
+		return;
+	}
+	if (route==StepResult::Step)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -609,13 +652,27 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	}
 	else
 	{
-		const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) {
-			return map->pathfindBuilding(entityRandom, targetBuilding, movementClass(), posX, posY, pathDx, pathDy,
-				activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint) ? StepResult::Step : StepResult::Blocked;
-		});
-		if (result == StepResult::Step) movement=MOV_GOING_DX_DY;
-		else { stopAttachedForBuilding(true); movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND; }
-
+		const auto route = activity == ACT_FLAG
+							   ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing
+																	  : BuildingRoute::Combat)
+							   : BuildingRoute::Footprint;
+		const auto result = findGradientDisplacement(
+			[&](int *pathDx, int *pathDy)
+			{
+				return map->queryBuildingStep(entityRandom, targetBuilding, movementClass(), posX, posY,
+											  pathDx, pathDy, route);
+			});
+		if (result == StepResult::Pending) {
+            if (performance[FLY]) waitForGradient();
+            else followPendingBuildingRoute(*targetBuilding, route);
+        }
+		else if (result == StepResult::Step)
+			movement = MOV_GOING_DX_DY;
+		else
+		{
+			stopAttachedForBuilding(true);
+			movement = performance[FLY] ? MOV_RANDOM_FLY : MOV_RANDOM_GROUND;
+		}
 	}
 }
 

@@ -49,6 +49,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <functional>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <numeric>
@@ -56,6 +57,9 @@
 #include <optional>
 #include <nlohmann/json.hpp>
 #include <unistd.h>
+#if defined(__APPLE__) || defined(__linux__)
+#include <pthread.h>
+#endif
 
 namespace
 {
@@ -2747,6 +2751,43 @@ TEST_SUITE("CustomGameSetup")
 		checkPreviewRestart();
 		std::cout << "PASS preview restart joins superseded workers safely\n";
 	}
+#if defined(__APPLE__) || defined(__linux__)
+	TEST_CASE("Comb preview fits a 512 KiB worker stack")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		struct Work
+		{
+			GenerationRequest request;
+			LandscapePreviewer::Preview preview;
+			std::exception_ptr error;
+		} work;
+		work.request.setMethodDefaults(GeneratorRegistry::builtins().idOf("comb"));
+		work.request.wDec = work.request.hDec = 8;
+		work.request.nbTeams = 2;
+		const auto expected = LandscapePreviewer::roll(work.request, 42);
+		REQUIRE(expected.state == LandscapePreviewer::State::Ready);
+		pthread_attr_t attributes;
+		REQUIRE(pthread_attr_init(&attributes) == 0);
+		const auto stackResult = pthread_attr_setstacksize(&attributes, 512 * 1024);
+		if (stackResult != 0) pthread_attr_destroy(&attributes);
+		REQUIRE(stackResult == 0);
+		pthread_t thread;
+		const auto started = pthread_create(&thread, &attributes, [](void *argument) -> void * {
+			auto &work = *static_cast<Work *>(argument);
+			try { work.preview = LandscapePreviewer::roll(work.request, 42); }
+			catch (...) { work.error = std::current_exception(); }
+			return nullptr;
+		}, &work);
+		pthread_attr_destroy(&attributes);
+		REQUIRE(started == 0);
+		REQUIRE(pthread_join(thread, nullptr) == 0);
+		if (work.error) std::rethrow_exception(work.error);
+		REQUIRE(work.preview.state == LandscapePreviewer::State::Ready);
+		CHECK(work.preview.seed == expected.seed);
+		CHECK(work.preview.score == expected.score);
+		CHECK(work.preview.thumbnail.pixels()->rgb == expected.thumbnail.pixels()->rgb);
+	}
+#endif
 	TEST_CASE("landscape preview performance [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));
