@@ -1,0 +1,30 @@
+{
+  "before": {
+    "source": "df25376f8",
+    "binary_sha256": "d6f1f935c954541594595cd15897c0d45e949a379293035314c39f07efc490e1",
+    "ticks": 38912,
+    "finalChecksum": 1468087721,
+    "gradient_jobs": 12022,
+    "sampled_queries": 853,
+    "mean": {
+      "extra_cost": 1.6318874560375147,
+      "flagged": 0.17702227432590856,
+      "false_unreachable": 0.0011723329425556857,
+      "false_reachable": 0.03985932004689332
+    }
+  },
+  "fixed": {
+    "source": "2bb153e24",
+    "binary_sha256": "92bb64f55d447fd85dc407278330e860cc96c48edaca8b370230cce3bb42a2da",
+    "ticks": 38912,
+    "finalChecksum": 13526470,
+    "gradient_jobs": 9406,
+    "sampled_queries": 879,
+    "mean": {
+      "extra_cost": 1.7360637087599544,
+      "flagged": 0.149032992036405,
+      "false_unreachable": 0.0022753128555176336,
+      "false_reachable": 0.005688282138794084
+    }
+  }
+}

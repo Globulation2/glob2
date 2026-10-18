@@ -1,0 +1,17 @@
+{
+  "fix-mac-evidence.tar.gz": "b31726fbb28743d6a4d3708be1185d0be0ab122dd811ad1d4185d2bffecfc9be",
+  "research-evidence.tar.gz": "7f908cda789f9915eda8d5da28f7265d08fedcb204801af3b941bec8a616eac8",
+  "fix-quality-summary.json": "04b765cddeec1051447e273fe92f0294e54bd8d2fa724dbf5edd7f2fa294bb43",
+  "no-cap-analysis.json": "d3b339223df6e94023a3fd6450a0f7b1423f6dfa8f72e71f177f0902b2d9da9e",
+  "no-cap-independent-review.md": "6f0906852b8f9691969751d35f1a64b46d339bd5bf7984045875fb93a4fa7625",
+  "README.md": "0eb36a7a2634591434add0a1007fac0bae1cbe16d9cbd7754e7025e8fca15a80",
+  "controlled-analysis.json": "da99b5ae8e9bf4783578711e666ccc0e08ec0a1f6c80f2171623234d79190030",
+  "negative-followup-analysis.json": "85164a7df707bfc840eb6239ce9d203657e48df2ff0dda231522c31f5f10843d",
+  "no-cap-aging.png": "f3c4c0c1986b9cb1b43242d3d9a385fa37873c5c972144c401fc9d11594a2bc3",
+  "independent-research-review.md": "f2f128c3f11888ca444c8883ca67ed0a623fa9274be6832b0a9b7e0026550a6e",
+  "no-cap-aging.svg": "e130b3980288706ea389e5c29916f8e32f053f835daabedf374046e7d5b9c75b",
+  "plot-report.py": "5bef82a18e4dabd187607ee993232b7596bfd7ff2be81cb1193b2580a236f182",
+  "fix-cross-platform.json": "617a079b8bac38c0cd73f0859f2d2fe50f8fc49746784facd232b33dc4983472",
+  "fix-linux-evidence.tar.gz": "86c9dc93b836f38f85cba1fabe0eecf1c7796a5a01509740ace045f7691ecd0e",
+  "training-age-coverage.json": "8a18c4e9c6fdd686c90c2a36a12bd2b131542058e356874f31014b7f89d66e07"
+}

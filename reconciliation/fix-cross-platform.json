@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "source": "2bb153e249d7e6612c57f6cd3a380312e480c4c4",
+  "ticks": 4096,
+  "variants": [
+    "Mac ARM64 1thread",
+    "Mac ARM64 4threads",
+    "Mac ARM64 probe",
+    "Linux x86_64 1thread",
+    "Linux x86_64 4threads",
+    "Linux x86_64 probe"
+  ],
+  "vectors": {
+    "world.checksums": "e59333c304101b48507291942f19b398672ff8c5800bd67949b69ac9b5205213",
+    "snapshot.checksums": "16cf583d26b2a4ade3c4ed27f86e243ce3670c6f2418686d231daa563cc532e2",
+    "game.replay.checksums": "0e9f55dfd206b244f320d90d86a7bd8368b8b9fafae82559171de253c36b00d1"
+  },
+  "old173_to174": {
+    "status": "passed",
+    "hashes": {
+      "released173": {
+        "world.checksums": "39a3860ba7ebb4297f2029804699fe6d58a4dbffa530ed8c759598085d8b9d68",
+        "snapshot.checksums": "31e819e76f6e9193983e58c601ad32688936ebd0c800666e000a4e278c86e4f7",
+        "game.replay.checksums": "c79e783c49426c2abe86bba7801649b9637c368afde2325a8d952cdbcd1a8c66"
+      },
+      "resaved174": {
+        "world.checksums": "34c424cebdaf481033913b9325378e2a8e97e3b48c51e90c03aecb8c23240a4e",
+        "snapshot.checksums": "0f85ad774dec21f312616fc7dc96de9b1f35d473793ebf6c0442e5eba0328b54",
+        "game.replay.checksums": "df9ea37e35de7684cb477930483b6e20ab9c7463f2a4d5459bebf607ee58c993"
+      }
+    }
+  },
+  "save_resume": "Matched174headers: 2048plus overlapping world/snapshot exact on both hosts"
+}

@@ -1,0 +1,2348 @@
+{
+  "all": {
+    "all": {
+      "population": {
+        "episodes": 476107,
+        "raw_pct": 100.0,
+        "balanced_pct": 100.0,
+        "mean_future_queries_raw": 5.228242810964762,
+        "mean_future_queries_balanced": 4.307716690595484,
+        "positive_target_raw_pct": 13.451598065140818,
+        "mean_target_balanced": 3.1746226542516363,
+        "max_age": 1053
+      },
+      "age_above": {
+        "128": {
+          "episodes": 45661,
+          "raw_pct": 9.590491213109658,
+          "balanced_pct": 11.577413869848314,
+          "mean_future_queries_raw": 0.7412890650664681,
+          "mean_future_queries_balanced": 0.716253641881981,
+          "positive_target_raw_pct": 5.372199470007227,
+          "mean_target_balanced": 1.075048477471417,
+          "max_age": 1053
+        },
+        "136": {
+          "episodes": 37062,
+          "raw_pct": 7.78438460262084,
+          "balanced_pct": 9.580074467330324,
+          "mean_future_queries_raw": 0.5926015865306783,
+          "mean_future_queries_balanced": 0.6027364783739788,
+          "positive_target_raw_pct": 4.311693918299066,
+          "mean_target_balanced": 0.9756847309725846,
+          "max_age": 1053
+        },
+        "144": {
+          "episodes": 31857,
+          "raw_pct": 6.691142957360425,
+          "balanced_pct": 8.328177647923654,
+          "mean_future_queries_raw": 0.5722761088614747,
+          "mean_future_queries_balanced": 0.5872355742616037,
+          "positive_target_raw_pct": 4.061901622877233,
+          "mean_target_balanced": 1.0110175843693234,
+          "max_age": 1053
+        },
+        "256": {
+          "episodes": 6693,
+          "raw_pct": 1.4057764326086364,
+          "balanced_pct": 1.751502988853039,
+          "mean_future_queries_raw": 1.5971910951740624,
+          "mean_future_queries_balanced": 1.7174185796444967,
+          "positive_target_raw_pct": 10.802330793366204,
+          "mean_target_balanced": 3.993756945498407,
+          "max_age": 1053
+        },
+        "512": {
+          "episodes": 1339,
+          "raw_pct": 0.281239301249509,
+          "balanced_pct": 0.341363903142633,
+          "mean_future_queries_raw": 1.6235997012696042,
+          "mean_future_queries_balanced": 2.3628829826504285,
+          "positive_target_raw_pct": 11.725168035847648,
+          "mean_target_balanced": 14.990635303981664,
+          "max_age": 1053
+        },
+        "1024": {
+          "episodes": 7,
+          "raw_pct": 0.0014702577361811525,
+          "balanced_pct": 0.001839906324442259,
+          "mean_future_queries_raw": 1.5714285714285714,
+          "mean_future_queries_balanced": 1.216112945252753,
+          "positive_target_raw_pct": 14.285714285714285,
+          "mean_target_balanced": 1.086744355894001,
+          "max_age": 1053
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_zero": {
+      "population": {
+        "episodes": 432,
+        "raw_pct": 0.09073590600432256,
+        "balanced_pct": 0.11760645828363951,
+        "mean_future_queries_raw": 0.13194444444444445,
+        "mean_future_queries_balanced": 0.09192271757503231,
+        "positive_target_raw_pct": 0.6944444444444444,
+        "mean_target_balanced": -0.003931168373303157,
+        "max_age": 253
+      },
+      "age_above": {
+        "128": {
+          "episodes": 351,
+          "raw_pct": 81.25,
+          "balanced_pct": 83.43673780732681,
+          "mean_future_queries_raw": 0.14814814814814814,
+          "mean_future_queries_balanced": 0.10376766902761947,
+          "positive_target_raw_pct": 0.5698005698005698,
+          "mean_target_balanced": -0.012385176894918786,
+          "max_age": 253
+        },
+        "136": {
+          "episodes": 347,
+          "raw_pct": 80.32407407407408,
+          "balanced_pct": 82.89125835305067,
+          "mean_future_queries_raw": 0.14985590778097982,
+          "mean_future_queries_balanced": 0.104450529109579,
+          "positive_target_raw_pct": 0.5763688760806917,
+          "mean_target_balanced": -0.01246667957286076,
+          "max_age": 253
+        },
+        "144": {
+          "episodes": 314,
+          "raw_pct": 72.68518518518519,
+          "balanced_pct": 69.62378970927887,
+          "mean_future_queries_raw": 0.14331210191082802,
+          "mean_future_queries_balanced": 0.10789212108140513,
+          "positive_target_raw_pct": 0.6369426751592357,
+          "mean_target_balanced": -0.014842322740455202,
+          "max_age": 253
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge1": {
+      "population": {
+        "episodes": 475675,
+        "raw_pct": 99.90926409399567,
+        "balanced_pct": 99.88239354171635,
+        "mean_future_queries_raw": 5.232871183055658,
+        "mean_future_queries_balanced": 4.312680574423652,
+        "positive_target_raw_pct": 13.463183896568035,
+        "mean_target_balanced": 3.1783652403500233,
+        "max_age": 1053
+      },
+      "age_above": {
+        "128": {
+          "episodes": 45310,
+          "raw_pct": 9.525411257686445,
+          "balanced_pct": 11.492803156355412,
+          "mean_future_queries_raw": 0.74588391083646,
+          "mean_future_queries_balanced": 0.7214892812512028,
+          "positive_target_raw_pct": 5.409401898035754,
+          "mean_target_balanced": 1.0843440543573402,
+          "max_age": 1053
+        },
+        "136": {
+          "episodes": 36715,
+          "raw_pct": 7.7185052819677304,
+          "balanced_pct": 9.493754262300603,
+          "mean_future_queries_raw": 0.5967860547460166,
+          "mean_future_queries_balanced": 0.6078590922055832,
+          "positive_target_raw_pct": 4.34699714013346,
+          "mean_target_balanced": 0.9858433920603639,
+          "max_age": 1053
+        },
+        "144": {
+          "episodes": 31543,
+          "raw_pct": 6.631208282966311,
+          "balanced_pct": 8.256005169999872,
+          "mean_future_queries_raw": 0.5765463018736329,
+          "mean_future_queries_balanced": 0.5919952430565856,
+          "positive_target_raw_pct": 4.095995942047364,
+          "mean_target_balanced": 1.0212039201907452,
+          "max_age": 1053
+        },
+        "256": {
+          "episodes": 6693,
+          "raw_pct": 1.4070531350186577,
+          "balanced_pct": 1.7535652948900506,
+          "mean_future_queries_raw": 1.5971910951740624,
+          "mean_future_queries_balanced": 1.7174185796444967,
+          "positive_target_raw_pct": 10.802330793366204,
+          "mean_target_balanced": 3.993756945498407,
+          "max_age": 1053
+        },
+        "512": {
+          "episodes": 1339,
+          "raw_pct": 0.28149471803226994,
+          "balanced_pct": 0.34176584184485,
+          "mean_future_queries_raw": 1.6235997012696042,
+          "mean_future_queries_balanced": 2.3628829826504285,
+          "positive_target_raw_pct": 11.725168035847648,
+          "mean_target_balanced": 14.990635303981664,
+          "max_age": 1053
+        },
+        "1024": {
+          "episodes": 7,
+          "raw_pct": 0.0014715929994218741,
+          "balanced_pct": 0.0018420727209283521,
+          "mean_future_queries_raw": 1.5714285714285714,
+          "mean_future_queries_balanced": 1.216112945252753,
+          "positive_target_raw_pct": 14.285714285714285,
+          "mean_target_balanced": 1.086744355894001,
+          "max_age": 1053
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge8": {
+      "population": {
+        "episodes": 325313,
+        "raw_pct": 68.32770784718561,
+        "balanced_pct": 62.803495112066344,
+        "mean_future_queries_raw": 7.251093562200096,
+        "mean_future_queries_balanced": 6.372766709139853,
+        "positive_target_raw_pct": 18.010039561898846,
+        "mean_target_balanced": 4.788428673380055,
+        "max_age": 206
+      },
+      "age_above": {
+        "128": {
+          "episodes": 6960,
+          "raw_pct": 2.1394779796688113,
+          "balanced_pct": 2.4423521608378556,
+          "mean_future_queries_raw": 1.744683908045977,
+          "mean_future_queries_balanced": 1.6752030323635732,
+          "positive_target_raw_pct": 12.873563218390805,
+          "mean_target_balanced": 2.2504845331984256,
+          "max_age": 206
+        },
+        "136": {
+          "episodes": 2797,
+          "raw_pct": 0.8597873432663312,
+          "balanced_pct": 1.0263553304262052,
+          "mean_future_queries_raw": 0.9452985341437254,
+          "mean_future_queries_balanced": 0.9172415370387658,
+          "positive_target_raw_pct": 8.044333214158026,
+          "mean_target_balanced": 1.2040959215116598,
+          "max_age": 206
+        },
+        "144": {
+          "episodes": 1301,
+          "raw_pct": 0.3999225361421154,
+          "balanced_pct": 0.49126637836577103,
+          "mean_future_queries_raw": 0.3674096848578017,
+          "mean_future_queries_balanced": 0.30284966845657957,
+          "positive_target_raw_pct": 3.843197540353574,
+          "mean_target_balanced": 0.42875888398503614,
+          "max_age": 206
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge32": {
+      "population": {
+        "episodes": 111323,
+        "raw_pct": 23.38192885212778,
+        "balanced_pct": 19.080712306517324,
+        "mean_future_queries_raw": 15.774817423174007,
+        "mean_future_queries_balanced": 14.659936205735178,
+        "positive_target_raw_pct": 29.925532010456063,
+        "mean_target_balanced": 11.545854200536699,
+        "max_age": 155
+      },
+      "age_above": {
+        "128": {
+          "episodes": 256,
+          "raw_pct": 0.22996146348912624,
+          "balanced_pct": 0.2999653220456463,
+          "mean_future_queries_raw": 6.58984375,
+          "mean_future_queries_balanced": 6.302036191090054,
+          "positive_target_raw_pct": 37.890625,
+          "mean_target_balanced": 12.479880019996541,
+          "max_age": 155
+        },
+        "136": {
+          "episodes": 25,
+          "raw_pct": 0.022457174168859985,
+          "balanced_pct": 0.028155172702620707,
+          "mean_future_queries_raw": 4.36,
+          "mean_future_queries_balanced": 4.0249242820824715,
+          "positive_target_raw_pct": 32.0,
+          "mean_target_balanced": 18.343450764981657,
+          "max_age": 155
+        },
+        "144": {
+          "episodes": 4,
+          "raw_pct": 0.0035931478670175976,
+          "balanced_pct": 0.005313409838109058,
+          "mean_future_queries_raw": 1.25,
+          "mean_future_queries_balanced": 0.7772702179621197,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": 0.0,
+          "max_age": 155
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge128": {
+      "population": {
+        "episodes": 16147,
+        "raw_pct": 3.39146452373101,
+        "balanced_pct": 2.3129252207830873,
+        "mean_future_queries_raw": 45.736545488326,
+        "mean_future_queries_balanced": 46.58659463261341,
+        "positive_target_raw_pct": 35.412150863937576,
+        "mean_target_balanced": 27.25094472504961,
+        "max_age": 128
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge8": {
+      "population": {
+        "episodes": 115246,
+        "raw_pct": 24.205903294847587,
+        "balanced_pct": 19.972535667695492,
+        "mean_future_queries_raw": 15.547489717647467,
+        "mean_future_queries_balanced": 14.411763773052233,
+        "positive_target_raw_pct": 29.609704458289226,
+        "mean_target_balanced": 11.236179108764535,
+        "max_age": 140
+      },
+      "age_above": {
+        "128": {
+          "episodes": 200,
+          "raw_pct": 0.17354181490030024,
+          "balanced_pct": 0.1949745213655975,
+          "mean_future_queries_raw": 7.63,
+          "mean_future_queries_balanced": 7.635607433746576,
+          "positive_target_raw_pct": 39.5,
+          "mean_target_balanced": 13.79091355675647,
+          "max_age": 140
+        },
+        "136": {
+          "episodes": 7,
+          "raw_pct": 0.006073963521510508,
+          "balanced_pct": 0.006142587573885272,
+          "mean_future_queries_raw": 7.571428571428571,
+          "mean_future_queries_balanced": 8.023161478550083,
+          "positive_target_raw_pct": 14.285714285714285,
+          "mean_target_balanced": -5.4593941046050745,
+          "max_age": 140
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge32": {
+      "population": {
+        "episodes": 15925,
+        "raw_pct": 3.344836349812122,
+        "balanced_pct": 2.271243601231253,
+        "mean_future_queries_raw": 46.26021978021978,
+        "mean_future_queries_balanced": 47.20650791746351,
+        "positive_target_raw_pct": 34.63736263736264,
+        "mean_target_balanced": 27.005604571907842,
+        "max_age": 125
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge128": {
+      "population": {
+        "episodes": 1115,
+        "raw_pct": 0.23419105369171217,
+        "balanced_pct": 0.1823266742816203,
+        "mean_future_queries_raw": 140.6780269058296,
+        "mean_future_queries_balanced": 143.91998946264346,
+        "positive_target_raw_pct": 55.964125560538115,
+        "mean_target_balanced": 117.9705544173482,
+        "max_age": 8
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    }
+  },
+  "development": {
+    "all": {
+      "population": {
+        "episodes": 356101,
+        "raw_pct": 100.0,
+        "balanced_pct": 100.0,
+        "mean_future_queries_raw": 5.2997829267539265,
+        "mean_future_queries_balanced": 4.426793073283487,
+        "positive_target_raw_pct": 13.495047753305943,
+        "mean_target_balanced": 3.170064547875604,
+        "max_age": 1053
+      },
+      "age_above": {
+        "128": {
+          "episodes": 33744,
+          "raw_pct": 9.475963280080652,
+          "balanced_pct": 11.387213524017687,
+          "mean_future_queries_raw": 0.7441619250829777,
+          "mean_future_queries_balanced": 0.7402345996208877,
+          "positive_target_raw_pct": 5.375770507349455,
+          "mean_target_balanced": 1.200744793845041,
+          "max_age": 1053
+        },
+        "136": {
+          "episodes": 27354,
+          "raw_pct": 7.6815285551009405,
+          "balanced_pct": 9.441573881153737,
+          "mean_future_queries_raw": 0.5923448124588726,
+          "mean_future_queries_balanced": 0.6249456317629082,
+          "positive_target_raw_pct": 4.3357461431600495,
+          "mean_target_balanced": 1.1373907205261036,
+          "max_age": 1053
+        },
+        "144": {
+          "episodes": 23438,
+          "raw_pct": 6.5818405452385695,
+          "balanced_pct": 8.160847685554536,
+          "mean_future_queries_raw": 0.5723184572062463,
+          "mean_future_queries_balanced": 0.6144819506174591,
+          "positive_target_raw_pct": 4.100179196177148,
+          "mean_target_balanced": 1.2393517733289856,
+          "max_age": 1053
+        },
+        "256": {
+          "episodes": 4873,
+          "raw_pct": 1.3684319898006465,
+          "balanced_pct": 1.7440771340013195,
+          "mean_future_queries_raw": 1.612764210958342,
+          "mean_future_queries_balanced": 1.7801164339252842,
+          "positive_target_raw_pct": 11.060948081264108,
+          "mean_target_balanced": 4.92664907655707,
+          "max_age": 1053
+        },
+        "512": {
+          "episodes": 978,
+          "raw_pct": 0.2746411832598055,
+          "balanced_pct": 0.3426121549607129,
+          "mean_future_queries_raw": 1.6451942740286298,
+          "mean_future_queries_balanced": 2.6570576967743262,
+          "positive_target_raw_pct": 12.065439672801636,
+          "mean_target_balanced": 19.594791222579886,
+          "max_age": 1053
+        },
+        "1024": {
+          "episodes": 6,
+          "raw_pct": 0.0016849152347227332,
+          "balanced_pct": 0.0023919669554570405,
+          "mean_future_queries_raw": 1.6666666666666667,
+          "mean_future_queries_balanced": 1.22224391455244,
+          "positive_target_raw_pct": 16.666666666666664,
+          "mean_target_balanced": 1.1175745140541318,
+          "max_age": 1053
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_zero": {
+      "population": {
+        "episodes": 307,
+        "raw_pct": 0.08621149617664652,
+        "balanced_pct": 0.11434545394899366,
+        "mean_future_queries_raw": 0.13029315960912052,
+        "mean_future_queries_balanced": 0.07902893537847501,
+        "positive_target_raw_pct": 0.6514657980456027,
+        "mean_target_balanced": 0.010312308980297195,
+        "max_age": 253
+      },
+      "age_above": {
+        "128": {
+          "episodes": 253,
+          "raw_pct": 82.41042345276873,
+          "balanced_pct": 85.11278354560903,
+          "mean_future_queries_raw": 0.14624505928853754,
+          "mean_future_queries_balanced": 0.09010204270435385,
+          "positive_target_raw_pct": 0.7905138339920948,
+          "mean_target_balanced": 0.012116051844046648,
+          "max_age": 253
+        },
+        "136": {
+          "episodes": 252,
+          "raw_pct": 82.08469055374593,
+          "balanced_pct": 85.03313240441769,
+          "mean_future_queries_raw": 0.14682539682539683,
+          "mean_future_queries_balanced": 0.09018644192995147,
+          "positive_target_raw_pct": 0.7936507936507936,
+          "mean_target_balanced": 0.01212740103616534,
+          "max_age": 253
+        },
+        "144": {
+          "episodes": 227,
+          "raw_pct": 73.9413680781759,
+          "balanced_pct": 67.94124739528888,
+          "mean_future_queries_raw": 0.14096916299559473,
+          "mean_future_queries_balanced": 0.09698231382925833,
+          "positive_target_raw_pct": 0.881057268722467,
+          "mean_target_balanced": 0.015178274429227303,
+          "max_age": 253
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge1": {
+      "population": {
+        "episodes": 355794,
+        "raw_pct": 99.91378850382335,
+        "balanced_pct": 99.885654546051,
+        "mean_future_queries_raw": 5.3042434667251275,
+        "mean_future_queries_balanced": 4.431770235081858,
+        "positive_target_raw_pct": 13.506129951601206,
+        "mean_target_balanced": 3.173681716985271,
+        "max_age": 1053
+      },
+      "age_above": {
+        "128": {
+          "episodes": 33491,
+          "raw_pct": 9.413031135994423,
+          "balanced_pct": 11.302815180631145,
+          "mean_future_queries_raw": 0.7486787495147951,
+          "mean_future_queries_balanced": 0.7458389575696246,
+          "positive_target_raw_pct": 5.410408766534293,
+          "mean_target_balanced": 1.2109911672460667,
+          "max_age": 1053
+        },
+        "136": {
+          "episodes": 27102,
+          "raw_pct": 7.617329128653097,
+          "balanced_pct": 9.355039422193274,
+          "mean_future_queries_raw": 0.596487344107446,
+          "mean_future_queries_balanced": 0.6305100093862733,
+          "positive_target_raw_pct": 4.368681278134455,
+          "mean_target_balanced": 1.1490995235806511,
+          "max_age": 1053
+        },
+        "144": {
+          "episodes": 23211,
+          "raw_pct": 6.5237187810924295,
+          "balanced_pct": 8.092413264484488,
+          "mean_future_queries_raw": 0.5765369867735125,
+          "mean_future_queries_balanced": 0.6194556701906004,
+          "positive_target_raw_pct": 4.131661712119254,
+          "mean_target_balanced": 1.2511173771276418,
+          "max_age": 1053
+        },
+        "256": {
+          "episodes": 4873,
+          "raw_pct": 1.3696127534472196,
+          "balanced_pct": 1.7460736898883067,
+          "mean_future_queries_raw": 1.612764210958342,
+          "mean_future_queries_balanced": 1.7801164339252842,
+          "positive_target_raw_pct": 11.060948081264108,
+          "mean_target_balanced": 4.92664907655707,
+          "max_age": 1053
+        },
+        "512": {
+          "episodes": 978,
+          "raw_pct": 0.2748781598340613,
+          "balanced_pct": 0.34300436485877556,
+          "mean_future_queries_raw": 1.6451942740286298,
+          "mean_future_queries_balanced": 2.6570576967743262,
+          "positive_target_raw_pct": 12.065439672801636,
+          "mean_target_balanced": 19.594791222579886,
+          "max_age": 1053
+        },
+        "1024": {
+          "episodes": 6,
+          "raw_pct": 0.0016863690787365722,
+          "balanced_pct": 0.00239470519197955,
+          "mean_future_queries_raw": 1.6666666666666667,
+          "mean_future_queries_balanced": 1.22224391455244,
+          "positive_target_raw_pct": 16.666666666666664,
+          "mean_target_balanced": 1.1175745140541318,
+          "max_age": 1053
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge8": {
+      "population": {
+        "episodes": 245014,
+        "raw_pct": 68.80463688672596,
+        "balanced_pct": 62.962646803135094,
+        "mean_future_queries_raw": 7.308586448121332,
+        "mean_future_queries_balanced": 6.54293190306911,
+        "positive_target_raw_pct": 17.9699935513889,
+        "mean_target_balanced": 4.744602548508886,
+        "max_age": 205
+      },
+      "age_above": {
+        "128": {
+          "episodes": 5215,
+          "raw_pct": 2.1284498028684076,
+          "balanced_pct": 2.396692609642413,
+          "mean_future_queries_raw": 1.7463087248322147,
+          "mean_future_queries_balanced": 1.7318136187106585,
+          "positive_target_raw_pct": 12.674976030680728,
+          "mean_target_balanced": 2.059310912750085,
+          "max_age": 205
+        },
+        "136": {
+          "episodes": 2079,
+          "raw_pct": 0.8485229415461973,
+          "balanced_pct": 0.9867563934536883,
+          "mean_future_queries_raw": 0.9417989417989417,
+          "mean_future_queries_balanced": 0.942525035370488,
+          "positive_target_raw_pct": 8.032708032708033,
+          "mean_target_balanced": 0.8476089683753002,
+          "max_age": 205
+        },
+        "144": {
+          "episodes": 950,
+          "raw_pct": 0.38773294587248075,
+          "balanced_pct": 0.4243816536176264,
+          "mean_future_queries_raw": 0.37684210526315787,
+          "mean_future_queries_balanced": 0.3711665851984345,
+          "positive_target_raw_pct": 4.631578947368421,
+          "mean_target_balanced": 0.6305535636194651,
+          "max_age": 205
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge32": {
+      "population": {
+        "episodes": 84218,
+        "raw_pct": 23.650031872979856,
+        "balanced_pct": 19.454189755782792,
+        "mean_future_queries_raw": 15.857761998622623,
+        "mean_future_queries_balanced": 14.988579559499206,
+        "positive_target_raw_pct": 30.071956113894892,
+        "mean_target_balanced": 11.384279747470112,
+        "max_age": 146
+      },
+      "age_above": {
+        "128": {
+          "episodes": 196,
+          "raw_pct": 0.23272934527060724,
+          "balanced_pct": 0.29678052347178324,
+          "mean_future_queries_raw": 6.642857142857143,
+          "mean_future_queries_balanced": 6.216046926225968,
+          "positive_target_raw_pct": 36.734693877551024,
+          "mean_target_balanced": 12.803806474446981,
+          "max_age": 146
+        },
+        "136": {
+          "episodes": 18,
+          "raw_pct": 0.02137310313709658,
+          "balanced_pct": 0.018086666451978727,
+          "mean_future_queries_raw": 4.388888888888889,
+          "mean_future_queries_balanced": 4.204794705886194,
+          "positive_target_raw_pct": 27.77777777777778,
+          "mean_target_balanced": 5.208858196246172,
+          "max_age": 146
+        },
+        "144": {
+          "episodes": 2,
+          "raw_pct": 0.0023747892374551757,
+          "balanced_pct": 0.0011393750609214827,
+          "mean_future_queries_raw": 1.5,
+          "mean_future_queries_balanced": 2.243879020643303,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": 0.0,
+          "max_age": 146
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge128": {
+      "population": {
+        "episodes": 12524,
+        "raw_pct": 3.5169797332779185,
+        "balanced_pct": 2.5552565856746305,
+        "mean_future_queries_raw": 45.218141168955604,
+        "mean_future_queries_balanced": 45.81758014530494,
+        "positive_target_raw_pct": 35.635579687000956,
+        "mean_target_balanced": 24.677530871442762,
+        "max_age": 128
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge8": {
+      "population": {
+        "episodes": 87173,
+        "raw_pct": 24.479852626080802,
+        "balanced_pct": 20.333850021378446,
+        "mean_future_queries_raw": 15.631606116572792,
+        "mean_future_queries_balanced": 14.736892273344894,
+        "positive_target_raw_pct": 29.766097300769733,
+        "mean_target_balanced": 11.096932312934536,
+        "max_age": 140
+      },
+      "age_above": {
+        "128": {
+          "episodes": 157,
+          "raw_pct": 0.18010163697475134,
+          "balanced_pct": 0.1884043505807273,
+          "mean_future_queries_raw": 7.713375796178344,
+          "mean_future_queries_balanced": 7.668607352725795,
+          "positive_target_raw_pct": 39.490445859872615,
+          "mean_target_balanced": 17.513934718926002,
+          "max_age": 140
+        },
+        "136": {
+          "episodes": 5,
+          "raw_pct": 0.005735720922762782,
+          "balanced_pct": 0.004714111320024291,
+          "mean_future_queries_raw": 7.4,
+          "mean_future_queries_balanced": 8.039631449039584,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": -1.1262327865552197,
+          "max_age": 140
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge32": {
+      "population": {
+        "episodes": 12379,
+        "raw_pct": 3.4762609484387856,
+        "balanced_pct": 2.5080690108575383,
+        "mean_future_queries_raw": 45.69464415542451,
+        "mean_future_queries_balanced": 46.42976592028488,
+        "positive_target_raw_pct": 35.075531141449225,
+        "mean_target_balanced": 24.531864721713156,
+        "max_age": 125
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge128": {
+      "population": {
+        "episodes": 841,
+        "raw_pct": 0.23616895206696975,
+        "balanced_pct": 0.1878827300083566,
+        "mean_future_queries_raw": 139.935790725327,
+        "mean_future_queries_balanced": 138.94114629316235,
+        "positive_target_raw_pct": 56.24256837098692,
+        "mean_target_balanced": 105.34568258759026,
+        "max_age": 8
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    }
+  },
+  "heldout": {
+    "all": {
+      "population": {
+        "episodes": 120006,
+        "raw_pct": 100.0,
+        "balanced_pct": 100.0,
+        "mean_future_queries_raw": 5.01595753545656,
+        "mean_future_queries_balanced": 3.9543005457812,
+        "positive_target_raw_pct": 13.322667199973335,
+        "mean_target_balanced": 3.188151016019996,
+        "max_age": 1026
+      },
+      "age_above": {
+        "128": {
+          "episodes": 11917,
+          "raw_pct": 9.930336816492508,
+          "balanced_pct": 12.14192440878474,
+          "mean_future_queries_raw": 0.7331543173617521,
+          "mean_future_queries_balanced": 0.649502728116329,
+          "positive_target_raw_pct": 5.362087773768566,
+          "mean_target_balanced": 0.7251732111761359,
+          "max_age": 1026
+        },
+        "136": {
+          "episodes": 9708,
+          "raw_pct": 8.08959552022399,
+          "balanced_pct": 9.991141230664075,
+          "mean_future_queries_raw": 0.5933250927070457,
+          "mean_future_queries_balanced": 0.5404459444507899,
+          "positive_target_raw_pct": 4.243922538112897,
+          "mean_target_balanced": 0.5221441456350405,
+          "max_age": 1026
+        },
+        "144": {
+          "episodes": 8419,
+          "raw_pct": 7.015482559205373,
+          "balanced_pct": 8.824809380240886,
+          "mean_future_queries_raw": 0.5721582135645563,
+          "mean_future_queries_balanced": 0.5124531667916455,
+          "positive_target_raw_pct": 3.9553391139090155,
+          "mean_target_balanced": 0.3843147841478103,
+          "max_age": 1026
+        },
+        "256": {
+          "episodes": 1820,
+          "raw_pct": 1.5165908371248105,
+          "balanced_pct": 1.7735427664680634,
+          "mean_future_queries_raw": 1.5554945054945055,
+          "mean_future_queries_balanced": 1.5344243256816983,
+          "positive_target_raw_pct": 10.10989010989011,
+          "mean_target_balanced": 1.270954044041595,
+          "max_age": 1026
+        },
+        "512": {
+          "episodes": 361,
+          "raw_pct": 0.3008182924187124,
+          "balanced_pct": 0.33765911857205105,
+          "mean_future_queries_raw": 1.5650969529085872,
+          "mean_future_queries_balanced": 1.4769714074932065,
+          "positive_target_raw_pct": 10.80332409972299,
+          "mean_target_balanced": 1.125150521367432,
+          "max_age": 1026
+        },
+        "1024": {
+          "episodes": 1,
+          "raw_pct": 0.0008332916687498958,
+          "balanced_pct": 0.00020140223561556205,
+          "mean_future_queries_raw": 1.0,
+          "mean_future_queries_balanced": 1.0,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": 0.0,
+          "max_age": 1026
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_zero": {
+      "population": {
+        "episodes": 125,
+        "raw_pct": 0.10416145859373697,
+        "balanced_pct": 0.12728504906845445,
+        "mean_future_queries_raw": 0.136,
+        "mean_future_queries_balanced": 0.1263008745600188,
+        "positive_target_raw_pct": 0.8,
+        "mean_target_balanced": -0.04190796160662731,
+        "max_age": 253
+      },
+      "age_above": {
+        "128": {
+          "episodes": 98,
+          "raw_pct": 78.4,
+          "balanced_pct": 78.96796653243526,
+          "mean_future_queries_raw": 0.15306122448979592,
+          "mean_future_queries_balanced": 0.14303900184316473,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": -0.08279511533729965,
+          "max_age": 253
+        },
+        "136": {
+          "episodes": 95,
+          "raw_pct": 76.0,
+          "balanced_pct": 77.18046835695297,
+          "mean_future_queries_raw": 0.15789473684210525,
+          "mean_future_queries_balanced": 0.14635178239840774,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": -0.08471264862978757,
+          "max_age": 253
+        },
+        "144": {
+          "episodes": 87,
+          "raw_pct": 69.6,
+          "balanced_pct": 74.10988253467772,
+          "mean_future_queries_raw": 0.14942528735632185,
+          "mean_future_queries_balanced": 0.13455927881652593,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": -0.0882225375805398,
+          "max_age": 253
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge1": {
+      "population": {
+        "episodes": 119881,
+        "raw_pct": 99.89583854140626,
+        "balanced_pct": 99.87271495093157,
+        "mean_future_queries_raw": 5.021045870488234,
+        "mean_future_queries_balanced": 3.959179226872674,
+        "positive_target_raw_pct": 13.335724593555277,
+        "mean_target_balanced": 3.1922676380189388,
+        "max_age": 1026
+      },
+      "age_above": {
+        "128": {
+          "episodes": 11819,
+          "raw_pct": 9.858943452256822,
+          "balanced_pct": 12.056756442189071,
+          "mean_future_queries_raw": 0.7379642947795921,
+          "mean_future_queries_balanced": 0.6537303812869615,
+          "positive_target_raw_pct": 5.406548777392334,
+          "mean_target_balanced": 0.7319176425739984,
+          "max_age": 1026
+        },
+        "136": {
+          "episodes": 9613,
+          "raw_pct": 8.018785295417956,
+          "balanced_pct": 9.90551026724881,
+          "mean_future_queries_raw": 0.5976282117965256,
+          "mean_future_queries_balanced": 0.5443594062336313,
+          "positive_target_raw_pct": 4.285862893997711,
+          "mean_target_balanced": 0.5281703979896679,
+          "max_age": 1026
+        },
+        "144": {
+          "episodes": 8332,
+          "raw_pct": 6.950225640426757,
+          "balanced_pct": 8.741605336534024,
+          "mean_future_queries_raw": 0.5765722515602496,
+          "mean_future_queries_balanced": 0.5165362227860475,
+          "positive_target_raw_pct": 3.9966394623139703,
+          "mean_target_balanced": 0.38942044053828545,
+          "max_age": 1026
+        },
+        "256": {
+          "episodes": 1820,
+          "raw_pct": 1.5181721874191907,
+          "balanced_pct": 1.7758030983131101,
+          "mean_future_queries_raw": 1.5554945054945055,
+          "mean_future_queries_balanced": 1.5344243256816983,
+          "positive_target_raw_pct": 10.10989010989011,
+          "mean_target_balanced": 1.270954044041595,
+          "max_age": 1026
+        },
+        "512": {
+          "episodes": 361,
+          "raw_pct": 0.3011319558562241,
+          "balanced_pct": 0.338089455901891,
+          "mean_future_queries_raw": 1.5650969529085872,
+          "mean_future_queries_balanced": 1.4769714074932065,
+          "positive_target_raw_pct": 10.80332409972299,
+          "mean_target_balanced": 1.125150521367432,
+          "max_age": 1026
+        },
+        "1024": {
+          "episodes": 1,
+          "raw_pct": 0.0008341605425380168,
+          "balanced_pct": 0.00020165891726735665,
+          "mean_future_queries_raw": 1.0,
+          "mean_future_queries_balanced": 1.0,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": 0.0,
+          "max_age": 1026
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge8": {
+      "population": {
+        "episodes": 80299,
+        "raw_pct": 66.91248770894789,
+        "balanced_pct": 62.33113631321391,
+        "mean_future_queries_raw": 7.075667193862937,
+        "mean_future_queries_balanced": 5.862603169538982,
+        "positive_target_raw_pct": 18.132230787431975,
+        "mean_target_balanced": 4.919821530373843,
+        "max_age": 206
+      },
+      "age_above": {
+        "128": {
+          "episodes": 1745,
+          "raw_pct": 2.173127934345384,
+          "balanced_pct": 2.5792417192521286,
+          "mean_future_queries_raw": 1.7398280802292263,
+          "mean_future_queries_balanced": 1.5174939774729572,
+          "positive_target_raw_pct": 13.46704871060172,
+          "mean_target_balanced": 2.783067093217737,
+          "max_age": 206
+        },
+        "136": {
+          "episodes": 718,
+          "raw_pct": 0.8941580841604503,
+          "balanced_pct": 1.145074872207059,
+          "mean_future_queries_raw": 0.9554317548746518,
+          "mean_future_queries_balanced": 0.8519206741325643,
+          "positive_target_raw_pct": 8.07799442896936,
+          "mean_target_balanced": 2.1250932885751133,
+          "max_age": 206
+        },
+        "144": {
+          "episodes": 351,
+          "raw_pct": 0.4371162779113065,
+          "balanced_pct": 0.691790040901186,
+          "mean_future_queries_raw": 0.3418803418803419,
+          "mean_future_queries_balanced": 0.1772035035962716,
+          "positive_target_raw_pct": 1.7094017094017095,
+          "mean_target_balanced": 0.05762492779250334,
+          "max_age": 206
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge32": {
+      "population": {
+        "episodes": 27105,
+        "raw_pct": 22.586370681465926,
+        "balanced_pct": 17.972239263291645,
+        "mean_future_queries_raw": 15.517100166021029,
+        "mean_future_queries_balanced": 13.604099972081166,
+        "positive_target_raw_pct": 29.47057738424645,
+        "mean_target_balanced": 12.064946280223248,
+        "max_age": 155
+      },
+      "age_above": {
+        "128": {
+          "episodes": 60,
+          "raw_pct": 0.22136137244050913,
+          "balanced_pct": 0.3101971605802202,
+          "mean_future_queries_raw": 6.416666666666667,
+          "mean_future_queries_balanced": 6.566346147121112,
+          "positive_target_raw_pct": 41.66666666666667,
+          "mean_target_balanced": 11.484209373568545,
+          "max_age": 155
+        },
+        "136": {
+          "episodes": 7,
+          "raw_pct": 0.025825493451392734,
+          "balanced_pct": 0.06050237703961395,
+          "mean_future_queries_raw": 4.285714285714286,
+          "mean_future_queries_balanced": 3.852174480299272,
+          "positive_target_raw_pct": 42.857142857142854,
+          "mean_target_balanced": 30.958077532237702,
+          "max_age": 155
+        },
+        "144": {
+          "episodes": 2,
+          "raw_pct": 0.007378712414683638,
+          "balanced_pct": 0.018723378753686137,
+          "mean_future_queries_raw": 1.0,
+          "mean_future_queries_balanced": 0.4905432898801899,
+          "positive_target_raw_pct": 0.0,
+          "mean_target_balanced": 0.0,
+          "max_age": 155
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q128_ge128": {
+      "population": {
+        "episodes": 3623,
+        "raw_pct": 3.019015715880873,
+        "balanced_pct": 1.5936909375923407,
+        "mean_future_queries_raw": 47.52856748550925,
+        "mean_future_queries_balanced": 50.24612779173986,
+        "positive_target_raw_pct": 34.63980126966602,
+        "mean_target_balanced": 39.49712927014247,
+        "max_age": 116
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge8": {
+      "population": {
+        "episodes": 28073,
+        "raw_pct": 23.392997016815826,
+        "balanced_pct": 18.900162430768486,
+        "mean_future_queries_raw": 15.286289317137463,
+        "mean_future_queries_balanced": 13.373590432965537,
+        "positive_target_raw_pct": 29.124069390517583,
+        "mean_target_balanced": 11.680810419132815,
+        "max_age": 139
+      },
+      "age_above": {
+        "128": {
+          "episodes": 43,
+          "raw_pct": 0.15317208705873972,
+          "balanced_pct": 0.21595384536373624,
+          "mean_future_queries_raw": 7.325581395348837,
+          "mean_future_queries_balanced": 7.543677342648659,
+          "positive_target_raw_pct": 39.53488372093023,
+          "mean_target_balanced": 3.419443408200314,
+          "max_age": 139
+        },
+        "136": {
+          "episodes": 2,
+          "raw_pct": 0.007124283119011149,
+          "balanced_pct": 0.01070387937811182,
+          "mean_future_queries_raw": 8.0,
+          "mean_future_queries_balanced": 8.0,
+          "positive_target_raw_pct": 50.0,
+          "mean_target_balanced": -11.553055473702967,
+          "max_age": 139
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge32": {
+      "population": {
+        "episodes": 3546,
+        "raw_pct": 2.9548522573871305,
+        "balanced_pct": 1.5683508749423962,
+        "mean_future_queries_raw": 48.23463056965595,
+        "mean_future_queries_balanced": 50.893173894443116,
+        "positive_target_raw_pct": 33.107727016356456,
+        "mean_target_balanced": 38.746765182171444,
+        "max_age": 116
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    },
+    "q32_ge128": {
+      "population": {
+        "episodes": 274,
+        "raw_pct": 0.22832191723747147,
+        "balanced_pct": 0.16583642028674242,
+        "mean_future_queries_raw": 142.95620437956205,
+        "mean_future_queries_balanced": 160.66155803006868,
+        "positive_target_raw_pct": 55.1094890510949,
+        "mean_target_balanced": 160.42221441106457,
+        "max_age": 8
+      },
+      "age_above": {
+        "128": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "136": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "144": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "256": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "512": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "1024": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        },
+        "4096": {
+          "episodes": 0,
+          "raw_pct": 0.0,
+          "balanced_pct": 0.0,
+          "mean_future_queries_raw": null,
+          "mean_future_queries_balanced": null,
+          "positive_target_raw_pct": null,
+          "mean_target_balanced": null,
+          "max_age": null
+        }
+      }
+    }
+  },
+  "old_raw": {
+    "episodes": 246924,
+    "max_age": 1039,
+    "age_above": {
+      "128": {
+        "episodes": 29297,
+        "raw_pct": 11.864784306102283
+      },
+      "136": {
+        "episodes": 25373,
+        "raw_pct": 10.275631368356256
+      },
+      "144": {
+        "episodes": 22236,
+        "raw_pct": 9.00519998056082
+      },
+      "256": {
+        "episodes": 5299,
+        "raw_pct": 2.1460044386126906
+      },
+      "512": {
+        "episodes": 436,
+        "raw_pct": 0.17657254863844746
+      },
+      "1024": {
+        "episodes": 1,
+        "raw_pct": 0.0004049829097212098
+      },
+      "4096": {
+        "episodes": 0,
+        "raw_pct": 0.0
+      }
+    },
+    "high_query_age_above": {
+      "1": {
+        "128": 29129,
+        "136": 25214,
+        "144": 22095,
+        "256": 5296,
+        "512": 436,
+        "1024": 1,
+        "4096": 0
+      },
+      "8": {
+        "128": 12134,
+        "136": 10204,
+        "144": 9070,
+        "256": 2799,
+        "512": 0,
+        "1024": 0,
+        "4096": 0
+      },
+      "32": {
+        "128": 3509,
+        "136": 3283,
+        "144": 3066,
+        "256": 1115,
+        "512": 0,
+        "1024": 0,
+        "4096": 0
+      },
+      "128": {
+        "128": 712,
+        "136": 668,
+        "144": 634,
+        "256": 258,
+        "512": 0,
+        "1024": 0,
+        "4096": 0
+      }
+    }
+  }
+}

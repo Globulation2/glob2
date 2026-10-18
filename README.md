@@ -1,3 +1,5 @@
+Latest investigation and narrow production fix: [reconciliation/README.md](reconciliation/README.md). The no-cap experiment exposes an age-support gap and planning liveness failures; successful planning reads no longer trigger periodic demand.
+
 Latest final512 dataset, native verification and completed current-master comparison: [final-512/README.md](final-512/README.md). Final performance is mixed: pooled CPU/tick+16.51%,3/8 format wins. The older evidence below used the pre-integration base and does not establish final performance.
 
 Local / VM verification for adaptive resource gradients

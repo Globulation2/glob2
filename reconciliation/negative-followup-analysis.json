@@ -1,0 +1,567 @@
+{
+  "rows": [
+    {
+      "case": "8v8-warm2048-master",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.351457341796875,
+      "process_cpu_s": 21.062721,
+      "wall_s": 21.066145634977147,
+      "finalChecksum": 538653575,
+      "gradient_jobs": 3072,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.0,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-final512",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 7.3202880703125,
+      "process_cpu_s": 23.736572,
+      "wall_s": 23.73996634600917,
+      "finalChecksum": 1010831722,
+      "gradient_jobs": 5764,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.8763020833333333,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-oldmodel",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 7.300944360351562,
+      "process_cpu_s": 23.601463999999996,
+      "wall_s": 23.60492588899797,
+      "finalChecksum": 463070818,
+      "gradient_jobs": 5916,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.92578125,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-preserve-turns",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 7.37181063671875,
+      "process_cpu_s": 23.433479000000013,
+      "wall_s": 23.43719363299897,
+      "finalChecksum": 1213108419,
+      "gradient_jobs": 5764,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.8763020833333333,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-no-distance",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.76613712890625,
+      "process_cpu_s": 22.10637999999999,
+      "wall_s": 22.109456126985606,
+      "finalChecksum": 3348407704,
+      "gradient_jobs": 4230,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.376953125,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "river164-negative-only",
+      "ticks_final": 25154,
+      "measured_ticks": 25154,
+      "sim_cpu_ms_tick": 0.27840394923272643,
+      "process_cpu_s": 7.217996999999998,
+      "wall_s": 7.222275027015712,
+      "finalChecksum": 2290900079,
+      "gradient_jobs": 26443,
+      "gradient_count_window_ticks": 25154,
+      "jobs_per_tick": 1.0512443348970342,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-negative-only",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.762652078125,
+      "process_cpu_s": 22.230220000000006,
+      "wall_s": 22.251166177971754,
+      "finalChecksum": 3737098097,
+      "gradient_jobs": 4602,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.498046875,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "river164-negative-only-preserve-turns",
+      "ticks_final": 24610,
+      "measured_ticks": 24610,
+      "sim_cpu_ms_tick": 0.20786485233644858,
+      "process_cpu_s": 5.331927000000015,
+      "wall_s": 5.3345921210129745,
+      "finalChecksum": 1102029080,
+      "gradient_jobs": 10552,
+      "gradient_count_window_ticks": 24610,
+      "jobs_per_tick": 0.4287687931735067,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "8v8-warm2048-negative-only-preserve-turns",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.944851991210937,
+      "process_cpu_s": 22.237333000000014,
+      "wall_s": 22.25682417000644,
+      "finalChecksum": 3080782079,
+      "gradient_jobs": 4629,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.5068359375,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup"
+    },
+    {
+      "case": "river164-distance-audit-final",
+      "ticks_final": 28738,
+      "measured_ticks": 28738,
+      "sim_cpu_ms_tick": 0.276253718143225,
+      "process_cpu_s": 8.149598000000026,
+      "wall_s": 8.154431647970341,
+      "finalChecksum": 3674949434,
+      "gradient_jobs": 31356,
+      "gradient_count_window_ticks": 28738,
+      "jobs_per_tick": 1.0910988934511796,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 56,
+          "reactive_depleted": 70,
+          "reactive_blocked": 572,
+          "adaptive_cap": 3379,
+          "adaptive_model": 73
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 50,
+          "periodic": 11175
+        },
+        "clear": {
+          "other": 38,
+          "periodic": 14918
+        },
+        "forbidden": {
+          "other": 1025
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 167.053238,
+        "policyNs": 47.717433,
+        "queryNs": 1.285335
+      },
+      "seed_wall_ms": {
+        "natural_ground": 109.933203,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 319.989398,
+        "clear": 316.987181,
+        "forbidden": 35.93454
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 406.513461,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 27.714402,
+        "clear": 1456.489951,
+        "forbidden": 11.152612
+      },
+      "policy": {
+        "capAccepted": 3411,
+        "modelAccepted": 111,
+        "modelRejected": 200174,
+        "fieldsVisited": 1082629,
+        "modelEvaluations": 200285,
+        "movementQueries": 39719,
+        "distanceQueries": 2063547
+      }
+    },
+    {
+      "case": "8v8-warm2048-distance-audit-final",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 7.220862662109375,
+      "process_cpu_s": 23.442758,
+      "wall_s": 23.452690962993074,
+      "finalChecksum": 1010831722,
+      "gradient_jobs": 5764,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.8763020833333333,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 1,
+          "reactive_depleted": 8,
+          "reactive_blocked": 57,
+          "adaptive_cap": 967,
+          "adaptive_model": 13
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 17,
+          "periodic": 307
+        },
+        "clear": {
+          "other": 24,
+          "periodic": 339
+        },
+        "forbidden": {
+          "other": 272
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 70.632751,
+        "policyNs": 40.65701,
+        "queryNs": 0.720513
+      },
+      "seed_wall_ms": {
+        "natural_ground": 109.730872,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 75.626701,
+        "clear": 64.204301,
+        "forbidden": 85.419276
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 922.105604,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 6.234118,
+        "clear": 367.773979,
+        "forbidden": 106.15097
+      },
+      "policy": {
+        "capAccepted": 5426,
+        "modelAccepted": 740,
+        "modelRejected": 58019,
+        "fieldsVisited": 364557,
+        "modelEvaluations": 58759,
+        "movementQueries": 9883,
+        "distanceQueries": 586291
+      }
+    },
+    {
+      "case": "river164-distance-audit-negative-only",
+      "ticks_final": 25154,
+      "measured_ticks": 25154,
+      "sim_cpu_ms_tick": 0.27692497892979245,
+      "process_cpu_s": 7.182028999999972,
+      "wall_s": 7.186292344005778,
+      "finalChecksum": 2290900079,
+      "gradient_jobs": 26443,
+      "gradient_count_window_ticks": 25154,
+      "jobs_per_tick": 1.0512443348970342,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 50,
+          "reactive_depleted": 38,
+          "reactive_blocked": 365,
+          "adaptive_cap": 2126,
+          "adaptive_model": 24
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 8,
+          "periodic": 9552
+        },
+        "clear": {
+          "other": 12,
+          "periodic": 13387
+        },
+        "forbidden": {
+          "other": 881
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 130.342123,
+        "policyNs": 26.917275,
+        "queryNs": 1.37205
+      },
+      "seed_wall_ms": {
+        "natural_ground": 77.744641,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 271.26091,
+        "clear": 283.401029,
+        "forbidden": 30.504206
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 241.167698,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 27.065772,
+        "clear": 1270.291534,
+        "forbidden": 9.035296
+      },
+      "policy": {
+        "capAccepted": 2135,
+        "modelAccepted": 28,
+        "modelRejected": 31873,
+        "fieldsVisited": 866829,
+        "modelEvaluations": 31901,
+        "movementQueries": 28237,
+        "distanceQueries": 23827
+      }
+    },
+    {
+      "case": "8v8-warm2048-distance-audit-negative-only",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.7705962265625,
+      "process_cpu_s": 22.195222000000015,
+      "wall_s": 22.204698540037498,
+      "finalChecksum": 3737098097,
+      "gradient_jobs": 4602,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.498046875,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 3,
+          "reactive_depleted": 6,
+          "reactive_blocked": 54,
+          "adaptive_cap": 557,
+          "adaptive_model": 17
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 16,
+          "periodic": 313
+        },
+        "clear": {
+          "other": 19,
+          "periodic": 341
+        },
+        "forbidden": {
+          "other": 273
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 64.709727,
+        "policyNs": 36.150959,
+        "queryNs": 1.107658
+      },
+      "seed_wall_ms": {
+        "natural_ground": 86.712442,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 77.074429,
+        "clear": 64.432313,
+        "forbidden": 84.739937
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 528.007865,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 6.233568,
+        "clear": 365.517535,
+        "forbidden": 109.170246
+      },
+      "policy": {
+        "capAccepted": 1503,
+        "modelAccepted": 659,
+        "modelRejected": 6554,
+        "fieldsVisited": 364154,
+        "modelEvaluations": 7213,
+        "movementQueries": 9640,
+        "distanceQueries": 2196
+      }
+    },
+    {
+      "case": "river164-distance-audit-negative-only-preserve-turns",
+      "ticks_final": 24610,
+      "measured_ticks": 24610,
+      "sim_cpu_ms_tick": 0.21309292933766763,
+      "process_cpu_s": 5.459159999999979,
+      "wall_s": 5.462201931048185,
+      "finalChecksum": 1102029080,
+      "gradient_jobs": 10552,
+      "gradient_count_window_ticks": 24610,
+      "jobs_per_tick": 0.4287687931735067,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 50,
+          "reactive_depleted": 44,
+          "reactive_blocked": 273,
+          "adaptive_cap": 2005,
+          "adaptive_model": 32
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 172,
+          "periodic": 2698
+        },
+        "clear": {
+          "other": 730,
+          "periodic": 3837
+        },
+        "forbidden": {
+          "other": 711
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 82.620528,
+        "policyNs": 25.226286,
+        "queryNs": 1.467806
+      },
+      "seed_wall_ms": {
+        "natural_ground": 74.197185,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 81.262449,
+        "clear": 96.976611,
+        "forbidden": 24.95257
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 228.045117,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 7.33649,
+        "clear": 420.611392,
+        "forbidden": 7.73159
+      },
+      "policy": {
+        "capAccepted": 2006,
+        "modelAccepted": 34,
+        "modelRejected": 31875,
+        "fieldsVisited": 836471,
+        "modelEvaluations": 31909,
+        "movementQueries": 29783,
+        "distanceQueries": 25107
+      }
+    },
+    {
+      "case": "8v8-warm2048-distance-audit-negative-only-preserve-turns",
+      "ticks_final": 35840,
+      "measured_ticks": 1024,
+      "sim_cpu_ms_tick": 6.9385040419921875,
+      "process_cpu_s": 22.204486000000017,
+      "wall_s": 22.211672201985493,
+      "finalChecksum": 3080782079,
+      "gradient_jobs": 4629,
+      "gradient_count_window_ticks": 3072,
+      "jobs_per_tick": 1.5068359375,
+      "note": "CPU/tick uses measured ticks; gradient jobs cover whole executed prefix including warmup",
+      "admissions": {
+        "natural_ground": {
+          "cold_or_stale": 5,
+          "reactive_depleted": 8,
+          "reactive_blocked": 76,
+          "adaptive_cap": 591,
+          "adaptive_model": 10
+        },
+        "natural_air": {},
+        "markets": {},
+        "guard": {
+          "other": 242,
+          "periodic": 53
+        },
+        "clear": {
+          "other": 273,
+          "periodic": 55
+        },
+        "forbidden": {
+          "other": 313
+        }
+      },
+      "timers_wall_ms": {
+        "stageNs": 52.666008,
+        "policyNs": 38.451699,
+        "queryNs": 1.243832
+      },
+      "seed_wall_ms": {
+        "natural_ground": 92.037707,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 68.122222,
+        "clear": 57.227426,
+        "forbidden": 98.305768
+      },
+      "propagate_wall_ms": {
+        "natural_ground": 601.166562,
+        "natural_air": 0.0,
+        "markets": 0.0,
+        "guard": 5.55203,
+        "clear": 341.24727,
+        "forbidden": 141.944749
+      },
+      "policy": {
+        "capAccepted": 1494,
+        "modelAccepted": 398,
+        "modelRejected": 7795,
+        "fieldsVisited": 365121,
+        "modelEvaluations": 8193,
+        "movementQueries": 10020,
+        "distanceQueries": 3143
+      }
+    }
+  ],
+  "instrumentation_equivalence": [
+    {
+      "pair": [
+        "river164-distance-audit-final",
+        "river164-final512"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    },
+    {
+      "pair": [
+        "river164-distance-audit-negative-only",
+        "river164-negative-only"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    },
+    {
+      "pair": [
+        "river164-distance-audit-negative-only-preserve-turns",
+        "river164-negative-only-preserve-turns"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    },
+    {
+      "pair": [
+        "8v8-warm2048-distance-audit-final",
+        "8v8-warm2048-final512"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    },
+    {
+      "pair": [
+        "8v8-warm2048-distance-audit-negative-only",
+        "8v8-warm2048-negative-only"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    },
+    {
+      "pair": [
+        "8v8-warm2048-distance-audit-negative-only-preserve-turns",
+        "8v8-warm2048-negative-only-preserve-turns"
+      ],
+      "same_ticks": true,
+      "same_checksum": true,
+      "same_jobs": true
+    }
+  ]
+}
