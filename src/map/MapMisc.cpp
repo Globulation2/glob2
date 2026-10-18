@@ -86,7 +86,11 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
             cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
         });
-
+        if (includePending) gradientRuntime->pipeline.visitCaptures([&](auto*,bool,const auto& capture) {
+            mix64(capture.tick);mix64(capture.sources.count);mix64(capture.sources.added);mix64(capture.sources.removed);
+            mix64(capture.contradictionKnown);
+            for (auto value:capture.movementBaseline) mix64(value);
+        });
 
     }
     // Suspended freshness changes the next explicit query, so it is simulation state.

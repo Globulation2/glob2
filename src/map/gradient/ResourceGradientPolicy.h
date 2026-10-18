@@ -2,6 +2,8 @@
 #pragma once
 #include "ResourceGradientModel.h"
 #include "Material.h"
+#include "ResourceGradientContradictions.h"
+#include "FileFormatVersions.h"
 #include <map>
 #include <limits>
 #include <utility>
@@ -20,11 +22,43 @@ struct ResourceGradientPolicy
     // jobs carry their own copy; serving epochs change only at publication.
     struct Capture {
         std::uint32_t tick=0; Sources sources{};
+        // Cumulative owner-query counters at the actual world capture boundary.
+        // A delayed job carries these unchanged until publication; requests and
+        // worker completion are not capture boundaries. Old saves lack history.
+        ResourceGradientModel::MovementCounts movementBaseline{};
+        bool contradictionKnown=false;
         void save(GAGCore::OutputStream*) const;
-        static Capture load(GAGCore::InputStream*);
+        static Capture load(GAGCore::InputStream*,unsigned version=FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS);
     };
     struct Field {
         Capture serving;
+        ResourceGradientModel::MovementCounts movementTotal{};
+        template<std::size_t... I> void recordMovementImpl(const GradientMovementEvidence& e,std::index_sequence<I...>) {
+            ((movementTotal[I]+=contradictionValue<ResourceGradientModel::RequiredMovementCounters[I]>(e)),...);
+        }
+        void recordMovement(const GradientMovementEvidence& e) {
+            recordMovementImpl(e,std::make_index_sequence<ResourceGradientModel::CounterCount>{});
+        }
+        ResourceGradientModel::MovementCounts contradictions() const {
+            auto result=movementTotal;
+            for (std::size_t i=0;i<result.size();++i) result[i]-=serving.movementBaseline[i];
+            return result;
+        }
+        Capture capture(std::uint32_t tick,const Sources& sources) const {
+            return {tick,sources,movementTotal,true};
+        }
+        bool validMovementCapture(const Capture& capture) const {
+            if (!capture.contradictionKnown) return true;
+            std::uint64_t queryDelta=0;
+            for (unsigned i=0;i<movementTotal.size();++i) {
+                if (capture.movementBaseline[i]>movementTotal[i]) return false;
+                if (ResourceGradientModel::RequiredMovementCounters[i]==5)
+                    queryDelta=movementTotal[i]-capture.movementBaseline[i];
+            }
+            for (unsigned i=0;i<movementTotal.size();++i)
+                if (movementTotal[i]-capture.movementBaseline[i]>queryDelta) return false;
+            return true;
+        }
         std::uint32_t submitted=0, queryTick=0;
         bool requested=false, queryKnown=false;
         std::array<std::uint32_t,128> queries{};
@@ -62,11 +96,16 @@ struct ResourceGradientPolicy
         // merely because time passed; another query must request it again.
         bool refresh(std::uint32_t tick,const Sources& now) {
             if (!std::exchange(requested,false) || std::uint32_t(tick-submitted)<MinimumInterval) return false;
-            return std::uint32_t(tick-submitted)>=MaximumInterval || ResourceGradientModel::predict(inputs(tick,now))>=Threshold;
+            if (std::uint32_t(tick-submitted)>=MaximumInterval) return true;
+            const auto base=inputs(tick,now);
+            // Do not fabricate a zero historical rate when loading an old save.
+            // Its next genuine publication establishes an observed baseline.
+            return (serving.contradictionKnown ? ResourceGradientModel::predict(base,contradictions())
+                : ResourceGradientModel::predictLegacy(base))>=Threshold;
         }
     };
     void save(GAGCore::OutputStream*) const;
-    void load(GAGCore::InputStream*,unsigned teams);
+    void load(GAGCore::InputStream*,unsigned teams,unsigned version=FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS);
     std::uint32_t checksum() const;
     bool initialized=false;
     std::array<Sources,MaterialCount> sources{};

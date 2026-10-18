@@ -1306,7 +1306,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			const bool superseded=loadFlag(stream,"superseded");
             ResourceGradientPolicy::Capture capture;
             if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_DEMAND) {
-                capture=ResourceGradientPolicy::Capture::load(stream);
+                capture=ResourceGradientPolicy::Capture::load(stream,versionMinor);
                 if (capture.sources.count>size) throw std::runtime_error("Invalid saved gradient source count");
             }
 			Uint16 *field=nullptr;
@@ -1384,7 +1384,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
     }
     if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_DEMAND) {
         auto& policy=gradientRuntime->resources;
-        policy.load(stream,game->teamsCount());
+        policy.load(stream,game->teamsCount(),versionMinor);
         if (policy.initialized) {
             // A corrupted positive-stock count would underflow on the next
             // harvest. Verify once at load, preserving the saved epochs rather
@@ -1399,6 +1399,21 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 if (field.serving.sources.count>size) throw std::runtime_error("Invalid saved adaptive capture count");
         }
     } else gradientRuntime->resources={};
+    if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS)
+        gradientRuntime->pipeline.visitCaptures([&](auto* slot,bool superseded,const auto& capture) {
+            // Superseded outputs can legitimately predate a catalog reset and
+            // will never publish. Every live natural capture must share its
+            // owner's cumulative-counter epoch.
+            if (superseded || !capture.contradictionKnown) return;
+            const auto plane=planeKeyForSlot(slot);
+            if (!plane) return;
+            const auto id=MapState::decodePlaneKey(*plane);
+            if (id.market || id.resource>=MaterialCount || id.swim>=SWIM_CLASS_COUNT) return;
+            const int key=(id.team*MaterialCount+id.resource)*SWIM_CLASS_COUNT+id.swim;
+            const auto field=gradientRuntime->resources.fields.find(key);
+            if (field==gradientRuntime->resources.fields.end() || !field->second.validMovementCapture(capture))
+                throw std::runtime_error("Invalid pending contradiction capture baseline");
+        });
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.

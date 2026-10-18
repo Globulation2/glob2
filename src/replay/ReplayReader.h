@@ -22,9 +22,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 172 combines air routing with tagged snapshot checksum metadata.
+//! the reader still accepts. Version 176 uses capture-aligned movement evidence
+//! in adaptive resource refresh decisions.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 174;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 176;
 
 
 /// This class is used for reading replays.

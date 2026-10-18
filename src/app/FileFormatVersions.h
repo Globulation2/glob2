@@ -281,6 +281,9 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
 
 // Published movement-class counts and stale suspended shared fields.
 static constexpr int FILE_FORMAT_VERSION_GRADIENT_DEMAND = 174;
+// Selected movement counters and serving/pending capture baselines. Counter
+// blocks carry stable IDs so later model feature selections remain readable.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS = 176;
 
 // Cached hiring suggestions and their pending deadlines.
 static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;

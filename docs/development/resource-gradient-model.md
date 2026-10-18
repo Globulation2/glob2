@@ -67,29 +67,52 @@ between zero and nonzero; consuming part of a deposit does not count as removal.
 Initialization scans source tiles once. Queries update counters without per-query
 allocation. A rolling hash avoids scanning the history during checksums.
 
-The predictor uses seven features, in generated order: serving capture age,
-queries in 32 and 128 ticks, added sources, removed sources, and added/removed
-counts divided by source count at capture in Q12. Inputs clamp at one million;
-integer log2(1+x) interpolation produces Q12 features. Four linear heads estimate
-positive/negative benefit probabilities and conditional magnitudes. Their
-probabilities use an integer sigmoid lookup table. Accumulators use signed
-64-bit arithmetic with export-time bounds. The final prediction is milli cost;
-the engine compares it with 32000. It uses no material/category IDs, simulation
-RNG, clock, floating point or platform-specific math library.
+The deployed `goal-stall-v1` predictor uses twelve inputs. Seven base inputs stay
+in a fixed order for policy history and episode CSVs: serving capture age, queries
+in 32 and 128 ticks, added sources, removed sources, and added/removed counts
+relative to source count at capture. The other inputs are empty-goal count,
+reachable-no-move count, movement queries since capture, and the two event/query
+fractions. Count inputs use integer log2(1+x) interpolation; event fractions use
+integer Q12 ratios. Ratios use the full counters before count-feature clamping.
+The generated feature order and required counter IDs are part of the model
+contract, separate from the stable seven-column base measurement layout.
+
+Two logistic components estimate the probabilities of positive and negative
+benefit. Two linear components estimate their conditional magnitudes. Their
+expected difference is the refresh score. Fitting standardizes transformed inputs;
+export folds that scaling into the integer coefficients. Runtime probabilities
+use an integer sigmoid lookup table. Accumulators use signed 64-bit arithmetic
+with export-time bounds. The final prediction is milli cost; the engine compares
+it with 32000. It uses no material/category IDs, simulation RNG, clock, floating
+point or platform-specific math library. Coefficient signs are conditional on the
+other inputs; correlated counts and rates need not have matching signs.
+
+The policy retains only the three selected cumulative movement counters. A real
+field capture snapshots their values; pending work carries that exact baseline
+through delayed publication. Inference subtracts the serving capture baseline
+from current totals. Format 176 saves live totals, serving and pending baselines,
+and whether each history is known. Counter blocks identify stable counter IDs so
+later feature selections can read earlier blocks safely. Supported older saves
+remain readable: histories absent from a save stay explicitly unknown, and the
+frozen seven-feature predictor is used until a fresh capture publishes. Missing
+history is never presented to training as measured zeros. New-save continuation
+must preserve this state, including unpublished work.
 
 `ResourceGradientProbe` owns all diagnostic state. With collection disabled no
 probe, output stream, reference field, episode copy, sampling map or diagnostic
-source bookkeeping is allocated. Only null checks remain in tick/movement paths.
-The policy's demand and turnover counters are required by gameplay regardless of
-whether data is being collected. The collector reads copies of policy state and
+source bookkeeping is allocated. No diagnostic blocker classification or extra neighbor scans run in normal
+movement. The policy's demand, turnover and three selected movement counters are
+required by gameplay regardless of whether data is being collected. The collector reads copies of policy state and
 unit RNG state; it must never advance those live inputs.
 
 ## Contradiction telemetry experiments
 
-The seven production inputs remain the baseline. Optional collection also records
-contradictions observed while natural ground-resource movement queries follow a
-cached field. These remain diagnostic features until a held-out comparison and
-prospective games justify paying for them in production.
+The seven base inputs remain the comparison baseline. Collection records all six
+contradiction counters while natural ground-resource movement queries follow a
+cached field. Production uses only empty goals, reachable-no-move and movement
+queries. Persistent blockers, unit occupancy and sidesteps remain diagnostic;
+adding them to inference requires incremental held-out and prospective evidence,
+plus compatible counter-state persistence and measured runtime overhead.
 
 Each query contributes at most once to each category; categories can overlap:
 
@@ -118,13 +141,16 @@ can produce these events without a stale field; an empty goal is a direct
 contradiction. Some events already trigger reactive refreshes, so feature value
 must be incremental to the existing seven inputs and behavior.
 
-Keep cumulative counters and capture snapshots in the optional observer. Capture
-baselines must follow the field through pending computation and delayed
+The policy owns selected production counters and their capture snapshots. The
+optional observer also keeps all six diagnostic histories. Both use the same
+per-query evidence; diagnostic classification must not alter ordinary movement.
+Capture baselines follow the field through pending computation and delayed
 publication. Episode features use current totals minus the serving field's
 capture baseline; never substitute the publication tick or include future
-observations in a feature. Diagnostic counters do not affect scheduling, saves,
-checksums or gameplay RNG. A future production feature requires a separate
-review of persistence, checksums, simulation version and overhead.
+observations in a feature. The three unselected diagnostic categories do not affect scheduling, saves,
+checksums or gameplay RNG. The selected production histories affect scheduling
+and therefore participate in saves and checksums. A feature-selection change
+requires compatible persistence, simulation-version and overhead review.
 
 Episode columns use the `since_capture_` prefix for the six counters above.
 `contradiction_capture_known` distinguishes a measured capture from a field that
@@ -264,12 +290,15 @@ stays in the same validation group, even if collected with a later model.
 ## Fit, validate and replace coefficients
 
 ```sh
-python3 tools/resource_gradient_model.py fit \
+python3 tools/resource_gradient_model.py fit-candidate \
+  --feature-set goal-stall-v1 \
   --manifest artifacts/resource-gradient-training/cohort.json \
   --split-registry artifacts/resource-gradient-splits.json \
   --output artifacts/resource-gradient-training/model.json
-python3 tools/resource_gradient_model.py emit \
+python3 tools/resource_gradient_model.py promote \
   --model artifacts/resource-gradient-training/model.json \
+  --contract goal-stall-v1 \
+  --output artifacts/resource-gradient-training/deployment-model.json \
   --header artifacts/resource-gradient-training/ResourceGradientModel.h
 python3 -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_tournament
 ```
@@ -278,7 +307,8 @@ For subsequent generations, pass every compatible cohort explicitly and reuse
 the existing split registry:
 
 ```sh
-python3 tools/resource_gradient_model.py fit \
+python3 tools/resource_gradient_model.py fit-candidate \
+  --feature-set goal-stall-v1 \
   --manifest artifacts/gradient-exploration/cohort.json \
   --manifest artifacts/gradient-candidate-v1/cohort.json \
   --split-registry artifacts/resource-gradient-splits.json \
@@ -316,12 +346,17 @@ are useful diagnostics, but do not prove lower full-match CPU or better gameplay
 Measure prospective matched maps after refitting, because a different scheduler
 changes the trajectories that generate the next dataset.
 
-The committed seed model is `tools/models/resource-gradient.json`; its provenance
-records the frozen diverse refit used to select A32. To replace it, retain the new
-fit report and data as review evidence, copy the reviewed model JSON to that
-path, and run `python3 tools/resource_gradient_model.py emit`. The generated
-header is the only model used by the engine. No model-selection environment
-variables or alternate runtime thresholds are supported. The Python tests check
+The committed deployment model is `tools/models/resource-gradient.json`.
+`fit-candidate` produces a research report; `promote --contract goal-stall-v1`
+explicitly packages reviewed coefficients with the selected feature contract and
+pinned legacy fallback. Promotion creates a candidate, not evidence of prospective
+quality or performance. Validate it before copying its deployment JSON and generated
+header into the engine. `emit` reproduces the header from the validated deployment
+contract; arbitrary research reports cannot emit production code. The separate
+`fit` command remains available for seven-feature baseline comparisons.
+
+The generated header is the only model used by the engine. No model-selection
+environment variables or alternate runtime thresholds are supported. Tests check
 header reproducibility, overflow bounds, dataset hashes, balancing and C++/Python
 integer parity under undefined-behavior sanitization.
 

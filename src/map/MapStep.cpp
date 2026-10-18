@@ -274,7 +274,8 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
         job->snapshotLease=foundation.gradientView();
         if (preparation.kind==gradient_preparation::Kind::Materials && preparation.swim<SWIM_CLASS_COUNT) {
             gradientRuntime->initializeResourcePolicy(*this);
-            job->capture={unsigned(foundation.tick),gradientRuntime->resources.sources[preparation.material]};
+            const int fieldKey=(preparation.team*MaterialCount+preparation.material)*SWIM_CLASS_COUNT+preparation.swim;
+            job->capture=gradientRuntime->resources.fields[fieldKey].capture(unsigned(foundation.tick),gradientRuntime->resources.sources[preparation.material]);
             if (auto& probe=gradientRuntime->qualityProbe) {
                 const int key=(preparation.team*MaterialCount+preparation.material)*SWIM_CLASS_COUNT+preparation.swim;
                 probe->capturedMovement(key,unsigned(foundation.tick));
