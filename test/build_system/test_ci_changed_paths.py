@@ -330,7 +330,7 @@ class ChangedPathsTest(unittest.TestCase):
         # web-native can succeed while its optional native producer was skipped.
         self.assertIn('!cancelled()', guard)
         expression = guard.replace('!cancelled()', 'not cancelled').replace('&&', 'and')
-        expression = expression.replace('needs.changes.outputs.browser', 'browser')
+        expression = expression.replace('needs.changes.outputs.run_web_test', 'browser')
         expression = expression.replace('needs.web-build.result', 'build')
         expression = expression.replace('needs.web-native.result', 'native')
         for cancelled in (False, True):
@@ -342,6 +342,27 @@ class ChangedPathsTest(unittest.TestCase):
                                 cancelled=cancelled, browser=browser, build=build, native=native))
                             self.assertEqual(actual, not cancelled and browser == 'true'
                                              and build == 'success' and native == 'success')
+
+    def test_web_native_reuses_only_the_selected_primary_gcc13_producer(self):
+        workflow = (SCRIPT.parents[2] / '.github/workflows/build.yml').read_text()
+        block = workflow.split('  web-native:\n', 1)[1].split('  web-deploy:\n', 1)[0]
+        guard = re.search(r"if: \$\{\{ (.*?) \}\}", block).group(1)
+        expression = guard.replace('!cancelled()', 'not cancelled').replace('&&', 'and').replace('||', 'or')
+        expression = expression.replace('needs.changes.outputs.run_web_native', 'web_native')
+        expression = expression.replace('needs.changes.outputs.run_linux_gcc13_producer', 'producer_selected')
+        expression = expression.replace('needs.linux-gcc13-producer.result', 'producer_result')
+        # GCC11/Clang can make the broad native flag true without producing a
+        # primary GCC13 artifact. That case must use the independent build path.
+        self.assertNotIn('needs.changes.outputs.native', block)
+        self.assertIn("if [ '${{ needs.changes.outputs.run_linux_gcc13_producer }}' = true ]; then", block)
+        for selected in ('false', 'true'):
+            for result in ('success', 'failure', 'cancelled', 'skipped'):
+                for cancelled in (False, True):
+                    with self.subTest(selected=selected, result=result, cancelled=cancelled):
+                        actual = eval(expression, {'__builtins__': {}}, dict(
+                            cancelled=cancelled, web_native='true',
+                            producer_selected=selected, producer_result=result))
+                        self.assertEqual(actual, not cancelled and (selected != 'true' or result == 'success'))
 
     def test_every_inline_build_checks_out_the_selected_revision(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
@@ -371,15 +392,18 @@ class ChangedPathsTest(unittest.TestCase):
         helper = (root / '.github/workflows/ci-linux-build.yml').read_text()
         for gcc in ('11', '13'):
             block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
-            self.assertIn('run_tests: true', block)
+            self.assertIn(f"run_tests: ${{{{ needs.changes.outputs.gcc{gcc}_shards != '[]' }}}}", block)
+            self.assertIn(f"test_shards: ${{{{ needs.changes.outputs.gcc{gcc}_shards }}}}", block)
+            self.assertIn(f"generator_suites: ${{{{ needs.changes.outputs.gcc{gcc}_generators }}}}", block)
             self.assertIn('needs: changes' if gcc == '11' else 'needs: [changes, linux-gcc13-producer]', block)
         tests = helper.split('  tests:\n', 1)[1]
         self.assertIn('needs: [build, reuse]', tests)
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)
-        self.assertIn('if [ "$COMPATIBILITY" = true ]; then expected=success; fi', gate)
-        self.assertIn('test "$CLANG_RESULT" = "$expected"', gate)
+        self.assertIn("CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}", gate)
+        self.assertIn("expected = 'success' if plan['jobs'][job] else 'skipped'", gate)
+        self.assertIn("assert result['result'] == expected", gate)
         self.assert_jobs(['.github/workflows/ci-linux-build.yml'], native=True,
                          browser=True, map_generators=True, deployment=True, cross_platform=True)
 

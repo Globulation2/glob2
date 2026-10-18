@@ -196,110 +196,162 @@ def changed_paths(base):
     return [os.fsdecode(path) for path in diff.stdout.split(b"\0") if path]
 
 
-def main():
-    from ci_policy import CHEAP_FLAGS, CHEAP_PATHS, FLAGS, full, select, browser_matrix, fingerprint
-    from ci_coverage_baseline import activated, successful_full_run
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--base", help="Base revision for reporting changed paths; master always runs full coverage")
-    args = parser.parse_args()
-    event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    payload = {}
-    if os.environ.get('GITHUB_EVENT_PATH'):
-        payload = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
-    labels = [label['name'] for label in payload.get('pull_request', {}).get('labels', [])]
-    draft = event == 'pull_request' and (os.environ.get('DRAFT') == 'true' or
-            payload.get('pull_request', {}).get('draft') is True)
-    requested = event == 'pull_request' and bool({'ci:run', 'ci:full'} & set(labels))
-    cheap_only = event == 'pull_request' and not requested
-    enabled = requested and activated()
-    paths, known, checkpoint = [], False, None
-    base = args.base if event == 'pull_request' else payload.get('before') or os.environ.get('BASE_SHA')
-    if base and event in ('pull_request', 'push'):
-        try:
-            paths = changed_paths(base)
-            known = True
-        except (OSError, subprocess.CalledProcessError) as error:
-            print(f"Could not inspect changed paths ({error}); hosted verification will use full coverage when requested", file=sys.stderr)
-    desired_selection, reasons = select(paths, labels, known)
-    complete = event in ('push', 'schedule', 'workflow_dispatch') or 'ci:full' in labels
-    if complete:
-        desired_selection = full()
-    if os.environ.get('CI_CALLED_FULL') == 'true':
-        complete = True
-        desired_selection = full()
-    desired = dict(desired_selection, reasons=reasons,
-                   profile='compatibility' if desired_selection['coverage'] else 'primary')
-    if enabled or complete:
-        selected = dict(desired_selection)
+def choose_checks(paths, known, event, labels=(), *, branch='', history=None, model=None,
+                  budget=.12, prediction_time=None, disabled=False, audit=False,
+                  browser_only=False, called_full=False, reused=False):
+    """Resolve the policy into one exact, dependency-complete execution plan."""
+    from ci_policy import CHEAP_FLAGS, CHEAP_PATHS, full, select, browser_matrix
+    from ci_check_inventory import inventory, execution_plan, flags_from_plan, from_flags, critical_change
+    from ci_predictive import select_checks
+    checks=inventory()
+    desired,reasons=select(paths,labels,known)
+    complete=event in ('push','schedule','workflow_dispatch') or called_full or 'ci:full' in labels
+    if complete:desired=full()
+    if browser_only:desired={flag:flag in ('browser','deployment') for flag in desired}
+    report=None;exceptions=[];mode='affected';selected_ids=[]
+    if reused:
+        mode='nightly-reused'
+    elif event=='pull_request' and (not known or critical_change(paths) or disabled or audit):
+        selected_ids=[c['id'] for c in checks];mode='full'
+        exceptions=[('diff unavailable' if not known else 'CI/build inventory changed' if critical_change(paths)
+                     else 'predictive reduction disabled' if disabled else 'full PR audit')]
+    elif complete:
+        mode='affected' if browser_only else 'full'
+        entries=browser_matrix(desired,paths,True)
+        selected_ids=from_flags(desired,entries,['arm64-v8a','armeabi-v7a','x86_64'],'full',checks)
+    elif event=='pull_request' and 'ci:run' not in labels:
+        engine=any(v for k,v in desired.items() if k not in CHEAP_FLAGS)
+        if engine:
+            mode='predictive'
+            candidates=[c for c in checks if not c.get('full_only')]
+            report=select_checks(candidates,paths if known else None,history,model,budget=budget,
+                                 event=event,branch=branch,prediction_time=prediction_time)
+            selected_ids=list(report['selected_ids'])
+            # New checks need one observed result; never infer a pass for them.
+            selected_ids += report['unknown_ids']
+            if report['unknown_ids']:exceptions.append('new checks: '+', '.join(report['unknown_ids']))
+            if 'ci:windows' in labels:selected_ids.append('windows')
+            if 'ci:android' in labels:selected_ids += [c['id'] for c in checks if c['job']=='android']
+            if 'ci:browsers' in labels:selected_ids += [c['id'] for c in checks if c['job']=='web-test']
+        else:mode='cheap-contracts'
+        for flag in CHEAP_FLAGS:
+            if desired.get(flag) and any(p.startswith(CHEAP_PATHS[flag]) for p in paths):selected_ids.append(flag)
     else:
-        # Preserve the existing job family selection until a new full hosted
-        # baseline validates the changed policy. Cheap docs/contracts stay cheap.
-        legacy = classify(paths) if known else {job: True for job in JOBS}
-        selected = dict(desired_selection)
-        selected.update(legacy)
-        selected.update(compatibility=legacy['native'] or legacy['map_generators'], variants=legacy['native'],
-                        coverage=legacy['native'], windows=legacy['native'], macos=False,
-                        android=coverage_profile(paths, event, legacy)['android'])
-    reused_run = None
-    if event == 'schedule':
-        reused_run = successful_full_run(os.environ.get('GITHUB_REPOSITORY', ''),
-                                         os.environ.get('GITHUB_SHA', ''),
-                                         os.environ.get('GH_TOKEN', ''))
-    if cheap_only or reused_run is not None:
-        # Cheap jobs (CHEAP_FLAGS) still follow their own paths on pull requests
-        # (all of them when the diff is unknown).
-        cheap = select(paths, (), known)[0] if cheap_only else {}
-        selected = {flag: flag in CHEAP_FLAGS and cheap.get(flag, False) and (not known or any(
-                        p.startswith(CHEAP_PATHS[flag]) for p in paths)) for flag in FLAGS}
-    browser_only = event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true'
-    if browser_only:
-        selected = {flag: flag in ('browser', 'deployment') for flag in FLAGS}
-    full_matrix = not browser_only and all(selected.values())
-    # Unknown/shared boundaries request the complete development matrix.
-    exhaustive = selected['coverage'] or complete or (not enabled and not cheap_only)
-    entries = browser_matrix(selected, paths, exhaustive or 'ci:browsers' in labels)
-    arches = ['arm64-v8a', 'armeabi-v7a', 'x86_64'] if exhaustive else ['arm64-v8a', 'x86_64']
-    effective = dict(selected, browsers_all=bool(entries and {e['browsers'] for e in entries} == {'chromium','firefox','webkit'}), android_arches=arches)
-    policy = fingerprint()
-    inventory = {'jobs': selected, 'native_secondary': 'full' if exhaustive else 'compatibility',
-                 'browsers': entries, 'android_arches': arches if selected['android'] else []}
+        # Explicit ci:run retains affected verification; primary GCC13 stays complete.
+        entries=browser_matrix(desired,paths,desired['coverage'] or 'ci:browsers' in labels)
+        selected_ids=from_flags(desired,entries,['arm64-v8a','armeabi-v7a','x86_64'],'full',checks)
+    selected_ids=sorted(set(selected_ids))
+    plan=execution_plan(selected_ids,checks)
+    plan.update(mode=mode,requested_budget=budget,predictor=report,exceptions=exceptions,
+                inventory_count=len(checks),ranked_count=report['selected_count'] if report else len(selected_ids),
+                executed_count=len(plan['executed_ids']))
+    # A prediction does not imply the compound full-matrix comparison ran.
+    full_matrix=set(plan['executed_ids'])=={c['id'] for c in checks}
+    plan['full_matrix']=full_matrix
+    return flags_from_plan(plan),plan,dict(desired,reasons=reasons)
+
+
+def _prediction_inputs():
+    """Latest trusted master bundle, with the committed inert seed as fallback."""
+    from ci_history import fetch_latest_bundle, load_history
+    directory=Path(__file__).resolve().parents[2]/'.github/ci';reasons=[]
+    repo=os.environ.get('GITHUB_REPOSITORY')
+    if repo and os.environ.get('GH_TOKEN'):
+        try:
+            target=Path('artifacts/ci-predictor')
+            if fetch_latest_bundle(repo,target,token=os.environ['GH_TOKEN']):directory=target
+            else:reasons.append('no trusted refreshed bundle; using committed seed')
+        except (OSError,ValueError,KeyError,RuntimeError) as error:
+            reasons.append('bundle unavailable; using committed seed: '+str(error))
+    try:history=load_history(directory/'history.json.gz')
+    except (OSError,ValueError,KeyError,EOFError) as error:
+        history={'schema':1,'records':[]};reasons.append('history unavailable: '+str(error))
+    return history,directory/'model.json.gz',reasons
+
+
+def main():
     import hashlib
-    inventory_hash = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
-    observed_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() if os.environ.get('CI_CALLED_FULL') == 'true' else os.environ.get('GITHUB_SHA')
-    engine_selected = any(on for flag, on in selected.items() if flag not in CHEAP_FLAGS)
-    mode = ('nightly-reused' if reused_run is not None else 'full' if full_matrix else
-            'affected' if engine_selected else 'cheap-contracts')
-    observation = dict(schema=3, verification_mode=mode, reused_run_id=reused_run, selection=selected, event=event, sha=observed_sha,
-                       full_matrix=full_matrix, desired=desired, effective=effective, tiers_enabled=enabled,
-                       draft=draft, paths=paths, checkpoint=checkpoint, policy_fingerprint=policy,
-                       inventory=inventory, inventory_fingerprint=inventory_hash,
-                       checkpoint_eligible=full_matrix and event in ('push','schedule','workflow_dispatch') and os.environ.get('CI_CALLED_FULL') != 'true')
-    artifact = Path('artifacts/ci-selection.json')
-    artifact.parent.mkdir(parents=True, exist_ok=True)
-    artifact.write_text(json.dumps(observation, indent=2) + '\n')
-    outputs = dict(selected, verification_mode=mode, browsers_all=effective['browsers_all'],
-                   android_arches=json.dumps(arches, separators=(',', ':')),
-                   browser_matrix=json.dumps({'include': entries}, separators=(',', ':')),
-                   secondary_profile='full' if exhaustive or 'ci:windows' in labels or any(p.startswith(('windows/', 'darwin/')) for p in paths) else 'compatibility', draft=draft,
-                   full_matrix=full_matrix, inventory_fingerprint=inventory_hash)
-    output = ''.join(f'{key}={str(value).lower() if isinstance(value,bool) else value}\n' for key,value in outputs.items())
-    print(json.dumps(observation, indent=2))
+    import time
+    from ci_policy import CHEAP_FLAGS, fingerprint, select
+    from ci_coverage_baseline import successful_full_run
+    from ci_check_inventory import fingerprint as inventory_fingerprint
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--base',help='PR base revision; master still runs full coverage')
+    args=parser.parse_args()
+    event=os.environ.get('GITHUB_EVENT_NAME','workflow_dispatch')
+    payload=json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text()) if os.environ.get('GITHUB_EVENT_PATH') else {}
+    pr=payload.get('pull_request',{})
+    labels=[x['name'] for x in pr.get('labels',[])]
+    branch=pr.get('head',{}).get('ref') or os.environ.get('GITHUB_REF_NAME','master')
+    draft=bool(pr.get('draft') or os.environ.get('DRAFT')=='true')
+    paths=[];known=False
+    base=args.base if event=='pull_request' else payload.get('before') or os.environ.get('BASE_SHA')
+    if base and event in ('pull_request','push'):
+        try:paths=changed_paths(base);known=True
+        except (OSError,subprocess.CalledProcessError) as error:print('Diff unavailable; selecting full coverage:',error,file=sys.stderr)
+    prediction_time=time.time()
+    budget=float(os.environ.get('CI_PR_CHECK_BUDGET') or '.12')
+    if not 0 < budget <= 1:raise ValueError('CI_PR_CHECK_BUDGET must be in (0, 1]')
+    percent=float(os.environ.get('CI_PR_FULL_AUDIT_PERCENT') or '0')
+    if not 0 <= percent <= 100:raise ValueError('CI_PR_FULL_AUDIT_PERCENT must be in [0, 100]')
+    sample=f'{os.environ.get("GITHUB_REPOSITORY","")}:{os.environ.get("GITHUB_SHA","")}:{os.environ.get("GITHUB_RUN_ID","")}'
+    audit=int(hashlib.sha256(sample.encode()).hexdigest()[:16],16)/2**64 < percent/100
+    history=model=None;input_reasons=[]
+    # Full and explicit affected runs need neither the model nor a network restore.
+    if event=='pull_request' and not ({'ci:run','ci:full'} & set(labels)):
+        from ci_check_inventory import critical_change
+        desired_flags,_=select(paths,labels,known)
+        engine=any(value for flag,value in desired_flags.items() if flag not in CHEAP_FLAGS)
+        if (known and engine and not critical_change(paths) and not audit
+                and os.environ.get('CI_PREDICTIVE_ENABLED','true')!='false'):
+            history,model,input_reasons=_prediction_inputs()
+    reused_run=None
+    if event=='schedule':reused_run=successful_full_run(os.environ.get('GITHUB_REPOSITORY',''),os.environ.get('GITHUB_SHA',''),os.environ.get('GH_TOKEN',''))
+    selected,plan,desired=choose_checks(paths,known,event,labels,branch=branch,history=history,model=model,
+        budget=budget,prediction_time=prediction_time,disabled=os.environ.get('CI_PREDICTIVE_ENABLED','true')=='false',
+        audit=audit,browser_only=event=='workflow_dispatch' and os.environ.get('BROWSER_ONLY')=='true',
+        called_full=os.environ.get('CI_CALLED_FULL')=='true',reused=reused_run is not None)
+    if plan['predictor']:plan['predictor']['fallback_reasons'] += input_reasons
+    options=plan['options'];entries=options['browser_matrix']['include'];arches=options['android_arches']
+    policy=fingerprint()
+    inventory_hash=hashlib.sha256(json.dumps(
+        {'catalog':inventory_fingerprint(),'checks':plan['executed_ids'],'options':options},
+        sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    sha=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() if os.environ.get('CI_CALLED_FULL')=='true' else os.environ.get('GITHUB_SHA')
+    observation=dict(schema=4,verification_mode=plan['mode'],reused_run_id=reused_run,selection=selected,event=event,
+        sha=sha,branch=branch,prediction_time=prediction_time,base_sha=base,full_matrix=plan['full_matrix'],desired=desired,
+        effective=dict(selected,browsers_all=bool(entries and {e['browsers'] for e in entries}=={'chromium','firefox','webkit'}),android_arches=arches),
+        tiers_enabled=False,predictive_enabled=plan['mode']=='predictive',draft=draft,paths=paths,checkpoint=None,policy_fingerprint=policy,
+        inventory={'checks':plan['executed_ids'],'jobs':selected,'browsers':entries,'android_arches':arches},
+        inventory_fingerprint=inventory_hash,execution_plan=plan,
+        checkpoint_eligible=plan['full_matrix'] and event in ('push','schedule','workflow_dispatch') and os.environ.get('CI_CALLED_FULL')!='true')
+    target=Path('artifacts/ci-selection.json');target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(observation,indent=2)+'\n')
+    outputs=dict(selected,verification_mode=plan['mode'],browsers_all=observation['effective']['browsers_all'],
+        android_arches=json.dumps(arches,separators=(',',':')),browser_matrix=json.dumps(options['browser_matrix'],separators=(',',':')),
+        variants_matrix=json.dumps(options['variants_matrix'],separators=(',',':')),secondary_profile='full',draft=draft,
+        full_matrix=plan['full_matrix'],inventory_fingerprint=inventory_hash,job_plan=json.dumps(plan,separators=(',',':')))
+    for name in ('gcc11','gcc13'):
+        outputs[name+'_shards']=json.dumps(options[name+'_shards'],separators=(',',':'))
+        outputs[name+'_generators']=json.dumps(options[name+'_generators'],separators=(',',':'))
+        outputs[name+'_regressions']=options[name+'_regressions']
+    outputs['clang_regressions']=options['clang_regressions']
+    for job,on in plan['jobs'].items():outputs['run_'+job.replace('-','_')]=on
+    lines=''.join(f'{key}={str(value).lower() if isinstance(value,bool) else value}\n' for key,value in outputs.items())
+    print(json.dumps(observation,indent=2))
     if os.environ.get('GITHUB_OUTPUT'):
-        with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as target:
-            target.write(output)
-    summary = os.environ.get('GITHUB_STEP_SUMMARY')
-    if summary:
-        with open(summary, 'a') as target:
-            target.write('## Selected development checks\n')
-            target.write(f'Verification mode: **{mode}**.\n')
-            if cheap_only:
-                target.write('PR: cheap contracts only; use `ci:run` or `ci:full` to request hosted verification.\n')
-            if reused_run is not None:
-                target.write(f'Nightly full coverage already verified by run {reused_run} for this exact revision and policy.\n')
-            if not engine_selected:
-                target.write('Cheap-only success does not establish engine verification or acceptance of PR evidence.\n')
-            target.write('```json\n' + json.dumps(observation, indent=2) + '\n```\n')
+        with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write(lines)
+    if os.environ.get('GITHUB_STEP_SUMMARY'):
+        with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('## Selected development checks\n\n'+f'Verification mode: **{plan["mode"]}**.\n\n')
+            f.write(f'Ranked budget: {budget:.0%}; {plan["ranked_count"]} ranked checks; {plan["executed_count"]} checks execute after prerequisites and policy additions, out of {plan["inventory_count"]}.\n\n')
+            if plan['predictor']:f.write('Model: `'+plan['predictor']['model_id']+'`.\n\n')
+            for reason in plan['exceptions']+input_reasons:f.write('- '+reason+'\n')
+            f.write('\n| Check | Decision |\n|---|---|\n')
+            from ci_check_inventory import inventory
+            for check in inventory():
+                cid=check['id'];decision='selected' if cid in plan['ranked_ids'] else 'prerequisite' if cid in plan['executed_ids'] else 'not selected'
+                f.write(f'| {check["name"]} | {decision} |\n')
+            if not any(v for k,v in selected.items() if k not in CHEAP_FLAGS):f.write('\nCheap-only success does not establish engine verification or acceptance of PR evidence.\n')
 
 
-if __name__ == "__main__":
-    main()
+if __name__=='__main__':main()

@@ -37,6 +37,15 @@ on:
       run_tests:
         type: boolean
         default: false
+      run_regressions:
+        type: boolean
+        default: true
+      test_shards:
+        type: string
+        default: '[1,2,3,4]'
+      generator_suites:
+        type: string
+        default: ''
       runtime_packages:
         type: boolean
         default: false
@@ -270,7 +279,7 @@ jobs:
 
   regressions:
     name: Linux CLI and compatibility evidence (${{ inputs.compiler }})
-    if: ${{ !cancelled() && !inputs.generator_only && !inputs.build_only && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
+    if: ${{ !cancelled() && !inputs.generator_only && !inputs.build_only && inputs.run_regressions && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
     needs: [build, reuse]
     container: ${{ inputs.validate_runtime && inputs.image || '' }}
     runs-on: ${{ inputs.runner }}
@@ -358,14 +367,15 @@ jobs:
     name: Linux tests (${{ inputs.runner }}, shard ${{ matrix.shard }}/4)
     needs: [build, reuse]
     container: ${{ inputs.validate_runtime && inputs.image || '' }}
-    if: ${{ !cancelled() && !inputs.build_only && inputs.run_tests && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
+    if: ${{ !cancelled() && !inputs.build_only && inputs.run_tests && inputs.test_shards != '[]' && join(fromJSON(inputs.test_shards), ',') != '' && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
     env:
       CI_RUNNER_FAMILY: ${{ inputs.runner }}
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        # Keep each selected shard in the original four-way partition.
+        shard: ${{ fromJSON(inputs.test_shards) }}
     steps:
       - name: Bootstrap clean runtime image
         if: ${{ inputs.validate_runtime }}
@@ -634,7 +644,8 @@ jobs:
   audit:
     name: Audit native shard coverage (${{ inputs.runner }})
     needs: tests
-    if: ${{ !cancelled() && inputs.run_tests }}
+    # A partial prediction retains its inventories but cannot attest full coverage.
+    if: ${{ !cancelled() && inputs.run_tests && join(fromJSON(inputs.test_shards), ',') == '1,2,3,4' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -649,7 +660,7 @@ jobs:
   generators:
     name: Map generators (${{ inputs.runner }}, ${{ matrix.suite }})
     needs: [build, reuse]
-    if: ${{ !cancelled() && !inputs.build_only && inputs.map_generators && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
+    if: ${{ !cancelled() && !inputs.build_only && inputs.map_generators && inputs.generator_suites != '[]' && (inputs.generator_suites == '' || join(fromJSON(inputs.generator_suites), ',') != '') && (needs.build.result == 'success' || needs.reuse.result == 'success') }}
     runs-on: ${{ inputs.runner }}
     env:
       CCACHE: 1
@@ -659,7 +670,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: ${{ fromJSON(inputs.coverage_profile == 'full' && '["sweep-a","sweep-b","telemetry"]' || '["golden","telemetry"]') }}
+        suite: ${{ fromJSON(inputs.generator_suites || (inputs.coverage_profile == 'full' && '["sweep-a","sweep-b","telemetry"]' || '["golden","telemetry"]')) }}
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1

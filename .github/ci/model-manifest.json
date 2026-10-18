@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "files": {
+    "model.json.gz": "ef051278ab8d6d66f4279bc587664d853cf90c18caf8ffbfe387b3f6ddba68f7",
+    "history.json.gz": "901097054655bc8a41722c66c004f9d416ea2b099a91c8f3a8f4b36461a35354"
+  },
+  "model_id": "history-et54-ee68d5dd155866eb28d2",
+  "feature_schema": "history54-v1",
+  "training_cutoff": 1792334047.0
+}

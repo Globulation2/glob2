@@ -32,6 +32,7 @@ RELEASE = {
 EXEMPT = {
     'thread-sanitizer.yml': 'callable validation inherits build cancellation',
     'ci-metrics.yml': 'each run measures a distinct, completed build run',
+    'ci-model.yml': 'serialized master model publisher must complete its trusted bundle',
     'cancel-superseded.yml': 'the canceller; cancels its own older runs unconditionally',
 }
 
@@ -96,6 +97,12 @@ class WorkflowConcurrencyTest(unittest.TestCase):
                     self.assertIsNone(declared, 'call-only workflows inherit their caller\'s cancellation')
                 elif declared is not None:
                     self.assertFalse(declared[0].startswith('${{'), 'group needs a literal workflow prefix')
+
+    def test_model_publication_is_serialized_without_cancelling_in_progress(self):
+        text = workflows()['ci-model.yml']
+        self.assertEqual(concurrency(text), ('ci-selection-model', 'false'))
+        self.assertEqual(triggers(text), {'workflow_run', 'schedule', 'workflow_dispatch'})
+        self.assertNotIn('.github/workflows/ci-model.yml', cancel.CI_WORKFLOWS)
 
     def test_release_workflows_never_cancel_in_progress(self):
         for name in RELEASE:
