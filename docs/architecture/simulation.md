@@ -452,16 +452,17 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   errors survive executor batch retirement and surface at save/publication.
 - Stale building walking fields are refreshed by `BuildingGradientPipeline`
   (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
-  refresh and keeps serving the old field; at the next observation up to four requests are
-  staged from the shared handle with the periodic job, built on
-  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
-  default 8), before team stepping. Publication swaps the field and its search on
+  refresh and keeps serving the old field. At each observation up to four requests
+  are admitted globally from the FIFO, staged from the shared handle with the
+  periodic job, built on workers and published `buildingGradientDelay` ticks
+  later (the match rule, 1–8, default 8), before team stepping. Publication swaps the field and its search on
   the owner; it is discarded if a synchronous rebuild or a reset superseded it.
   Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
-  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
-  walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. First use after creation, idle eviction,
-  movement, or a type/range change queues initialization on the same pipeline.
+  the newest capture. Queueing before admission adds to the publication delay for
+  both this metadata and the serving walking field. Team-wide resets and
+  forbidden-area paints keep old fields serving until the refresh publishes.
+  First use after creation, idle eviction, movement, or a type/range change
+  queues initialization on the same pipeline.
   Until publication, route queries return Pending. Assigned ground units retain
   their job and use the ordinary flyer's wrapped eight-direction heading toward
   the building centre (flag position for attraction routes), trying nearby
@@ -469,9 +470,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   occupancy still apply; with no legal step they wait. This fallback consumes no
   movement RNG and yields to gradient routing as soon as the field is available.
   Food/healing destination selection still skips pending candidates. Initialization
-  seeds and settles only the minimum depth (32 cost units), then transfers the unfinished
-  search buckets with the field. Hiring proposals and live readers continue that
-  search only as far as their requested cells. Warm refreshes retain the existing
+  seeds and settles only the minimum depth (32 cost units), then transfers the
+  unfinished search buckets with the field. Hiring proposals and live readers
+  continue that search only as far as their requested cells. Warm refreshes retain the existing
   depth model. The FIFO has no synchronous overflow fallback; stale entries are
   pruned and each live building/route/swim slot has at most one request.
   Saving retains the existing complete-field representation and remaining

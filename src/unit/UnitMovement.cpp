@@ -647,8 +647,6 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 			});
 		if (result == StepResult::Pending)
 			followPendingBuildingRoute(*targetBuilding, route);
-		else if (result == StepResult::AtGoal)
-			waitForGradient();
 		else if (result == StepResult::Step)
 			movement = MOV_GOING_DX_DY;
 		else

@@ -254,8 +254,8 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b) throw std::logic_error("Staged building gradient lost its destination");
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
-		// Owner cost planes from the same boundary as the lease the seeder reads.
-		p.inputs = {}; // The worker derives immutable movement planes from the lease.
+		// Defer movement-plane construction to the worker's captured lease.
+		p.inputs = {};
 		job->snapshotLease = foundation.buildingGradientView();
 	}
 	rt.buildings.prepare(staged);
