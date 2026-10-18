@@ -1,0 +1,56 @@
+{
+  "status": "native_fixture_qualified",
+  "mac_binary_sha256": "29493368329536b6ad923ef38ba21a208926633e06217a8c09b0568d0f2ada7c",
+  "linux_binary_sha256": "abcbd2cf0de3891c7471432aef2788071bef3b3dbe17c3c0de073ff7b80981ae",
+  "source_revision": "f65c8d1698f6deefc4820209e69ad704f91d5776",
+  "initial_parity": {
+    "threads": [
+      1,
+      4
+    ],
+    "linux_hosts": [
+      "pharaoh-dev-1.local",
+      "devlaptop.local",
+      "therig.local",
+      "pharaoh-dev-2.local"
+    ],
+    "raw_outputs_per_arm": 8,
+    "report_sha256": "2aeda7e344c2e2b89dbd3618b1a464688d4e0472694f810ea1755e56b4d93ca7"
+  },
+  "continuation": {
+    "input_checkpoint_sha256": "6b1c0c032a33975f2816ae64728d7d8fcb65252a7b3d74c2b66aeb250587e3ef",
+    "tick_range": [
+      2048,
+      4096
+    ],
+    "threads": [
+      1,
+      4
+    ],
+    "raw_outputs_per_arm": 13,
+    "identical_replay_bytes": true,
+    "identical_periodic_and_final_save_bytes": true,
+    "report_sha256": "7c3000e5245b106cbc8911ae42f684dd98f874bc8ef6bcbc7daed98cbfa12934"
+  },
+  "parser": {
+    "complete_movement_rows": 22,
+    "known_counter_rows": 22,
+    "parsed_features_and_labels_identical": true,
+    "report_sha256": "576299dc46e6c3b5a882ae62204974e810268da6eee6f6ae51aaa34fa867a33e"
+  },
+  "observed_counter_totals": {
+    "empty_goal": 10,
+    "persistent_progress_blocked": 26,
+    "unit_progress_blocked": 202,
+    "sidestep_used": 16,
+    "reachable_no_move": 16,
+    "movement_queries": 900
+  },
+  "contract_canonical_sha256": "e4cdcf9770318ac2b929a86535b7a4e7a96ad689865a6609f476a1d1193e6866",
+  "finished_utc": "2026-10-18T20:26:53.123042+00:00",
+  "limitations": [
+    "Small Linux x86_64 versus macOS arm64 qualification fixtures; other platforms and broad gameplay coverage omitted.",
+    "Direct fixture data sealed through permanent dataset.seal/load. Generic Mac worker transport/bundle admission remains parent-owned.",
+    "No performance or new model-quality claim."
+  ]
+}

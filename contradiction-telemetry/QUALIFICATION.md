@@ -7,7 +7,7 @@ Game source `79de5484410beee884f85ba293bb44d38f226c55`; test-only stub repair `3
 - 15 engine cases and14 unit cases passed, including contradiction classification/RNG and gradient tests. Original hot calling interfaces and the compiled ordinary selector remain without tracking arguments/helper calls.
 - Eight old/new × observer off/on × one/four-thread arms matched raw world/snapshot/full-replay vectors and final save bytes. Eight old-save continuations, exploration parity,15 delayed-publication traces and24 pending-phase continuations passed. Original save-cadence and RSS-censor failures, diagnoses and unchanged-assertion reruns are retained.
 - All four remote hosts then ran the exact same2,048-tick scenario through the permanent coordinator. Their vectors, final saves and all emitted telemetry were byte-identical; original engine vectors and query labels matched. Permanent augmented export accepted the new columns and non-overlapping totals. See crosshost/verified.json and its archive.
-- All55 Python suites passed for the later collection-tool changes. See collection-tools-pools/ for exact source hashes, tested source archive, logs and independent review.
+- All55 Python tests passed for the later collection-tool changes. See collection-tools-pools/ for exact source hashes, tested source archive, logs and independent review.
 
 ## CPU limits
 
@@ -20,3 +20,9 @@ The fresh128-game round uses16 preselected slots per eight formats, exact origin
 No new trained-model benefit is claimed. Windows/macOS/browser execution for this observer revision and manual gameplay are not verified. PR remains draft. The first refit must compare baseline and augmented variants on identical new rows, weights and grouped splits before considering any inference/bookkeeping changes.
 
 Native archive reassembly and verification commands are in native/README.md. Recorded absolute campaign paths are provenance; archived relative files and their hashes provide the reviewable contents.
+
+## macOS ARM64 qualification
+
+An ordinary Apple Clang release of the same native source/model/contract passed the small matched fixtures. Both one/four-thread Mac arms matched all four Linux hosts byte-for-byte across eight initial raw outputs. Loading the Linux checkpoint and continuing ticks2048–4096 matched thirteen outputs, including full replay bytes and periodic/final saves. Permanent seal/load accepted22 known-counter movement episodes with identical features and labels. All six counter categories were exercised. See macos/QUALIFIED.json and macos/macos-native-qualification.tar.gz for exact commands, raw evidence, dependency identities and limitations.
+
+The Mac binary has SHA25629493368329536b6ad923ef38ba21a208926633e06217a8c09b0568d0f2ada7c. Existing Mac and Linux SDL dependency versions differ; no upgrades were performed, and the tested versions/hashes are recorded. This is fixture-level compatibility evidence, not a broad gameplay or CPU claim. Mac worker transport qualification and next-round admission are separate. Current128-game collection remains on its original four remote hosts.

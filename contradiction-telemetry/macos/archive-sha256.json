@@ -1,0 +1,8 @@
+{
+  "path": "macos-native-qualification.tar.gz",
+  "sha256": "e14762e862f7d8ff689ca88ada16980089011ba973af14a4e31d3517cf9b9c9d",
+  "bytes": 6029225,
+  "evidence_files": 124,
+  "qualified_report_sha256": "fbdf4512d0c86ce547b209dec8cd6d2fa6ead07720a0453992586a8ca3deccaf",
+  "all_extracted_file_hashes_verified": 124
+}
