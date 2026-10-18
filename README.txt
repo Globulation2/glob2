@@ -5,3 +5,8 @@ verification-evidence.zip: macOS commands, source identity, logs, saves and trac
 linux-callgrind-evidence.zip: clean before/after profiles, Linux release build/test logs, traces and saves.
 linux-callgrind-summary.json adds inclusive hot-path and exclusive remaining-work group summaries.
 Earlier checksum-diagnostic profiles are excluded from the performance comparison.
+
+Operation-local demand/quota reuse experiment against PR head 0e36aee51:
+reuse-prototype.patch: tested implementation, two regression tests and architecture note; uncommitted.
+reuse-summary.json: before/after instructions and compatibility results.
+linux-reuse-evidence.zip and macos-reuse-evidence.zip: profiles, builds, tests, checksums and saves.
