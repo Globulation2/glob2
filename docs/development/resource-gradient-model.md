@@ -44,19 +44,74 @@ pinned development numpy/scikit-learn dependencies in `requirements-dev.txt`.
 ```sh
 scons release=1 --build=build/resource-gradient-release -j4 \
   build/resource-gradient-release/src/glob2
+python3 tools/resource_gradient_model.py plan \
+  --binary build/resource-gradient-release/src/glob2 \
+  --output artifacts/resource-gradient-plan.json --games 256 --seed 5101
+# Inspect the printed coverage and saved plan before starting collection.
 python3 tools/resource_gradient_model.py run \
   --binary build/resource-gradient-release/src/glob2 \
+  --plan artifacts/resource-gradient-plan.json \
   --output artifacts/resource-gradient-training \
-  --seeds 5101 5102 5103 5104 --ticks 90000 --jobs 4 --threads 4
+  --ticks 90000 --jobs 4 --threads 4
 ```
 
-The default plan has four independently seeded maps per format: Isles 64 duel,
-River 128 four-player FFA, River 256 4v4, and Savannah 256 sixteen-player FFA.
-All use Nicowar. `--jobs` bounds concurrent games; `--threads` is compute
-participants per game. Collection timings are diagnostic and never CPU evidence.
-A custom `--plan plan.json` is a list of records with `format`, `generator`,
-`size`, `players`, `alliances`, `map_seed`, `game_seed` and optional `ai` fields.
-Keep `format` consistent for comparable generator/size/player/alliance settings.
+The default is a **bounded 256-game stratified random sample**, rather than a
+cross product or fixed map lineup. It uses the same `generator_samples` helper
+and catalog `searchValues` domains as the AI rating tournaments:
+
+- Thirty-two games each: 1v1, 3/4/8/16-player FFA, 2v2, 4v4 and 8v8.
+- All non-editor generators advertised by the supplied binary are eligible.
+  Choose among the least-used compatible generators, so each is sampled before
+  any compatible repeat. A budget smaller than the generator pool samples a
+  subset; the primary-plan coverage report explicitly lists unselected generators.
+- Width and height draw from 64, 128, 256 and 512 tiles, including rectangular
+  maps with aspect ratio at most 2. Registered dimensions/player counts must
+  permit the combination. Density stays between 1,024 and 32,768 tiles per
+  colony, avoiding extremely cramped starts and very sparse expensive games.
+  Compatible shapes receive balanced exposure.
+- Generator-specific controls and starting workers vary over their catalog
+  search domains. These are the engine's curated search values, not arbitrary
+  values invented by the collector. Geometry and player count take precedence.
+- All native AIs in the catalog are eligible. Each game has a 50% chance of
+  a homogeneous roster; otherwise it draws a mixed roster; a mixed draw can still
+  coincide. AI seat exposure is balanced, and alliance seating is shuffled.
+- Each game has separate random 32-bit map and simulation seeds. Plan order is
+  shuffled, and the sampling seed, entire catalog snapshot, controls, roster and
+  map dimensions are frozen before collection. The same inputs reproduce the
+  same plan.
+
+`--games`, `--seed`, `--generators`, `--sizes`, `--formats` and `--ais` constrain
+the sampling design on `plan` or on `run` without a supplied plan. `plan` only
+inspects the catalog and writes a plan; it runs no matches. The game budget must
+cover every requested format at least once. A useful fit needs at least four
+independent maps **with complete episodes** per format; the 256-game default
+provides 32 planned maps each but sparse games may yield no usable episodes.
+Inspect collection coverage before fitting or increasing the budget.
+
+`--jobs` bounds concurrent games; `--threads` is compute participants per game.
+Collection timings are diagnostic and never CPU evidence. Custom legacy JSON
+lists are also accepted: records need `format`, `generator`, `width`/`height`
+(or square `size`), `players`, `alliances`, `map_seed`, `game_seed`, optional
+per-seat `ais` (or uniform `ai`) and optional displayed `generator_params`.
+`format` should identify the match rules (such as `4ffa`), not a unique map or
+seed: it is the balancing/holdout stratum. Generator parameters cannot override
+the separately recorded geometry, player count or map seed. Individual catalog bounds do not encode every generator's relationship constraints.
+Each sampled match therefore freezes up to 32 map candidates: its balanced primary
+draw followed by random alternatives from the same eligible pool. The format,
+AI roster, alliances and simulation seed stay fixed while map inputs vary.
+Collection tries the candidates in order, accepting the first playable map.
+Only structured invalid-request, placement and world-validation rejections are
+retried. Crashes, script errors, missing dependencies and other failures stop the
+run; exhausting candidates also fails rather than shortening the tournament.
+
+Every rejection keeps its specification, command, JSON report and log. The
+manifest records the actual selected map and its validation-group identity;
+`coverage.json` reports actual completed-match coverage separately from planned
+primary coverage. This samples playable configurations conditional on successful
+generation, so acceptance can change the generator/dimension mix. Inspect both
+coverage and rejections before claiming broad representation; a catalog entry
+alone does not establish a feasible generator/size/player combination. Custom
+lists have no alternatives unless explicitly supplied in `map_candidates`.
 
 The output retains the frozen plan, binary/model hashes, exact commands, map
 hashes, losslessly compressed episode/query CSVs and an atomically updated manifest. Repeating the exact
@@ -78,7 +133,7 @@ python3 tools/resource_gradient_model.py fit \
 python3 tools/resource_gradient_model.py emit \
   --model artifacts/resource-gradient-training/model.json \
   --header artifacts/resource-gradient-training/ResourceGradientModel.h
-python3 -m unittest tools.test_resource_gradient_model
+python3 -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_tournament
 ```
 
 The feature list, transforms and regularization are fixed. Every fit standardizes
@@ -86,12 +141,22 @@ using its training rows only, fits logistic heads with C=1 and conditional ridge
 heads with alpha=100, then folds standardization into exported integer
 coefficients. Constant outcome classes are represented explicitly. Weights give
 equal mass to each format, then each starting state, then collection game, then
-episode. All collection rounds for a starting state stay together.
+episode. All collection rounds, AI-roster changes and seat swaps of the same generated
+map stay together. New manifests record this map identity separately from the
+full game identity; older manifests with saved map specifications derive the same identity.
+Manifests without map metadata retain their historical starting-state groups.
 
-At least four independent states per format are required. A quarter of states per format
-(rounded up), selected by sorted state identity without labels, are excluded from
-coefficients as a holdout; development states have three grouped validation folds. Reports
-score the quantized integer model. Held-out error and selected-episode benefit
+At least four independent maps with complete episodes per format are required.
+Approximately a quarter of maps are excluded from coefficients as a holdout;
+development maps have three validation folds. Seeded `StratifiedGroupKFold`
+assigns whole maps, stratifying map/format pairs rather than episodes. This
+handles maps reused across format labels without splitting them. Every format
+must retain at least one holdout map, three development maps, and at least one
+validation/two training maps in each fold; otherwise fitting fails explicitly
+and requests more independent maps. Split coverage is recorded in the fit report. Reports
+score the quantized integer model, including holdout slices by match format,
+generator and dimensions. Each slice reports its sample/map count; small slices
+are diagnostic, not evidence of precise generalization performance. Held-out error and selected-episode benefit
 are useful diagnostics, but do not prove lower full-match CPU or better gameplay.
 Measure prospective matched maps after refitting, because a different scheduler
 changes the trajectories that generate the next dataset.

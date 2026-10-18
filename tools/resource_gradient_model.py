@@ -24,6 +24,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
+from tools.resource_gradient_tournament import sample_plan, coverage, map_identity, digest
 FEATURES = ('age', 'q32', 'q128', 'source_added', 'source_removed',
             'source_added_frac_q12', 'source_removed_frac_q12')
 HEADS = ('positive_probability', 'negative_probability', 'positive_mean', 'negative_mean')
@@ -134,26 +136,93 @@ inline I sigmoid(I z) {
     Path(path).write_text(text)
 
 
-def default_plan(seeds):
-    formats = [('isles-64-duel','isles',64,2,[1,2]),
-               ('river-128-4ffa','river',128,4,list(range(1,5))),
-               ('river-256-4v4','river',256,8,[1]*4+[2]*4),
-               ('savannah-256-16ffa','savannah',256,16,list(range(1,17)))]
-    return [dict(format=name,generator=generator,size=size,players=players,alliances=alliances,
-                 map_seed=seed*100+i,game_seed=seed*100+i,ai='nicowar')
-            for seed in seeds for i,(name,generator,size,players,alliances) in enumerate(formats)]
+def make_plan(args):
+    binary = Path(args.binary).resolve()
+    catalog = json.loads(subprocess.check_output(
+        [str(binary), 'info', 'catalog', '--format', 'json'], cwd=ROOT, timeout=60))
+    return sample_plan(catalog, args.games, args.seed, generators=args.generators,
+                       sizes=args.sizes, formats=args.formats, ais=args.ais)
+
+
+def plan(args):
+    document = make_plan(args)
+    save(args.output, document)
+    print(json.dumps(document['coverage'], indent=2))
+
+
+def validate_specs(specs):
+    if not isinstance(specs, list) or not specs: raise ValueError('Plan needs a nonempty game list')
+    for spec in specs:
+        n = spec['players']
+        if type(n) is not int or not 2 <= n <= 16: raise ValueError('Plan players must be 2..16')
+        for key in ['width', 'height']:
+            size = spec.get(key, spec.get('size'))
+            if type(size) is not int or size < 1 or size > 512 or size & (size-1):
+                raise ValueError('Plan dimensions must be powers of two, at most 512')
+        for key in ['map_seed', 'game_seed']:
+            if type(spec[key]) is not int or not 0 <= spec[key] <= 2**32-1: raise ValueError('Plan seeds must be uint32')
+        if len(spec['alliances']) != n or any(type(v) is not int or not 1 <= v <= n for v in spec['alliances']):
+            raise ValueError('Plan needs one valid alliance per player')
+        if len(set(spec['alliances'])) < 2: raise ValueError('Plan must have opposing alliances')
+        if 'ais' in spec and (len(spec['ais']) != n or any(not isinstance(a, str) or not a for a in spec['ais'])):
+            raise ValueError('Plan needs one AI name per player')
+        params = spec.get('generator_params', {})
+        if not isinstance(params, dict) or set(params) & {'width', 'height', 'teams', 'seed'}:
+            raise ValueError('Generator params cannot override explicit map identity')
+        if any(not isinstance(k, str) or type(v) is not int or v < 0 for k, v in params.items()):
+            raise ValueError('Generator params must be nonnegative integer catalog controls')
+        candidates=spec.get('map_candidates', [])
+        if not isinstance(candidates,list) or len(candidates)>31:raise ValueError('At most 32 map candidates per match')
+        for candidate in candidates:
+            if not isinstance(candidate,dict) or set(candidate)-{'generator','width','height','map_seed','generator_params'}:
+                raise ValueError('Map candidates may change only generation inputs')
+            validate_specs([{**{k:v for k,v in spec.items() if k!='map_candidates'},**candidate}])
+    if len({digest(spec) for spec in specs}) != len(specs): raise ValueError('Duplicate starting states in plan')
+
+
+def generate_map(binary, spec, directory, env):
+    attempts=[]
+    base={k:v for k,v in spec.items() if k!='map_candidates'}
+    for index,candidate in enumerate([{}]+spec.get('map_candidates', [])):
+        actual={**base,**candidate};report=directory/f'generation-{index}.json'
+        report.unlink(missing_ok=True)
+        command=[str(binary),'map','generate',actual['generator'],'--seed',str(actual['map_seed']),
+                 '--width',str(actual.get('width',actual.get('size'))),
+                 '--height',str(actual.get('height',actual.get('size'))),'--teams',str(actual['players']),
+                 '--output',str(directory/'map.map.gz'),'--report-file',str(report)]
+        for key,value in sorted(actual.get('generator_params', {}).items()):command+=['--set',f'{key}={value}']
+        with (directory/f'generation-{index}.log').open('w') as log:
+            result=subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
+        attempts.append(dict(spec=actual,command=command,returncode=result.returncode))
+        save(directory/'generation-attempts.json',attempts)
+        if result.returncode==0:
+            save(directory/'selected-map.json',actual)
+            return actual,attempts
+        failure=json.loads(report.read_text()) if report.exists() else {}
+        # Retry only explicit generation rejections. Crashes, bad CLI options,
+        # missing dependencies, script errors and timeouts must remain failures.
+        if result.returncode!=2 or failure.get('report_type')!='generation_failure' or failure.get('generation',{}).get('outcome',{}).get('error') not in {'invalid_request','placement_failed','invalid_world'}:
+            raise subprocess.CalledProcessError(result.returncode,command)
+    raise RuntimeError(f'All map candidates rejected; inspect {directory}/generation-attempts.json')
 
 
 def run(args):
     binary = Path(args.binary).resolve()
     out = Path(args.output).resolve(); out.mkdir(parents=True,exist_ok=True)
-    plan = json.loads(Path(args.plan).read_text()) if args.plan else default_plan(args.seeds)
-    identities=[json.dumps(spec,sort_keys=True,separators=(',',':')) for spec in plan]
-    if len(set(identities))!=len(identities):raise ValueError('Duplicate starting states in plan')
+    document = json.loads(Path(args.plan).read_text()) if args.plan else make_plan(args)
+    if isinstance(document, dict) and document.get('schema') != 1: raise ValueError('Unsupported tournament plan schema')
+    plan = document['games'] if isinstance(document, dict) else document
+    if isinstance(document, dict) and digest(document['catalog']) != document['catalog_sha256']:
+        raise ValueError('Plan catalog hash mismatch')
+    validate_specs(plan)
+    eligible=(document['design']['generators'] if isinstance(document,dict) else
+              sorted({s['generator'] for s in plan} | {c.get('generator',s['generator']) for s in plan for c in s.get('map_candidates', [])}))
+    print(json.dumps(coverage(plan,eligible), indent=2), flush=True)
     binary_hash = sha(binary)
-    frozen = dict(schema=1,binary_sha256=binary_hash,model_sha256=sha(DEFAULT_MODEL),header_sha256=sha(HEADER),
+    frozen = dict(schema=2,binary_sha256=binary_hash,model_sha256=sha(DEFAULT_MODEL),header_sha256=sha(HEADER),
                   source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                  tick_cap=args.ticks,threads=args.threads,plan=plan)
+                  tick_cap=args.ticks,threads=args.threads,plan=plan,
+                  sampling=document if isinstance(document, dict) else None)
     frozen_path = out/'plan.json'
     if frozen_path.exists() and json.loads(frozen_path.read_text()) != frozen:
         raise ValueError('Output has a different frozen plan/build; choose a fresh directory')
@@ -161,20 +230,19 @@ def run(args):
     manifest_path=out/'manifest.json'
     manifest=json.loads(manifest_path.read_text()) if manifest_path.exists() else []
     done={r['group'] for r in manifest}
+    save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
     def game(spec):
         identity=json.dumps(spec,sort_keys=True,separators=(',',':'))
         group=hashlib.sha256(identity.encode()).hexdigest()[:16]
         if group in done:return None
         directory=out/group; directory.mkdir(exist_ok=True)
         map_path=directory/'map.map.gz'
-        generate=[str(binary),'map','generate',spec['generator'],'--seed',str(spec['map_seed']),
-                  '--width',str(spec['size']),'--height',str(spec['size']),'--teams',str(spec['players']),'--output',str(map_path)]
         command=[str(binary),'game','run','--map-file',str(map_path),'--game-seed',str(spec['game_seed']),
                  '--ticks',str(args.ticks),'--compute-threads',str(args.threads),'--gpu','off',
                  '--compute-telemetry','off','--output-dir',str(directory),'--resource-gradient-probe']
-        for alliance in spec['alliances']: command+=['--player',spec.get('ai','nicowar'),'--alliance',str(alliance)]
+        roster = spec.get('ais', [spec.get('ai', 'nicowar')]*spec['players'])
+        for ai, alliance in zip(roster, spec['alliances']): command+=['--player',ai,'--alliance',str(alliance)]
         env={k:v for k,v in os.environ.items() if not k.startswith('GLOB2_RESOURCE_')}
-        save(directory/'commands.json',dict(generate=generate,run=command))
         episode=directory/'gradient-episodes.csv'
         result=directory/'result.json'
         # A process can finish before its result is appended to the manifest.
@@ -187,8 +255,13 @@ def run(args):
         if not recovered:
             result.unlink(missing_ok=True)
             with (directory/'run.log').open('w') as log:
-                subprocess.run(generate,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+                spec,attempts=generate_map(binary,spec,directory,env)
+                save(directory/'commands.json',dict(generation_attempts=attempts,run=command))
                 subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+        if recovered:
+            selected=directory/'selected-map.json'
+            if selected.exists():spec=json.loads(selected.read_text())
+            elif spec.get('map_candidates'):raise ValueError('Completed game lacks selected-map provenance')
         result_data=json.loads(result.read_text())
         if result_data.get('status')!='completed':raise RuntimeError(f'Game did not complete: {result}')
         if not episode.exists() and not episode.with_suffix('.csv.gz').exists():
@@ -204,7 +277,7 @@ def run(args):
                     shutil.copyfileobj(inp,gz)
             temp.replace(compressed);raw.unlink()
         episode=episode.with_suffix('.csv.gz')
-        return dict(group=group,format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
+        return dict(group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
                     binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
                     ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
@@ -212,6 +285,7 @@ def run(args):
             record=future.result()
             if record:
                 manifest.append(record);save(manifest_path,manifest)
+                save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
                 print(f'{len(manifest)}/{len(plan)} games collected',flush=True)
 
 
@@ -230,7 +304,13 @@ def dataset(manifests):
                 for line in csv.DictReader(f):
                     if int(line['complete']) != 1:continue
                     row={k:int(v) for k,v in line.items()}
-                    row.update(group=record['group'],format=record['format'],collection='|'.join(identity))
+                    spec=record.get('spec', {})
+                    group=record.get('map_group')
+                    if not group and all(k in spec for k in ['generator','players','map_seed']) and ('size' in spec or {'width','height'} <= spec.keys()):
+                        group=map_identity(spec)
+                    row.update(group=group or record['group'],format=record['format'],collection='|'.join(identity))
+                    row.update(generator=spec.get('generator','unknown'),
+                               dimensions=f"{spec.get('width',spec.get('size','?'))}x{spec.get('height',spec.get('size','?'))}")
                     rows.append(row)
     if not rows:raise ValueError('No complete episodes')
     return rows
@@ -288,16 +368,59 @@ def metrics(rows,model):
                 selected_actual_benefit=float(np.average(y[take],weights=w[take])) if take.any() else None)
 
 
+def metric_slices(rows, model):
+    report = {}
+    for key in ['format', 'generator', 'dimensions']:
+        groups = collections.defaultdict(list)
+        for row in rows: groups[row.get(key, 'unknown')].append(row)
+        report[key] = {name: metrics(group, model) for name, group in sorted(groups.items())}
+    return report
+
+
+def split_maps(rows):
+    """Stratify map/format pairs, never episode counts or individual games.
+
+    One map may appear in several formats. A group splitter assigns it once
+    globally; explicit coverage checks prevent small/overlapping strata from
+    silently disappearing from holdout or a validation fold.
+    """
+    import numpy as np
+    from sklearn.model_selection import StratifiedGroupKFold
+    pairs=sorted({(r['group'],r['format']) for r in rows})
+    groups=np.array([g for g,f in pairs]);labels=np.array([f for g,f in pairs])
+    x=np.zeros((len(pairs),1))
+    formats=sorted(set(labels))
+    def counts(selected):
+        return {fmt:len({g for i,(g,f) in enumerate(pairs) if i in selected and f==fmt}) for fmt in formats}
+    for development, holdout in StratifiedGroupKFold(n_splits=4,shuffle=True,random_state=713).split(x,labels,groups):
+        dev_counts,held_counts=counts(set(development)),counts(set(holdout))
+        if min(dev_counts.values())>=3 and min(held_counts.values())>=1:
+            break
+    else:
+        raise ValueError('Map overlap prevents format coverage in the holdout; collect more independent maps')
+    held=set(groups[holdout]);folds={};coverage=[]
+    splitter=StratifiedGroupKFold(n_splits=3,shuffle=True,random_state=714)
+    for fold,(training,validation) in enumerate(splitter.split(x[development],labels[development],groups[development])):
+        train_indices=set(development[training]);valid_indices=set(development[validation])
+        train_counts,valid_counts=counts(train_indices),counts(valid_indices)
+        if min(train_counts.values())<2 or min(valid_counts.values())<1:
+            raise ValueError('Map overlap prevents format coverage in cross-validation; collect more independent maps')
+        for g in groups[list(valid_indices)]:folds[g]=fold
+        coverage.append(dict(training_maps=train_counts,validation_maps=valid_counts))
+    return held,folds,dict(development_maps=dev_counts,holdout_maps=held_counts,folds=coverage)
+
+
 def fit(args):
     rows=dataset(args.manifest)
-    by_format=collections.defaultdict(set)
-    for r in rows:by_format[r['format']].add(r['group'])
-    if any(len(v)<4 for v in by_format.values()):raise ValueError('Need at least four independent states per format for held-out evaluation')
-    # Group assignment is independent of labels. All policies/collection rounds
-    # for a starting state stay together, including the final coefficient holdout.
-    held={group for v in by_format.values() for group in sorted(v)[-math.ceil(len(v)/4):]}
+    # Include planned strata with zero usable episodes: otherwise they vanish
+    # before fitting and a biased collection can look deceptively complete.
+    expected={record['format'] for path in args.manifest for record in json.loads(Path(path).read_text())}
+    by_format={fmt:set() for fmt in expected}
+    for r in rows:by_format.setdefault(r['format'],set()).add(r['group'])
+    missing={fmt:len(groups) for fmt,groups in by_format.items() if len(groups)<4}
+    if missing:raise ValueError(f'Need at least four independent maps with complete episodes per format: {missing}')
+    held,folds,split_coverage=split_maps(rows)
     dev=[r for r in rows if r['group'] not in held];test=[r for r in rows if r['group'] in held]
-    folds={group:i%3 for fmt,groups in sorted(by_format.items()) for i,group in enumerate(sorted(groups-held))}
     reports=[]
     for fold in range(3):
         train=[r for r in dev if folds[r['group']]!=fold];valid=[r for r in dev if folds[r['group']]==fold]
@@ -305,7 +428,9 @@ def fit(args):
     model=fit_heads(dev)
     model['provenance']=dict(manifests=[dict(name=Path(p).name,sha256=sha(p)) for p in args.manifest],
                              development_states=sorted({r['group'] for r in dev}),heldout_states=sorted(held),
-                             cross_validation=reports,holdout=metrics(test,model),
+                             cross_validation=reports,holdout=metrics(test,model),holdout_slices=metric_slices(test,model),
+                             grouping='generated map identity from record/spec; old manifests without map metadata use starting-state group',
+                             split_coverage=split_coverage,
                              weighting='equal format, then state, then collection, then episode',
                              regularization=dict(logistic_C=1,ridge_alpha=100),
                              note='Holdout is excluded from coefficients; validation does not replace prospective gameplay measurements.')
@@ -317,9 +442,15 @@ def fit(args):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest='command',required=True)
-    p=sub.add_parser('run');p.add_argument('--binary',required=True);p.add_argument('--output',required=True)
-    p.add_argument('--plan');p.add_argument('--seeds',type=int,nargs='+',default=[5101,5102,5103,5104])
-    p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1);p.set_defaults(action=run)
+    for command, action in [('plan', plan), ('run', run)]:
+        p=sub.add_parser(command);p.add_argument('--binary',required=True);p.add_argument('--output',required=True)
+        p.add_argument('--games',type=int,default=256);p.add_argument('--seed',type=int,default=5101)
+        p.add_argument('--generators',nargs='+');p.add_argument('--sizes',type=int,nargs='+')
+        p.add_argument('--formats',nargs='+');p.add_argument('--ais',nargs='+')
+        p.set_defaults(action=action)
+        if command=='run':
+            p.add_argument('--plan')
+            p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1)
     p=sub.add_parser('fit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--header');p.set_defaults(action=fit)
     p=sub.add_parser('emit');p.add_argument('--model',default=str(DEFAULT_MODEL));p.add_argument('--header',default=str(HEADER));p.set_defaults(action=lambda a:emit(json.loads(Path(a.model).read_text()),a.header))
     args=parser.parse_args()
