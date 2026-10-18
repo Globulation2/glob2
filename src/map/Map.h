@@ -4,6 +4,7 @@
 
 #pragma once
 #include "OwnerRandom.h"
+#include "gradient/FieldReadiness.h"
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include <array>
@@ -401,8 +402,8 @@ public:
 			((Uint32(1) << Team::MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
-	// Standalone map callers capture/submit periodic preparation here. Game defers
-	// selection until its entire tick (including scripts/fog/projects) is complete.
+	// Applies live map mutations only. The Game observation boundary publishes
+	// due fields, captures the completed world, and submits subsequent jobs.
 	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
@@ -1080,20 +1081,39 @@ public:
 	//! withMarkets: the variant where the team's stocked markets are goals too,
 	//! priced by each supplier's configured pickup penalty. Used when a
 	//! consumer enables stock fetching (Building::fetchesFromMarkets).
-	Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
-    Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
+    const Uint16* lookupMaterialGradientSlot(int team, int material, int swim, bool markets = false, const Building* consumer = nullptr) const;
+    const Uint16* lookupForbiddenGradient(int team, int swim) const { return forbiddenGradient[team][swim]; }
+    const Uint16* lookupGuardAreasGradient(int team, int swim) const { return guardAreasGradient[team][swim]; }
+    const Uint16* lookupClearAreasGradient(int team, int swim) const { return clearAreasGradient[team][swim]; }
+	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
+    const Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
+    FieldReadiness requestMaterialField(int team,int material,int swim,bool markets=false,const Building* consumer=nullptr)
+    { return getMaterialGradientSlot(team,material,swim,markets,consumer) ? FieldReadiness::Ready : FieldReadiness::Pending; }
+    FieldReadiness requestForbiddenField(int team,int swim)
+    { return getForbiddenGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
+    FieldReadiness requestGuardField(int team,int swim)
+    { return getGuardAreasGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
+    FieldReadiness requestClearField(int team,int swim)
+    { return getClearAreasGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
+
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).
 	unsigned materialSupplyModesSlot(const Building* consumer, int resource) const;
-	Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
+	const Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
 	bool stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
 	void setMaterialRoutingCacheBudget(Uint64 bytes);
 	Uint64 materialRoutingCacheBytes() const;
 	void saveMaterialRoutingCache(GAGCore::OutputStream* stream) const;
 	void loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor);
-	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
-	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
-	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
+    unsigned gradientDestination(Uint16* const*) const;
+    Uint16** gradientDestination(unsigned);
+    bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1);
+    StepResult queryMaterialStep(EntityRandom&, int, Uint8, int, int, int, int*, int*, bool*, Building*, bool = false);
+
+    StepResult queryForbiddenStep(const Uint16*, int, int, int, int, int*, int*);
+	const Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
+	const Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
+	const Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
 	//! Guard-area balancing: out[i] = number of the team's warriors within
 	//! GUARD_CROWD_RADIUS tiles of tile i (units inside buildings excluded).
 	//! Separable box sum, linear in map size. Returns false, leaving out
@@ -1124,9 +1144,11 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
+	RouteResult queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-		return getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer)[coordToIndex(x, y)];
+		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer);
+		return field ? field[coordToIndex(x, y)] : GRADIENT_UNREACHABLE;
 	}
 	
 	// Chamfer distance transform on a pre-seeded Uint8 buffer. Caller fills the
@@ -1159,11 +1181,14 @@ public:
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
 
-	//! Initialize a fresh building field and retain its search frontier. Point
-	//! queries extend it on demand; buildingGradient returns a complete field.
+	// Result adapters preserve the existing immediate lazy building semantics.
+	FieldReadiness requestBuildingField(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	const Uint16 *lookupBuildingField(const Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
+	RouteResult queryBuildingDistance(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
+	StepResult queryBuildingStep(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
+	//! Initialize a lazy field from the current map; point reads settle demand.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Complete field, refreshed as needed; NULL when locked. Point queries use
-	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
+	//! Complete field adapter; finishes a lazy generation, NULL while Pending or locked.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	// Owner-only: establish a safe generation without querying or finishing it.
 	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);
@@ -1182,6 +1207,7 @@ public:
 	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
+    StepResult queryAreaStep(EntityRandom&, AreaKind, int, int, int, int, int*, int*);
 	//! Find the best direction toward a guard or clear area; return true if one has been found.
 	bool pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
@@ -1267,7 +1293,8 @@ protected:
 	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed
 	// [team][swim class]; NULL until a unit of that class asks for one.
 	// Map owns the buffers and frees them on clear. Resource/guard/clear fields
-	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
+	// refresh round-robin at completed-world submission boundaries; forbidden
+	// fields also enroll refreshes through map edits and periodic maintenance.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];

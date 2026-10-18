@@ -439,3 +439,93 @@ for (const variant of ['serial', 'threaded']) {
     expect(issues).toEqual([]);
   });
 }
+
+test('WebAssembly verifies ground gradient publication across serial and threaded runtimes', async ({page}, info) => {
+  test.setTimeout(1800000);
+  let serialTraces;
+  for (const variant of ['serial', 'threaded']) {
+    // This corpus includes binary/text checkpoints and all 1/2/4/8 participant
+    // configurations. Allow correctness work to finish on shared browser hosts.
+    const root = path.resolve(__dirname, '../..');
+    const output = path.join(root, 'artifacts/browser-determinism/gradient-publication', variant, info.project.name);
+    fs.mkdirSync(output, {recursive: true});
+    const progress = [];
+    page.on('console', message => progress.push(message.text()));
+    page.on('pageerror', error => progress.push(String(error)));
+    await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
+      var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant === 'threaded' ? 'threaded/' : ''}'+name,
+        print:m=>console.log(String(m)),printErr:m=>console.error(String(m)),
+        preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';
+          ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
+        async onRuntimeInitialized(){
+          const result={files:{},threaded:typeof SharedArrayBuffer!=='undefined' && HEAP8.buffer instanceof SharedArrayBuffer};
+          try {result.exit=(await Module.start(['--test-suite=DelayedGradientPublication',
+            '--reporters=junit','--out=/evidence/tests.xml']))??0;}
+          catch(error){result.error=String(error);}
+          function collect(directory){for(const name of FS.readdir(directory)){
+            if(name==='.'||name==='..'||name==='profile')continue;
+            const file=directory+'/'+name;
+            if(FS.isDir(FS.stat(file).mode)){collect(file);continue;}
+            // Save fixtures round-trip in MEMFS; retain compact per-boundary
+            // traces, audit counters and JUnit outside the browser for review.
+            if(/\\.(tsv|xml|json)$/.test(name))
+              result.files[file.substring('/evidence/'.length)]=FS.readFile(file,{encoding:'utf8'});
+          }}
+          collect('/evidence');window.gradientPublicationResult=result;
+        }};
+      </script><script src="/${variant === 'threaded' ? 'threaded/' : ''}script-tests.js"></script>`);
+    try {
+      await page.waitForFunction(() => window.gradientPublicationResult !== undefined, null, {timeout: 880000});
+    } finally {
+      fs.writeFileSync(path.join(output, 'run.log'), progress.join('\n'));
+    }
+    const result = await page.evaluate(() => window.gradientPublicationResult);
+    for (const [relative, contents] of Object.entries(result.files)) {
+      const destination = path.join(output, relative);
+      fs.mkdirSync(path.dirname(destination), {recursive: true});
+      fs.writeFileSync(destination, contents);
+    }
+    const source = JSON.parse(require('node:child_process').execFileSync('python3',
+      [path.join(root, 'test/build_provenance.py')], {cwd: root, encoding: 'utf8'}));
+    const producer = JSON.parse(result.files['cases/build-provenance.json']);
+    const packageRoot = process.env.GLOB2_TEST_BUILD_DIR || path.join(root, 'build/emscripten/client/release');
+    const binaryRoot = variant === 'threaded' ? path.join(packageRoot, 'threaded') : packageRoot;
+    const binaries = Object.fromEntries(['script-tests.js', 'script-tests.wasm', 'script-tests.data'].map(name =>
+      [name, crypto.createHash('sha256').update(fs.readFileSync(path.join(name.endsWith('.data') ? packageRoot : binaryRoot, name))).digest('hex')]));
+    fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({source, producer, variant,
+      browser: info.project.name, browserVersion: page.context().browser().version(),
+      binaries, exit: result.exit, error: result.error, files: Object.keys(result.files)}, null, 2) + '\n');
+    expect(result.error).toBeUndefined();
+    expect(result.exit).toBe(0);
+    for (const key of ['revision', 'dirty', 'sourceTreeSha256']) expect(producer[key]).toEqual(source[key]);
+    expect(result.threaded).toBe(variant === 'threaded');
+    const junit = result.files['tests.xml'];
+    expect(junit).toMatch(/failures="0"/);
+    expect(junit).toMatch(/errors="0"/);
+    expect(junit).not.toMatch(/<skipped\b/);
+    expect(junit.match(/<testcase\b/g)).toHaveLength(3);
+    for (const participants of [1, 2, 4, 8]) {
+      for (const prefix of ['participants-']) {
+        expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '.tsv'))).toBe(true);
+        expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '-kernel-entries.tsv'))).toBe(true);
+      }
+    }
+    const traces = Object.fromEntries(Object.entries(result.files)
+      .filter(([name]) => name.endsWith('.tsv') && !name.endsWith('-kernel-entries.tsv')));
+    expect(Object.keys(traces)).toHaveLength(16);
+    for (const [name, contents] of Object.entries(traces)) {
+      const lines = contents.trimEnd().split('\n');
+      expect(lines[0], name).toMatch(/^boundary\t/);
+      const expectedRows = name.endsWith('-continuation.tsv')
+        ? (name.includes('/air-') ? 24 : 33)
+        : (name.includes('/air-participants-') ? 16 : 48);
+      expect(lines, name).toHaveLength(expectedRows + 1);
+    }
+    if (variant === 'serial') serialTraces = traces;
+    else {
+      expect(Object.keys(traces).sort()).toEqual(Object.keys(serialTraces).sort());
+      for (const [name, contents] of Object.entries(traces)) expect(contents, name).toBe(serialTraces[name]);
+    }
+  }
+});

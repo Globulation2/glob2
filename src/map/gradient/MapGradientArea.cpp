@@ -19,41 +19,33 @@
 
 // Forbidden / Guard area / Clear area gradients
 
-Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
+const Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 {
-	Uint16 *&gradient = forbiddenGradient[teamNumber][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateForbiddenGradient(teamNumber, swimClass);
-	}
-	return gradient;
+    auto& field=forbiddenGradient[teamNumber][swimClass];
+    if (!field && !game) { field=new Uint16[size]; updateForbiddenGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass);
+    return field;
 }
 
-Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
+const Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 {
-	Uint16 *&gradient = guardAreasGradient[teamNumber][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateGuardAreasGradient(teamNumber, swimClass);
-	}
-	return gradient;
+    auto& field=guardAreasGradient[teamNumber][swimClass];
+    if (!field && !game) { field=new Uint16[size]; updateGuardAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass);
+    return field;
 }
 
-Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
+const Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 {
-	Uint16 *&gradient = clearAreasGradient[teamNumber][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateClearAreasGradient(teamNumber, swimClass);
-	}
-	return gradient;
+    auto& field=clearAreasGradient[teamNumber][swimClass];
+    if (!field && !game) { field=new Uint16[size]; updateClearAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass);
+    return field;
 }
 
 void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 {
+    if (game) { requestGradientField(&forbiddenGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = forbiddenGradient[teamNumber][swimClass];
 	assert(gradient);
@@ -206,6 +198,7 @@ void Map::seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const
 
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
+    if (game) { requestGradientField(&guardAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
@@ -241,6 +234,7 @@ void Map::updateGuardAreasGradient()
 
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
+    if (game) { requestGradientField(&clearAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
