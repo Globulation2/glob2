@@ -87,10 +87,10 @@
   },
   "coverage_rationale": "Ordering and membership, sparse/dense material accounting, construction/repair and reserved slots, shared stock, candidate admission, fair hiring rounds, transfers, per-tick state and RNG, whole-game save/load continuation and multiplayer golden trace. Team header adds a nonvirtual method without layout or saved-state changes; all production objects rebuilt in the regular release target.",
   "omissions": [
-    "Fresh Linux Callgrind: Docker daemon unresponsive.",
-    "Windows, browser and mobile execution not available."
+    "Windows, browser and mobile execution not available.",
+    "Linux continuation covers the 24k save with eight compute participants; other sampled continuations were verified on macOS."
   ],
-  "performance_conclusion": "Deterministic work reductions demonstrated. Native CPU timing under compiler load was inconclusive; no total owner-thread or whole-engine speedup claimed.",
+  "performance_conclusion": "Clean x86_64 Callgrind pair shows 0.567% fewer owner instructions; targeted changed paths account for 0.501%. Call-list inclusive instructions decrease 14.57%, apportionment 4.55%. Remaining difference includes snapshot/allocation/scheduling variation. Native wall-clock timing is inconclusive; no elapsed-time speedup is claimed.",
   "status": "Committed and pushed on codex/building-recruitment-churn; draft PR #1222. No runtime profiling hooks or simulation/save-format changes.",
   "replay_equivalence": {
     "game.replay": {
@@ -102,5 +102,11 @@
       "sha256": "648b8acda7f5b1529b16a24b4aa7f289342c8b4b4bc5b63971add73fac592b7d"
     }
   },
-  "commit_sha": "0e36aee51be98cc297d3f6a72fe6438209d0eb9a"
+  "commit_sha": "0e36aee51be98cc297d3f6a72fe6438209d0eb9a",
+  "linux_callgrind": "linux-callgrind-summary.json",
+  "linux_focused_tests": {
+    "passed": 60,
+    "failed": 0,
+    "skipped": 0
+  }
 }
