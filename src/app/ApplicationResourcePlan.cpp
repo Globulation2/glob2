@@ -11,7 +11,7 @@ ApplicationResourcePlan resolveApplicationResourcePlan(unsigned requested,
     plan.requestedComputeThreads = requested;
     plan.threadsSupported = threadsSupported;
     plan.gradient = gradient;
-    plan.computeParticipants = threadsSupported ? resolveComputeThreadCount(requested, cpu.hardwareHint) : 1;
+    plan.computeParticipants = threadsSupported ? resolveComputeThreadCount(requested, cpu) : 1;
     plan.exceedsCpuAllocation = cpu.eligibleLogicalCpuCount &&
         plan.computeParticipants > *cpu.eligibleLogicalCpuCount;
     return plan;
@@ -27,8 +27,7 @@ const char* computeParticipantSourceName(const ApplicationResourcePlan& plan)
 {
     if (!plan.threadsSupported) return "threads-unavailable";
     if (plan.requestedComputeThreads) return "explicit-override";
-    if (plan.cpuAvailability.hardwareHint) return "hardware-hint";
-    return "serial-fallback";
+    return automaticComputeThreadSourceName(plan.cpuAvailability);
 }
 
 void writeApplicationResourcePlanJson(std::ostream& out, const ApplicationResourcePlan& plan)
@@ -41,6 +40,11 @@ void writeApplicationResourcePlanJson(std::ostream& out, const ApplicationResour
         << ",\"eligible_threads\":";
     if (plan.cpuAvailability.eligibleLogicalCpuCount) out << *plan.cpuAvailability.eligibleLogicalCpuCount;
     else out << "null";
+    out << ",\"physical_cores\":";
+    if (plan.cpuAvailability.physicalCoreCount) out << *plan.cpuAvailability.physicalCoreCount;
+    else out << "null";
+    out << ",\"physical_core_source\":\"" << physicalCoreSourceName(plan.cpuAvailability)
+        << "\",\"physical_cores_are_eligible\":" << (plan.cpuAvailability.physicalCoresAreEligible ? "true" : "false");
     out << ",\"threads_supported\":" << (plan.threadsSupported ? "true" : "false")
         << ",\"exceeds_cpu_allocation\":" << (plan.exceedsCpuAllocation ? "true" : "false")
         << ",\"compute_gpu_permitted\":" << (plan.computeGpuPermitted() ? "true" : "false")
