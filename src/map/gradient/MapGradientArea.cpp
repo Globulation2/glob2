@@ -22,9 +22,9 @@
 Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 {
 	Uint16 *&gradient = forbiddenGradient[teamNumber][swimClass];
-	if (gradient == NULL)
+	if (gradient == NULL || forbiddenGradientStale[teamNumber][swimClass])
 	{
-		gradient = new Uint16[size];
+		if (!gradient) gradient = new Uint16[size];
 		updateForbiddenGradient(teamNumber, swimClass);
 	}
 	return gradient;
@@ -33,9 +33,9 @@ Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 {
 	Uint16 *&gradient = guardAreasGradient[teamNumber][swimClass];
-	if (gradient == NULL)
+	if (gradient == NULL || guardGradientStale[teamNumber][swimClass])
 	{
-		gradient = new Uint16[size];
+		if (!gradient) gradient = new Uint16[size];
 		updateGuardAreasGradient(teamNumber, swimClass);
 	}
 	return gradient;
@@ -44,9 +44,9 @@ Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 {
 	Uint16 *&gradient = clearAreasGradient[teamNumber][swimClass];
-	if (gradient == NULL)
+	if (gradient == NULL || clearGradientStale[teamNumber][swimClass])
 	{
-		gradient = new Uint16[size];
+		if (!gradient) gradient = new Uint16[size];
 		updateClearAreasGradient(teamNumber, swimClass);
 	}
 	return gradient;
@@ -54,6 +54,7 @@ Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 
 void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 {
+    forbiddenGradientStale[teamNumber][swimClass]=false;
 	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = forbiddenGradient[teamNumber][swimClass];
 	assert(gradient);
@@ -207,6 +208,7 @@ void Map::seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const
 
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
+    guardGradientStale[teamNumber][swimClass]=false;
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
@@ -242,6 +244,7 @@ void Map::updateGuardAreasGradient()
 
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
+    clearGradientStale[teamNumber][swimClass]=false;
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];

@@ -47,6 +47,13 @@ template<class T, std::size_t N>
 void statValue(GAGCore::ChecksumStream* stream, const char*, const std::array<T,N>& values) {
 	for (const auto& value:values) statValue(stream,"",value);
 }
+void statValue(GAGCore::ChecksumStream* stream, const char*, const bool& value) { stream->addUint32(value); }
+void statValue(GAGCore::OutputStream* stream, const char* name, const bool& value) { stream->writeUint32(value,name); }
+void statValue(GAGCore::InputStream* stream, const char* name, bool& value) {
+    const auto flag=stream->readUint32(name);
+    if (flag>1) throw std::runtime_error("Invalid statistics flag");
+    value=flag;
+}
 // Second byte of each cold sampling qualification row: independent uniform
 // defender qualification and flag recruitment policy. Keep rows at two bytes.
 constexpr Uint8 SamplingAlwaysRecruitableDefender = 1u << 0;
@@ -279,6 +286,18 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 		statValue(stream, "intruderLevels", stat.intruderLevels);
 		statValue(stream, "defenceTick", stat.defenceTick);
 	}
+    if (versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND) {
+        statValue(stream,"movementClassesKnown",stat.movementClassesKnown);
+        statValue(stream,"groundUnitsByMovementClass",stat.groundUnitsByMovementClass);
+        if constexpr (std::is_base_of_v<GAGCore::InputStream,Stream>) {
+            Uint64 total=0;
+            for (auto count:stat.groundUnitsByMovementClass) total+=count;
+            if (total>Unit::MAX_COUNT) throw std::runtime_error("Invalid movement-class population");
+        }
+    } else if constexpr (std::is_base_of_v<GAGCore::InputStream,Stream>) {
+        stat.movementClassesKnown=false;
+        stat.groundUnitsByMovementClass.fill(0);
+    }
 }
 
 // Packed history rows have the fixed size of one record in the save's own format.
@@ -1365,6 +1384,8 @@ void TeamStats::rebuildMeasurementCountReset()
 void TeamStats::beginMeasurementSnapshot(Team *team)
 {
     configureUnits(team->race.unitTypeCount());
+    editMeasurements().movementClassesKnown=true;
+    editMeasurements().groundUnitsByMovementClass.fill(0);
 	editMeasurements().tick = team->game->stepCounter;
 	editMeasurements().variants.resize(team->game->buildingsTypes.size());
 	if (measurementCountCatalogSize != editMeasurements().variants.size())
@@ -1383,6 +1404,9 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 {
 	if (u && !u->isDead)
 	{
+        if (!u->performance[FLY] && (u->performance[WALK] || u->performance[SWIM])) {
+            ++editMeasurements().groundUnitsByMovementClass[u->swimClass()];
+        }
 		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++editMeasurements().carried[u->carriedMaterial];
         if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo())
@@ -1935,7 +1959,7 @@ void TeamStats::finishAggregate(TeamStat& stat, const UnitStatistics<std::array<
 
 namespace
 {
-template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &sample)
+template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &sample, int versionMinor = VERSION_MINOR)
 {
 	statValue(stream, "tick", sample.tick);
 	statValue(stream, "prestige", sample.prestige);
@@ -1945,12 +1969,12 @@ template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &
 	if (sample.aggregate)
 	{
 		enterStatSection(stream, "aggregateStat");
-		liveStatFields(stream, sample.stat);
-		unitStatValue(stream, "eligible", sample.eligible, VERSION_MINOR);
+		liveStatFields(stream, sample.stat, versionMinor);
+		unitStatValue(stream, "eligible", sample.eligible, versionMinor);
 		leaveStatSection(stream);
 	}
 	enterStatSection(stream, "measurements");
-	measurementFields(stream, sample.frame ? *sample.frame : sample.measurements);
+	measurementFields(stream, sample.frame ? *sample.frame : sample.measurements, versionMinor);
 	leaveStatSection(stream);
 }
 } // namespace
@@ -1988,7 +2012,7 @@ TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionM
         if(finalized>1) throw std::runtime_error("Invalid finalized statistics flag");
         sample.finalized=finalized;
     }
-	sampleFields(stream, sample);
+	sampleFields(stream, sample, versionMinor);
 	const auto count = stream->readCount("coverage");
 	if (count > Building::MAX_COUNT)
 		throw std::runtime_error("Invalid pending statistics coverage");
@@ -2013,6 +2037,8 @@ Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothe
                             int statsIndex, int smoothedIndex)
 {
 	GAGCore::ChecksumStream stream;
+    statValue(&stream,"movementClassesKnown",stats.measurements().movementClassesKnown);
+    statValue(&stream,"groundUnitsByMovementClass",stats.measurements().groundUnitsByMovementClass);
 	stream.writeUint32(stats.sourceTick, "sourceTick");
 	stream.writeUint32(stats.publishedTick, "publishedTick");
 	stream.writeSint32(statsIndex, "statsIndex");

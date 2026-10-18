@@ -641,9 +641,11 @@ void Map::clear()
 			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 			{
 				delete[] materialGradients[t][r][swim];
+				materialGradientStale[t][r][swim]=false;
 				materialGradients[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
 				delete[] marketMaterialGradients[t][r][swim];
+				marketMaterialGradientStale[t][r][swim]=false;
 				marketMaterialGradients[t][r][swim] = NULL;
 				marketGradientDirty[t][r][swim] = false;
 				marketGradientUpdated[t][r][swim] = false;
@@ -651,10 +653,13 @@ void Map::clear()
 		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 		{
 			delete[] forbiddenGradient[t][swim];
+			forbiddenGradientStale[t][swim]=false;
 			forbiddenGradient[t][swim] = NULL;
 			delete[] guardAreasGradient[t][swim];
+			guardGradientStale[t][swim]=false;
 			guardAreasGradient[t][swim] = NULL;
 			delete[] clearAreasGradient[t][swim];
+			clearGradientStale[t][swim]=false;
 			clearAreasGradient[t][swim] = NULL;
 			guardGradientUpdated[t][swim] = false;
 			clearGradientUpdated[t][swim] = false;

@@ -23,11 +23,14 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	const bool blockedGround = resourceBlocksGround(index);
 	const bool blockedAir = resourceBlocksAir(index);
 	const auto before = resourceMaterialMaskAt(index);
+    const auto positiveBefore=(gradientRuntime->adaptiveSourcesInitialized || (gradientRuntime->qualityProbe && gradientRuntime->qualityProbe->sourcesInitialized)) ? materialMaskAt(index) : MaterialMask(0);
 	releaseResourceStock(index);
 	resourceCells[index].resource = resource;
 	markResource(index);
 	initializeResourceStock(index, stocks);
 	materialStockChanged(index, before);
+    if(gradientRuntime->adaptiveSourcesInitialized)gradientRuntime->adaptiveStockChanged(positiveBefore,materialMaskAt(index));
+    if(auto& probe=gradientRuntime->qualityProbe;probe && probe->sourcesInitialized)probe->stockChanged(positiveBefore,materialMaskAt(index));
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
 }

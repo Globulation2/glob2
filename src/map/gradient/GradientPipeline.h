@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "BudgetExperiment.h"
 #include "field/GradientWorkspace.h"
 #include "field/GradientDeviceService.h"
 #include "sim/snapshot/WorldSnapshot.h"
@@ -33,7 +34,16 @@ class GradientPipeline
 		std::uint64_t due = 0, executorDue = 0;
 		bool superseded = false, done = false;
 		std::exception_ptr error;
-		gradient_preparation::Request request;
+        gradient_preparation::Request request;
+        std::unique_ptr<BuildingGradientSearch> resourceSearch;
+        std::vector<Uint16> resourceShadow;
+        BuildingGradientSearch::Inputs resourceInputs;
+        std::vector<int> resourceFeatures;
+        int resourceDepth=-1,resourceKey=0;
+        bool resourceCensus=false;
+        unsigned resourceCapture=0;
+        bool budgetTimed=false;
+        std::uint64_t budgetSeedNs=0,budgetPropagateNs=0;
 		gradient_preparation::CrowdingScratch *crowding = nullptr;
 		ComputeExecutor::Batch batch;
 		GradientPipeline *owner = nullptr;
@@ -60,12 +70,13 @@ class GradientPipeline
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
 		Job &, gradient_kernel::PlanDecision)>;
 	std::function<void(std::uint16_t **)> onPublished;
+    std::function<void(Job&)> onResourcePublished;
 	std::function<std::uint64_t(unsigned)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
 	struct Metrics
 	{
-		std::uint64_t jobs = 0, published = 0, discarded = 0, maxPending = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, maxPending = 0, naturalJobs = 0;
 	} metrics;
 
   private:
@@ -105,9 +116,11 @@ class GradientPipeline
 		job.crowding = &scratch.crowding;
 		try
 		{
-			if (job.seed)
-				job.seed(job);
-			self.work(job, scratch.propagation);
+            const auto started=job.budgetTimed?BudgetExperiment::threadCpuNs():0;
+            if(job.seed)job.seed(job);
+            const auto seeded=job.budgetTimed?BudgetExperiment::threadCpuNs():0;
+            self.work(job,scratch.propagation);
+            if(job.budgetTimed) {job.budgetSeedNs=seeded-started;job.budgetPropagateNs=BudgetExperiment::threadCpuNs()-seeded;}
 		}
 		catch (...)
 		{
@@ -314,6 +327,7 @@ class GradientPipeline
 				*job.slot = job.data.release();
 				job.data.reset(old);
 				++metrics.published;
+				if(onResourcePublished)onResourcePublished(job);
 				if (onPublished)
 					onPublished(job.slot);
 			}
@@ -329,9 +343,9 @@ class GradientPipeline
 			if (job->slot == slot)
 				job->superseded = true;
 	}
-	Job *reserve(std::uint16_t **slot, int swim)
+	Job *reserve(std::uint16_t **slot, int swim, bool multiple = false)
 	{
-		if (!enabled() || tick == lastSubmission || pending.size() >= delay)
+		if (!enabled() || (!multiple && (tick == lastSubmission || pending.size() >= delay)))
 			throw std::logic_error("gradient pipeline requires one submission per advanced tick");
 		std::unique_ptr<Job> job;
 		if (spare.empty())
@@ -346,6 +360,7 @@ class GradientPipeline
 		}
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
+        recycleBuildingGradientSearch(std::move(job->resourceSearch));job->resourceShadow.clear();job->resourceFeatures.clear();job->resourceDepth=-1;job->resourceCensus=false;
 		job->slot = slot;
 		job->swim = swim;
 		job->due = tick + delay;
@@ -365,6 +380,7 @@ class GradientPipeline
 	{
 		try
 		{
+            if (job->request.kind==gradient_preparation::Kind::Materials) ++metrics.naturalJobs;
 			job->seed = std::forward<Seed>(seed);
 			const auto remaining = unsigned(job->due - tick);
 			job->executorDue =

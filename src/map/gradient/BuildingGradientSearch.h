@@ -46,6 +46,7 @@ class BuildingGradientSearch
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;
 	int readerCost = 0;
+    std::uint64_t expanded=0;
 	int widthMask = 0, heightMask = 0;
 	template <class Done> void advance(Done done);
 
@@ -61,6 +62,7 @@ class BuildingGradientSearch
     void resolveForProposal(std::size_t target);
 
 	void finish() { resolve(cells); }
+    std::unique_ptr<BuildingGradientSearch> clone(Uint16* data)const;
 	// Settles whole cost layers up to and including cost. Settled values equal
 	// a full build's, and later resolve() calls continue from the same queues.
 	void resolveToCost(int cost);
@@ -70,6 +72,7 @@ class BuildingGradientSearch
 	// Preparation and finish() do not increase this demand history.
 	int requiredCost() const { return readerCost; }
 	bool complete() const { return pending == 0; }
+    std::uint64_t expandedEntries()const{return expanded;}
 	bool resolved(std::size_t target) const;
 	std::size_t retainedBytes() const;
 	void clearForReuse();

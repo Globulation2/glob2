@@ -32,6 +32,7 @@
 #include "unit/UnitConsts.h"
 
 #include <functional>
+#include <cstdlib>
 #include <chrono>
 #include <thread>
 #include <iostream>
@@ -199,7 +200,9 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game,legacy152);
             // Explicit verification only: joins private growth and hashes every
             // resource and pending proposal without slowing routine checksums.
-            if (!headlessOutput.empty())
+            const char* worldIntervalText=std::getenv("GLOB2_WORLD_CHECKSUM_INTERVAL");
+            const unsigned long worldInterval=worldIntervalText ? std::max(1ul,std::strtoul(worldIntervalText,nullptr,10)) : 1ul;
+			if (!headlessOutput.empty() && gui.game.stepCounter%worldInterval==0)
                 std::ofstream(headlessOutput + "/world.checksums", std::ios::app)
                     << gui.game.stepCounter << ' '
                     << gui.game.checkSum(nullptr, nullptr, nullptr, true) << '\n';

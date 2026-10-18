@@ -6,6 +6,7 @@
 #include "ResourceRegistry.h"
 #include <algorithm>
 #include <iterator>
+#include "map/gradient/ResourceSnapshotExperiment.h"
 
 namespace AIEngine
 {
@@ -84,8 +85,17 @@ public:
 	{
 		if (!lease.resourceFields || !MapState::validPlane(team, resource, swim)) return {};
 		const auto* found = lease.resourceFields->find(MapState::planeKey(team, resource, swim, market));
+        if(found)ResourceSnapshotExperiment::finish(found->values);
 		return found ? std::span<const Uint16>(*found->values) : std::span<const Uint16>{};
 	}
+    std::span<const Uint16> resourceGradientAt(int team,int resource,int swim,size_t cell,std::unique_lock<std::mutex>& guard)const
+    {
+        if(!lease.resourceFields||!MapState::validPlane(team,resource,swim))return {};
+        const auto* found=lease.resourceFields->find(MapState::planeKey(team,resource,swim,false));
+        if(!found)return {};
+        ResourceSnapshotExperiment::resolve(found->values,cell,guard);
+        return *found->values;
+    }
 	const SimulationSnapshot::Handle& components() const { return lease; }
 	const AIPlanning::BuildingCapabilityTables& capabilities() const { return *lease.catalogs->capabilities; }
 	Uint32 tick = 0;

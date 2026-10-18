@@ -317,6 +317,7 @@ bool Map::materialAvailableSlot(int teamNumber, int resourceType, int swimClass,
 
 bool Map::materialAvailableUpdateSlot(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets, const Building* consumer)
 {
+    ResourceExperiment::ReadScope read(ResourceExperiment::Reader::Scalar);
 	// distance and availability
 	bool result;
 	if (dist)
@@ -326,6 +327,13 @@ bool Map::materialAvailableUpdateSlot(int teamNumber, int resourceType, int swim
 		
 	// target position
 	const Uint16 *gradient = getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer);
+    std::lock_guard<std::mutex> resourceLock(materialGradientMutex);
+    if(gradient==materialGradients[teamNumber][resourceType][swimClass]) {
+        auto** slot=&materialGradients[teamNumber][resourceType][swimClass];
+        gradientRuntime->resolveResource(slot,coordToIndex(x,y),ResourceExperiment::Reader::Scalar);
+        if(gradient[coordToIndex(x,y)]<=GRADIENT_UNREACHABLE)
+            for(const auto& d:tabClose)gradientRuntime->resolveResource(slot,coordToIndex(x+d[0],y+d[1]),ResourceExperiment::Reader::Scalar);
+    }
 	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
 
 	return result;

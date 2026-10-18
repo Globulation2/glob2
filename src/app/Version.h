@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 164
+#define VERSION_MINOR 165
+// version 165 persists movement-class statistics and suspended gradient freshness.
 // version 164 publishes hiring after one tick; four-tick hiring saves are no longer accepted.
 // version 163 drops turret source signatures and epochs; live firing revalidates lists.
 // version 162 persists cached hiring suggestions; older saves start with none.

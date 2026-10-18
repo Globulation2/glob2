@@ -166,8 +166,15 @@ public:
  }
  std::span<const Uint16> resourceGradient(int owner,int resource,int swim)
  {
-  const int key=(owner*MaterialSlotCount+resource)*7+swim;
   auto published=world.resourceGradient(owner,resource,swim);
+  if(!published.empty()){resourceFields.erase((owner*MaterialSlotCount+resource)*7+swim);return published;}
+  std::unique_lock<std::mutex> guard;
+  return resourceGradient(owner,resource,swim,0,0,guard);
+ }
+ std::span<const Uint16> resourceGradient(int owner,int resource,int swim,int x,int y,std::unique_lock<std::mutex>& guard)
+ {
+  const int key=(owner*MaterialSlotCount+resource)*7+swim;
+  auto published=world.resourceGradientAt(owner,resource,swim,world.tileIndex(x,y),guard);
   std::span<const Uint16> gradient=published;
   if(!published.empty()) resourceFields.erase(key);
   else {
@@ -206,7 +213,8 @@ public:
  }
  bool resourceAvailableUpdate(int owner,int resource,int swim,int x,int y,int* rx,int* ry,int* distance)
  {
-  const auto gradient=resourceGradient(owner,resource,swim);
+  std::unique_lock<std::mutex> resourceGuard;
+  const auto gradient=resourceGradient(owner,resource,swim,x,y,resourceGuard);
   const auto index=[&](int px,int py){return world.tileIndex(px,py);};
   Uint16 best=gradient[index(x,y)];
   const bool found=best>GRADIENT_UNREACHABLE;

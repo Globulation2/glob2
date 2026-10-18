@@ -229,10 +229,11 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     // Only availability transitions affect counters; capture renewable membership
     // before mutation, including an empty persistent stock that can regrow.
     const auto before=crossesZero ? resourceMaterialMaskAt(index) : MaterialMask(0);
+    const auto positiveBefore=crossesZero && (gradientRuntime->adaptiveSourcesInitialized || (gradientRuntime->qualityProbe && gradientRuntime->qualityProbe->sourcesInitialized)) ? materialMaskAt(index) : MaterialMask(0);
     markResource(index);
     if (std::has_single_bit(p.materialMask)) r.amount=amount;
     else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
-    if (crossesZero) materialStockChanged(index,before);
+    if (crossesZero) {materialStockChanged(index,before);if(gradientRuntime->adaptiveSourcesInitialized)gradientRuntime->adaptiveStockChanged(positiveBefore,materialMaskAt(index));if(auto& probe=gradientRuntime->qualityProbe;probe && probe->sourcesInitialized)probe->stockChanged(positiveBefore,materialMaskAt(index));}
     if (!r.amount && !p.persistsWhenEmpty) replaceResource(index,Resource{});
 }
 

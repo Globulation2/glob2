@@ -47,6 +47,7 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 	heightMask = height - 1;
 	swimClass = swim;
 	currentCost = readerCost = 0;
+    expanded=0;
 	pending = 0;
 	for (auto &bucket : buckets)
 		bucket.clear();
@@ -84,6 +85,17 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 			}
 		}
 	}
+}
+
+std::unique_ptr<BuildingGradientSearch> BuildingGradientSearch::clone(Uint16* data)const
+{
+    auto r=acquireBuildingGradientSearch();
+    r->buckets=buckets;r->registry=registry;r->profiles=profiles;r->water=water;
+    if(modifiedCosts&&custom)r->custom=std::make_unique<TerrainGradientWorkspace>(*custom);else r->custom.reset();
+    r->terrainBuckets=terrainBuckets;r->modifiedCosts=modifiedCosts;r->gradient=data;
+    r->cells=cells;r->pending=pending;r->currentCost=currentCost;r->swimClass=swimClass;
+    r->widthMask=widthMask;r->heightMask=heightMask;r->readerCost=0;r->expanded=0;
+    return r;
 }
 
 bool BuildingGradientSearch::resolved(std::size_t target) const
@@ -140,6 +152,7 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		while (pending && !done())
 		{
 			assert(currentCost <= COST_LIMIT);
+			expanded+=buckets[currentCost%BUCKETS].size;
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost,
 													COST_LIMIT, {widthMask + 1, heightMask + 1},
 													waterSteps, waterAt);
@@ -152,6 +165,7 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		{
 			while (pending && !done())
 			{
+				expanded+=custom->buckets[currentCost%N].size;
 				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
 					{widthMask + 1, heightMask + 1}, profiles->movement,

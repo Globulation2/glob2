@@ -672,17 +672,22 @@ void Map::removeTeam(void)
 		for (int r=0; r<MaterialCount; r++)
 		{
 			delete[] materialGradients[t][r][s];
+			materialGradientStale[t][r][s]=false;
 			materialGradients[t][r][s]=NULL;
 			delete[] marketMaterialGradients[t][r][s];
+			marketMaterialGradientStale[t][r][s]=false;
 			marketMaterialGradients[t][r][s]=NULL;
 			marketGradientDirty[t][r][s]=false;
 			marketGradientUpdated[t][r][s]=false;
 		}
 		delete[] forbiddenGradient[t][s];
+		forbiddenGradientStale[t][s]=false;
 		forbiddenGradient[t][s]=NULL;
 		delete[] guardAreasGradient[t][s];
+		guardGradientStale[t][s]=false;
 		guardAreasGradient[t][s]=NULL;
 		delete[] clearAreasGradient[t][s];
+		clearGradientStale[t][s]=false;
 		clearAreasGradient[t][s]=NULL;
 	}
 	rebuildPlaneRegistry();
@@ -926,7 +931,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->writeEnterSection(r);
-				saveGradient(stream, materialGradients[t][r][sw], size);
+				const_cast<Map*>(this)->finishResourceGradients();
+                saveGradient(stream, materialGradients[t][r][sw], size);
+				stream->writeUint8(materialGradientStale[t][r][sw], "suspendedStale");
 				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
 				// The "with markets" twin is runtime state like its plain gradient:
 				// a resumed game must walk the same field it left. Its own section:
@@ -934,6 +941,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				// gradient's tiles live in this one.
 				stream->writeEnterSection("markets");
 				saveGradient(stream, marketMaterialGradients[t][r][sw], size);
+				stream->writeUint8(marketMaterialGradientStale[t][r][sw], "suspendedStale");
 				stream->writeUint8(marketGradientDirty[t][r][sw], "dirty");
 				stream->writeUint8(marketGradientUpdated[t][r][sw], "updated");
 				stream->writeLeaveSection();
@@ -942,13 +950,16 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			stream->writeLeaveSection();
 			stream->writeEnterSection("forbidden");
 			saveGradient(stream, forbiddenGradient[t][sw], size);
+			stream->writeUint8(forbiddenGradientStale[t][sw], "suspendedStale");
 			stream->writeLeaveSection();
 			stream->writeEnterSection("guard");
 			saveGradient(stream, guardAreasGradient[t][sw], size);
+			stream->writeUint8(guardGradientStale[t][sw], "suspendedStale");
 			stream->writeUint8(guardGradientUpdated[t][sw], "updated");
 			stream->writeLeaveSection();
 			stream->writeEnterSection("clear");
 			saveGradient(stream, clearAreasGradient[t][sw], size);
+			stream->writeUint8(clearGradientStale[t][sw], "suspendedStale");
 			stream->writeUint8(clearGradientUpdated[t][sw], "updated");
 			stream->writeLeaveSection();
 			stream->writeLeaveSection();
@@ -1103,11 +1114,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			{
 				stream->readEnterSection(r);
 				loadGradient(stream, materialGradients[t][r][sw], size, packed);
+				materialGradientStale[t][r][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
 				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
 				{
 					stream->readEnterSection("markets");
 					loadGradient(stream, marketMaterialGradients[t][r][sw], size, packed);
+					marketMaterialGradientStale[t][r][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
 					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
 					marketGradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 					stream->readLeaveSection();
@@ -1119,13 +1132,16 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			stream->readLeaveSection();
 			stream->readEnterSection("forbidden");
 			loadGradient(stream, forbiddenGradient[t][sw], size, packed);
+			forbiddenGradientStale[t][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
 			stream->readLeaveSection();
 			stream->readEnterSection("guard");
 			loadGradient(stream, guardAreasGradient[t][sw], size, packed);
+			guardGradientStale[t][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
 			guardGradientUpdated[t][sw]=loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readEnterSection("clear");
 			loadGradient(stream, clearAreasGradient[t][sw], size, packed);
+			clearGradientStale[t][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
 			clearGradientUpdated[t][sw]=loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readLeaveSection();
@@ -1275,14 +1291,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         for (int t=0; t<game->teamsCount(); ++t) {
             for (int sw=0; sw<savedSwimClasses; ++sw) {
                 for (int r=0; r<MaterialSlotCount; ++r) {
-                    delete[] materialGradients[t][r][sw]; materialGradients[t][r][sw]=nullptr;
+                    delete[] materialGradients[t][r][sw]; materialGradientStale[t][r][sw]=false; materialGradients[t][r][sw]=nullptr;
                     gradientUpdated[t][r][sw]=false;
-                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradients[t][r][sw]=nullptr;
+                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradientStale[t][r][sw]=false; marketMaterialGradients[t][r][sw]=nullptr;
                     marketGradientDirty[t][r][sw]=marketGradientUpdated[t][r][sw]=false;
                 }
-                delete[] forbiddenGradient[t][sw]; forbiddenGradient[t][sw]=nullptr;
-                delete[] guardAreasGradient[t][sw]; guardAreasGradient[t][sw]=nullptr;
-                delete[] clearAreasGradient[t][sw]; clearAreasGradient[t][sw]=nullptr;
+                delete[] forbiddenGradient[t][sw]; forbiddenGradientStale[t][sw]=false; forbiddenGradient[t][sw]=nullptr;
+                delete[] guardAreasGradient[t][sw]; guardGradientStale[t][sw]=false; guardAreasGradient[t][sw]=nullptr;
+                delete[] clearAreasGradient[t][sw]; clearGradientStale[t][sw]=false; clearAreasGradient[t][sw]=nullptr;
                 guardGradientUpdated[t][sw]=clearGradientUpdated[t][sw]=false;
             }
             for (int b=0; b<Building::MAX_COUNT; ++b)

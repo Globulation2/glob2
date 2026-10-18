@@ -13,6 +13,7 @@
 #include "MapInternal.h"
 
 #include <mutex>
+#include <atomic>
 #include <array>
 #include "SeedCells.h"
 #include <type_traits>
@@ -42,12 +43,30 @@ Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimC
 		return empty.data();
 	}
 	Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateMaterialGradient(teamNumber, resourceType, swimClass, withMarkets);
-	}
+    const bool stale=withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+                                 : materialGradientStale[teamNumber][resourceType][swimClass];
+    if (gradient == NULL || stale) {
+        if (!gradient) gradient = new Uint16[size];
+        updateMaterialGradient(teamNumber, resourceType, swimClass, withMarkets);
+    }
+    if(!withMarkets && ResourceExperiment::reader==ResourceExperiment::Reader::Bulk)
+        gradientRuntime->resolveResource(&gradient,0,ResourceExperiment::Reader::Bulk);
 	return gradient;
+}
+
+Uint16 Map::getGradient(int team,Uint8 material,int swim,int x,int y,bool markets,const Building* consumer)
+{
+    ResourceExperiment::ReadScope scope(ResourceExperiment::Reader::Scalar);
+    auto* data=getMaterialGradientSlot(team,material,swim,markets,consumer);
+    std::lock_guard<std::mutex> lock(materialGradientMutex);
+    if(data==materialGradients[team][material][swim])gradientRuntime->resolveResource(&materialGradients[team][material][swim],coordToIndex(x,y),ResourceExperiment::Reader::Scalar);
+    return data[coordToIndex(x,y)];
+}
+void Map::finishResourceGradients()
+{
+    std::lock_guard<std::mutex> lock(materialGradientMutex);
+    for(auto& [slot,field]:gradientRuntime->resourceSearches)
+        if(field.data==*slot)gradientRuntime->resolveResource(slot,0,ResourceExperiment::Reader::Export);
 }
 
 void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
@@ -57,12 +76,36 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	auto &slot = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
 	gradientRuntime->pipeline.invalidate(&slot);
 	Uint16 *gradient = slot;
+    if(!withMarkets) {
+        auto& d=gradientRuntime->demand[teamNumber][resourceType][swimClass];
+        gradientRuntime->initializeAdaptiveSources(*this);
+        d.servingSources=gradientRuntime->adaptiveSources[resourceType];
+        d.captured=d.serving=d.lastSubmitted=game?game->stepCounter:0;d.servingChanges=snapshotGenerations();
+    }
+    gradientRuntime->retireResource(&slot,game?game->stepCounter:0);
+	if (auto& probe=gradientRuntime->qualityProbe)
+    {probe->captured[gradient]=game ? game->stepCounter : 0;probe->captureSources(gradient,resourceType);}
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	{
 		PERF_SCOPE_TIME(PropagationResource);
-		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
+        if(!withMarkets && gradientRuntime->lazyActive) {
+            ResourceExperiment::Lazy field;field.data=gradient;field.capture=field.published=game?game->stepCounter:0;
+            field.key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;field.width=getW();field.height=getH();
+            const int units=game?game->teams[teamNumber]->stats.measurements().groundUnitsByMovementClass[swimClass]:0;
+            field.features=gradientRuntime->depthFeatures(&slot,field.key,units);
+            const int depth=gradientRuntime->depthModel.active()?std::clamp(gradientRuntime->depthModel.predict(field.features),0,65535):std::max(0,gradientRuntime->depthMode);
+            Uint16* data=gradient;
+            if(gradientRuntime->depthCensus){field.shadow.assign(data,data+size);data=field.shadow.data();}
+            field.search=acquireBuildingGradientSearch();field.search->begin(*this,data,swimClass);if(depth>0)field.search->resolveToCost(depth);
+            field.resolveOwner=[this,pointer=&slot](size_t cell){gradientRuntime->resolveResource(pointer,cell,ResourceExperiment::Reader::Scalar);};
+            gradientRuntime->resourceSearches[&slot]=std::move(field);
+            ResourceSnapshotExperiment::registerSlot(&slot,&gradientRuntime->resourceSearches[&slot]);
+            if(gradientRuntime->depthCensus)propagateGradient(gradient,swimClass,GRADIENT_COST_LIMIT,gradient_kernel::Family::Materials);
+        } else propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
             withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
 	}
+    (withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+                 : materialGradientStale[teamNumber][resourceType][swimClass])=false;
 	publishPlane(&slot);
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
@@ -262,4 +305,86 @@ void Map::rebuildPlaneRegistry()
 				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
 				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);
 			}
+}
+
+// Frozen resource-field cache. Registry keys are buffer identities only; readers
+// obtain a captured search and never borrow a live map or mutable owner field.
+namespace ResourceSnapshotExperiment {
+namespace {
+struct Snapshot;
+struct Registry {
+ std::mutex mutex;
+ std::map<Uint16**,ResourceExperiment::Lazy*> slots;
+ std::map<const Uint16*,Uint16**> owners;
+ std::map<const std::vector<Uint16>*,std::weak_ptr<Snapshot>> snapshots;
+ std::array<std::atomic<std::uint64_t>,4> counts{};
+ std::atomic<unsigned> slotCount{0},snapshotCount{0};
+};
+Registry& registry(){static auto* value=new Registry;return *value;}
+struct Snapshot {
+ std::shared_ptr<std::vector<Uint16>> values;
+ std::vector<Uint16> shadow;
+ std::unique_ptr<BuildingGradientSearch> search;
+ std::mutex mutex;int width=0,height=0,key=0,required=0;unsigned capture=0,reads=0,fullReads=0;bool registered=false;std::uint64_t baseExpanded=0;std::vector<int> features;
+ ~Snapshot(){
+  if(!registered)return;
+  {auto& r=registry();std::lock_guard lock(r.mutex);r.snapshots.erase(values.get());--r.snapshotCount;}
+  if(const char* path=std::getenv("GLOB2_RESOURCE_DEPTH_CSV")) {
+   static std::mutex logMutex;std::lock_guard lock(logMutex);
+   static std::ofstream log(std::string(path)+".snapshots");
+   if(log.tellp()==0)log<<"key,capture,required,queries,full_reads,entries,base_entries,serving_required,previous_required,serving_queries,previous_queries,material,swim,class_units\n";
+   log<<key<<','<<capture<<','<<required<<','<<reads<<','<<fullReads<<','<<search->expandedEntries()<<','<<baseExpanded;
+   for(int f:features)log<<','<<f;log<<'\n';
+  }
+  recycleBuildingGradientSearch(std::move(search));
+ }
+ void at(size_t cell) {
+  const auto before=search->expandedEntries();search->resolveForProposal(cell);
+  const auto* data=shadow.empty()?values->data():shadow.data();
+  const auto demand=[&](size_t i){const auto value=data[i];return value==GRADIENT_UNREACHABLE?search->settledCost():(value>GRADIENT_UNREACHABLE&&value!=GRADIENT_AT_GOAL?65535-int(value)+1:0);};
+  required=std::max(required,demand(cell));
+  if(data[cell]<=GRADIENT_UNREACHABLE) {
+   const int x=cell%width,y=cell/width;
+   for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+    {const size_t i=size_t(((y+dy)&(height-1))*width+((x+dx)&(width-1)));search->resolveForProposal(i);required=std::max(required,demand(i));}
+  }
+  ++reads;
+  if(!shadow.empty() && shadow[cell]!=(*values)[cell])throw std::runtime_error("Frozen resource snapshot mismatch");
+  registry().counts[2].fetch_add(search->expandedEntries()-before,std::memory_order_relaxed);
+ }
+ void all() {
+  const auto before=search->expandedEntries();search->finish();
+  ++reads;++fullReads;required=std::max(required,search->settledCost());
+  if(!shadow.empty() && shadow!=*values)throw std::runtime_error("Frozen resource snapshot full mismatch");
+  registry().counts[2].fetch_add(search->expandedEntries()-before,std::memory_order_relaxed);
+ }
+};
+std::shared_ptr<Snapshot> find(const std::shared_ptr<const std::vector<Uint16>>& values) {
+ auto& r=registry();if(!r.snapshotCount.load(std::memory_order_relaxed))return {};
+ std::lock_guard lock(r.mutex);const auto it=r.snapshots.find(values.get());return it==r.snapshots.end()?nullptr:it->second.lock();
+}
+}
+void registerSlot(Uint16** slot,ResourceExperiment::Lazy* field){auto& r=registry();std::lock_guard lock(r.mutex);if(r.slots.contains(slot))throw std::logic_error("Duplicate resource slot registration");r.slots[slot]=field;r.owners[field->data]=slot;++r.slotCount;}
+void unregisterSlot(Uint16** slot){auto& r=registry();std::lock_guard lock(r.mutex);const auto it=r.slots.find(slot);if(it!=r.slots.end()){const auto owner=r.owners.find(it->second->data);if(owner!=r.owners.end()&&owner->second==slot)r.owners.erase(owner);r.slots.erase(it);--r.slotCount;}}
+bool resolveOwner(const Uint16* values,size_t cell){
+ auto& r=registry();if(!r.slotCount.load(std::memory_order_relaxed))return false;
+ std::function<void(size_t)> resolve;
+ {std::lock_guard lock(r.mutex);const auto owner=r.owners.find(values);if(owner==r.owners.end()||*owner->second!=values)return false;const auto field=r.slots.find(owner->second);if(field==r.slots.end()||field->second->data!=values)return false;resolve=field->second->resolveOwner;}
+ if(!resolve)return false;resolve(cell);return true;
+}
+std::shared_ptr<std::vector<Uint16>> clonePlane(Uint16* const* slot,std::shared_ptr<std::vector<Uint16>> values) {
+ auto& r=registry();if(!r.slotCount.load(std::memory_order_relaxed))return values;
+ std::lock_guard lock(r.mutex);const auto it=r.slots.find(const_cast<Uint16**>(slot));
+ if(it==r.slots.end()||it->second->data!=*slot||it->second->search->complete())return values;
+ const auto& field=*it->second;
+ auto snapshot=std::make_shared<Snapshot>();snapshot->values=std::move(values);snapshot->width=field.width;snapshot->height=field.height;snapshot->key=field.key;snapshot->capture=field.capture;snapshot->features=field.features;snapshot->baseExpanded=field.search->expandedEntries();
+ Uint16* data=snapshot->values->data();
+ if(!field.shadow.empty()){snapshot->shadow=field.shadow;data=snapshot->shadow.data();}
+ snapshot->search=field.search->clone(data);
+ r.snapshots[snapshot->values.get()]=snapshot;snapshot->registered=true;++r.snapshotCount;++r.counts[0];
+ return std::shared_ptr<std::vector<Uint16>>(snapshot,snapshot->values.get());
+}
+void finish(const std::shared_ptr<const std::vector<Uint16>>& values){if(auto snapshot=find(values)){std::lock_guard lock(snapshot->mutex);++registry().counts[1];++registry().counts[3];snapshot->all();}}
+void resolve(const std::shared_ptr<const std::vector<Uint16>>& values,size_t cell,std::unique_lock<std::mutex>& guard){if(auto snapshot=find(values)){guard=std::unique_lock(snapshot->mutex);++registry().counts[1];snapshot->at(cell);}}
+std::array<std::uint64_t,4> metrics(){auto& r=registry();return {r.counts[0].load(),r.counts[1].load(),r.counts[2].load(),r.counts[3].load()};}
 }

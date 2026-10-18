@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SharedBuildingGradient.h"
 #include "WorldSnapshot.h"
+#include "map/gradient/ResourceSnapshotExperiment.h"
 #include "SnapshotStorage.h"
 #include "Building.h"
 #include "Game.h"
@@ -553,6 +554,7 @@ Handle capture(const Game& game,
 	}
 	if (needs(requirements, Component::ResourceFields))
 	{
+        // Partial fields retain their frozen frontier in the exported generation.
 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
 		fields->clear();
 		const auto planeCells = std::size_t(game.map.getW()) * game.map.getH();
@@ -566,6 +568,7 @@ Handle capture(const Game& game,
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
 			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
+            values=ResourceSnapshotExperiment::clonePlane(plane.slot,std::move(values));
 			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
 		}
 		result->resourceFields = std::move(fields);

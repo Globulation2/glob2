@@ -5,6 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
+#include "map/gradient/ResourceExperiment.h"
 #include "Game.h"
 
 #include "Building.h"
@@ -645,9 +646,20 @@ void Unit::handleMovementGoingToResource()
 		// walking. Re-ascend from here whenever the stored target has stopped
 		// being a peak of that same gradient; isGradientPeak is a cheap check
 		// to run every action, the ascent itself only when it actually goes stale.
+        ResourceExperiment::ReadScope targetRead(ResourceExperiment::Reader::Scalar);
 		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
-		if (!map->isGradientPeak(gradient, targetX, targetY))
+        const bool partial=ResourceSnapshotExperiment::resolveOwner(gradient,map->coordToIndex(targetX,targetY));
+        // Resolving a point's whole cost layer finalizes every strictly better
+        // neighbor used by the peak test. Goals/blocked markers are seeded.
+		if (!map->isGradientPeak(gradient, targetX, targetY)) {
+            if(partial) {
+                ResourceSnapshotExperiment::resolveOwner(gradient,map->coordToIndex(posX,posY));
+                if(gradient[map->coordToIndex(posX,posY)]<=GRADIENT_UNREACHABLE)
+                    for(int oy=-1;oy<=1;++oy)for(int ox=-1;ox<=1;++ox)
+                        ResourceSnapshotExperiment::resolveOwner(gradient,map->coordToIndex(posX+ox,posY+oy));
+            }
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
+        }
 	}
 	else
 	{

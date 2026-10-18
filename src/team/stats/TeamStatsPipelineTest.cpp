@@ -23,6 +23,26 @@
 
 namespace
 {
+// Historical sample writers omit fields added by movement demand tracking.
+class BeforeMovementOutput : public GAGCore::BinaryOutputStream
+{
+    unsigned skippedDepth=0;
+public:
+    using BinaryOutputStream::BinaryOutputStream;
+    void writeEnterSection(const std::string name) override {
+        if(name=="groundUnitsByMovementClass" || skippedDepth) ++skippedDepth;
+        else BinaryOutputStream::writeEnterSection(name);
+    }
+    void writeEnterSection(unsigned id) override {
+        if(skippedDepth) ++skippedDepth; else BinaryOutputStream::writeEnterSection(id);
+    }
+    void writeLeaveSection(size_t count=1) override {
+        if(skippedDepth) skippedDepth-=unsigned(count); else BinaryOutputStream::writeLeaveSection(count);
+    }
+    void writeUint32(Uint32 value,const std::string name) override {
+        if(!skippedDepth && name!="movementClassesKnown") BinaryOutputStream::writeUint32(value,name);
+    }
+};
 SimulationSnapshot::Handle input(glob2test::HeadlessGame &w)
 {
 	w.team->stats.enableCollection();
@@ -46,6 +66,63 @@ class StatisticsBoundaryObserver final : public AIImplementation
 } // namespace
 TEST_SUITE("TeamStatsPipeline")
 {
+    TEST_CASE("movement classes count living ground units every sample including eliminated teams")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true});
+        const int waterCosts[]{0,5,7,10,13,20,30,10};
+        for (int c=0;c<SWIM_CLASS_COUNT;++c) {
+            auto* u=w.addUnit(WORKER,8+c,8);
+            u->performance[FLY]=0;
+            u->performance[WALK]=c==WATER_ONLY_CLASS ? 0 : (c ? waterCosts[c]*2 : 20);
+            u->performance[SWIM]=c ? 20 : 0;
+            REQUIRE(u->swimClass()==c);
+            u->medical=Unit::MED_HUNGRY;
+        }
+        auto* flying=w.addUnit(WORKER,20,8); flying->performance[FLY]=20;
+        auto* dead=w.addUnit(WORKER,21,8); dead->isDead=true;
+        auto* immobile=w.addUnit(WORKER,22,8);
+        immobile->performance[FLY]=immobile->performance[WALK]=immobile->performance[SWIM]=0;
+        w.team->isAlive=false;
+        const auto sample=computeTeamStatsSample(input(w),0,false);
+        CHECK(sample.measurementFrame().movementClassesKnown);
+        for (auto count:sample.measurementFrame().groundUnitsByMovementClass) CHECK(count==1);
+        w.team->stats.step(w.team);
+        CHECK(w.team->stats.editMeasurements().groundUnitsByMovementClass==sample.measurementFrame().groundUnitsByMovementClass);
+    }
+
+    TEST_CASE("movement class demand follows delayed publication and persists pending transitions")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true});
+        w.game.gameHeader.setTeamStatsDelay(2);
+        auto* u=w.addUnit(WORKER,10,10);
+        u->performance[FLY]=u->performance[SWIM]=0; u->performance[WALK]=20;
+        TeamStatsPipeline pipeline(w.game.map.computeExecutor());
+        pipeline.prepareBoundary(w.game,input(w));
+        CHECK_FALSE(w.team->stats.editMeasurements().movementClassesKnown);
+        CHECK(w.team->stats.usesGroundMovementClass(6));
+        w.game.stepCounter=1;
+        u->performance[SWIM]=20;
+        pipeline.prepareBoundary(w.game,input(w));
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        pipeline.save(&output);
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(memory->getBuffer(),memory->getPosition()));
+        in.seekFromStart(0);
+        TeamStatsPipeline restored(w.game.map.computeExecutor());
+        restored.load(w.game,&in);
+        CHECK(restored.checkSum(true)==pipeline.checkSum(true));
+        w.game.stepCounter=2;
+        REQUIRE(restored.publishDue(w.game));
+        CHECK(w.team->stats.editMeasurements().groundUnitsByMovementClass[0]==1);
+        CHECK_FALSE(w.team->stats.usesGroundMovementClass(Map::SWIM_CLASS_EVEN));
+        w.game.stepCounter=3;
+        REQUIRE(restored.publishDue(w.game));
+        CHECK(w.team->stats.editMeasurements().groundUnitsByMovementClass[0]==0);
+        CHECK(w.team->stats.editMeasurements().groundUnitsByMovementClass[Map::SWIM_CLASS_EVEN]==1);
+    }
+
 	TEST_CASE("direct scalar checksums match canonical binary bytes")
 	{
 		auto *backend = new StatsChecksumBackend;
@@ -142,8 +219,8 @@ TEST_SUITE("TeamStatsPipeline")
         TeamStatsPipeline pipeline(w.game.map.computeExecutor());
         auto sample=computeTeamStatsSample(input(w),0,true);
         REQUIRE_FALSE(sample.finalized);
-        struct OldOutput : GAGCore::BinaryOutputStream {
-            using BinaryOutputStream::BinaryOutputStream;
+        struct OldOutput : BeforeMovementOutput {
+            using BeforeMovementOutput::BeforeMovementOutput;
             void writeUint8(Uint8 value,const std::string name) override { if(name!="finalized" && name!="completeFrame") BinaryOutputStream::writeUint8(value,name); }
         };
         auto* bytes=new GAGCore::MemoryStreamBackend;
@@ -172,9 +249,11 @@ TEST_SUITE("TeamStatsPipeline")
         for (unsigned tick=0;tick<2;++tick) {
             w.game.stepCounter=tick;
             raw.push_back(computeTeamStatsSample(input(w),0,false));
+            raw.back().measurements.movementClassesKnown=false;
+            raw.back().measurements.groundUnitsByMovementClass.fill(0);
         }
-        struct Format157Output : GAGCore::BinaryOutputStream {
-            using BinaryOutputStream::BinaryOutputStream;
+        struct Format157Output : BeforeMovementOutput {
+            using BeforeMovementOutput::BeforeMovementOutput;
             void writeUint8(Uint8 value,const std::string name) override {
                 if(name!="completeFrame") BinaryOutputStream::writeUint8(value,name);
             }
@@ -454,13 +533,13 @@ TEST_SUITE("TeamStatsPipeline")
         glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true});
         TeamStatsPipeline original(w.game.map.computeExecutor());
         original.prepareBoundary(w.game,input(w));
-        struct LegacyOutput : GAGCore::BinaryOutputStream {
-            using BinaryOutputStream::BinaryOutputStream;
+        struct LegacyOutput : BeforeMovementOutput {
+            using BeforeMovementOutput::BeforeMovementOutput;
             void writeUint8(Uint8 value,const std::string name) override {
-                if(name!="completeFrame" && name!="finalized") BinaryOutputStream::writeUint8(value,name);
+                if(name!="completeFrame" && name!="finalized" && name!="movementClassesKnown") BinaryOutputStream::writeUint8(value,name);
             }
             void writeUint32(Uint32 value, const std::string name) override {
-                BinaryOutputStream::writeUint32(value,name);
+                BeforeMovementOutput::writeUint32(value,name);
                 if(name=="due") BinaryOutputStream::writeUint32(0xdeadbeef,"inputChecksum");
             }
         };
@@ -471,7 +550,10 @@ TEST_SUITE("TeamStatsPipeline")
         in.seekFromStart(0);
         TeamStatsPipeline restored(w.game.map.computeExecutor());
         restored.load(w.game,&in,155);
-        CHECK(restored.checkSum(true)==original.checkSum(true));
+        CHECK(restored.checkSum()==original.checkSum());
+        w.game.stepCounter=8;
+        CHECK(restored.publishDue(w.game));
+        CHECK_FALSE(w.team->stats.editMeasurements().movementClassesKnown);
         CHECK(in.getPosition()==memory->getPosition());
     }
 	TEST_CASE("pure captures pause and waiting admit no statistics and readers share the generation")

@@ -332,6 +332,22 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   and sidecars without another extraction. A changed tick, observation revision,
   configuration revision or map generation refreshes entities; named views drop
   unwanted extras.
+- TeamStats counts living non-flying units with ground movement by their actual
+  run/swim ratio class during its existing per-tick snapshot scan. Published
+  counts gate periodic material, market, guard, clear and forbidden refreshes;
+  team aliveness does not gate surviving units. Unused fields are skipped in the
+  round robin, refreshing useful fields sooner under the existing one-field-per-tick
+  limit. This reduces stale work, but does not guarantee lower total gradient CPU.
+  Counts arrive at the fixed
+  `teamStatsDelay` deadline (eight ticks by default). Until the first known sample,
+  including after loading older saves, all classes remain eligible.
+  Inactive classes retain their allocated fields marked stale and cancel pending
+  periodic work. An explicit query rebuilds a missing or suspended stale field
+  synchronously, including during the statistics delay. Counts, pending samples
+  and suspended freshness flags are saved for exact continuation. The Population
+  statistics chart retains those same counts as ground-movement bands; history
+  predating their collection is unavailable rather than zero. Building fields
+  retain their existing query-triggered refresh and idle-expiry rules.
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay

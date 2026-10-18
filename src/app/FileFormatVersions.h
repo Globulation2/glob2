@@ -279,6 +279,9 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
 // Completed pending measurement frames replace raw labour deltas.
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
 
+// Published movement-class counts and stale suspended shared fields.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_DEMAND = 165;
+
 // Cached hiring suggestions and their pending deadlines.
 static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;
 

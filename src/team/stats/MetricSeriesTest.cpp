@@ -253,6 +253,29 @@ TEST_SUITE("MetricSeries views")
 	}
 }
 
+TEST_SUITE("MetricCatalog ground movement")
+{
+    TEST_CASE("movement chart shows all classes as counts and omits unknown legacy history")
+    {
+        Recorded team;
+        team.add(0,36); // Old history lacks movement counts.
+        const auto& movement=metric("ground movement");
+        CHECK_FALSE(Stats::buildChart(movement,Stats::defaultView(movement),{team.history}).any);
+        auto& m=team.add(512,36);
+        m.movementClassesKnown=true;
+        for(int c=0;c<SWIM_CLASS_COUNT;++c) m.groundUnitsByMovementClass[c]=c+1;
+        const auto chart=Stats::buildChart(movement,Stats::defaultView(movement),{team.history});
+        REQUIRE(chart.any);
+        CHECK(chart.stacked);
+        CHECK_FALSE(chart.percent);
+        REQUIRE(chart.teams.size()==1);
+        REQUIRE(chart.teams[0].values.size()==SWIM_CLASS_COUNT);
+        for(int c=0;c<SWIM_CLASS_COUNT;++c)
+            CHECK(sampleOf(chart.teams[0],c,1)==c+1);
+        CHECK(movement.value(m)==36);
+    }
+}
+
 TEST_SUITE("MetricCatalog worker time and defence")
 {
 	using M = GameplayMeasurements;
