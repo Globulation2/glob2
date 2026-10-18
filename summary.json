@@ -1,0 +1,756 @@
+{
+  "source": "a7c944a2f303c7dc2ecba1845ce9cd89072b1c55",
+  "base": "13d99a181e3225738411f394e7c29edbabe11b47",
+  "native_totals": {
+    "tests": "3042",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "native_provenance": {
+    "note": "Complete native inventory initially ran at143937cc5. Commit0d68d4916 changes only three expected checksum fixture files; the two JavaScript cases reran on that clean revision. Final a7c944a2f only updates Python format-boundary test expectations; full340 Python suite passed there and release binaries were rebuilt. Two display cases interrupted by disk exhaustion reran with capacity. Initial failure ledger and exact case replacements retained. No production C++ changes after143937cc5.",
+    "replaced_cases": [
+      {
+        "case": [
+          "JavaScriptSimulation",
+          "JavaScript economic planners and map survey execute, resume and replay 256 ticks"
+        ],
+        "replacement": "js-final.xml"
+      },
+      {
+        "case": [
+          "JavaScriptSimulation",
+          "JavaScript original fixture executes, resumes and replays 256 ticks"
+        ],
+        "replacement": "js-final.xml"
+      },
+      {
+        "case": [
+          "UIPresentation",
+          "every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]"
+        ],
+        "replacement": "display-retry-fullhd.xml"
+      },
+      {
+        "case": [
+          "UIPresentation",
+          "every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]"
+        ],
+        "replacement": "display-retry-laptop.xml"
+      }
+    ],
+    "totals": {
+      "tests": "3042",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "python_tests": 340,
+  "performance": [
+    {
+      "case": "midgame24k",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 137.963885,
+            "min": 136.314243,
+            "max": 142.241722,
+            "q1": 136.72645075,
+            "q3": 140.54570375
+          },
+          "cpu_us_per_tick": {
+            "median": 538.92142578125,
+            "min": 532.47751171875,
+            "max": 555.6317265625,
+            "q1": 534.0876982421876,
+            "q3": 549.0066552734376
+          },
+          "p50_tick_ms": {
+            "median": 0.1240215,
+            "min": 0.117589,
+            "max": 0.134731,
+            "q1": 0.1209255,
+            "q3": 0.13221624999999998
+          },
+          "p95_tick_ms": {
+            "median": 0.2596585,
+            "min": 0.248263,
+            "max": 0.286444,
+            "q1": 0.25205500000000003,
+            "q3": 0.27475725000000006
+          },
+          "p99_tick_ms": {
+            "median": 0.404364,
+            "min": 0.347959,
+            "max": 0.484283,
+            "q1": 0.3729675,
+            "q3": 0.45305500000000004
+          },
+          "peak_rss_kib": {
+            "median": 95318.0,
+            "min": 95024,
+            "max": 95876,
+            "q1": 95071.0,
+            "q3": 95494.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 138.0933555,
+            "min": 136.16016,
+            "max": 141.073184,
+            "q1": 136.55698825,
+            "q3": 138.91746225
+          },
+          "cpu_us_per_tick": {
+            "median": 539.427169921875,
+            "min": 531.875625,
+            "max": 551.067125,
+            "q1": 533.4257353515625,
+            "q3": 542.6463369140625
+          },
+          "p50_tick_ms": {
+            "median": 0.1261945,
+            "min": 0.121226,
+            "max": 0.132186,
+            "q1": 0.1234725,
+            "q3": 0.12978675
+          },
+          "p95_tick_ms": {
+            "median": 0.26816,
+            "min": 0.256107,
+            "max": 0.292345,
+            "q1": 0.25910524999999995,
+            "q3": 0.28334325
+          },
+          "p99_tick_ms": {
+            "median": 0.398578,
+            "min": 0.353659,
+            "max": 0.523516,
+            "q1": 0.36643525,
+            "q3": 0.48938774999999995
+          },
+          "peak_rss_kib": {
+            "median": 95286.0,
+            "min": 94812,
+            "max": 95812,
+            "q1": 95128.0,
+            "q3": 95481.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": 0.09384376208310119
+    },
+    {
+      "case": "islands",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 272.39083600000004,
+            "min": 270.348958,
+            "max": 275.108978,
+            "q1": 271.04882975,
+            "q3": 272.97582175
+          },
+          "cpu_us_per_tick": {
+            "median": 1064.026703125,
+            "min": 1056.0506171875,
+            "max": 1074.6444453125,
+            "q1": 1058.7844912109374,
+            "q3": 1066.3118037109375
+          },
+          "p50_tick_ms": {
+            "median": 0.26207400000000003,
+            "min": 0.258482,
+            "max": 0.267619,
+            "q1": 0.26105425000000004,
+            "q3": 0.26387225
+          },
+          "p95_tick_ms": {
+            "median": 0.510953,
+            "min": 0.461209,
+            "max": 0.612753,
+            "q1": 0.4888735,
+            "q3": 0.53388325
+          },
+          "p99_tick_ms": {
+            "median": 0.764896,
+            "min": 0.577306,
+            "max": 1.360446,
+            "q1": 0.6701215,
+            "q3": 0.9222692499999999
+          },
+          "peak_rss_kib": {
+            "median": 150340.0,
+            "min": 150004,
+            "max": 150620,
+            "q1": 150179.0,
+            "q3": 150598.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 271.813345,
+            "min": 269.849538,
+            "max": 275.776209,
+            "q1": 270.85859425,
+            "q3": 273.36407925
+          },
+          "cpu_us_per_tick": {
+            "median": 1061.77087890625,
+            "min": 1054.0997578125,
+            "max": 1077.25081640625,
+            "q1": 1058.0413837890624,
+            "q3": 1067.8284345703123
+          },
+          "p50_tick_ms": {
+            "median": 0.2609965,
+            "min": 0.254575,
+            "max": 0.265716,
+            "q1": 0.2592885,
+            "q3": 0.262905
+          },
+          "p95_tick_ms": {
+            "median": 0.508267,
+            "min": 0.467371,
+            "max": 0.547551,
+            "q1": 0.48075650000000003,
+            "q3": 0.5301262499999999
+          },
+          "p99_tick_ms": {
+            "median": 0.6632165,
+            "min": 0.638761,
+            "max": 1.324389,
+            "q1": 0.6484585,
+            "q3": 0.7057582499999999
+          },
+          "peak_rss_kib": {
+            "median": 150490.0,
+            "min": 149640,
+            "max": 150808,
+            "q1": 150210.0,
+            "q3": 150692.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -0.21200823363969334
+    },
+    {
+      "case": "swamp",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 279.3996575,
+            "min": 276.12112,
+            "max": 281.042878,
+            "q1": 277.383149,
+            "q3": 280.85775049999995
+          },
+          "cpu_us_per_tick": {
+            "median": 1091.404912109375,
+            "min": 1078.598125,
+            "max": 1097.8237421875,
+            "q1": 1083.52792578125,
+            "q3": 1097.1005878906249
+          },
+          "p50_tick_ms": {
+            "median": 0.245413,
+            "min": 0.242141,
+            "max": 0.254464,
+            "q1": 0.2446085,
+            "q3": 0.24837075
+          },
+          "p95_tick_ms": {
+            "median": 0.688133,
+            "min": 0.593186,
+            "max": 0.750328,
+            "q1": 0.6425902499999999,
+            "q3": 0.7337135
+          },
+          "p99_tick_ms": {
+            "median": 3.119155,
+            "min": 3.051128,
+            "max": 3.313397,
+            "q1": 3.07862475,
+            "q3": 3.1766702500000004
+          },
+          "peak_rss_kib": {
+            "median": 135242.0,
+            "min": 134564,
+            "max": 135404,
+            "q1": 135028.0,
+            "q3": 135335.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 275.3864135,
+            "min": 273.786059,
+            "max": 277.899352,
+            "q1": 274.5918355,
+            "q3": 276.0848405
+          },
+          "cpu_us_per_tick": {
+            "median": 1075.728177734375,
+            "min": 1069.47679296875,
+            "max": 1085.54434375,
+            "q1": 1072.624357421875,
+            "q3": 1078.456408203125
+          },
+          "p50_tick_ms": {
+            "median": 0.2459385,
+            "min": 0.241881,
+            "max": 0.251239,
+            "q1": 0.24269525,
+            "q3": 0.25047475
+          },
+          "p95_tick_ms": {
+            "median": 0.655186,
+            "min": 0.625967,
+            "max": 0.809009,
+            "q1": 0.6362957499999999,
+            "q3": 0.7133622500000001
+          },
+          "p99_tick_ms": {
+            "median": 2.3719770000000002,
+            "min": 2.213807,
+            "max": 2.514037,
+            "q1": 2.324601,
+            "q3": 2.4609105
+          },
+          "peak_rss_kib": {
+            "median": 135460.0,
+            "min": 135028,
+            "max": 136668,
+            "q1": 135162.0,
+            "q3": 136249.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -1.4363811451701514
+    },
+    {
+      "case": "lava-shield",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 189.8003175,
+            "min": 187.025704,
+            "max": 192.399972,
+            "q1": 188.053361,
+            "q3": 190.76583374999998
+          },
+          "cpu_us_per_tick": {
+            "median": 741.407490234375,
+            "min": 730.56915625,
+            "max": 751.562390625,
+            "q1": 734.5834414062501,
+            "q3": 745.1790380859375
+          },
+          "p50_tick_ms": {
+            "median": 0.12094550000000001,
+            "min": 0.116998,
+            "max": 0.124391,
+            "q1": 0.11875174999999999,
+            "q3": 0.1234
+          },
+          "p95_tick_ms": {
+            "median": 0.8580495,
+            "min": 0.717117,
+            "max": 0.974327,
+            "q1": 0.798346,
+            "q3": 0.95167425
+          },
+          "p99_tick_ms": {
+            "median": 1.8195225000000002,
+            "min": 1.756485,
+            "max": 2.003155,
+            "q1": 1.79006,
+            "q3": 1.84217925
+          },
+          "peak_rss_kib": {
+            "median": 116188.0,
+            "min": 115504,
+            "max": 116432,
+            "q1": 115820.0,
+            "q3": 116243.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 188.770647,
+            "min": 186.775325,
+            "max": 199.055086,
+            "q1": 187.40599025,
+            "q3": 191.1107135
+          },
+          "cpu_us_per_tick": {
+            "median": 737.38533984375,
+            "min": 729.59111328125,
+            "max": 777.5589296875,
+            "q1": 732.0546494140625,
+            "q3": 746.5262246093749
+          },
+          "p50_tick_ms": {
+            "median": 0.118782,
+            "min": 0.11284,
+            "max": 0.125604,
+            "q1": 0.11716025,
+            "q3": 0.1231825
+          },
+          "p95_tick_ms": {
+            "median": 0.8954690000000001,
+            "min": 0.82577,
+            "max": 0.993282,
+            "q1": 0.862676,
+            "q3": 0.92526825
+          },
+          "p99_tick_ms": {
+            "median": 2.014631,
+            "min": 1.89349,
+            "max": 2.190635,
+            "q1": 1.975212,
+            "q3": 2.0853754999999996
+          },
+          "peak_rss_kib": {
+            "median": 117052.0,
+            "min": 116680,
+            "max": 117420,
+            "q1": 116878.0,
+            "q3": 117326.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -0.5425019902825068
+    },
+    {
+      "case": "constrained64",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 1172.0374305,
+            "min": 1165.967766,
+            "max": 1183.045665,
+            "q1": 1168.1851687500002,
+            "q3": 1181.26629
+          },
+          "cpu_us_per_tick": {
+            "median": 4578.271212890625,
+            "min": 4554.5615859375,
+            "max": 4621.27212890625,
+            "q1": 4563.223315429687,
+            "q3": 4614.3214453125
+          },
+          "p50_tick_ms": {
+            "median": 3.377662,
+            "min": 3.349835,
+            "max": 3.398235,
+            "q1": 3.3664062500000003,
+            "q3": 3.38733575
+          },
+          "p95_tick_ms": {
+            "median": 11.8490955,
+            "min": 11.791593,
+            "max": 12.145453,
+            "q1": 11.812485000000002,
+            "q3": 11.94251975
+          },
+          "p99_tick_ms": {
+            "median": 28.25934,
+            "min": 28.006754,
+            "max": 28.686871,
+            "q1": 28.137176500000002,
+            "q3": 28.43274275
+          },
+          "peak_rss_kib": {
+            "median": 54300.0,
+            "min": 53712,
+            "max": 54508,
+            "q1": 53985.0,
+            "q3": 54402.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 17.695206,
+            "min": 17.036533,
+            "max": 19.096694,
+            "q1": 17.23971675,
+            "q3": 17.815973
+          },
+          "cpu_us_per_tick": {
+            "median": 69.1218984375,
+            "min": 66.54895703125,
+            "max": 74.5964609375,
+            "q1": 67.3426435546875,
+            "q3": 69.59364453124999
+          },
+          "p50_tick_ms": {
+            "median": 0.025477,
+            "min": 0.024015,
+            "max": 0.027722,
+            "q1": 0.02499675,
+            "q3": 0.026554249999999998
+          },
+          "p95_tick_ms": {
+            "median": 0.07066700000000001,
+            "min": 0.063418,
+            "max": 0.077865,
+            "q1": 0.06393900000000001,
+            "q3": 0.07225224999999999
+          },
+          "p99_tick_ms": {
+            "median": 0.095854,
+            "min": 0.088345,
+            "max": 0.187138,
+            "q1": 0.09004825,
+            "q3": 0.1008655
+          },
+          "peak_rss_kib": {
+            "median": 55614.0,
+            "min": 54884,
+            "max": 56040,
+            "q1": 55175.0,
+            "q3": 55783.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -98.49021835484801
+    },
+    {
+      "case": "ordinary32",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 7.710269,
+            "min": 7.642417,
+            "max": 8.156916,
+            "q1": 7.647436750000001,
+            "q3": 7.81949475
+          },
+          "cpu_us_per_tick": {
+            "median": 30.11823828125,
+            "min": 29.85319140625,
+            "max": 31.862953125,
+            "q1": 29.872799804687503,
+            "q3": 30.5449013671875
+          },
+          "p50_tick_ms": {
+            "median": 0.0169165,
+            "min": 0.016531,
+            "max": 0.017583,
+            "q1": 0.016826,
+            "q3": 0.01722725
+          },
+          "p95_tick_ms": {
+            "median": 0.031088,
+            "min": 0.030697,
+            "max": 0.03236,
+            "q1": 0.030958000000000003,
+            "q3": 0.031518500000000005
+          },
+          "p99_tick_ms": {
+            "median": 0.045665,
+            "min": 0.040756,
+            "max": 0.04831,
+            "q1": 0.042141,
+            "q3": 0.04697225
+          },
+          "peak_rss_kib": {
+            "median": 54018.0,
+            "min": 53724,
+            "max": 54416,
+            "q1": 53870.0,
+            "q3": 54254.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 7.826581,
+            "min": 7.527897,
+            "max": 7.953963,
+            "q1": 7.76991275,
+            "q3": 7.86561625
+          },
+          "cpu_us_per_tick": {
+            "median": 30.57258203125,
+            "min": 29.40584765625,
+            "max": 31.07016796875,
+            "q1": 30.351221679687498,
+            "q3": 30.725063476562497
+          },
+          "p50_tick_ms": {
+            "median": 0.017262,
+            "min": 0.01632,
+            "max": 0.018294,
+            "q1": 0.017072,
+            "q3": 0.0176155
+          },
+          "p95_tick_ms": {
+            "median": 0.032055,
+            "min": 0.029655,
+            "max": 0.032951,
+            "q1": 0.031519,
+            "q3": 0.032613500000000004
+          },
+          "p99_tick_ms": {
+            "median": 0.0409065,
+            "min": 0.033773,
+            "max": 0.048801,
+            "q1": 0.0392435,
+            "q3": 0.0472985
+          },
+          "peak_rss_kib": {
+            "median": 53994.0,
+            "min": 53680,
+            "max": 54668,
+            "q1": 53734.0,
+            "q3": 54158.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": 1.508533619255048
+    }
+  ],
+  "save_migration": {
+    "current_head": "143937cc50dda9d1efbc2b9c18c0adebc52c4d40",
+    "master": "13d99a181e3225738411f394e7c29edbabe11b47",
+    "results": [
+      {
+        "version": "168",
+        "old_header": [
+          0,
+          168,
+          1,
+          1
+        ],
+        "new_header": [
+          0,
+          173,
+          1,
+          1
+        ],
+        "matched_records": 24,
+        "aggregate_and_all_entities_match_except_saved_header_version": true
+      },
+      {
+        "version": "169",
+        "old_header": [
+          0,
+          169,
+          2,
+          3
+        ],
+        "new_header": [
+          0,
+          173,
+          2,
+          3
+        ],
+        "matched_records": 24,
+        "aggregate_and_all_entities_match_except_saved_header_version": true
+      },
+      {
+        "version": "171",
+        "old_header": [
+          0,
+          171,
+          1,
+          1
+        ],
+        "new_header": [
+          0,
+          173,
+          1,
+          1
+        ],
+        "matched_records": 24,
+        "aggregate_and_all_entities_match_except_saved_header_version": true
+      },
+      {
+        "version": "172",
+        "old_header": [
+          0,
+          172,
+          1,
+          1
+        ],
+        "new_header": [
+          0,
+          173,
+          1,
+          1
+        ],
+        "matched_records": 16,
+        "aggregate_and_all_entities_match_except_saved_header_version": true
+      }
+    ]
+  },
+  "air_determinism": {
+    "revision": "143937cc50dda9d1efbc2b9c18c0adebc52c4d40",
+    "binary_sha256": "2acdfa10358f2d57ddd220907d6885e0901813a354fed6c6e1ddf6ebadd48d5a",
+    "results": [
+      {
+        "case": "direct",
+        "participants": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "ticks_compared": 128,
+        "aggregate_and_all_team_entity_fields_match": true,
+        "save_phases": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "case": "constrained",
+        "participants": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "ticks_compared": 128,
+        "aggregate_and_all_team_entity_fields_match": true,
+        "save_phases": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "platforms": [
+      "Linux x86_64 GCC 13"
+    ],
+    "omitted_platforms": [
+      "Windows",
+      "macOS",
+      "Android",
+      "iOS",
+      "browser"
+    ],
+    "build": "dev_fast=0 release=1, -O3 -g1, no PCH/unity, GPU off"
+  },
+  "limitations": [
+    "Linux x86_64 GCC13 only; actual Windows/macOS/mobile/browser and cross-platform checksums not rerun",
+    "No new sanitizer, hosted CI, store packaging or human gameplay qualification",
+    "Native full inventory source143937cc5 plus final reference/test-only commits and four targeted replacements; initial failures and provenance retained",
+    "Generated UI screenshots discarded after disk exhaustion; two interrupted cases rerun with capacity; logs retained",
+    "38 opt-in native benchmarks excluded from standard suite"
+  ]
+}
