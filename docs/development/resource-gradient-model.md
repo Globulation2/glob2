@@ -15,6 +15,11 @@ movement-query features; the demanded 128-tick cap still guarantees a retry.
 
 ## Training workflow
 
+`tools/resource_gradient_model.py` exposes the individual stages as subcommands.
+There is currently no single command that orchestrates collection, candidate
+builds, repeated retraining, evaluation and promotion end to end. Run the stages
+explicitly; candidate builds and acceptance remain coordinated by the operator.
+
 The collection policy determines which training situations can occur. A capped
 policy rarely produces old, heavily queried fields, and stale planning answers
 can prevent recruitment before any movement query occurs. Increasing the number
