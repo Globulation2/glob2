@@ -44,12 +44,21 @@ changing only worker count must preserve execution at the same delay.
 
 All sessions use `--compute-threads auto|N`, where N is a positive unsigned
 integer counting total executor participants, including the simulation owner.
-`auto` (the default) uses reported logical CPU threads, falling back to one if
-the hardware count is unavailable. Browser automatic sizing remains capped at
-eight. Linux/Android CPU affinity is reported separately and does not resize the
-pool; it reflects cpuset restrictions, not CPU-time quotas or physical-core
-throughput. Explicit counts are preserved, including values above the observed
-CPU eligibility; there is no separate limit of 64.
+`auto` (the default) prefers physical cores on native platforms. Linux/Android
+count distinct sysfs sibling groups within the creating thread's CPU affinity;
+Windows counts core topology records intersecting process affinity on single
+processor-group systems. Windows multi-group eligibility is currently unknown
+and uses the logical fallback. macOS/iOS query enabled physical cores with sysctl.
+A system-wide physical count is bounded by logical eligibility when available;
+this bound is not an observed eligible-core count.
+
+When physical topology is unavailable or incomplete, auto falls back to eligible
+logical CPUs, then the hardware thread hint, then one participant. Browser auto
+continues to use the logical hardware hint capped at eight. Explicit counts are
+preserved, including values above observed CPU eligibility; there is no separate
+limit of 64. Discovery samples once at session setup, changes no affinity, and
+does not interpret CPU-time quotas. Both performance and efficiency cores count;
+no threads are pinned to cores. Auxiliary asset/preview pools are independent.
 The background pool has N−1 workers. AI, periodic/building gradients, resource
 growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave
@@ -75,9 +84,16 @@ explicit count), `compute_resolved_threads` records the resolved participant cou
 measured separately from fixed counts; using every logical CPU is not a speedup claim.
 
 `resource_plan` records the session's setup decision: requested/resolved participant
-counts, CPU eligibility and hardware hints, whether resolved participants exceed
+counts, CPU eligibility and hardware hints, nullable `physical_cores`,
+`physical_core_source`, and `physical_cores_are_eligible`, whether resolved participants exceed
 observed eligibility, thread support and initial compute-GPU permission/backend.
-It does not rediscover CPU availability when writing results. `compute_threads` and `compute_workers`
+`cpu_availability_source` retains logical-affinity provenance; physical topology
+has its own source field.
+`participant_source` distinguishes `physical-cores`, `physical-core-bound`,
+`eligible-logical-fallback`, `hardware-hint`, `serial-fallback`, explicit overrides
+and unavailable threading. A one-participant result retains the existing rule
+that compute GPU work is not permitted. It does not rediscover CPU availability
+when writing results. `compute_threads` and `compute_workers`
 still report actual execution after thread-creation fallback; GPU permission does
 not mean a device accepted or executed work. Reload keeps the setup allocation,
 and live gradient-menu changes retain their existing tick-boundary lifecycle.

@@ -584,10 +584,11 @@ owner computes their jobs at joins when there are no workers.
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads, or one participant when the hardware count is
-unavailable. Browser automatic sizing remains capped at eight. Linux/Android CPU
-affinity is reported separately and does not resize the pool.
+`--compute-threads auto|N` controls the shared pool for all sessions; native `auto`
+prefers physical cores, filtered by affinity where topology discovery supports it.
+Fallbacks are eligible logical CPUs, the hardware thread hint, then one participant.
+Browser auto retains its logical-CPU hint capped at eight. See
+[compute sizing](compute-benchmarks.md) for platform detection and limitations.
 N is a positive unsigned participant count including the owner. Explicit counts
 remain unchanged unless the platform cannot run threads, when execution uses one
 participant while retaining the requested count in diagnostics. Saving drains
