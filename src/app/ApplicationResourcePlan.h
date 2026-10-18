@@ -22,7 +22,7 @@ struct ApplicationResourcePlan
     }
 };
 
-// Pure injected policy: auto uses the hardware hint; affinity is observation-only.
+// Pure injected policy: auto prefers physical cores, then eligible logical CPUs.
 // Explicit counts remain unchanged unless the platform cannot run threads.
 ApplicationResourcePlan resolveApplicationResourcePlan(unsigned requested,
     const CpuAvailabilityObservation&, bool threadsSupported, gradient_kernel::Configuration);
