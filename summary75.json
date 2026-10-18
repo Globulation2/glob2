@@ -1,0 +1,1065 @@
+{
+  "source": {
+    "source": "933eea3e4021c9b0fd04b563fe5f073a10739966",
+    "base": "c7cdf04d4fbcdd4d09f81e2953d6a5e77e5ee4b2",
+    "clean": true,
+    "app_sha256": "01a2eb8c117f70134878f46c0ef3c71052b6af7af528105ab930cc72de54548d"
+  },
+  "environment": {
+    "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux",
+    "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "dependencies": {
+      "client_features": {
+        "authoring_links": false,
+        "commander": false,
+        "community_ai": true,
+        "community_generators": true
+      },
+      "client_profile": "free",
+      "distribution": "direct",
+      "linker": "auto",
+      "mode": "release",
+      "native_wss": true,
+      "retain_symbols": true,
+      "role": "client",
+      "target": "native",
+      "toolchain": "linux"
+    },
+    "flags": "dev_fast=0 release=1 retain_symbols=1 CXXFLAGS=-g1; -O3; no PCH or unity; CPU-only comparison, 4 compute participants"
+  },
+  "native_suites": {
+    "engine-headless": {
+      "tests": 1620,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "engine-display": {
+      "tests": 206,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "unit": {
+      "tests": 1192,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native": {
+      "tests": 3018,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "opt_in_benchmarks_excluded": [
+    "BuildingAreaEffectsBenchmark/dense fields measure steady pulses rebuilds and memory [benchmark]",
+    "BuildingAreaEffectsBenchmark/populated matches compare disabled and stationary aura tick cost [benchmark]",
+    "BuildingCatalogBenchmark/private stock routing measures warm fields invalidation and working sets [benchmark]",
+    "BuildingCatalogBenchmark/unused definitions do not enlarge simulation work [benchmark]",
+    "BuildingGradientBenchmark/building and resource preparation kernels [benchmark][pathfinding]",
+    "BuildingGradientBenchmark/fixed stock simulation without AI decisions [benchmark]",
+    "BuildingGradientBenchmark/footprint preparation diagnostic phases [benchmark][pathfinding]",
+    "CombGenerator/generation timing benchmark [benchmark][slow]",
+    "EngineSession/external replay retains recorded simulation checksums [benchmark][artifacts]",
+    "EngineSession/snapshot client frame latency with and without forced parking [benchmark][display][artifacts]",
+    "GuardAreaBalance/guard gradient rebuild timing [benchmark]",
+    "JavaScriptIntegration/JavaScript native distance fields match torus reference cold warm and reloaded [benchmark]",
+    "LanMatchHarness/LAN input delay on loopback and delayed links [network][slow][benchmark][artifacts]",
+    "MapGeneratorDefaults/Last Treeline profile [benchmark]",
+    "MarketsV2/identical gradient refresh workloads report CPU and memory [benchmark]",
+    "MarketsV2/identical market workloads report routing cost [benchmark]",
+    "OrchardCommons/generation timing benchmark [benchmark][slow]",
+    "ResourceGrowthBenchmark/identical live and snapshot kernel inputs [benchmark][resources]",
+    "ResourceGrowthBenchmark/paired legacy split and delayed growth component costs [benchmark][resources]",
+    "ResourceGrowthBenchmark/twenty seed ecology comparison [benchmark][resources]",
+    "ResourceGrowthFixtures/controlled full-engine growth fixtures [benchmark][resources]",
+    "ResourceRuntimeBenchmark/large eight-team sparse material and runtime catalog stress [benchmark][resources]",
+    "SoundMixerTrackSelection/native music supply under external CPU contention [benchmark][slow]",
+    "TeamStatsSave/place lookup cost against a scan of every building slot [benchmark]",
+    "TerrainEcology/saved-map growth calibration [benchmark][slow]",
+    "TerrainHazardBenchmark/idle decisions at fixed origins across safe and trapped terrain [benchmark]",
+    "TerrainHazardBenchmark/shared terrain fields across ice coverage and custom profiles [benchmark]",
+    "TerrainHazardBenchmark/write mature game fixtures with controlled ice coverage [benchmark][artifacts]",
+    "TerrainRuntime/write equivalent custom maps for paired performance runs [benchmark][artifacts]",
+    "TurnEngineHarness/input delay and stalls of real engines per link profile [network-sim][benchmark][artifacts]",
+    "TurnEngineHarness/rejoin fast-forward time grows with game length and AI count [network-sim][benchmark][artifacts]",
+    "WindowResize/presentation benchmark [benchmark][display]",
+    "WindowResize/software presentation benchmark [benchmark][display]",
+    "GpuTexturePreparation/SDL linear upload timing [display][benchmark]",
+    "GpuTexturePreparation/native mip upload timing [display][benchmark]",
+    "Maxima.FoodLedger/timing benchmark [benchmark][slow]",
+    "TurnHarness/input delay and stalls per link profile [network-sim][benchmark][artifacts]",
+    "production lazy gradient phases [benchmark][pathfinding]"
+  ],
+  "test_build_provenance": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/dev/shm/glob2-direct-air-release/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-g1 -std=gnu++20 -Wall -fPIC -O3",
+      "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "933eea3e4021c9b0fd04b563fe5f073a10739966",
+    "sourceStatus": [],
+    "sourceTreeSha256": "e0ff2029b72f6e21f26414e353ae1679da2f432d6a6dcb6725166aaae0b68e1a"
+  },
+  "contributor_tests": {
+    "tests": 340,
+    "failures": 0,
+    "skipped": 0,
+    "results_log": "python-final75.log"
+  },
+  "compatibility": [
+    {
+      "name": "air",
+      "command": [
+        "python3",
+        "artifacts/air-complete-fast-path/verify_air_final75.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "legacy168",
+      "command": [
+        "python3",
+        "artifacts/air-complete-fast-path/check_legacy75.py",
+        "legacy168"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "legacy171",
+      "command": [
+        "python3",
+        "artifacts/air-complete-fast-path/check_legacy75.py",
+        "legacy171"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "maxima-serial",
+      "command": [
+        "python3",
+        "test/maxima/check_save_continuation_fixture.py",
+        "/dev/shm/glob2-direct-air-release/src/glob2",
+        "--output",
+        "artifacts/air-complete-fast-path/maxima-final75-serial"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "maxima-parallel",
+      "command": [
+        "python3",
+        "test/maxima/check_save_continuation_fixture.py",
+        "/dev/shm/glob2-direct-air-release/src/glob2",
+        "--parallel-ai",
+        "--output",
+        "artifacts/air-complete-fast-path/maxima-final75-parallel"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native-browser",
+      "command": [
+        "python3",
+        "test/run-browser-determinism.py",
+        "/dev/shm/glob2-direct-air-release/src/glob2",
+        "artifacts/air-complete-fast-path/native-browser-final75",
+        "--engine-binary",
+        "/dev/shm/glob2-direct-air-release/test/glob2-engine-tests"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "sim-revision",
+      "command": [
+        "python3",
+        "test/check_sim_revision.py",
+        "--base",
+        "origin/master"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "docs",
+      "command": [
+        "python3",
+        "tools/check_docs.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "gradients",
+      "command": [
+        "python3",
+        "tools/shaders/gradient_preparation_rules.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "python",
+      "command": [
+        "artifacts/pr1196-full-suite/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-v",
+        "-s",
+        "test",
+        "-p",
+        "test_*.py"
+      ],
+      "env": {
+        "GLOB2_SDL3_PREFIX": "/home/bradley/glob2/build/sdl3/prefix",
+        "GLOB2_CLI_BINARY": "/dev/shm/glob2-direct-air-release/src/glob2",
+        "GLOB2_RECORDING_FIXTURE": "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/pr1196-full-suite/native-final-unit/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-355541135252052.mp4",
+        "GLOB2_TEST_FFPROBE": "/usr/bin/ffprobe",
+        "GLOB2_TEST_FFMPEG": "/usr/bin/ffmpeg"
+      },
+      "exit_code": 0
+    }
+  ],
+  "determinism": {
+    "revision": "933eea3e4021c9b0fd04b563fe5f073a10739966",
+    "binary_sha256": "01a2eb8c117f70134878f46c0ef3c71052b6af7af528105ab930cc72de54548d",
+    "results": [
+      {
+        "case": "direct",
+        "participants": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "ticks_compared": 128,
+        "aggregate_and_all_team_entity_fields_match": true,
+        "save_phases": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "case": "constrained",
+        "participants": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "ticks_compared": 128,
+        "aggregate_and_all_team_entity_fields_match": true,
+        "save_phases": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "platforms": [
+      "Linux x86_64 GCC 13"
+    ],
+    "omitted_platforms": [
+      "Windows",
+      "macOS",
+      "Android",
+      "iOS",
+      "browser"
+    ],
+    "build": "dev_fast=0 release=1, -O3 -g1, no PCH/unity, GPU off"
+  },
+  "old_saves": [
+    {
+      "commands": [
+        [
+          "/dev/shm/glob2-direct-air-release/src/glob2",
+          "game",
+          "run",
+          "--load-game",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy168/run/checkpoint-8.game.gz",
+          "--ticks",
+          "40",
+          "--save",
+          "every:8",
+          "--telemetry",
+          "checksums",
+          "--compute-threads",
+          "4",
+          "--gpu",
+          "off",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy168/final75-current"
+        ],
+        [
+          "/dev/shm/glob2-direct-air-release/src/glob2",
+          "game",
+          "run",
+          "--load-game",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy168/final75-current/checkpoint-16.game.gz",
+          "--ticks",
+          "40",
+          "--save",
+          "every:8",
+          "--telemetry",
+          "checksums",
+          "--compute-threads",
+          "4",
+          "--gpu",
+          "off",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy168/final75-resumed"
+        ]
+      ],
+      "old_header": [
+        0,
+        168,
+        1,
+        1
+      ],
+      "new_header": [
+        0,
+        172,
+        1,
+        1
+      ],
+      "matched_records": 24,
+      "all_aggregate_bits_match_except_saved_header_version": true
+    },
+    {
+      "commands": [
+        [
+          "/dev/shm/glob2-direct-air-release/src/glob2",
+          "game",
+          "run",
+          "--load-game",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy171/run/checkpoint-8.game.gz",
+          "--ticks",
+          "40",
+          "--save",
+          "every:8",
+          "--telemetry",
+          "checksums",
+          "--compute-threads",
+          "4",
+          "--gpu",
+          "off",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy171/final75-current"
+        ],
+        [
+          "/dev/shm/glob2-direct-air-release/src/glob2",
+          "game",
+          "run",
+          "--load-game",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy171/final75-current/checkpoint-16.game.gz",
+          "--ticks",
+          "40",
+          "--save",
+          "every:8",
+          "--telemetry",
+          "checksums",
+          "--compute-threads",
+          "4",
+          "--gpu",
+          "off",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2/artifacts/air-complete-fast-path/legacy171/final75-resumed"
+        ]
+      ],
+      "old_header": [
+        0,
+        171,
+        1,
+        1
+      ],
+      "new_header": [
+        0,
+        172,
+        1,
+        1
+      ],
+      "matched_records": 24,
+      "all_aggregate_bits_match_except_saved_header_version": true
+    }
+  ],
+  "performance": [
+    {
+      "case": "midgame24k",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 153.9386035,
+            "min": 151.04014,
+            "max": 157.510248,
+            "q1": 152.10683225,
+            "q3": 154.98071175
+          },
+          "cpu_us_per_tick": {
+            "median": 601.322669921875,
+            "min": 590.000546875,
+            "max": 615.27440625,
+            "q1": 594.1673134765625,
+            "q3": 605.3934052734376
+          },
+          "p50_tick_ms": {
+            "median": 0.124662,
+            "min": 0.119523,
+            "max": 0.136875,
+            "q1": 0.12149399999999999,
+            "q3": 0.12788825
+          },
+          "p95_tick_ms": {
+            "median": 0.7744035,
+            "min": 0.769283,
+            "max": 0.797486,
+            "q1": 0.7705479999999999,
+            "q3": 0.7815509999999999
+          },
+          "p99_tick_ms": {
+            "median": 1.023773,
+            "min": 0.988703,
+            "max": 1.075554,
+            "q1": 1.0059067499999998,
+            "q3": 1.061318
+          },
+          "peak_rss_kib": {
+            "median": 94850.0,
+            "min": 94584,
+            "max": 95120,
+            "q1": 94701.0,
+            "q3": 94916.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 155.635594,
+            "min": 153.039705,
+            "max": 157.94313,
+            "q1": 153.96776375000002,
+            "q3": 156.60498575
+          },
+          "cpu_us_per_tick": {
+            "median": 607.9515390625,
+            "min": 597.81134765625,
+            "max": 616.9653515625,
+            "q1": 601.4365771484374,
+            "q3": 611.7382255859375
+          },
+          "p50_tick_ms": {
+            "median": 0.13364399999999999,
+            "min": 0.126566,
+            "max": 0.136414,
+            "q1": 0.128454,
+            "q3": 0.13541475
+          },
+          "p95_tick_ms": {
+            "median": 0.7882089999999999,
+            "min": 0.778551,
+            "max": 0.798719,
+            "q1": 0.7830165,
+            "q3": 0.79538175
+          },
+          "p99_tick_ms": {
+            "median": 1.013634,
+            "min": 0.986879,
+            "max": 1.062841,
+            "q1": 0.9998459999999999,
+            "q3": 1.040637
+          },
+          "peak_rss_kib": {
+            "median": 94888.0,
+            "min": 94676,
+            "max": 95088,
+            "q1": 94782.0,
+            "q3": 94989.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": 1.1023813789502013
+    },
+    {
+      "case": "islands",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 289.2175675,
+            "min": 285.060289,
+            "max": 293.821091,
+            "q1": 286.50059400000004,
+            "q3": 292.04226475
+          },
+          "cpu_us_per_tick": {
+            "median": 1129.756123046875,
+            "min": 1113.51675390625,
+            "max": 1147.73863671875,
+            "q1": 1119.1429453125,
+            "q3": 1140.7900966796876
+          },
+          "p50_tick_ms": {
+            "median": 0.264578,
+            "min": 0.259414,
+            "max": 0.272277,
+            "q1": 0.261325,
+            "q3": 0.2684775
+          },
+          "p95_tick_ms": {
+            "median": 1.0342324999999999,
+            "min": 1.007337,
+            "max": 1.038375,
+            "q1": 1.015009,
+            "q3": 1.0378014999999998
+          },
+          "p99_tick_ms": {
+            "median": 1.563148,
+            "min": 1.296095,
+            "max": 2.01272,
+            "q1": 1.44997975,
+            "q3": 1.7903085
+          },
+          "peak_rss_kib": {
+            "median": 149180.0,
+            "min": 148916,
+            "max": 150340,
+            "q1": 149031.0,
+            "q3": 149711.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 284.722161,
+            "min": 282.855573,
+            "max": 286.143266,
+            "q1": 283.34283650000003,
+            "q3": 285.836383
+          },
+          "cpu_us_per_tick": {
+            "median": 1112.1959414062499,
+            "min": 1104.90458203125,
+            "max": 1117.7471328125,
+            "q1": 1106.8079550781251,
+            "q3": 1116.54837109375
+          },
+          "p50_tick_ms": {
+            "median": 0.2595235,
+            "min": 0.255125,
+            "max": 0.266377,
+            "q1": 0.25703425,
+            "q3": 0.26417725000000003
+          },
+          "p95_tick_ms": {
+            "median": 1.029769,
+            "min": 1.013108,
+            "max": 1.05737,
+            "q1": 1.02192175,
+            "q3": 1.0431787499999998
+          },
+          "p99_tick_ms": {
+            "median": 1.5328515,
+            "min": 1.439052,
+            "max": 1.81328,
+            "q1": 1.4447145000000001,
+            "q3": 1.6681432500000002
+          },
+          "peak_rss_kib": {
+            "median": 149232.0,
+            "min": 148976,
+            "max": 149736,
+            "q1": 149062.0,
+            "q3": 149532.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -1.5543338320899047
+    },
+    {
+      "case": "swamp",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 288.8054525,
+            "min": 286.188604,
+            "max": 290.228555,
+            "q1": 288.21001725,
+            "q3": 289.60501450000004
+          },
+          "cpu_us_per_tick": {
+            "median": 1128.146298828125,
+            "min": 1117.924234375,
+            "max": 1133.70529296875,
+            "q1": 1125.8203798828126,
+            "q3": 1131.2695878906252
+          },
+          "p50_tick_ms": {
+            "median": 0.24838300000000002,
+            "min": 0.239496,
+            "max": 0.251228,
+            "q1": 0.24639424999999998,
+            "q3": 0.24998350000000003
+          },
+          "p95_tick_ms": {
+            "median": 0.7913349999999999,
+            "min": 0.767931,
+            "max": 0.829535,
+            "q1": 0.778959,
+            "q3": 0.8147735
+          },
+          "p99_tick_ms": {
+            "median": 2.592321,
+            "min": 2.266574,
+            "max": 3.052338,
+            "q1": 2.5334005,
+            "q3": 3.0018735
+          },
+          "peak_rss_kib": {
+            "median": 134272.0,
+            "min": 133764,
+            "max": 135100,
+            "q1": 133895.0,
+            "q3": 134667.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 286.61130149999997,
+            "min": 283.786995,
+            "max": 288.376684,
+            "q1": 284.967256,
+            "q3": 287.85798224999996
+          },
+          "cpu_us_per_tick": {
+            "median": 1119.575396484375,
+            "min": 1108.54294921875,
+            "max": 1126.471421875,
+            "q1": 1113.15334375,
+            "q3": 1124.4452431640625
+          },
+          "p50_tick_ms": {
+            "median": 0.24647400000000003,
+            "min": 0.240779,
+            "max": 0.251639,
+            "q1": 0.24287525,
+            "q3": 0.2495645
+          },
+          "p95_tick_ms": {
+            "median": 0.7801285,
+            "min": 0.74629,
+            "max": 0.876443,
+            "q1": 0.76787075,
+            "q3": 0.8297337499999999
+          },
+          "p99_tick_ms": {
+            "median": 2.8166640000000003,
+            "min": 2.563006,
+            "max": 2.927376,
+            "q1": 2.727393,
+            "q3": 2.9010534999999997
+          },
+          "peak_rss_kib": {
+            "median": 134054.0,
+            "min": 133512,
+            "max": 134624,
+            "q1": 133771.0,
+            "q3": 134302.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -0.7597332325296136
+    },
+    {
+      "case": "lava-shield",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 191.7013,
+            "min": 190.258819,
+            "max": 198.56082,
+            "q1": 190.95872349999996,
+            "q3": 192.734891
+          },
+          "cpu_us_per_tick": {
+            "median": 748.833203125,
+            "min": 743.19851171875,
+            "max": 775.628203125,
+            "q1": 745.932513671875,
+            "q3": 752.87066796875
+          },
+          "p50_tick_ms": {
+            "median": 0.1200985,
+            "min": 0.117229,
+            "max": 0.128009,
+            "q1": 0.11751899999999998,
+            "q3": 0.12229825
+          },
+          "p95_tick_ms": {
+            "median": 0.7339875,
+            "min": 0.687752,
+            "max": 0.819457,
+            "q1": 0.71811325,
+            "q3": 0.7566402499999999
+          },
+          "p99_tick_ms": {
+            "median": 1.740338,
+            "min": 1.623837,
+            "max": 3.365631,
+            "q1": 1.6784902499999999,
+            "q3": 1.7926007499999999
+          },
+          "peak_rss_kib": {
+            "median": 115434.0,
+            "min": 114684,
+            "max": 116456,
+            "q1": 114942.0,
+            "q3": 116150.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 191.4992155,
+            "min": 187.981753,
+            "max": 192.650151,
+            "q1": 189.589154,
+            "q3": 191.96550425
+          },
+          "cpu_us_per_tick": {
+            "median": 748.043810546875,
+            "min": 734.30372265625,
+            "max": 752.53965234375,
+            "q1": 740.5826328125,
+            "q3": 749.8652509765625
+          },
+          "p50_tick_ms": {
+            "median": 0.1171685,
+            "min": 0.111368,
+            "max": 0.120565,
+            "q1": 0.113054,
+            "q3": 0.11992074999999999
+          },
+          "p95_tick_ms": {
+            "median": 0.7178525,
+            "min": 0.67596,
+            "max": 0.835518,
+            "q1": 0.69814625,
+            "q3": 0.7519465
+          },
+          "p99_tick_ms": {
+            "median": 2.0169285,
+            "min": 1.901753,
+            "max": 2.26444,
+            "q1": 1.960812,
+            "q3": 2.11794475
+          },
+          "peak_rss_kib": {
+            "median": 117264.0,
+            "min": 115964,
+            "max": 117704,
+            "q1": 116855.0,
+            "q3": 117578.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -0.10541634302949632
+    },
+    {
+      "case": "constrained64",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 1175.3834255000002,
+            "min": 1171.958871,
+            "max": 1184.360031,
+            "q1": 1173.3341665,
+            "q3": 1177.7518095
+          },
+          "cpu_us_per_tick": {
+            "median": 4591.341505859375,
+            "min": 4577.96433984375,
+            "max": 4626.40637109375,
+            "q1": 4583.336587890625,
+            "q3": 4600.593005859375
+          },
+          "p50_tick_ms": {
+            "median": 3.3874874999999998,
+            "min": 3.379497,
+            "max": 3.399505,
+            "q1": 3.38115625,
+            "q3": 3.3950567499999997
+          },
+          "p95_tick_ms": {
+            "median": 11.836090500000001,
+            "min": 11.796943,
+            "max": 11.935721,
+            "q1": 11.8180475,
+            "q3": 11.861275249999998
+          },
+          "p99_tick_ms": {
+            "median": 28.3816865,
+            "min": 28.165376,
+            "max": 28.540404,
+            "q1": 28.280948000000002,
+            "q3": 28.406827
+          },
+          "peak_rss_kib": {
+            "median": 54216.0,
+            "min": 53932,
+            "max": 54496,
+            "q1": 54039.0,
+            "q3": 54459.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 64.3464095,
+            "min": 63.079243,
+            "max": 66.393151,
+            "q1": 63.65711675,
+            "q3": 64.963994
+          },
+          "cpu_us_per_tick": {
+            "median": 251.353162109375,
+            "min": 246.40329296875,
+            "max": 259.34824609375,
+            "q1": 248.66061230468748,
+            "q3": 253.7656015625
+          },
+          "p50_tick_ms": {
+            "median": 0.06387899999999999,
+            "min": 0.049812,
+            "max": 0.07,
+            "q1": 0.056327,
+            "q3": 0.06890575
+          },
+          "p95_tick_ms": {
+            "median": 0.133915,
+            "min": 0.109194,
+            "max": 0.146113,
+            "q1": 0.121288,
+            "q3": 0.14363325
+          },
+          "p99_tick_ms": {
+            "median": 0.1584855,
+            "min": 0.121707,
+            "max": 0.179695,
+            "q1": 0.13239225,
+            "q3": 0.16390575000000002
+          },
+          "peak_rss_kib": {
+            "median": 55524.0,
+            "min": 55188,
+            "max": 55784,
+            "q1": 55361.0,
+            "q3": 55689.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -94.52549626751563
+    },
+    {
+      "case": "ordinary32",
+      "versions": {
+        "master": {
+          "cpu_ms": {
+            "median": 7.745048000000001,
+            "min": 7.611634,
+            "max": 8.041267,
+            "q1": 7.663456499999999,
+            "q3": 7.835075750000001
+          },
+          "cpu_us_per_tick": {
+            "median": 30.254093750000003,
+            "min": 29.7329453125,
+            "max": 31.41119921875,
+            "q1": 29.935376953125,
+            "q3": 30.6057646484375
+          },
+          "p50_tick_ms": {
+            "median": 0.017257,
+            "min": 0.016772,
+            "max": 0.018024,
+            "q1": 0.01687175,
+            "q3": 0.017543
+          },
+          "p95_tick_ms": {
+            "median": 0.0309925,
+            "min": 0.029666,
+            "max": 0.032481,
+            "q1": 0.030511749999999997,
+            "q3": 0.031969
+          },
+          "p99_tick_ms": {
+            "median": 0.037739999999999996,
+            "min": 0.032781,
+            "max": 0.043341,
+            "q1": 0.034313750000000004,
+            "q3": 0.03931575
+          },
+          "peak_rss_kib": {
+            "median": 54162.0,
+            "min": 53876,
+            "max": 54336,
+            "q1": 54107.0,
+            "q3": 54255.0
+          }
+        },
+        "direct": {
+          "cpu_ms": {
+            "median": 7.6758745,
+            "min": 7.537685,
+            "max": 7.989648,
+            "q1": 7.5797165,
+            "q3": 7.79134675
+          },
+          "cpu_us_per_tick": {
+            "median": 29.983884765625,
+            "min": 29.44408203125,
+            "max": 31.2095625,
+            "q1": 29.608267578124998,
+            "q3": 30.434948242187502
+          },
+          "p50_tick_ms": {
+            "median": 0.016961,
+            "min": 0.016641,
+            "max": 0.017933,
+            "q1": 0.01676425,
+            "q3": 0.0176505
+          },
+          "p95_tick_ms": {
+            "median": 0.031313,
+            "min": 0.029965,
+            "max": 0.032982,
+            "q1": 0.030610250000000002,
+            "q3": 0.032731
+          },
+          "p99_tick_ms": {
+            "median": 0.038100999999999996,
+            "min": 0.032651,
+            "max": 0.040556,
+            "q1": 0.03304425,
+            "q3": 0.03887025
+          },
+          "peak_rss_kib": {
+            "median": 54086.0,
+            "min": 53820,
+            "max": 54256,
+            "q1": 53923.0,
+            "q3": 54140.0
+          }
+        }
+      },
+      "direct_vs_master_cpu_percent": -0.8931319728425313
+    }
+  ],
+  "profile_work_categories": [
+    {
+      "case": "islands",
+      "field_work": {
+        "master": {
+          "building_gradient_jobs": 206,
+          "building_gradient_synchronous": 8,
+          "gradient_jobs": 384
+        },
+        "hybrid": {
+          "building_gradient_jobs": 206,
+          "building_gradient_synchronous": 8,
+          "gradient_jobs": 384
+        }
+      },
+      "exclusive_instruction_categories": {
+        "propagation": {
+          "master": 879179011,
+          "hybrid": 885184244,
+          "delta": 6005233
+        },
+        "building_seeds": {
+          "master": 189503860,
+          "hybrid": 194552388,
+          "delta": 5048528
+        },
+        "material_cache": {
+          "master": 225616986,
+          "hybrid": 234545133,
+          "delta": 8928147
+        },
+        "guard_seeds": {
+          "master": 6105789,
+          "hybrid": 6105801,
+          "delta": 12
+        }
+      }
+    },
+    {
+      "case": "midgame24k",
+      "field_work": {
+        "master": {
+          "building_gradient_jobs": 355,
+          "building_gradient_synchronous": 37,
+          "gradient_jobs": 384
+        },
+        "hybrid": {
+          "building_gradient_jobs": 355,
+          "building_gradient_synchronous": 37,
+          "gradient_jobs": 384
+        }
+      },
+      "exclusive_instruction_categories": {
+        "propagation": {
+          "master": 295171203,
+          "hybrid": 296443840,
+          "delta": 1272637
+        },
+        "building_seeds": {
+          "master": 94220289,
+          "hybrid": 96958789,
+          "delta": 2738500
+        },
+        "material_cache": {
+          "master": 95815102,
+          "hybrid": 97912622,
+          "delta": 2097520
+        },
+        "guard_seeds": {
+          "master": 6992361,
+          "hybrid": 6992412,
+          "delta": 51
+        }
+      }
+    }
+  ],
+  "instruction_profiles": [
+    {
+      "case": "islands",
+      "master_instructions": 2834946665,
+      "hybrid_instructions": 2854820630,
+      "instruction_percent": 0.7010348817267698
+    },
+    {
+      "case": "midgame24k",
+      "master_instructions": 1612269943,
+      "hybrid_instructions": 1617815083,
+      "instruction_percent": 0.34393372053329596
+    }
+  ],
+  "limits": [
+    "Linux x86_64 GCC 13.3 only. Other-platform per-tick execution was not verified.",
+    "Actual browser, Windows, macOS, mobile, sanitizer, hosted CI and release/store packaging matrices were not run.",
+    "Native browser-reference corpus passed; actual browsers remain unqualified.",
+    "Instruction profiles ran while an unrelated build was active; their timing fields are not used as native measurements. Native timing waits for an idle host.",
+    "38 opt-in microbenchmarks are outside the standard suite. Separate six-scenario release timing used ten trials per revision.",
+    "Automated gameplay scenarios do not establish human play feel.",
+    "Timing attempts were discarded when unrelated builds started. The successful retry requires 120 seconds without competing compilers/game/profile processes, then checks before and after every sample.",
+    "Old partial/stopped suites and earlier policy-test failure are retained and superseded by the final suite."
+  ]
+}
