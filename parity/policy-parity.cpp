@@ -1,0 +1,4 @@
+#include "ResourceGradientPolicy.h"
+#include <iostream>
+#include <vector>
+int main(){for(unsigned start:{0u,UINT32_MAX-64}){ResourceGradientPolicy::Field field;ResourceGradientPolicy::Sources source{100,0,0};std::vector<unsigned> queries;unsigned hash=0;for(unsigned elapsed=0;elapsed<4096;++elapsed){unsigned tick=start+elapsed;if(elapsed%17==0){++source.added;++source.count;}if(elapsed%13==0){++source.removed;--source.count;}unsigned count=elapsed%13<7?elapsed%9:0;for(unsigned i=0;i<count;++i){field.queried(tick,true);queries.push_back(tick);}auto x=field.inputs(tick,source);unsigned n32=0,n128=0;for(auto q:queries){n32+=unsigned(tick-q)<32;n128+=unsigned(tick-q)<128;}if(x[1]!=n32||x[2]!=n128)return 1;const auto score=ResourceGradientModel::predict(x);bool refresh=field.refresh(tick,source);if(refresh){field.submitted=tick;field.serving={tick,source};}hash=std::rotl(hash,1)^unsigned(score)^field.historyHash;std::cout<<elapsed<<' '<<hash<<' '<<refresh<<'\n';}}}

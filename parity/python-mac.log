@@ -1,0 +1,11 @@
+test_balancing_does_not_reward_larger_games_or_collection_repeats (tools.test_resource_gradient_model.ResourceGradientModelTest.test_balancing_does_not_reward_larger_games_or_collection_repeats) ... skipped 'numpy required'
+test_constant_label_fit_is_supported (tools.test_resource_gradient_model.ResourceGradientModelTest.test_constant_label_fit_is_supported) ... skipped 'scikit-learn required'
+test_exported_cpp_matches_integer_python_with_undefined_behavior_checks (tools.test_resource_gradient_model.ResourceGradientModelTest.test_exported_cpp_matches_integer_python_with_undefined_behavior_checks) ... ok
+test_fit_keeps_all_collection_rounds_for_a_state_out_of_training (tools.test_resource_gradient_model.ResourceGradientModelTest.test_fit_keeps_all_collection_rounds_for_a_state_out_of_training) ... skipped 'scikit-learn required'
+test_generated_header_and_numeric_bounds (tools.test_resource_gradient_model.ResourceGradientModelTest.test_generated_header_and_numeric_bounds) ... ok
+test_manifest_integrity_complete_filter_and_deduplication (tools.test_resource_gradient_model.ResourceGradientModelTest.test_manifest_integrity_complete_filter_and_deduplication) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.903s
+
+OK (skipped=3)

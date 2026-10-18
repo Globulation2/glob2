@@ -1,0 +1,14 @@
+{
+  "README.md": "0285efd3a844f13c9455dbbb86fcfd03fea2d4003b169b0b19a09c39c7c0c0b9",
+  "games-evidence.tar.gz": "c2e6a0802d0918dcfeed8570c101dd0645f578d13cbff0eb5aaa87dc84044aae",
+  "native-evidence.tar.gz": "96d28708e0fb5a1f2d3188eb38f8f5908286ea337edbbed6edc30240f14a4ca5",
+  "build/final-build.log": "5eb9ac2c2ea18334e39530ce1ac240b18bda30755bcb0e31c2df69577e536a83",
+  "build/final-test-build.log": "e2a8a3263b3c0431797b60dcc12b1a441b87f055f9f5438f828c3af56e920743",
+  "parity/policy-parity.cpp": "0ab555076da67e0327913c004a847b1629b154a9363527544a9b723bc68d0e52",
+  "parity/policy-parity-mac.trace": "d766d51a5c9510006f5a8d4c5edfd9ac3329067c66e55514d7ce59e01c98b933",
+  "parity/policy-parity-linux.trace": "d766d51a5c9510006f5a8d4c5edfd9ac3329067c66e55514d7ce59e01c98b933",
+  "parity/policy-tests-linux.log": "3a4a4ec2edfe266e0867e6d89213dfb39fb6630fcfefefcd1c9bdd6f237a342d",
+  "parity/python-mac.log": "d992a30531bbad90a42d01baba34f550c691534951a6d80e5bab5a8f2ebf1370",
+  "scripts/validate_games.py": "e4d85c8c034d351cec9aef168cfe3b10127641f8a7718a055a71e6f96f7005d5",
+  "scripts/validate_continuation.py": "e519f2f3787d7a9ba7a32e0d8d45dc94b8ea4c99a9543bdefd4dad7064c96e42"
+}
