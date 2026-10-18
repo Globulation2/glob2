@@ -321,6 +321,14 @@ checks seeding and cold input preparation separately from reader expansion.
 `HiringPlanner` verifies that background ranking extends only the required
 frontier, leaves distant cells unresolved, and lets live admission reuse the work.
 
+Intentional routing changes can also move Maxima's fixed army-birth and rally
+trajectories. Their legacy checksum adapters normalize representation, not
+simulation behavior. Refresh them with `GLOB2_RECORD_ARMY_CHECKSUMS=1` and
+`GLOB2_RECORD_RALLY_CHECKSUMS=1` respectively, running the focused
+`Maxima.Economy/army births*` and `Maxima.Combat/rally assembles by movement`
+cases. Then rerun both without those variables to verify the recorded traces.
+
+
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
 worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
 checks the one-worker/eight-tick defaults and save/resume at each of the eight
