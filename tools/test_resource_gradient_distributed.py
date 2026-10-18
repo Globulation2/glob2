@@ -66,6 +66,29 @@ class DistributedTests(unittest.TestCase):
             maps[0]['spec']=plan['games'][0];Path(maps[0]['path']).write_bytes(b'changed')
             with self.assertRaisesRegex(ValueError,'bytes changed'):d.make_experiment(plan,maps,[linux],self.cohort())
 
+    def test_diagnostic_timeout_is_explicit_and_frozen_without_changing_tick_cap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);linux=self.bundle(root,'linux');plan,maps=self.plan(root,1)
+            ordinary=d.make_experiment(plan,maps,[linux],self.cohort())
+            longer=d.make_experiment(plan,maps,[linux],self.cohort(),timeout_seconds=43200)
+            self.assertEqual(longer['jobs'][0]['config']['ticks'],90000)
+            self.assertEqual(longer['jobs'][0]['limits']['timeout_seconds'],43200)
+            self.assertNotEqual(ordinary['id'],longer['id'])
+            for invalid in [0,-1,True,1.5]:
+                with self.assertRaisesRegex(ValueError,'Positive game timeout'):
+                    d.make_experiment(plan,maps,[linux],self.cohort(),timeout_seconds=invalid)
+
+    def test_predeclared_execution_pool_preserves_all_planned_games(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);general=self.bundle(root,'linux');large=self.bundle(root,'linux',{'execution_pool':'large-maps'})
+            plan,maps=self.plan(root,2);maps[0]['build']=large['id'];maps[1]['build']=general['id']
+            manifest=d.make_experiment(plan,maps,[general,large],self.cohort())
+            self.assertEqual([j['build'] for j in manifest['jobs']],[large['id'],general['id']])
+            self.assertEqual({j['id'] for j in manifest['jobs']},{r['group'] for r in maps})
+            maps[0]['build']='e'*64
+            with self.assertRaisesRegex(ValueError,'unknown supplied build'):
+                d.make_experiment(plan,maps,[general,large],self.cohort())
+
     def test_augmented_contract_requires_explicit_instrumented_build(self):
         from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
         with tempfile.TemporaryDirectory() as tmp:

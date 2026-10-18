@@ -474,6 +474,14 @@ same-seed generation being identical across architectures. A subset/chunk must
 select planned slots before outcomes and include exactly those slots in its map
 index; never select only games that finish quickly.
 
+An accepted-map record may also pin a supplied `build` ID before dispatch. This
+can route a static large-map workload class to faster hosts: register identical
+binary bundles with distinct execution-pool metadata and configure each host's
+build allowlist. Keep the pool rule and every planned slot in the frozen index;
+do not route or omit games based on their outcomes. Exports retain each bundle
+receipt and merge compatible collections by binary identity. Without an explicit
+build, the weighted allocation below remains the default.
+
 ```sh
 python3 tools/resource_gradient_distributed.py prepare \
   --plan artifacts/chunk-plan.json --maps artifacts/accepted-maps.json \
@@ -494,6 +502,13 @@ one compute participant because CPU affinity allocation is unavailable there;
 set slots to the desired concurrent-game budget. Collection explicitly disables
 GPU execution and compute telemetry. Probe cost makes its timings unsuitable as
 engine performance measurements.
+
+Distributed preparation defaults to a two-hour per-game wall timeout. Set
+`prepare --timeout-seconds SECONDS` before dispatch when large maps with training
+probes need longer; the timeout is frozen in the experiment identity. It changes
+the failure deadline, not the simulation tick cap. Do not repeatedly retry an
+unchanged slow diagnostic game against an insufficient deadline or drop it from
+the planned sample because it finishes late.
 
 Export requires every planned slot to succeed, preserves accepted worker receipts
 and both transported/decoded artifact hashes, and seals cohorts for the permanent

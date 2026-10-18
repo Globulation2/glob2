@@ -32,11 +32,12 @@ from tools.tournaments.results import Results
 def _records(value):return value['games'] if isinstance(value,dict) else value
 
 
-def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000):
+def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000, timeout_seconds=7200):
     """maps: [{group: original planned hash[:16], spec: accepted spec, path, sha256}]."""
     specs=_records(plan);maps=maps.get('maps',maps) if isinstance(maps,dict) else maps
     if not specs or len({digest(s) for s in specs})!=len(specs):raise ValueError('Nonempty unique planned games required')
     if type(ticks) is not int or ticks<1:raise ValueError('Positive tick cap required')
+    if type(timeout_seconds) is not int or timeout_seconds<1:raise ValueError('Positive game timeout required')
     if not bundles:raise ValueError('At least one supplied build required')
     versions={canonical_hash(b['capabilities'].get('sim_version')) for b in bundles}
     if len(versions)!=1 or any(not b['capabilities'].get('sim_version') for b in bundles):raise ValueError('Supplied bundles must have identical explicit simulation versions')
@@ -88,9 +89,16 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         if any(intervals):
             collection={'exploration':','.join(map(str,intervals)),
                         'seed':accepted.get('collection_seed',exploration_seed_for_game(policy.get('seed',0),group))}
-        fmt=actual['format'];current=credits[fmt]
-        for key in weights:current[key]+=weights[key]
-        build=max(sorted(weights),key=lambda key:current[key]);current[build]-=sum(weights.values())
+        if 'build' in accepted:
+            # Optional predeclared execution pool: identical binaries may have
+            # separate bundle identities/host allowlists for large-map work.
+            # This never drops a slot or chooses a pool from game outcomes.
+            build=accepted['build']
+            if build not in by_build:raise ValueError('Accepted map pins an unknown supplied build')
+        else:
+            fmt=actual['format'];current=credits[fmt]
+            for key in weights:current[key]+=weights[key]
+            build=max(sorted(weights),key=lambda key:current[key]);current[build]-=sum(weights.values())
         if by_build[build]['platform']['os']=='darwin':collection['threads']=1
         from tools.tournaments.jobs import resource_gradient_collection_outputs
         outputs=resource_gradient_collection_outputs(collection)
@@ -110,18 +118,18 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
                             'raw_sha256':accepted['sha256'],'raw_bytes':path.stat().st_size,'path':'map.map.gz' if path.name.endswith('.gz') else 'map.map'}},
                         seeds={'game':actual['game_seed']},config=config,
                         outputs={'result':'full','required':list(outputs)},labels=labels,
-                        limits={'timeout_seconds':7200,'estimated_seconds':900},job_id=group))
+                        limits={'timeout_seconds':timeout_seconds,'estimated_seconds':900},job_id=group))
     manifest=dict(schema_version=1,id='gradient-'+digest(dict(jobs=jobs))[:24],jobs=jobs,
                   settings={'prefetch':0,'measured':False},
                   resource_gradient=dict(schema=1,plan_sha256=digest(plan),build_weights=weights,
-                    partition='smooth weighted round robin within format before outcomes',
+                    partition='explicit accepted-map build when present; otherwise smooth weighted round robin within format before outcomes',
                     sim_version=bundles[0]['capabilities']['sim_version']))
     return validate_experiment(manifest)
 
 
-def prepare(plan, maps, bundle_directories, cohort, directory, build_weights=None, ticks=90000):
+def prepare(plan, maps, bundle_directories, cohort, directory, build_weights=None, ticks=90000, timeout_seconds=7200):
     bundles=[inspect_bundle(p) for p in bundle_directories]
-    experiment=make_experiment(plan,maps,bundles,cohort,build_weights,ticks)
+    experiment=make_experiment(plan,maps,bundles,cohort,build_weights,ticks,timeout_seconds)
     directory=Path(directory)
     for record in (maps.get('maps',maps) if isinstance(maps,dict) else maps):
         artifact=store_artifact(record['path'],directory/'artifacts',compress=False)
@@ -233,10 +241,11 @@ def main():
     p=sub.add_parser('prepare');p.add_argument('--plan',required=True);p.add_argument('--maps',required=True)
     p.add_argument('--bundle',action='append',required=True);p.add_argument('--cohort',required=True);p.add_argument('--directory',required=True)
     p.add_argument('--weights',help='JSON file mapping bundle IDs to positive capacity weights');p.add_argument('--ticks',type=int,default=90000)
+    p.add_argument('--timeout-seconds',type=int,default=7200,help='Per-game wall timeout, frozen before dispatch; increase for large diagnostic games')
     p=sub.add_parser('collect');p.add_argument('directory');p.add_argument('--hosts',required=True);p.add_argument('--once',action='store_true')
     p=sub.add_parser('export');p.add_argument('directory');p.add_argument('--output',required=True);p.add_argument('--allow-partial',action='store_true')
     args=parser.parse_args();read=lambda p:json.loads(Path(p).read_text())
-    if args.command=='prepare':result=prepare(read(args.plan),read(args.maps),args.bundle,read(args.cohort),args.directory,read(args.weights) if args.weights else None,args.ticks)
+    if args.command=='prepare':result=prepare(read(args.plan),read(args.maps),args.bundle,read(args.cohort),args.directory,read(args.weights) if args.weights else None,args.ticks,args.timeout_seconds)
     elif args.command=='export':result=export(args.directory,args.output,args.allow_partial)
     else:
         from tools.tournaments.cli import configure_hosts
