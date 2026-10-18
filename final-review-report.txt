@@ -1,0 +1,37 @@
+PR #1221 final review follow-up
+
+Tested source: f47d5eba32b7fa9b21ea8d29e4e6b4f21081e11e
+Base: 486a2230a4ddb257ba9dee34d3aace05f2260d6f
+Simulation revision: 69; format 168; protocol 72; minimum save version 58.
+
+Changes: shared setup-based policy, frozen for the full session including after the last human quits; AI-only turn/replay consistency; terminal replay validation; accurate distinction between map sampling and report cadence.
+
+Decision: keep the PR in draft. These measurements do not justify accepting reduced routine checksum coverage for production. No merge or general engine TPS/FPS improvement is recommended.
+
+Release=1, dev_fast=0, client_profile=full, -O3, no PCH/unity; GCC 15.2, SDL3 3.4.16, Linux x86_64. CPU affinity 9-15,25-31. Ten sequential alternating matched pairs per workload and participant count. No task builds/tests/profilers or diagnostic telemetry ran during timing. Governor/external machine effects remain possible.
+
+Participants include the owner: 1 = zero workers; 4 = three workers. Negative percentages mean lower cost. CPU excludes warmup; elapsed includes warmup/teardown. Intervals are approximate paired log-ratio 95% t intervals, without multiple-comparison adjustment.
+
+Workload | participants | CPU change % [95% interval] | elapsed change % [95% interval] | p95 change % | p99 change %
+small | 1 | +1.60 [-0.59, +3.83] | +1.57 [-0.70, +3.90] | +1.80 | -0.48
+small | 4 | +8.19 [+0.70, +16.22] | +7.01 [-1.43, +16.18] | +11.10 | +11.61
+large | 1 | +0.01 [-3.56, +3.72] | +0.02 [-3.44, +3.61] | +0.40 | -2.37
+large | 4 | +0.50 [-3.90, +5.10] | -0.72 [-4.13, +2.82] | -0.82 | -3.94
+arena | 1 | -0.79 [-2.91, +1.38] | -1.01 [-3.16, +1.19] | +1.47 | -0.66
+arena | 4 | +0.50 [-2.09, +3.15] | -0.62 [-4.20, +3.09] | -0.32 | -2.77
+scripted | 1 | +1.30 [-4.10, +7.01] | +1.06 [-4.23, +6.65] | +0.39 | +0.80
+scripted | 4 | -0.96 [-4.84, +3.08] | +0.25 [-4.62, +5.36] | +4.52 | -1.85
+
+Interpretation: no elapsed-time interval excludes zero, and no CPU-saving interval excludes zero. Small/four-participant CPU is +8.19% [0.70%,16.22%]. Tail-latency results are mixed; raw confidence intervals are in native/summary.json. Snapshot storage remains similar. Baseline versus candidate also changes coverage, so this comparison does not isolate offloading from reduced hashing work.
+
+All 160 uninstrumented runs agree on players, teams, winners, unresolved status and final tick. Each checksum algorithm has stable initial/final endpoints across repeats and participant counts; old and new algorithm values are not compared directly.
+
+Validation: 41 focused engine cases, 49 unit cases, 21 Python checks, two external replay controls through their terminal checksums. The final grouped engine run passed without retries; stress case 63.4s with a 300s limit. Four 256-tick deep traces match the base and 1/4 participants. Uninterrupted candidate saves, replays and routine traces are byte-identical across participant counts.
+
+Four continuations (256->384) agree on deep gameplay traces after the documented header-version delta. Scripted save payloads match except MapHeader SHA1. Three legacy cases retain a dormant AI enrollment generation 1->3 across reload; this is reproduced on the base. All differing bytes and base comparisons are retained in continuations-final/verified.json. Field identification is retained in earlier evidence save-diagnostic3.log; the serializer is unchanged.
+
+Coverage limit: 32-tick map sampling does not imply detection within 31 ticks. With continuous advancement and default reports every 25 turns, map-bearing reports recur every 800 turns before delivery/network latency; pauses alter alignment. Scripts, world RNG, projectiles and uncaptured bookkeeping remain outside routine coverage. These losses are not justified by a demonstrated speedup.
+
+Unverified: Windows/macOS/mobile, actual browser execution, rendered feel, packaging, remote-session performance, other hardware and longer workloads.
+
+Current commands/results: benchmark.py; native/environment.json and per-run command.json/result.json/run.log; build logs/compile databases; engine.xml, unit-final.xml, browser-replay.xml, human-replay.xml; release-validation-final/verified.json; continuations-final/verified.json; normal-outcomes-verified.json. Earlier non-final measurements remain separate and are not pooled with this assessment.
