@@ -149,6 +149,8 @@ static void paintingForbiddenAreaRefreshesGradients()
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
 		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
+		if (world.game.map.pathfindBuilding(random,world.inn,c,20,24,&dx,&dy))
+			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "building guidance cannot step onto freshly forbidden paint");
 		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
 		require(!world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "closing the gap cuts off the distant route");
 		require(!world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");

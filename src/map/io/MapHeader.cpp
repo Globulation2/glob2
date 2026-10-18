@@ -71,7 +71,7 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 	mapName = stream->readText("mapName");
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
-	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR || (versionMinor>=169 && versionMinor<171))
+	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR || versionMinor==170)
 		return false;
 
 	numberOfTeams = stream->readSint32("numberOfTeams");

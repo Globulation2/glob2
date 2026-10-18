@@ -298,8 +298,14 @@ static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;
 static constexpr int FILE_FORMAT_VERSION_UNIFIED_MOVEMENT = 171;
 
 // Air-routing draft saves at 171 predate tagged order metadata. Master saves
-// at 168 already carry it; 172 combines both layouts without misreading either.
+// at 168/169 already carry it; 172 combines the air and tagged layouts.
 inline constexpr bool hasSnapshotChecksumMetadata(unsigned version)
 {
-    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version >= 172;
+    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version == 169 || version >= 172;
 }
+// Cold gradient demand, stable cache destinations and unpublished complete fields.
+static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 169;
+
+// Air-only drafts 171/172 predate the released delayed-ground state.
+inline constexpr bool hasDelayedGradientState(unsigned version)
+{ return version == FILE_FORMAT_VERSION_DELAYED_GRADIENTS || version >= 173; }

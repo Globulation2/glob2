@@ -16,7 +16,7 @@ namespace gradient_kernel { struct OwnedGradientField; }
 
 namespace gradient_preparation
 {
-enum class Kind { Materials, Markets, Guard, Clear };
+enum class Kind { Materials, Markets, Guard, Clear, Forbidden };
 inline gradient_kernel::Family backendFamily(Kind kind)
 {
     using gradient_kernel::Family;
@@ -25,6 +25,7 @@ inline gradient_kernel::Family backendFamily(Kind kind)
     case Kind::Markets: return Family::Markets;
     case Kind::Guard: return Family::Guard;
     case Kind::Clear: return Family::Clear;
+    case Kind::Forbidden: return Family::Forbidden;
     }
     throw std::invalid_argument("unknown gradient family");
 }
@@ -35,6 +36,9 @@ struct Request
     Uint32 allies = 0;
     bool crowding = false;
     unsigned terrainBuckets = 64;
+    int consumer = -1;
+    bool excludesShared = false;
+    unsigned modes = 1;
 };
 // One executor thread owns each cache. Stamps identify immutable inputs, not ticks:
 // jobs may arrive out of order and a pooled snapshot buffer may have been reused.

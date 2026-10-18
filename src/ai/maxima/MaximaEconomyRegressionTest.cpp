@@ -551,8 +551,8 @@ void armyBirthsMatchPlatformChecksums()
     const bool record=std::getenv("GLOB2_RECORD_ARMY_CHECKSUMS")!=nullptr;
     std::ifstream expected;
     std::ofstream output;
-    // Record with serial execution of the default delayed schedule; normal
-    // verification uses its background worker and must match every tick.
+    // Record the same delayed schedule used by normal verification. Dedicated
+    // gradient-publication suites vary executor counts and check every tick.
     if(record) { f.game.map.configureGradientPipeline(0,8); output.open(path); }
     else expected.open(path);
     REQUIRE((record?output.good():expected.good()));
@@ -560,7 +560,7 @@ void armyBirthsMatchPlatformChecksums()
         f.game.step(0);REQUIRE(f.game.stepCounter==unsigned(tick));
         // Normalize the header to 115; the fixture uses eight-tick publication. With one
         // team and no players, the header version is rotated six times.
-        // Keep the released stock trace; the adapter removes only catalog-era representation.
+        // Normalize representation only; routing changes still require a fixture refresh.
         const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
             ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);
         if(record)output<<tick<<' '<<checksum<<'\n';

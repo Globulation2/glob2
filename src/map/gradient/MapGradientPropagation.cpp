@@ -4,6 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
+#include "GradientExecutionAudit.h"
 #include "field/RuntimeTerrainGradient.h"
 
 static_assert(std::size(gradient_kernel::WATER_STEP) == SWIM_CLASS_COUNT);
@@ -21,6 +22,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 }
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family)
 {
+	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
 	PERF_SCOPE_TIME(Propagation);
     auto& scratch = gradientRuntime->workspaces[compute.slot()].propagation;
     scratch.family = family;

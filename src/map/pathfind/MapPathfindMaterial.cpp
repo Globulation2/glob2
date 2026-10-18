@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "Game.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 
 
 
@@ -17,8 +18,24 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MaterialCount);
 	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
+	if (!gradient) { *stopWork=false; return false; }
 	size_t hereIndex=coordToIndex(x, y);
-	Uint16 here=gradient[hereIndex];
+    Uint16 here=gradient[hereIndex];
+    // Resolve the already-selected destination instead of repeating supplier
+    // key rules. Stable cache entries remain pinned while their ticket exists.
+    const auto refresh=[&] {
+        using Kind=gradient_preparation::Kind;
+        if (compute.insideJob()) return;
+        if (gradient==materialGradients[teamNumber][resourceType][swimClass])
+            requestGradientField(&materialGradients[teamNumber][resourceType][swimClass],int(Kind::Materials),teamNumber,resourceType,swimClass);
+        else if (gradient==marketMaterialGradients[teamNumber][resourceType][swimClass])
+            requestGradientField(&marketMaterialGradients[teamNumber][resourceType][swimClass],int(Kind::Markets),teamNumber,resourceType,swimClass);
+        else for (auto& [key,field]:gradientRuntime->materialFields)
+            if (field.published==gradient) {
+                requestGradientField(&field.published,int(Kind::Markets),field.team,field.resource,field.swim,field.consumer,field.modes);
+                break;
+            }
+    };
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (here==GRADIENT_FORBIDDEN)
 	{
@@ -31,11 +48,15 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 		return false;
 	}
 	*stopWork=false;
-	if (here==GRADIENT_AT_GOAL)
-		return false; // standing where the resource was: it is gone, wander until the gradient is rebuilt
+    if (here==GRADIENT_AT_GOAL) {
+        if (!materialAmountAtSlot(hereIndex,resourceType)) refresh();
+        return false;
+    }
 	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
-	return directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false);
+    if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false)) return true;
+    refresh();
+    return false;
 }
 
 
@@ -108,4 +129,15 @@ void Map::pathfindRandom(Unit *unit)
 			}
 		assert(false);
 	}
+}
+
+StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
+{
+    const auto* field=getMaterialGradientSlot(team,material,swim,markets,target);
+    if (!field) { *stopWork=false; return StepResult::Pending; }
+    if (field[coordToIndex(x,y)]==GRADIENT_FORBIDDEN && !getForbiddenGradient(team,swim)) { *stopWork=false; return StepResult::Pending; }
+    const bool atGoal=field[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
+    const bool stepped=pathfindMaterial(random,team,material,swim,x,y,dx,dy,stopWork,target,markets);
+    if (atGoal) return StepResult::AtGoal;
+    return stepped ? StepResult::Step : StepResult::Blocked;
 }

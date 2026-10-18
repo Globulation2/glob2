@@ -15,8 +15,18 @@
 #include "GlobalContainer.h"
 #include <climits>
 
+void Unit::waitForGradient()
+{
+	gradientDecisionPending=true;
+	dx=dy=0;
+	direction=UNIT_DIRECTION_NONE;
+	movement=MOV_GOING_DX_DY;
+}
+
 void Unit::handleMovement(void)
 {
+	gradientDecisionPending=false;
+	const auto priorClaim=previousClearingArea;
 	// Release any clearing-area claim from a prior tick before this unit decides
 	// what to do this tick. Note: distance is intentionally NOT reset here — it
 	// must survive the per-tick reset (see Unit.h declaration comment).
@@ -68,6 +78,13 @@ void Unit::handleMovement(void)
 		default:
 			assert(false);
 			break;
+	}
+	// A temporary absence of guidance must not release a clearing reservation.
+	// Local interactions and accepted new choices above still replace it normally.
+	if (gradientDecisionPending && priorClaim && !previousClearingArea
+		&& owner->map->isClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber)==NOGUID) {
+		previousClearingArea=priorClaim;
+		owner->map->setClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber,gid);
 	}
 }
 
@@ -298,12 +315,15 @@ void Unit::handleMovementAttackingAround()
 
 		// Under guard-area balancing a crowded area's tiles sit below the goal
 		// value, so "inside" is the painted bit there.
+		const Uint16* guardGradient = performance[FLY] || attachedBuilding ? nullptr
+			: owner->map->getGuardAreasGradient(owner->teamNumber, swimClass());
+		if (!performance[FLY] && !attachedBuilding && !guardGradient) { waitForGradient(); return; }
 		const bool balancing = owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
 		auto insideGuardArea = [&](int x, int y)
 		{
 			if (balancing || performance[FLY])
 				return owner->map->isGuardArea(x, y, owner->me);
-			return owner->map->getGuardAreasGradient(owner->teamNumber, movementClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
+			return guardGradient[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
 		};
 		if (!attachedBuilding && performance[FLY] && !owner->map->hasAirRoutingConstraints()
             && !balancing && !insideGuardArea(posX,posY)) {
@@ -315,6 +335,7 @@ void Unit::handleMovementAttackingAround()
             return;
         }
 		if (!attachedBuilding && findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Guard, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); }))
+
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
@@ -457,7 +478,13 @@ void Unit::handleMovementClearingResources()
         else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
         return;
     }
-	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, attachedBuilding, movementClass(), posX, posY, pathDx, pathDy, BuildingRoute::Clearing); }))
+	// Commit displacement only on success, including for synchronous routes.
+	const auto route = findGradientDisplacement([&](int* pathDx, int* pathDy) {
+		return map->pathfindBuilding(entityRandom, attachedBuilding, movementClass(), posX, posY,
+			pathDx, pathDy, BuildingRoute::Clearing) ? StepResult::Step : StepResult::Blocked;
+	});
+	if (route == StepResult::Step)
+
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -483,10 +510,12 @@ void Unit::handleMovementRandom()
 		dy = enemyOff->dy;
 		movement=MOV_ATTACKING_TARGET;
 	}
-
-	else if (!performance[FLY] && (map->getForbidden(posX, posY)&owner->me))
+	else if (!performance[FLY] && map->getForbidden(posX, posY)&owner->me)
 	{
-		if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindForbidden(NULL, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); }))
+		const auto escape = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryForbiddenStep(nullptr, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); });
+		if (escape == StepResult::Pending) { waitForGradient(); return; }
+		if (escape == StepResult::Step)
+
 			directionFromDxDy();
 		else
 		{
@@ -501,6 +530,8 @@ void Unit::handleMovementRandom()
 		// g==0: on obstacle. g==1: no clearing area reachable from this cell.
 		// Both cases mean "nothing found".
 		const Uint16 *clearAreasGradient = owner->map->getClearAreasGradient(owner->teamNumber, movementClass());
+		if (!clearAreasGradient) { waitForGradient(); return; }
+
 		Uint16 g = clearAreasGradient[owner->map->coordToIndex(posX, posY)];
 		int distance = gradientTiles(g);
 		if(g > GRADIENT_UNREACHABLE && distance < foodStepsLeft(trigHungry) && medical == MED_FREE)
@@ -521,7 +552,8 @@ void Unit::handleMovementRandom()
 				dy=0;
                 const bool direct=performance[FLY] && !map->hasAirRoutingConstraints();
                 if (!direct)
-                    findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); });
+                    findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->queryAreaStep(entityRandom, Map::AreaKind::Clear, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy)==StepResult::Step; });
+
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -571,20 +603,19 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 		dy = enemyOff->dy;
 		movement=MOV_ATTACKING_TARGET;
 	}
-
 	else if (performance[FLY] && !map->hasAirRoutingConstraints())
-    {
-        movement=MOV_FLYING_TARGET;
-    }
-	else if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, targetBuilding, movementClass(), posX, posY, pathDx, pathDy,
-		activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint); }))
 	{
-		movement=MOV_GOING_DX_DY;
+		movement=MOV_FLYING_TARGET;
 	}
 	else
 	{
-		stopAttachedForBuilding(true);
-		movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
+		const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) {
+			return map->pathfindBuilding(entityRandom, targetBuilding, movementClass(), posX, posY, pathDx, pathDy,
+				activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint) ? StepResult::Step : StepResult::Blocked;
+		});
+		if (result == StepResult::Step) movement=MOV_GOING_DX_DY;
+		else { stopAttachedForBuilding(true); movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND; }
+
 	}
 }
 
@@ -669,11 +700,14 @@ void Unit::handleMovementGoingToResource()
         movement=MOV_FLYING_TARGET;
         return;
     }
+
 	int teamNumber=owner->teamNumber;
 	int swim=movementClass();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindMaterial(entityRandom, teamNumber, destinationPurpose, swim, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); }))
+	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, swim, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); });
+	if (result == StepResult::Pending || result == StepResult::AtGoal) { waitForGradient(); return; }
+	if (result == StepResult::Step)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -685,7 +719,7 @@ void Unit::handleMovementGoingToResource()
 		// being a peak of that same gradient; isGradientPeak is a cheap check
 		// to run every action, the ascent itself only when it actually goes stale.
 		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
-		if (!map->isGradientPeak(gradient, targetX, targetY))
+		if (gradient && !map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}
 	else

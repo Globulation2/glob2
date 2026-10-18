@@ -314,6 +314,123 @@ TEST_CASE("reserved output slots are initialized and remain distinct from real m
     CHECK(wishes[14]==0);
 }
 
+TEST_CASE("sparse delivery accounting clears unused slots and still counts committed workers")
+{
+    glob2test::HeadlessGlobals globals;
+    DemandFixture fixture;
+    auto& b=*fixture.building;
+    fixture.runtime.replenishMaterialMask=1u<<WHEAT;
+    auto* unit=fixture.world.addUnit(WORKER,20,20);
+    REQUIRE(unit);
+    unit->destinationPurpose=WOOD;
+    unit->attachedBuilding=&b;
+    b.unitsWorking.push_back(unit);
+    checkDemand(b);
+    int targets[MaterialSlotCount], served[MaterialSlotCount];
+    std::fill_n(targets,MaterialSlotCount,-999);
+    std::fill_n(served,MaterialSlotCount,-999);
+    b.fetchApportionment(targets,served);
+    CHECK(targets[WOOD]==0);
+    CHECK(served[WOOD]==1);
+    for (int r=MaterialCount;r<MaterialSlotCount;++r) {
+        CHECK(targets[r]==0);
+        CHECK(served[r]==0);
+    }
+}
+
+TEST_CASE("failed admission reuses only current operation demand across stock and budget changes")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool site : {false,true})
+    for (bool shared : {false,true})
+    for (bool repair : {false,true})
+    {
+        if (repair && !site) continue;
+        CAPTURE(site);
+        CAPTURE(shared);
+        CAPTURE(repair);
+        DemandFixture fixture(site);
+        auto& b=*fixture.building;
+        fixture.type.useTeamMaterials=shared;
+        b.updateMaterialsPointer();
+        fixture.runtime.replenishMaterialMask=1u<<WHEAT;
+        fixture.type.materialMultiplier[WHEAT]=3;
+        if (site)
+        {
+            b.constructionResultState=repair ? Building::REPAIR : Building::NEW_BUILDING;
+            fixture.type.semantics.constructionCost.fill(0);
+            b.constructionBudget.fill(0);
+            b.constructionBudget[WHEAT]=11;
+            b.constructionBudget[14]=5;
+        }
+        REQUIRE_FALSE(fixture.world.game.hiringCandidates(b));
+        for (int stock : {0,1,7,11,0})
+        {
+            b.setMaterial(WHEAT,stock);
+            if (site)
+            {
+                b.constructionBudget[14]=stock ? 9 : 5;
+                b.constructionReserved[14]=stock ? 2 : 0;
+            }
+            const auto expected=referenceDemand(b);
+            const auto rng=b.entityRandom.exportState();
+            // Exercise an admission attempt even when only reserved slots need
+            // stock; final staffing must still count only real materials.
+            if (site && !repair && stock==11)
+            {
+                CHECK(expected.total==0);
+                CHECK(expected.needs[14]>0);
+            }
+            b.desiredMaxUnitWorking=std::max(1,expected.workers);
+            const auto wishes=std::array<int,MaterialSlotCount>{};
+            std::copy(wishes.begin(),wishes.end(),b.wishedMaterials);
+            CHECK_FALSE(b.subscribeToBringMaterialsStep(true));
+            CHECK(b.unitsWorking.empty());
+            CHECK(b.desiredMaxUnitWorking==expected.workers);
+            CHECK(b.isMaterialFull()==(expected.missing==0));
+            CHECK(b.entityRandom.exportState()==rng);
+            CHECK(std::equal(wishes.begin(),wishes.end(),b.wishedMaterials));
+            checkDemand(b);
+        }
+    }
+}
+
+TEST_CASE("failed live admission preserves route queries and a later successful attempt")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* b=world.addBuilding("inn",8,8);
+    b->maxUnitWorking=1;
+    b->setMaterial(WHEAT,0);
+    b->updateCallLists();
+    auto* unit=world.addUnit(WORKER,6,8);
+    unit->medical=Unit::MED_FREE;
+    unit->activity=Unit::ACT_RANDOM;
+    unit->hungriness=0;
+    unit->carriedMaterial=WHEAT;
+    glob2test::publishCurrentHiringSuggestions(world.game);
+    REQUIRE(world.game.hiringCandidates(*b));
+    const auto slot=b->routeSlot(unit->swimClass(),BuildingRoute::Footprint);
+    REQUIRE(b->globalGradient[slot]==nullptr);
+    // The published suggestion becomes too hungry to travel. Live admission
+    // must still resolve its route before rejecting it, without hiring.
+    unit->hungriness=1;
+    unit->hungry=unit->trigHungry;
+    const auto expected=referenceDemand(*b);
+    CHECK_FALSE(b->subscribeToBringMaterialsStep());
+    CHECK(b->globalGradient[slot]!=nullptr);
+    CHECK(b->unitsWorking.empty());
+    CHECK(b->desiredMaxUnitWorking==expected.workers);
+    checkDemand(*b);
+    // Reuse is local to the failed operation, not retained with suggestions.
+    unit->hungriness=0;
+    REQUIRE(b->subscribeToBringMaterialsStep());
+    REQUIRE(b->unitsWorking.size()==1);
+    CHECK(b->unitsWorking.front()==unit);
+    CHECK(unit->attachedBuilding==b);
+    CHECK(b->callListState==0);
+}
+
 TEST_CASE("update boundaries keep wishes staffing and recruitment bucket order observable")
 {
     glob2test::HeadlessGlobals globals;
@@ -351,6 +468,52 @@ TEST_CASE("update boundaries keep wishes staffing and recruitment bucket order o
     expected.insert(position,&b);
     b.updateCallLists();
     CHECK(fixture.world.team->buildingsNeedingUnits[4]==expected);
+}
+
+TEST_CASE("same priority reposition matches removal and insertion in unsorted buckets")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    std::array<Building*,4> buildings{};
+    for (int i=0;i<4;++i)
+    {
+        buildings[i]=world.addBuilding("inn",4+6*i,8);
+        REQUIRE(buildings[i]);
+        buildings[i]->maxUnitWorking=12;
+        buildings[i]->setMaterial(WHEAT,0);
+        buildings[i]->updateCallLists();
+    }
+    auto& bucket=world.team->buildingsNeedingUnits[buildings[0]->priority];
+    std::array<int,4> permutation{0,1,2,3};
+    do {
+        for (int target=0;target<4;++target)
+            for (int wish=0;wish<5;++wish)
+            {
+                // Peers' wishes can change before they update their own lists.
+                // Exercise every position, both movement directions, unchanged
+                // positions, and equal-wish ties resolved by building identity.
+                for (int i=0;i<4;++i) {
+                    std::fill_n(buildings[i]->wishedMaterials,MaterialSlotCount,0);
+                    buildings[i]->wishedMaterials[WHEAT]=i;
+                }
+                buildings[target]->wishedMaterials[WHEAT]=wish;
+                bucket.clear();
+                for (int i:permutation) bucket.push_back(buildings[i]);
+                auto expected=bucket;
+                auto* b=buildings[target];
+                expected.erase(std::find(expected.begin(),expected.end(),b));
+                const auto position=std::find_if(expected.begin(),expected.end(),
+                    [&](Building* peer){return Team::buildingHasHigherPriority(b,peer);});
+                expected.insert(position,b);
+                b->updateCallLists(12,false);
+                CHECK(bucket==expected);
+                CHECK(bucket.size()==4);
+            }
+    } while (std::next_permutation(permutation.begin(),permutation.end()));
+    bucket={buildings[0]};
+    buildings[0]->updateCallLists(12,false);
+    CHECK(bucket==std::vector<Building*>{buildings[0]});
+    bucket.assign(buildings.begin(),buildings.end());
 }
 
 TEST_CASE("repair upgrade delivery completion and destruction refresh demand at their existing boundaries")

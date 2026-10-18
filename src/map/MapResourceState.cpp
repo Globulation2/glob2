@@ -84,14 +84,27 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     resourceChanges.markAll();
     invalidateResourceSeeds();
     bumpTopologyGeneration();
-    if (arraysBuilt && marketsV2Enabled())
-        for (int team = 0; team < Team::MAX_COUNT; ++team)
-            for (int material = 0; material < MaterialCount; ++material)
-                for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim) {
+    if (arraysBuilt) {
+        // Catalog replacement changes the interpretation of cell and resource
+        // identities. Unlike painting existing cells, this supersedes private
+        // outputs built with the old configuration. Queued scalar requests have
+        // not captured inputs yet and will capture the replacement catalogs.
+        for (int team=0;team<Team::MAX_COUNT;++team)
+            for (int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
+                gradientRuntime->pipeline.invalidate(&forbiddenGradient[team][swim]);
+                gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
+                gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
+                for (int material=0;material<MaterialCount;++material) {
+                    gradientRuntime->pipeline.invalidate(&materialGradients[team][material][swim]);
+
                     gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
-                    marketGradientUpdated[team][material][swim] = false;
-                    marketGradientDirty[team][material][swim] = true;
                 }
+            }
+        for (auto& [key,field]:gradientRuntime->materialFields) {
+            gradientRuntime->pipeline.invalidate(&field.published);
+            field.topology=0;
+        }
+    }
     terrainEditChanged = terrainRoutesChanged = true;
     finishTerrainEdit();
 }

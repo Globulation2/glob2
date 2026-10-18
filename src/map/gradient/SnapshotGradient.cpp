@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SnapshotGradient.h"
+#include "GradientExecutionAudit.h"
 #include "ComputeExecutor.h"
 #include "SeedCells.h"
 #include "MapInternal.h"
@@ -220,6 +221,7 @@ void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
 
 void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch)
 {
+    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
     const auto view = snapshot.view();
     const auto size = size_t(view.width) * view.height;
     const Uint32 mask = Uint32(1) << request.team;
@@ -231,7 +233,10 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
         {
             if (b.team != request.team || b.buildingState != Building::ALIVE) continue;
             const auto& type = snapshot.catalogs->buildings->at(b.typeNum).resolvedType;
-            if (!(type.runtimeSuppliesStockMask & b.availableSupplyMask & (1u << request.material))) continue;
+            if (b.identity.gid == request.consumer || (request.excludesShared && b.usesTeamResources)) continue;
+            const auto supplies = ((request.modes & 1) ? type.runtimeSuppliesStockMask : 0)
+                | ((request.modes & 2) ? type.runtimeSuppliesDirectStockMask : 0);
+            if (!(supplies & b.availableSupplyMask & (1u << request.material))) continue;
             suppliers[Building::GIDtoID(b.identity.gid)] = std::max<int>(GRADIENT_UNREACHABLE+1,
                 GRADIENT_AT_GOAL - type.semantics.market.pickupPenalty * GRADIENT_STEP);
         }
@@ -243,6 +248,18 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
             request.kind==Kind::Markets ? suppliers.data() : nullptr))
             materialCells(view, snapshot.visibility->visible.data(), request.team, request.material, request.swim,
                 out, request.kind==Kind::Markets ? suppliers.data() : nullptr, run);
+        break;
+    case Kind::Forbidden:
+        for (size_t i=0; i<size; ++i) {
+            const bool blocked=MapState::resourceBlocksGround(view,i) || view.occupancy[i].building!=NOGBID
+                || view.occupancy[i].immobileUnit!=IMMOBILE_UNIT_NONE
+                || !gradient_kernel::terrainAllowsGround(view.terrainProperties(i),request.swim);
+            out[i]=blocked ? GRADIENT_FORBIDDEN : (view.areas[i].forbidden & mask) ? GRADIENT_UNREACHABLE : GRADIENT_AT_GOAL;
+        }
+        for (size_t i=0; i<size; ++i) if (out[i]==GRADIENT_UNREACHABLE)
+            for (int d=0;d<8;++d) if (out[view.index((i & view.wMask)+tabClose[d][0],(i >> view.wDec)+tabClose[d][1])]==GRADIENT_AT_GOAL) {
+                out[i]=GRADIENT_FORBIDDEN_BORDER; break;
+            }
         break;
     case Kind::Clear:
         clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
@@ -399,6 +416,7 @@ void validatePropagation(const PropagationField& field)
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
 {
+    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
     const PropagationField field{request,&snapshot,output,&scratch};
     validatePropagation(field);
     // Preserve the shared trivial-field shortcut and validation order without
@@ -614,6 +632,7 @@ BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRou
 
 BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot, Uint16* out)
 {
+    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
     const auto view=snapshot.view();
     const auto size=size_t(view.width)*view.height;
     return buildingCells(view, building, out, [size](auto fn) { fn(0, size); });

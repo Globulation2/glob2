@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "AINumbi.h"
 #include "NumbiQueries.h"
 #include "ai/engine/AIDecision.h"
@@ -22,13 +23,20 @@ TEST_SUITE("NumbiObservation")
   std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
   NumbiObservation::Queries query(*world,0,cache,&enrollments);
   for(int resource:{WHEAT,WOOD,CHERRY}) for(int swim:{0,3,6}) {
+   glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,resource,swim); });
    for(int y=0;y<32;++y) for(int x=0;x<32;++x) {
     CAPTURE(resource);CAPTURE(swim);CAPTURE(x);CAPTURE(y);
     int snapshotX=-1,snapshotY=-1,snapshotDistance=-1,liveX=-1,liveY=-1,liveDistance=-1;
     const bool captured=query.resourceAvailableUpdate(0,resource,swim,x,y,&snapshotX,&snapshotY,&snapshotDistance);
     const bool live=map.materialAvailableUpdateSlot(0,resource,swim,x,y,&liveX,&liveY,&liveDistance);
-    CHECK(captured==live);CHECK(snapshotX==liveX);CHECK(snapshotY==liveY);
-    if(live) CHECK(snapshotDistance==liveDistance);
+    CHECK(captured==live);
+    // Destination outputs are meaningful only on success. The live Pending /
+    // Unreachable adapter leaves them untouched; the private oracle may write
+    // its search origin on failure. Reachable routes must still match exactly.
+    if(live) {
+     CHECK(snapshotX==liveX);CHECK(snapshotY==liveY);
+     CHECK(snapshotDistance==liveDistance);
+    }
    }
   }
   CHECK(enrollments.size()==9);
@@ -41,6 +49,7 @@ TEST_SUITE("NumbiObservation")
   auto& game=fixture.game;auto& map=game.map;
   map.setResourceByIndex(5,5,WHEAT,1);
   int initialX,initialY,initialDistance;
+  glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,WHEAT,0); });
   REQUIRE(map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),0,8,8,&initialX,&initialY,&initialDistance));
   map.setNoResource(5,5,0);map.setResourceByIndex(24,24,WHEAT,1);
   auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));

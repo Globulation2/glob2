@@ -175,9 +175,9 @@ TEST_SUITE("NetSendOrderDecode")
 TEST_CASE("saved order envelopes retain master and air draft layouts" * doctest::test_suite("NetSendOrderDecode"))
 {
     const Uint8 payload[1]={ORDER_NULL};
-    for (unsigned version : {167u,168u,171u,172u}) {
+    for (unsigned version : {167u,168u,169u,171u,172u,173u}) {
         CAPTURE(version);
-        const bool tagged=version==168 || version>=172;
+        const bool tagged=version==168 || version==169 || version>=172;
         std::unique_ptr<BinaryInputStream> stream(makeStream(1,payload,1,7,0x12345678,tagged));
         NetSendOrder message;
         message.setDecodeVersionMinor(version);

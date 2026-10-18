@@ -4,6 +4,7 @@
 #pragma once
 
 #include "UnitState.h"
+#include "gradient/FieldReadiness.h"
 #include "UnitCatalog.h"
 #include "UnitCargo.h"
 #include <vector>
@@ -75,6 +76,9 @@ public:
 		return hasCapability(UnitRuntimeTraits::ExtendedCargo) && continueExtendedCargoCollection();
 	}
 	void receiveCargoPacket(int resource, WideMaterialPacket packet);
+	RouteResult queryMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
+		bool withMarkets=false, const Building* consumer=nullptr);
+
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
@@ -82,6 +86,9 @@ public:
 	void directionFromDxDy(void);
 private:
 	bool continueExtendedCargoCollection();
+	// Per-decision control only: reset before each movement decision, never
+	// persisted or included in snapshots/checksums.
+	bool gradientDecisionPending = false;
 public:
 	// Wide pathfinding outputs can change even on failure. Preserve both writes
 	// before storing the audited one-cell displacement in its compact fields.
@@ -92,6 +99,19 @@ public:
 		assert(x>=-1 && x<=1 && y>=-1 && y<=1);
 		dx=Sint8(x); dy=Sint8(y);
 		return found;
+	}
+	// Pending fields preserve every assignment and retry on the ordinary action cadence.
+	// The existing zero-displacement movement is already saved and checksummed.
+	void waitForGradient();
+	template<class Search> StepResult findGradientDisplacement(Search search)
+	{
+		int x=dx, y=dy;
+		const auto result=search(&x, &y);
+		if (result == StepResult::Step) {
+			assert(x>=-1 && x<=1 && y>=-1 && y<=1);
+			dx=Sint8(x); dy=Sint8(y);
+		}
+		return result;
 	}
 private:
 	void dxDyFromDirection(void);

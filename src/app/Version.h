@@ -7,10 +7,12 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 172
+#define VERSION_MINOR 173
+// version 173 integrates delayed ground guidance with the air routing layout.
 // version 172 combines air routing with tagged snapshot checksum metadata.
 // version 171 appends one shared air routing class and preserves released save layouts.
-// Draft formats 169-170 were never released and are not accepted.
+// Version 169 is released delayed ground guidance; draft format 170 is rejected.
+
 // version 168 uses delayed snapshot checksums and tagged order checksum metadata.
 // version 167 uses one completed observation per owner boundary and saves boundary phase markers.
 // version 166 saves append-ordered entity populations and the live task cursor.
