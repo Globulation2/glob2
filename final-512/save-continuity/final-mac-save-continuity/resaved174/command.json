@@ -1,0 +1,19 @@
+[
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-final-ca6365e83",
+  "game",
+  "run",
+  "--load-game",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/final-mac-save-continuity/released173/final.game.gz",
+  "--ticks",
+  "1280",
+  "--compute-threads",
+  "1",
+  "--gpu",
+  "off",
+  "--save",
+  "final",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/final-mac-save-continuity/resaved174"
+]

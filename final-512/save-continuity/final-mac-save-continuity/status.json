@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "production": "ca6365e83900e2668ff2348044a89ba3b2d70c43",
+  "matched_header174_save_resume": {
+    "world.checksums": {
+      "overlap": 2048,
+      "divergences": 0
+    },
+    "snapshot.checksums": {
+      "overlap": 2049,
+      "divergences": 0
+    }
+  },
+  "released173_resaved174_mac_linux": "all_world_snapshot_full_replay_traces_identical",
+  "original_173_vs_saved174_header_checksum_xor": 1572864,
+  "note": "Initial raw world comparison mixed map header versions173 and174. MapHeader hashes versionMinor; its 3-bit XOR rotates13times in this3team3player setup, giving constant1572864 on every overlapping tick. Matching174controls give exactly identical raw world and snapshot checksums."
+}

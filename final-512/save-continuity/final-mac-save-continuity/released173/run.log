@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 2e09c72b
+automaticEndingGame ended: 1024 ticks, 0 minutes, 34 seconds
+GLOB2_GAME_END ticks=1024 winner_team=-1 seed=859231393 map="map.map" orders=0 players=team0:Warrush,team1:Warrush,team2:Warrush
+final: wrote /Users/bradley/glob2/artifacts/gradient-training-1024/final-mac-save-continuity/released173/final.game.gz

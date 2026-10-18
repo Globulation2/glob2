@@ -1,0 +1,435 @@
+{
+  "production": "ca6365e83900e2668ff2348044a89ba3b2d70c43",
+  "test_only_followup": "df25376f8b681dcd8d87dd6832b4e93a935cad96",
+  "base": "3d896cbb95293da6d24caddd247a62c9ca99d77f",
+  "runs": 32,
+  "independent_starting_states": 8,
+  "repetitions": 2,
+  "formats": [
+    {
+      "format": "1v1",
+      "map": "spider-web",
+      "master": {
+        "cpu_ms_per_tick": 0.12069405161102202,
+        "total_cpu_ms_per_tick": 0.12702869708898284,
+        "total_cpu_seconds": 5.227739,
+        "simulation_cpu_seconds": 4.967043,
+        "wall_seconds": 5.286888853996061,
+        "ticks_per_wall_second": 7790.627704970437,
+        "ticks": 41154,
+        "termination": "engine_end",
+        "winning_teams": [
+          1
+        ],
+        "final_units": 81,
+        "gradient_jobs": 40495,
+        "building_gradient_jobs": 5846
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 0.1282546199928923,
+        "total_cpu_ms_per_tick": 0.13471403005533839,
+        "total_cpu_seconds": 5.3069245,
+        "simulation_cpu_seconds": 5.0524625,
+        "wall_seconds": 5.334413708507782,
+        "ticks_per_wall_second": 7387.820045934915,
+        "ticks": 39394,
+        "termination": "engine_end",
+        "winning_teams": [
+          1
+        ],
+        "final_units": 88,
+        "gradient_jobs": 38436,
+        "building_gradient_jobs": 5368
+      },
+      "cpu_ms_per_tick_change_pct": 6.264242753434779,
+      "total_cpu_seconds_change_pct": 1.5147179306388647,
+      "wall_seconds_change_pct": 0.8989191152713571,
+      "ticks_change_pct": -4.276619526655978,
+      "ticks_per_wall_second_change_pct": -5.170413402998708,
+      "gradient_jobs_change_pct": -5.084578343005308,
+      "cpu_ratio_repeats": [
+        1.050010593518278,
+        1.0762371704067046
+      ],
+      "total_cpu_ratio_repeats": [
+        1.003726269684198,
+        1.0274170102398397
+      ]
+    },
+    {
+      "format": "2v2",
+      "map": "fjord-continent",
+      "master": {
+        "cpu_ms_per_tick": 0.1134284,
+        "total_cpu_ms_per_tick": 0.11623530555555556,
+        "total_cpu_seconds": 10.4611775,
+        "simulation_cpu_seconds": 10.208556,
+        "wall_seconds": 10.492382041498786,
+        "ticks_per_wall_second": 8577.652954359353,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 70,
+        "gradient_jobs": 89997,
+        "building_gradient_jobs": 37175
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 0.07894207777777779,
+        "total_cpu_ms_per_tick": 0.08175005555555556,
+        "total_cpu_seconds": 7.357505,
+        "simulation_cpu_seconds": 7.104787,
+        "wall_seconds": 7.390548374503851,
+        "ticks_per_wall_second": 12177.719644430785,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 46,
+        "gradient_jobs": 88193,
+        "building_gradient_jobs": 22267
+      },
+      "cpu_ms_per_tick_change_pct": -30.403604584233058,
+      "total_cpu_seconds_change_pct": -29.668481392271573,
+      "wall_seconds_change_pct": -29.56272136038094,
+      "ticks_change_pct": 0.0,
+      "ticks_per_wall_second_change_pct": 41.970300141856384,
+      "gradient_jobs_change_pct": -2.004511261486497,
+      "cpu_ratio_repeats": [
+        0.694933574136983,
+        0.6969946772057255
+      ],
+      "total_cpu_ratio_repeats": [
+        0.702749615241227,
+        0.7038807485335173
+      ]
+    },
+    {
+      "format": "3ffa",
+      "map": "stone-highlands",
+      "master": {
+        "cpu_ms_per_tick": 0.058441899259500364,
+        "total_cpu_ms_per_tick": 0.06852764667588901,
+        "total_cpu_seconds": 1.6842725,
+        "simulation_cpu_seconds": 1.436385,
+        "wall_seconds": 1.6970615004829597,
+        "ticks_per_wall_second": 14484.438718147194,
+        "ticks": 24578,
+        "termination": "engine_end",
+        "winning_teams": [
+          1
+        ],
+        "final_units": 37,
+        "gradient_jobs": 24567,
+        "building_gradient_jobs": 2126
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 0.051765595036661026,
+        "total_cpu_ms_per_tick": 0.06558172588832487,
+        "total_cpu_seconds": 1.1627640000000001,
+        "simulation_cpu_seconds": 0.9178040000000001,
+        "wall_seconds": 1.1677311454841401,
+        "ticks_per_wall_second": 15183.292180916935,
+        "ticks": 17730,
+        "termination": "engine_end",
+        "winning_teams": [
+          2
+        ],
+        "final_units": 23,
+        "gradient_jobs": 14038,
+        "building_gradient_jobs": 1399
+      },
+      "cpu_ms_per_tick_change_pct": -11.423831715657384,
+      "total_cpu_seconds_change_pct": -30.963427830116565,
+      "wall_seconds_change_pct": -31.190994247891403,
+      "ticks_change_pct": -27.862315892261368,
+      "ticks_per_wall_second_change_pct": 4.824857050858067,
+      "gradient_jobs_change_pct": -42.85830585745105,
+      "cpu_ratio_repeats": [
+        0.8920776761886856,
+        0.8795406780636246
+      ],
+      "total_cpu_ratio_repeats": [
+        0.6959237944226648,
+        0.684900997093968
+      ]
+    },
+    {
+      "format": "4ffa",
+      "map": "hilbert-river",
+      "master": {
+        "cpu_ms_per_tick": 1.4574400500000002,
+        "total_cpu_ms_per_tick": 1.460457388888889,
+        "total_cpu_seconds": 131.441165,
+        "simulation_cpu_seconds": 131.1696045,
+        "wall_seconds": 132.6251766664791,
+        "ticks_per_wall_second": 679.971639937234,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 662,
+        "gradient_jobs": 89997,
+        "building_gradient_jobs": 31895
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 1.6622419277777776,
+        "total_cpu_ms_per_tick": 1.6653132555555556,
+        "total_cpu_seconds": 149.878193,
+        "simulation_cpu_seconds": 149.6017735,
+        "wall_seconds": 151.616511145985,
+        "ticks_per_wall_second": 593.6049244454546,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 672,
+        "gradient_jobs": 102422,
+        "building_gradient_jobs": 61033
+      },
+      "cpu_ms_per_tick_change_pct": 14.052164806214652,
+      "total_cpu_seconds_change_pct": 14.026829418318076,
+      "wall_seconds_change_pct": 14.319554519625344,
+      "ticks_change_pct": 0.0,
+      "ticks_per_wall_second_change_pct": -12.701517301479182,
+      "gradient_jobs_change_pct": 13.806015756080757,
+      "cpu_ratio_repeats": [
+        1.192052829274157,
+        1.0927777943619876
+      ],
+      "total_cpu_ratio_repeats": [
+        1.1917521380203724,
+        1.0925665546375576
+      ]
+    },
+    {
+      "format": "4v4",
+      "map": "coral",
+      "master": {
+        "cpu_ms_per_tick": 0.6863805666666667,
+        "total_cpu_ms_per_tick": 0.6893268833333334,
+        "total_cpu_seconds": 62.0394195,
+        "simulation_cpu_seconds": 61.77425100000001,
+        "wall_seconds": 62.843717979005305,
+        "ticks_per_wall_second": 1432.3649164338135,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 137,
+        "gradient_jobs": 89999,
+        "building_gradient_jobs": 18646
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 0.5477909888888889,
+        "total_cpu_ms_per_tick": 0.5508062277777779,
+        "total_cpu_seconds": 49.57256050000001,
+        "simulation_cpu_seconds": 49.301189,
+        "wall_seconds": 49.72229360399069,
+        "ticks_per_wall_second": 1810.510409164106,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 127,
+        "gradient_jobs": 97557,
+        "building_gradient_jobs": 12511
+      },
+      "cpu_ms_per_tick_change_pct": -20.19136096041051,
+      "total_cpu_seconds_change_pct": -20.09506068959912,
+      "wall_seconds_change_pct": -20.87945270742605,
+      "ticks_change_pct": 0.0,
+      "ticks_per_wall_second_change_pct": 26.40008062133836,
+      "gradient_jobs_change_pct": 8.397871087456533,
+      "cpu_ratio_repeats": [
+        0.7897278352871656,
+        0.8063947238036401
+      ],
+      "total_cpu_ratio_repeats": [
+        0.7907366414610364,
+        0.8073130010187334
+      ]
+    },
+    {
+      "format": "8ffa",
+      "map": "spider-web",
+      "master": {
+        "cpu_ms_per_tick": 0.3333872445858314,
+        "total_cpu_ms_per_tick": 0.3367851706839594,
+        "total_cpu_seconds": 27.525452,
+        "simulation_cpu_seconds": 27.2477395,
+        "wall_seconds": 27.651685521006584,
+        "ticks_per_wall_second": 2955.8020357775167,
+        "ticks": 81730,
+        "termination": "engine_end",
+        "winning_teams": [
+          5
+        ],
+        "final_units": 168,
+        "gradient_jobs": 81729,
+        "building_gradient_jobs": 45157
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 0.43413945472795445,
+        "total_cpu_ms_per_tick": 0.43814735187317333,
+        "total_cpu_seconds": 29.682730499999998,
+        "simulation_cpu_seconds": 29.4112115,
+        "wall_seconds": 30.088983437482966,
+        "ticks_per_wall_second": 2253.2025686608877,
+        "ticks": 67746,
+        "termination": "engine_end",
+        "winning_teams": [
+          5
+        ],
+        "final_units": 158,
+        "gradient_jobs": 77807,
+        "building_gradient_jobs": 39095
+      },
+      "cpu_ms_per_tick_change_pct": 30.220775323089512,
+      "total_cpu_seconds_change_pct": 7.837395367749078,
+      "wall_seconds_change_pct": 8.814283363033336,
+      "ticks_change_pct": -17.109996329377218,
+      "ticks_per_wall_second_change_pct": -23.77018009366828,
+      "gradient_jobs_change_pct": -4.798786232549035,
+      "cpu_ratio_repeats": [
+        1.346781012869289,
+        1.2570406612406386
+      ],
+      "total_cpu_ratio_repeats": [
+        1.1145837449143026,
+        1.0416666468527191
+      ]
+    },
+    {
+      "format": "8v8",
+      "map": "city-states",
+      "master": {
+        "cpu_ms_per_tick": 3.280168220154137,
+        "total_cpu_ms_per_tick": 3.284634593572779,
+        "total_cpu_seconds": 225.884321,
+        "simulation_cpu_seconds": 225.5771685,
+        "wall_seconds": 228.43143862549914,
+        "ticks_per_wall_second": 301.137742392372,
+        "ticks": 68770,
+        "termination": "engine_end",
+        "winning_teams": [
+          0,
+          3,
+          4,
+          6,
+          7,
+          9,
+          12,
+          14
+        ],
+        "final_units": 399,
+        "gradient_jobs": 68769,
+        "building_gradient_jobs": 159398
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 3.5545176555555553,
+        "total_cpu_ms_per_tick": 3.557882744444444,
+        "total_cpu_seconds": 320.209447,
+        "simulation_cpu_seconds": 319.906589,
+        "wall_seconds": 326.0868340000161,
+        "ticks_per_wall_second": 276.1639728769745,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 192,
+        "gradient_jobs": 150620,
+        "building_gradient_jobs": 202505
+      },
+      "cpu_ms_per_tick_change_pct": 8.363883099523672,
+      "total_cpu_seconds_change_pct": 41.758155494112415,
+      "wall_seconds_change_pct": 42.750418227071464,
+      "ticks_change_pct": 30.871019339828408,
+      "ticks_per_wall_second_change_pct": -8.293138321684534,
+      "gradient_jobs_change_pct": 119.02310634152018,
+      "cpu_ratio_repeats": [
+        1.086876014227444,
+        1.0802277136980047
+      ],
+      "total_cpu_ratio_repeats": [
+        1.4218454734706916,
+        1.4130886523225017
+      ]
+    },
+    {
+      "format": "16ffa",
+      "map": "everglades",
+      "master": {
+        "cpu_ms_per_tick": 2.6955592055555555,
+        "total_cpu_ms_per_tick": 2.699225366666667,
+        "total_cpu_seconds": 242.930283,
+        "simulation_cpu_seconds": 242.6003285,
+        "wall_seconds": 248.23919039600878,
+        "ticks_per_wall_second": 363.40987674396933,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 394,
+        "gradient_jobs": 89999,
+        "building_gradient_jobs": 68560
+      },
+      "adaptive32": {
+        "cpu_ms_per_tick": 2.8684481388888887,
+        "total_cpu_ms_per_tick": 2.8720452777777776,
+        "total_cpu_seconds": 258.484075,
+        "simulation_cpu_seconds": 258.1603325,
+        "wall_seconds": 263.4649469789874,
+        "ticks_per_wall_second": 341.66863323571965,
+        "ticks": 90000,
+        "termination": "tick_cap",
+        "winning_teams": [],
+        "final_units": 202,
+        "gradient_jobs": 102217,
+        "building_gradient_jobs": 63956
+      },
+      "cpu_ms_per_tick_change_pct": 6.413842922723001,
+      "total_cpu_seconds_change_pct": 6.402574355046542,
+      "wall_seconds_change_pct": 6.133502352585607,
+      "ticks_change_pct": 0.0,
+      "ticks_per_wall_second_change_pct": -5.982568141252498,
+      "gradient_jobs_change_pct": 13.575706396737752,
+      "cpu_ratio_repeats": [
+        1.0449379910754097,
+        1.0849421977826685
+      ],
+      "total_cpu_ratio_repeats": [
+        1.0447781637642015,
+        1.0848827075767287
+      ]
+    }
+  ],
+  "pooled": {
+    "master": {
+      "cpu_ms_per_tick": 1.223432707659415,
+      "total_cpu_seconds": 1414.387659,
+      "simulation_cpu_seconds": 1409.962152,
+      "wall_seconds": 1434.5350831679534,
+      "ticks": 1152464,
+      "ticks_per_wall_second": 803.371080653502
+    },
+    "adaptive32": {
+      "cpu_ms_per_tick": 1.4254634073790595,
+      "total_cpu_seconds": 1643.308399,
+      "simulation_cpu_seconds": 1638.912298,
+      "wall_seconds": 1669.7445247899159,
+      "ticks": 1149740,
+      "ticks_per_wall_second": 688.5724031014015
+    }
+  },
+  "pooled_change_pct": {
+    "cpu_ms_per_tick": 16.51342966840861,
+    "total_cpu_seconds": 16.1851482896741,
+    "simulation_cpu_seconds": 16.238034877407117,
+    "wall_seconds": 16.396213963797802,
+    "ticks": -0.23636313151647048,
+    "ticks_per_wall_second": -14.28962036556226
+  },
+  "equal_format_geometric_mean_cpu_per_tick_change_pct": -1.3718473650749519,
+  "limitations": [
+    "Eight starting states; two timing repetitions per policy. This is a final smoke comparison, not robust across-map inference.",
+    "Whole-policy trajectories/populations/game lengths differ. CPU/tick is not an isolated refresh-kernel cost.",
+    "Serial games with explicit one-thread compute and GPU/probe off; default multi-core gameplay wall time was not benchmarked.",
+    "Tick-capped games have no measured finish time.",
+    "Range bars span the two paired timing ratios; bar centers and table entries use the ratio of policy means. They are not confidence intervals across maps.",
+    "Tick-capped totals are censored observed-prefix CPU/wall costs, not full-game finish costs; end status is shown for each policy.",
+    "One-host timing without a recorded continuous host-load/thermal guard; counterbalancing reduces drift but cannot rule out external confounding."
+  ]
+}

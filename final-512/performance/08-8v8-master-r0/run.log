@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.isGameEnded
+automaticEndingGame ended: 68770 ticks, 38 minutes, 12 seconds
+GLOB2_GAME_END ticks=68770 winner_team=0 seed=892606048 map="map.map" orders=0 players=team0:Cabino,team1:Cabino,team2:Cabino,team3:Cabino,team4:Cabino,team5:Cabino,team6:Cabino,team7:Cabino,team8:Cabino,team9:Cabino,team10:Cabino,team11:Cabino,team12:Cabino,team13:Cabino,team14:Cabino,team15:Cabino

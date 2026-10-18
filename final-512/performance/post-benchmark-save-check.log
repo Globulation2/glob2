@@ -1,0 +1,8 @@
+released173 complete
+resaved174 complete
+resume2048 complete
+Traceback (most recent call last):
+  File "/Users/bradley/glob2/artifacts/gradient-training-1024/post-benchmark-save-check.py", line 17, in <module>
+    assert all(a[t]==b[t] for t in overlap),(name,'resume mismatch')
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('world.checksums', 'resume mismatch')

@@ -1,4 +1,4 @@
-Latest final512 dataset and verification: [final-512/README.md](final-512/README.md). Its current-master timing comparison is still running. The older evidence below used the pre-integration base and does not establish final performance.
+Latest final512 dataset, native verification and completed current-master comparison: [final-512/README.md](final-512/README.md). Final performance is mixed: pooled CPU/tick+16.51%,3/8 format wins. The older evidence below used the pre-integration base and does not establish final performance.
 
 Local / VM verification for adaptive resource gradients
 

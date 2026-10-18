@@ -1,0 +1,19 @@
+[
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-final-ca6365e83",
+  "game",
+  "run",
+  "--load-game",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/final-sim80-parity-mac/one/checkpoint-512.game.gz",
+  "--ticks",
+  "4096",
+  "--compute-threads",
+  "1",
+  "--gpu",
+  "off",
+  "--save",
+  "final",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/final-mac-save-continuity/control174-from512"
+]
