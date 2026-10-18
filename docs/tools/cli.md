@@ -682,6 +682,10 @@ Platform: all.
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
 | `--resource-gradient-probe` | flag; default false | Write sampled natural-resource pathfinding quality comparisons. |
+| `--resource-gradient-exploration` | comma-separated intervals | Headless probe-only field assignment: 0 uses adaptive32; other unique values are 8..65536 ticks. Rejects replay recording. |
+| `--resource-gradient-exploration-seed` | uint32; default 0 | Stable field-assignment seed; requires exploration. |
+| `--resource-gradient-fork-field` | integer; 0..65535 | One-shot demanded-field intervention; requires load-game and probe, rejects replay recording. |
+| `--resource-gradient-fork-wait` | ticks; 0..65536; default 0 | Delay before selected field becomes eligible for its one-shot admission. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |

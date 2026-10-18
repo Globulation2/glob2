@@ -113,6 +113,70 @@ TEST_CASE("successful planning reads leave warm natural fields idle beyond the d
     CHECK(map.gradientPipelineStatus().pending==0);
 }
 
+TEST_CASE("planning probe observes scalar-only counterfactuals without changing movement demand [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    map.configureGradientPipeline(0,3);
+    REQUIRE(world.addUnit(WORKER,8,8));
+    map.setResourceByIndex(20,20,WHEAT,1);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    for(unsigned tick=0;tick<4;++tick) advanceFields(game);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    const int key=WHEAT*SWIM_CLASS_COUNT;
+    // Select a normal sampled window rather than bypassing observer sampling.
+    unsigned window=0;
+    for (;;++window) {
+        const unsigned hash=(unsigned(key)^window*2246822519u)*2654435761u;
+        if (((hash^(hash>>16))%8)==0) break;
+    }
+    // Use the sampled index, with a warmup away from initial submission.
+    game.stepCounter=window*4096+16;
+    const auto path=(glob2test::artifactDir()/"planning-probe.csv").string();
+    map.gradientRuntime->qualityProbe=std::make_unique<ResourceGradientProbe>(path.c_str());
+    auto& probe=*map.gradientRuntime->qualityProbe;
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    const auto first=game.stepCounter;
+    game.stepCounter=first+255;
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    for(int y=19;y<=21;++y) for(int x=19;x<=21;++x)
+        if(x!=20 || y!=20) map.paintCell(x,y,WATER);
+    game.stepCounter=first+256;
+    probe.stageEpisodes(map);
+    REQUIRE(probe.fields.contains(key));
+    REQUIRE(probe.fields.at(key).episodes.size()==1);
+    game.stepCounter+=map.gradientPipelineStatus().delay;
+    const auto before=normalizedChecksums(game);
+    // Live guidance still reports reachable; the private oracle sees the ring.
+    CHECK(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    CHECK(normalizedChecksums(game)==before);
+    auto& e=probe.fields.at(key).episodes.front();
+    CHECK(e.queries==0);CHECK_FALSE(e.movementObserved);CHECK(e.planningQueries==1);
+    CHECK(e.deferFalsePositive==1);CHECK(e.refreshFalsePositive==0);
+    for(int y=19;y<=21;++y) for(int x=19;x<=21;++x)
+        if(x!=20 || y!=20) map.paintCell(x,y,GRASS);
+    ++game.stepCounter;
+    const auto reopened=normalizedChecksums(game);
+    CHECK(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
+    CHECK(normalizedChecksums(game)==reopened);
+    CHECK(e.planningQueries==2);CHECK(e.refreshFalseNegative==1);
+    const auto& policy=map.gradientRuntime->resources.fields.at(key);
+    CHECK_FALSE(policy.requested);CHECK(policy.count32==0);CHECK(policy.count128==0);
+    CHECK(probe.query==0);CHECK(probe.planningQuery==4);
+    // Depleted material fields still need quality examples: stale positive
+    // planning answers must remain observable after the final source vanishes.
+    map.setNoResource(20,20,1);
+    REQUIRE_FALSE(map.hasMaterialSourceSlot(WHEAT));
+    game.stepCounter=first+288;
+    const auto depleted=normalizedChecksums(game);
+    probe.stageEpisodes(map);
+    CHECK(normalizedChecksums(game)==depleted);
+    REQUIRE(probe.fields.at(key).episodes.size()==1);
+    CHECK(probe.fields.at(key).episodes.front().tick==game.stepCounter);
+    CHECK_FALSE(probe.fields.at(key).episodes.front().movementObserved);
+}
+
 TEST_CASE("recruitment-only demand recovers a published unreachable natural field after terrain opens")
 {
     glob2test::HeadlessGlobals globals;

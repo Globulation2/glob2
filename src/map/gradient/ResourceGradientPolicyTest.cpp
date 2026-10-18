@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "ResourceGradientPolicy.h"
+#include "ResourceGradientExploration.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -52,5 +53,61 @@ TEST_CASE("binary and text continuation retain query windows capture epochs and 
             CHECK(p.fields[0].refresh(tick,p.sources[0])==restored.fields[0].refresh(tick,restored.sources[0]));
         }
     }
+}
+}
+
+TEST_SUITE("ResourceGradientExploration") {
+TEST_CASE("interval strata are validated and assigned without consuming game randomness") {
+    CHECK((ResourceGradientExploration::parseIntervals("0,32,128,512")==std::vector<unsigned>{0,32,128,512}));
+    for (const auto* invalid:{"","8,","-1","1","7","65537","32,32","32, 64","32x"})
+        CHECK_THROWS_AS(ResourceGradientExploration::parseIntervals(invalid),std::invalid_argument);
+    ResourceGradientExploration first,second;
+    first.intervals=second.intervals={0,32,128,512};first.seed=second.seed=123456;
+    unsigned changed=0;std::array<unsigned,4> counts{};
+    for (int key=0;key<1024;++key) {
+        const auto interval=first.intervalFor(key);
+        CHECK(interval==second.intervalFor(key));
+        ++counts[std::find(first.intervals.begin(),first.intervals.end(),interval)-first.intervals.begin()];
+        second.seed=654321;changed+=interval!=second.intervalFor(key);second.seed=first.seed;
+    }
+    for (auto count:counts) CHECK(count>150);
+    CHECK(changed>500);
+}
+TEST_CASE("fixed interval exploration bypasses model and production cap but retains demand") {
+    ResourceGradientExploration config;config.intervals={512};
+    ResourceGradientPolicy::Field field;field.submitted=0;
+    field.requested=true;CHECK(config.refresh(0,field,128,{})==nullptr);
+    field.requested=true;CHECK(config.refresh(0,field,511,{})==nullptr);
+    CHECK(config.refresh(0,field,512,{})==nullptr); // idle fields do no work
+    field.requested=true;CHECK(std::string_view(config.refresh(0,field,512,{}))=="fixed_interval");
+    CHECK_FALSE(field.requested);
+}
+TEST_CASE("adaptive stratum is exactly the official refresh decision including state") {
+    ResourceGradientExploration config;config.intervals={0};
+    ResourceGradientPolicy::Field explored,official;
+    for (unsigned tick=0;tick<600;++tick) {
+        if (tick%3==0) {explored.queried(tick,true);official.queried(tick,true);}
+        const bool accepted=config.refresh(19,explored,tick,{})!=nullptr;
+        CHECK(accepted==official.refresh(tick,{}));
+        CHECK(explored.requested==official.requested);
+        CHECK(explored.count32==official.count32);
+        CHECK(explored.count128==official.count128);
+        CHECK(explored.queryTick==official.queryTick);
+        if (accepted) explored.submitted=official.submitted=tick;
+    }
+}
+TEST_CASE("checkpoint branch waits for one demanded admission and then restores baseline") {
+    ResourceGradientExploration config;config.forkField=7;config.forkStart=100;config.forkWait=256;
+    ResourceGradientPolicy::Field field;field.submitted=99;
+    for (unsigned tick=100;tick<356;++tick) {
+        field.requested=true;CHECK(config.refresh(7,field,tick,{})==nullptr);
+    }
+    CHECK(config.refresh(7,field,356,{})==nullptr); // not a synthetic movement query
+    field.requested=true;CHECK(std::string_view(config.refresh(7,field,356,{}))=="checkpoint_fork");
+    config.record(356,7,"checkpoint_fork",false);CHECK_FALSE(config.forkComplete);
+    field.requested=true;CHECK(config.refresh(7,field,357,{})!=nullptr);
+    config.record(357,7,"checkpoint_fork",true);CHECK(config.forkComplete);
+    field.submitted=357;field.requested=true;CHECK(config.refresh(7,field,358,{})==nullptr);
+    field.requested=true;CHECK(std::string_view(config.refresh(7,field,485,{}))=="age_cap");
 }
 }

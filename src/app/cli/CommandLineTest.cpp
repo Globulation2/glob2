@@ -159,3 +159,25 @@ TEST_SUITE("CommandLine")
 		}
 	}
 }
+
+TEST_SUITE("GradientCollectionCommandLine") {
+TEST_CASE("exploration and checkpoint overrides require explicit headless collection") {
+    CHECK_NOTHROW(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-exploration","0,32,512","--resource-gradient-exploration-seed","4294967295"}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-fork-field","7","--resource-gradient-fork-wait","256"}));
+    CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-exploration","32"}));
+    CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-exploration-seed","123"}));
+    CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-fork-field","7"}));
+    CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-exploration","32","--write-replay"}));
+    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-gradient-exploration","32"}));
+    CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-fork-field","7","--resource-gradient-fork-wait","32","--save","final"}));
+    for (const auto* invalid:{"32,","32,32","nope","7","65537"})
+        CHECK_THROWS(Cli::parse({"game","run","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+            "--resource-gradient-exploration",invalid}));
+}
+}

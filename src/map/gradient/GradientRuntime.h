@@ -12,6 +12,7 @@
 #include "TerrainSafetyCache.h"
 #include "ResourceGradientProbe.h"
 #include "ResourceGradientPolicy.h"
+#include "ResourceGradientExploration.h"
 #include <cstdlib>
 #include "field/GradientWorkspace.h"
 
@@ -30,6 +31,7 @@ struct GradientRuntime
 {
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
     ResourceGradientPolicy resources;
+    std::unique_ptr<ResourceGradientExploration> exploration;
     void initializeResourcePolicy(const Map&);
 	struct Workspace
 	{

@@ -280,6 +280,9 @@ public:
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+    // Explicit headless-only experiment; deliberately absent from save state.
+    void configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
+        int forkField, unsigned forkWait, const std::string& decisionPath);
     void applyGradientBackendRequest();
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping

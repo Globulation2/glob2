@@ -488,6 +488,20 @@ struct HeadlessRunner
 			}
 			engine.gui.game.map.setGradientWorkerCount(1);
 		}
+        if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+            if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
+                throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
+            if (options.count("--resource-gradient-fork-field") && saved.empty())
+                throw std::invalid_argument("Gradient checkpoint forks require --load-game");
+            if (options.count("--resource-gradient-fork-field") && options.count("--save"))
+                throw std::invalid_argument("Gradient checkpoint forks cannot write resumable saves");
+            engine.gui.game.map.configureResourceGradientExploration(
+                one(options,"--resource-gradient-exploration"),
+                integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
+                options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,65535) : -1,
+                integer(one(options,"--resource-gradient-fork-wait","0"),0,65536),
+                (output/"gradient-decisions.csv").string());
+        }
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
 			globals.replayWriter=std::make_unique<ReplayWriter>();
@@ -706,6 +720,15 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
+        if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+            result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
+                << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
+                << ",\"fork_field\":" << (options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,65535) : -1)
+                << ",\"fork_wait\":" << integer(one(options,"--resource-gradient-fork-wait","0"),0,65536)
+                << ",\"save_continuation_supported\":" << (options.count("--resource-gradient-fork-field")?"false":"true")
+                << ",\"continuation_policy\":" << quote(options.count("--resource-gradient-fork-field")
+                    ? "unsupported-single-shot-checkpoint-fork" : "requires-identical-explicit-exploration-options") << '}';
+        }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		result << ",\"javascriptControllers\":[";

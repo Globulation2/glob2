@@ -539,8 +539,14 @@ void Map::stagePeriodicGradientPreparation()
             field.requested=false;
             continue;
         }
-        if (!field.refresh(game->stepCounter,policy.sources[material])) continue;
-        if (!requestGradientField(&materialGradients[team][material][swim],int(Kind::Materials),team,material,swim)) continue;
+        auto& exploration=gradientRuntime->exploration;
+        const char* reason=nullptr;
+        if (exploration) reason=exploration->refresh(key,field,game->stepCounter,policy.sources[material]);
+        else if (field.refresh(game->stepCounter,policy.sources[material])) reason="adaptive";
+        if (!reason) continue;
+        const bool accepted=requestGradientField(&materialGradients[team][material][swim],int(Kind::Materials),team,material,swim);
+        if (exploration) exploration->record(game->stepCounter,key,reason,accepted);
+        if (!accepted) continue;
         const auto request=gradientRuntime->fieldRequests.back();
         gradientRuntime->fieldRequests.pop_back();
         admit(request);
@@ -765,4 +771,31 @@ Uint16** Map::gradientDestination(unsigned id, unsigned savedClasses)
     const unsigned team=id/(kinds*savedClasses), kind=(id/savedClasses)%kinds, swim=id%savedClasses;
     if (team>=unsigned(game->teamsCount())) throw std::runtime_error("Invalid gradient team");
     return market?&marketMaterialGradients[team][kind][swim]:kind<MaterialSlotCount?&materialGradients[team][kind][swim]:kind==MaterialSlotCount?&guardAreasGradient[team][swim]:&clearAreasGradient[team][swim];
+}
+
+void Map::configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
+    int forkField,unsigned forkWait,const std::string& decisionPath)
+{
+    if (!globalContainer || !globalContainer->structuredHeadless || !gradientRuntime->qualityProbe)
+        throw std::invalid_argument("Gradient exploration requires structured headless collection with the probe enabled");
+    ResourceGradientExploration config;
+    if (!intervals.empty()) config.intervals=ResourceGradientExploration::parseIntervals(intervals);
+    config.seed=seed;config.forkField=forkField;config.forkWait=forkWait;config.forkStart=game->stepCounter;
+    if (forkField>=0) {
+        const auto found=gradientRuntime->resources.fields.find(forkField);
+        const int swim=forkField%SWIM_CLASS_COUNT,material=(forkField/SWIM_CLASS_COUNT)%MaterialCount,
+            team=forkField/(SWIM_CLASS_COUNT*MaterialCount);
+        if (team>=game->mapHeader.getNumberOfTeams() || found==gradientRuntime->resources.fields.end()
+            || !materialGradients[team][material][swim])
+            throw std::invalid_argument("Gradient fork requires a captured warm natural-resource field");
+        auto** slot=&materialGradients[team][material][swim];
+        bool pending=false;
+        gradientRuntime->pipeline.forEachDestination([&](Uint16** destination){pending|=destination==slot;});
+        for (const auto& request:gradientRuntime->fieldRequests) pending|=request.slot==slot;
+        if (pending) throw std::invalid_argument("Cannot fork a field with a pending or queued refresh");
+    }
+    config.decisions.open(decisionPath);
+    if (!config.decisions) throw std::runtime_error("Cannot open gradient exploration decisions");
+    config.decisions<<"tick,key,behavior_seed,behavior_interval,reason,admitted\n";
+    gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>(std::move(config));
 }

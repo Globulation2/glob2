@@ -274,6 +274,11 @@ hash group out of eight during the first 1024 ticks of each 4096-tick window,
 with 256 ticks of warmup per sampled field. It uses private RNG copies and
 private fields and must produce identical simulation checksums with probing off.
 
+The separate `gradient-planning-quality.csv` compares sampled scalar planning
+answers with fresh reachability, including failed recruitment opportunities.
+Episode planning counters remain separate from movement direction-cost labels.
+See the model workflow for seeded exploration cohorts and checkpoint branches.
+
 The observer adds substantial reference computation and CSV I/O. Its objects and
 buffers exist only when enabled; disabled movement paths perform a null check.
 Never use collector-enabled runs for performance comparisons. Legacy entry points

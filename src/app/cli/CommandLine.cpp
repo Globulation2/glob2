@@ -2,6 +2,7 @@
 #include "CommandLine.h"
 #include "RecordingDefaults.h"
 #include "MapRender.h"
+#include "gradient/ResourceGradientExploration.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -311,6 +312,17 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-interval", "--diagnostic-fields");
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
+        requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        if (r.has("--resource-gradient-exploration")) ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+        requireParent("--resource-gradient-exploration-seed", "--resource-gradient-exploration");
+        requireParent("--resource-gradient-fork-field", "--load-game");
+        requireParent("--resource-gradient-fork-field", "--resource-gradient-probe");
+        requireParent("--resource-gradient-fork-field", "--resource-gradient-fork-wait");
+        requireParent("--resource-gradient-fork-wait", "--resource-gradient-fork-field");
+        if (r.has("--resource-gradient-fork-field") && r.has("--save"))
+            throw std::invalid_argument("Checkpoint gradient forks cannot write resumable saves: one-shot fork state is not serialized");
+        if ((r.has("--resource-gradient-exploration") || r.has("--resource-gradient-fork-field")) && r.has("--write-replay"))
+            throw std::invalid_argument("Gradient collection overrides cannot record a replay: the override is not serialized");
 		if (r.has("--load-game"))
 			for (const auto &key :
 				 {"--player", "--ai-param", "--ai-script", "--map-script", "--alliance",
@@ -479,6 +491,10 @@ const std::vector<Command> &commands()
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 flag("--resource-gradient-probe", "Write sampled natural-resource pathfinding quality comparisons"),
+             value("--resource-gradient-exploration", "intervals", "Headless collection: seeded per-field intervals, comma separated; 0=adaptive, others 8..65536"),
+             integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),
+             integer("--resource-gradient-fork-field", "Saved warm natural-field key for one refresh-now/wait comparison", 0, 65535),
+             integer("--resource-gradient-fork-wait", "Wait before selected-field demanded refresh; baseline resumes after admission", 0, 65536),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,
 					 std::to_string(DefaultDiagnosticInterval)),

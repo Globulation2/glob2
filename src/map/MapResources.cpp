@@ -302,6 +302,11 @@ RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, 
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
 	if (!field) return RouteResult::Pending;
 	const auto value=field[coordToIndex(x,y)];
+    // Observe both successful and failed planning reads. This diagnostic owns
+    // its sampling history and never enrolls a successful read as live demand.
+    if (gradientRuntime->qualityProbe && game && !compute.insideJob()
+        && swim<SWIM_CLASS_COUNT && field==materialGradients[team][material][swim])
+        gradientRuntime->qualityProbe->observePlanning(*this,team,material,swim,x,y,field);
 	if (value<=GRADIENT_UNREACHABLE) {
 		if (game && !compute.insideJob() && swim<SWIM_CLASS_COUNT
 			&& field==materialGradients[team][material][swim]) {

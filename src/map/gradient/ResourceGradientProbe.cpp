@@ -9,18 +9,21 @@
 #include <stdexcept>
 
 ResourceGradientProbe::ResourceGradientProbe(const char* path):output(path),
-    study(std::filesystem::path(path).parent_path()/"gradient-episodes.csv")
+    study(std::filesystem::path(path).parent_path()/"gradient-episodes.csv"),
+    planning(std::filesystem::path(path).parent_path()/"gradient-planning-quality.csv")
 {
-    if (!output || !study) throw std::runtime_error("Cannot open resource gradient training outputs");
+    if (!output || !study || !planning) throw std::runtime_error("Cannot open resource gradient training outputs");
     output<<"query,tick,window,window_elapsed,team,resource,swim,extra_cost,false_unreachable,false_reachable,depleted_goal,missed_move,unreachable_step,left_fresh_goal,flagged\n";
-    study<<"tick,key,complete,queries,defer_extra,refresh_extra,age,q32,q128,source_added,source_removed,source_added_frac_q12,source_removed_frac_q12\n";
+    study<<"tick,key,complete,queries,defer_extra,refresh_extra,age,q32,q128,source_added,source_removed,source_added_frac_q12,source_removed_frac_q12,planning_queries,defer_planning_false_negative,defer_planning_false_positive,refresh_planning_false_negative,refresh_planning_false_positive,behavior_interval,behavior_seed,movement_observed\n";
+    planning<<"query,tick,window,team,resource,swim,false_unreachable,false_reachable,live_value,fresh_value\n";
 }
 ResourceGradientProbe::~ResourceGradientProbe() { finishStudy(lastTick); }
 void ResourceGradientProbe::writeEpisode(int key,const Episode& e,bool complete)
 {
     study<<e.tick<<','<<key<<','<<complete<<','<<e.queries<<','<<e.deferExtra<<','<<e.refreshExtra;
     for (auto v:e.inputs) study<<','<<v;
-    study<<'\n';
+    study<<','<<e.planningQueries<<','<<e.deferFalseNegative<<','<<e.deferFalsePositive
+        <<','<<e.refreshFalseNegative<<','<<e.refreshFalsePositive<<','<<e.behaviorInterval<<','<<e.behaviorSeed<<','<<e.movementObserved<<'\n';
 }
 void ResourceGradientProbe::finishStudy(unsigned tick)
 {
@@ -46,56 +49,36 @@ void ResourceGradientProbe::stageEpisodes(Map& map)
             team=key/(MaterialCount*SWIM_CLASS_COUNT);
         if (unsigned(lastTick-field.lastQuery)>128 || unsigned(lastTick-field.firstTick)<256
             || (field.episodeKnown && unsigned(lastTick-field.lastEpisode)<32)
-            || !map.periodicGradientClassActive(team,swim) || !map.hasMaterialSourceSlot(resource)) continue;
+            || !map.periodicGradientClassActive(team,swim)) continue;
         const auto found=map.gradientRuntime->resources.fields.find(key);
-        if (found==map.gradientRuntime->resources.fields.end() || unsigned(lastTick-found->second.submitted)<8) continue;
+        if (found!=map.gradientRuntime->resources.fields.end() && unsigned(lastTick-found->second.submitted)<8) continue;
         const auto* old=map.materialGradients[team][resource][swim];
         if (!old) continue;
         Episode e;e.tick=lastTick;e.delay=map.gradientRuntime->pipeline.delayTicks();
         // Compute from a copy: collecting an example must not advance live
         // rolling counters or alter any other simulation-owned state.
-        auto state=found->second;
+        auto state=found==map.gradientRuntime->resources.fields.end()
+            ? ResourceGradientPolicy::Field{} : found->second;
         e.inputs=state.inputs(lastTick,map.gradientRuntime->resources.sources[resource]);
-        e.deferred.assign(old,old+map.size);e.refreshed.resize(map.size);
-        map.seedMaterialGradientDirect(team,resource,swim,e.refreshed.data(),nullptr);
-        gradient_kernel::CPUSelectionScope cpu(gradient_kernel::Backend::CPU);
-        if (!map.hasTerrainMovementModifiers()) {
-            const auto water=map.frozenWaterSnapshot();
-            gradient_kernel::propagateField(e.refreshed.data(),swim,Map::GRADIENT_COST_LIMIT,{map.getW(),map.getH()},scratch,[p=water->data()](size_t i){return p[i]!=0;});
-        } else {
-            const auto profiles=map.frozenTerrainMovementSnapshot(swim);
-            gradient_kernel::propagateTerrainProfiles(e.refreshed.data(),swim,Map::GRADIENT_COST_LIMIT,{map.getW(),map.getH()},scratch,profiles->data(),profiles->movement,map.terrainQueueBuckets());
+        e.movementObserved=field.movementObserved || state.count128>0;
+        if (const auto& behavior=map.gradientRuntime->exploration) {
+            e.behaviorInterval=behavior->intervalFor(key);e.behaviorSeed=behavior->seed;
         }
+        e.deferred.assign(old,old+map.size);
+        rebuildFresh(map,team,resource,swim,e.refreshed);
         field.episodes.push_back(std::move(e));field.lastEpisode=lastTick;field.episodeKnown=true;
     }
 }
 void ResourceGradientProbe::observe(Map& map,int team,int resource,int swim,int x,int y,
     const std::uint16_t* live,EntityRandom random)
 {
-    const auto tick=map.game->stepCounter;lastTick=tick;
-    if (tick%4096>=1024) return;
-    if (window!=tick/4096) { finishStudy(tick);fields.clear();window=tick/4096; }
+    const auto tick=map.game->stepCounter;
     const int key=(team*MaterialCount+resource)*SWIM_CLASS_COUNT+swim;
-    const unsigned hash=(unsigned(key)^window*2246822519u)*2654435761u;
-    if (((hash^(hash>>16))%8)!=0) return;
-    auto [it,inserted]=fields.try_emplace(key);auto& field=it->second;
-    if (inserted) field.firstTick=tick;
-    field.lastQuery=tick;++query;
-    std::vector<Uint16> fresh(map.size);
-    // Direct seeding bypasses live caches; private propagation bypasses worker
-    // queues and backend sessions. Rebuild per query: earlier units in this
-    // very tick may already have consumed a source.
-    map.seedMaterialGradientDirect(team,resource,swim,fresh.data(),nullptr);
-    gradient_kernel::CPUSelectionScope cpu(gradient_kernel::Backend::CPU);
-    if (!map.hasTerrainMovementModifiers()) {
-        const auto water=map.frozenWaterSnapshot();
-        gradient_kernel::propagateField(fresh.data(),swim,Map::GRADIENT_COST_LIMIT,
-            {map.getW(),map.getH()},scratch,[p=water->data()](size_t i) { return p[i]!=0; });
-    } else {
-        const auto profiles=map.frozenTerrainMovementSnapshot(swim);
-        gradient_kernel::propagateTerrainProfiles(fresh.data(),swim,Map::GRADIENT_COST_LIMIT,
-            {map.getW(),map.getH()},scratch,profiles->data(),profiles->movement,map.terrainQueueBuckets());
-    }
+    auto* sampled=sampleField(tick,key);if (!sampled) return;
+    auto& field=*sampled;++query;field.movementObserved=true;
+    for (auto& e:field.episodes) e.movementObserved=true;
+    std::vector<Uint16> fresh;
+    rebuildFresh(map,team,resource,swim,fresh);
     const auto here=map.coordToIndex(x,y);
     // Forbidden-area escape uses a separate field and is outside this probe.
     if (fresh[here]==GRADIENT_FORBIDDEN) return;
@@ -136,4 +119,56 @@ void ResourceGradientProbe::observe(Map& map,int team,int resource,int swim,int 
         <<','<<flags[1]<<','<<(a<=GRADIENT_UNREACHABLE && b>GRADIENT_UNREACHABLE)
         <<','<<(a>GRADIENT_UNREACHABLE && b<=GRADIENT_UNREACHABLE)<<','<<flags[3]<<','<<flags[2]
         <<','<<flags[4]<<','<<flags[5]<<','<<flags[0]<<'\n';
+}
+
+ResourceGradientProbe::Field* ResourceGradientProbe::sampleField(unsigned tick,int key)
+{
+    lastTick=tick;
+    if (tick%4096>=1024) return nullptr;
+    if (window!=tick/4096) { finishStudy(tick);fields.clear();window=tick/4096; }
+    const unsigned hash=(unsigned(key)^window*2246822519u)*2654435761u;
+    if (((hash^(hash>>16))%8)!=0) return nullptr;
+    auto [it,inserted]=fields.try_emplace(key);
+    if (inserted) it->second.firstTick=tick;
+    it->second.lastQuery=tick;
+    return &it->second;
+}
+
+void ResourceGradientProbe::rebuildFresh(Map& map,int team,int resource,int swim,std::vector<std::uint16_t>& fresh)
+{
+    fresh.resize(map.size);
+    // Private oracle: no live cache, worker submission, backend session or RNG.
+    // Rebuild per query because earlier decisions can consume sources this tick.
+    map.seedMaterialGradientDirect(team,resource,swim,fresh.data(),nullptr);
+    gradient_kernel::CPUSelectionScope cpu(gradient_kernel::Backend::CPU);
+    if (!map.hasTerrainMovementModifiers()) {
+        const auto water=map.frozenWaterSnapshot();
+        gradient_kernel::propagateField(fresh.data(),swim,Map::GRADIENT_COST_LIMIT,
+            {map.getW(),map.getH()},scratch,[p=water->data()](size_t i) { return p[i]!=0; });
+    } else {
+        const auto profiles=map.frozenTerrainMovementSnapshot(swim);
+        gradient_kernel::propagateTerrainProfiles(fresh.data(),swim,Map::GRADIENT_COST_LIMIT,
+            {map.getW(),map.getH()},scratch,profiles->data(),profiles->movement,map.terrainQueueBuckets());
+    }
+}
+
+void ResourceGradientProbe::observePlanning(Map& map,int team,int resource,int swim,int x,int y,const std::uint16_t* live)
+{
+    const auto tick=map.game->stepCounter;
+    const int key=(team*MaterialCount+resource)*SWIM_CLASS_COUNT+swim;
+    auto* field=sampleField(tick,key);if (!field) return;
+    std::vector<Uint16> fresh;
+    rebuildFresh(map,team,resource,swim,fresh);
+    const auto here=map.coordToIndex(x,y);
+    const bool reference=fresh[here]>GRADIENT_UNREACHABLE;
+    for (auto& e:field->episodes) if (unsigned(tick-e.tick)>=e.delay && unsigned(tick-e.tick)<32) {
+        ++e.planningQueries;
+        e.deferFalseNegative+=e.deferred[here]<=GRADIENT_UNREACHABLE && reference;
+        e.deferFalsePositive+=e.deferred[here]>GRADIENT_UNREACHABLE && !reference;
+        e.refreshFalseNegative+=e.refreshed[here]<=GRADIENT_UNREACHABLE && reference;
+        e.refreshFalsePositive+=e.refreshed[here]>GRADIENT_UNREACHABLE && !reference;
+    }
+    planning<<++planningQuery<<','<<tick<<','<<window<<','<<team<<','<<resource<<','<<swim
+        <<','<<(live[here]<=GRADIENT_UNREACHABLE && reference)
+        <<','<<(live[here]>GRADIENT_UNREACHABLE && !reference)<<','<<live[here]<<','<<fresh[here]<<'\n';
 }

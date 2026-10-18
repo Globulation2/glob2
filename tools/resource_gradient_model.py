@@ -211,6 +211,13 @@ def run(args):
     binary = Path(args.binary).resolve()
     out = Path(args.output).resolve(); out.mkdir(parents=True,exist_ok=True)
     document = json.loads(Path(args.plan).read_text()) if args.plan else make_plan(args)
+    exploration = getattr(args, 'exploration', None)
+    exploration_seed = getattr(args, 'exploration_seed', 5101)
+    if not 0 <= exploration_seed <= 2**32-1: raise ValueError('Exploration seed must be uint32')
+    from tools.resource_gradient_experiments import intervals
+    selected_intervals = intervals(exploration) if exploration else []
+    policy = dict(name='seeded-field-intervals' if exploration else 'adaptive32',
+                  intervals=selected_intervals, seed=exploration_seed, model_sha256=sha(DEFAULT_MODEL))
     if isinstance(document, dict) and document.get('schema') != 1: raise ValueError('Unsupported tournament plan schema')
     plan = document['games'] if isinstance(document, dict) else document
     if isinstance(document, dict) and digest(document['catalog']) != document['catalog_sha256']:
@@ -223,7 +230,12 @@ def run(args):
     frozen = dict(schema=2,binary_sha256=binary_hash,model_sha256=sha(DEFAULT_MODEL),header_sha256=sha(HEADER),
                   source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                   tick_cap=args.ticks,threads=args.threads,plan=plan,
-                  sampling=document if isinstance(document, dict) else None)
+                  sampling=document if isinstance(document, dict) else None, policy=policy)
+    cohort = dict(id=getattr(args, 'cohort', None) or digest(frozen),
+                  role='exploration' if any(selected_intervals) else 'candidate', policy=policy,
+                  contract=dict(features=list(FEATURES), label='movement-direction-extra-cost',
+                                future_offsets=[8,31], benefit_unit='direction-cost', request_type='movement'))
+    frozen['cohort'] = cohort
     frozen_path = out/'plan.json'
     if frozen_path.exists() and json.loads(frozen_path.read_text()) != frozen:
         raise ValueError('Output has a different frozen plan/build; choose a fresh directory')
@@ -241,6 +253,9 @@ def run(args):
         command=[str(binary),'game','run','--map-file',str(map_path),'--game-seed',str(spec['game_seed']),
                  '--ticks',str(args.ticks),'--compute-threads',str(args.threads),'--gpu','off',
                  '--compute-telemetry','off','--output-dir',str(directory),'--resource-gradient-probe']
+        if exploration:
+            command += ['--resource-gradient-exploration', ','.join(map(str, selected_intervals)),
+                        '--resource-gradient-exploration-seed', str(exploration_seed)]
         roster = spec.get('ais', [spec.get('ai', 'nicowar')]*spec['players'])
         for ai, alliance in zip(roster, spec['alliances']): command+=['--player',ai,'--alliance',str(alliance)]
         env={k:v for k,v in os.environ.items() if not k.startswith('GLOB2_RESOURCE_')}
@@ -270,7 +285,7 @@ def run(args):
             raise RuntimeError('No episode data: binary lacks the collector')
         # Reference-query CSVs can be large. Compression runs only after the
         # game exits and uses a fixed header so retained evidence is reproducible.
-        for name in ['gradient-episodes.csv','gradient-quality.csv']:
+        for name in ['gradient-episodes.csv','gradient-quality.csv','gradient-planning-quality.csv','gradient-decisions.csv']:
             raw=directory/name
             if not raw.exists():continue
             compressed=raw.with_suffix('.csv.gz');temp=compressed.with_suffix('.gz.tmp')
@@ -279,7 +294,8 @@ def run(args):
                     shutil.copyfileobj(inp,gz)
             temp.replace(compressed);raw.unlink()
         episode=episode.with_suffix('.csv.gz')
-        return dict(group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
+        diagnostics={p.name:sha(p) for p in directory.glob('gradient-*.csv.gz')}
+        return dict(diagnostics=diagnostics,cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
                     binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
                     ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
     failure_path=out/'failures.json'
@@ -305,47 +321,23 @@ def run(args):
                 save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
                 print(f'{len(manifest)}/{len(plan)} games collected',flush=True)
     if failures:raise RuntimeError(f'{len(failures)} collection games failed; inspect {failure_path} and resume after repair')
+    from tools.resource_gradient_dataset import seal
+    seal(manifest_path, out/'cohort.json', cohort)
 
 
 def dataset(manifests):
-    rows=[];seen=set()
-    for path in manifests:
-        for record in json.loads(Path(path).read_text()):
-            p=Path(record['episodes'])
-            if not p.is_absolute():p=Path(path).resolve().parent/p
-            digest=sha(p)
-            if digest != record['episode_sha256']:raise ValueError(f'Dataset hash mismatch: {p}')
-            identity=(record['group'],record['binary_sha256'],digest)
-            if identity in seen:continue
-            seen.add(identity)
-            with (gzip.open(p,'rt') if p.suffix=='.gz' else p.open()) as f:
-                for line in csv.DictReader(f):
-                    if int(line['complete']) != 1:continue
-                    row={k:int(v) for k,v in line.items()}
-                    spec=record.get('spec', {})
-                    group=record.get('map_group')
-                    if not group and all(k in spec for k in ['generator','players','map_seed']) and ('size' in spec or {'width','height'} <= spec.keys()):
-                        group=map_identity(spec)
-                    row.update(group=group or record['group'],format=record['format'],collection='|'.join(identity))
-                    row.update(generator=spec.get('generator','unknown'),
-                               dimensions=f"{spec.get('width',spec.get('size','?'))}x{spec.get('height',spec.get('size','?'))}")
-                    rows.append(row)
-    if not rows:raise ValueError('No complete episodes')
-    return rows
+    from tools.resource_gradient_dataset import load
+    return load(manifests)
 
 
 def weights(rows):
-    import numpy as np
-    count=collections.Counter((r['format'],r['group'],r['collection']) for r in rows)
-    states=collections.defaultdict(set);collections_by_state=collections.defaultdict(set)
-    for fmt,group,collection in count:
-        states[fmt].add(group);collections_by_state[fmt,group].add(collection)
-    w=np.array([1/(len(states[r['format']])*len(collections_by_state[r['format'],r['group']])*
-                   count[r['format'],r['group'],r['collection']]) for r in rows])
-    return w*len(w)/w.sum()
+    from tools.resource_gradient_dataset import balanced_weights
+    return balanced_weights(rows)
 
 
 def fit_heads(rows):
+    rows=[r for r in rows if r.get('movement_label_available',1)]
+    if not rows:raise ValueError('No observed movement labels to fit')
     import numpy as np
     from sklearn.linear_model import LogisticRegression,Ridge
     x=np.array([[log_integer(r[k]) for k in FEATURES] for r in rows],dtype=np.int64)
@@ -377,18 +369,35 @@ def fit_heads(rows):
 
 
 def metrics(rows,model):
+    rows=[r for r in rows if r.get('movement_label_available',1)]
+    if not rows:return dict(episodes=0,states=0,note='No observed movement labels')
     import numpy as np
-    y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows]);pred=np.array([predict(model,[r[k] for k in FEATURES])/1000 for r in rows]);w=weights(rows)
-    take=pred>=32
+    y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float)
+    pred=np.array([predict(model,[r[k] for k in FEATURES])/1000 for r in rows]);w=weights(rows)
+    threshold=model['threshold']/1000
+    take=pred>=threshold;ideal=y>=threshold;positive=np.maximum(y,0)
+    # The threshold is the decision's opportunity cost in the same benefit
+    # units. This regret scores the exported integer decisions, not fit MAE.
+    regret=np.maximum(y-threshold,0)*(~take)+np.maximum(threshold-y,0)*take
+    def mean(values):return float(np.average(values,weights=w))
+    def quantile(values,q):
+        order=np.argsort(values,kind='stable');v=values[order];cw=np.cumsum(w[order])
+        return float(v[min(np.searchsorted(cw,q*cw[-1]),len(v)-1)])
+    total=float(np.sum(w*positive));captured=float(np.sum(w*positive*take))
     return dict(episodes=len(rows),states=len({r['group'] for r in rows}),
-                mae=float(np.average(abs(pred-y),weights=w)),mse=float(np.average((pred-y)**2,weights=w)),
-                selected_pct=float(np.average(take,weights=w)*100),
-                selected_actual_benefit=float(np.average(y[take],weights=w[take])) if take.any() else None)
+                mae=mean(abs(pred-y)),mse=mean((pred-y)**2),selected_pct=mean(take)*100,
+                selected_actual_benefit=float(np.average(y[take],weights=w[take])) if take.any() else None,
+                positive_benefit_captured_fraction=captured/total if total else None,
+                missed_positive_benefit=mean(positive*(~take)),negative_benefit_selected=mean(np.maximum(-y,0)*take),
+                threshold=threshold,decision_regret=mean(regret),decision_regret_p95=quantile(regret,.95),
+                decision_regret_p99=quantile(regret,.99),false_refresh_pct=mean(take & ~ideal)*100,
+                missed_threshold_decision_pct=mean(~take & ideal)*100,
+                absolute_error_p95=quantile(abs(pred-y),.95),absolute_error_p99=quantile(abs(pred-y),.99))
 
 
 def metric_slices(rows, model):
     report = {}
-    for key in ['format', 'generator', 'dimensions']:
+    for key in ['format', 'generator', 'dimensions', 'cohort']:
         groups = collections.defaultdict(list)
         for row in rows: groups[row.get(key, 'unknown')].append(row)
         report[key] = {name: metrics(group, model) for name, group in sorted(groups.items())}
@@ -430,14 +439,23 @@ def split_maps(rows):
 
 def fit(args):
     rows=dataset(args.manifest)
+    from tools.resource_gradient_dataset import support_audit
+    all_rows=rows
+    rows=[r for r in rows if r.get('movement_label_available',1)]
+    if not rows:raise ValueError('No observed movement labels to fit')
     # Include planned strata with zero usable episodes: otherwise they vanish
     # before fitting and a biased collection can look deceptively complete.
-    expected={record['format'] for path in args.manifest for record in json.loads(Path(path).read_text())}
+    from tools.resource_gradient_dataset import manifest_records, support_audit
+    expected={record['format'] for path in args.manifest for record in manifest_records(path)[0]}
     by_format={fmt:set() for fmt in expected}
     for r in rows:by_format.setdefault(r['format'],set()).add(r['group'])
     missing={fmt:len(groups) for fmt,groups in by_format.items() if len(groups)<4}
     if missing:raise ValueError(f'Need at least four independent maps with complete episodes per format: {missing}')
-    held,folds,split_coverage=split_maps(rows)
+    support=support_audit(all_rows)
+    if getattr(args,'split_registry',None):
+        from tools.resource_gradient_dataset import registered_split
+        held,folds,split_coverage=registered_split(rows,args.split_registry,split_maps)
+    else:held,folds,split_coverage=split_maps(rows)
     dev=[r for r in rows if r['group'] not in held];test=[r for r in rows if r['group'] in held]
     reports=[]
     for fold in range(3):
@@ -448,8 +466,8 @@ def fit(args):
                              development_states=sorted({r['group'] for r in dev}),heldout_states=sorted(held),
                              cross_validation=reports,holdout=metrics(test,model),holdout_slices=metric_slices(test,model),
                              grouping='generated map identity from record/spec; old manifests without map metadata use starting-state group',
-                             split_coverage=split_coverage,
-                             weighting='equal format, then state, then collection, then episode',
+                             split_coverage=split_coverage,support=support,
+                             weighting='equal format, then cohort role, then cohort, then state, then collection, then episode',
                              regularization=dict(logistic_C=1,ridge_alpha=100),
                              note='Holdout is excluded from coefficients; validation does not replace prospective gameplay measurements.')
     save(args.output,model)
@@ -468,9 +486,16 @@ def main():
         p.set_defaults(action=action)
         if command=='run':
             p.add_argument('--plan')
+            p.add_argument('--cohort', help='Immutable collection generation name; defaults to frozen-config hash')
+            p.add_argument('--exploration', help='Seeded per-field interval mixture; 0 uses adaptive32, e.g. 0,32,64,128,256,512')
+            p.add_argument('--exploration-seed',type=int,default=5101)
             p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1)
             p.add_argument('--timeout-seconds',type=int,default=7200)
-    p=sub.add_parser('fit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--header');p.set_defaults(action=fit)
+    p=sub.add_parser('fit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--header');p.add_argument('--split-registry',required=True,help='Preserve map holdout/fold assignments across collection generations');p.set_defaults(action=fit)
+    from tools.resource_gradient_dataset import audit_cli
+    p=sub.add_parser('audit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.set_defaults(action=audit_cli)
+    from tools.resource_gradient_experiments import add_commands
+    add_commands(sub)
     p=sub.add_parser('emit');p.add_argument('--model',default=str(DEFAULT_MODEL));p.add_argument('--header',default=str(HEADER));p.set_defaults(action=lambda a:emit(json.loads(Path(a.model).read_text()),a.header))
     args=parser.parse_args()
     if args.command=='run' and min(args.jobs,args.threads,args.ticks,args.timeout_seconds)<1:parser.error('jobs, threads and ticks must be positive')
