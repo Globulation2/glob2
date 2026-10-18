@@ -1,0 +1,11 @@
+[
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/venv/bin/python",
+  "tools/resource_gradient_model.py",
+  "fit",
+  "--manifest",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/training-manifest-512.json",
+  "--output",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/fit-512/model.json",
+  "--header",
+  "/Users/bradley/glob2/artifacts/gradient-training-1024/fit-512/ResourceGradientModel.h"
+]

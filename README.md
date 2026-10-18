@@ -1,3 +1,5 @@
+Latest final512 dataset and verification: [final-512/README.md](final-512/README.md). Its current-master timing comparison is still running. The older evidence below used the pre-integration base and does not establish final performance.
+
 Local / VM verification for adaptive resource gradients
 
 - Production commit: f5636d46430c7c948825f4430ea4e79822c1bf6a.

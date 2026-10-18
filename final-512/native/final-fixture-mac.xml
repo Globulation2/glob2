@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="27" failures="0" errors="0" skipped="0"><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.045708" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]" time="2.38908" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.213319" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="0.904943" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains admitted material work before replacing stocks" time="0.099102" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="constrained explorer flag eligibility applies route accessibility and hunger distance" time="0.0402" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="0.041074" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="0.044469" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="0.243309" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="required terrain experiments survive tiling and distinguish map headers" time="0.040925" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and terrain edits refresh ecology" time="0.020035" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs after captured routes publish at their fixed deadline" time="0.040843" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="0.04379" status="run" />
+  <testcase classname="TerrainProperties" name="vertex terrain survives tiling and batches snapshot invalidation" time="0.022183" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="0.041063" status="run" />
+  <testcase classname="TerrainRuntime" name="each catalogue type requires exactly its group's experiment and shares the group profile" time="0.022801" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="0.021526" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="0.110646" status="run" />
+  <testcase classname="TerrainRuntime" name="format-137 saves with custom terrain load with remapped IDs and resave at the current format" time="0.142932" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="0.563541" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="0.021264" status="run" />
+  <testcase classname="TerrainRuntime" name="painted catalogue terrain survives save and reload with its checksum" time="0.325709" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="0.100451" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="0.035711" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,23 @@
+{
+  "source": "ca6365e83900e2668ff2348044a89ba3b2d70c43",
+  "ticks": 4096,
+  "status": "passed",
+  "comparison": "macOS ARM64 vs Linux x86_64; one/four threads and collector on/off",
+  "files": [
+    {
+      "file": "world.checksums",
+      "sha256": "57593b7d95003f37b856f2a60c3175931eb5facbe7c0ebd707106e5d88733971",
+      "bytes": 63386
+    },
+    {
+      "file": "snapshot.checksums",
+      "sha256": "cca22799b69afdea932936092061c39e49fc2340c604d4f6c033e16d2c75c68d",
+      "bytes": 82766
+    },
+    {
+      "file": "game.replay.checksums",
+      "sha256": "1490b75e36bec318555de86c4679389a7c64ea9f712985f83aaa550558b007ba",
+      "bytes": 39443678
+    }
+  ]
+}

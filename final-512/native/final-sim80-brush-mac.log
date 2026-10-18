@@ -1,0 +1,8 @@
+PASS glob2-unit-tests BrushAccumulator (5 cases) (0.0s)
+PASS glob2-unit-tests BrushAccumulatorOrderBounds (2 cases) (0.0s)
+PASS glob2-unit-tests BrushAccumulatorOrderCodec (2 cases) (0.0s)
+PASS glob2-unit-tests BrushCoverage (6 cases) (0.0s)
+PASS glob2-unit-tests BrushToolHit (7 cases) (0.0s)
+
+5 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/gradient-training-1024/final-sim80-brush-mac.xml (22 cases)

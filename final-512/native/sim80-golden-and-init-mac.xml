@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="all natural visitation flags initialize and clear including reserved material slots" time="0.030519" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.474472" status="run" />
+  </testsuite></testsuites>

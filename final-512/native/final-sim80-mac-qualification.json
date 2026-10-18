@@ -1,0 +1,27 @@
+{
+  "production_source": "ca6365e83900e2668ff2348044a89ba3b2d70c43",
+  "test_only_followup": "df25376f8",
+  "initial": "final-sim80-engine-mac.xml",
+  "followup": "final-fixture-mac.xml",
+  "resolved": [
+    [
+      "SharedWorkerLifecycle",
+      "pending gradient work survives a save and continues at the same deadlines"
+    ],
+    [
+      "TerrainProperties",
+      "terrain edits refresh escape costs after captured routes publish at their fixed deadline"
+    ],
+    [
+      "TerrainRuntime",
+      "embedded registry restores custom state and pending gradients without source files"
+    ],
+    [
+      "TerrainRuntime",
+      "production pipeline captures custom movement and discards fields after reimport"
+    ]
+  ],
+  "total": 423,
+  "skipped": 38,
+  "status": "passed"
+}

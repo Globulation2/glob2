@@ -1,0 +1,19 @@
+{
+  "old_model_same_holdout": {
+    "episodes": 120006,
+    "states": 126,
+    "mae": 6.1186480985582135,
+    "mse": 573.8417074972049,
+    "selected_pct": 0.9607900300339225,
+    "selected_actual_benefit": 56.71430954369267
+  },
+  "new_model_same_holdout": {
+    "episodes": 120006,
+    "states": 126,
+    "mae": 5.581493583836976,
+    "mse": 576.6756533582269,
+    "selected_pct": 0.41729000723180243,
+    "selected_actual_benefit": 96.60798161576885
+  },
+  "note": "Same heldout maps, frozen observed game queries; these are observational predictions, not prospective closed-loop gameplay comparisons."
+}

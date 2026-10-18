@@ -1,0 +1,20 @@
+{
+  "pid": 8749,
+  "source_revision": "3d896cbb95293da6d24caddd247a62c9ca99d77f",
+  "cwd": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2",
+  "command": [
+    "/usr/bin/nice",
+    "-n",
+    "10",
+    "/opt/homebrew/bin/scons",
+    "release=1",
+    "CXXFLAGS=",
+    "--build=build/final-master-release",
+    "-j2",
+    "build/final-master-release/src/glob2"
+  ],
+  "started": "2026-10-18T12:28:16.751151+00:00",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-master-3d896cbb9",
+  "binary_sha256": "b8b9846d3c6ff6eb2c9bc5f09d2b4f81f82d62eae30fa4c146f24fdc9feaf31d",
+  "build_status": "passed"
+}

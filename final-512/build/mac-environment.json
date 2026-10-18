@@ -1,0 +1,48 @@
+[
+  {
+    "command": [
+      "sw_vers"
+    ],
+    "output": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  {
+    "command": [
+      "uname",
+      "-a"
+    ],
+    "output": "Darwin Mac 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:29 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8122 arm64\n"
+  },
+  {
+    "command": [
+      "clang++",
+      "--version"
+    ],
+    "output": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n"
+  },
+  {
+    "command": [
+      "otool",
+      "-L",
+      "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-final-ca6365e83"
+    ],
+    "output": "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-final-ca6365e83:\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib (compatibility version 3.0.0, current version 3.0.0)\n\t/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)\n\t/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib (compatibility version 5.0.0, current version 5.0.0)\n\t/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib (compatibility version 201.0.0, current version 201.0.0)\n\t/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib (compatibility version 5.0.0, current version 5.5.0)\n\t/opt/homebrew/opt/opus/lib/libopus.0.dylib (compatibility version 12.0.0, current version 12.1.0)\n\t/opt/homebrew/opt/libogg/lib/libogg.0.dylib (compatibility version 0.0.0, current version 0.8.6)\n\t/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib (compatibility version 203.0.0, current version 203.0.0)\n\t/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib (compatibility version 409.0.0, current version 409.0.0)\n\t/opt/homebrew/opt/speex/lib/libspeex.1.dylib (compatibility version 7.0.0, current version 7.2.0)\n\t/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib (compatibility version 401.0.0, current version 401.18.0)\n\t/opt/homebrew/opt/webp/lib/libwebp.7.dylib (compatibility version 10.0.0, current version 10.0.0)\n\t/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib (compatibility version 2.0.0, current version 2.2.0)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 62460.1.2)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)\n\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox (compatibility version 1.0.0, current version 3350.77.5)\n\t/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia (compatibility version 1.0.0, current version 3350.77.5)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 758.27.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n"
+  },
+  {
+    "command": [
+      "sysctl",
+      "hw.physicalcpu",
+      "hw.logicalcpu",
+      "hw.memsize"
+    ],
+    "output": "hw.physicalcpu: 8\nhw.logicalcpu: 8\nhw.memsize: 25769803776\n"
+  },
+  {
+    "command": [
+      "/Users/bradley/glob2/artifacts/gradient-training-1024/venv/bin/python",
+      "-m",
+      "pip",
+      "freeze"
+    ],
+    "output": "cloudpickle==3.1.2\njoblib==1.6.0\nnarwhals==2.27.1\nnumpy==2.4.6\nscikit-learn==1.9.1\nscipy==1.17.1\nthreadpoolctl==3.7.0\n"
+  }
+]

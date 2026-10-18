@@ -1,0 +1,11 @@
+{
+  "source": "ca6365e83900e2668ff2348044a89ba3b2d70c43",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-training-1024/bin/glob2-final-ca6365e83",
+  "sha256": "49a3572418e132ba65d322fce42bde342211e82331e0feb2ac3df38f7adf4106",
+  "flags": [
+    "release=1",
+    "CXXFLAGS=",
+    "O3",
+    "no dev_fast/PCH/unity"
+  ]
+}

@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="306" failures="0" errors="0" skipped="1"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.054759" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.040269" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.053929" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.039356" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.039609" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.042769" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.055344" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.091085" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="building refresh overflow preserves the 64-request FIFO across binary and text saves" time="1.82912" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.042245" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.263504" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.041201" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="observation phase is covered by both current checksum tiers" time="0.052505" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.070185" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="0.67123" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="prediction retains reader demand across rebuilds and save completion" time="0.043912" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.054023" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released saves through format168 bootstrap only when their observation was not admitted" time="0.260128" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.041591" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="1.78082" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.040771" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.053523" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="0.20937" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="0.189126" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="0.812164" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.041996" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="world observation publication and admission survive save boundaries" time="0.205441" status="run" />
+  </testsuite><testsuite name="ClearingFlagGradient"><testcase classname="ClearingFlagGradient" name="empty persistent deposits remain clearing flag goals and worker targets" time="0.058087" status="run" />
+  <testcase classname="ClearingFlagGradient" name="material switches; declarative clearing; empty tiles; padding independence and swimming variants" time="0.153631" status="run" />
+  <testcase classname="ClearingFlagGradient" name="passable clearing sources respect forbidden paint buildings and immobile units" time="0.043745" status="run" />
+  </testsuite><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="a partially visited warm air cycle continues through binary and text saves" time="0.404269" status="run" />
+  <testcase classname="DelayedGradientPublication" name="all natural visitation flags initialize and clear including reserved material slots" time="0.029321" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold material and area fields publish identical generations with one two four and eight participants [artifacts]" time="0.163389" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold queued and privately completed fields continue through binary and text saves [artifacts]" time="1.11622" status="run" />
+  <testcase classname="DelayedGradientPublication" name="known-zero movement statistics retain first-use FIFO demand and exclude air from the adaptive policy" time="0.062817" status="run" />
+  <testcase classname="DelayedGradientPublication" name="ordinary terrain edits with markets disabled round-trip binary and text saves" time="0.400726" status="run" />
+  <testcase classname="DelayedGradientPublication" name="recruitment-only demand recovers a published unreachable natural field after terrain opens" time="0.058951" status="run" />
+  <testcase classname="DelayedGradientPublication" name="two demanded warm resources batch alongside one cold FIFO ticket at a shared deadline" time="0.092192" status="run" />
+  </testsuite><testsuite name="GradientBackendSwitch"><testcase classname="GradientBackendSwitch" name="CPU-only lifecycle owns no GPU service or backend session" time="0.081499" status="run" />
+  <testcase classname="GradientBackendSwitch" name="backend switch drains privately and preserves pending publication" time="0.061256" status="run" />
+  <testcase classname="GradientBackendSwitch" name="repeated backend requests coalesce without moving publication ticks" time="0.060167" status="run" />
+  </testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="0.061437" status="run" />
+  <testcase classname="GradientPreparation" name="a locally blocked consumer field refreshes its stable supplier-cache destination" time="0.070458" status="run" />
+  <testcase classname="GradientPreparation" name="absent natural sources return shared negative guidance without enrolling rebuilds" time="0.118518" status="run" />
+  <testcase classname="GradientPreparation" name="air material planes and cache keys occupy an independent namespace" time="0.002364" status="run" />
+  <testcase classname="GradientPreparation" name="air shares preparation and lazy building fields while ignoring ground blockers" time="0.065015" status="run" />
+  <testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="0.069985" status="run" />
+  <testcase classname="GradientPreparation" name="authored air blockers constrain the common point router while forbidden paint only blocks ground" time="0.062665" status="run" />
+  <testcase classname="GradientPreparation" name="blocked live guidance and removed material goals deduplicate delayed refresh demand" time="0.143669" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="0.109028" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="0.092971" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="0.068201" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="0.067157" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="0.065826" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="0.060739" status="run" />
+  <testcase classname="GradientPreparation" name="consumer pool changes hard-supersede ground supplier fields at a stable identity" time="0.114595" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="0.068471" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="0.059007" status="run" />
+  <testcase classname="GradientPreparation" name="forbidden paint is ground-only for air material service guard and clearing queries" time="0.102729" status="run" />
+  <testcase classname="GradientPreparation" name="ground refreshes preserve warm air material seeds across edits" time="0.093606" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="0.061029" status="run" />
+  <testcase classname="GradientPreparation" name="material LRU retains a published result until its waiting reader observes it" time="0.08622" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.003576" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.029988" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="0.067836" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="0.310274" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air explorer recruitment does not create a combat field" time="0.061588" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air service choices keep geometric ranking without allocating fields" time="0.120058" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary flying building jobs and warrior recruitment avoid route fields" time="0.092347" status="run" />
+  <testcase classname="GradientPreparation" name="pending escape guidance preserves a material assignment without consuming RNG" time="0.058667" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="0.075513" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="0.065897" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.030428" status="run" />
+  <testcase classname="GradientPreparation" name="released ground and air draft routing layouts remain independent" time="0.060045" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="0.221198" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="1.49381" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="0.182637" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="0.087664" status="run" />
+  <testcase classname="GradientPreparation" name="stock changes during shared market work retain dirty demand through its fixed deadline" time="0.071853" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.064972" status="run" />
+  <testcase classname="GradientPreparation" name="the version-152 checksum adapter excludes newly introduced publication state" time="0.057839" status="run" />
+  <testcase classname="GradientPreparation" name="unreleased routing draft formats are rejected before reading runtime state" time="0" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="0.072571" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="0.902866" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="0.064338" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="0.362602" status="run" />
+  </testsuite><testsuite name="ImmobileUnitGradient"><testcase classname="ImmobileUnitGradient" name="fresh map has no immobile units" time="0.067621" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="immobile unit blocks its own tile" time="0.065706" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="painting forbidden area refreshes gradients" time="0.063554" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads" time="0.151201" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden edits preserve published generations until delayed refresh" time="3.81683" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting delays complete routes across passable resources" time="0.255981" status="run" />
+  <testcase classname="MapGradientInvalidation" name="scheduled escape maintenance publishes complete fields after every seed transition" time="1.50662" status="run" />
+  <testcase classname="MapGradientInvalidation" name="scheduled escape publication covers all teams across tick wrap without mutating fields" time="0.157953" status="run" />
+  </testsuite><testsuite name="ReplayTelemetry"><testcase classname="ReplayTelemetry" name="capture skips invalid fields and retains exact changes and disappearance" time="0.055223" status="run" />
+  <testcase classname="ReplayTelemetry" name="duplicate players compare with prior capture and schemas can return" time="0.044987" status="run" />
+  <testcase classname="ReplayTelemetry" name="legacy bytes preserve duplicate fields NUL order schemas copy and move" time="0" status="run" />
+  <testcase classname="ReplayTelemetry" name="loader limits and incomplete-frame state keep the existing contract" time="0.001125" status="run" />
+  <testcase classname="ReplayTelemetry" name="logical byte budget and frame limit retain legacy truncation points" time="0.234622" status="run" />
+  <testcase classname="ReplayTelemetry" name="playback expands exact values stamps unavailability and reloaded history" time="0.057056" status="run" />
+  <testcase classname="ReplayTelemetry" name="schema lookup distinguishes prefixes and each metadata component" time="0.046694" status="run" />
+  <testcase classname="ReplayTelemetry" name="stable capture descriptors retain changing payloads and stamps" time="0.046624" status="run" />
+  </testsuite><testsuite name="ResourceGradientPolicy"><testcase classname="ResourceGradientPolicy" name="binary and text continuation retain query windows capture epochs and pending demand" time="0.000388" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="minimum spacing maximum age and source turnover are deterministic" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="rolling demand matches exact query windows including tick wrap" time="0.00021" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="a half-harvested scavenge site survives save and continues identically" time="0.142163" status="run" />
+  <testcase classname="RuntimeResources" name="bounded starter crop replacement uses surplus materials and respects clearability" time="0.053953" status="run" />
+  <testcase classname="RuntimeResources" name="custom compound deposit has independent material stock and destructive harvest" time="0.030418" status="run" />
+  <testcase classname="RuntimeResources" name="custom ground and air obstruction independently govern routes across toroidal barriers" time="0.149775" status="run" />
+  <testcase classname="RuntimeResources" name="destructive resources cannot bridge pooled farms even without reserves or regrowth" time="0.149625" status="run" />
+  <testcase classname="RuntimeResources" name="editor catalog replacement preserves materials across layouts and rejects invalid imports atomically" time="0.032101" status="run" />
+  <testcase classname="RuntimeResources" name="embedded resource save starts with an invalid installed catalog" time="0.158053" status="run" />
+  <testcase classname="RuntimeResources" name="farm harvest uses the touched material policy before pooling neighboring stock" time="0.096035" status="run" />
+  <testcase classname="RuntimeResources" name="fixed property ablations preserve harvest growth clearing and movement invariants" time="0.064408" status="run" />
+  <testcase classname="RuntimeResources" name="frozen resource saves ignore reordered modified installed defaults in a fresh process" time="0.076338" status="run" />
+  <testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.515478" status="run" />
+  <testcase classname="RuntimeResources" name="growth at capacity oscillates and persistent fruit depletes" time="0.02893" status="run" />
+  <testcase classname="RuntimeResources" name="infinite farm stocks remain harvestable at their seed reserve" time="0.059919" status="run" />
+  <testcase classname="RuntimeResources" name="landscape dead trees, undergrowth and fish keep their habitats and obstruction" time="0.029128" status="run" />
+  <testcase classname="RuntimeResources" name="landscape scavenge sites start full, deplete per material and vanish when empty" time="0.029042" status="run" />
+  <testcase classname="RuntimeResources" name="landscape showcase map places every landscape resource [artifacts]" time="0.072416" status="run" />
+  <testcase classname="RuntimeResources" name="last finite source extinction and persistent source regrowth update material presence" time="0.027613" status="run" />
+  <testcase classname="RuntimeResources" name="legacy pending natural publication can be saved before any movement query" time="0.466518" status="run" />
+  <testcase classname="RuntimeResources" name="material frontage counts secondary stocks and prospective renewable supply" time="0.042757" status="run" />
+  <testcase classname="RuntimeResources" name="material harvesting consumes stock and never invents a delivery" time="0.028631" status="run" />
+  <testcase classname="RuntimeResources" name="redefined builtin resource follows declarative habitat and terrain whitelist intersection" time="0.030905" status="run" />
+  <testcase classname="RuntimeResources" name="released observation format 139 imports legacy stocks and preserves current save continuation" time="0.194707" status="run" />
+  <testcase classname="RuntimeResources" name="released terrain-seed format 138 retains legacy resource and material continuation" time="0.17207" status="run" />
+  <testcase classname="RuntimeResources" name="renamed deposits and sprite variants preserve stochastic stock trajectories" time="0.107126" status="run" />
+  <testcase classname="RuntimeResources" name="resource identities above byte range preserve compound stocks through save and continuation" time="0.192102" status="run" />
+  <testcase classname="RuntimeResources" name="seed cache allocates only live material bitsets and reuses them after depletion" time="0.068605" status="run" />
+  <testcase classname="RuntimeResources" name="shared starting supply checks accept material sources above resource id 255" time="0.097972" status="run" />
+  <testcase classname="RuntimeResources" name="start diagnostics distinguish configured renewal from spreading pressure" time="0.065013" status="run" />
+  <testcase classname="RuntimeResources" name="starting crop guarantees and adjacent supply use live material yields" time="0.041436" status="run" />
+  <testcase classname="RuntimeResources" name="unused catalog definitions allocate no material gradients and schedule no extra work" time="0.117448" status="run" />
+  <testcase classname="RuntimeResources" name="workers carry food from camp-sites to an inn and leave their other yields" time="0.062814" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="11.7685" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="0.255984" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="0.102539" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.06909" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.050102" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.046569" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.050348" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="0.426251" status="run" />
+  <testcase classname="TeamStatsPipeline" name="inspection admits no work and paused or waiting frames reuse the initial observation" time="0.053264" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="0.08848" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.062478" status="run" />
+  <testcase classname="TeamStatsPipeline" name="legacy zero-delay pending samples publish their original output before new delayed samples" time="0.046522" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.059819" status="run" />
+  <testcase classname="TeamStatsPipeline" name="movement class demand follows delayed publication and persists pending transitions" time="0.047592" status="run" />
+  <testcase classname="TeamStatsPipeline" name="movement classes count living ground units every sample including eliminated teams" time="0.0461" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.042473" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="0.077335" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.044534" status="run" />
+  <testcase classname="TeamStatsPipeline" name="remote map sweeps are periodic and explicit verification remains exhaustive" time="0.06884" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.045004" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.049693" status="run" />
+  <testcase classname="TeamStatsPipeline" name="secondary statistics are periodic while verification and entity checks stay immediate" time="0.068166" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="0.297867" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="5.22436" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="2.35456" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.239269" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="0.725486" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.044764" status="run" />
+  <testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="0.246777" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="0.612902" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="0.280193" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="0.137433" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.046682" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.047051" status="run" />
+  <testcase classname="TeamStatsSave" name="defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing" time="0.072088" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.057164" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.144594" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.074717" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.070882" status="run" />
+  <testcase classname="TeamStatsSave" name="nonuniform combat levels retain per-unit defender recruitment eligibility" time="0.072871" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.078948" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.055461" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.057876" status="run" />
+  <testcase classname="TeamStatsSave" name="retained format152 magic levels count each explorer once through migration and current continuation [save-format]" time="0.572289" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" time="0.769288" status="run" />
+  <testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="1.09962" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="7.11831" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="1.53514" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="0.69626" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="0.626543" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="0.743112" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="1.27605" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="2.09383" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="0.896579" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="1.01541" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="1.72314" status="run" />
+  <testcase classname="TurnEngineHarness" name="map checksum coverage survives the last human quitting [network-sim]" time="0.203562" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="0.698831" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="0.820473" status="run" />
+  <testcase classname="TurnEngineHarness" name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" time="0.745226" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.633948" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="1.58762" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="1.2317" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="0.701199" status="run" />
+  </testsuite><testsuite name="UnitCatalog"><testcase classname="UnitCatalog" name="authored animation spans stay inside the stock atlas" time="0.062224" status="run" />
+  <testcase classname="UnitCatalog" name="both header forms retain embedded unit properties and experiment gates" time="0.035127" status="run" />
+  <testcase classname="UnitCatalog" name="converted legacy flight tables retain their authoritative exception" time="0.030062" status="run" />
+  <testcase classname="UnitCatalog" name="counted race tables survive both text and binary saves" time="0.031965" status="run" />
+  <testcase classname="UnitCatalog" name="current header forms reject omitted embedded definitions" time="0.029494" status="run" />
+  <testcase classname="UnitCatalog" name="current race records cannot override the embedded catalog" time="0.030517" status="run" />
+  <testcase classname="UnitCatalog" name="embedded experiments contribute allowed keys without global registration" time="0.03043" status="run" />
+  <testcase classname="UnitCatalog" name="installed definitions reproduce immutable embedded defaults" time="0.031315" status="run" />
+  <testcase classname="UnitCatalog" name="legacy movement exception cannot relax additional definitions" time="0.030607" status="run" />
+  <testcase classname="UnitCatalog" name="legacy performance policies preserve tables and remain migration only" time="0.030701" status="run" />
+  <testcase classname="UnitCatalog" name="legacy presentation offsets survive migration without relaxing additional types" time="0.030709" status="run" />
+  <testcase classname="UnitCatalog" name="legacy signed cached performance normalizes without narrowing race tables [save-format]" time="0.08703" status="run" />
+  <testcase classname="UnitCatalog" name="malformed definitions fail before publication" time="0.030753" status="run" />
+  <testcase classname="UnitCatalog" name="new combinations retain appearance and preserve other games" time="0.032089" status="run" />
+  <testcase classname="UnitCatalog" name="optional recruitment policies preserve pre-policy snapshots and compact traits" time="0.032651" status="run" />
+  <testcase classname="UnitCatalog" name="pre-race legacy headers receive cached-performance policies" time="0.029017" status="run" />
+  <testcase classname="UnitCatalog" name="pre73 team race tables survive cached units training production and current resaves [save-format]" time="0.489767" status="run" />
+  <testcase classname="UnitCatalog" name="retained format64 FourSquares map keeps its historical warrior tables and current continuation [save-format]" time="0.290447" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="HP rule arithmetic precedes the cached performance cap at creation rebind and training" time="0.06049" status="run" />
+  <testcase classname="UnitCustomization" name="active water-only cargo preserves queued and pending gradient deadlines [save-format]" time="5.36263" status="run" />
+  <testcase classname="UnitCustomization" name="air navigation ignores team paint and switches after terrain resource catalog and load changes" time="0.12116" status="run" />
+  <testcase classname="UnitCustomization" name="airborne clearing and magic coexist with held cargo" time="0.062095" status="run" />
+  <testcase classname="UnitCustomization" name="all locked capability ablations match fixed tick and RNG traces [golden][artifacts]" time="0.191336" status="run" />
+  <testcase classname="UnitCustomization" name="an explicit producer creates stationary units on a legal birth cell" time="0.071628" status="run" />
+  <testcase classname="UnitCustomization" name="batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks" time="0.318045" status="run" />
+  <testcase classname="UnitCustomization" name="cached performance caps preserve wide save validation and normalized continuation [save-format]" time="0.463374" status="run" />
+  <testcase classname="UnitCustomization" name="catalog derived vision cache preserves padding wire state and visibility continuation [save-format]" time="0.351363" status="run" />
+  <testcase classname="UnitCustomization" name="catalog resizing rejects in-flight projectile rows without publishing state" time="0.316044" status="run" />
+  <testcase classname="UnitCustomization" name="compact unit fields reject wide invalid values before conversion [save-format]" time="0.059198" status="run" />
+  <testcase classname="UnitCustomization" name="concurrent catalogs keep independent live performance and continuation" time="0.291286" status="run" />
+  <testcase classname="UnitCustomization" name="configured magic cooldown follows the magic level while imported tables retain legacy indexing" time="0.089255" status="run" />
+  <testcase classname="UnitCustomization" name="configured service multipliers shorten complete meals and healing visits" time="0.16868" status="run" />
+  <testcase classname="UnitCustomization" name="construction qualification excludes higher-level couriers in live and captured queries" time="0.059761" status="run" />
+  <testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="0.096644" status="run" />
+  <testcase classname="UnitCustomization" name="conversion claim release preserves the stock policy and is configurable" time="0.092981" status="run" />
+  <testcase classname="UnitCustomization" name="current saves reject invalid cached bounds and retain pending lethal state" time="0.060136" status="run" />
+  <testcase classname="UnitCustomization" name="current unit records require idle and service assignments to have no working purpose" time="0.319953" status="run" />
+  <testcase classname="UnitCustomization" name="custom carriers resume actual pickup and delivery including active water only fields" time="2.46907" status="run" />
+  <testcase classname="UnitCustomization" name="custom combat extremes preserve observer estimates and clamp lethal overkill" time="0.0604" status="run" />
+  <testcase classname="UnitCustomization" name="custom feeding healing and training resume entry interior and exit with exact reservations" time="2.42408" status="run" />
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="0.500432" status="run" />
+  <testcase classname="UnitCustomization" name="deleted units release wide cargo before a GID is reused" time="0.059991" status="run" />
+  <testcase classname="UnitCustomization" name="direct flight handles wrapped bearings arrival and fully occupied airspace" time="0.117738" status="run" />
+  <testcase classname="UnitCustomization" name="direct flying carriers retain priced overlay and direct stock destinations" time="0.114527" status="run" />
+  <testcase classname="UnitCustomization" name="direct flying clearers retain shared goals and clearing claims" time="0.089486" status="run" />
+  <testcase classname="UnitCustomization" name="disabling future flag recruitment preserves all existing job roles and memberships [save-format]" time="0.634846" status="run" />
+  <testcase classname="UnitCustomization" name="documented bulk carrier setup enables an inherited-cost production recipe" time="0.082099" status="run" />
+  <testcase classname="UnitCustomization" name="empty direct flight guard queries preserve invalid target coordinates" time="0.061548" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]" time="0.23768" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index retains last slot and full occupied table oracle" time="0.074205" status="run" />
+  <testcase classname="UnitCustomization" name="extended cargo delivers one usable packet per completed work action" time="0.058899" status="run" />
+  <testcase classname="UnitCustomization" name="extreme hunger and experience saturate without changing valid stock arithmetic" time="0.059651" status="run" />
+  <testcase classname="UnitCustomization" name="flag recruitment refusal does not disable painted clearing or defense areas" time="0.264878" status="run" />
+  <testcase classname="UnitCustomization" name="flying carriers steer directly between shared destination queries" time="0.05928" status="run" />
+  <testcase classname="UnitCustomization" name="fractional deliveries retain exact residuals across multipliers and reject overflow atomically" time="0.07149" status="run" />
+  <testcase classname="UnitCustomization" name="game save resumes mixed cargo and per entity RNG at every tick" time="0.284474" status="run" />
+  <testcase classname="UnitCustomization" name="ground and airborne couriers collect mixed kinds and deliver through the engine" time="0.121833" status="run" />
+  <testcase classname="UnitCustomization" name="high unit IDs spawn work and resume all indexed state" time="2.43233" status="run" />
+  <testcase classname="UnitCustomization" name="hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]" time="1.61851" status="run" />
+  <testcase classname="UnitCustomization" name="idle clearing permission does not interrupt a transport assignment" time="0.059442" status="run" />
+  <testcase classname="UnitCustomization" name="idle flyers wander inside forbidden paint instead of requesting ground escape" time="0.058618" status="run" />
+  <testcase classname="UnitCustomization" name="idle painted clearing completes without permission to interrupt jobs [save-format]" time="0.267672" status="run" />
+  <testcase classname="UnitCustomization" name="imported movement tables retain historical course admission and direct grants" time="0.072365" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring finds a wanted material in overflow cargo and completes delivery" time="0.059824" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring respects retained packet capacity and material kind limits" time="0.091348" status="run" />
+  <testcase classname="UnitCustomization" name="labor and defense statistics require usable clocks and recruitment mobility" time="0.061451" status="run" />
+  <testcase classname="UnitCustomization" name="learning mask updates preserve every neighboring flag" time="0" status="run" />
+  <testcase classname="UnitCustomization" name="legacy flying targets retain direct angular steering through forbidden paint" time="0.058324" status="run" />
+  <testcase classname="UnitCustomization" name="legacy setup sentinel retains resolved map definitions and cached unit values" time="0.07095" status="run" />
+  <testcase classname="UnitCustomization" name="maximum healing multiplier and health complete a diagonal service visit" time="0.058924" status="run" />
+  <testcase classname="UnitCustomization" name="migrated tables retain cached performance idle and contact policies" time="0.058689" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision changes with flight learned during a reserved service [save-format]" time="0.290671" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision follows cached flight rather than presentation or saved Race tables [save-format]" time="0.480803" status="run" />
+  <testcase classname="UnitCustomization" name="mixed combat and fractional regeneration continue with cached clocks cargo and random streams" time="0.280362" status="run" />
+  <testcase classname="UnitCustomization" name="mixed inventory and assigned purpose survive unit serialization" time="0.059618" status="run" />
+  <testcase classname="UnitCustomization" name="mixed melee and transport conserve multiple material kinds and rejected packets" time="0.058882" status="run" />
+  <testcase classname="UnitCustomization" name="mobility statistics respect swimming only and stationary definitions" time="0.060423" status="run" />
+  <testcase classname="UnitCustomization" name="ordinary flyers retain angular steering and local avoidance without movement fields" time="0.119609" status="run" />
+  <testcase classname="UnitCustomization" name="ordinary flying couriers export a deterministic direct flight setup [artifacts]" time="0.0786" status="run" />
+  <testcase classname="UnitCustomization" name="parallel construction qualification captures all courses before grants and preserves immobile definitions" time="0.301503" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement losses are assessed together before admission with a surviving mode alternative" time="0.301533" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically" time="0.258266" status="run" />
+  <testcase classname="UnitCustomization" name="passive healing and starvation damage are independent configured rates" time="0.062202" status="run" />
+  <testcase classname="UnitCustomization" name="pending lethal scouts have bounded attraction ranking and resolve death" time="0.071906" status="run" />
+  <testcase classname="UnitCustomization" name="restored unsafe ongoing training exits without charging materials or changing levels" time="0.259645" status="run" />
+  <testcase classname="UnitCustomization" name="retained single packets and kind limits do not withdraw incompatible resources" time="0.093348" status="run" />
+  <testcase classname="UnitCustomization" name="setup cancels obsolete live work clocks and claims without losing cargo or RNG" time="0.090568" status="run" />
+  <testcase classname="UnitCustomization" name="setup rejects immobile interior patients without publishing partial catalog state" time="0.211155" status="run" />
+  <testcase classname="UnitCustomization" name="setup releases original parallel course reservations before disabling learnability" time="0.115571" status="run" />
+  <testcase classname="UnitCustomization" name="setup scaling preserves lethal extremes and zero-kind inventories refuse packets" time="0.06226" status="run" />
+  <testcase classname="UnitCustomization" name="shared air routing stress exports a reproducible benchmark setup [artifacts]" time="0.176486" status="run" />
+  <testcase classname="UnitCustomization" name="stock capacity-one wide primary cargo survives unit and game continuation [save-format]" time="0.711058" status="run" />
+  <testcase classname="UnitCustomization" name="survival eligibility is independent of movement and work capabilities" time="0.090457" status="run" />
+  <testcase classname="UnitCustomization" name="swim only fields avoid land and stationary zero hunger units keep making medical progress" time="0.061655" status="run" />
+  <testcase classname="UnitCustomization" name="target search handles a defender whose effective melee strength saturates" time="0.060747" status="run" />
+  <testcase classname="UnitCustomization" name="tiling anchors and starting positions recognize producers of additional units" time="0.071831" status="run" />
+  <testcase classname="UnitCustomization" name="training rejects loss of the last movement mode before reservation or direct mutation" time="0.303943" status="run" />
+  <testcase classname="UnitCustomization" name="transport capability with a zero delivery clock cannot be hired" time="0.061915" status="run" />
+  <testcase classname="UnitCustomization" name="unit experiment gates control spawning and reject disabled live definitions" time="0.260528" status="run" />
+  <testcase classname="UnitCustomization" name="unit loading rejects mismatched assigned purposes and over-capacity primary packets" time="0.144659" status="run" />
+  <testcase classname="UnitCustomization" name="unusable retained fractional cargo releases its job and continues exactly after saving" time="0.300035" status="run" />
+  <testcase classname="UnitCustomization" name="water only exploration rejects dry steering and takes a valid water alternative" time="0.251087" status="run" />
+  <testcase classname="UnitCustomization" name="water only patrol ignores less explored dry neighbours without changing walker or flyer RNG" time="0.255247" status="run" />
+  <testcase classname="UnitCustomization" name="zero-consumption patients heal without a rebound meal despite retained low hunger" time="0.094231" status="run" />
+  </testsuite></testsuites>

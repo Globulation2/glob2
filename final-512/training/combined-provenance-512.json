@@ -1,0 +1,11 @@
+{
+  "selection_file": "selected-slots-512.json",
+  "target": 512,
+  "per_format": 64,
+  "source_by_binary": {
+    "42575882578b08cc1eff92479f1d8d2fee9d4d6d00da67b2e27b49fdcae340d8": "f58a3c20dc3791dcda0eb20cab73cc308e762243",
+    "36ac5d44dc9bcacf43e2ed07027eb40db1701577cc9016085756cfefecaea2dc": "e9713dc8b82745daa4c6665842bdd2e9724a8319"
+  },
+  "duplicate_slots": [],
+  "unresolved_failed_slots": []
+}

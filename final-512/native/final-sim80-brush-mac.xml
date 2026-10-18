@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="22" failures="0" errors="0" skipped="0"><testsuite name="BrushAccumulator"><testcase classname="BrushAccumulator" name="SingleApplication" time="0.000722" status="run" />
+    <testcase classname="BrushAccumulator" name="NonWrappingStroke" time="0" status="run" />
+    <testcase classname="BrushAccumulator" name="OppositeSeamWrapsOneRow" time="0" status="run" />
+    <testcase classname="BrushAccumulator" name="WrapNegativeDelta" time="0" status="run" />
+    <testcase classname="BrushAccumulator" name="LargeBrushAcrossSeamBothAxes" time="0" status="run" />
+  </testsuite><testsuite name="BrushAccumulatorOrderBounds"><testcase classname="BrushAccumulatorOrderBounds" name="OversizedStrokePreservesEveryPaintedWorldTile" time="0.006105" status="run" />
+    <testcase classname="BrushAccumulatorOrderBounds" name="OrdinaryStrokeRetainsItsExactBitmapAndBounds" time="0" status="run" />
+  </testsuite><testsuite name="BrushAccumulatorOrderCodec"><testcase classname="BrushAccumulatorOrderCodec" name="RectangularTorusFoldsOnlyOversizedAxisAndRoundTripsAddAndDelete" time="0.000172" status="run" />
+    <testcase classname="BrushAccumulatorOrderCodec" name="OrdinaryObservationOrderHasIdenticalWireBytes" time="0" status="run" />
+  </testsuite><testsuite name="BrushCoverage"><testcase classname="BrushCoverage" name="a single-cell brush covers its centre" time="0" status="run" />
+    <testcase classname="BrushCoverage" name="the plus brush covers a plus" time="0" status="run" />
+    <testcase classname="BrushCoverage" name="a stroke covers the union of its centres" time="0" status="run" />
+    <testcase classname="BrushCoverage" name="every figure matches its mask, including checkerboard parity" time="0" status="run" />
+    <testcase classname="BrushCoverage" name="world pixels map to the cell under them" time="0" status="run" />
+    <testcase classname="BrushCoverage" name="a stamp is one centre of a stroke aligned to its origin" time="0" status="run" />
+  </testsuite><testsuite name="BrushToolHit"><testcase classname="BrushToolHit" name="OffByOneIsTheOnlyChange" time="0.002689" status="run" />
+    <testcase classname="BrushToolHit" name="OffByOneCellsNowHit" time="0" status="run" />
+    <testcase classname="BrushToolHit" name="ZoneStripClicksMissThePanel" time="0.000157" status="run" />
+    <testcase classname="BrushToolHit" name="ModeRow" time="0.00038" status="run" />
+    <testcase classname="BrushToolHit" name="FigureGrid" time="0.000654" status="run" />
+    <testcase classname="BrushToolHit" name="Edges" time="0" status="run" />
+    <testcase classname="BrushToolHit" name="LayoutConstants" time="0" status="run" />
+  </testsuite></testsuites>

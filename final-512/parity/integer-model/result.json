@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "vectors": 8206,
+  "ubsan": "no diagnostics",
+  "compiler_command": [
+    "g++",
+    "-std=c++20",
+    "-O1",
+    "-g0",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=all",
+    "-I/Users/bradley/.codex/worktrees/adaptive-final-integration/glob2/src/map/gradient",
+    "/Users/bradley/glob2/artifacts/gradient-training-1024/integer-model-512/model-parity.cpp",
+    "-o",
+    "/Users/bradley/glob2/artifacts/gradient-training-1024/integer-model-512/model-parity"
+  ],
+  "header_sha256": "d9d54ae5f37bed9c13c6a94749f5527818370f6f71b3354b0961efbcfb8131ae",
+  "prediction_sha256": "cd5c44c4ee901aa5a21e85fd745d105bc2a0403f5d6a67988e7212166e68779e"
+}
