@@ -105,6 +105,7 @@ enum AreaType
 class Map
 {
 	friend class ResourceSeedCache;
+	friend struct ResourceGradientProbe;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
@@ -1273,6 +1274,14 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
+    // Suspended fields remain allocated, but their next explicit query rebuilds them.
+    bool materialGradientStale[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT]{};
+    bool marketMaterialGradientStale[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT]{};
+    bool forbiddenGradientStale[Team::MAX_COUNT][SWIM_CLASS_COUNT]{};
+    bool guardGradientStale[Team::MAX_COUNT][SWIM_CLASS_COUNT]{};
+    bool clearGradientStale[Team::MAX_COUNT][SWIM_CLASS_COUNT]{};
+    bool periodicGradientClassActive(int team, int swim) const;
+    void suspendUnusedGradientClasses();
 	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
 	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];

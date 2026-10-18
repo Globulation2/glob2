@@ -42,11 +42,12 @@ Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimC
 		return empty.data();
 	}
 	Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateMaterialGradient(teamNumber, resourceType, swimClass, withMarkets);
-	}
+    const bool stale=withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+                                 : materialGradientStale[teamNumber][resourceType][swimClass];
+    if (gradient == NULL || stale) {
+        if (!gradient) gradient = new Uint16[size];
+        updateMaterialGradient(teamNumber, resourceType, swimClass, withMarkets);
+    }
 	return gradient;
 }
 
@@ -57,12 +58,16 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	auto &slot = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
 	gradientRuntime->pipeline.invalidate(&slot);
 	Uint16 *gradient = slot;
+	if (auto& probe=gradientRuntime->qualityProbe)
+		probe->captured[gradient]=game ? game->stepCounter : 0;
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	{
 		PERF_SCOPE_TIME(PropagationResource);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
             withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
 	}
+    (withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+                 : materialGradientStale[teamNumber][resourceType][swimClass])=false;
 	publishPlane(&slot);
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }

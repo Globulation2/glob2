@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include <nlohmann/json.hpp>
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
 #include <algorithm>
 #include <iostream>
 #include "GlobalContainer.h"
@@ -19,6 +22,8 @@
 #include <PerformanceTelemetry.h>
 #include <memory>
 #include <vector>
+#include "gradient/ResourceGradientProbe.h"
+#include <fstream>
 
 namespace
 {
@@ -52,6 +57,198 @@ static void prepareMovementTerrain(Map& map,int swim)
 
 TEST_SUITE("MapGradientInvalidation")
 {
+ TEST_CASE("resource quality probe detects a depleted goal without changing simulation state")
+ {
+  glob2test::HeadlessGlobals globals;
+  glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+  auto& game=fixture.game; auto& map=game.map;
+  map.setResourceByIndex(20,20,WOOD,1);
+  map.setResourceByIndex(30,20,WOOD,1);
+  const auto* live=map.getMaterialGradientSlot(0,WOOD,0);
+  const auto path=glob2test::artifactDir()/"resource-quality.csv";
+  ResourceGradientProbe probe(path.string().c_str());
+  probe.window=0; probe.captured[live]=0;
+  EntityRandom random; random.initialize(1,EntityRandom::Kind::Unit,0,1);
+  const auto saved=random;
+  probe.observe(map,0,WOOD,0,20,20,live,random,false,0,0);
+  map.replaceResource(20,20,Resource{}); game.stepCounter=1;
+  const auto before=map.checkSum(true);
+  probe.observe(map,0,WOOD,0,20,20,live,random,false,0,0);
+  CHECK(map.checkSum(true)==before); CHECK(random==saved);
+  map.replaceResource(30,20,Resource{}); game.stepCounter=2;
+  const auto depleted=map.checkSum(true);
+  probe.observe(map,0,WOOD,0,20,20,live,random,false,0,0);
+  CHECK(map.checkSum(true)==depleted); CHECK(random==saved);
+  game.stepCounter=9;
+  probe.observe(map,0,WOOD,0,20,20,live,random,false,0,0);
+  game.stepCounter=10;
+  probe.observe(map,0,WOOD,0,20,20,live,random,false,0,0);
+  probe.output.flush();
+  std::ifstream input(path); std::string line;
+  std::vector<std::string> names;
+  REQUIRE(bool(std::getline(input,line)));
+  { std::istringstream cells(line); std::string cell; while(std::getline(cells,cell,',')) names.push_back(cell); }
+  int rows=0,allConsumed=0,delayedPublications=0;
+  while(std::getline(input,line)) {
+   std::map<std::string,int> row; std::istringstream cells(line); std::string cell; size_t i=0;
+   while(std::getline(cells,cell,',')) { REQUIRE(i<names.size()); row[names[i++]]=std::stoi(cell); }
+   if(row["policy"]==1001 && (row["query"]==4 || row["query"]==5)) {
+    CHECK(row["age"]==8);
+    CHECK(row["false_reachable"]==(row["query"]==4));
+    ++delayedPublications;
+   }
+   if(row["query"]==3 && row["policy"]==0) {
+    CHECK(row["false_reachable"]==1); CHECK(row["missed_move"]==0); ++allConsumed;
+   }
+   if(row["query"]!=2) continue;
+   ++rows;
+   if(row["policy"]==0 || row["policy"]==256) {
+    CHECK(row["depleted_goal"]==1); CHECK(row["missed_move"]==1); CHECK(row["age"]==1);
+   }
+   if(row["policy"]==256) { CHECK(row["goals_removed"]==1); CHECK(row["sources_removed"]==1); }
+   if(row["policy"]==1) {
+    CHECK(row["depleted_goal"]==0); CHECK(row["missed_move"]==0); CHECK(row["extra_cost"]==0);
+   }
+  }
+  CHECK(rows==19);
+  CHECK(allConsumed==1);
+  CHECK(delayedPublications==2);
+ }
+
+ TEST_CASE("unused movement classes suspend shared refreshes and queries rebuild retained fields")
+ {
+  glob2test::HeadlessGlobals globals;
+  Fixture f(1); auto& map=f.game.map;
+  map.setResourceByIndex(20,20,WHEAT,10);
+  map.addGuardArea(24,24,0); map.addClearArea(20,20,0);
+  for(int team=0;team<2;++team) {
+   for(int c:{0,Map::SWIM_CLASS_EVEN}) {
+    map.getMaterialGradientSlot(team,WHEAT,c);
+    map.getGuardAreasGradient(team,c);
+    map.getClearAreasGradient(team,c);
+    map.getForbiddenGradient(team,c);
+   }
+   f.game.teams[team]->stats.editMeasurements().movementClassesKnown=true;
+  }
+  // Team 0 is eliminated but its remaining ground unit still needs its fields.
+  f.game.teams[0]->isAlive=false;
+  f.game.teams[0]->stats.editMeasurements().groundUnitsByMovementClass[0]=1;
+  const auto before=propagations();
+  for(unsigned tick=0;tick<32;++tick) map.syncStep(tick);
+  CHECK(propagations()>before);
+  f.game.teams[0]->stats.editMeasurements().groundUnitsByMovementClass[0]=0;
+  const auto idle=propagations();
+  for(unsigned tick=32;tick<96;++tick) map.syncStep(tick);
+  CHECK(propagations()==idle);
+  map.setResourceByIndex(21,20,WHEAT,10);
+  const auto goal=map.coordToIndex(21,20);
+  CHECK(map.getMaterialGradientSlot(1,WHEAT,0)[goal]==GRADIENT_AT_GOAL);
+  CHECK(propagations()==idle+1);
+  map.getGuardAreasGradient(1,0); map.getClearAreasGradient(1,0); map.getForbiddenGradient(1,0);
+  CHECK(propagations()==idle+4);
+  // Published demand may lag the first new unit; cold queries still work.
+  REQUIRE(map.getMaterialGradientSlot(1,WHEAT,6));
+  f.game.teams[1]->stats.editMeasurements().groundUnitsByMovementClass[0]=1;
+  map.stagePeriodicGradientPreparation();
+  CHECK(propagations()>idle+4);
+ }
+
+ TEST_CASE("unused fields leave the rotation while the one-field-per-tick budget stays unchanged")
+ {
+  glob2test::HeadlessGlobals globals;
+  Fixture f(0); auto& map=f.game.map;
+  map.setResourceByIndex(20,20,WHEAT,10);
+  auto* active=map.getMaterialGradientSlot(0,WHEAT,0);
+  map.getMaterialGradientSlot(0,WHEAT,Map::SWIM_CLASS_EVEN);
+  auto& counts=f.game.teams[0]->stats.editMeasurements();
+  counts.movementClassesKnown=true; counts.groundUnitsByMovementClass[0]=1;
+  map.setResourceByIndex(21,20,WHEAT,10);
+  const auto before=propagations();
+  for(int i=0;i<20;++i) map.stagePeriodicGradientPreparation();
+  CHECK(propagations()==before+20);
+  CHECK(active[map.coordToIndex(21,20)]==GRADIENT_AT_GOAL);
+  map.getMaterialGradientSlot(0,WHEAT,0);
+  CHECK(propagations()==before+20);
+  map.getMaterialGradientSlot(0,WHEAT,Map::SWIM_CLASS_EVEN);
+  CHECK(propagations()==before+21);
+ }
+
+ TEST_CASE("unused movement classes suspend market stock refreshes too")
+ {
+  glob2test::HeadlessGlobals globals;
+  glob2test::GameOptions options{.discovered=true,.clearImmobile=true,.header=true};
+  options.experiments.set(ExperimentId::MarketsV2);
+  glob2test::HeadlessGame world(options);
+  auto& map=world.game.map;
+  auto* market=world.addBuilding("market",8,8,0);
+  REQUIRE(market);
+  market->setMaterial(WHEAT,100);
+  map.getMaterialGradientSlot(0,WHEAT,0,true);
+  map.configureGradientPipeline(0,2);
+  world.team->stats.editMeasurements().movementClassesKnown=true;
+  const auto before=propagations();
+  for(int i=0;i<8;++i) { map.stagePeriodicGradientPreparation(); map.advanceGradientPipeline(); }
+  CHECK(map.gradientPipelineStatus().jobs==0);
+  CHECK(propagations()==before);
+  market->setMaterial(WHEAT,0);
+  CHECK(map.getMaterialGradientSlot(0,WHEAT,0,true)[map.coordToIndex(8,8)]!=GRADIENT_AT_GOAL);
+  CHECK(propagations()==before+1);
+  world.team->stats.editMeasurements().groundUnitsByMovementClass[0]=1;
+  map.stagePeriodicGradientPreparation();
+  CHECK(map.gradientPipelineStatus().jobs==1);
+ }
+
+ TEST_CASE("suspended freshness and published movement counts survive binary and text saves")
+ {
+  glob2test::HeadlessGlobals globals;
+  for(bool text:{false,true}) {
+   glob2test::HeadlessGame original(glob2test::GameOptions{.wDec=6,.hDec=6,.loadDefaultRace=true,.header=true}); auto& map=original.game.map;
+   map.setResourceByIndex(20,20,WHEAT,10);
+   map.getMaterialGradientSlot(0,WHEAT,0);
+   original.game.teams[0]->stats.editMeasurements().movementClassesKnown=true;
+   map.stagePeriodicGradientPreparation();
+   map.setResourceByIndex(21,20,WHEAT,10);
+   auto* memory=new GAGCore::MemoryStreamBackend;
+   std::unique_ptr<GAGCore::OutputStream> out(text
+    ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory))
+    : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+   original.game.save(out.get(),false,"suspended gradients"); out->flush();
+   Game restored(nullptr);
+   auto backend=std::make_unique<GAGCore::MemoryStreamBackend>(memory->getBuffer(),memory->getPosition());
+   backend->seekFromStart(0);
+   std::unique_ptr<GAGCore::InputStream> in(text
+    ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend.get()))
+    : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend.release())));
+   REQUIRE(restored.load(in.get()));
+   CHECK(restored.teams[0]->stats.editMeasurements().movementClassesKnown);
+   CHECK_FALSE(restored.teams[0]->stats.usesGroundMovementClass(0));
+   CHECK(map.checkSum(true)==restored.map.checkSum(true));
+   const auto before=propagations();
+   CHECK(restored.map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(21,20)]==GRADIENT_AT_GOAL);
+   CHECK(propagations()==before+1);
+  }
+ }
+
+ TEST_CASE("suspending a movement class cancels pending periodic publications")
+ {
+  glob2test::HeadlessGlobals globals;
+  Fixture f(0); auto& map=f.game.map;
+  map.setResourceByIndex(20,20,WHEAT,10);
+  map.getMaterialGradientSlot(0,WHEAT,0);
+  map.configureGradientPipeline(0,2);
+  map.advanceGradientPipeline();
+  map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+  REQUIRE(map.gradientPipelineStatus().pending>0);
+  f.game.teams[0]->stats.editMeasurements().movementClassesKnown=true;
+  map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+  for(int i=0;i<4;++i) map.advanceGradientPipeline();
+  CHECK(map.gradientPipelineStatus().published==0);
+  CHECK(map.gradientPipelineStatus().discarded>0);
+  const auto before=propagations();
+  map.getMaterialGradientSlot(0,WHEAT,0);
+  CHECK(propagations()==before+1);
+ }
+
  TEST_CASE("forbidden painting refreshes routes across passable resources")
  {
   glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});

@@ -10,6 +10,8 @@
 #include "SnapshotGradient.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
+#include "ResourceGradientProbe.h"
+#include <cstdlib>
 #include "field/GradientWorkspace.h"
 
 #include <vector>
@@ -25,6 +27,7 @@
 
 struct GradientRuntime
 {
+    std::unique_ptr<ResourceGradientProbe> qualityProbe;
 	struct Workspace
 	{
 		GradientWorkspace propagation;
@@ -103,6 +106,10 @@ struct GradientRuntime
         if (backendSession) backendSession = std::make_shared<gradient_kernel::BackendSession>();
         shareBackendSession();
     }
-    GradientRuntime() { shareBackendSession(); }
+    GradientRuntime() {
+        shareBackendSession();
+        if (const char* path=std::getenv("GLOB2_RESOURCE_GRADIENT_PROBE"))
+            if (*path) qualityProbe=std::make_unique<ResourceGradientProbe>(path);
+    }
 
 };

@@ -275,6 +275,8 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     auto* job=std::exchange(gradientRuntime->preparation, {}).job;
     job->request=request;
     job->snapshotLease=std::move(projected);
+    if (auto& probe=gradientRuntime->qualityProbe)
+        probe->captured[job->data.get()]=foundation.tick;
     gradientRuntime->pipeline.prepare(job, [](GradientPipeline::Job& job) {
         gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding);
     });
@@ -312,7 +314,20 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
 	ensureBuildingGradientPipeline();
-	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
+	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) {
+        if (const auto key=planeKeyForSlot(slot)) {
+            const auto id=MapState::decodePlaneKey(*key);
+            (id.market ? marketMaterialGradientStale[id.team][id.resource][id.swim]
+                       : materialGradientStale[id.team][id.resource][id.swim])=false;
+        } else {
+            for (int t=0; t<Team::MAX_COUNT; ++t)
+                for (int s=0; s<SWIM_CLASS_COUNT; ++s) {
+                    if (slot==&guardAreasGradient[t][s]) guardGradientStale[t][s]=false;
+                    if (slot==&clearAreasGradient[t][s]) clearGradientStale[t][s]=false;
+                }
+        }
+        publishPlane(slot);
+    };
 	// Staged after tick c-1's step counter advanced to c, a job published
 	// `remaining` advances later is joined at the start of step c+remaining-1.
 	gradientRuntime->pipeline.deadline = [this](unsigned remaining) {
@@ -359,7 +374,7 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 		const int escapeTeam = slot / activeSwimClasses;
 		const int escapeSwim = slot % activeSwimClasses;
 		const Uint16* field = forbiddenGradient[escapeTeam][escapeSwim];
-		if (field)
+		if (field && periodicGradientClassActive(escapeTeam, escapeSwim))
 		{
 			// Class 0 and SWIM_CLASS_EVEN have fixed edge costs. Their propagated fields retain the
 			// obstacle/free-goal/forbidden-interior partition used to seed it.
@@ -395,11 +410,38 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 	if (preparePeriodic) { stagePeriodicGradientPreparation(); preparePendingGradient(); }
 }
 
+bool Map::periodicGradientClassActive(int team, int swim) const
+{
+    return game->teams[team]->stats.usesGroundMovementClass(swim);
+}
+
+void Map::suspendUnusedGradientClasses()
+{
+    const auto suspend = [&](Uint16** slot, bool& stale) {
+        if (*slot && !stale) {
+            gradientRuntime->pipeline.invalidate(slot);
+            stale = true;
+        }
+    };
+    for (int team=0; team<game->teamsCount(); ++team)
+        for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim) {
+            if (periodicGradientClassActive(team,swim)) continue;
+            for (int material=0; material<MaterialCount; ++material) {
+                suspend(&materialGradients[team][material][swim],materialGradientStale[team][material][swim]);
+                suspend(&marketMaterialGradients[team][material][swim],marketMaterialGradientStale[team][material][swim]);
+            }
+            suspend(&guardAreasGradient[team][swim],guardGradientStale[team][swim]);
+            suspend(&clearAreasGradient[team][swim],clearGradientStale[team][swim]);
+            suspend(&forbiddenGradient[team][swim],forbiddenGradientStale[team][swim]);
+        }
+}
+
 void Map::stagePeriodicGradientPreparation()
 {
 	preparePendingGradient();
 	// Building requests are admitted first; the periodic job below may return early.
 	stageBuildingGradientPreparation();
+    suspendUnusedGradientClasses();
 	using Kind = GradientRuntime::Preparation::Kind;
 	// Queue membership and round-robin flags belong to the simulation owner.
 	// Reserve before AI lazy refreshes so invalidation can supersede this job
@@ -408,7 +450,8 @@ void Map::stagePeriodicGradientPreparation()
 		auto *job = gradientRuntime->pipeline.reserve(slot, swim);
 		gradientRuntime->preparation = {job, kind, team, material, swim};
 	};
-	// We only update one gradient per step, round robin over the gradients in use.
+	// Refresh at most one eligible field per tick. Unused movement classes do
+    // not consume round-robin turns, so fields units still use refresh sooner.
 	// Fields are allocated lazily: the second pass runs on freshly reset flags,
 	// so finding nothing there means no gradient exists yet and there is nothing to do.
 	for (int pass=0; pass<2; pass++)
@@ -417,7 +460,7 @@ void Map::stagePeriodicGradientPreparation()
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
+					if (periodicGradientClassActive(t, s) && hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
 					{
 						if (gradientRuntime->pipeline.enabled()) dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
 						else updateMaterialGradient(t, r, s);
@@ -429,7 +472,7 @@ void Map::stagePeriodicGradientPreparation()
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
+					if (periodicGradientClassActive(t, s) && marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
 						// Stock transitions already invalidate stale snapshots. Regular refreshes
 						// must let earlier jobs publish, even when this is the only field.
@@ -441,7 +484,7 @@ void Map::stagePeriodicGradientPreparation()
 					}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
+				if (periodicGradientClassActive(t, s) && guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
 					if (gradientRuntime->pipeline.enabled()) dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
 					else updateGuardAreasGradient(t, s);
@@ -450,7 +493,7 @@ void Map::stagePeriodicGradientPreparation()
 				}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
+				if (periodicGradientClassActive(t, s) && clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
 					if (gradientRuntime->pipeline.enabled()) dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
 					else updateClearAreasGradient(t, s);

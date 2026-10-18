@@ -681,6 +681,8 @@ Platform: all.
 | `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
+| `--resource-gradient-probe` | flag; default false | Write sampled natural-resource pathfinding quality comparisons. |
+| `--checksum-world-interval` | integer; 1..2147483647 | Ticks between full world hashes with checksum telemetry. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |
@@ -700,6 +702,8 @@ Structured jobs isolate engine tuning and diagnostic environment variables.
 `--building-artwork` requires `--generator`.
 
 `--candidates` requires `--generator`.
+
+`--checksum-world-interval` requires `--telemetry`.
 
 `--diagnostic-interval` requires `--diagnostic-fields`.
 

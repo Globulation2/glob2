@@ -478,6 +478,8 @@ const std::vector<Command> &commands()
 					{"checksums", "team-timeline", "maxima"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
+			 flag("--resource-gradient-probe", "Write sampled natural-resource pathfinding quality comparisons"),
+			 integer("--checksum-world-interval", "Ticks between full world hashes with checksum telemetry", 1, 2147483647),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,
 					 std::to_string(DefaultDiagnosticInterval)),
@@ -641,6 +643,7 @@ const std::vector<Command> &commands()
 				c.requirements["--diagnostic-interval"] = {"--diagnostic-fields"};
 				c.requirements["--diagnostic-png"] = {"--diagnostic-fields"};
 				c.requirements["--fork-rule"] = {"--load-game"};
+				c.requirements["--checksum-world-interval"] = {"--telemetry"};
 			}
 			if (c.path == "dev random-games" || c.path == "game repeat")
 				c.constraints.push_back("Recording requires --display");

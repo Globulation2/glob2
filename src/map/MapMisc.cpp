@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "Game.h"
 #include "gradient/GradientRuntime.h"
 #include "Bullet.h"
 #include "Sector.h"
@@ -59,6 +60,18 @@ Uint32 Map::checkSum(bool heavy, bool includePending)
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
 		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
 	}
+
+    // Suspended freshness changes the next explicit query, so it is simulation state.
+    for (int t=0; game && t<game->teamsCount(); ++t)
+        for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+            Uint32 stale=Uint32(forbiddenGradientStale[t][sw])
+                | (Uint32(guardGradientStale[t][sw])<<1) | (Uint32(clearGradientStale[t][sw])<<2);
+            for (int r=0; r<MaterialCount; ++r) {
+                stale |= Uint32(materialGradientStale[t][r][sw]) << (3+r);
+                stale |= Uint32(marketMaterialGradientStale[t][r][sw]) << (3+MaterialCount+r);
+            }
+            if (stale) mix64((Uint64(t*SWIM_CLASS_COUNT+sw)<<32)|stale);
+        }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)

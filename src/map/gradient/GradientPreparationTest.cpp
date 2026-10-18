@@ -1101,7 +1101,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 			if (!inserted) { CHECK(plane.generation >= it->second); it->second = plane.generation; }
 		}
 	};
-	for (int resource=0; resource<3; ++resource) m.setResourceByIndex(10 + resource, 10, resource, 0);
+	for (int resource : {WHEAT, WOOD, STONE}) m.setResourceByIndex(10 + resource, 10, resource, 1);
 	m.setMapDiscovered();
 	check(); CHECK(m.publishedResourceFields().empty());
 	m.getMaterialGradientSlot(0, WHEAT, 0); check();
@@ -1122,7 +1122,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	REQUIRE(handle.resourceFields);
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
-	REQUIRE(stone); CHECK(stone->values->at(7) == 5);
+	REQUIRE(stone); CHECK(stone->values->at(7) == m.materialGradients[1][STONE][1][7]);
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 

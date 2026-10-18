@@ -249,6 +249,47 @@ The rendering thread polls pending artwork with the application's 2 ms budget,
 including when simulation runs on a separate thread, so HD reloads finish during
 automatic matches too.
 
+## Resource gradient quality probe
+
+Pass `--resource-gradient-probe` to `game run` to write `gradient-quality.csv` in
+the job's output directory and compare natural-resource movement queries with
+privately recomputed CPU fields. Legacy entry points can instead set
+`GLOB2_RESOURCE_GRADIENT_PROBE` to an output CSV path. Structured jobs clear this
+environment variable and require the explicit flag. The diagnostic observes queried
+team/material/movement classes in a rotating deterministic hash group (one of
+eight groups) during the first 1024 ticks of each 4096-tick window.
+It evaluates the live field (`policy=0`) and demand-driven refresh intervals of
+1–256 ticks against the same current world, with private RNG copies and no
+simulation-visible publication. Market and consumer-specific fields are excluded.
+Queries requiring forbidden-area escape in the live or fresh field are also
+excluded. A historical synthetic field that marks the current cell forbidden
+counts as a missing resource-directed route; the probe does not simulate its
+separate forbidden-field escape fallback. Thus `missed_move` measures lost
+resource-directed movement, not necessarily a unit standing still.
+
+Rows record input age, reachability disagreements, depleted goals, missed moves,
+and additional fresh-field cost of a selected step relative to the fresh
+selector's step using the same private RNG state. Equal-cost alternatives score
+zero, and both selectors use current occupancy. Synthetic interval rows also count changed source locations,
+eligible goals and obstacles. Synthetic refreshes use zero publication delay (`policy=interval`) or
+eight ticks (`policy=1000+interval`), with synchronous cold starts, and happen on the first
+query after an interval expires; their results describe local decisions along the
+original trajectory, not the outcomes of matches using those policies. Discard
+window warmup when comparing intervals. Source changes count material-availability
+zero crossings, independently of fog and obstacles. Eligible goal changes include visibility changes;
+obstacles include immobile units, so neither is exclusively resource depletion or
+terrain editing. Extra cost excludes unreachable selected neighbors; inspect
+reachability and missed-move counters alongside it.
+
+This adds substantial compute and CSV I/O. Do not use probe-enabled runs for
+performance comparisons. Compare checksum sidecars with an otherwise identical
+probe-disabled run before interpreting results. Input age is unknown (`-1`) for
+fields restored from saves until rebuilt; diagnostic history is not saved.
+With `--telemetry checksums`, `--checksum-world-interval N` can reduce full-world
+hashing to every N ticks (default 1). The binary checksum sidecar still records
+every tick, and the final result still includes a full checksum. Use a short
+every-tick full-world comparison before a larger sampled-world comparison.
+
 ## Verifying a match record
 
 ```sh
