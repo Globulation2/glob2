@@ -940,7 +940,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(r);
 				saveGradient(stream, materialGradients[t][r][sw], size);
 				stream->writeUint8(materialGradientStale[t][r][sw], "suspendedStale");
-				stream->writeUint8(0, "updated"); // historical round-robin byte
+				// Ground natural fields use adaptive demand; air retains the
+				// released round-robin cycle and must resume its exact position.
+				stream->writeUint8(sw==AIR_MOVEMENT_CLASS && gradientUpdated[t][r][sw], "updated");
 				// The "with markets" twin is runtime state like its plain gradient:
 				// a resumed game must walk the same field it left. Its own section:
 				// the text format keys tiles by section name, and the plain
@@ -1134,7 +1136,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readEnterSection(r);
 				loadGradient(stream, materialGradients[t][r][sw], size, packed);
 				materialGradientStale[t][r][sw]=versionMinor >= FILE_FORMAT_VERSION_GRADIENT_DEMAND && loadFlag(stream,"suspendedStale");
-				(void)loadFlag(stream,"updated"); // natural fields now use demand state
+				const bool updated=loadFlag(stream,"updated");
+				gradientUpdated[t][r][sw]=sw==AIR_MOVEMENT_CLASS && updated;
 				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
 				{
 					stream->readEnterSection("markets");

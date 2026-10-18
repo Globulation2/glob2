@@ -4,6 +4,7 @@
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
+#include "LegacyPopulationOutput.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/GradientExecutionAudit.h"
@@ -951,12 +952,13 @@ TEST_CASE("legacy pending natural publication can be saved before any movement q
         glob2test::HeadlessGame original({.wDec=6,.hDec=6,.header=true});
         auto& map=original.game.map;
         map.setResourceByIndex(20,20,WHEAT,10);
+        glob2test::LegacyPopulationOutput::primeMaterialGradient(map,0,WHEAT,0);
         const auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
         REQUIRE(field);
         map.configureGradientPipeline(0,2);
         auto data=std::make_unique<Uint16[]>(map.size);
         std::copy_n(field,map.size,data.get());
-        // Match the pre-169 loader: completed old jobs have no capture metadata,
+        // Match a pre-174 loader: completed old jobs have no capture metadata,
         // and source bookkeeping remains uninitialized until first use.
         map.gradientRuntime->resources={};
         map.gradientRuntime->pipeline.restoreCompleted({
@@ -1023,7 +1025,9 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     }
     original.finishGradientPipeline();
     candidate.finishGradientPipeline();
-    CHECK(original.gradientPipelineStatus().jobs==0); // allocated but never queried by movement
+    // Explicit cold reads above still receive their first complete generation.
+    // Unused catalog definitions add no work to that admitted demand.
+    CHECK(original.gradientPipelineStatus().jobs>0);
     CHECK(original.gradientPipelineStatus().published==candidate.gradientPipelineStatus().published);
     CHECK(original.gradientRuntime->resourceSeeds.allocatedBytes()==candidate.gradientRuntime->resourceSeeds.allocatedBytes());
     for (unsigned material=0;material<MaterialCount;++material)
@@ -2122,8 +2126,13 @@ TEST_CASE("absent natural sources return shared negative guidance without enroll
         // including for a previously published generation retained at depletion.
         map.setResourceByIndex(12,12,WHEAT,1);
         REQUIRE(map.hasMaterialSourceSlot(WHEAT));
-        for (unsigned i=0;i<32 && map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(12,12)]!=GRADIENT_AT_GOAL;++i)
+        // Warm adaptive refreshes are driven by movement demand, rather than
+        // cache inspection. The demanded age cap bounds eventual replacement.
+        for (unsigned i=0;i<128+map.gradientPipelineStatus().delay
+             && map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(12,12)]!=GRADIENT_AT_GOAL;++i) {
+            map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr);
             boundary();
+        }
         REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(12,12)]==GRADIENT_AT_GOAL);
     }
 }

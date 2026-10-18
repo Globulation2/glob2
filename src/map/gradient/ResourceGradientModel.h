@@ -26,23 +26,23 @@ inline I sigmoid(I z) {
     return SigLut[i]+(SigLut[i+1]-SigLut[i])*r/50;
 }
 inline I positive_probability(const std::array<I,7>& x) {
-    constexpr I c[]={10906522,50963554,8002868,15818148,-2098851,4610415,12336586};
-    I z=-1699099422241LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
+    constexpr I c[]={13470807,42231374,15558727,10040355,12405886,3318849,9922545};
+    I z=-1886441879996LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_probability(const std::array<I,7>& x) {
-    constexpr I c[]={12905991,27361518,11464461,5726834,-2743230,-3495566,6404282};
-    I z=-1700061298223LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
+    constexpr I c[]={13879570,11261931,33349407,-2442545,12864754,4792900,-954221};
+    I z=-2060844642461LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I positive_mean(const std::array<I,7>& x) {
-    constexpr I c[]={65316629,1200833680,140367024,145917934,-328221262,140898898,224088167};
-    I z=-12377900823466LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
+    constexpr I c[]={51477207,1240365741,-201788474,206159315,-317690104,72505397,187567494};
+    I z=-5752064656374LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_mean(const std::array<I,7>& x) {
-    constexpr I c[]={-4407263,204441602,37329544,-20383320,2904264,249952,96605360};
-    I z=198080225015LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
+    constexpr I c[]={-29797263,183802549,30807046,54242320,-50940482,1610710,51640750};
+    I z=1371287654695LL; for (int i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline int predict(std::array<I,7> x) {

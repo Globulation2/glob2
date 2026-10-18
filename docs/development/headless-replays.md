@@ -589,8 +589,9 @@ publishes due results, captures once, then admits work before applying orders an
 advancing. Newly admitted AI/statistics work configured with delay zero is due at
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
-old pending results keep their original deadlines. The current replay floor 169
-also requires delayed gradient publication; the sim revision gates these rules. Runtime world publication and
+old pending results keep their original deadlines. The current replay floor 174
+also requires adaptive ground-resource scheduling and the integrated delayed-ground
+and air-routing state; the sim revision gates these rules. Runtime world publication and
 AI-order delivery remain separate: world results publish before capture, while
 due AI orders enter the command schedule and undergo live order validation. See the
 [owner timing contract](../architecture/simulation.md#completed-world-observations).

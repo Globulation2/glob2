@@ -39,7 +39,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return legacy || formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND; }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -148,6 +148,12 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND
+            && (name=="adaptiveResources" || name=="groundUnitsByMovementClass"
+                || (name=="capture" && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end()))) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (!hasDelayedGradientState(formatVersion)) {
             if (name=="mapRuntime") requireGradientRuntime();
             if (preservePending && name=="queuedRequests") {
@@ -228,6 +234,7 @@ public:
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="movementClassesKnown") return;
         if (name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if (value<5000) { if (value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Historical air destination"); value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT; }
@@ -275,6 +282,8 @@ public:
     void writeUint8(Uint8 value,std::string_view name) override
     {
         if(suppressed()) return;
+        if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND
+            && (name=="suspendedStale" || name=="movementClassesKnown")) return;
         if(name=="slot" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT
             && std::find(sections.begin(),sections.end(),"buildingGradientPipeline")!=sections.end()) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
@@ -287,6 +296,12 @@ public:
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
         if(suppressed()) return;
+        if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="count"
+            && !sections.empty() && sections.back()=="gradientPipeline") {
+            if(value>255) throw std::logic_error("Historical periodic job count exceeds its encoding");
+            BinaryOutputStream::writeUint8(Uint8(value),name);
+            return;
+        }
         if(name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");

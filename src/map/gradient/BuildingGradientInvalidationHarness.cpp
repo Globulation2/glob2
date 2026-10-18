@@ -1164,6 +1164,9 @@ TEST_SUITE("BuildingGradientInvalidation")
                 world->game.map.configureGradientPipeline(0, 2);
             }
             auto& map = original.game.map;
+            // Request explicitly: warm natural fields now require demand rather
+            // than participating in the legacy periodic round automatically.
+            map.updateMaterialGradient(0,WHEAT,0);
             map.publishWorldResultsDue();
             auto observation = original.game.snapshotStore().captureBoundary(original.game);
             map.submitWorldWork(observation);

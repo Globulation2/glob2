@@ -8,6 +8,9 @@ since its previous submission, and admits demanded fields at 128 ticks even when
 the prediction is lower. Multiple accepted fields share one executor batch and
 publish after the configured fixed delay. Market, consumer-specific and area
 fields keep their existing mechanisms.
+Owner distance/availability reads also request upkeep, including a stale negative
+answer that would otherwise prevent recruitment. They do not increment the
+movement-query features; the demanded 128-tick cap still guarantees a retry.
 
 ## Runtime and disabled diagnostics
 

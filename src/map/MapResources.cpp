@@ -301,6 +301,14 @@ RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, 
 {
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
 	if (!field) return RouteResult::Pending;
+	if (game && !compute.insideJob() && swim<SWIM_CLASS_COUNT
+		&& field==materialGradients[team][material][swim]) {
+		// Recruitment must eventually reconsider an old negative answer even
+		// when no unit can start walking toward it. This is demand, not a
+		// movement sample: keep the fitted q32/q128 feature definitions intact.
+		gradientRuntime->initializeResourcePolicy(*this);
+		gradientRuntime->resources.fields[(team*MaterialCount+material)*SWIM_CLASS_COUNT+swim].requested=true;
+	}
 	const auto value=field[coordToIndex(x,y)];
 	if (value<=GRADIENT_UNREACHABLE) return RouteResult::Unreachable;
 	if (distance) *distance=gradientTiles(value);
