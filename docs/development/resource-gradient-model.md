@@ -13,6 +13,46 @@ stale negative answer that would otherwise prevent recruitment. Successful
 planning reads are passive. They do not increment the
 movement-query features; the demanded 128-tick cap still guarantees a retry.
 
+## Training workflow
+
+The collection policy determines which training situations can occur. A capped
+policy rarely produces old, heavily queried fields, and stale planning answers
+can prevent recruitment before any movement query occurs. Increasing the number
+of maps alone does not fill those gaps. Use this loop across model generations:
+
+1. Freeze a varied tournament plan and collect an exploration cohort with a
+   mixture of demanded refresh intervals, including intervals beyond the current
+   production cap. Preserve its binary, collector sources, seeds and data.
+2. Audit actual coverage: inspect joint field age and movement demand, planning
+   failures, and representation by map generator, dimensions and match format.
+   Assigned intervals and completed-game counts alone do not establish support.
+3. Fit the integer model using compatible accumulated cohorts and the same
+   persistent map split registry. Reserve exploration weight as candidate-policy
+   cohorts accumulate; keep every map's holdout/fold assignment fixed.
+4. Build the candidate and evaluate complete games on held-out states. Measure
+   CPU with probing disabled and movement/planning quality in separate diagnostic
+   repeats. Use checkpoint interventions to investigate consequences that the
+   cheaper episode labels cannot establish.
+5. Collect another cohort under the candidate to expose the situations it creates.
+   Add those examples to the compatible exploration data, retrain, and repeat the
+   prospective comparison. Keep the incumbent unless the candidate meets the
+   performance and quality requirements, including subgroup failures and tails.
+
+There is no automatic convergence or promotion guarantee. Keep conservative
+runtime fallbacks for unsupported situations, retain fixed stress cases, and
+rotate fresh test maps to avoid repeatedly tuning to one evaluation suite. The
+shipped model remains a deterministic integer calculation; learning happens only
+in the offline tools.
+
+A game produces many training episodes. Each episode concerns one field over
+32 ticks: capture the seven scheduler features, retain the serving field, and
+privately build a refreshed alternative. Score their additional direction cost
+on subsequent live movement queries after the publication delay. The difference
+is the movement-benefit target. These are comparisons along the observed game
+trajectory, not two simulations of alternative futures. Complete quiet movement
+episodes retain their valid zero future benefit. Planning reachability errors
+are separate measurements and currently do not train the movement heads.
+
 ## Runtime and disabled diagnostics
 
 `ResourceGradientPolicy` owns simulation state. Each allocated natural field
@@ -144,6 +184,23 @@ python3 tools/resource_gradient_model.py emit \
   --header artifacts/resource-gradient-training/ResourceGradientModel.h
 python3 -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_tournament
 ```
+
+For subsequent generations, pass every compatible cohort explicitly and reuse
+the existing split registry:
+
+```sh
+python3 tools/resource_gradient_model.py fit \
+  --manifest artifacts/gradient-exploration/cohort.json \
+  --manifest artifacts/gradient-candidate-v1/cohort.json \
+  --split-registry artifacts/resource-gradient-splits.json \
+  --output artifacts/gradient-refit/model.json
+```
+
+Collect `gradient-candidate-v1` using `run` with the candidate binary, a new output
+directory and cohort identity, and no `--exploration` option. The runner records
+the candidate role automatically. Reusing a plan is allowed; repeated maps stay
+in their existing validation groups. Inspect the fit and prospective evaluation
+before exporting coefficients into the engine.
 
 The feature list, transforms and regularization are fixed. Every fit standardizes
 using its training rows only, fits logistic heads with C=1 and conditional ridge
