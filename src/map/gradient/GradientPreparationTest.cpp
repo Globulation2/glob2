@@ -1922,7 +1922,7 @@ TEST_CASE("the version-152 checksum adapter excludes newly introduced publicatio
     map.setResourceByIndex(12,12,WHEAT,1);
     const auto legacy=map.checkSum(true,false,true);
     const auto current=map.checkSum(true,false,false);
-    REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);
+    REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0)==nullptr);
     CHECK(map.checkSum(true,false,true)==legacy);
     CHECK(map.checkSum(true,false,false)!=current);
 }

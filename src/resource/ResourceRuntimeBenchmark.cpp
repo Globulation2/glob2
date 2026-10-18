@@ -110,7 +110,7 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         // part of the lookup measurement. Missing-source planes also publish a
         // real completed Unreachable field through the same delayed pipeline.
         for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-            map.requestMaterialField(team,material,0);
+            map.getMaterialGradientSlot(team,material,0);
         glob2test::awaitGradient(world.game,[&]() -> const Uint16* {
             for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
                 if(!map.lookupMaterialGradientSlot(team,material,0)) return nullptr;

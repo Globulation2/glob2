@@ -1085,14 +1085,6 @@ public:
     const Uint16* lookupClearAreasGradient(int team, int swim) const { return clearAreasGradient[team][swim]; }
 	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
     const Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
-    FieldReadiness requestMaterialField(int team,int material,int swim,bool markets=false,const Building* consumer=nullptr)
-    { return getMaterialGradientSlot(team,material,swim,markets,consumer) ? FieldReadiness::Ready : FieldReadiness::Pending; }
-    FieldReadiness requestForbiddenField(int team,int swim)
-    { return getForbiddenGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
-    FieldReadiness requestGuardField(int team,int swim)
-    { return getGuardAreasGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
-    FieldReadiness requestClearField(int team,int swim)
-    { return getClearAreasGradient(team,swim) ? FieldReadiness::Ready : FieldReadiness::Pending; }
 
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).

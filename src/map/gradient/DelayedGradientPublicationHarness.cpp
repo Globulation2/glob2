@@ -157,7 +157,7 @@ TEST_CASE("cold material and area fields publish identical generations with one 
         for (const auto* field : fields()) CHECK(field==nullptr);
         const auto queued=map.gradientRuntime->fieldRequests.size();
         for (int i=0;i<20;++i)
-            REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);
+            REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0)==nullptr);
         CHECK(map.gradientRuntime->fieldRequests.size()==queued);
 
         std::vector<std::vector<Uint32>> trajectory;
@@ -215,7 +215,7 @@ TEST_CASE("ordinary terrain edits with markets disabled round-trip binary and te
         map.configureCompute(2); map.configureGradientPipeline(1,3);
         REQUIRE_FALSE(map.marketsV2Enabled());
         map.setResourceByIndex(20,20,WHEAT,1);
-        map.requestMaterialField(0,WHEAT,0);
+        map.getMaterialGradientSlot(0,WHEAT,0);
         advanceFields(game); // Keep an ordinary material ticket during painting.
         map.paintCell(12,12,WATER);
         // Loading rejects market routing state when the feature is disabled,
