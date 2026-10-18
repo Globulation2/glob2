@@ -172,6 +172,11 @@ public:
                 return;
             }
         }
+        if ((name=="preparedGradients" && formatVersion<FILE_FORMAT_VERSION_HIRING_GRADIENTS)
+            || (name=="initializationRequests" && formatVersion<FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS)) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
             suppressedAt=sections.size();
             return;
@@ -231,6 +236,13 @@ public:
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
+        const bool hiring=std::find(sections.begin(),sections.end(),"HiringPipeline")!=sections.end();
+        if (!injecting && hiring
+            && ((name=="gradients" && formatVersion<FILE_FORMAT_VERSION_HIRING_GRADIENTS)
+                || (name=="initializations" && formatVersion<FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS))) {
+            if (value) throw std::logic_error("Historical hiring fixture cannot discard prepared or proactive gradients");
+            return;
+        }
         if (!hasInitialBuildingGradient(formatVersion) && name=="count"
             && sections.size()>=2 && sections.back()=="queue"
             && sections[sections.size()-2]=="buildingGradientPipeline") {

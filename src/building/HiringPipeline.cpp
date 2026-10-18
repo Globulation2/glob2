@@ -8,7 +8,6 @@
 #include "BuildingGradientJob.h"
 #include "SnapshotGradient.h"
 #include "BuildingGradientDepthPolicy.h"
-#include "GradientExecutionAudit.h"
 #include "ai/observation/AIWorldView.h"
 #include <PackedArray.h>
 #include <bit>
@@ -184,7 +183,6 @@ struct HiringPlanner::PreparedRoute
 	{
 		if (job.data)
 			return;
-		GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
 		field->width = snapshot.width;
 		field->height = snapshot.height;
 		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);

@@ -325,6 +325,8 @@ TEST_CASE("constrained explorer flag eligibility applies route accessibility and
     explorer->medical=Unit::MED_FREE;
     flag->unitStayRange=0;
     int routeDistance=0,distance=0;
+    // This case compares settled route distance with the hunger threshold.
+    glob2test::awaitBuildingGradient(world.game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
     REQUIRE(world.game.map.buildingAvailable(flag,AIR_MOVEMENT_CLASS,8,8,&routeDistance,BuildingRoute::Combat));
     REQUIRE(routeDistance>0);
     explorer->hungriness=1;

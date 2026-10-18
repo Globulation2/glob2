@@ -3,6 +3,8 @@
 #include "GradientExecutionAudit.h"
 #include "EngineFixtures.h"
 #include "HiringPipeline.h"
+#include "FileFormatVersions.h"
+#include "LegacyPopulationOutput.h"
 #include "Order.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
@@ -711,10 +713,37 @@ TEST_SUITE("HiringGradientPreparation")
 			}
 		}
 	}
-	TEST_CASE("formats 170 and 171 load without proactive initialization records")
+    TEST_CASE("historical fixture adapter omits only empty new hiring sections")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+        for (int version : {164,169,173,174,175}) {
+            CAPTURE(version);
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            glob2test::LegacyPopulationOutput output(bytes,&world.game,version);
+            HiringPipeline original(world.game.map.computeExecutor());
+            original.save(&output);
+            output.writeUint32(0xabcdef01,"sentinel"); output.flush();
+            GAGCore::BinaryInputStream input(
+                new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));
+            input.seekFromStart(0);
+            HiringPipeline restored(world.game.map.computeExecutor());
+            restored.load(world.game,&input,version);
+            CHECK(input.readUint32("sentinel")==0xabcdef01);
+        }
+        // A synthetic historical fixture must never erase real new-format work.
+        for (const auto* count : {"gradients","initializations"}) {
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            glob2test::LegacyPopulationOutput output(bytes,&world.game,173);
+            output.writeEnterSection("HiringPipeline");
+            CHECK_THROWS_AS(output.writeUint32(1,count),std::logic_error);
+            output.writeLeaveSection();
+        }
+    }
+	TEST_CASE("pre-174 formats load without gradient or proactive initialization records")
 	{
 		glob2test::HeadlessGlobals globals;
-		for (int version : {170, 171})
+		for (int version : {170, 171, 173})
 		{
 			CAPTURE(version);
 			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
@@ -748,7 +777,7 @@ TEST_SUITE("HiringGradientPreparation")
 			out.writeUint32(0, "buildings");
 			out.writeEnterSection("buildingLists");
 			out.writeLeaveSection();
-			if (version >= 171)
+			if (version >= FILE_FORMAT_VERSION_HIRING_GRADIENTS)
 			{
 				out.writeUint32(0, "gradients");
 				out.writeEnterSection("preparedGradients");

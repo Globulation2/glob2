@@ -57,7 +57,9 @@ TEST_SUITE("HiringPlanner")
         building->updateCallLists();
         worker->carriedMaterial=WHEAT;
         worker->hungriness=0;
-        game.map.prepareBuildingGradient(building,worker->swimClass(),BuildingRoute::Footprint);
+        // Cold building routes now publish at a completed-world boundary.
+        // Await the seed without completing its retained lazy frontier.
+        glob2test::awaitBuildingGradient(game,building,worker->swimClass(),BuildingRoute::Footprint);
         const auto slot=building->routeSlot(worker->swimClass(),BuildingRoute::Footprint);
         auto* search=building->globalGradientSearch[slot].get();
         REQUIRE(search);

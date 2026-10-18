@@ -1687,6 +1687,7 @@ TEST_CASE("air shares preparation and lazy building fields while ignoring ground
         REQUIRE(owner==worker);
     }
     int distance=0;
+    glob2test::awaitBuildingGradient(game,building,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
     REQUIRE(map.buildingAvailable(building,AIR_MOVEMENT_CLASS,4,4,&distance));
     const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
     const auto lease=map.leaseBuildingRoute(building,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
@@ -1785,6 +1786,8 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         CHECK(map.isFreeForMovement(9,8,AIR_MOVEMENT_CLASS,1));
         CHECK_FALSE(map.isFreeForMovement(9,8,0,1));
         int distance=-1,dx=0,dy=0;
+        glob2test::awaitBuildingGradient(game,inn,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+        glob2test::awaitBuildingGradient(game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
         CHECK(map.buildingAvailable(inn,AIR_MOVEMENT_CLASS,8,8,&distance,BuildingRoute::Footprint));
         CHECK(distance>0);
         CHECK_FALSE(map.buildingAvailable(inn,0,8,8,&distance,BuildingRoute::Footprint));
@@ -1851,6 +1854,8 @@ TEST_CASE("ordinary air service choices keep geometric ranking without allocatin
         // A real terrain edit must switch selection to the shared route policy.
         map.paintCell(60,60,VOID_HOLE);
         REQUIRE(map.hasAirRoutingConstraints());
+        for (auto* building : {near,far})
+            glob2test::awaitBuildingGradient(world.game,building,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
         REQUIRE(select()!=nullptr);
         for (auto* building : {near,far}) {
             const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
@@ -1987,6 +1992,7 @@ TEST_CASE("ordinary air explorer recruitment does not create a combat field" * d
     }
     map.paintCell(60,60,VOID_HOLE);
     REQUIRE(map.hasAirRoutingConstraints());
+    glob2test::awaitBuildingGradient(world.game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
     int distance=-1;
     REQUIRE(flag->considerUnitForExplorerFlag(flyer,&distance));
     CHECK(flag->globalGradient[slot]!=nullptr);
@@ -2020,6 +2026,7 @@ TEST_CASE("ordinary flying building jobs and warrior recruitment avoid route fie
         }
         map.paintCell(60,60,VOID_HOLE);
         REQUIRE(map.hasAirRoutingConstraints());
+        glob2test::awaitBuildingGradient(world.game,building,AIR_MOVEMENT_CLASS,route);
         int distance=-1;
         REQUIRE(eligible(&distance));
         CHECK(building->globalGradient[slot]!=nullptr);

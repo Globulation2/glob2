@@ -10,7 +10,6 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
-#include "GradientExecutionAudit.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
@@ -43,7 +42,6 @@ void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
-    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
     p.inputs=BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease,p.swim);
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
