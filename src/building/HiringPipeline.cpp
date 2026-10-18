@@ -240,6 +240,11 @@ struct HiringPlanner::PreparedRoute
 		result->building.generation = s->readUint32("identity");
 		auto &job = result->job;
 		job.slot = s->readUint8("slot");
+        if (!hasUnifiedMovement(versionMinor)) {
+            if (job.slot >= BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT)
+                throw std::runtime_error("Invalid legacy prepared hiring gradient slot");
+            job.slot = (job.slot / SWIM_CLASS_COUNT) * MOVEMENT_CLASS_COUNT + job.slot % SWIM_CLASS_COUNT;
+        }
 		job.captureTick = s->readUint32("captured");
 		job.generation = s->readUint32("topology");
 		job.locked = readFlag(s, "locked");
@@ -250,8 +255,8 @@ struct HiringPlanner::PreparedRoute
 			job.slot >= BUILDING_GRADIENT_COUNT || job.captureTick != captured ||
 			!result->building.generation || job.resourceState > 2)
 			throw std::runtime_error("Invalid prepared hiring gradient");
-		job.swim = job.slot % SWIM_CLASS_COUNT;
-		job.route = BuildingRoute(job.slot / SWIM_CLASS_COUNT);
+		job.swim = job.slot % MOVEMENT_CLASS_COUNT;
+		job.route = BuildingRoute(job.slot / MOVEMENT_CLASS_COUNT);
 		auto *live = game.resolveBuilding(result->building);
 		if (live)
 			job.epoch = live->refreshEpoch[job.slot];
@@ -295,7 +300,7 @@ struct HiringPlanner::PreparedRoute
 		// Access metadata is shared by swim classes of one variant. Keep a
 		// newer sibling's result, including an owner build later in this tick.
 		bool newest = true;
-		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 		{
 			if (swim == job.swim || swimAccessVariant(swim) != swimAccessVariant(job.swim))
 				continue;
@@ -367,15 +372,15 @@ void HiringPipeline::compute(void *context, std::size_t)
 			{
 				const auto &candidate = list.candidates[i];
 				const auto *unit = world.unitAtSlot(candidate.unit.gid);
-				if (!unit || unit->identity != candidate.unit || unit->performance[FLY])
+				if (!unit || unit->identity != candidate.unit)
 					continue;
 				const auto kind =
 					list.key.job == Hiring::Job::Delivery || list.key.job == Hiring::Job::Fetch
 						? BuildingRoute::Footprint
 					: list.key.job == Hiring::Job::Clear ? BuildingRoute::Clearing
 														 : BuildingRoute::Combat;
-				const int slot = int(kind) * SWIM_CLASS_COUNT +
-								 Map::swimClass(unit->performance[WALK], unit->performance[SWIM]);
+				const int slot = int(kind) * MOVEMENT_CLASS_COUNT +
+								 (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
 				for (const auto &route : *w.input->routes)
 					if (route.building == building.building && route.slot == slot)
 					{
@@ -757,7 +762,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 	HiringPlanner::Inputs inputs;
 	inputs.world = world.simulationView();
 	auto routes = std::make_shared<std::vector<HiringPlanner::Inputs::Route>>();
-	std::array<unsigned, Team::MAX_COUNT> groundClasses{};
+	std::array<unsigned, Team::MAX_COUNT> movementClasses{};
 	if (initializations && !initializations->empty())
 	{
 		const AIEngine::AIWorldView view(inputs.world);
@@ -767,9 +772,9 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
 			if (initializationTeams & (1u << team))
 				for (const auto &unit : view.unitsForTeam(team))
-					if (!unit->isDead && !unit->performance[FLY])
-						groundClasses[team] |=
-							1u << Map::swimClass(unit->performance[WALK], unit->performance[SWIM]);
+					if (!unit->isDead)
+						movementClasses[team] |=
+							1u << (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
 	}
 	for (const auto &b : inputs.world.entities->buildings)
 	{
@@ -797,9 +802,9 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						[](int value) { return value > 0; });
 		const bool clearing = type.attractsRole(0);
 		const bool combat = type.attractsRole(1) || type.attractsRole(2);
-		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
-			if (((hire ? inputs.world.entities->availableGroundClasses[b.team] : 0) |
-				 (initialize ? groundClasses[b.team] : 0)) &
+		for (unsigned c = 0; c < MOVEMENT_CLASS_COUNT; ++c)
+			if (((hire ? inputs.world.entities->availableMovementClasses[b.team] : 0) |
+				 (initialize ? movementClasses[b.team] : 0)) &
 				(1u << c))
 				for (auto route :
 					 {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})

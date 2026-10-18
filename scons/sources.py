@@ -30,6 +30,7 @@ CLIENT_SOURCES = (
     'ai/observation/AIWorldCapture.cpp',
     'engine/sim/snapshot/WorldCapture.cpp',
     'engine/sim/snapshot/WorldSnapshot.cpp',
+    'engine/sim/snapshot/SnapshotChecksum.cpp',
     'engine/sim/snapshot/SnapshotStore.cpp',
     'engine/sim/snapshot/SnapshotStorage.cpp',
     'ai/observation/AIQueries.cpp',

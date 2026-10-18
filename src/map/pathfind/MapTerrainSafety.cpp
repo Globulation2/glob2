@@ -49,7 +49,7 @@ struct EscapeProfile
 
     bool freeNextStep(const Map& map, int x, int y) const
     {
-        if (air) return map.isFreeForAirUnit(x, y);
+        if (air) return map.isFreeForAirUnit(x,y);
         if (!air && swim==WATER_ONLY_CLASS && !map.terrainPropertiesAt(x,y).swimmable) return false;
         return escapeForbidden ? map.isFreeForGroundUnitNoForbidden(x, y, swim > 0)
             : map.isFreeForGroundUnit(x, y, swim > 0, team);
@@ -149,7 +149,7 @@ bool Map::pathfindTerrainSafety(Unit* unit)
     unit->dx = unit->dy = 0;
     unit->direction = 8;
     const bool air = unit->performance[FLY] > 0;
-    const EscapeProfile profile{air, unit->swimClass(), unit->owner->me,
+    const EscapeProfile profile{air, unit->movementClass(), unit->owner->me,
         !air && bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
 
     // Avoid allocating a field on wholly hazardous maps. Counts are maintained
@@ -163,9 +163,9 @@ bool Map::pathfindTerrainSafety(Unit* unit)
         }
     if (!hasSafeTerrain) return false;
 
-    // Ground units share by permissions, not unit type or HP. Flyers ignore team
-    // paint and share one field. Occupancy is deliberately checked only at descent.
-    const unsigned key = air ? 0 : 1 + (unit->owner->teamNumber * SWIM_CLASS_COUNT + profile.swim) * 2 + profile.escapeForbidden;
+    // Ground fields depend on team paint and escape policy. Air fields ignore
+    // paint and share across teams; occupancy is checked only at descent.
+    const unsigned key = 1 + ((air ? 0 : unit->owner->teamNumber) * MOVEMENT_CLASS_COUNT + profile.swim) * 2 + profile.escapeForbidden;
     auto& cache = gradientRuntime->safety;
     auto& field = cache.acquire(key, size);
     const Uint64 generation = air ? cache.airGeneration : cache.groundGeneration;

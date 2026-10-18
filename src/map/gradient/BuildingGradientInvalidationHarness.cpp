@@ -377,34 +377,43 @@ static void delayedFields()
 		auto refresh=[&]() { if(kind==0) map.updateMaterialGradient(0, 0, swim);
 			else if(kind==1) map.updateGuardAreasGradient(0, swim); else map.updateClearAreasGradient(0, swim); };
 		const auto cells=map.getW()*map.getH();
-		field();
+		const auto reference=[&]() {
+			std::vector<Uint16> values(cells);
+			if(kind==0) map.seedMaterialGradient(0, 0, swim, values.data());
+			else if(kind==1) map.seedGuardAreasGradient(0, swim, values.data());
+			else map.seedClearAreasGradient(0, swim, values.data());
+			map.propagateGradient(values.data(), swim);
+			return values;
+		};
+		const auto original=reference();
+		map.configureCompute(workers+1);
 		map.configureGradientPipeline(workers, 3);
-		map.advanceGradientPipeline(); map.syncStep(0); preparePeriodic(map); // Seed the only allocated periodic slot.
+		const auto publish=[&]() { ++world.game.stepCounter; map.advanceGradientPipeline(); };
+		const auto capture=[&]() { map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); };
+		require(!field(), "cold read enrolls without publishing a placeholder");
+		publish(); capture(); // Admission at advance 1, publication at advance 4.
 		require(map.gradientPipelineStatus().jobs==1, "pipeline scheduled a real field");
 		map.addForbidden(41, 40, 0);
 		refresh();
-		const std::vector<Uint16> expected(field(),field()+cells);
-		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().discarded==1, "synchronous refresh supersedes queued snapshot");
-		require(std::vector<Uint16>(field(),field()+cells)==expected, "old field cannot overwrite fresh synchronous field");
-		// A subsequent periodic snapshot publishes normally at its fixed deadline.
-		map.syncStep(1); preparePeriodic(map);
-		map.advanceGradientPipeline(); map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().published==0, "no early publication");
-		map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().published==1, "publication at deadline");
-		map.syncStep(2); preparePeriodic(map);
-		std::vector<Uint16> frozen(cells);
-		if(kind==0) map.seedMaterialGradient(0, 0, swim, frozen.data());
-		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
-		else map.seedClearAreasGradient(0, swim, frozen.data());
-		map.propagateGradient(frozen.data(), swim);
+		publish(); require(!field(), "first captured field remains pending at advance 2");
+		publish(); require(!field(), "first captured field remains pending at advance 3");
+		publish();
+		require(field()!=nullptr, "cold field publishes at its original deadline despite a soft edit");
+		require(map.gradientPipelineStatus().discarded==0, "soft changes do not supersede private work");
+		require(std::vector<Uint16>(field(),field()+cells)==original, "first publication uses its original capture");
+		const auto frozen=reference();
+		require(frozen!=original, "the changed world requires a different field");
+		refresh(); capture();
+
 		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
-		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
+		publish(); publish();
+		require(std::vector<Uint16>(field(),field()+cells)==original, "refresh cannot publish before its deadline");
+		publish();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
-		map.syncStep(3); preparePeriodic(map); // Destruction must safely drain a job in flight.
+		refresh(); capture(); // Destruction must safely drain private work.
+
 	}
-	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
+	std::puts("PASS cold and soft-stale resource/guard/clear deadlines, captured terrain, teardown");
 }
 
 // Scheduled kernel equivalence: the worker's building seeder and captured-input
@@ -638,7 +647,7 @@ constexpr Uint32 RuntimeSentinel = 0x51a7c0de;
 std::string saveLegacyRuntime(Map& map, int version)
 {
     auto* backend = new GAGCore::MemoryStreamBackend;
-    glob2test::LegacyPopulationOutput output(backend, map.game, version);
+    glob2test::LegacyPopulationOutput output(backend, map, version);
     map.saveRuntimeState(&output);
     output.writeUint32(RuntimeSentinel, "followingSection");
     output.flush();
@@ -1143,10 +1152,10 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
-    TEST_CASE("owner observation at tick zero publishes cold fields and access metadata together at tick K")
+    TEST_CASE("owner observation at tick zero publishes cold fields and access metadata at tick one")
     {
         glob2test::HeadlessGlobals globals;
-        constexpr unsigned delay=4;
+        constexpr unsigned delay=4, initialDelay=1;
         for (unsigned workers:{0u,2u}) {
             CAPTURE(workers);
             World world;
@@ -1173,7 +1182,7 @@ TEST_SUITE("BuildingGradientInvalidation")
             game.observeCompletedWorld();
             REQUIRE(map.buildingGradientPipelineStatus().pending==2);
             map.finishGradientPipeline(); // Force early private completion without publication.
-            for (unsigned tick=0;tick<delay;++tick) {
+            for (unsigned tick=0;tick<initialDelay;++tick) {
                 CAPTURE(tick);
                 if (tick) { ++game.stepCounter; game.observeCompletedWorld(); }
                 CHECK(map.lookupBuildingField(site,0,BuildingRoute::Footprint)==nullptr);
@@ -1182,7 +1191,7 @@ TEST_SUITE("BuildingGradientInvalidation")
                 CHECK(flag->anyResourceToClear[variant]==0);
             }
             ++game.stepCounter; game.observeCompletedWorld();
-            REQUIRE(game.stepCounter==delay);
+            REQUIRE(game.stepCounter==initialDelay);
             REQUIRE(map.lookupBuildingField(site,0,BuildingRoute::Footprint)!=nullptr);
             REQUIRE(map.lookupBuildingField(flag,0,BuildingRoute::Clearing)!=nullptr);
             CHECK(site->lastGlobalGradientUpdateStepCounter[site->routeSlot(0,BuildingRoute::Footprint)]==0);
@@ -1193,6 +1202,87 @@ TEST_SUITE("BuildingGradientInvalidation")
             if (workers && GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
             else CHECK(audit.totals().owner>0);
         }
+    }
+
+    TEST_CASE("released and building-draft format lineages select independent layouts [save-format]")
+    {
+        struct Layout { unsigned version; bool movement, snapshot, delayed, initial; };
+        for (const auto layout : {
+            Layout{168,false,true,false,false}, Layout{169,false,true,true,false},
+            Layout{170,false,false,false,true}, Layout{171,true,false,false,false},
+            Layout{172,true,true,false,false}, Layout{173,true,true,true,false},
+            Layout{174,false,false,false,true}, Layout{175,true,true,true,true}}) {
+            CAPTURE(layout.version);
+            CHECK(hasUnifiedMovement(layout.version)==layout.movement);
+            CHECK(hasSnapshotChecksumMetadata(layout.version)==layout.snapshot);
+            CHECK(hasDelayedGradientState(layout.version)==layout.delayed);
+            CHECK(hasInitialBuildingGradient(layout.version)==layout.initial);
+        }
+    }
+
+    TEST_CASE("released173 and building drafts preserve queued and admitted building routes [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int version : {170,173,174}) for (bool admitted : {false,true}) {
+            CAPTURE(version); CAPTURE(admitted);
+            World source, restored;
+            Scheduler scheduled(source,0,4), restoredScheduler(restored,0,4);
+            source.game.gameHeader.setResourceGrowthDisabled(true);
+            restored.game.gameHeader.setResourceGrowthDisabled(true);
+            const auto type=source.game.buildingsTypes.getTypeNum("clearingflag",0,false);
+            auto* original=source.game.addBuilding(24,24,type,0);
+            auto* loaded=restored.game.addBuilding(24,24,type,0);
+            REQUIRE(original); REQUIRE(loaded);
+            for (auto* flag : {original,loaded}) {
+                flag->unitStayRange=4; flag->setClearsMaterial(WOOD,true);
+            }
+            source.game.map.setResourceByIndex(26,24,WOOD,1);
+            restored.game.map.setResourceByIndex(26,24,WOOD,1);
+            const auto slot=original->routeSlot(0,BuildingRoute::Clearing);
+            // Master173 could queue only warm building refreshes. Published
+            // building drafts170/174 additionally permit an initial cold field.
+            if (!hasInitialBuildingGradient(version)) source.warm(original);
+            REQUIRE(source.game.map.requestBuildingRefresh(original,slot));
+            REQUIRE(source.game.map.buildingGradientPipelineStatus().queued==1);
+            if (admitted) {
+                scheduled.tick();
+                REQUIRE(source.game.map.buildingGradientPipelineStatus().pending==1);
+            }
+            restored.game.stepCounter=source.game.stepCounter;
+            const auto bytes=saveLegacyRuntime(source.game.map,version);
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+            GAGCore::BinaryInputStream input(backend);
+            restored.game.map.loadRuntimeState(&input,version);
+            CHECK(input.readUint32("followingSection")==RuntimeSentinel);
+            CHECK(restored.game.map.buildingGradientPipelineStatus().queued==
+                source.game.map.buildingGradientPipelineStatus().queued);
+            CHECK(restored.game.map.buildingGradientPipelineStatus().pending==
+                source.game.map.buildingGradientPipelineStatus().pending);
+            CHECK(loaded->refreshRequested.test(slot));
+            CHECK(bool(loaded->globalGradient[slot])==bool(original->globalGradient[slot]));
+            CHECK(saveRuntime(restored.game.map)==saveRuntime(source.game.map));
+            // This uses Clearing rather than Footprint to pin the old8-to-new9
+            // movement-class slot remap as well as the 16/32-bit queue counts.
+        }
+    }
+
+    TEST_CASE("empty building-draft174 runtime uses its widened queue count [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        World source, restored;
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        glob2test::LegacyPopulationOutput output(backend,&source.game,174);
+        source.game.map.saveRuntimeState(&output);
+        output.writeUint32(RuntimeSentinel,"followingSection"); output.flush();
+        const auto bytes=backend->takeContents();
+        auto* saved=new GAGCore::MemoryStreamBackend;
+        saved->write(bytes.data(),bytes.size()); saved->seekFromStart(0);
+        GAGCore::BinaryInputStream input(saved);
+        restored.game.map.loadRuntimeState(&input,174);
+        CHECK(input.readUint32("followingSection")==RuntimeSentinel);
+        CHECK(restored.game.map.buildingGradientPipelineStatus().queued==0);
+        CHECK(restored.game.map.buildingGradientPipelineStatus().pending==0);
     }
 
     TEST_CASE("observation phase is covered by both current checksum tiers")
@@ -1211,10 +1301,10 @@ TEST_SUITE("BuildingGradientInvalidation")
         }
     }
 
-    TEST_CASE("initial legacy saves bootstrap only when their observation was not admitted")
+    TEST_CASE("released saves through format168 bootstrap only when their observation was not admitted")
     {
         glob2test::HeadlessGlobals globals;
-        for (int legacyVersion : {164,165,166})
+        for (int legacyVersion : {164,165,166,167,168})
         for (bool admitted : {false,true}) {
             CAPTURE(legacyVersion); CAPTURE(admitted);
             World source, restored;
@@ -1243,13 +1333,13 @@ TEST_SUITE("BuildingGradientInvalidation")
     TEST_CASE("world observation publication and admission survive save boundaries")
     {
         glob2test::HeadlessGlobals globals;
-        for (int legacyVersion : {164,165,166}) {
+        for (int legacyVersion : {164,165,166,167,168}) {
             CAPTURE(legacyVersion);
             World original, restored, legacy;
             for (World* world : {&original, &restored, &legacy}) {
                 world->game.stepCounter = 37;
                 world->game.map.setResourceByIndex(20, 20, WHEAT, 1);
-                world->game.map.getMaterialGradientSlot(0, WHEAT, 0);
+                glob2test::LegacyPopulationOutput::primeMaterialGradient(world->game.map,0,WHEAT,0);
                 world->game.map.configureGradientPipeline(0, 2);
             }
             auto& map = original.game.map;
@@ -1292,13 +1382,16 @@ TEST_SUITE("BuildingGradientInvalidation")
             legacy.game.map.publishWorldResultsDue();
             CHECK(map.gradientPipelineStatus().published == 0);
             CHECK(restored.game.map.gradientPipelineStatus().published == 0);
-            CHECK(legacy.game.map.gradientPipelineStatus().published == 1);
+            CHECK(legacy.game.map.gradientPipelineStatus().published == (legacyVersion<FILE_FORMAT_VERSION_SINGLE_OBSERVATION ? 1 : 0));
             ++original.game.stepCounter;
             ++restored.game.stepCounter;
+            ++legacy.game.stepCounter;
             map.publishWorldResultsDue();
             restored.game.map.publishWorldResultsDue();
+            legacy.game.map.publishWorldResultsDue();
             CHECK(map.gradientPipelineStatus().published == 1);
             CHECK(restored.game.map.gradientPipelineStatus().published == 1);
+            CHECK(legacy.game.map.gradientPipelineStatus().published == 1);
             const auto* a = map.getMaterialGradientSlot(0,WHEAT,0);
             const auto* b = restored.game.map.getMaterialGradientSlot(0,WHEAT,0);
             CHECK(std::equal(a, a + map.getW() * map.getH(), b));
@@ -1359,6 +1452,54 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledFixedDeadlines();
 	}
+    TEST_CASE("more than 64 building refreshes retain their FIFO without synchronous overflow across saves")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned workers : {0u, 2u}) for (bool text : {false, true}) {
+            CAPTURE(workers); CAPTURE(text);
+            World source, restored;
+            Scheduler s(source, workers, 4), r(restored, workers, 4);
+            std::vector<Building*> buildings, loaded;
+            for (unsigned i=0; i<65; ++i) {
+                const int x=4+6*(i%8), y=4+6*(i/8);
+                buildings.push_back(source.place(x,y));
+                loaded.push_back(restored.place(x,y));
+            }
+            for (auto* b:buildings) {
+                source.warm(b);
+                REQUIRE(source.available(b,2,2));
+            }
+            const auto before=s.status();
+            for (unsigned i=0; i<64; ++i) REQUIRE(s.map.requestBuildingRefresh(buildings[i],0));
+            CHECK(s.status().queued==64);
+            CHECK(s.status().synchronous==before.synchronous);
+            // Coalescing an existing destination must not trigger overflow.
+            REQUIRE(s.map.requestBuildingRefresh(buildings[1],0));
+            CHECK(s.status().queued==64);
+            CHECK(s.status().synchronous==before.synchronous);
+            REQUIRE(s.map.requestBuildingRefresh(buildings[64],0));
+            CHECK(s.status().queued==65);
+            CHECK(s.status().synchronous==before.synchronous);
+            CHECK(s.status().synchronousByReason[std::size_t(Map::BuildingSyncReason::Overflow)]
+                ==before.synchronousByReason[std::size_t(Map::BuildingSyncReason::Overflow)]);
+            for (auto* building:buildings) CHECK(building->refreshRequested.test(0));
+
+            const auto bytes=saveRuntime(s.map,text);
+            loadRuntime(r.map,bytes,text);
+            CHECK(r.status().queued==65);
+            CHECK(saveRuntime(r.map,text)==bytes);
+            for (auto* building:loaded) CHECK(building->refreshRequested.test(0));
+            // Coalescing the oldest destination preserves every queued refresh,
+            // including after loading, rather than evicting a published field.
+            REQUIRE(s.map.requestBuildingRefresh(buildings.front(),0));
+            REQUIRE(r.map.requestBuildingRefresh(loaded.front(),0));
+            CHECK(buildings[1]->refreshRequested.test(0));
+            CHECK(loaded[1]->refreshRequested.test(0));
+            CHECK(s.status().queued==65);
+            CHECK(r.status().queued==65);
+            CHECK(saveRuntime(s.map,text)==saveRuntime(r.map,text));
+        }
+    }
 	TEST_CASE("requests during team stepping are captured at the observation boundary")
 	{
 		glob2test::HeadlessGlobals globals;

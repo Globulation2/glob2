@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
 #include "BinaryStream.h"
@@ -111,31 +112,61 @@ TEST_CASE("same-size map replacement and terrain edits refresh ecology")
     CHECK(field.at(8,8)==field.at(40,8));
 }
 
-TEST_CASE("terrain edits refresh escape costs and supersede queued route snapshots")
+TEST_CASE("terrain edits refresh escape costs after captured routes publish at their fixed deadline")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     auto& map = world.game.map;
     for (int y=6;y<11;++y) for (int x=6;x<11;++x) map.addForbidden(x,y,0);
-    auto* escape = map.getForbiddenGradient(0,0);
+    auto* escape = glob2test::awaitGradient(world.game,[&] { return map.getForbiddenGradient(0,0); });
     const auto old = escape[map.coordToIndex(8,8)];
     {
         auto batch = map.editTerrain();
         for (int x=8;x<12;++x) map.paintCell(x,8,TRAIL);
     }
-    CHECK(escape[map.coordToIndex(8,8)] > old);
+    CHECK(escape[map.coordToIndex(8,8)] == old); // Guidance remains stale until publication.
+    map.updateForbiddenGradient(0,0);
+    auto* refreshed=glob2test::awaitGradient(world.game,[&] {
+        auto* field=map.getForbiddenGradient(0,0);
+        return field!=escape ? field : nullptr;
+    });
+    CHECK(refreshed[map.coordToIndex(8,8)] > old);
+    map.resetGradientPipeline();
+    map.configureGradientPipeline(0,2);
     map.setResourceByIndex(15,15,WHEAT,1);
     map.getMaterialGradientSlot(0,WHEAT,0);
-    map.configureGradientPipeline(0,2);
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
     map.stagePeriodicGradientPreparation();
-    map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
-    map.paintCell(9,8,ICE);
+    map.game->snapshotStore().invalidateBoundary();
+    map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
+    std::vector<Uint16> captured;
+    pipeline.visitPendingSnapshots([&](const auto& pending) {
+        captured.assign(pending.data,pending.data+map.cellCount());
+    });
+    REQUIRE(captured.size()==map.cellCount());
+    // Edit passable cells near the material source: the earlier escape fixture's
+    // forbidden pocket masks terrain costs and cannot distinguish generations.
+    map.paintCell(14,15,ICE);
     map.advanceGradientPipeline();
+    CHECK(map.getMaterialGradientSlot(0,WHEAT,0)==nullptr);
+    // Another soft edit before the very next advance cannot move the deadline.
+    map.paintCell(13,15,TRAIL);
+    std::vector<Uint16> replacement(map.cellCount());
+    map.seedMaterialGradient(0,WHEAT,0,replacement.data());
+    map.propagateGradient(replacement.data(),0);
+    REQUIRE(replacement!=captured);
     map.advanceGradientPipeline();
-    CHECK_EQ(pipeline.metrics.discarded,1);
-    CHECK_EQ(pipeline.metrics.published,0);
+    REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0)!=nullptr);
+    CHECK(std::equal(captured.begin(),captured.end(),map.getMaterialGradientSlot(0,WHEAT,0)));
+    CHECK_EQ(pipeline.metrics.discarded,0);
+    CHECK_EQ(pipeline.metrics.published,1);
+    map.updateMaterialGradient(0,WHEAT,0);
+    const auto* refreshedMaterial=glob2test::awaitGradient(world.game,[&] {
+        auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
+        return field && std::equal(replacement.begin(),replacement.end(),field) ? field : nullptr;
+    });
+    CHECK(std::equal(replacement.begin(),replacement.end(),refreshedMaterial));
 }
 
 TEST_CASE("required terrain experiments survive tiling and distinguish map headers")
@@ -281,21 +312,31 @@ TEST_CASE("terrain health profiles choose independent air and ground rates")
     CHECK_EQ(explorer->hp,air+1);
 }
 
-TEST_CASE("explorer flag eligibility applies route accessibility and hunger distance")
+TEST_CASE("constrained explorer flag eligibility applies route accessibility and hunger distance")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    world.game.map.paintCell(24,24,VOID_HOLE);
+    REQUIRE(world.game.map.hasAirRoutingConstraints());
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     Building* flag=world.addBuilding("explorationflag",12,12);
     REQUIRE(explorer); REQUIRE(flag);
     explorer->activity=Unit::ACT_RANDOM;
     explorer->medical=Unit::MED_FREE;
-    explorer->hungry=explorer->trigHungry+10*explorer->race->hungriness;
-    int distance=0;
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,11));
-    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,10));
-    CHECK_EQ(distance,100);
+    flag->unitStayRange=0;
+    int routeDistance=0,distance=0;
+    REQUIRE(world.game.map.buildingAvailable(flag,AIR_MOVEMENT_CLASS,8,8,&routeDistance,BuildingRoute::Combat));
+    REQUIRE(routeDistance>0);
+    explorer->hungriness=1;
+    explorer->hungry=explorer->trigHungry+routeDistance-1;
+    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    explorer->hungry=explorer->trigHungry+routeDistance;
+    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
+    CHECK_EQ(distance,routeDistance*routeDistance);
+    world.game.map.addForbidden(12,12,0);
+    world.game.map.updateGlobalGradient(flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
+    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    CHECK_EQ(distance,routeDistance*routeDistance);
 }
 
 TEST_CASE("projectile supercover tests intermediate cells corners and wrapped coordinates")
@@ -537,8 +578,12 @@ TEST_SUITE("TerrainRuntime")
 				map.advanceGradientPipeline();
 				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
 				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
-				CHECK(std::equal(replacement.begin(), replacement.end(),
-								 map.materialGradients[0][WHEAT][6]));
+				CHECK(map.materialGradients[0][WHEAT][6]==nullptr);
+				// The replacement is queued, not synchronously built by update. Admit
+				// it at a completed-world boundary and await its own fixed deadline.
+				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,6); });
+				CHECK(map.gradientRuntime->pipeline.metrics.published==1);
+				CHECK(std::equal(replacement.begin(),replacement.end(),published));
 			}
 	}
 	TEST_CASE("unused distinct costs do not expand map movement setup")
@@ -1101,7 +1146,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
     // Wheat clear of the ice's transition cells, where nothing grows.
     map.setResourceByIndex(12,8,WHEAT,1);
     REQUIRE(map.getResource(12,8).type==WHEAT);
-    const auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
+    const auto* field=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,0); });
     REQUIRE(field);
     std::vector<Uint16> expected(field,field+map.getW()*map.getH());
     map.configureGradientPipeline(0,2);
@@ -1191,7 +1236,7 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
         CHECK(input.isEndOfStream());
         CHECK(map.materialGradients[0][WHEAT][0]==nullptr);
         CHECK(map.gradientRuntime->pipeline.delayTicks()==2);
-        const auto* rebuilt=map.getMaterialGradientSlot(0,WHEAT,0);
+        const auto* rebuilt=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,0); });
         REQUIRE(rebuilt);
         CHECK(std::equal(expected.begin(),expected.end(),rebuilt));
     }
@@ -1274,7 +1319,7 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(first->dy!=0);
 }
-TEST_CASE("flyers share safety fields across teams and ignore ground invalidations")
+TEST_CASE("flyers share safety across teams and ignore forbidden paint and ground blockers")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
@@ -1291,8 +1336,10 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     REQUIRE(map.pathfindTerrainSafety(other));
     CHECK(map.gradientRuntime->safety.builds==1);
     map.setResourceByIndex(15,15,WOOD,1);
-    map.addForbidden(8,8,0);
     map.setBuilding(15,16,1,1,0);
+    REQUIRE(map.pathfindTerrainSafety(first));
+    CHECK(map.gradientRuntime->safety.builds==1);
+    map.addForbidden(8,8,0);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(map.gradientRuntime->safety.builds==1);
     map.paintCell(8,9,GRASS);

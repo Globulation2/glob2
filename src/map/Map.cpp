@@ -7,6 +7,7 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "render/SoftwareTerrainCache.h"
@@ -54,7 +55,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MaterialSlotCount; r++)
-			for (int s=0; s<SWIM_CLASS_COUNT; s++)
+			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 			{
 				materialGradients[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
@@ -63,7 +64,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 				marketGradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 		{
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
@@ -108,6 +109,7 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!waterSnapshot)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
 		// Called by independent executor jobs too; do not dispatch while holding
 		// this lock. All readers share this one initialization pass.
@@ -132,6 +134,7 @@ Map::frozenTerrainMovementSnapshot(unsigned swim) const
 	auto &cached = terrainMovementSnapshots[swim];
 	if (!cached)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
 		snapshot->cells.resize(size);
 		auto &movement = snapshot->movement;
@@ -215,8 +218,8 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 	const auto &rule = cellRuleData[ruleIndex];
 	const auto &p = rule.properties;
 	const unsigned edge = rule.ground[p.swimmable ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
-	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
-		if (gradient_kernel::terrainAllowsGround(p, sw))
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
+		if (gradient_kernel::terrainAllowsMovement(p, sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
 			if (add)
@@ -263,9 +266,9 @@ void Map::updateTerrainSummary()
 	airTerrainConstraints = terrainFeatures[2];
 	projectileBlockingTerrain = terrainFeatures[3];
 	terrainBucketCount = terrainFeatures[5] ? 256 : terrainFeatures[4] ? 128 : 64;
-	terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
 	terrainMinimumAir = GRADIENT_STEP;
-	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
 		for (unsigned cost = 1; cost < terrainMinimumGround[sw]; ++cost)
 			if (terrainGroundCostCounts[sw][cost])
 			{
@@ -449,20 +452,22 @@ void Map::finishTerrainEdit()
 	{
 		bumpTopologyGeneration();
 		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
-				// A queued field owns an immutable snapshot of the old terrain.
-				// Prevent its delayed publication from undoing this invalidation.
-				gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
-				gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
+                // Cell edits are soft changes: publish the captured complete
+                // field at its original deadline, then refresh the dirty plane.
+                // Repeated painting must not starve all visible generations.
 				guardGradientUpdated[team][swim] = clearGradientUpdated[team][swim] = false;
 				for (int resource = 0; resource < MaterialCount; ++resource)
 				{
-					gradientRuntime->pipeline.invalidate(&materialGradients[team][resource][swim]);
-					gradientUpdated[team][resource][swim] = false;
+                    gradientUpdated[team][resource][swim] = false;
+                    if (marketsV2Enabled()) {
+                        marketGradientUpdated[team][resource][swim] = false;
+                        marketGradientDirty[team][resource][swim] = true;
+                    }
 				}
-				// Escape fields have no dirty flag. Their scheduled seed comparison
-				// cannot detect a cost-only change such as grass becoming trail.
+                // Escape fields use the same delayed refresh contract, including
+                // cost-only terrain changes such as grass becoming trail.
 				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
 			}
 	}
@@ -586,6 +591,7 @@ void Map::clear()
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
 	gradientRuntime->preparation={};
+    gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
@@ -597,6 +603,7 @@ void Map::clear()
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
 	gradientRuntime->safety.reset();
+    gradientRuntime->directFlight = {};
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{
@@ -638,7 +645,7 @@ void Map::clear()
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
 		for (int r=0; r<MaterialCount; ++r)
-			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				delete[] materialGradients[t][r][swim];
 				materialGradients[t][r][swim] = NULL;
@@ -648,7 +655,7 @@ void Map::clear()
 				marketGradientDirty[t][r][swim] = false;
 				marketGradientUpdated[t][r][swim] = false;
 			}
-		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+		for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 		{
 			delete[] forbiddenGradient[t][swim];
 			forbiddenGradient[t][swim] = NULL;
@@ -683,7 +690,7 @@ void Map::clear()
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MaterialCount; r++)
-			for (int s=0; s<SWIM_CLASS_COUNT; s++)
+			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 				gradientUpdated[t][r][s]=false;
 }
 

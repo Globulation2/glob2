@@ -93,7 +93,7 @@ struct FundingState
 };
 struct Entities
 {
-	std::array<Uint8,16> availableGroundClasses{}; // Available ground movement classes, filled during normal unit extraction.
+	std::array<Uint16,16> availableMovementClasses{}; // Available movement classes, filled during normal unit extraction.
     // Sparse raw funding facts: absent means all zero. Shared, pooled storage.
     std::vector<FundingState> funding;
     UnitCargoStore unitCargo;
@@ -177,6 +177,7 @@ struct Handle
 	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;
+    Handle checksumView(bool mapChecksums = false) const;
     Handle turretView() const;
     // Retain map inputs only on spatial-diagnostic sample ticks.
     Handle statisticsView() const;

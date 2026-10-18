@@ -12,7 +12,8 @@ single player and the legacy games:
 | --- | --- |
 | `addLocalOrder` | Encodes, submits and flushes a human order; null and latency orders are ignored |
 | `pushOrder(order, p, isAI)` | Queues a locally computed AI order, as today |
-| `advanceStep(checksum)` | Sends `ChecksumReport` when the executed tick is a multiple of `checksumInterval` |
+| `advanceStep()` | Advances order bookkeeping independently of checksum completion |
+| `publishChecksum(sample)` | Sends a delayed `ChecksumReport` when its source turn is a multiple of `checksumInterval` |
 | `tickReady` (`allOrdersReceived`) | The next tick is below the horizon and every AI seat has its order |
 | `orderReceived(p)` | AI seat: its queue is not empty. Human seat: the next tick is authorized |
 | `retrieveOrder(p)` | The bundled order for that seat and tick, or a `NullOrder`; `sender` is set to `p` |
@@ -123,8 +124,8 @@ changing the protocol or the record: see [network telemetry](../development/netw
    must be a saved game exactly when the source is an uploaded save.
 3. `toGameHeader(mapHeader)` requires the map's team count to equal `teams.length`.
    Human or AI seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
-   client and in the verifier**, so the heavy checksum the engine enables when a
-   network player exists is the same everywhere; the local seat is chosen by
+   client and in the verifier**. Remote matches therefore use the same periodic
+   snapshot map-checksum tier on every client; the local seat is chosen by
    `localPlayer`, never by the player type. AI seats use the `AINames` CLI ids (`none`
    is `AI::NONE`) and their `aiConfig`. Each team's ally-team number is
    `alliance + 1`. The rules set the `GameHeader` setters of the same names, starting

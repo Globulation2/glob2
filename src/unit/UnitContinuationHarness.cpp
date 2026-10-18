@@ -14,10 +14,9 @@
 #include <vector>
 #include <algorithm>
 
-namespace
-{
 struct UnitActivityAccess : Unit
 {
+    static bool pending(const Unit& unit) { return unit.gradientDecisionPending; }
 	static void route(Unit &unit)
 	{
 		const auto movement = &UnitActivityAccess::handleMovement;
@@ -34,6 +33,8 @@ struct UnitActivityAccess : Unit
 		(unit.*activity)();
 	}
 };
+namespace
+{
 static std::vector<Uint32> state(Game& game)
 {
     std::vector<Uint32> result, buildings, units;
@@ -197,12 +198,13 @@ TEST_SUITE("UnitContinuation")
 				CHECK(unit->posY == 16);
 				CHECK(unit->dx == -1);
 				CHECK(unit->dy == -1);
-				CHECK(unit->gradientDecisionPending);
+				CHECK(UnitActivityAccess::pending(*unit));
 				CHECK(std::find(building->unitsInside.begin(), building->unitsInside.end(), unit) !=
 					  building->unitsInside.end());
 			};
 			assertSteering();
-			for (int tick = 0; tick < 3; ++tick)
+            // Missing fields publish one advance after admission, regardless of refresh delay.
+			for (int tick = 0; tick < 1; ++tick)
 			{
 				game.map.advanceGradientPipeline();
 				assertSteering();
@@ -213,7 +215,7 @@ TEST_SUITE("UnitContinuation")
 			game.map.advanceGradientPipeline();
 			UnitActivityAccess::route(*unit);
 			CHECK(unit->attachedBuilding == building);
-			CHECK(!unit->gradientDecisionPending);
+			CHECK(!UnitActivityAccess::pending(*unit));
 			CHECK((unit->dx != 0 || unit->dy != 0));
 			game.map.finishGradientPipeline();
 		}
@@ -241,7 +243,7 @@ TEST_SUITE("UnitContinuation")
 			unit->subscriptionSuccess(building, true, false, UnitJobPurpose::None);
 			const auto random = unit->entityRandom;
 			UnitActivityAccess::route(*unit);
-			REQUIRE(unit->gradientDecisionPending);
+			REQUIRE(UnitActivityAccess::pending(*unit));
 			CHECK(unit->dx == (blocked == 8 ? 0 : steps[blocked][0]));
 			CHECK(unit->dy == (blocked == 8 ? 0 : steps[blocked][1]));
 			CHECK(unit->attachedBuilding == building);
@@ -309,7 +311,7 @@ TEST_SUITE("UnitContinuation")
 			}
 			const auto random = unit->entityRandom;
 			UnitActivityAccess::route(*unit);
-			REQUIRE(unit->gradientDecisionPending);
+			REQUIRE(UnitActivityAccess::pending(*unit));
 			CHECK(unit->dx == 1);
 			CHECK(unit->dy == 0);
 			CHECK(unit->attachedBuilding == flag);
@@ -346,7 +348,7 @@ TEST_SUITE("UnitContinuation")
 			building->unitsInside.push_back(unit);
 			unit->subscriptionSuccess(building, true, false, UnitJobPurpose::None);
 			UnitActivityAccess::route(*unit);
-			REQUIRE(unit->gradientDecisionPending);
+			REQUIRE(UnitActivityAccess::pending(*unit));
 			UnitActivityAccess::move(*unit);
 			REQUIRE(unit->posX == 15);
 			REQUIRE(unit->posY == 15);
@@ -415,7 +417,8 @@ TEST_SUITE("UnitContinuation")
                 if (medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT, 20);
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
-                if (!unit->performance[FLY]) glob2test::awaitBuildingGradient(world.game,service,unit->swimClass());
+                if (!unit->performance[FLY] || world.game.map.hasAirRoutingConstraints())
+                    glob2test::awaitBuildingGradient(world.game,service,unit->movementClass());
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);

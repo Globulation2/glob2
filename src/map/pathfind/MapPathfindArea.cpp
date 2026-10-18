@@ -15,6 +15,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 {
 	PERF_SCOPE_TIME(PathArea);
 	const Uint16 *gradient=getForbiddenGradient(teamNumber, swimClass);
+	if (!gradient) return false;
 	bool canSwim=swimClass>0;
 
 	// Pick the neighbor with the highest (base, option) lexicographically. The base gradient
@@ -29,7 +30,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 		int ry=tabClose[di][1];
 		int xg=(x+rx)&wMask;
 		int yg=(y+ry)&hMask;
-		if ((swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(xg,yg).swimmable) || !isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
+		if (swimClass==AIR_MOVEMENT_CLASS ? !isFreeForAirUnit(xg,yg) : ((swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(xg,yg).swimmable) || !isFreeForGroundUnitNoForbidden(xg, yg, canSwim)))
 			continue;
 		size_t addr=xg+(yg<<wDec);
 		Uint16 base=gradient[addr];
@@ -45,9 +46,13 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 	{
 		*dx=tabClose[maxd][0];
 		*dy=tabClose[maxd][1];
-		return true;
-	}
-	return false;
+        return true;
+    }
+    // A complete unreachable pocket can wait for scheduled maintenance. Local
+    // blockage of an otherwise usable route requests an earlier delayed field.
+    if (gradient[coordToIndex(x,y)]>GRADIENT_UNREACHABLE)
+        updateForbiddenGradient(teamNumber,swimClass);
+    return false;
 }
 
 bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
@@ -56,6 +61,7 @@ bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int 
 	const Uint16 *gradient = (kind == AreaKind::Guard)
 		? getGuardAreasGradient(teamNumber, swimClass)
 		: getClearAreasGradient(teamNumber, swimClass);
+	if (!gradient) return false;
 	const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	const size_t index = coordToIndex(x, y);
 	const Uint16 here = gradient[index];
@@ -83,11 +89,25 @@ bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int 
 	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false))
 		return true;
 
-	// we are in a blocked situation, so we have to regenerate the gradient
+	// Local blockage enrolls a delayed refresh and keeps the published field.
 	switch (kind)
 	{
 		case AreaKind::Guard: updateGuardAreasGradient(teamNumber, swimClass); break;
 		case AreaKind::Clear: updateClearAreasGradient(teamNumber, swimClass); break;
 	}
 	return false;
+}
+
+StepResult Map::queryForbiddenStep(const Uint16* option, int team, int swim, int x, int y, int* dx, int* dy)
+{
+    // Check readiness before any movement decision; absence is not blockage.
+    if (!getForbiddenGradient(team,swim)) return StepResult::Pending;
+    return pathfindForbidden(option,team,swim,x,y,dx,dy) ? StepResult::Step : StepResult::Blocked;
+}
+StepResult Map::queryAreaStep(EntityRandom& random, AreaKind kind, int team, int swim, int x, int y, int* dx, int* dy)
+{
+    const auto* field=kind==AreaKind::Guard ? getGuardAreasGradient(team,swim) : getClearAreasGradient(team,swim);
+    if (!field) return StepResult::Pending;
+    if (field[coordToIndex(x,y)]==GRADIENT_AT_GOAL) return StepResult::AtGoal;
+    return pathfindArea(random,kind,team,swim,x,y,dx,dy) ? StepResult::Step : StepResult::Blocked;
 }

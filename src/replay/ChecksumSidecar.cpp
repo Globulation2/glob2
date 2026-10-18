@@ -70,7 +70,7 @@ bool ChecksumSidecarWriter::open(const std::string& replayPath, const Game& game
 	writeU32(numTeams);
 	writeU32(numPlayers);
 	writeU32(0); // total_ticks placeholder
-	writeU32(0); // flags
+	writeU32(1); // flags: exhaustive live-world diagnostic hash, not routine snapshot schema
 
 	if (!ok)
 	{

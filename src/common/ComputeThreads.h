@@ -7,11 +7,14 @@
 #include <string_view>
 #include <thread>
 #include <optional>
+#include <vector>
+#include <cstdint>
 
 // Total executor participants, including the simulation owner. Hardware discovery
 // may return zero; one participant is the portable serial fallback. Work placement
 // and match deadlines are independent of this local execution setting.
-inline unsigned defaultComputeThreadCount(unsigned hardware = std::thread::hardware_concurrency())
+// This overload applies the logical-count fallback; native auto uses topology below.
+inline unsigned defaultComputeThreadCount(unsigned hardware)
 {
 #ifdef __EMSCRIPTEN__
     // Browser workers share a bounded Wasm heap with artwork and encoders;
@@ -39,25 +42,78 @@ inline unsigned parseComputeThreadCount(std::string_view value)
 struct CpuAvailabilityObservation {
     std::optional<unsigned> eligibleLogicalCpuCount;
     unsigned hardwareHint = 0;
+    // System-wide enabled cores unless filtered by observed affinity below.
+    std::optional<unsigned> physicalCoreCount;
+    enum class PhysicalSource { Unknown, Sysctl, LinuxTopology, WindowsTopology };
+    PhysicalSource physicalCoreSource = PhysicalSource::Unknown;
+    // True only for an exact core/affinity intersection, not a throughput estimate.
+    bool physicalCoresAreEligible = false;
 };
 // Pure status mapping. A hardware hint is never promoted to observed allocation.
 inline CpuAvailabilityObservation cpuAvailabilityObservation(unsigned hardware, unsigned eligible = 0) {
-    return {eligible ? std::optional<unsigned>(eligible) : std::nullopt, hardware};
+    CpuAvailabilityObservation result;
+    result.hardwareHint = hardware;
+    if (eligible) result.eligibleLogicalCpuCount = eligible;
+    return result;
 }
 inline const char* cpuAvailabilitySourceName(const CpuAvailabilityObservation& observation) {
     if (observation.eligibleLogicalCpuCount) return "affinity-mask";
     return observation.hardwareHint ? "hardware-hint-only" : "unknown";
 }
-// One query of the creating thread's eligible logical mask when supported.
-// Neither the mask nor hardware hint measures CPU-time quota or reserved cores.
+// Observe topology and eligibility once at setup. Linux uses creating-thread
+// affinity; Windows uses process affinity. Counts do not measure CPU-time quota
+// or reserved throughput.
 CpuAvailabilityObservation discoverComputeCpuAvailability(unsigned hardware = std::thread::hardware_concurrency()) noexcept;
 
-// Automatic sizing uses the hardware hint; affinity is reported separately.
-// Explicit counts are not clamped by either hint or observation.
-inline unsigned resolveComputeThreadCount(unsigned requested, unsigned hardware = std::thread::hardware_concurrency())
-{
-    return requested ? requested : defaultComputeThreadCount(hardware);
+// Topology parsing/counting is separate from OS access for synthetic tests.
+namespace compute_topology {
+using CpuList = std::vector<unsigned>;
+std::optional<CpuList> parseCpuList(std::string_view text);
+// One complete sibling list per eligible CPU, in the same order.
+std::optional<unsigned> countCoreGroups(const CpuList& eligible, const std::vector<CpuList>& siblings);
+// A single Windows processor group's core masks, with complete eligible coverage.
+std::optional<unsigned> countCoreMasks(std::uint64_t eligible, const std::vector<std::uint64_t>& masks);
 }
+
+// Physical cores first, then eligible logical CPUs, hardware hint, serial.
+// A system-wide physical count can only be bounded by logical eligibility;
+// it must never be described as an observed eligible physical count.
+inline unsigned defaultComputeThreadCount(const CpuAvailabilityObservation& cpu)
+{
+#ifdef __EMSCRIPTEN__
+    return defaultComputeThreadCount(cpu.hardwareHint);
+#else
+    if (cpu.physicalCoreCount && *cpu.physicalCoreCount) {
+        const unsigned physical = *cpu.physicalCoreCount;
+        return cpu.eligibleLogicalCpuCount ? std::min(physical, *cpu.eligibleLogicalCpuCount) : physical;
+    }
+    return defaultComputeThreadCount(cpu.eligibleLogicalCpuCount.value_or(cpu.hardwareHint));
+#endif
+}
+inline const char* automaticComputeThreadSourceName(const CpuAvailabilityObservation& cpu)
+{
+#ifndef __EMSCRIPTEN__
+    if (cpu.physicalCoreCount && *cpu.physicalCoreCount) {
+        if (!cpu.physicalCoresAreEligible && cpu.eligibleLogicalCpuCount)
+            return "physical-core-bound";
+        return "physical-cores";
+    }
+    if (cpu.eligibleLogicalCpuCount) return "eligible-logical-fallback";
+#endif
+    return cpu.hardwareHint ? "hardware-hint" : "serial-fallback";
+}
+const char* physicalCoreSourceName(const CpuAvailabilityObservation& cpu);
+inline unsigned resolveComputeThreadCount(unsigned requested, const CpuAvailabilityObservation& cpu)
+{
+    return requested ? requested : defaultComputeThreadCount(cpu);
+}
+// Explicit hardware injection remains available to tests; normal callers discover
+// topology through the one-argument overload.
+inline unsigned resolveComputeThreadCount(unsigned requested, unsigned hardware)
+{
+    return resolveComputeThreadCount(requested, cpuAvailabilityObservation(hardware));
+}
+unsigned resolveComputeThreadCount(unsigned requested);
 
 inline bool isRemovedComputeOption(std::string_view option)
 {

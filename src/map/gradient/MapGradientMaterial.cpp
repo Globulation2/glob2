@@ -17,7 +17,26 @@
 #include "SeedCells.h"
 #include <type_traits>
 
-Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
+namespace {
+// The pipeline borrows the address of published, not just its array. Eviction
+// must retain the whole stable entry until every logical ticket has retired.
+// First-read holds depend only on simulation ticks, never worker completion.
+bool retainedMaterialField(const GradientRuntime& runtime, const GradientRuntime::MaterialField& field, const Game* game)
+{
+    bool retained=false;
+    for (const auto& queued:runtime.fieldRequests) if (queued.slot==&field.published) retained=true;
+    runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) { if (slot==&field.published) retained=true; });
+    if (!retained && field.awaitingFirstRead && field.published
+        && Uint32(game->stepCounter-field.publishedStep)<GradientRuntime::MaterialReadHoldTicks) {
+        const auto* consumer=field.consumer<0 ? nullptr : game->teams[field.team]->myBuildings[Building::GIDtoID(field.consumer)];
+        retained=field.consumer<0 || (consumer && consumer->scriptIdentity==field.identity && consumer->typeNum==field.type
+            && consumer->posX==field.x && consumer->posY==field.y && consumer->usesTeamMaterials()==field.excludesShared);
+    }
+    return retained;
+}
+}
+
+const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
 {
 	if (consumer)
 	{
@@ -31,27 +50,32 @@ Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimC
 	withMarkets = withMarkets && marketsV2Enabled();
 	// Keep colonies without markets on the original field and refresh schedule.
 	if (withMarkets && game->teams[teamNumber]->stockSuppliers.empty()) withMarkets=false;
-	// Compute jobs (hiring searches, AI-enrolled fields) may request the same
-	// lazy field concurrently. Cover both allocation and pipeline invalidation
-	// before publishing the pointer.
+	// Workers may observe a published field but cannot enroll shared requests.
+	// The owner alone changes destinations and publishes at pipeline boundaries.
 	std::lock_guard<std::mutex> lock(materialGradientMutex);
-	if (!withMarkets && !hasMaterialSourceSlot(resourceType))
-	{
-		auto& empty = gradientRuntime->absentMaterialField;
-		if (empty.size() != size) empty.assign(size, GRADIENT_UNREACHABLE);
-		return empty.data();
-	}
-	Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-	if (gradient == NULL)
-	{
-		gradient = new Uint16[size];
-		updateMaterialGradient(teamNumber, resourceType, swimClass, withMarkets);
-	}
+    // Source counts prove this answer without a route build. Preserve the
+    // shared negative field: missing natural materials must not enroll one
+    // full-map job per team/swim class on every refresh round. Supplier-backed
+    // and consumer-specific fields above still require their normal snapshots.
+    if (!withMarkets && !hasMaterialSourceSlot(resourceType)) {
+        auto& empty=gradientRuntime->absentMaterialField;
+        if (empty.size()!=size) empty.assign(size,GRADIENT_UNREACHABLE);
+        return empty.data();
+    }
+    Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
+    if (!gradient && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
+    if (!gradient && !compute.insideJob())
+        requestGradientField(&gradient, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass);
 	return gradient;
 }
 
 void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
+    if (game && swimClass!=AIR_MOVEMENT_CLASS) {
+        auto& field=withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
+        requestGradientField(&field, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass); return;
+    }
+
 	withMarkets = withMarkets && marketsV2Enabled();
 	PERF_SCOPE_TIME(ResourceGradient);
 	auto &slot = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
@@ -112,7 +136,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
+					if (swimClass==AIR_MOVEMENT_CLASS || (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
@@ -129,11 +153,9 @@ void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 {
 	if (resourceType<MaterialCount) ++gradientRuntime->stockRevision[teamNumber][resourceType];
 	if (!marketsV2Enabled()) return;
-	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
-		{
-			marketGradientDirty[teamNumber][resourceType][s]=true;
-			gradientRuntime->pipeline.invalidate(&marketMaterialGradients[teamNumber][resourceType][s]);
-		}
+	for (int s=0; s<MOVEMENT_CLASS_COUNT; ++s)
+		marketGradientDirty[teamNumber][resourceType][s]=true;
+
 }
 
 
@@ -145,7 +167,7 @@ bool Map::stockSupplierEligibleSlot(const Building* supplier, const Building* co
         && supplier->availableMaterial(resource)>0;
 }
 
-Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes)
+const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes)
 {
     std::lock_guard<std::mutex> lock(materialGradientMutex);
     auto& runtime=*gradientRuntime;
@@ -155,50 +177,86 @@ Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, 
     const int excluded=privateField ? consumer->gid : -1;
     const Uint64 key=MapState::materialFieldKey(excluded,team,resource,swim,modes);
     auto found=runtime.materialFields.find(key);
+    if (compute.insideJob()) {
+        if (found==runtime.materialFields.end()) return nullptr;
+        const auto& entry=found->second;
+        if (privateField && (entry.identity!=consumer->scriptIdentity || entry.type!=consumer->typeNum
+            || entry.x!=consumer->posX || entry.y!=consumer->posY || entry.excludesShared!=consumer->usesTeamMaterials())) return nullptr;
+        return entry.published;
+    }
     if (found==runtime.materialFields.end())
     {
         const Uint64 fieldBytes=Uint64(size)*sizeof(Uint16);
         const Uint64 limit=std::max(fieldBytes,runtime.materialCacheBudget);
         while (!runtime.materialLru.empty() && (runtime.materialFields.size()+1)*fieldBytes>limit)
         {
-            runtime.materialFields.erase(runtime.materialLru.front());
-            runtime.materialLru.pop_front();
+            auto victim=runtime.materialLru.end();
+            for (auto candidate=runtime.materialLru.begin();candidate!=runtime.materialLru.end();++candidate) {
+                auto& old=runtime.materialFields.at(*candidate);
+                if (!retainedMaterialField(runtime,old,game)) { victim=candidate; break; }
+            }
+            if (victim==runtime.materialLru.end()) return nullptr;
+            runtime.materialFields.erase(*victim); runtime.materialLru.erase(victim);
         }
         found=runtime.materialFields.try_emplace(key).first;
         auto& entry=found->second;
-        entry.cells=std::make_unique<Uint16[]>(size);
+
         entry.consumer=excluded; entry.team=team; entry.resource=resource; entry.swim=swim; entry.modes=modes;
         runtime.materialLru.push_back(key); entry.lru=std::prev(runtime.materialLru.end());
     }
     auto& entry=found->second;
     const bool changedConsumer=privateField && (entry.identity!=consumer->scriptIdentity || entry.type!=consumer->typeNum
-        || entry.x!=consumer->posX || entry.y!=consumer->posY);
-    // Synchronous bounded fields use the same fixed age across platforms. Stock
-    // changes invalidate immediately; natural growth/harvest refreshes by age.
-    if (entry.recency==0 || changedConsumer || entry.sourceRevision!=runtime.stockRevision[team][resource]
+        || entry.x!=consumer->posX || entry.y!=consumer->posY || entry.excludesShared!=consumer->usesTeamMaterials());
+    if (changedConsumer) {
+        runtime.pipeline.invalidate(&entry.published);
+        std::erase_if(runtime.fieldRequests,[&](const auto& request) { return request.slot==&entry.published; });
+        entry.cells.reset(); entry.published=nullptr; entry.awaitingFirstRead=false;
+    }
+    // Stock and topology changes request a delayed refresh; natural growth and
+    // harvest also refresh at the same fixed age on every platform.
+    if (!entry.published || entry.recency==0 || changedConsumer || entry.sourceRevision!=runtime.stockRevision[team][resource]
         || entry.topology!=topologyGeneration || Uint32(game->stepCounter-entry.builtStep)>=128)
     {
-        seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
-        {
-            PERF_SCOPE_TIME(PropagationResource);
+        bool pending=false;
+        for (const auto& queued:runtime.fieldRequests) if (queued.slot==&entry.published) pending=true;
+        runtime.pipeline.forEachDestination([&](auto* slot) { if (slot==&entry.published) pending=true; });
+        if (swim==AIR_MOVEMENT_CLASS) {
+            if (!entry.cells) entry.cells=std::make_unique<Uint16[]>(size);
+            seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
             propagateGradient(entry.cells.get(),swim,GRADIENT_COST_LIMIT,gradient_kernel::Family::Markets);
+            entry.published=entry.cells.get();
+        } else if (!compute.insideJob()) requestGradientField(&entry.published, int(gradient_preparation::Kind::Markets),team,resource,swim,excluded,modes);
+        // Keep the revision of the admitted request. Changes observed while its
+        // ticket is pending must remain dirty after that result publishes.
+        if (!pending) {
+            entry.sourceRevision=runtime.stockRevision[team][resource]; entry.topology=topologyGeneration;
+            entry.builtStep=game->stepCounter; entry.identity=privateField ? consumer->scriptIdentity : 0;
+            entry.excludesShared=privateField && consumer->usesTeamMaterials();
+            entry.type=privateField ? consumer->typeNum : -1;
+            entry.x=privateField ? consumer->posX : 0; entry.y=privateField ? consumer->posY : 0;
         }
-        entry.sourceRevision=runtime.stockRevision[team][resource]; entry.topology=topologyGeneration;
-        entry.builtStep=game->stepCounter; entry.identity=privateField ? consumer->scriptIdentity : 0;
-        entry.type=privateField ? consumer->typeNum : -1; entry.x=privateField ? consumer->posX : 0; entry.y=privateField ? consumer->posY : 0;
     }
     entry.recency=++runtime.materialCacheClock;
     runtime.materialLru.splice(runtime.materialLru.end(),runtime.materialLru,entry.lru);
-    return entry.cells.get();
+    if (entry.published) entry.awaitingFirstRead=false;
+    return entry.published;
 }
 void Map::setMaterialRoutingCacheBudget(Uint64 bytes)
 {
-    gradientRuntime->materialCacheBudget=std::clamp<Uint64>(bytes,sizeof(Uint16)*size,std::max<Uint64>(sizeof(Uint16)*size,64ull*1024*1024));
-    while (!gradientRuntime->materialLru.empty() && materialRoutingCacheBytes()>gradientRuntime->materialCacheBudget)
-    {
-        gradientRuntime->materialFields.erase(gradientRuntime->materialLru.front());
-        gradientRuntime->materialLru.pop_front();
+    auto& runtime=*gradientRuntime;
+    const auto target=std::clamp<Uint64>(bytes,sizeof(Uint16)*size,std::max<Uint64>(sizeof(Uint16)*size,64ull*1024*1024));
+    while (materialRoutingCacheBytes()>target) {
+        auto victim=runtime.materialLru.end();
+        for (auto it=runtime.materialLru.begin();it!=runtime.materialLru.end();++it) {
+            auto& entry=runtime.materialFields.at(*it);
+            if (!retainedMaterialField(runtime,entry,game)) { victim=it; break; }
+        }
+        if (victim==runtime.materialLru.end()) break;
+        runtime.materialFields.erase(*victim); runtime.materialLru.erase(victim);
     }
+    // Configuration cannot destroy an admitted destination. A shrink takes the
+    // smallest budget that still retains its logically outstanding tickets.
+    runtime.materialCacheBudget=std::max(target,materialRoutingCacheBytes());
 }
 Uint64 Map::materialRoutingCacheBytes() const
 {
@@ -226,11 +284,11 @@ unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) co
 
 std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
 {
-	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;
+	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * MOVEMENT_CLASS_COUNT;
 	const auto decode = [&](Uint16* const* first, bool market) {
 		const auto offset = std::size_t(slot - first);
-		return MapState::planeKey(int(offset / (MaterialSlotCount * SWIM_CLASS_COUNT)),
-			int((offset / SWIM_CLASS_COUNT) % MaterialSlotCount), int(offset % SWIM_CLASS_COUNT), market);
+		return MapState::planeKey(int(offset / (MaterialSlotCount * MOVEMENT_CLASS_COUNT)),
+			int((offset / MOVEMENT_CLASS_COUNT) % MaterialSlotCount), int(offset % MOVEMENT_CLASS_COUNT), market);
 	};
 	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
 	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
@@ -257,9 +315,30 @@ void Map::rebuildPlaneRegistry()
 	publishedPlaneIndex.fill(0);
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		for (int resource = 0; resource < MaterialSlotCount; ++resource)
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
 				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);
 			}
+}
+
+const Uint16* Map::lookupMaterialGradientSlot(int team, int material, int swim, bool markets, const Building* consumer) const
+{
+    if (consumer) {
+        const auto modes=materialSupplyModesSlot(consumer,material);
+        markets=modes&1;
+        const unsigned supplied=((modes&1)?consumer->runtime->suppliesStockMask:0)
+            | ((modes&2)?consumer->runtime->suppliesDirectStockMask:0);
+        const bool privateField=consumer->runtime->has(BuildingRuntimeTraits::SharedStock) || (supplied&(1u<<material));
+        if ((modes&2) || (markets && privateField)) {
+            const auto key=MapState::materialFieldKey(privateField?consumer->gid:-1,team,material,swim,modes);
+            const auto it=gradientRuntime->materialFields.find(key);
+            if (it==gradientRuntime->materialFields.end()) return nullptr;
+            const auto& entry=it->second;
+            if (privateField && (entry.identity!=consumer->scriptIdentity || entry.type!=consumer->typeNum || entry.x!=consumer->posX || entry.y!=consumer->posY || entry.excludesShared!=consumer->usesTeamMaterials())) return nullptr;
+            return entry.published;
+        }
+    }
+    markets=markets && marketsV2Enabled() && !game->teams[team]->stockSuppliers.empty();
+    return markets ? marketMaterialGradients[team][material][swim] : materialGradients[team][material][swim];
 }

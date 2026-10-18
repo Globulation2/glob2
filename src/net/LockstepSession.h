@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL_stdinc.h>
 #include <memory>
+#include "ChecksumSample.h"
 
 class Order;
 
@@ -43,6 +44,9 @@ class LockstepSession
 	/// the queued local order (if one is due) stamped with the given state
 	/// checksum. Called only after a tick was committed.
 	virtual void advanceStep(Uint32 checksum) = 0;
+    // Production engine: advance orders independently of delayed checksum delivery.
+    virtual void advanceStep() = 0;
+    virtual void publishChecksum(ChecksumSample sample) = 0;
 
 	/// True once every player's order for the next tick is present, so the
 	/// engine may execute it. (NetEngine::allOrdersReceived.)

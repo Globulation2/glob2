@@ -58,6 +58,7 @@
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
 #include "ReplayWriter.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "online/ReplayAppearance.h"
 #include "online/SkinDownloads.h"
 #include "online/OnlineStorage.h"
@@ -639,13 +640,19 @@ TEST_SUITE("EngineSession")
         engine.beginSession(0);
         std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
         for(unsigned tick=0;tick<ticks;++tick) {
-            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr,reader.formatVersion()<=152);
+            const auto checksum=SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")
+                ? engine.gui.game.checkSum(nullptr,nullptr,nullptr,true)
+                : SimulationChecksum::snapshotChecksum(engine.gui.game.observation(),engine.routineMapChecksums());
             trace<<engine.gui.game.stepCounter<<' '<<checksum<<'\n';
-            reader.setCheckSum(checksum);
             REQUIRE(engine.stepSession(tick*40,{}));
             REQUIRE(reader.isValid());
             CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
         }
+        // The terminator is read on the next boundary and carries the final hash.
+        REQUIRE(engine.stepSession(Uint64(ticks)*40,{}));
+        REQUIRE(reader.isFinished());
+        REQUIRE(reader.isValid());
+        CHECK_NOTHROW(reader.finishChecksumValidation());
         engine.gui.isRunning=false;engine.finishSession();
     }
     TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")

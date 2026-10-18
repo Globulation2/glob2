@@ -313,7 +313,7 @@ public:
 	// producer submits at most one batch per tick and joins it at its horizon,
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
 	// gradients (16), building gradients (8), growth (16), statistics (8), turrets (4)
-	// and hiring (4), plus headroom for tests and teardown. Producers assert their horizons.
+	// and hiring (4), plus checksum jobs (one-tick horizon) and headroom for tests and teardown. Producers assert their horizons.
 	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8, TurretHorizon = 4, HiringHorizon = 4;
 	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + (TurretHorizon + 1) + (HiringHorizon + 1) + 13;
 private:
@@ -1376,6 +1376,8 @@ public:
 	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
+	// Logical job context, including explicit serial jobs executed on slot zero.
+	bool insideJob() const { return active == this; }
 	static std::size_t workerSlot() { return active ? activeSlot : 0; }
 	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }
 	// Configuration/lifecycle only. Replacing a service does not wait for a

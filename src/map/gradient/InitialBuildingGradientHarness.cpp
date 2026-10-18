@@ -43,7 +43,7 @@ TEST_CASE("cold initialization publishes a resumable frontier at fixed deadlines
         std::ostringstream trace;
         for(unsigned boundary=1;boundary<=8;++boundary) {
             advance(game);
-            if(boundary<4) CHECK(b->globalGradient[0]==nullptr);
+            if(boundary<2) CHECK(b->globalGradient[0]==nullptr);
             else {
                 REQUIRE(b->globalGradientSearch[0]);
                 CHECK_FALSE(b->globalGradientSearch[0]->complete());
@@ -78,7 +78,7 @@ TEST_CASE("cold initialization publishes a resumable frontier at fixed deadlines
 }
 TEST_CASE("queued and privately completed cold initialization survives binary and text saves [artifacts]") {
     glob2test::HeadlessGlobals globals;
-    for(bool text:{false,true}) for(unsigned checkpoint:{0u,2u,5u}) {
+    for(bool text:{false,true}) for(unsigned checkpoint:{0u,1u,2u,5u}) {
         CAPTURE(text);CAPTURE(checkpoint);
         glob2test::HeadlessGame world({.wDec=7,.hDec=7,.clearImmobile=true,.header=true,.seed=731});
         auto& game=world.game;auto& map=game.map;
@@ -120,7 +120,7 @@ TEST_CASE("soft edits retain cold deadlines while a building reset supersedes it
     REQUIRE(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
     advance(game);
     const auto epoch=b->refreshEpoch[0];
-    for(int tick=0;tick<2;++tick) {
+    for(int tick=0;tick<1;++tick) {
         b->resetPathfindGradients(Building::GradientDrop::Area);
         CHECK(b->refreshEpoch[0]==epoch);
         CHECK(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);

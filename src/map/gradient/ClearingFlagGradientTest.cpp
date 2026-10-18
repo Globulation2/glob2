@@ -33,6 +33,14 @@ struct Fixture {
 };
 }
 namespace {
+// These tests exercise the explicit reference seeder against authored resource
+// predicates. Public simulation getters now return Pending on a cold field;
+// allocate reference storage directly rather than pretending a read builds it.
+void ensureClearingReferenceStorage(Map& map, Building* flag, int swim)
+{
+    auto& field=flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)];
+    if (!field) field=map.acquireBuildingGradientBuffer();
+}
 void clearingUsesMaterialSwitchesAndResourceProperties() {
     Fixture f;
     auto* flag=f.building(20,20,0,"clearingflag");
@@ -46,7 +54,7 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
     REQUIRE(end>=begin);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
         const int slot=flag->routeSlot(swim, BuildingRoute::Clearing);
-        f.game.map.buildingGradient(flag,swim,BuildingRoute::Clearing);
+        ensureClearingReferenceStorage(f.game.map,flag,swim);
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
             for(unsigned resource=0;resource<=f.game.map.resourceRegistry().size();++resource) {
@@ -106,7 +114,7 @@ TEST_CASE("passable clearing sources respect forbidden paint buildings and immob
     for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
     {
         const auto verify=[&](Uint16 expected) {
-            map.buildingGradient(flag,swim,BuildingRoute::Clearing);
+            ensureClearingReferenceStorage(map,flag,swim);
             map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
             map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==expected);
@@ -160,7 +168,7 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         REQUIRE(map.isClearableResourceForMaterials(21,21,flag->clearingMaterialMask));
         for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
         {
-            map.buildingGradient(flag,swim,BuildingRoute::Clearing);
+            ensureClearingReferenceStorage(map,flag,swim);
             map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
             map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==GRADIENT_AT_GOAL);

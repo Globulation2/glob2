@@ -4,6 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
+#include "GradientExecutionAudit.h"
 #include "field/RuntimeTerrainGradient.h"
 
 static_assert(std::size(gradient_kernel::WATER_STEP) == SWIM_CLASS_COUNT);
@@ -21,12 +22,13 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 }
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family)
 {
+	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
 	PERF_SCOPE_TIME(Propagation);
     auto& scratch = gradientRuntime->workspaces[compute.slot()].propagation;
     scratch.family = family;
 	// Cells carry rules, not built-in types: unmodified costs only need to
 	// know which cells swim, and modified ones the map's compact profiles.
-	if (!hasTerrainMovementModifiers())
+	if (!hasMovementCostModifiers(swimClass))
 	{
 		const auto water = frozenWaterSnapshot();
 		gradient_kernel::propagateField(gradient, swimClass, maxCost, {getW(), getH()},
@@ -41,5 +43,5 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradie
 	gradient_kernel::propagateTerrainProfiles(
 		gradient, swimClass, maxCost, {getW(), getH()},
 		scratch, profiles->data(),
-		profiles->movement, terrainQueueBuckets(), {profiles, std::uint64_t(swimClass), 0, allCells});
+		profiles->movement, movementQueueBuckets(swimClass), {profiles, std::uint64_t(swimClass), 0, allCells});
 }

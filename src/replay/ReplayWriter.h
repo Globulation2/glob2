@@ -6,6 +6,9 @@
 #include <memory>
 #include <functional>
 #include "ReplayTelemetry.h"
+#include "ChecksumSample.h"
+#include <deque>
+#include <map>
 #include <assert.h>
 #include "Types.h"
 
@@ -45,6 +48,8 @@ public:
 
 	/// If the checksum is 0, there won't be any checking if the checksums match for orders.
 	void setCheckSum(Uint32 checksum = 0);
+    void enableDeferredChecksums(std::function<void()> flush) { flushChecksums=std::move(flush); }
+    void publishChecksum(ChecksumSample sample);
 
 	/// Adds the order to the replay
 	void pushOrder(std::shared_ptr<Order> order);
@@ -71,6 +76,13 @@ public:
 private:
     void notifySaved(const std::string &filename) const;
     SaveObserver saveObserver;
+    std::function<void()> flushChecksums;
+    struct PendingOrder { Uint32 steps, worldTick; std::shared_ptr<Order> order; };
+    std::deque<PendingOrder> pendingOrders;
+    std::map<Uint32,Uint32> readyChecksums;
+    std::deque<Uint32> readyChecksumOrder;
+    void writePending();
+    void writeEnd(GAGCore::OutputStream* output) const;
     std::string recordingPath;
 	/// You shouldn't copy-construct this class
 	ReplayWriter(const ReplayWriter &copy) { assert(false); };

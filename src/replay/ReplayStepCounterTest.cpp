@@ -133,7 +133,7 @@ void testWideRoundTrip()
 // copy of the written bytes (BinaryOutputStream deletes its backend on
 // destruction, so the copy is taken while it is still alive); the caller
 // passes ownership to ReplayReader::loadReplay.
-BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uint32 finalCounter = 0, Uint32 checksum = 0)
+BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uint32 finalCounter = 0, Uint32 checksum = 0, bool present = false)
 {
 	MemoryStreamBackend* writeBackend = new MemoryStreamBackend;
 	MemoryStreamBackend* readBackend = nullptr;
@@ -144,6 +144,7 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uin
 		ostream.writeUint32(firstCounter, "replayStepsSinceLastOrder");
 		auto order = std::make_shared<StepTestOrder>();
 		order->gameCheckSum = checksum;
+        order->hasGameCheckSum=present || checksum!=0;
 		writeOrderEnvelope(&ostream, order);
 		ostream.writeUint32(finalCounter, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new NullOrder()));
@@ -166,9 +167,17 @@ void testVersionBounds()
 		ReplayReader population;
 		check(!population.loadReplay(writeReplayBody(166,1),false),
 		      "observation boundary: format166 replay uses older timing");
+        for(Uint16 version:{167,168,169,170}) {
+            ReplayReader oldRouting;
+            check(!oldRouting.loadReplay(writeReplayBody(version,1),false),
+                "air routing boundary: older simulation replay rejected");
+        }
 		ReplayReader current;
 		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
-		      "observation boundary: current replay timing accepted");
+		      "current delayed-publication replay accepted");
+		ReplayReader observation;
+		check(!observation.loadReplay(writeReplayBody(168,1),false),
+		      "delayed publication boundary: format168 replay rejected");
 	}
 	for (Uint16 version : {137, 138, 139, 140, 141}) {
 		ReplayReader reader;
@@ -246,7 +255,49 @@ TEST_SUITE("ReplayStepCounter")
         ReplayReader reader;
         CHECK_FALSE(reader.loadReplay(writeReplayBody(VERSION_MINOR, 0xffffffffu, 1), false));
     }
-	TEST_CASE("checksum mismatch closes playback safely") {
+    TEST_CASE("paused turns retain the first snapshot for their shared simulation tick") {
+        const auto path=(glob2test::profileDir()/"paused-deferred.replay").string();
+        GameGUI gui;
+        ReplayWriter writer; writer.init(path,gui); writer.enableDeferredChecksums([]{});
+        writer.pushOrder(std::make_shared<StepTestOrder>());
+        writer.publishChecksum({0,111});
+        writer.publishChecksum({0,222}); // A later paused network turn changed its world.
+        writer.pushOrder(std::make_shared<StepTestOrder>()); writer.finish();
+        ReplayReader reader;
+        REQUIRE(reader.loadReplay(new BinaryInputStream(new FileStreamBackend(std::fopen(path.c_str(),"rb"))),false));
+        reader.enableDeferredChecksums(); reader.publishChecksum({0,111});
+        for (int i=0;i<2;++i) {
+            auto order=reader.retrieveOrder(); CHECK(order->getOrderType()!=ORDER_NULL);
+            CHECK(order->hasGameCheckSum); CHECK(order->gameCheckSum==111);
+        }
+        CHECK(reader.retrieveOrder()->getOrderType()==ORDER_NULL);
+        CHECK_NOTHROW(reader.finishChecksumValidation()); CHECK(reader.isValid());
+    }
+    TEST_CASE("delayed replay checks validate their original source tick") {
+        ReplayReader reader;
+        REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR,0,0,123),false));
+        reader.enableDeferredChecksums();
+        CHECK(reader.retrieveOrder()->getOrderType()!=ORDER_NULL);
+        reader.publishChecksum({0,123});
+        CHECK_NOTHROW(reader.finishChecksumValidation());
+    }
+    TEST_CASE("delayed replay mismatch and missing terminal work fail validation") {
+        ReplayReader reader;
+        REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR,0,0,123),false));
+        reader.enableDeferredChecksums(); reader.retrieveOrder();
+        CHECK_THROWS_AS(reader.publishChecksum({0,456}),std::ios_base::failure);
+        CHECK_FALSE(reader.isValid());
+        REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR,0,0,123),false));
+        reader.enableDeferredChecksums(); reader.retrieveOrder();
+        CHECK_THROWS_AS(reader.finishChecksumValidation(),std::ios_base::failure);
+    }
+    TEST_CASE("zero is a valid delayed checksum when explicitly present") {
+        ReplayReader reader;
+        REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR,0,0,0,true),false));
+        reader.enableDeferredChecksums(); reader.retrieveOrder();
+        CHECK_THROWS_AS(reader.publishChecksum({0,1}),std::ios_base::failure);
+    }
+    TEST_CASE("checksum mismatch closes playback safely") {
         ReplayReader reader;
         REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR, 0, 0, 123), false));
         reader.setCheckSum(456);

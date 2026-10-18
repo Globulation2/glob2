@@ -15,7 +15,7 @@
 class GradientExecutionAudit
 {
 public:
-    enum class Kind { Seed, TerrainPlane, Count };
+    enum class Kind { Seed, Propagation, TerrainPlane, Count };
     struct Counts
     {
         std::uint64_t owner = 0, other = 0;

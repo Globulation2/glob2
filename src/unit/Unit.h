@@ -2,9 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
-#include "gradient/FieldReadiness.h"
 
 #include "UnitState.h"
+#include "gradient/FieldReadiness.h"
 #include "UnitCatalog.h"
 #include "UnitCargo.h"
 #include <vector>
@@ -38,6 +38,7 @@ namespace GAGCore
 class Unit : public UnitUtils, public UnitState
 {
 	friend struct TeamStatsMeasurementFixture;
+	friend struct UnitActivityAccess;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
 	// Owner-thread hooks; excluded from immutable state record copies.
@@ -77,15 +78,32 @@ public:
 		return hasCapability(UnitRuntimeTraits::ExtendedCargo) && continueExtendedCargoCollection();
 	}
 	void receiveCargoPacket(int resource, WideMaterialPacket packet);
-	bool findAirGuardDestination(Sint32* x, Sint32* y);
-	bool findAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
+	RouteResult queryMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
+		bool withMarkets=false, const Building* consumer=nullptr);
+
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
 	
-    bool gradientDecisionPending=false;
-	// Pending fields preserve assignments while ground units steer geometrically.
-	// The normal displacement/movement state already survives saves and checksums.
+	void directionFromDxDy(void);
+private:
+	bool continueExtendedCargoCollection();
+	// Per-decision control only: reset before each movement decision, never
+	// persisted or included in snapshots/checksums.
+	bool gradientDecisionPending = false;
+public:
+	// Wide pathfinding outputs can change even on failure. Preserve both writes
+	// before storing the audited one-cell displacement in its compact fields.
+	template<class Search> bool findDisplacement(Search search)
+	{
+		int x=dx, y=dy;
+		const bool found=search(&x, &y);
+		assert(x>=-1 && x<=1 && y>=-1 && y<=1);
+		dx=Sint8(x); dy=Sint8(y);
+		return found;
+	}
+	// Pending fields preserve every assignment and retry on the ordinary action cadence.
+	// The existing zero-displacement movement is already saved and checksummed.
 	void waitForGradient();
 	void followPendingBuildingRoute(Building&, BuildingRoute);
 	template<class Search> StepResult findGradientDisplacement(Search search)
@@ -97,20 +115,6 @@ public:
 			dx=Sint8(x); dy=Sint8(y);
 		}
 		return result;
-	}
-	void directionFromDxDy(void);
-private:
-	bool continueExtendedCargoCollection();
-public:
-	// Wide pathfinding outputs can change even on failure. Preserve both writes
-	// before storing the audited one-cell displacement in its compact fields.
-	template<class Search> bool findDisplacement(Search search)
-	{
-		int x=dx, y=dy;
-		const bool found=search(&x, &y);
-		assert(x>=-1 && x<=1 && y>=-1 && y<=1);
-		dx=Sint8(x); dy=Sint8(y);
-		return found;
 	}
 private:
 	void dxDyFromDirection(void);
@@ -206,8 +210,8 @@ protected:
 	
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
-	void flyToTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
+	void flyToTarget(); // Direct bearing and local air-traffic avoidance.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 
@@ -225,6 +229,7 @@ public:
 
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
+	int movementClass() const;
 	//! Construction eligibility is independent of work/harvest speed.
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;

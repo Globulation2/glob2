@@ -76,7 +76,7 @@ void require(bool condition, const char* message)
 // the rules its four corners combine to.
 std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost, const std::vector<TerrainType>* semantic = nullptr,
-	bool semanticPerCell = false)
+	bool semanticPerCell = false, const TerrainRegistry* registry = nullptr)
 {
 	constexpr int waterSteps[] = {10, 5, 7, 10, 13, 20, 30};
 	constexpr int Infinity = INT_MAX / 2;
@@ -101,17 +101,21 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 			size_t((y + 1) % height) * width + (x + 1) % width};
 		bool water = true;
 		for (const auto corner : corners) water = water && PathMap::isWater(terrain[corner]);
-		int cardinal = water ? waterSteps[swimClass] : 10;
+		int cardinal = water && swimClass<AIR_MOVEMENT_CLASS ? waterSteps[swimClass] : 10;
         if (semantic)
         {
             // The type-indexed kernels read one terrain per cell.
             const auto &s = *semantic;
-            const auto p = semanticPerCell ? terrainProperties(s[i])
-                : combineCornerRules(terrainProperties(s[corners[0]]), terrainProperties(s[corners[1]]),
-                    terrainProperties(s[corners[2]]), terrainProperties(s[corners[3]]));
-            const int base = p.swimmable ? waterSteps[swimClass] : 10;
-            cardinal = std::max(1, (base*256 + p.groundSpeedQ8/2)/p.groundSpeedQ8);
-            cardinal = std::min(181, (cardinal*(256+20*std::max(0,-int(p.groundHealthQ8)))+128)/256);
+            const auto properties=[&](TerrainType t)->const TerrainProperties& {
+                return registry ? registry->properties(t) : terrainProperties(t);
+            };
+            const auto p = semanticPerCell ? properties(s[i])
+                : combineCornerRules(properties(s[corners[0]]), properties(s[corners[1]]),
+                    properties(s[corners[2]]), properties(s[corners[3]]));
+            const int base = swimClass==AIR_MOVEMENT_CLASS ? 10 : p.swimmable ? waterSteps[swimClass] : 10;
+            const unsigned speed=swimClass==AIR_MOVEMENT_CLASS ? p.airSpeedQ8 : p.groundSpeedQ8;
+            cardinal = std::max(1u, (base*256 + speed/2)/speed);
+            cardinal = std::min(181, (cardinal*(256+20*std::max(0,-int(swimClass==AIR_MOVEMENT_CLASS ? p.airHealthQ8 : p.groundHealthQ8)))+128)/256);
         }
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -930,4 +934,82 @@ TEST_CASE("eager terrain specialization proves uniform costs across the whole fi
                             swim, cap, &uniform, true));
                     }
                 }
+}
+
+TEST_CASE("air movement costs share eager and immutable lazy fields against the heap oracle [pathfinding]")
+{
+    std::mt19937 random(1196);
+    for(int trial=0;trial<60;++trial) {
+        const int ws=4+trial%3,hs=4+trial%2;
+        const size_t count=size_t(1<<ws)*(1<<hs);
+        std::vector<Uint16> classic(count,0),seeds(count,Unreached);
+        PathMap map(ws,hs,classic);
+        std::vector<TerrainType> terrain(count);
+        for(size_t i=0;i<count;++i) {
+            terrain[i]=static_cast<TerrainType>(random()%TERRAIN_COUNT);
+            map.setVertexTerrain(i,terrain[i]);
+            seeds[i]=random()%7 ? Unreached : Blocked;
+            if(random()%71==0) seeds[i]=Goal;
+        }
+        seeds[0]=Goal;
+        const auto expected=oracle(seeds,classic,1<<ws,1<<hs,AIR_MOVEMENT_CLASS,CostLimit,&terrain);
+        auto actual=seeds;
+        map.propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
+        REQUIRE(actual==expected);
+        actual=seeds;
+        BuildingGradientSearch search;
+        search.begin(map,actual.data(),AIR_MOVEMENT_CLASS);
+        search.resolve(1);
+        map.fillTerrain(GRASS);
+        search.finish();
+        REQUIRE(actual==expected);
+    }
+}
+
+TEST_CASE("air lazy fields support the maximum map without private query budgets [pathfinding]")
+{
+    const size_t count=size_t(1024)*1024;
+    PathMap map(10,10,std::vector<Uint16>(count,0));
+    std::vector<Uint16> gradient(count,Unreached);
+    gradient[0]=Goal;
+    BuildingGradientSearch search;
+    search.begin(map,gradient.data(),AIR_MOVEMENT_CLASS);
+    search.resolve(512+size_t(512)*1024);
+    CHECK(gradient[512+size_t(512)*1024]==Goal-512*14);
+    CHECK(map.frozenTerrainMovementSnapshot(AIR_MOVEMENT_CLASS)==map.frozenTerrainMovementSnapshot(AIR_MOVEMENT_CLASS));
+}
+
+TEST_CASE("authored air speed and damage profiles agree across scalar SIMD and lazy routing [pathfinding]")
+{
+    using namespace gradient_kernel;
+    const auto previous=configuration();
+    struct Restore {Configuration previous;~Restore(){requestBackendConfiguration(previous);applyBackendConfiguration(previous);}} restore{previous};
+    PathMap map(5,5,std::vector<Uint16>(1024,0));
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+        {"key":"test:air-fast","name":"Fast air","base":"grass","appearance":"grass","properties":{"airSpeedQ8":1024}},
+        {"key":"test:air-slow","name":"Slow hazardous air","base":"grass","appearance":"grass","properties":{"airSpeedQ8":64,"airHealthQ8":-32}}
+    ]})");
+    const auto fast=*map.terrainRegistry().find("test:air-fast");
+    const auto slow=*map.terrainRegistry().find("test:air-slow");
+    std::vector<TerrainType> terrain(1024);
+    std::vector<Uint16> seeds(1024,Unreached);
+    for(size_t i=0;i<1024;++i) {
+        terrain[i]=i%11==0 ? slow : i%7==0 ? fast : GRASS;
+        map.setVertexTerrain(i,terrain[i]);
+        if(i%23==0)seeds[i]=Blocked;
+    }
+    seeds[0]=Goal;seeds[777]=Goal;
+    const auto expected=oracle(seeds,std::vector<Uint16>(1024,0),32,32,AIR_MOVEMENT_CLASS,CostLimit,&terrain,false,&map.terrainRegistry());
+    for(auto selected:{Backend::Scalar,Backend::SSE2,Backend::NEON}) {
+        if(!cpuVariantAvailable(selected))continue;
+        setBackend(selected);
+        auto actual=seeds;
+        map.propagateGradient(actual.data(),AIR_MOVEMENT_CLASS);
+        REQUIRE(actual==expected);
+        actual=seeds;
+        BuildingGradientSearch search;
+        search.begin(map,actual.data(),AIR_MOVEMENT_CLASS);
+        search.resolve(500);search.finish();
+        REQUIRE(actual==expected);
+    }
 }

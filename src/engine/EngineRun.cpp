@@ -14,6 +14,7 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "GameDiagnostics.h"
 #include <utility>
@@ -187,21 +188,20 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
-		const bool legacy152 = globalContainer->replayReader && globalContainer->replayReader->formatVersion() <= 152;
-		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL, false, legacy152);
-		net->advanceStep(checksum);
-
-		if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
+        collectChecksums();
+        net->advanceStep();
 
 		if (checksumSidecar)
         {
-			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game,legacy152);
+			// Explicit diagnostic mode retains exhaustive live-world coverage.
+            const auto deep=gui.game.checkSum(nullptr,nullptr,nullptr,true);
+            checksumSidecar->writeTick(gui.game.stepCounter, deep, gui.game);
             // Explicit verification only: joins private growth and hashes every
             // resource and pending proposal without slowing routine checksums.
             if (!headlessOutput.empty())
                 std::ofstream(headlessOutput + "/world.checksums", std::ios::app)
                     << gui.game.stepCounter << ' '
-                    << gui.game.checkSum(nullptr, nullptr, nullptr, true) << '\n';
+                    << deep << '\n';
         }
 	}
 	// advanceStep inserts the local order. Measuring earlier leaves a stale
@@ -274,9 +274,12 @@ void Engine::executeOrdersAndStep(bool readyNow)
 			}
 		}
 
-		if (globalContainer->replayReader->isFinished())
-		{
-			gui.showEndOfReplayScreen();
+        if (globalContainer->replayReader->isFinished())
+        {
+            if (!globalContainer->replayReader->isValid()) throw std::ios_base::failure("Replay playback failed");
+            flushChecksums();
+            globalContainer->replayReader->finishChecksumValidation();
+            gui.showEndOfReplayScreen();
 		}
 	}
 
@@ -366,7 +369,16 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
     }
     if (diagnostics) options.include(diagnostics->captureOptions(gui.game.stepCounter));
     const bool paused=gui.gamePaused || gui.hardPause;
+    if (!checksumPipeline) checksumPipeline=std::make_unique<SimulationChecksum::Pipeline>(gui.game.map.computeExecutor());
+    checksumPipeline->synchronizeWorld(gui.game.map.identity());
+    // Retire due leases before the owner acquires its next pooled buffers.
+    // Reconfigured serial fallback also releases its inputs before capture.
+    collectChecksums();
     const auto world=gui.game.observeCompletedWorld(options);
+    checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
+    if (globalContainer->replayWriter)
+        globalContainer->replayWriter->enableDeferredChecksums([this] { flushChecksums(); });
+    if (globalContainer->replayReader) globalContainer->replayReader->enableDeferredChecksums();
     // Presentation follows the retained owner's identity, not the inspection
     // cache revision that live entity helpers may invalidate during orders.
     const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=world.tick
@@ -376,6 +388,37 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         paused || globalContainer->replaying, diagnostics, world);
     if (presentation) publishPresentation(world,*presentation);
     return world;
+}
+
+bool Engine::routineMapChecksums() const
+{
+    return sessionMapChecksums;
+}
+
+void Engine::collectChecksums(bool flush)
+{
+    if (!checksumPipeline) return;
+    const auto now=turn ? turn->turn().executedTick() : gui.game.stepCounter;
+    for (const auto& result:checksumPipeline->collect(now,flush,gui.game.stepCounter)) {
+        latestChecksum=result.sample;
+        if (net) net->publishChecksum(result.sample);
+        const ChecksumSample worldSample{result.worldTick,result.sample.value};
+        if (globalContainer->replayWriter) globalContainer->replayWriter->publishChecksum(worldSample);
+        if (globalContainer->replayReader) globalContainer->replayReader->publishChecksum(worldSample);
+        if (!headlessOutput.empty() && checksumSidecar)
+            std::ofstream(headlessOutput+"/snapshot.checksums",std::ios::app)
+                <<result.sample.sourceTick<<' '<<result.worldTick<<' '<<result.sample.value<<'\n';
+    }
+}
+void Engine::flushChecksums()
+{
+    if (!checksumPipeline || !net) return;
+    checksumPipeline->synchronizeWorld(gui.game.map.identity());
+    collectChecksums(true);
+    // The normal stop path may leave its terminal completed world unobserved.
+    const auto& world=gui.game.observeCompletedWorld();
+    checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
+    collectChecksums(true);
 }
 
 std::optional<SceneRequest> Engine::admitPresentation(bool worldAdvanced)
@@ -853,8 +896,9 @@ void Engine::teardownSession()
 {
     // Complete private jobs before session-owned telemetry/diagnostic sinks
     // close. Logical deadlines and queued commands remain game-owned.
+    flushChecksums();
     gui.game.drainAI();
-	gui.waitForAutosave();
+    gui.waitForAutosave();
     if (std::getenv("GLOB2_TEAM_TIMELINE")) {
         // Summary snapshots use existing synchronization; trace export requires
         // a drained lifecycle boundary and never reads a running stream.
@@ -886,8 +930,9 @@ void Engine::teardownSession()
 
 	leaveTurnMatch();
 	gui.connectionOverlay.reset();
-	exportTurnTelemetry();
-	turn = nullptr;
+    exportTurnTelemetry();
+    checksumPipeline.reset();
+    turn = nullptr;
 	turnMatch.reset();
 	net.reset();
 }
@@ -934,6 +979,10 @@ void Engine::pumpTurnSession(Uint64 now)
 
 void Engine::reloadTurnInitialState()
 {
+    // Finish the old recording before replacing its world and executor inputs.
+    flushChecksums();
+    if (globalContainer->replayWriter) globalContainer->replayWriter->finish();
+    checksumPipeline.reset(); latestChecksum.reset();
     serialPresentation.reset();
     retainedPresentation.reset();
     gui.setPublishedScene(nullptr);
@@ -1097,6 +1146,8 @@ void Engine::abortSession() noexcept
     catch (...)
     {
         std::cerr << "Failure while closing game resources; session cannot continue\n";
+        checksumPipeline.reset();
+        turn=nullptr; turnMatch.reset();
         net.reset();
         checksumSidecar.reset();
         globalContainer->datasetWriter.reset();
@@ -1271,7 +1322,8 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;
         automaticGameEndTick = now;
-        printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
+        flushChecksums();
+        printf("nox::gui.game.checkSum() = %08x\n", latestChecksum ? latestChecksum->value : 0);
     }
 
 		if (!headlessOutput.empty() && readyNow)

@@ -79,10 +79,7 @@ class Planner
 	bool pruneCandidates = true;
 
   public:
-	struct Options
-	{
-		bool pruneCandidates = true;
-	};
+	struct Options { bool pruneCandidates = true; };
 	Planner() = default;
 	explicit Planner(Options options) : pruneCandidates(options.pruneCandidates) {}
 	Output rank(const Inputs &, unsigned team, unsigned capacity = 128);

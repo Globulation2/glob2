@@ -9,6 +9,7 @@
 #include <cstdint>
 #include "map/gradient/GradientPipeline.h"
 #include "map/gradient/BuildingGradientPipeline.h"
+#include "map/gradient/GradientExecutionAudit.h"
 #include <deque>
 #include <vector>
 #include <array>
@@ -42,6 +43,59 @@ public:
 
 TEST_SUITE("GradientPipeline")
 {
+TEST_CASE("kernel audit can retire safely before observation workers drain")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (unsigned attempt=0;attempt<32;++attempt)
+    {
+        auto audit=std::make_unique<GradientExecutionAudit>();
+        std::atomic<bool> entered{false},finished{false};
+        auto worker=GAGCore::ThreadSupport::launch([&] {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+            entered.store(true,std::memory_order_release);
+            for (unsigned i=0;i<4096;++i)
+                GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+            finished.store(true,std::memory_order_release);
+        });
+        while (!entered.load(std::memory_order_acquire)) std::this_thread::yield();
+        CHECK(audit->totals().other>0);
+        audit.reset(); // Mirrors fatal test unwinding before executor teardown.
+        worker.join();
+        CHECK(finished.load(std::memory_order_acquire));
+    }
+}
+
+TEST_CASE("kernel audit distinguishes owner preparation from deferred worker work")
+{
+    for (unsigned workers : {0u, 1u, 3u, 7u})
+    {
+        GradientExecutionAudit audit;
+        TestGradientPipeline pipeline;
+        pipeline.configure(workers, 3, 1, [](auto& job, auto&) {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+            job.data[0] = 19;
+        });
+        auto* published = new std::uint16_t[1]{7};
+        pipeline.advance(); // Admission at advance 1; publication at advance 4.
+        pipeline.submit(&published, 0, [](auto&) {});
+        // Draining for a save may finish the private job, never publish early.
+        pipeline.finish();
+        CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 19);
+        const auto counts = audit.totals();
+        const bool hasWorkers = workers && GAGCore::ThreadSupport::available;
+        CHECK(counts.owner == (hasWorkers ? 0 : 1));
+        CHECK(counts.other == (hasWorkers ? 1 : 0));
+        // A pre-submit kernel must be visible even when join telemetry is empty.
+        GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+        CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner == 1);
+        pipeline.reset();
+        delete[] published;
+    }
+}
+
 TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown")
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (unsigned delay : {1, 2, 3, 8}) {
@@ -363,7 +417,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
             }
             pipeline.prepare(staged);
             for (unsigned i=1; i<delay; ++i) { pipeline.advance(); CHECK(published.empty()); }
-            std::thread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
+            std::jthread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
             pipeline.advance(); // Waits for the gated job, then publishes all four.
             opener.join();
             CHECK(published==std::vector<unsigned>{0,1,2,3});
@@ -1239,4 +1293,84 @@ TEST_CASE("malformed captured configurations decline and recover once" * doctest
     CHECK(service->metrics().submitted==0);CHECK(service->metrics().declined==contexts.size());
     for(const auto& c:contexts){CHECK(c.field->phase.load()==OwnedGradientField::Phase::Complete);CHECK(c.field->data[0]==177);}
     service->stop();
+}
+
+TEST_CASE("building initialization deadlines overtake refreshes and survive pending saves" * doctest::test_suite("GradientPipeline"))
+{
+    for (unsigned workers : {0u,1u,3u,7u}) {
+        CAPTURE(workers);
+        TestBuildingPipeline original, restored;
+        original.configure(workers,8,[](auto&){});
+        std::vector<unsigned> published, resumed;
+        original.publish=[&](auto& job){published.push_back(job.payload.key);return true;};
+        original.advance();
+        auto* warm=original.reserve(8);warm->payload.key=8;
+        auto* initial=original.reserve(1);initial->payload.key=1;
+        TestBuildingPipelineBase::Job* staged[]={warm,initial};
+        original.prepare(staged);
+        CHECK(original.metrics.batches==2);
+        restored.configure(0,8,[](auto&){});
+        restored.publish=[&](auto& job){resumed.push_back(job.payload.key);return true;};
+        std::vector<unsigned> deadlines;
+        original.visitPending([&](auto& job,unsigned remaining){
+            deadlines.push_back(remaining);
+            restored.restoreCompleted(remaining,job.superseded,job.payload);
+        });
+        CHECK(deadlines==std::vector<unsigned>{1,8});
+        for(unsigned step=1;step<=8;++step) {
+            original.advance();restored.advance();
+            CHECK(published==resumed);
+            if(step<8) CHECK(published==std::vector<unsigned>{1});
+            else CHECK(published==std::vector<unsigned>{1,8});
+        }
+        original.reset();restored.reset();
+    }
+}
+
+TEST_CASE("mixed building deadlines retain bounded admission across the full executor horizon" * doctest::test_suite("GradientPipeline"))
+{
+    ComputeExecutor executor;executor.configure(8);
+    TestBuildingPipelineBase pipeline;
+    pipeline.configure(executor,8,[](auto&){});
+    unsigned published=0;
+    pipeline.publish=[&](auto&){++published;return true;};
+    for(unsigned tick=1;tick<=32;++tick) {
+        pipeline.advance();
+        TestBuildingPipelineBase::Job* staged[]={pipeline.reserve(8),pipeline.reserve(1)};
+        pipeline.prepare(staged);
+    }
+    for(unsigned tick=0;tick<8;++tick)pipeline.advance();
+    CHECK(published==64);
+    CHECK(pipeline.pendingCount()==0);
+    pipeline.reset();
+    pipeline.configure(executor,8,[](auto&){});pipeline.advance();
+    std::vector<TestBuildingPipelineBase::Job*> staged;
+    for(unsigned i=0;i<TestBuildingPipelineBase::MaxJobsPerTick;++i)staged.push_back(pipeline.reserve(8));
+    pipeline.prepare(staged);
+    for(unsigned tick=0;tick<7;++tick)pipeline.advance();
+    CHECK_FALSE(pipeline.canReserve(1));
+    CHECK(pipeline.canReserve(8));
+    CHECK_FALSE(pipeline.canReserve(9));
+    pipeline.finish();pipeline.reset();
+}
+
+TEST_CASE("an unfinished refresh batch cannot hold up an initial building field" * doctest::test_suite("GradientPipeline"))
+{
+    if(!GAGCore::ThreadSupport::available)return;
+    TestBuildingPipeline pipeline;
+    std::promise<void> warmStarted, releaseWarm, initialPublished;
+    auto release=releaseWarm.get_future().share();
+    auto initialDone=initialPublished.get_future();
+    std::atomic<bool> opened=false;
+    pipeline.configure(2,8,[&](auto& job){if(job.payload.key==8){warmStarted.set_value();release.wait();}});
+    pipeline.publish=[&](auto& job){if(job.payload.key==1){CHECK_FALSE(opened.load());initialPublished.set_value();}return true;};
+    pipeline.advance();
+    auto* warm=pipeline.reserve(8);warm->payload.key=8;
+    auto* initial=pipeline.reserve(1);initial->payload.key=1;
+    TestBuildingPipelineBase::Job* staged[]={warm,initial};pipeline.prepare(staged);
+    warmStarted.get_future().wait();
+    // Release on a failed implementation too, so a coupled batch fails instead
+    // of hanging the test runner.
+    std::thread opener([&]{initialDone.wait_for(std::chrono::milliseconds(200));opened=true;releaseWarm.set_value();});
+    pipeline.advance();opener.join();pipeline.finish();pipeline.reset();
 }

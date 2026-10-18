@@ -138,7 +138,7 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 	assert(x>=0);
 	assert(y>=0);
 	if (requestBuildingField(building,swimClass,route)==FieldReadiness::Pending) return false;
-	if (((areaCells[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
+	if (swimClass!=AIR_MOVEMENT_CLASS && ((areaCells[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).

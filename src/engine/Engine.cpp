@@ -8,6 +8,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "OnlineServices.h"
 #include "GameDiagnostics.h"
@@ -21,6 +22,7 @@
 #include "online/ReplayAppearance.h"
 #include <Toolkit.h>
 #include "ReplayWriter.h"
+#include "TurnLockstep.h"
 #include "SoundMixer.h"
 
 #include <iostream>
@@ -33,8 +35,11 @@ Engine::Engine()
 Engine::~Engine()
 {
     cancelInputDispatches();
-	stopSimulationThread();
-	PerformanceTelemetry::collector().enabled = false;
+    stopSimulationThread();
+    // Observers may capture locals destroyed before the Engine during unwinding.
+    // Explicit session finalization drains callbacks while their owners are alive.
+    if (turn) turn->onChecksum = {};
+    PerformanceTelemetry::collector().enabled = false;
 	globalContainer->liveSpectating=false;
 	if(previousCustomSpeed>=0) {
         globalContainer->settings.gameSpeed=previousCustomSpeed;
@@ -44,6 +49,7 @@ Engine::~Engine()
 	// Closing the window stops every screen without finishing the session: a turn
 	// match still says goodbye, and its relay connection lingers until the Quit is
 	// written (RelayTransport).
+    try { flushChecksums(); } catch (const std::exception& e) { std::cerr<<"Checksum finalization failed: "<<e.what()<<std::endl; }
 	try { leaveTurnMatch(); }
 	catch (...) {}
 	// Finalize the replay of the session this Engine ran, if any.
@@ -51,7 +57,8 @@ Engine::~Engine()
 	// writes the NullOrder terminator and flushes the replay file. This must
 	// happen after run() returns because the EndGameScreen shown there needs
 	// the writer alive to offer "save replay".
-	globalContainer->replayWriter.reset();
+    globalContainer->replayWriter.reset();
+    checksumPipeline.reset();
 }
 
 void Engine::prepareRun()

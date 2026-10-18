@@ -31,9 +31,25 @@ struct GradientRuntime
 		gradient_preparation::CrowdingScratch crowding;
 	};
     TerrainSafetyCache safety;
+    // Owner-only derived summary, invalidated alongside air safety on edits,
+    // catalog replacement and loading. Never depends on query order.
+    struct DirectFlight {
+        bool resourceBlockers = false, valid = false;
+    } directFlight;
+	// A positive-speed action completes within 256 simulation ticks. Keep a
+    // new result for that first read opportunity, then permit deterministic
+    // reclamation when the original request has been abandoned.
+    static constexpr Uint32 MaterialReadHoldTicks = 256;
+
 	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;
+        Uint16* published = nullptr;
+        // Consumer pool membership changes which otherwise eligible suppliers
+        // must be excluded, even when script identity/type/position are stable.
+        bool excludesShared = false;
+        bool awaitingFirstRead = false;
+        Uint32 publishedStep = 0;
 		Uint64 sourceRevision=0, recency=0;
 		Uint32 topology=0, builtStep=0, identity=0;
 		Sint32 consumer=-1, type=-1, x=0, y=0;
@@ -50,6 +66,8 @@ struct GradientRuntime
 	std::optional<Uint32> worldResultsPublishedTick;
 	std::optional<Uint32> worldWorkSubmittedTick;
 	GradientPipeline pipeline;
+    struct FieldRequest { Uint16** slot; gradient_preparation::Request request; };
+    std::deque<FieldRequest> fieldRequests;
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;
@@ -67,9 +85,7 @@ struct GradientRuntime
 	std::deque<BuildingRequest> buildingRequests;
 	// Reserved this tick, prepared together at the observation boundary.
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;
-	// Owner-side building walking field builds (cold fields, own-building
-	// changes and queue overflow; every build on a map without a game), split
-	// by reason.
+	// Explicit synchronous/editor field builds, split by diagnostic reason.
 	Uint64 buildingSynchronous = 0;
 	std::array<Uint64, std::size_t(Map::BuildingSyncReason::Count)> synchronousByReason{};
 	Map::BuildingSyncReason syncReason = Map::BuildingSyncReason::Other;
@@ -90,7 +106,7 @@ struct GradientRuntime
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
-	// Shared inert field for materials with no natural or supplier source.
+	// Shared immediate negative answer when global natural-source counts are zero.
 	std::vector<Uint16> absentMaterialField;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
     std::shared_ptr<gradient_kernel::BackendSession> backendSession;

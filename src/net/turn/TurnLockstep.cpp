@@ -15,9 +15,14 @@ TurnLockstepSession::TurnLockstepSession(int numberOfPlayers, std::shared_ptr<Tu
 
 void TurnLockstepSession::advanceStep(Uint32 checksum)
 {
-	if (onChecksum && !session.needsReload())
-		onChecksum(session.executedTick(), checksum);
-	session.advanceStep(checksum);
+    publishChecksum({session.executedTick(),checksum});
+    session.advanceStep();
+}
+void TurnLockstepSession::publishChecksum(ChecksumSample sample)
+{
+    if (session.needsReload()) return;
+    if (onChecksum) onChecksum(sample.sourceTick,sample.value);
+    session.publishChecksum(sample);
 }
 
 std::uint32_t TurnLockstepSession::pauseBudgetTicks() const

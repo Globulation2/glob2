@@ -107,27 +107,43 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 
 void Team::addBuildingNeedingWork(Building* b, Sint32 priority)
 {
-	bool did_find_position=false;
-	Sint32 p = priority;
-	std::vector<Building*>& blist = buildingsNeedingUnits[p];
-	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
+	auto& bucket = buildingsNeedingUnits[priority];
+	for (auto position = bucket.begin(); position != bucket.end(); ++position)
 	{
-		if(buildingHasHigherPriority(b, *i))
+		if (buildingHasHigherPriority(b, *position))
 		{
-			buildingsNeedingUnits[p].insert(i, b);
-			did_find_position=true;
-			break;
+			bucket.insert(position, b);
+			return;
 		}
 	}
-	if(!did_find_position)
-		buildingsNeedingUnits[p].push_back(b);
+	bucket.push_back(b);
+}
+
+void Team::repositionBuildingNeedingWork(Building* b, Sint32 priority)
+{
+	auto& bucket = buildingsNeedingUnits[priority];
+	const auto current = std::find(bucket.begin(), bucket.end(), b);
+	assert(current != bucket.end());
+	// Another building's staffing or wishes can change without reordering this
+	// bucket. Reproduce insertion before the first lower-ranked entry even if
+	// the bucket is unsorted; a neighbor check or binary search is not enough.
+	auto position = bucket.begin();
+	while (position != bucket.end())
+	{
+		if (position != current && buildingHasHigherPriority(b, *position)) break;
+		++position;
+	}
+	if (position < current)
+		std::rotate(position, current, current + 1);
+	else if (position > current + 1)
+		std::rotate(current, current + 1, position);
 }
 
 
 void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 {
-	Sint32 p = priority;
-	buildingsNeedingUnits[p].erase(std::find(buildingsNeedingUnits[p].begin(), buildingsNeedingUnits[p].end(), b));
+	auto& bucket = buildingsNeedingUnits[priority];
+	bucket.erase(std::find(bucket.begin(), bucket.end(), b));
 }
 
 
@@ -183,7 +199,7 @@ namespace
 	bool jobCost(Unit *u, Building *b, int resource, int *cost)
 	{
 		Map *map = b->owner->map;
-		int swimClass = u->swimClass();
+		int swimClass = u->movementClass();
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedMaterial >= 0)
@@ -209,12 +225,11 @@ namespace
 	bool innCost(Unit *u, Building *b, int *cost)
 	{
 		Map *map = b->owner->map;
-		if (u->performance[FLY])
-		{
-			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
-			return true;
-		}
-		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
+        if (u->performance[FLY] && !map->hasAirRoutingConstraints()) {
+            *cost=1+Sint32(std::sqrt(map->warpDistSquare(u->posX,u->posY,b->posX,b->posY)));
+            return true;
+        }
+		return map->buildingAvailable(b, u->movementClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.
@@ -242,7 +257,7 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->movementClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
 		u->setValidTarget(true);
 	}

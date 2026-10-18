@@ -50,7 +50,7 @@ class HiringPipeline
 			   const std::map<Uint16, BuildingRef> *initializations = nullptr);
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
-	// Legacy format-172 continuation support; new buildings initialize on demand.
+	// Legacy saved continuation support; new buildings initialize on demand.
 	// Tests enqueue these requests explicitly to exercise old-save continuation.
 	void requestInitialization(Building &);
 	bool preparing(const Building &, int slot) const;

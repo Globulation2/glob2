@@ -2,6 +2,7 @@
 #include "ai/engine/AIDecision.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "AICastor.h"
 #include "ai/observation/WorldQueries.h"
 #include "AINicowar.h"
@@ -121,6 +122,7 @@ TEST_SUITE("AIRecoveryCoverage")
   REQUIRE(fixture.addBuilding("swarm",4,4));
   game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
+  glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),0); });
   game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),0,4,4,&x,&y,&distance);
   Cabino::AICabino full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);

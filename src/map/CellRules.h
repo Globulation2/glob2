@@ -22,8 +22,8 @@ struct CellRule
 	// The four corner terrains in ascending order: the rule's identity.
 	std::array<TerrainType, 4> corners{};
 	TerrainProperties properties;
-	// Damage-weighted ground entry cost per swim class.
-	std::array<gradient_kernel::EntrySteps, std::size(gradient_kernel::WATER_STEP)> ground{};
+	// Damage-weighted movement costs; the historical name includes the air class.
+	std::array<gradient_kernel::EntrySteps, MOVEMENT_CLASS_COUNT> ground{};
 	unsigned airCost = GRADIENT_STEP, airRouteCost = GRADIENT_STEP, groundTravelCost = GRADIENT_STEP;
 	// Resource habitat: a permission per resource habitat profile, unless some
 	// corner terrain names its resources explicitly; then only the resources
@@ -36,14 +36,14 @@ struct CellRule
 	bool uniform() const { return corners[0] == corners[3]; }
 };
 
-// Integer wire table compiled with the ordinary corner rules. All swim classes
+// Integer wire table compiled with the ordinary corner rules. All movement classes
 // use the same representation; no map-sized host preparation is needed.
 struct GradientPreparationRule
 {
 	std::uint32_t accessibility = 0;
-	std::array<std::uint32_t, std::size(gradient_kernel::WATER_STEP)> costs{};
+	std::array<std::uint32_t, MOVEMENT_CLASS_COUNT> costs{};
 };
-static_assert(sizeof(GradientPreparationRule) == 36);
+static_assert(sizeof(GradientPreparationRule) == 40);
 
 // The compiled rules of one map, for one terrain and one resource registry.
 // Rule t is the uniform cell of terrain type t, for every registered type; mixed
@@ -55,10 +55,10 @@ class CellRuleTable
   public:
 	static constexpr std::size_t Capacity = 65536;
 	using Key = std::array<TerrainType, 4>;
-	// Access has three variants even though movement costs have eight classes.
+	// Access has four variants while movement costs have nine classes.
 	// CPU seed loops use one narrow column; the accelerator wire table retains
 	// its all-class mask and costs. Both are compiled from the same rule.
-	inline static constexpr std::array<int, 3> OpenTerrainClasses{0, 1, WATER_ONLY_CLASS};
+	inline static constexpr std::array<int, 4> OpenTerrainClasses{0, 1, WATER_ONLY_CLASS, AIR_MOVEMENT_CLASS};
 
 	CellRuleTable(std::shared_ptr<const TerrainRegistry> terrains,
 				  std::shared_ptr<const ResourceRegistry> resources);
@@ -121,7 +121,7 @@ class CellRuleTable
 	};
 	void compile(CellRule &rule);
 	std::uint16_t add(const Key &key, bool prepare);
-	std::array<TerrainRegistry::Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
+	std::array<TerrainRegistry::Movement, MOVEMENT_CLASS_COUNT> movement_;
 	std::shared_ptr<const TerrainRegistry> terrains_;
 	std::shared_ptr<const ResourceRegistry> resources_;
 	std::vector<CellRule> rules_;

@@ -16,13 +16,15 @@
 #include <algorithm>
 #include <array>
 #include <ios>
+#include <iostream>
 #include <filesystem>
 
 // Write an Order to the stream, with the given checksum
-inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
+inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0, bool present = false)
 {
 	// Write the checksum
 	order->gameCheckSum = checksum;
+    order->hasGameCheckSum = present || checksum!=0;
 
 	// A NetSendOrder has methods to write an Order to a stream
 	NetSendOrder msg(order);
@@ -42,7 +44,7 @@ ReplayWriter::ReplayWriter()
 
 ReplayWriter::~ReplayWriter()
 {
-	finish();
+    try { finish(); } catch (const std::exception& e) { std::cerr<<"Cannot finalize replay: "<<e.what()<<std::endl; }
 
 	delete buffer;
 }
@@ -122,11 +124,20 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 		return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
-	// Write the number of steps since last order to this order (can be 0)
-	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
-
-	// Write the Order to the file
-	writeOrder(buffer, order, checksum);
+    if (flushChecksums) {
+        // Orders can be reused/mutated by networking after this call. Freeze payload and sender.
+        std::vector<Uint8> bytes(order->getDataLength()+1);
+        bytes[0]=order->getOrderType();
+        std::copy_n(order->getData(),order->getDataLength(),bytes.data()+1);
+        auto copy=Order::getOrder(bytes.data(),bytes.size(),VERSION_MINOR);
+        if (!copy) throw std::ios_base::failure("Cannot freeze replay order");
+        copy->sender=order->sender;
+        pendingOrders.push_back({stepsSinceLastOrder,game ? game->stepCounter : telemetryStep,std::move(copy)});
+        writePending();
+    } else {
+        buffer->writeUint32(stepsSinceLastOrder,"replayStepsSinceLastOrder");
+        writeOrder(buffer,order,checksum);
+    }
 
 	stepsSinceLastOrder = 0;
 	ordersWritten++;
@@ -134,18 +145,42 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 	// Don't flush the buffer. That is done when writing the last Order, in ReplayWriter::finish().
 }
 
+void ReplayWriter::publishChecksum(ChecksumSample sample)
+{
+    if (finished) return;
+    auto [entry,inserted]=readyChecksums.emplace(sample.sourceTick,sample.value);
+    // Several paused network turns can edit one simulation tick. Playback
+    // executes their orders together, so all use that tick's first observation.
+    if (inserted) readyChecksumOrder.push_back(sample.sourceTick);
+    writePending();
+    while (readyChecksumOrder.size()>8) {
+        readyChecksums.erase(readyChecksumOrder.front()); readyChecksumOrder.pop_front();
+    }
+}
+void ReplayWriter::writePending()
+{
+    while (!pendingOrders.empty()) {
+        auto& pending=pendingOrders.front();
+        const auto found=readyChecksums.find(pending.worldTick);
+        if (found==readyChecksums.end()) break;
+        buffer->writeUint32(pending.steps,"replayStepsSinceLastOrder");
+        pending.order->gameCheckSumTick=pending.worldTick;
+        pending.order->hasGameCheckSum=true;
+        writeOrder(buffer,pending.order,found->second,true);
+        pendingOrders.pop_front();
+    }
+}
+
 void ReplayWriter::finish()
 {
 	if (!isValid() || finished)
 		return;
 
-	// Write the number of steps since last order to the end of the replay
-	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+    if (flushChecksums) flushChecksums();
+    writePending();
+    if (!pendingOrders.empty()) throw std::ios_base::failure("Replay has uncomputed checksums");
+    writeEnd(buffer);
 
-	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
-	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
-
-	telemetry.write(buffer);
 	finished = true;
 
 	// Flush the buffer now
@@ -155,13 +190,30 @@ void ReplayWriter::finish()
 	stepsSinceLastOrder = 0;
 }
 
+void ReplayWriter::writeEnd(GAGCore::OutputStream* output) const
+{
+    // Write the number of steps since last order to the end of the replay
+	output->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+
+	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
+	auto end=std::make_shared<NullOrder>();
+    end->gameCheckSumTick=game ? game->stepCounter : 0;
+    const auto final=readyChecksums.find(end->gameCheckSumTick);
+    end->hasGameCheckSum=final!=readyChecksums.end();
+    writeOrder(output,end,final!=readyChecksums.end() ? final->second : 0,final!=readyChecksums.end());
+
+	telemetry.write(output);
+}
+
 bool ReplayWriter::write(const std::string &filename) const
 {
 	if (!isValid()) return false;
 	if (filename == "") return false;
 	
-	// Make sure the buffer is flushed
-	buffer->flush();
+    if (!finished && flushChecksums) flushChecksums();
+    if (!pendingOrders.empty()) return false;
+    // Make sure the buffer is flushed
+    buffer->flush();
 
     const size_t pos = bufferBackend->getPosition();
     const bool saved = Toolkit::getFileManager()->writeAtomically(filename, [&](GAGCore::OutputStream& file) {
@@ -178,9 +230,7 @@ bool ReplayWriter::write(const std::string &filename) const
         }
 		if (!finished)
 		{
-			file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
-			writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
-			telemetry.write(&file);
+            writeEnd(&file);
 		}
     });
     // Atomic writer failures must not leave the live recording's cursor moved.

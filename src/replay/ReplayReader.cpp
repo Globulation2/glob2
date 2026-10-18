@@ -38,6 +38,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	// Reset checksum
 	checksum = 0;
 	telemetry = {};
+    expectedChecksums.clear(); readyChecksums.clear(); readyChecksumOrder.clear(); deferredChecksums=false;
 
 	// Make sure the given stream is valid
 	if (inputStream == NULL) return false;
@@ -148,6 +149,42 @@ void ReplayReader::setCheckSum(Uint32 checksum)
 	this->checksum = checksum;
 }
 
+void ReplayReader::validateChecksum(Uint32 expected, Uint32 actual)
+{
+    if (expected==actual) return;
+    delete stream; stream=nullptr;
+    throw std::ios_base::failure("Replay snapshot checksum mismatch");
+}
+void ReplayReader::expectChecksum(ChecksumSample sample)
+{
+    if (auto found=readyChecksums.find(sample.sourceTick);found!=readyChecksums.end())
+        validateChecksum(sample.value,found->second);
+    else {
+        auto [entry,inserted]=expectedChecksums.emplace(sample.sourceTick,sample.value);
+        if (!inserted) validateChecksum(entry->second,sample.value);
+        if (expectedChecksums.size()>4) throw std::ios_base::failure("Replay checksum backlog exceeded");
+    }
+}
+void ReplayReader::publishChecksum(ChecksumSample sample)
+{
+    if (auto found=expectedChecksums.find(sample.sourceTick);found!=expectedChecksums.end()) {
+        validateChecksum(found->second,sample.value); expectedChecksums.erase(found);
+    }
+    auto [entry,inserted]=readyChecksums.emplace(sample.sourceTick,sample.value);
+    if (!inserted) validateChecksum(entry->second,sample.value);
+    else readyChecksumOrder.push_back(sample.sourceTick);
+    while (readyChecksumOrder.size()>4) {
+        readyChecksums.erase(readyChecksumOrder.front()); readyChecksumOrder.pop_front();
+    }
+}
+void ReplayReader::finishChecksumValidation()
+{
+    if (!expectedChecksums.empty()) {
+        delete stream; stream=nullptr;
+        throw std::ios_base::failure("Replay ended with unvalidated checksums");
+    }
+}
+
 std::shared_ptr<Order> ReplayReader::retrieveOrder()
 {
 	if (!hasMoreOrdersThisStep()) return std::shared_ptr<Order>(new NullOrder());
@@ -165,7 +202,9 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 		order = msg.getOrder();
 
 		// Check the checksums (no assert as we also want to check this in release-mode)
-		if (checksum != 0 && order->gameCheckSum != 0 && checksum != order->gameCheckSum)
+		if (deferredChecksums && order->hasGameCheckSum)
+            expectChecksum({order->gameCheckSumTick,order->gameCheckSum});
+        if (!deferredChecksums && checksum != 0 && order->gameCheckSum != 0 && checksum != order->gameCheckSum)
 		{
 			// Mayday, checksums don't match!
 			std::cerr << "Error in replay: checksums don't match!" << std::endl;

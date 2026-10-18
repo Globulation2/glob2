@@ -60,6 +60,7 @@ class GradientPipeline
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
 		Job &, gradient_kernel::PlanDecision)>;
 	std::function<void(std::uint16_t **)> onPublished;
+    std::function<bool(std::uint16_t **)> validDestination;
 	std::function<std::uint64_t(unsigned)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
@@ -286,7 +287,7 @@ class GradientPipeline
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
-		if (!enabled() || !value.slot || !*value.slot || !value.data || !value.remaining ||
+		if (!enabled() || !value.slot || !value.data || !value.remaining ||
 			value.remaining > delay || pending.size() >= delay ||
 			(!pending.empty() && pending.back()->due >= tick + value.remaining))
 			throw std::runtime_error("Invalid saved gradient deadline or destination");
@@ -308,14 +309,13 @@ class GradientPipeline
 			(this->*waitJob)(job, {JoinReason::TickDeadline, deadline ? deadline(0) / 2 : tick});
 			if (job.error)
 				std::rethrow_exception(job.error);
-			if (!job.superseded)
+			if (!job.superseded && (!validDestination || validDestination(job.slot)))
 			{
 				auto *old = *job.slot;
 				*job.slot = job.data.release();
 				job.data.reset(old);
+                if (onPublished) onPublished(job.slot);
 				++metrics.published;
-				if (onPublished)
-					onPublished(job.slot);
 			}
 			else
 				++metrics.discarded;
@@ -323,6 +323,10 @@ class GradientPipeline
 			pending.pop_front();
 		}
 	}
+    template<class Visitor> void visitLogical(Visitor visitor) const
+    { for (const auto& job:pending) visitor(job->slot, unsigned(job->due-tick), job->superseded); }
+    template<class Visitor> void forEachDestination(Visitor visitor) const
+    { for (const auto& job:pending) if (!job->superseded) visitor(job->slot); }
 	void invalidate(std::uint16_t **slot)
 	{
 		for (auto &job : pending)
@@ -337,13 +341,16 @@ class GradientPipeline
 		if (spare.empty())
 		{
 			job = std::make_unique<Job>();
-			job->data = std::make_unique<std::uint16_t[]>(cells);
+			// Seeding initializes every cell on the worker. Value initialization
+			// here would retain a map-sized clearing pass on the owner.
+			job->data.reset(new std::uint16_t[cells]);
 		}
 		else
 		{
 			job = std::move(spare.back());
 			spare.pop_back();
 		}
+        if (!job->data) job->data=std::make_unique_for_overwrite<std::uint16_t[]>(cells);
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
 		job->slot = slot;
