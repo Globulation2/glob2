@@ -339,7 +339,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Fields omit transient traffic, while stepping checks the air occupancy layer.
   On maps without air terrain constraints or air-blocking resources, flyers
   retain direct angular steering and local traffic
-  avoidance. Shared queries still choose service, resource and clearing goals;
+  avoidance, and choose food, healing and upgrade buildings using the historical
+  geometric distances. These service choices do not allocate air fields. Shared
+  queries still choose resource and clearing goals;
   ordinary building/resource travel does not follow a field at every step.
   A derived summary invalidated alongside air safety selects the policy again
   after edits or loading. Guard balancing retains its field-based steering.

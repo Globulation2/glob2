@@ -73,6 +73,10 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
         geometry.reset(view.width,view.height,view.wDec,view.wMask);
         const std::array<const std::vector<Uint64>*,4> current={&snapshot.terrain->stamps.chunks,
             &snapshot.resources->stamps.chunks,&snapshot.occupancy->stamps.chunks,&snapshot.areas->stamps.chunks};
+        // Compile separate refresh loops: ground-only caches must not test air
+        // state for every cell. Once initialized, keep the air template current
+        // even when the next request is for a ground field.
+        const auto refresh=[&]<bool Air>() {
         for (size_t chunk=0; chunk<geometry.count(); ++chunk) {
             const auto changed=[&](size_t component) {
                 return rebuild || stamps[component].size()!=geometry.count()
@@ -97,7 +101,7 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         // Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
-                        if(!airSignatures.empty()) {
+                        if constexpr (Air) {
                         const MaterialMask airMask=MapState::materialMaskAt(view,i);
                         const bool airOpen=rules.flyable && !MapState::resourceBlocksAir(view,i);
                         const Uint16 airSignature=airMask | (airOpen?0x1000:0)
@@ -139,6 +143,9 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                 }
             });
         }
+        };
+        if (airSignatures.empty()) refresh.template operator()<false>();
+        else refresh.template operator()<true>();
         for (size_t component=0; component<4; ++component) stamps[component]=*current[component];
     } catch (const std::bad_alloc&) {
         // Allocation failure only disables this optional optimization.

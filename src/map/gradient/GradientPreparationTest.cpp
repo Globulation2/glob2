@@ -1773,3 +1773,73 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         CHECK(map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8));
     }
 }
+
+TEST_CASE("ordinary air service choices keep geometric ranking without allocating fields" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (int purpose : {FEED, HEAL, WALK}) {
+        CAPTURE(purpose);
+        glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=world.game.map;
+        auto* unit=world.addUnit(purpose==WALK ? WORKER : EXPLORER,8,8);
+        REQUIRE(unit);
+        // Exercise a flying worker's training using its normal learnable skills.
+        if (purpose==WALK) unit->performance[FLY]=32;
+        const char* kind=purpose==FEED ? "inn" : purpose==HEAL ? "hospital" : "racetrack";
+        auto* near=world.addBuilding(kind,20,8);
+        auto* far=world.addBuilding(kind,18,18);
+        REQUIRE(near); REQUIRE(far);
+        for (auto* building : {near,far}) {
+            building->setMaterial(WHEAT,20);
+            building->updateCallLists();
+            REQUIRE(building->canOfferService(unit,purpose));
+        }
+        const auto select=[&] {
+            if (purpose==FEED) return world.team->findNearestFood(unit);
+            if (purpose==HEAL) return world.team->findNearestHeal(unit);
+            return world.team->findBestUpgrade(unit);
+        };
+        for (bool painted : {false,true}) {
+            if (painted) for (int y=0;y<map.getH();++y) map.addForbidden(15,y,0);
+            REQUIRE_FALSE(map.hasAirRoutingConstraints());
+            CHECK(select()==near);
+            for (auto* building : {near,far}) {
+                const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+                CHECK(building->globalGradient[slot]==nullptr);
+            }
+        }
+        // A real terrain edit must switch selection to the shared route policy.
+        map.paintCell(60,60,VOID_HOLE);
+        REQUIRE(map.hasAirRoutingConstraints());
+        REQUIRE(select()!=nullptr);
+        for (auto* building : {near,far}) {
+            const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+            CHECK(building->globalGradient[slot]!=nullptr);
+        }
+    }
+}
+
+TEST_CASE("ground refreshes preserve warm air material seeds across edits" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    gradient_preparation::MaterialSeedCache cache;
+    std::vector<Uint16> cached(map.size),reference(map.size);
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
+    REQUIRE(cache.trySeed(snapshot,0,WHEAT,0,cached.data(),nullptr));
+    CHECK(cache.airSignatures.empty());
+    REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+    REQUIRE_FALSE(cache.airSignatures.empty());
+    map.setResourceByIndex(18,12,WHEAT,1);
+    map.markImmobileUnit(18,12,0);
+    map.addForbidden(18,12,0);
+    snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
+    REQUIRE(cache.trySeed(snapshot,0,WHEAT,0,cached.data(),nullptr));
+    CHECK(cached[map.coordToIndex(18,12)]==GRADIENT_FORBIDDEN);
+    REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+    const auto run=[](auto fn) { fn(0,size_t(128*128)); };
+    gradient_preparation::materialCells(map.stateView(),map.fogOfWar,0,WHEAT,AIR_MOVEMENT_CLASS,reference.data(),nullptr,run);
+    CHECK(cached==reference);
+    CHECK(cached[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+}

@@ -35,6 +35,27 @@ Building *Team::findNearestHeal(Unit *unit)
 	if (unit->hungriness > 0 && unit->hungry < 0)
 		return NULL;
 
+	if (unit->performance[FLY] && !map->hasAirRoutingConstraints())
+	{
+		Sint32 x = unit->posX;
+		Sint32 y = unit->posY;
+		Sint32 maxDist = starvationLimitedTravelDistance(unit);
+		Building *choosen = NULL;
+		Sint32 bestDist2 = maxDist * maxDist;
+		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
+		{
+			Building *b=(*bi);
+			if (!b->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,*b)) continue;
+			Sint32 dist2 = map->warpDistSquare(x,y,b->posX,b->posY);
+			if (dist2 < bestDist2)
+			{
+				choosen = b;
+				bestDist2 = dist2;
+			}
+		}
+		return choosen;
+	}
+
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
 		Sint32 maxDist = starvationLimitedTravelDistance(unit);
@@ -60,6 +81,7 @@ Building *Team::findNearestHeal(Unit *unit)
 Building *Team::findNearestFood(Unit *unit)
 {
 	MapHeader& header=game->mapHeader;
+	const bool directAir=unit->performance[FLY] && !map->hasAirRoutingConstraints();
 
 	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
 	for (int ti= 0; ti < header.getNumberOfTeams(); ti++)
@@ -90,13 +112,13 @@ Building *Team::findNearestFood(Unit *unit)
 				{
 			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 					int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-					if ((dist >= maxDist && !map->hasMovementCostModifiers(unit->movementClass()) && !unit->performance[FLY])
+					if ((dist >= maxDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
 						|| !(*bi)->canConvertUnit()
 						)
 					{
 						continue;
 					}
-					if (!map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+					if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -130,10 +152,10 @@ Building *Team::findNearestFood(Unit *unit)
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-			if (dist >= bestDist && !map->hasMovementCostModifiers(unit->movementClass()) && !unit->performance[FLY])
+			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
 				continue;
 
-			if (!map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+			if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -158,6 +180,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=Team::UPGRADE_SCORE_NONE;
 	int x=unit->posX;
 	int y=unit->posY;
+	const bool routeAir=unit->performance[FLY] && map->hasAirRoutingConstraints();
 	//TODO: This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
 	//to be the last, this code will fail.
 	for (int ability=(int)WALK; ability<NB_ABILITY; ability++)
@@ -175,7 +198,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 			if (!b->canOfferService(unit, ability) || !serviceMovementAllowed(*map,*unit,*b))
 				continue;
             std::int64_t distanceSquared=map->warpDistSquare(b->posX,b->posY,x,y);
-            if(unit->performance[FLY] || map->hasTerrainMovementModifiers() || !unit->performance[WALK])
+            if(routeAir || (!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK])))
             {
                 int distance=0;
                 if(!map->buildingAvailable(b,unit->movementClass(),x,y,&distance,BuildingRoute::Footprint)) continue;
