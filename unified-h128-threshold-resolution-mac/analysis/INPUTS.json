@@ -1,0 +1,14 @@
+{
+  "scope": "Read-only diagnosis from sealed existing outputs; no predictions repeated, no refit/games/sourcechanges",
+  "created_utc": "2026-10-19T11:53:08.950991+00:00",
+  "files": {
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/RESULTS.json": "05bfb8f9642e44120a2d8fcd8a5936b2e0aaddfe7eb89b36f746cd069c228ca0",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/PREDICTIONS.json": "fd98273d7cc7b7a0aeb2446d32c18971c6107dff3116d7efb8a77be4b502cc5f",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/predictions.npz": "41f833dd01a2fc042066d6fb0f1d92b051559fcba2a994c69ce26c9b42655569",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/cumulative-512/independent-review/REVIEW.json": "19e22d7716b4bca38b3e36c6e54c52df2f1492dfd72cc4f9dd40a6d40fc7f337",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/threshold-study/PILOT-SUMMARY.json": "3fe48f096908f96fc8a52a162da8ae1e92572c84765a5c04da84f45fd79e67d5",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/analysis/RESULTS.json": "857d44948e3d452f391796bf57e21b958811551db95335949b7926b3d1837ae7",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/model-research-cumulative256/DEVELOPMENT-SELECTION.json": "8bba5a48184b00d68406af49b20a4766e15e4f4fb7b7c453bc1a7002152b2be2"
+  },
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab"
+}

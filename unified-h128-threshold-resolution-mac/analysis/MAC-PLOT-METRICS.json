@@ -1,0 +1,1121 @@
+{
+  "summary_sha256": "0ac3101721408b73b46e3844c88c33fa2753c80e869a6389fc95e06a5d200646",
+  "source_summary": "MAC-SUMMARY.json",
+  "quality_scope": "Two1024sampled windows per8192tick diagnostic continuation; original2048phase excluded",
+  "timing_by_map": {
+    "66294c58700ef1b4": {
+      "A1": {
+        "cpu_mean": 0.17727026367187498,
+        "cpu_repeat_values": [
+          0.176536376953125,
+          0.1803851318359375,
+          0.1788988037109375,
+          0.1732607421875
+        ],
+        "cpu_range": [
+          0.1732607421875,
+          0.1803851318359375
+        ],
+        "direction_rate": 0.21597833446174677,
+        "queries": 1477,
+        "extra_cost": 319,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.21597833446174677,
+          "false_reachable": 0.024373730534867976,
+          "false_unreachable": 0.002708192281651997,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.002031144211238998,
+          "missed_move": 0.002708192281651997,
+          "stall": 0.002031144211238998
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.002816657277809074,
+            "false_unreachable": 0.0007366642111192962
+          },
+          "totals": {
+            "false_reachable": 65,
+            "false_unreachable": 17,
+            "queries": 23077
+          }
+        }
+      },
+      "A4": {
+        "cpu_mean": 0.1745791015625,
+        "cpu_repeat_values": [
+          0.17914111328125,
+          0.1736602783203125,
+          0.172150146484375,
+          0.1733648681640625
+        ],
+        "cpu_range": [
+          0.172150146484375,
+          0.17914111328125
+        ],
+        "direction_rate": 0.11284807034684904,
+        "queries": 2047,
+        "extra_cost": 231,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.11284807034684904,
+          "false_reachable": 0.025891548607718612,
+          "false_unreachable": 0.0004885197850512946,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.0009770395701025891,
+          "missed_move": 0.0014655593551538837,
+          "stall": 0.0029311187103077674
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.005598025642569072,
+            "false_unreachable": 0.0015650394269547945
+          },
+          "totals": {
+            "false_reachable": 186,
+            "false_unreachable": 52,
+            "queries": 33226
+          }
+        }
+      },
+      "A16": {
+        "cpu_mean": 0.14690399169921875,
+        "cpu_repeat_values": [
+          0.146854736328125,
+          0.1461484375,
+          0.146904052734375,
+          0.147708740234375
+        ],
+        "cpu_range": [
+          0.1461484375,
+          0.147708740234375
+        ],
+        "direction_rate": 0.21139896373056996,
+        "queries": 1930,
+        "extra_cost": 408,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.21139896373056996,
+          "false_reachable": 0.02849740932642487,
+          "false_unreachable": 0.0005181347150259067,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.004145077720207254,
+          "missed_move": 0.0031088082901554403,
+          "stall": 0.0015544041450777201
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.005128205128205128,
+            "false_unreachable": 0.005891078618351346
+          },
+          "totals": {
+            "false_reachable": 121,
+            "false_unreachable": 139,
+            "queries": 23595
+          }
+        }
+      },
+      "A32": {
+        "cpu_mean": 0.142134521484375,
+        "cpu_repeat_values": [
+          0.141401611328125,
+          0.138997314453125,
+          0.1497978515625,
+          0.13834130859375
+        ],
+        "cpu_range": [
+          0.13834130859375,
+          0.1497978515625
+        ],
+        "direction_rate": 0.5012658227848101,
+        "queries": 1580,
+        "extra_cost": 792,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.5012658227848101,
+          "false_reachable": 0.0379746835443038,
+          "false_unreachable": 0.0012658227848101266,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.002531645569620253,
+          "missed_move": 0.0037974683544303796,
+          "stall": 0.0031645569620253164
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.003962309736651365,
+            "false_unreachable": 0.0024643633727953612
+          },
+          "totals": {
+            "false_reachable": 82,
+            "false_unreachable": 51,
+            "queries": 20695
+          }
+        }
+      },
+      "A128": {
+        "cpu_mean": 0.139378662109375,
+        "cpu_repeat_values": [
+          0.1409002685546875,
+          0.1366080322265625,
+          0.1409990234375,
+          0.13900732421875
+        ],
+        "cpu_range": [
+          0.1366080322265625,
+          0.1409990234375
+        ],
+        "direction_rate": 0.5341159207630227,
+        "queries": 1363,
+        "extra_cost": 728,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.5341159207630227,
+          "false_reachable": 0.043286867204695524,
+          "false_unreachable": 0.0022010271460014674,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.00880410858400587,
+          "missed_move": 0.009537784299339692,
+          "stall": 0.00293470286133529
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.00796630809823422,
+            "false_unreachable": 0.005023340775319667
+          },
+          "totals": {
+            "false_reachable": 157,
+            "false_unreachable": 99,
+            "queries": 19708
+          }
+        }
+      },
+      "recovery-only": {
+        "cpu_mean": 0.13713525390625,
+        "cpu_repeat_values": [
+          0.138155029296875,
+          0.138084228515625,
+          0.13787939453125,
+          0.13442236328125
+        ],
+        "cpu_range": [
+          0.13442236328125,
+          0.138155029296875
+        ],
+        "direction_rate": 0.5341159207630227,
+        "queries": 1363,
+        "extra_cost": 728,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.5341159207630227,
+          "false_reachable": 0.043286867204695524,
+          "false_unreachable": 0.0022010271460014674,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.00880410858400587,
+          "missed_move": 0.009537784299339692,
+          "stall": 0.00293470286133529
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.00796630809823422,
+            "false_unreachable": 0.005023340775319667
+          },
+          "totals": {
+            "false_reachable": 157,
+            "false_unreachable": 99,
+            "queries": 19708
+          }
+        }
+      },
+      "fixed32": {
+        "cpu_mean": 0.1683543701171875,
+        "cpu_repeat_values": [
+          0.1668995361328125,
+          0.1634041748046875,
+          0.167639404296875,
+          0.175474365234375
+        ],
+        "cpu_range": [
+          0.1634041748046875,
+          0.175474365234375
+        ],
+        "direction_rate": 0.25735294117647056,
+        "queries": 1360,
+        "extra_cost": 350,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.25735294117647056,
+          "false_reachable": 0.03235294117647059,
+          "false_unreachable": 0.0014705882352941176,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.008823529411764706,
+          "missed_move": 0.003676470588235294,
+          "stall": 0.0029411764705882353
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.0015233347181830771,
+            "false_unreachable": 0.002243456584960532
+          },
+          "totals": {
+            "false_reachable": 55,
+            "false_unreachable": 81,
+            "queries": 36105
+          }
+        }
+      },
+      "fixed128": {
+        "cpu_mean": 0.14379653930664063,
+        "cpu_repeat_values": [
+          0.1442025146484375,
+          0.14248583984375,
+          0.1446788330078125,
+          0.1438189697265625
+        ],
+        "cpu_range": [
+          0.14248583984375,
+          0.1446788330078125
+        ],
+        "direction_rate": 0.2883747178329571,
+        "queries": 1772,
+        "extra_cost": 511,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.2883747178329571,
+          "false_reachable": 0.028216704288939052,
+          "false_unreachable": 0.0,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.007900677200902935,
+          "missed_move": 0.004514672686230248,
+          "stall": 0.001128668171557562
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.007159022677936354,
+            "false_unreachable": 0.0028174218280910815
+          },
+          "totals": {
+            "false_reachable": 155,
+            "false_unreachable": 61,
+            "queries": 21651
+          }
+        }
+      }
+    },
+    "0083541d8ee4d18b": {
+      "A1": {
+        "cpu_mean": 0.2270259094238281,
+        "cpu_repeat_values": [
+          0.228544189453125,
+          0.224229736328125,
+          0.2236409912109375,
+          0.231688720703125
+        ],
+        "cpu_range": [
+          0.2236409912109375,
+          0.231688720703125
+        ],
+        "direction_rate": 0.2634146341463415,
+        "queries": 3690,
+        "extra_cost": 972,
+        "movement_rates": {
+          "escape_failure": 0.00027100271002710027,
+          "extra_cost": 0.2634146341463415,
+          "false_reachable": 0.00894308943089431,
+          "false_unreachable": 0.0013550135501355014,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.0013550135501355014,
+          "missed_move": 0.0035230352303523035,
+          "stall": 0.014363143631436315
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.004031932908636401,
+            "false_unreachable": 0.00428997661478913
+          },
+          "totals": {
+            "false_reachable": 250,
+            "false_unreachable": 266,
+            "queries": 62005
+          }
+        }
+      },
+      "A4": {
+        "cpu_mean": 0.20614279174804687,
+        "cpu_repeat_values": [
+          0.2082691650390625,
+          0.207890380859375,
+          0.202162841796875,
+          0.206248779296875
+        ],
+        "cpu_range": [
+          0.202162841796875,
+          0.2082691650390625
+        ],
+        "direction_rate": 0.1348914858096828,
+        "queries": 2995,
+        "extra_cost": 404,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.1348914858096828,
+          "false_reachable": 0.01736227045075125,
+          "false_unreachable": 0.001001669449081803,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.005342237061769616,
+          "missed_move": 0.002337228714524207,
+          "stall": 0.002337228714524207
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.015162529857721466,
+            "false_unreachable": 0.021497559455810573
+          },
+          "totals": {
+            "false_reachable": 292,
+            "false_unreachable": 414,
+            "queries": 19258
+          }
+        }
+      },
+      "A16": {
+        "cpu_mean": 0.207015869140625,
+        "cpu_repeat_values": [
+          0.2021395263671875,
+          0.2136429443359375,
+          0.20566259765625,
+          0.206618408203125
+        ],
+        "cpu_range": [
+          0.2021395263671875,
+          0.2136429443359375
+        ],
+        "direction_rate": 0.1583487369069624,
+        "queries": 3246,
+        "extra_cost": 514,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.1583487369069624,
+          "false_reachable": 0.016327788046826865,
+          "false_unreachable": 0.0021565003080714724,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.0027726432532347504,
+          "missed_move": 0.0036968576709796672,
+          "stall": 0.004313000616142945
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.014971619017861792,
+            "false_unreachable": 0.010597302504816955
+          },
+          "totals": {
+            "false_reachable": 575,
+            "false_unreachable": 407,
+            "queries": 38406
+          }
+        }
+      },
+      "A32": {
+        "cpu_mean": 0.201206787109375,
+        "cpu_repeat_values": [
+          0.19967919921875,
+          0.199869873046875,
+          0.2016444091796875,
+          0.2036336669921875
+        ],
+        "cpu_range": [
+          0.19967919921875,
+          0.2036336669921875
+        ],
+        "direction_rate": 0.5823598130841121,
+        "queries": 3424,
+        "extra_cost": 1994,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.5823598130841121,
+          "false_reachable": 0.02570093457943925,
+          "false_unreachable": 0.0014602803738317756,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.0040887850467289715,
+          "missed_move": 0.006425233644859813,
+          "stall": 0.018691588785046728
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.0069277664880842416,
+            "false_unreachable": 0.007343432477369296
+          },
+          "totals": {
+            "false_reachable": 450,
+            "false_unreachable": 477,
+            "queries": 64956
+          }
+        }
+      },
+      "A128": {
+        "cpu_mean": 0.20597756958007812,
+        "cpu_repeat_values": [
+          0.1992032470703125,
+          0.2042755126953125,
+          0.2029288330078125,
+          0.217502685546875
+        ],
+        "cpu_range": [
+          0.1992032470703125,
+          0.217502685546875
+        ],
+        "direction_rate": 0.28385899814471244,
+        "queries": 3234,
+        "extra_cost": 918,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.28385899814471244,
+          "false_reachable": 0.025664811379097093,
+          "false_unreachable": 0.006184291898577613,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.004329004329004329,
+          "missed_move": 0.0095856524427953,
+          "stall": 0.004329004329004329
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.009653605905735378,
+            "false_unreachable": 0.022920861080997366
+          },
+          "totals": {
+            "false_reachable": 187,
+            "false_unreachable": 444,
+            "queries": 19371
+          }
+        }
+      },
+      "recovery-only": {
+        "cpu_mean": 0.20343652343750002,
+        "cpu_repeat_values": [
+          0.20240869140625,
+          0.207324951171875,
+          0.201642578125,
+          0.202369873046875
+        ],
+        "cpu_range": [
+          0.201642578125,
+          0.207324951171875
+        ],
+        "direction_rate": 0.28385899814471244,
+        "queries": 3234,
+        "extra_cost": 918,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.28385899814471244,
+          "false_reachable": 0.025664811379097093,
+          "false_unreachable": 0.006184291898577613,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.004329004329004329,
+          "missed_move": 0.0095856524427953,
+          "stall": 0.004329004329004329
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.009653605905735378,
+            "false_unreachable": 0.022920861080997366
+          },
+          "totals": {
+            "false_reachable": 187,
+            "false_unreachable": 444,
+            "queries": 19371
+          }
+        }
+      },
+      "fixed32": {
+        "cpu_mean": 0.21373986816406249,
+        "cpu_repeat_values": [
+          0.21553173828125,
+          0.2105556640625,
+          0.209982177734375,
+          0.218889892578125
+        ],
+        "cpu_range": [
+          0.209982177734375,
+          0.218889892578125
+        ],
+        "direction_rate": 0.6339447171273572,
+        "queries": 3871,
+        "extra_cost": 2454,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.6339447171273572,
+          "false_reachable": 0.018083182640144666,
+          "false_unreachable": 0.0010333247222939809,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.003358305347455438,
+          "missed_move": 0.004649961250322914,
+          "stall": 0.008524928958925343
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.006322427283832414,
+            "false_unreachable": 0.0038297731849846477
+          },
+          "totals": {
+            "false_reachable": 383,
+            "false_unreachable": 232,
+            "queries": 60578
+          }
+        }
+      },
+      "fixed128": {
+        "cpu_mean": 0.20339981079101563,
+        "cpu_repeat_values": [
+          0.206815185546875,
+          0.2034647216796875,
+          0.201569091796875,
+          0.201750244140625
+        ],
+        "cpu_range": [
+          0.201569091796875,
+          0.206815185546875
+        ],
+        "direction_rate": 0.16415770609318997,
+        "queries": 2790,
+        "extra_cost": 458,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.16415770609318997,
+          "false_reachable": 0.022939068100358423,
+          "false_unreachable": 0.0025089605734767025,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.005017921146953405,
+          "missed_move": 0.007526881720430108,
+          "stall": 0.007168458781362007
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.005455351358723447,
+            "false_unreachable": 0.011081182447407004
+          },
+          "totals": {
+            "false_reachable": 160,
+            "false_unreachable": 325,
+            "queries": 29329
+          }
+        }
+      }
+    },
+    "1d043310cbecdceb": {
+      "A1": {
+        "cpu_mean": 0.2582695922851563,
+        "cpu_repeat_values": [
+          0.2582796630859375,
+          0.255433349609375,
+          0.2545081787109375,
+          0.264857177734375
+        ],
+        "cpu_range": [
+          0.2545081787109375,
+          0.264857177734375
+        ],
+        "direction_rate": 1.112571898110107,
+        "queries": 1217,
+        "extra_cost": 1354,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 1.112571898110107,
+          "false_reachable": 0.018898931799506986,
+          "false_unreachable": 0.03533278553820871,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.0049301561216105174,
+          "missed_move": 0.05341002465078061,
+          "stall": 0.06737880032867707
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.002984438286079727,
+            "false_unreachable": 0.013323385205713068
+          },
+          "totals": {
+            "false_reachable": 56,
+            "false_unreachable": 250,
+            "queries": 18764
+          }
+        }
+      },
+      "A4": {
+        "cpu_mean": 0.23356842041015624,
+        "cpu_repeat_values": [
+          0.23475537109375,
+          0.2352647705078125,
+          0.233794921875,
+          0.2304586181640625
+        ],
+        "cpu_range": [
+          0.2304586181640625,
+          0.2352647705078125
+        ],
+        "direction_rate": 0.9687339825730394,
+        "queries": 1951,
+        "extra_cost": 1890,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.9687339825730394,
+          "false_reachable": 0.025627883136852898,
+          "false_unreachable": 0.06611993849308047,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.007688364941055869,
+          "missed_move": 0.07329574577139929,
+          "stall": 0.031266017426960536
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.006636155606407322,
+            "false_unreachable": 0.0019287348806799607
+          },
+          "totals": {
+            "false_reachable": 203,
+            "false_unreachable": 59,
+            "queries": 30590
+          }
+        }
+      },
+      "A16": {
+        "cpu_mean": 0.22145602416992188,
+        "cpu_repeat_values": [
+          0.221880615234375,
+          0.221142578125,
+          0.221078125,
+          0.2217227783203125
+        ],
+        "cpu_range": [
+          0.221078125,
+          0.221880615234375
+        ],
+        "direction_rate": 1.5284661754855995,
+        "queries": 1493,
+        "extra_cost": 2282,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 1.5284661754855995,
+          "false_reachable": 0.029470864032150032,
+          "false_unreachable": 0.012726054922973878,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.010716677829872739,
+          "missed_move": 0.03415941058271936,
+          "stall": 0.06563965170797052
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.01004382177014362,
+            "false_unreachable": 0.0022390685474842466
+          },
+          "totals": {
+            "false_reachable": 314,
+            "false_unreachable": 70,
+            "queries": 31263
+          }
+        }
+      },
+      "A32": {
+        "cpu_mean": 0.22841400146484375,
+        "cpu_repeat_values": [
+          0.2228251953125,
+          0.222293701171875,
+          0.23769677734375,
+          0.23084033203125
+        ],
+        "cpu_range": [
+          0.222293701171875,
+          0.23769677734375
+        ],
+        "direction_rate": 1.623942745608328,
+        "queries": 1537,
+        "extra_cost": 2496,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 1.623942745608328,
+          "false_reachable": 0.03253090435914118,
+          "false_unreachable": 0.02277163305139883,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.014964216005204945,
+          "missed_move": 0.04294079375406636,
+          "stall": 0.08978529603122967
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.006029701864741132,
+            "false_unreachable": 0.0013213235567796926
+          },
+          "totals": {
+            "false_reachable": 324,
+            "false_unreachable": 71,
+            "queries": 53734
+          }
+        }
+      },
+      "A128": {
+        "cpu_mean": 0.22255068969726563,
+        "cpu_repeat_values": [
+          0.2230216064453125,
+          0.2256385498046875,
+          0.2162427978515625,
+          0.2252998046875
+        ],
+        "cpu_range": [
+          0.2162427978515625,
+          0.2256385498046875
+        ],
+        "direction_rate": 1.499677627337202,
+        "queries": 1551,
+        "extra_cost": 2326,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 1.499677627337202,
+          "false_reachable": 0.037395228884590584,
+          "false_unreachable": 0.015473887814313346,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.015473887814313346,
+          "missed_move": 0.04384268214055448,
+          "stall": 0.07156673114119923
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.008358983644154747,
+            "false_unreachable": 0.0031383909710905908
+          },
+          "totals": {
+            "false_reachable": 277,
+            "false_unreachable": 104,
+            "queries": 33138
+          }
+        }
+      },
+      "recovery-only": {
+        "cpu_mean": 0.22002487182617186,
+        "cpu_repeat_values": [
+          0.2200882568359375,
+          0.222343505859375,
+          0.2177376708984375,
+          0.2199300537109375
+        ],
+        "cpu_range": [
+          0.2177376708984375,
+          0.222343505859375
+        ],
+        "direction_rate": 2.491384102279044,
+        "queries": 1799,
+        "extra_cost": 4482,
+        "movement_rates": {
+          "escape_failure": 0.0011117287381878821,
+          "extra_cost": 2.491384102279044,
+          "false_reachable": 0.03168426903835464,
+          "false_unreachable": 0.03446359088382435,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.012229016120066704,
+          "missed_move": 0.058365758754863814,
+          "stall": 0.048916064480266815
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.008561810908381305,
+            "false_unreachable": 0.0036588935505903015
+          },
+          "totals": {
+            "false_reachable": 351,
+            "false_unreachable": 150,
+            "queries": 40996
+          }
+        }
+      },
+      "fixed32": {
+        "cpu_mean": 0.23404598999023438,
+        "cpu_repeat_values": [
+          0.231994873046875,
+          0.232013916015625,
+          0.2405599365234375,
+          0.231615234375
+        ],
+        "cpu_range": [
+          0.231615234375,
+          0.2405599365234375
+        ],
+        "direction_rate": 0.7731343283582089,
+        "queries": 1340,
+        "extra_cost": 1036,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 0.7731343283582089,
+          "false_reachable": 0.04029850746268657,
+          "false_unreachable": 0.026119402985074626,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.014179104477611941,
+          "missed_move": 0.05373134328358209,
+          "stall": 0.09029850746268657
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.00684583500467977,
+            "false_unreachable": 0.002888086642599278
+          },
+          "totals": {
+            "false_reachable": 256,
+            "false_unreachable": 108,
+            "queries": 37395
+          }
+        }
+      },
+      "fixed128": {
+        "cpu_mean": 0.22850283813476563,
+        "cpu_repeat_values": [
+          0.2312674560546875,
+          0.22793603515625,
+          0.22802783203125,
+          0.226780029296875
+        ],
+        "cpu_range": [
+          0.226780029296875,
+          0.2312674560546875
+        ],
+        "direction_rate": 2.0086730268863833,
+        "queries": 1153,
+        "extra_cost": 2316,
+        "movement_rates": {
+          "escape_failure": 0.0,
+          "extra_cost": 2.0086730268863833,
+          "false_reachable": 0.049436253252385085,
+          "false_unreachable": 0.0199479618386817,
+          "guard_balance": 0.0,
+          "invalid_goal": 0.029488291413703384,
+          "missed_move": 0.06678230702515178,
+          "stall": 0.07025151777970512
+        },
+        "planning": {
+          "per_query": {
+            "false_reachable": 0.007255092143549952,
+            "false_unreachable": 0.00492725509214355
+          },
+          "totals": {
+            "false_reachable": 187,
+            "false_unreachable": 127,
+            "queries": 25775
+          }
+        }
+      }
+    }
+  },
+  "equal_map_aggregate": {
+    "A1": {
+      "cpu_mean": 0.22085525512695312,
+      "cpu_range": [
+        0.2190159912109375,
+        0.22326888020833333
+      ],
+      "cpu_repeat_values": [
+        0.22112007649739585,
+        0.22001607259114583,
+        0.2190159912109375,
+        0.22326888020833333
+      ],
+      "direction_rate": 0.5306549555727317,
+      "query_pooled_direction_rate": 0.4143170426065163,
+      "queries": 6384,
+      "extra_cost": 2645,
+      "movement_rates_equal_map": {
+        "escape_failure": 9.03342366757001e-05,
+        "extra_cost": 0.5306549555727317,
+        "false_reachable": 0.017405250588423092,
+        "false_unreachable": 0.01313199712333207,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.0027721046276616723,
+        "missed_move": 0.01988041738759497,
+        "stall": 0.027924362723784128
+      }
+    },
+    "A4": {
+      "cpu_mean": 0.20476343790690105,
+      "cpu_range": [
+        0.20270263671875,
+        0.2073885498046875
+      ],
+      "cpu_repeat_values": [
+        0.2073885498046875,
+        0.20560514322916668,
+        0.20270263671875,
+        0.203357421875
+      ],
+      "direction_rate": 0.40549117957652375,
+      "query_pooled_direction_rate": 0.3610753610753611,
+      "queries": 6993,
+      "extra_cost": 2525,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.40549117957652375,
+        "false_reachable": 0.02296056739844092,
+        "false_unreachable": 0.022536709242404522,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.004669213857642691,
+        "missed_move": 0.025699511280359126,
+        "stall": 0.01217812161726417
+      }
+    },
+    "A16": {
+      "cpu_mean": 0.19179196166992188,
+      "cpu_range": [
+        0.1902916259765625,
+        0.1936446533203125
+      ],
+      "cpu_repeat_values": [
+        0.1902916259765625,
+        0.1936446533203125,
+        0.19121492513020832,
+        0.19201664225260417
+      ],
+      "direction_rate": 0.6327379587077107,
+      "query_pooled_direction_rate": 0.48043184885290147,
+      "queries": 6669,
+      "extra_cost": 3204,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.6327379587077107,
+        "false_reachable": 0.024765353801800588,
+        "false_unreachable": 0.005133563315357086,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.005878132934438248,
+        "missed_move": 0.013655025514618157,
+        "stall": 0.023835685489730397
+      }
+    },
+    "A32": {
+      "cpu_mean": 0.19058510335286458,
+      "cpu_range": [
+        0.18705362955729166,
+        0.19637967936197917
+      ],
+      "cpu_repeat_values": [
+        0.18796866861979167,
+        0.18705362955729166,
+        0.19637967936197917,
+        0.19093843587239584
+      ],
+      "direction_rate": 0.9025227938257501,
+      "query_pooled_direction_rate": 0.807521785659685,
+      "queries": 6541,
+      "extra_cost": 5282,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.9025227938257501,
+        "false_reachable": 0.03206884082762808,
+        "false_unreachable": 0.00849924540334691,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.007194882207184723,
+        "missed_move": 0.017721165251118852,
+        "stall": 0.03721381392610057
+      }
+    },
+    "A128": {
+      "cpu_mean": 0.18930230712890625,
+      "cpu_range": [
+        0.18672355143229166,
+        0.19393660481770833
+      ],
+      "cpu_repeat_values": [
+        0.1877083740234375,
+        0.1888406982421875,
+        0.18672355143229166,
+        0.19393660481770833
+      ],
+      "direction_rate": 0.7725508487483124,
+      "query_pooled_direction_rate": 0.6460637605725439,
+      "queries": 6148,
+      "extra_cost": 3972,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.7725508487483124,
+        "false_reachable": 0.03544896915612773,
+        "false_unreachable": 0.007953068952964142,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.009535666909107848,
+        "missed_move": 0.020988706294229824,
+        "stall": 0.026276812777179616
+      }
+    },
+    "recovery-only": {
+      "cpu_mean": 0.1868655497233073,
+      "cpu_range": [
+        0.1855740966796875,
+        0.18925089518229166
+      ],
+      "cpu_repeat_values": [
+        0.18688399251302085,
+        0.18925089518229166,
+        0.18575321451822918,
+        0.1855740966796875
+      ],
+      "direction_rate": 1.1031196737289264,
+      "query_pooled_direction_rate": 0.9580988117573483,
+      "queries": 6396,
+      "extra_cost": 6128,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.00037057624606262737,
+        "extra_cost": 1.1031196737289264,
+        "false_reachable": 0.03354531587404909,
+        "false_unreachable": 0.014282969976134477,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.008454043011025633,
+        "missed_move": 0.025829731832332937,
+        "stall": 0.018726590556868813
+      }
+    },
+    "fixed32": {
+      "cpu_mean": 0.2053800760904948,
+      "cpu_range": [
+        0.20199125162760417,
+        0.20865983072916666
+      ],
+      "cpu_repeat_values": [
+        0.2048087158203125,
+        0.20199125162760417,
+        0.20606050618489583,
+        0.20865983072916666
+      ],
+      "direction_rate": 0.5548106622206789,
+      "query_pooled_direction_rate": 0.5843859382133617,
+      "queries": 6571,
+      "extra_cost": 3840,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.5548106622206789,
+        "false_reachable": 0.030244877093100607,
+        "false_unreachable": 0.009541105314220907,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.008786979745610695,
+        "missed_move": 0.020685925040713433,
+        "stall": 0.033921537630733384
+      }
+    },
+    "fixed128": {
+      "cpu_mean": 0.1918997294108073,
+      "cpu_range": [
+        0.1907830810546875,
+        0.19409505208333333
+      ],
+      "cpu_repeat_values": [
+        0.19409505208333333,
+        0.19129553222656248,
+        0.19142525227864582,
+        0.1907830810546875
+      ],
+      "direction_rate": 0.8204018169375101,
+      "query_pooled_direction_rate": 0.5748031496062992,
+      "queries": 5715,
+      "extra_cost": 3285,
+      "movement_rates_equal_map": {
+        "escape_failure": 0.0,
+        "extra_cost": 0.8204018169375101,
+        "false_reachable": 0.03353067521389419,
+        "false_unreachable": 0.007485640804052801,
+        "guard_balance": 0.0,
+        "invalid_goal": 0.014135629920519907,
+        "missed_move": 0.026274620477270715,
+        "stall": 0.02618288157754156
+      }
+    }
+  },
+  "uncertainty": "Observed4repeat ranges, no confidence claim",
+  "no_new_simulation": true
+}

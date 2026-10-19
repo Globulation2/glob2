@@ -1,0 +1,14 @@
+{
+  "status": "built-research-only",
+  "source_base": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "frozen_base_elf": "995f3decd7c42ec002110424294b0f4a681f04cb8c173dbfb00dd75b3c3fa1f0",
+  "pid": 57193,
+  "started_utc": "2026-10-19T11:50:09.657393+00:00",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-resolution/macos-runtime/build/glob2",
+  "binary_sha256": "b1a31ac84559a090d11224a44a073543ce0c56c901e3de46d90c6d3bd0d14062",
+  "patch_sha256": "ce620abb9f50929a2ed9f8244c7cd0bde8a91e5328b718feceb6c02c5acf8b1c",
+  "reused_inputs": 644,
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "finished_utc": "2026-10-19T11:50:28.543133+00:00"
+}

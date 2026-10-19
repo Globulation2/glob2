@@ -1,0 +1,8 @@
+{
+  "summary_sha256": "0ac3101721408b73b46e3844c88c33fa2753c80e869a6389fc95e06a5d200646",
+  "study_seal_sha256": "d25bdde70b817d80fe6d769b4e98f6ed0629b4dc5df3d692a0cbce641ffbcef6",
+  "conclusions_sha256": "e02a4e8e6f95294da0c18ac46897b0fb21ef7cff50b6b12989bf5ddbc6ba9eda",
+  "status": "All144complete",
+  "final_quality": "24extended8192-steps-two1024-tick-sample-windows",
+  "analysis_launched_no_simulations": true
+}

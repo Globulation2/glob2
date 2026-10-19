@@ -1,0 +1,121 @@
+diff --git a/src/app/cli/CommandLine.cpp b/src/app/cli/CommandLine.cpp
+index 727e406ea..b4aeafee6 100644
+--- a/src/app/cli/CommandLine.cpp
++++ b/src/app/cli/CommandLine.cpp
+@@ -317,7 +317,7 @@ void constraints(const Request &r)
+ 		requireParent("--diagnostic-interval", "--diagnostic-fields");
+ 		requireParent("--diagnostic-png", "--diagnostic-fields");
+ 		requireParent("--fork-rule", "--load-game");
+-        requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
++        // RESEARCH ONLY: fixed intervals may run without the diagnostic observer.
+         requireParent("--gradient-spatial-overlap", "--resource-gradient-probe");
+         if (r.has("--resource-gradient-exploration")) {
+             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1e79240c3..0a3e256f2 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -61,6 +61,7 @@
+ #include <sstream>
+ #include <stdexcept>
+ 
++std::int64_t researchGradientThreshold();
+ namespace fs = std::filesystem;
+ namespace Headless
+ {
+@@ -350,6 +351,19 @@ struct HeadlessRunner
+     }
+ 	static int game(const Options &options, const fs::path &output)
+ 	{
++        // Research override is eagerly checked even if no model evaluation occurs.
++        const auto researchThreshold=researchGradientThreshold();
++        const char* researchRaw=std::getenv("GLOB2_RESEARCH_GRADIENT_THRESHOLD_MILLI");
++        const std::string researchInput=nlohmann::json({
++            {"schema",1},{"research_only_binary",true},
++            {"environment_key","GLOB2_RESEARCH_GRADIENT_THRESHOLD_MILLI"},
++            {"environment_value",researchRaw?nlohmann::json(researchRaw):nlohmann::json(nullptr)},
++            {"threshold_milli_direction_cost",researchThreshold},
++            {"base_threshold_milli_direction_cost",AdaptiveGradientState::Threshold},
++            {"model_contract",AdaptiveGradientModel::ContractId}}).dump();
++        Headless::writeJson((output/"research-gradient-threshold-input.json").string(),researchInput);
++        const auto researchInputHash=Online::Sha256::hex(researchInput+"\n");
++
+ 		const auto setupStart = std::chrono::steady_clock::now();
+ 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+ 		const auto setupCpuStart=benchmark?processCpuNs():0;
+@@ -568,7 +582,7 @@ struct HeadlessRunner
+             engine.gui.game.map.configureGradientWorkStats(path.string());
+         }
+         if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+-            if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
++            if ((options.count("--resource-gradient-fork-field") && one(options,"--resource-gradient-probe","false")!="true") || recordReplay)
+                 throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
+             if (options.count("--resource-gradient-fork-field") && saved.empty())
+                 throw std::invalid_argument("Gradient checkpoint forks require --load-game");
+@@ -730,7 +744,10 @@ struct HeadlessRunner
+         result << ",\"adaptive_gradient_policy\":{\"contract\":" << quote(AdaptiveGradientModel::ContractId)
+             << ",\"collector_contract\":" << quote(ResourceGradientProbe::CollectorContract)
+             << ",\"model_trained\":" << (AdaptiveGradientModel::Trained?"true":"false")
+-            << ",\"threshold_milli_direction_cost\":" << AdaptiveGradientState::Threshold
++            << ",\"threshold_milli_direction_cost\":" << researchThreshold
++            << ",\"research_only_binary\":true"
++            << ",\"research_threshold_override\":" << (researchRaw?"true":"false")
++            << ",\"research_input_sha256\":" << quote(researchInputHash)
+             << ",\"prediction_horizon_ticks\":" << ResourceGradientProbe::HorizonTicks
+             << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
+             << ",\"demanded_age_cap\":null"
+diff --git a/src/map/MapStep.cpp b/src/map/MapStep.cpp
+index c48a020d2..883add89a 100644
+--- a/src/map/MapStep.cpp
++++ b/src/map/MapStep.cpp
+@@ -761,7 +761,7 @@ Uint16** Map::gradientDestination(unsigned id, unsigned savedClasses)
+ void Map::configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
+     int forkField,unsigned forkWait,const std::string& decisionPath)
+ {
+-    if (!globalContainer || !globalContainer->structuredHeadless || !gradientRuntime->qualityProbe)
++    if (!globalContainer || !globalContainer->structuredHeadless || (forkField>=0 && !gradientRuntime->qualityProbe))
+         throw std::invalid_argument("Gradient exploration requires structured headless collection with the probe enabled");
+     ResourceGradientExploration config;
+     if (!intervals.empty()) config.intervals=ResourceGradientExploration::parseIntervals(intervals);
+diff --git a/src/map/gradient/AdaptiveGradientState.cpp b/src/map/gradient/AdaptiveGradientState.cpp
+index 61e122dd0..0d186eb51 100644
+--- a/src/map/gradient/AdaptiveGradientState.cpp
++++ b/src/map/gradient/AdaptiveGradientState.cpp
+@@ -2,6 +2,28 @@
+ #include "AdaptiveGradientState.h"
+ #include <Stream.h>
+ #include <stdexcept>
++#include <cstdlib>
++#include <limits>
++
++// ISOLATED RESEARCH ONLY. Fixed gen003 scores; only the admission threshold varies.
++std::int64_t researchGradientThreshold() {
++    static const std::int64_t value=[] {
++        const char* raw=std::getenv("GLOB2_RESEARCH_GRADIENT_THRESHOLD_MILLI");
++        if(!raw)return AdaptiveGradientState::Threshold;
++        if(!*raw)throw std::invalid_argument("Invalid research gradient threshold: expected positive integer");
++        std::int64_t parsed=0;
++        for(const char* p=raw;*p;++p) {
++            if(*p<'0'||*p>'9')throw std::invalid_argument("Invalid research gradient threshold: expected positive integer");
++            const int digit=*p-'0';
++            if(parsed>(std::numeric_limits<std::int64_t>::max()-digit)/10)
++                throw std::invalid_argument("Invalid research gradient threshold: integer overflow");
++            parsed=parsed*10+digit;
++        }
++        if(parsed<=0)throw std::invalid_argument("Invalid research gradient threshold: expected positive integer");
++        return parsed;
++    }();
++    return value;
++}
+ 
+ namespace {
+ void write64(GAGCore::OutputStream* s,std::uint64_t value,const char* name) {
+@@ -69,7 +91,7 @@ AdaptiveGradientState::Evaluation AdaptiveGradientState::Field::evaluate(std::ui
+     if(!serving.known)return accept(Reason::HistoryInitialization);
+     // Fixed intervals are explicit research behavior, never a production cap.
+     if(fixedInterval && age>=std::max(fixedInterval,MinimumInterval))return accept(Reason::Bootstrap);
+-    if(!fixedInterval && predict && predict(inputs(tick,now),contradictions())>=Threshold)return accept(Reason::Model);
++    if(!fixedInterval && predict && predict(inputs(tick,now),contradictions())>=researchGradientThreshold())return accept(Reason::Model);
+     demand=false;acceptedReason=Reason::None;return {};
+ }
+ void AdaptiveGradientState::Capture::save(GAGCore::OutputStream* s) const {

@@ -1,0 +1,297 @@
+{
+  "addendum_reason": "Initial2048-step diagnostics only cover the original1024-tick active sample window; preserve them explicitly, add two-window diagnostics matching8192-step timing horizon. No CPU rerun. This is not a new independent map sample.",
+  "arms": [
+    {
+      "id": "A1",
+      "threshold_milli": 1000
+    },
+    {
+      "id": "A4",
+      "threshold_milli": 4000
+    },
+    {
+      "id": "A16",
+      "threshold_milli": 16000
+    },
+    {
+      "id": "A32",
+      "threshold_milli": 32000
+    },
+    {
+      "id": "A128",
+      "threshold_milli": 128000
+    },
+    {
+      "id": "recovery-only",
+      "threshold_milli": 9223372036854775807
+    },
+    {
+      "fixed_interval": 32,
+      "id": "fixed32",
+      "threshold_milli": 128000
+    },
+    {
+      "fixed_interval": 128,
+      "id": "fixed128",
+      "threshold_milli": 128000
+    }
+  ],
+  "attempts": 1,
+  "collection_ingestion": false,
+  "compute_participants": 1,
+  "counterbalance": "Each map has two arm orders and their exact reversals; serial map-block timing, diagnostics separately after all timing. No concurrent local collection or compilation. Capture host load per run, do not claim physical isolation.",
+  "decision_rule": "Select a research shortlist from observed CPU/quality tradeoff only; no automatic production threshold/model update. A scalar threshold is not an empirical conversion to the old capped H32 policy.",
+  "diagnostic_probe": true,
+  "diagnostic_runs": 24,
+  "diagnostic_workstats": true,
+  "frozen_utc": "2026-10-19T11:58:18.654492+00:00",
+  "gpu": "off",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "horizon": 128,
+  "host": "localhost",
+  "maps": [
+    {
+      "active_teams": 4,
+      "checkpoint_receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/threshold-study/warmup-remote/66294c58700ef1b4-CHECKPOINT.json",
+      "checkpoint_receipt_sha256": "138bee1fc15dad9ce0ae365c951335cb919ad574e02e163eebf57797c7b3aa52",
+      "diagnostic_order": [
+        "A4",
+        "A16",
+        "A32",
+        "A128",
+        "recovery-only",
+        "fixed32",
+        "fixed128",
+        "A1"
+      ],
+      "fold": -1,
+      "format": "4ffa",
+      "group": "66294c58700ef1b4",
+      "map_group": "50188509371e97f4",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/66294c58700ef1b4.map.gz",
+      "off_repeat_orders": [],
+      "origin_round": 2,
+      "original_map_sha256": "d184c94d962f700d8c0e33d8d530b1e5b46a40d48e7d3f6e2b2ba53424ca796f",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          2,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "generator": "polder",
+        "generator_params": {
+          "algae-amount": 75,
+          "crop-crossings": 1,
+          "dyke-spacing": 32,
+          "fruit-amount": 125,
+          "ground": 1,
+          "hamlets": 1,
+          "row-angle": 2,
+          "stone-amount": 100,
+          "village-size": 16,
+          "water-crossings": 1,
+          "wheat-amount": 75,
+          "wood-amount": 75,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 330329066,
+        "players": 4,
+        "width": 128
+      },
+      "unit_count": 189,
+      "warm_save_minor": 178,
+      "warm_save_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/66294c58700ef1b4.game.gz",
+      "warm_save_sha256": "fa4506373ba0ea0bc24294a45582f0350c5f8f4ede2834fa84c1d1629dc5ce35",
+      "warm_tick": 16384,
+      "warm_usable": true
+    },
+    {
+      "active_teams": 3,
+      "checkpoint_receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/threshold-study/warmup-remote/0083541d8ee4d18b-CHECKPOINT.json",
+      "checkpoint_receipt_sha256": "0f47b5802cf4c3ba9b8a8f91260405da4842825217c08c69b1a52265748d0db8",
+      "diagnostic_order": [
+        "A32",
+        "A128",
+        "recovery-only",
+        "fixed32",
+        "fixed128",
+        "A1",
+        "A4",
+        "A16"
+      ],
+      "fold": -1,
+      "format": "2v2",
+      "group": "0083541d8ee4d18b",
+      "map_group": "a701ceca2d835e82",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/0083541d8ee4d18b.map.gz",
+      "off_repeat_orders": [],
+      "origin_round": 1,
+      "original_map_sha256": "83358cf148e5dfa6ac1a14af7c3eba50a9f949c944386d5e446f2136cc6204f3",
+      "spec": {
+        "ais": [
+          "maxima",
+          "warrush",
+          "maxima",
+          "econo"
+        ],
+        "alliances": [
+          2,
+          2,
+          1,
+          1
+        ],
+        "format": "2v2",
+        "game_seed": 3333364126,
+        "generator": "islands",
+        "generator_params": {
+          "algae-amount": 125,
+          "desert": 2,
+          "extra-islands": 2,
+          "fruit": 5,
+          "grass": 73,
+          "hilltop-stone": 0,
+          "repeat": 2,
+          "sand": 5,
+          "smoothing": 6,
+          "stone-amount": 125,
+          "water": 57,
+          "wheat-amount": 150,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 128,
+        "map_seed": 2679416391,
+        "players": 4,
+        "width": 64
+      },
+      "unit_count": 163,
+      "warm_save_minor": 178,
+      "warm_save_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/0083541d8ee4d18b.game.gz",
+      "warm_save_sha256": "0827b66484228fba21ce8e57ddd3f5ac9304a2d24fa9aaf3cf74e908b794ffca",
+      "warm_tick": 16384,
+      "warm_usable": true
+    },
+    {
+      "active_teams": 5,
+      "checkpoint_receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/threshold-study/warmup-remote/1d043310cbecdceb-CHECKPOINT.json",
+      "checkpoint_receipt_sha256": "fb5b89d21f250d82a7425d4fa598a1f48adb00fd0ea6102a9fd4b60b370ee487",
+      "diagnostic_order": [
+        "recovery-only",
+        "fixed32",
+        "fixed128",
+        "A1",
+        "A4",
+        "A16",
+        "A32",
+        "A128"
+      ],
+      "fold": -1,
+      "format": "8ffa",
+      "group": "1d043310cbecdceb",
+      "map_group": "8200f8884b89e3e1",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/1d043310cbecdceb.map.gz",
+      "off_repeat_orders": [],
+      "origin_round": 2,
+      "original_map_sha256": "a72687dc462368d4d505d93da98082c6034e736f55ca2fb0e72f474efa4b5d4c",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "maxima",
+          "warrush",
+          "castor",
+          "castor",
+          "warrush"
+        ],
+        "alliances": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          2,
+          3,
+          1
+        ],
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "generator": "fjord-continent",
+        "generator_params": {
+          "algae-amount": 150,
+          "bank-deposits": 1,
+          "coast-roughness": 23,
+          "continent-size": 34,
+          "fjord-width": 4,
+          "fruit-amount": 150,
+          "lake-connected": 0,
+          "lake-size": 30,
+          "resource-islands": 3,
+          "sandy-lake-shore": 1,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3680668015,
+        "players": 8,
+        "width": 128
+      },
+      "unit_count": 197,
+      "warm_save_minor": 178,
+      "warm_save_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/1d043310cbecdceb.game.gz",
+      "warm_save_sha256": "8a4b056b0dc18a6788b130f44f638a8e4ecc3fe75a1eb4e31e3d4c54e5da2ea0",
+      "warm_tick": 16384,
+      "warm_usable": true
+    }
+  ],
+  "maximum_age_cap": null,
+  "minimum_interval": 8,
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "off_additional_ticks": 8192,
+  "off_repeats": 0,
+  "on_additional_ticks": 8192,
+  "on_repeats": 1,
+  "parent_plan_sha256": "6dbc98eb7d499c8a65feedb26db943541b1a3b410ad849f8c53bef4ae33c1722",
+  "primary_comparison": "Actual simulation CPU/tick and sampled direction-extra/query versus fixed32, fixed128, A128 and recovery-only; per-map results plus equal-map CPU aggregate. Separate movement/planning/stall/reachability outcomes. Diagnostics differ from timing horizon; never extrapolate their job counts.",
+  "production_promotion": false,
+  "publication_delay": 8,
+  "quality_duty_cycle": {
+    "absolute_sample_windows_inclusive": [
+      [
+        16384,
+        17407
+      ],
+      [
+        20480,
+        21503
+      ]
+    ],
+    "code": "ResourceGradientProbe.cpp:71 sampleField: tick%4096<1024",
+    "sampled_ticks_per_run": 2048,
+    "simulation_ticks_per_run": 8192
+  },
+  "required_gate": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-resolution/macos-runtime/QUALIFIED-MAC-THRESHOLD-RUNTIME.json",
+  "runtime": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-resolution/macos-runtime/runtime",
+  "sampling_limit": "These same three mature worlds were already examined in prior pilot. This is a controlled followup, not new independent validation. Three formats/generators, small/moderate maps, no all-map generalization. Prior unusable3FFA stays excluded explicitly with no replacement.",
+  "source_base": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "status": "FROZEN-BEFORE-EXTENDED-WINDOW-OUTCOMES",
+  "study": "fixed-gen003-threshold-resolution-mac-extended-quality-v1",
+  "timing_denominator": "Actual end tick minus loaded16384; benchmark_measured_ticks must match. Include early game-end/censoring explicitly.",
+  "timing_probe": false,
+  "timing_runs": 0,
+  "timing_workstats": false,
+  "wall_cap_seconds": 1800,
+  "workers": 1
+}

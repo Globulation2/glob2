@@ -1,0 +1,19 @@
+328: 
+329: def fit_heads(rows, features=FEATURES, transforms=None, weighting=None, threshold=32000):
+330:     rows=[r for r in rows if r.get('movement_label_available',1)]
+331:     if not rows:raise ValueError('No observed movement labels to fit')
+357:         else:
+358:             est=LogisticRegression(C=1,max_iter=250,random_state=713).fit(z,mask,sample_weight=w)
+359:             beta=est.coef_.ravel()/sd;model[name+'_probability']=export(beta,float(est.intercept_[0])-float(beta@mu))
+360:         if mask.any():
+361:             est=Ridge(alpha=100).fit(z[mask],sign*y[mask],sample_weight=w[mask])
+362:             beta=est.coef_/sd;model[name+'_mean']=export(beta,float(est.intercept_)-float(beta@mu))
+363:         else:model[name+'_mean']=export(np.zeros(len(features)),0)
+373:     pred=np.array([predict(model,[r[k] for k in model.get('features',FEATURES)])/1000 for r in rows]);w=(weighting or weights)(rows)
+374:     threshold=model['threshold']/1000
+375:     take=pred>=threshold;ideal=y>=threshold;positive=np.maximum(y,0)
+376:     # The threshold is the decision's opportunity cost in the same benefit
+377:     # units. This regret scores the exported integer decisions, not fit MAE.
+378:     regret=np.maximum(y-threshold,0)*(~take)+np.maximum(threshold-y,0)*take
+379:     def mean(values):return float(np.average(values,weights=w))
+380:     def quantile(values,q):

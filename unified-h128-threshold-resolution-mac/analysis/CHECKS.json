@@ -1,0 +1,8 @@
+{
+  "final_summary_sha256": "0ac3101721408b73b46e3844c88c33fa2753c80e869a6389fc95e06a5d200646",
+  "all_eight_arms_cpu_equalmap_quality_and_pooled_match_root_summary": true,
+  "additive_family_weights_reconcile_with_original_sweep": true,
+  "observed_four_repeat_ranges_not_CI": true,
+  "all24_extended_diagnostics8192": true,
+  "analysis_no_inference_refit_games": true
+}

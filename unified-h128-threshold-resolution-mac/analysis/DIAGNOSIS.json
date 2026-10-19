@@ -1,0 +1,768 @@
+{
+  "source": "Existing sealed prediction cache reused; score bands derived by subtraction of existing cumulative weighted selection/benefit/harm. No inference/refit/rerun.",
+  "populations": {
+    "development": {
+      "score_min_units": -17.5,
+      "score_max_units": 206.598,
+      "below1_raw": 47190,
+      "score_bands": [
+        {
+          "prediction_range_units": [
+            1,
+            2
+          ],
+          "weighted_mass_pct": 7.423323405060992,
+          "raw_rows": 8628,
+          "weighted_actual_mean": 1.2835616124595044,
+          "weighted_negative_magnitude_per_bin_row": 0.537419987753938,
+          "raw_positive": 658,
+          "raw_negative": 286
+        },
+        {
+          "prediction_range_units": [
+            2,
+            4
+          ],
+          "weighted_mass_pct": 8.185110656896107,
+          "raw_rows": 10271,
+          "weighted_actual_mean": 2.658645225097913,
+          "weighted_negative_magnitude_per_bin_row": 0.8032471606795814,
+          "raw_positive": 1087,
+          "raw_negative": 454
+        },
+        {
+          "prediction_range_units": [
+            4,
+            8
+          ],
+          "weighted_mass_pct": 8.166068721662802,
+          "raw_rows": 10495,
+          "weighted_actual_mean": 4.839223218735118,
+          "weighted_negative_magnitude_per_bin_row": 1.2196513703931318,
+          "raw_positive": 1614,
+          "raw_negative": 622
+        },
+        {
+          "prediction_range_units": [
+            8,
+            16
+          ],
+          "weighted_mass_pct": 6.453831387260633,
+          "raw_rows": 8741,
+          "weighted_actual_mean": 11.074742724809132,
+          "weighted_negative_magnitude_per_bin_row": 2.082204247882512,
+          "raw_positive": 2076,
+          "raw_negative": 634
+        },
+        {
+          "prediction_range_units": [
+            16,
+            32
+          ],
+          "weighted_mass_pct": 4.087714508745689,
+          "raw_rows": 6057,
+          "weighted_actual_mean": 19.96671640907008,
+          "weighted_negative_magnitude_per_bin_row": 3.4377780492312056,
+          "raw_positive": 1951,
+          "raw_negative": 529
+        },
+        {
+          "prediction_range_units": [
+            32,
+            64
+          ],
+          "weighted_mass_pct": 1.9154178953614838,
+          "raw_rows": 2971,
+          "weighted_actual_mean": 40.43386597299162,
+          "weighted_negative_magnitude_per_bin_row": 4.451570758233787,
+          "raw_positive": 1082,
+          "raw_negative": 297
+        },
+        {
+          "prediction_range_units": [
+            64,
+            96
+          ],
+          "weighted_mass_pct": 0.39819210635903557,
+          "raw_rows": 654,
+          "weighted_actual_mean": 57.31520570073265,
+          "weighted_negative_magnitude_per_bin_row": 5.982341399197184,
+          "raw_positive": 218,
+          "raw_negative": 75
+        },
+        {
+          "prediction_range_units": [
+            96,
+            128
+          ],
+          "weighted_mass_pct": 0.11410558503137001,
+          "raw_rows": 188,
+          "weighted_actual_mean": 52.76440188527954,
+          "weighted_negative_magnitude_per_bin_row": 16.640083643919155,
+          "raw_positive": 50,
+          "raw_negative": 35
+        },
+        {
+          "prediction_range_units": [
+            128,
+            192
+          ],
+          "weighted_mass_pct": 0.02211740349588637,
+          "raw_rows": 35,
+          "weighted_actual_mean": -74.79314741420389,
+          "weighted_negative_magnitude_per_bin_row": 90.71646950524601,
+          "raw_positive": 5,
+          "raw_negative": 14
+        },
+        {
+          "prediction_range_units": [
+            192,
+            256
+          ],
+          "weighted_mass_pct": 0.0008753501400560223,
+          "raw_rows": 2,
+          "weighted_actual_mean": 622.0,
+          "weighted_negative_magnitude_per_bin_row": 0.0,
+          "raw_positive": 1,
+          "raw_negative": 0
+        }
+      ],
+      "top128": {
+        "raw_rows": 37,
+        "maps": 14,
+        "raw_negative": 14,
+        "raw_zero": 17,
+        "raw_positive": 6,
+        "actual_min": -685.0,
+        "actual_max": 1244.0,
+        "raw_actual_sum": -165.0,
+        "largest_negative_labels": [
+          -685.0,
+          -354.0,
+          -178.0,
+          -174.0,
+          -114.0,
+          -98.0,
+          -96.0,
+          -88.0
+        ],
+        "weighted_mean": -48.26574713685557,
+        "weighted_negative_magnitude_per_selected_episode": 87.26283034813902
+      }
+    },
+    "holdout": {
+      "score_min_units": -12.524,
+      "score_max_units": 187.4,
+      "below1_raw": 13386,
+      "score_bands": [
+        {
+          "prediction_range_units": [
+            1,
+            2
+          ],
+          "weighted_mass_pct": 7.066140968693184,
+          "raw_rows": 2409,
+          "weighted_actual_mean": 0.8513407537858618,
+          "weighted_negative_magnitude_per_bin_row": 0.5741360086746496,
+          "raw_positive": 156,
+          "raw_negative": 90
+        },
+        {
+          "prediction_range_units": [
+            2,
+            4
+          ],
+          "weighted_mass_pct": 7.761049917332759,
+          "raw_rows": 2778,
+          "weighted_actual_mean": 3.4930082841759758,
+          "weighted_negative_magnitude_per_bin_row": 0.887396570814483,
+          "raw_positive": 352,
+          "raw_negative": 153
+        },
+        {
+          "prediction_range_units": [
+            4,
+            8
+          ],
+          "weighted_mass_pct": 7.882296434241747,
+          "raw_rows": 2880,
+          "weighted_actual_mean": 6.582328948608862,
+          "weighted_negative_magnitude_per_bin_row": 1.5897358638803833,
+          "raw_positive": 566,
+          "raw_negative": 189
+        },
+        {
+          "prediction_range_units": [
+            8,
+            16
+          ],
+          "weighted_mass_pct": 6.595041506035922,
+          "raw_rows": 2718,
+          "weighted_actual_mean": 12.715131120451595,
+          "weighted_negative_magnitude_per_bin_row": 3.406491650306411,
+          "raw_positive": 758,
+          "raw_negative": 260
+        },
+        {
+          "prediction_range_units": [
+            16,
+            32
+          ],
+          "weighted_mass_pct": 4.749084263092053,
+          "raw_rows": 2162,
+          "weighted_actual_mean": 23.713880784048484,
+          "weighted_negative_magnitude_per_bin_row": 5.5605672438577445,
+          "raw_positive": 730,
+          "raw_negative": 237
+        },
+        {
+          "prediction_range_units": [
+            32,
+            64
+          ],
+          "weighted_mass_pct": 1.9495288239683484,
+          "raw_rows": 1061,
+          "weighted_actual_mean": 62.98989190672503,
+          "weighted_negative_magnitude_per_bin_row": 9.801678589722826,
+          "raw_positive": 435,
+          "raw_negative": 108
+        },
+        {
+          "prediction_range_units": [
+            64,
+            96
+          ],
+          "weighted_mass_pct": 0.31131657548312847,
+          "raw_rows": 203,
+          "weighted_actual_mean": 136.17829330157406,
+          "weighted_negative_magnitude_per_bin_row": 12.00937737566126,
+          "raw_positive": 61,
+          "raw_negative": 27
+        },
+        {
+          "prediction_range_units": [
+            96,
+            128
+          ],
+          "weighted_mass_pct": 0.06934769564716231,
+          "raw_rows": 49,
+          "weighted_actual_mean": 43.840000796127235,
+          "weighted_negative_magnitude_per_bin_row": 15.13701633263369,
+          "raw_positive": 15,
+          "raw_negative": 10
+        },
+        {
+          "prediction_range_units": [
+            128,
+            192
+          ],
+          "weighted_mass_pct": 0.04537464360418544,
+          "raw_rows": 23,
+          "weighted_actual_mean": -73.32137662130708,
+          "weighted_negative_magnitude_per_bin_row": 156.94866195026302,
+          "raw_positive": 7,
+          "raw_negative": 8
+        },
+        {
+          "prediction_range_units": [
+            192,
+            256
+          ],
+          "weighted_mass_pct": 0.0,
+          "raw_rows": 0,
+          "weighted_actual_mean": null,
+          "weighted_negative_magnitude_per_bin_row": null,
+          "raw_positive": 0,
+          "raw_negative": 0
+        }
+      ],
+      "top128": {
+        "raw_rows": 23,
+        "maps": 9,
+        "raw_negative": 8,
+        "raw_zero": 8,
+        "raw_positive": 7,
+        "actual_min": -2194.0,
+        "actual_max": 1864.0,
+        "raw_actual_sum": -1608.0,
+        "largest_negative_labels": [
+          -2194.0,
+          -1004.0,
+          -786.0,
+          -224.0,
+          -152.0,
+          -66.0,
+          -44.0,
+          -10.0
+        ],
+        "weighted_mean": -73.3213766213071,
+        "weighted_negative_magnitude_per_selected_episode": 156.94866195026302
+      }
+    }
+  },
+  "conditional_regime_slices": {
+    "family": {
+      "clear": {
+        "1": {
+          "netbenefit": 0.741304876714344,
+          "selection_pct": 38.52035807047745,
+          "harm": 1.2948754431429812,
+          "positive_captured": 0.8175987488039863
+        },
+        "4": {
+          "netbenefit": 0.46982909708050835,
+          "selection_pct": 19.190688193667167,
+          "harm": 1.193213799644201,
+          "positive_captured": 0.6677708149466611
+        },
+        "8": {
+          "netbenefit": 0.1702705147267424,
+          "selection_pct": 10.339639059248716,
+          "harm": 1.0019885005888802,
+          "positive_captured": 0.4707036478298758
+        },
+        "16": {
+          "netbenefit": -0.18595555043405643,
+          "selection_pct": 4.511258011509382,
+          "harm": 0.876979118101484,
+          "positive_captured": 0.2774705161468919
+        },
+        "32": {
+          "netbenefit": -0.11922395327874262,
+          "selection_pct": 1.1918720074992628,
+          "harm": 0.4351598965142926,
+          "positive_captured": 0.12685950717257324
+        },
+        "128": {
+          "netbenefit": -0.2554775714633679,
+          "selection_pct": 0.103412210711371,
+          "harm": 0.25866634697357205,
+          "positive_captured": 0.0012804066722058938
+        }
+      },
+      "forbidden": {
+        "1": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.3709113656617537,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        },
+        "4": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.04938936781609195,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        },
+        "8": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        },
+        "16": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        },
+        "32": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        },
+        "128": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        }
+      },
+      "guard": {
+        "1": {
+          "netbenefit": 0.14911502593236625,
+          "selection_pct": 41.88457847278273,
+          "harm": 0.0315946229151563,
+          "positive_captured": 0.9268375571841881
+        },
+        "4": {
+          "netbenefit": 0.1541729110891712,
+          "selection_pct": 22.617287306389848,
+          "harm": 0.02409130125041484,
+          "positive_captured": 0.9142952141841344
+        },
+        "8": {
+          "netbenefit": 0.1403942352127018,
+          "selection_pct": 13.074162230585323,
+          "harm": 0.021404586882836113,
+          "positive_captured": 0.8298462532725092
+        },
+        "16": {
+          "netbenefit": 0.15026982695682103,
+          "selection_pct": 6.815727688652841,
+          "harm": 0.008627468111130526,
+          "positive_captured": 0.8149646781075819
+        },
+        "32": {
+          "netbenefit": 0.01910307836001884,
+          "selection_pct": 2.073473886188943,
+          "harm": 0.005708568738229756,
+          "positive_captured": 0.12725588552086964
+        },
+        "128": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        }
+      },
+      "materials": {
+        "1": {
+          "netbenefit": 16.739747288055433,
+          "selection_pct": 63.436291161299486,
+          "harm": 2.7321913341519166,
+          "positive_captured": 0.9429467650116664
+        },
+        "4": {
+          "netbenefit": 15.746747595260649,
+          "selection_pct": 44.072320237382584,
+          "harm": 2.405789710610243,
+          "positive_captured": 0.8790535273053451
+        },
+        "8": {
+          "netbenefit": 13.96186532841474,
+          "selection_pct": 31.42662556482419,
+          "harm": 2.1010283764963398,
+          "positive_captured": 0.7778605895202414
+        },
+        "16": {
+          "netbenefit": 10.941941278566858,
+          "selection_pct": 17.60579013888742,
+          "harm": 1.382398620185131,
+          "positive_captured": 0.5968176391629881
+        },
+        "32": {
+          "netbenefit": 6.58655902190129,
+          "selection_pct": 6.465960902544313,
+          "harm": 0.7659388348498475,
+          "positive_captured": 0.3560515572328138
+        },
+        "128": {
+          "netbenefit": 0.12240031815296543,
+          "selection_pct": 0.07808636370537075,
+          "harm": 0.026193237032306537,
+          "positive_captured": 0.007195781318031453
+        }
+      }
+    },
+    "age": {
+      "0-31": {
+        "1": {
+          "netbenefit": 4.218866692873488,
+          "selection_pct": 39.56346326860231,
+          "harm": 1.1033547536007124,
+          "positive_captured": 0.9227634807787581
+        },
+        "4": {
+          "netbenefit": 4.048683873054751,
+          "selection_pct": 19.50478318317023,
+          "harm": 0.8835876144962473,
+          "positive_captured": 0.8551541967524642
+        },
+        "8": {
+          "netbenefit": 2.985985125368418,
+          "selection_pct": 9.960027783828265,
+          "harm": 0.7223132206262157,
+          "positive_captured": 0.6429424863151845
+        },
+        "16": {
+          "netbenefit": 2.0464535182481383,
+          "selection_pct": 4.25519756199233,
+          "harm": 0.5638441007661535,
+          "positive_captured": 0.45257179563353384
+        },
+        "32": {
+          "netbenefit": 1.2826528464257914,
+          "selection_pct": 1.231232024468485,
+          "harm": 0.28412722743755353,
+          "positive_captured": 0.27164736550575397
+        },
+        "128": {
+          "netbenefit": 0.09224617736183963,
+          "selection_pct": 0.055062261722549355,
+          "harm": 0.009713056418219462,
+          "positive_captured": 0.017677629239337685
+        }
+      },
+      "128-511": {
+        "1": {
+          "netbenefit": 4.65715152802429,
+          "selection_pct": 33.76956255261129,
+          "harm": 1.6161660392263197,
+          "positive_captured": 0.9120652828253732
+        },
+        "4": {
+          "netbenefit": 4.269364282800275,
+          "selection_pct": 21.609539592960385,
+          "harm": 1.5334201858248155,
+          "positive_captured": 0.8436554025545314
+        },
+        "8": {
+          "netbenefit": 3.848561784650209,
+          "selection_pct": 13.927390077765228,
+          "harm": 1.455011307696527,
+          "positive_captured": 0.7710760439912264
+        },
+        "16": {
+          "netbenefit": 2.9021403067237883,
+          "selection_pct": 6.641777339515344,
+          "harm": 1.324466429956989,
+          "positive_captured": 0.6144980271374779
+        },
+        "32": {
+          "netbenefit": 1.4139779153438847,
+          "selection_pct": 2.2624404407549616,
+          "harm": 0.9054223675173382,
+          "positive_captured": 0.33721303796520574
+        },
+        "128": {
+          "netbenefit": -0.30133568548387096,
+          "selection_pct": 0.046370967741935484,
+          "harm": 0.30133568548387096,
+          "positive_captured": 0.0
+        }
+      },
+      "32-127": {
+        "1": {
+          "netbenefit": 5.946384090541002,
+          "selection_pct": 38.454108418501235,
+          "harm": 1.476663913075842,
+          "positive_captured": 0.9403611910937341
+        },
+        "4": {
+          "netbenefit": 5.699215210214756,
+          "selection_pct": 21.787094328885647,
+          "harm": 1.29948875778208,
+          "positive_captured": 0.8866047473020835
+        },
+        "8": {
+          "netbenefit": 5.068613466396288,
+          "selection_pct": 14.474466375298977,
+          "harm": 1.0584088990488552,
+          "positive_captured": 0.7761790098380913
+        },
+        "16": {
+          "netbenefit": 4.313847826467358,
+          "selection_pct": 6.80447528009529,
+          "harm": 0.3729956749016499,
+          "positive_captured": 0.5937353140205799
+        },
+        "32": {
+          "netbenefit": 2.4859842806499657,
+          "selection_pct": 2.0542459198313283,
+          "harm": 0.16604228790199552,
+          "positive_captured": 0.3359621090420846
+        },
+        "128": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.029468201754385963,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        }
+      },
+      "4096+": {
+        "1": {
+          "netbenefit": 1.268762424081318,
+          "selection_pct": 43.44502797274038,
+          "harm": 0.23114355517848167,
+          "positive_captured": 0.6905921751828106
+        },
+        "4": {
+          "netbenefit": 1.2343675527149394,
+          "selection_pct": 26.16759741780535,
+          "harm": 0.21191278594771243,
+          "positive_captured": 0.6659016623789132
+        },
+        "8": {
+          "netbenefit": 1.0733569511752457,
+          "selection_pct": 13.319374597176518,
+          "harm": 0.21191278594771243,
+          "positive_captured": 0.5917685746505325
+        },
+        "16": {
+          "netbenefit": 0.9085472544721664,
+          "selection_pct": 10.80719420096761,
+          "harm": 0.21068729575163397,
+          "positive_captured": 0.5153220490262
+        },
+        "32": {
+          "netbenefit": 0.7805968694295901,
+          "selection_pct": 6.811178445219766,
+          "harm": 0.20295138888888892,
+          "positive_captured": 0.45284887219705744
+        },
+        "128": {
+          "netbenefit": -0.09722222222222224,
+          "selection_pct": 0.04340277777777778,
+          "harm": 0.09722222222222224,
+          "positive_captured": 0.0
+        }
+      },
+      "512-4095": {
+        "1": {
+          "netbenefit": 3.122795038592833,
+          "selection_pct": 41.37608285249421,
+          "harm": 1.212294192837025,
+          "positive_captured": 0.933597391680639
+        },
+        "4": {
+          "netbenefit": 2.8554412523253236,
+          "selection_pct": 30.862746449338157,
+          "harm": 1.1671146337225597,
+          "positive_captured": 0.8662907457305633
+        },
+        "8": {
+          "netbenefit": 2.1095721570505286,
+          "selection_pct": 22.101977468186288,
+          "harm": 1.1231363359146511,
+          "positive_captured": 0.6961905640176841
+        },
+        "16": {
+          "netbenefit": 1.5512800294778433,
+          "selection_pct": 11.936060012031787,
+          "harm": 0.9360406746497468,
+          "positive_captured": 0.5356651265240148
+        },
+        "32": {
+          "netbenefit": 1.0989451097943874,
+          "selection_pct": 3.4060173997217986,
+          "harm": 0.2851232169102692,
+          "positive_captured": 0.298070584187965
+        },
+        "128": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        }
+      }
+    },
+    "demand": {
+      "0-7": {
+        "1": {
+          "netbenefit": 0.6678161281824855,
+          "selection_pct": 9.695229842825555,
+          "harm": 0.07957956826970371,
+          "positive_captured": 0.4927233467193146
+        },
+        "4": {
+          "netbenefit": 0.4482049473451231,
+          "selection_pct": 4.778636640889653,
+          "harm": 0.04004130635994278,
+          "positive_captured": 0.32187812866824134
+        },
+        "8": {
+          "netbenefit": 0.20121807100837194,
+          "selection_pct": 2.547240470833979,
+          "harm": 0.02823834695519288,
+          "positive_captured": 0.15126998285099955
+        },
+        "16": {
+          "netbenefit": 0.11865900583573546,
+          "selection_pct": 1.4166009254140344,
+          "harm": 0.025453195732541654,
+          "positive_captured": 0.09500649601927737
+        },
+        "32": {
+          "netbenefit": 0.04774030757073096,
+          "selection_pct": 0.35362281229454684,
+          "harm": 0.009216013950766976,
+          "positive_captured": 0.03754866329858378
+        },
+        "128": {
+          "netbenefit": 0.0,
+          "selection_pct": 0.0,
+          "harm": 0.0,
+          "positive_captured": 0.0
+        }
+      },
+      "32+": {
+        "1": {
+          "netbenefit": 16.878382882052936,
+          "selection_pct": 96.68332742561113,
+          "harm": 4.742197127644352,
+          "positive_captured": 0.9943409522037214
+        },
+        "4": {
+          "netbenefit": 16.754676570291508,
+          "selection_pct": 62.29127910483258,
+          "harm": 4.489840483514082,
+          "positive_captured": 0.977045634618246
+        },
+        "8": {
+          "netbenefit": 15.40804891865575,
+          "selection_pct": 40.77923960710407,
+          "harm": 4.087389929156002,
+          "positive_captured": 0.8966046803031152
+        },
+        "16": {
+          "netbenefit": 12.321513164395487,
+          "selection_pct": 23.736307047702002,
+          "harm": 3.0903227317128374,
+          "positive_captured": 0.7087978015978494
+        },
+        "32": {
+          "netbenefit": 7.855212512113776,
+          "selection_pct": 9.71909668771374,
+          "harm": 1.7659624354447268,
+          "positive_captured": 0.4424824983595738
+        },
+        "128": {
+          "netbenefit": -0.23348500191801985,
+          "selection_pct": 0.23519489539159605,
+          "harm": 0.4086232525417574,
+          "positive_captured": 0.008054693020001894
+        }
+      },
+      "8-31": {
+        "1": {
+          "netbenefit": 4.386093869861576,
+          "selection_pct": 49.58322693873838,
+          "harm": 0.8697496745085809,
+          "positive_captured": 0.9212230353836337
+        },
+        "4": {
+          "netbenefit": 3.7186294599611047,
+          "selection_pct": 24.8078275107899,
+          "harm": 0.6785440249177161,
+          "positive_captured": 0.7707188143352409
+        },
+        "8": {
+          "netbenefit": 2.83346993651291,
+          "selection_pct": 16.09761692750485,
+          "harm": 0.5015954551966751,
+          "positive_captured": 0.5845567961482746
+        },
+        "16": {
+          "netbenefit": 1.6278347748308464,
+          "selection_pct": 7.149446414225028,
+          "harm": 0.2622075279063412,
+          "positive_captured": 0.33127898356032176
+        },
+        "32": {
+          "netbenefit": 0.7600199882550008,
+          "selection_pct": 2.0325475155513217,
+          "harm": 0.06197970815679974,
+          "positive_captured": 0.14407678786862554
+        },
+        "128": {
+          "netbenefit": -0.006802721088435374,
+          "selection_pct": 0.0030369290573372208,
+          "harm": 0.006802721088435374,
+          "positive_captured": 0.0
+        }
+      }
+    }
+  },
+  "note": "Conditional subgroup weights are recomputed; these slices are not additive contributions to pooled mean. No CPU/job/admission inference from offline selection fractions."
+}

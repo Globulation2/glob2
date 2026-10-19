@@ -1,0 +1,32 @@
+"""Render completed extended-quality Mac summary; never consumes partial/old2048phase."""
+from pathlib import Path
+import argparse,json,hashlib,statistics
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+P=argparse.ArgumentParser();P.add_argument('summary',type=Path);P.add_argument('--out',type=Path,default=Path(__file__).resolve().parent);a=P.parse_args();a.out.mkdir(parents=True,exist_ok=True);d=json.loads(a.summary.read_text());assert d['status']=='COMPLETE';arms=['A1','A4','A16','A32','A128','recovery-only','fixed32','fixed128'];timing={m['group']:m for m in d['timing_by_map']};assert len(timing)==3;diag={(v['group'],v['arm']):v for v in d['diagnostics']};assert len(diag)==24 and all(v['actual_ticks']==8192 and v['full_horizon'] for v in diag.values()),'Wait all24 extended8192 diagnostics; old2048phase is not2window evidence'
+assert all(set(m['by_arm'])==set(arms) for m in timing.values());names={g:m['format']+' · '+m['generator'] for g,m in timing.items()};metrics={}
+for g,m in timing.items():
+ metrics[g]={}
+ for arm in arms:
+  t=m['by_arm'][arm];assert t['runs']==t['full_runs']==4 and len(t['simulation_cpu_ms_per_tick'])==4;v=diag[g,arm];overall=v['movement']['overall'];q=overall['totals']['queries'];assert q>0;metrics[g][arm]=dict(cpu_mean=t['mean_cpu_ms_per_tick'],cpu_repeat_values=t['simulation_cpu_ms_per_tick'],cpu_range=t['observed_cpu_range'],direction_rate=overall['totals']['extra_cost']/q,queries=q,extra_cost=overall['totals']['extra_cost'],movement_rates=overall['per_query'],planning=v['planning']['overall'])
+aggregate={}
+for arm in arms:
+ vals=[metrics[g][arm] for g in timing];repeat=[statistics.mean(v['cpu_repeat_values'][i] for v in vals) for i in range(4)];aggregate[arm]=dict(cpu_mean=statistics.mean(v['cpu_mean'] for v in vals),cpu_range=[min(repeat),max(repeat)],cpu_repeat_values=repeat,direction_rate=statistics.mean(v['direction_rate'] for v in vals),query_pooled_direction_rate=sum(v['extra_cost'] for v in vals)/sum(v['queries'] for v in vals),queries=sum(v['queries'] for v in vals),extra_cost=sum(v['extra_cost'] for v in vals),movement_rates_equal_map={k:statistics.mean(v['movement_rates'][k] for v in vals) for k in vals[0]['movement_rates']})
+plt.rcParams.update({'font.size':9,'axes.spines.top':False,'axes.spines.right':False,'savefig.dpi':180});fig,axes=plt.subplots(2,2,figsize=(12,8));panels=[(names[g],metrics[g]) for g in timing]+[('Equal-map aggregate (primary)',aggregate)];colors={'A1':'#0072B2','A4':'#56B4E9','A16':'#009E73','A32':'#E69F00','A128':'#D55E00','recovery-only':'black','fixed32':'#CC79A7','fixed128':'#777777'};offset={'A1':(5,7),'A4':(5,-13),'A16':(-24,7),'A32':(5,-13),'A128':(5,7),'recovery-only':(-45,-15),'fixed32':(5,7),'fixed128':(-38,8)}
+for ax,(name,pop) in zip(axes.flat,panels):
+ for arm in arms:
+  v=pop[arm];x=v['cpu_mean'];lo,hi=v['cpu_range'];y=v['direction_rate'];ax.errorbar(x,y,xerr=[[max(0,x-lo)],[max(0,hi-x)]],fmt='s' if arm.startswith('fixed') else 'x' if arm=='recovery-only' else 'o',color=colors[arm],capsize=2,ms=5);ax.annotate('recovery' if arm=='recovery-only' else arm,(x,y),xytext=({'fixed128':(28,8),'A32':(18,17),'A128':(-45,-18)}.get(arm,offset[arm]) if name.startswith('Equal-map') else offset[arm]),textcoords='offset points',fontsize=8,color=colors[arm])
+ ax.set_title(name,fontsize=10);ax.set_xlabel('Probe-OFF simulation CPU (ms/tick)');ax.set_ylabel('Direction extra cost / sampled movement query');ax.grid(alpha=.15);ax.margins(x=.16,y=.2)
+fig.suptitle('Frozen gen003 Mac study: measured CPU vs diagnostic direction quality',fontsize=14);fig.text(.5,.012,'CPU: 4 OFF repeats ×8192 ticks/map/arm; whiskers are observed ranges, not CIs. Quality: 2 sampled1024 windows within separate8192-tick ON runs.\nEqual-map aggregate uses identical map weights for CPU and quality; policies/worlds/query mixes can diverge. Lower-left is preferable on these two metrics only.',ha='center',fontsize=8);fig.tight_layout(rect=[0,.06,1,.95])
+for e in ['png','pdf']:fig.savefig(a.out/('mac-cpu-vs-direction.'+e))
+plt.close(fig)
+fig,ax=plt.subplots(figsize=(10,6));labeloffset={'A1':(8,8),'A4':(8,-15),'A16':(8,-17),'A32':(25,17),'A128':(-52,-18),'recovery-only':(10,8),'fixed32':(8,8),'fixed128':(35,8)}
+for arm in arms:
+ v=aggregate[arm];x=v['cpu_mean'];lo,hi=v['cpu_range'];y=v['direction_rate'];ax.errorbar(x,y,xerr=[[max(0,x-lo)],[max(0,hi-x)]],fmt='s' if arm.startswith('fixed') else 'x' if arm=='recovery-only' else 'o',color=colors[arm],capsize=3,ms=7);ax.annotate('recovery-only' if arm=='recovery-only' else arm,(x,y),xytext=labeloffset[arm],textcoords='offset points',fontsize=11,color=colors[arm],arrowprops={'arrowstyle':'-','color':colors[arm],'lw':.6})
+ax.set_xlabel('Probe-OFF simulation CPU (ms/tick), equal-map mean');ax.set_ylabel('Direction extra cost / sampled query, equal-map mean');ax.set_title('Frozen gen003: lower-left is preferable on these two metrics',fontsize=13);ax.grid(alpha=.16);ax.margins(x=.18,y=.17);fig.text(.5,.015,'3 mature maps. Horizontal spans: observed 4-repeat CPU ranges, not confidence intervals.\nQuality comes from 2 sampled1024 windows in separate8192-tick diagnostic runs; query-pooled quality is reported separately.',ha='center',fontsize=8);fig.tight_layout(rect=[0,.06,1,1])
+for e in ['png','pdf']:fig.savefig(a.out/('mac-cpu-vs-direction-aggregate.'+e))
+plt.close(fig);fig,ax=plt.subplots(figsize=(10,4));x=list(range(8));width=.35;ax.bar([v-width/2 for v in x],[aggregate[arm]['direction_rate'] for arm in arms],width,label='Equal-map rate (primary)',color='#0072B2');ax.bar([v+width/2 for v in x],[aggregate[arm]['query_pooled_direction_rate'] for arm in arms],width,label='Query-pooled rate (secondary)',color='#E69F00');ax.set_xticks(x);ax.set_xticklabels(['recovery' if v=='recovery-only' else v for v in arms]);ax.set_ylabel('Direction extra cost / query');ax.set_title('Quality weightings are reported separately');ax.legend();ax.grid(axis='y',alpha=.15);fig.tight_layout()
+for e in ['png','pdf']:fig.savefig(a.out/('mac-quality-weightings.'+e))
+(a.out/'MAC-PLOT-METRICS.json').write_text(json.dumps(dict(summary_sha256=hashlib.sha256(a.summary.read_bytes()).hexdigest(),source_summary=str(a.summary),quality_scope='Two1024sampled windows per8192tick diagnostic continuation; original2048phase excluded',timing_by_map=metrics,equal_map_aggregate=aggregate,uncertainty='Observed4repeat ranges, no confidence claim',no_new_simulation=True),indent=2)+'\n')
+print(json.dumps(aggregate,indent=2))

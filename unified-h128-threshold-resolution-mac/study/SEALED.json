@@ -1,0 +1,20 @@
+{
+  "capped": 0,
+  "executed_runs": 144,
+  "extended_off_on_final_checksum_matches": 24,
+  "extended_probe_on8192_runs": 24,
+  "failed": 0,
+  "initial_probe_on2048_runs": 24,
+  "model_unchanged": true,
+  "normal_horizons": 144,
+  "off_total_ticks": 786432,
+  "probe_off_timing_runs": 96,
+  "production_promotion": false,
+  "qualified_mature_per_tick_parity": "seeGATE-SNAPSHOT and linkedruntimequalification",
+  "raw_artifacts_verified": 1098,
+  "raw_hash_manifest_sha256": "af64b25672f0f468733df729e2ce13e367fbb11a3e1ca69170df6acbf405e0b2",
+  "sealed_utc": "2026-10-19T12:02:45.522063+00:00",
+  "status": "PASS",
+  "timing_repeat_determinism": "24map-arm combinations,4identicalfinalchecksums each",
+  "training_ingestion": false
+}
