@@ -1,0 +1,149 @@
+{
+  "build": "101d756e6a72a2040cea002a8e093c5cdc6c70e82b0a32aa58e287c04126e315",
+  "config": {
+    "alliances": [],
+    "players": [
+      "warrush",
+      "warrush",
+      "warrush"
+    ],
+    "resource_gradient_collection": {},
+    "ticks": 2048
+  },
+  "depends_on": [],
+  "id": "b8a79199c684b5c3",
+  "inputs": {
+    "map": {
+      "bytes": 23226,
+      "encoding": "identity",
+      "path": "map.map.gz",
+      "raw_bytes": 23226,
+      "raw_sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+      "sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c"
+    }
+  },
+  "labels": {
+    "resource_gradient": {
+      "actual_spec": {
+        "ais": [
+          "warrush",
+          "warrush",
+          "warrush"
+        ],
+        "alliances": [],
+        "format": "qualification-3ffa",
+        "game_seed": 859231393,
+        "generator": "frozen-input",
+        "height": 128,
+        "map_seed": 0,
+        "players": 3,
+        "qualification_replica": 0,
+        "width": 128
+      },
+      "cohort": {
+        "contract": {
+          "benefit_unit": "direction-cost",
+          "contradictions": {
+            "capture_known": "contradiction_capture_known",
+            "classification": "first-rejection-existing-check-order",
+            "counters": [
+              "since_capture_empty_goal",
+              "since_capture_persistent_progress_blocked",
+              "since_capture_unit_progress_blocked",
+              "since_capture_sidestep_used",
+              "since_capture_reachable_no_move",
+              "since_capture_movement_queries"
+            ],
+            "denominator": "since_capture_movement_queries",
+            "future_stall_columns": [
+              "defer_stalls",
+              "refresh_stalls"
+            ],
+            "future_stall_definition": "reachable-non-goal-selector-no-move",
+            "scope": "natural-ground-resource-movement",
+            "version": 1,
+            "window": "since-field-capture"
+          },
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "source_added",
+            "source_removed",
+            "source_added_frac_q12",
+            "source_removed_frac_q12"
+          ],
+          "future_offsets": [
+            8,
+            31
+          ],
+          "label": "movement-direction-extra-cost",
+          "request_type": "movement"
+        },
+        "header_sha256": "d9d54ae5f37bed9c13c6a94749f5527818370f6f71b3354b0961efbcfb8131ae",
+        "id": "contradictions-20261018-crosshost-qualification",
+        "policy": {
+          "assignment": "sha256(master-seed:planned-game-group) low32, then unsigned field hash",
+          "intervals": [
+            0
+          ],
+          "model_sha256": "f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217",
+          "name": "adaptive32",
+          "seed": 181041
+        },
+        "role": "candidate"
+      },
+      "collection_seed": null,
+      "generation": null,
+      "header_sha256": "d9d54ae5f37bed9c13c6a94749f5527818370f6f71b3354b0961efbcfb8131ae",
+      "logical_group": "b8a79199c684b5c3",
+      "map_sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+      "model_sha256": "f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217",
+      "ordinal": 0,
+      "planned_spec": {
+        "ais": [
+          "warrush",
+          "warrush",
+          "warrush"
+        ],
+        "alliances": [],
+        "format": "qualification-3ffa",
+        "game_seed": 859231393,
+        "generator": "frozen-input",
+        "height": 128,
+        "map_seed": 0,
+        "players": 3,
+        "qualification_replica": 0,
+        "width": 128
+      }
+    }
+  },
+  "limits": {
+    "estimated_seconds": 900,
+    "timeout_seconds": 7200
+  },
+  "outputs": {
+    "required": [
+      "gradient-episodes.csv",
+      "gradient-quality.csv",
+      "gradient-planning-quality.csv",
+      "gradient-contradictions.csv",
+      "world.checksums",
+      "snapshot.checksums",
+      "game.replay.checksums",
+      "final.game.gz"
+    ],
+    "result": "full",
+    "saves": [
+      "final"
+    ],
+    "telemetry": [
+      "checksums"
+    ]
+  },
+  "schema_version": 1,
+  "seeds": {
+    "game": 859231393
+  },
+  "type": "game"
+}

@@ -1,0 +1,19 @@
+# Paired H32/H128 analysis plan (frozen before mature paired data)
+
+The equal-steady-rate arithmetic is **160 direction-cost units**: old usable capture offsets 8..31 contain 24 ticks; current 8..127 contain 120 ticks, so 32×120/24=160. This assumes constant signed benefit accrual per usable tick. It is not an empirical cutoff or a policy-equivalence result. Old production compared an **expected model prediction** against 32; the paired measurement compares realized oracle labels under the current simulator.
+
+Use exactly the three mature pilot maps, warmed under source 4a/gen003/original 128000 policy to tick 16384: 4FFA/polder 128×64(group 66294c…), 2v2/islands 64×128(008354…), and 8FFA/fjord-continent128²(1d0433…). Load the exact warm-save hashes, run 1024 additional ticks toward 17408 with the qualified 425565…Probe-only binary, and leave threshold overrides absent. The early-ended 3FFA remains skipped, with no replacement. Collector owns launch after pilot completion/CPU2 availability; this plan starts no games.
+
+The sidecar records short and full sums from the **same already computed** counterfactual costs, capture, query and RNG context. Strictly join it one-to-one with the original full-H128 episode CSV using run+tick+field identity+serving capture. Require exact H128 sum/query/completion agreement, delay 8, nonnegative prefix counts/sums and prefix≤full for each arm. Do not reconstruct prefixes from aggregate H128 CSVs.
+
+Primary population: natural ground Materials only (family Materials, movement 0..7), closest to the old resource scope. New families, Markets and AIR remain separate; unobserved families are explicitly unmeasured. This is neither an old engine replay nor the old fitted model. Use known-history/movement-labelled complete paired horizons; preserve counts of unknown, no-movement, short-only-complete and both-censored rows. No imputation.
+
+Define signed labels B32=defer32−refresh32 and B128=defer128−refresh128. Describe their paired weighted distributions, query counts, B/usable-tick and B/query rates, late increments and counts B32≥32. Ratios B128/B32 are reported only for B32>0; zeros/negatives and sign reversals remain explicit elsewhere. Negative late increments can cancel early gains.
+
+Predeclared near-cutoff bands: B32∈[24,40] primary and [16,48] sensitivity, always separate. Report B128 median/IQR/p10/p90 and per-map support. Require 20 episodes across 2 maps for even a tentative primary-band statement; otherwise state insufficient support, without widening the band after seeing results.
+
+A descriptive oracle cutoff may match the weighted fraction B32≥32 using an integer B128 cutoff: choose the closest fraction, ties choosing the highest cutoff, and report tie error/false positives/false negatives/disagreement. Compare fixed 128 and 160 as well. A target fraction 0 or 1 yields a bound/nonidentification, not a unique equivalent. None of these converts the old expected-model cutoff or promotes a runtime threshold.
+
+Existing hierarchical weights balance format/role/cohort/map/family/collection/episode; also show each map and equal-map summaries. With only 3 maps, enumerate all 10 multinomial map-cluster count vectors for paired uncertainty, reporting their exact probabilities and discrete intervals; fewer usable maps receive the corresponding limited-support treatment, and 1 map gets no CI. No refit, target-contract change, threshold promotion or training ingestion.
+
+PLAN.json SHA e29c75b7…d8286 and INPUTS-LOCK.json SHA 4b0795b9…ac238b bind the exact collector INPUTS.json SHA ac0c3e0e…f7be35, gate and actual remote warm/binary hashes. SOURCE-EVIDENCE.json and line-numbered excerpts preserve old/current windows and scoring context. Plan-v1 is retained with the pre-outcome amendment record. Collection outputs will be separately hash-locked before later read-only analysis.

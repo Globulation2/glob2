@@ -1,0 +1,14 @@
+{
+  "status": "built-research-only",
+  "source_base": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "frozen_base_elf": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+  "pid": 946917,
+  "started_utc": "2026-10-19T11:24:57.877659+00:00",
+  "binary": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/build/glob2",
+  "binary_sha256": "425565fbc0222cfc0b0c073f5b6006fd5f8af8c3eba6bf44c4504c2a4f7e26ea",
+  "patch_sha256": "926cb30db4527f55a148a9aa73436260fe360a1ad28c073bfb4cc8734b069053",
+  "reused_inputs": 645,
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "finished_utc": "2026-10-19T11:25:18.378490+00:00"
+}

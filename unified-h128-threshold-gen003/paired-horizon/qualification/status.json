@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "name": "frozen-on",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-on",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-off",
+      "value": null,
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-early",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "056851b06865660a1b5ee54ee1642ba6552e47c20c3df930a2f41d2aaa49734f",
+        "snapshot.checksums": "93ec7e16178be265b2ba12d7c941c1c2085729a93221c226c2c03e99ee826138",
+        "game.replay.checksums": "d2fe145306a15c3f444c945f9cc4e73114ce8e330dc281200b7ed01e7c528c7f",
+        "final.game.gz": "45ec641f1bb5016db3d52d4cac7e9d8c9ab9864aecd5e5a334bcdf08914e53c1"
+      }
+    },
+    {
+      "name": "paired-short-complete-full-censored",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "06d7e74465e1a4a5b126b6ab813be61280a93a68f248e3edade5df9661921fa9",
+        "snapshot.checksums": "48760ad26f5cdc2652b72e08899b4f0a8ef918a14ef7a93d466c3965c27998e1",
+        "game.replay.checksums": "0b9a339ee459acc8f5663e673161aa2563f44330df5bdc7008b07f3f75e3b62e",
+        "final.game.gz": "97509977bd25db0d1c4c38cd58117dcb2b8dcfeed421e22edf1f43cd087bcc41"
+      }
+    }
+  ],
+  "invalid": []
+}

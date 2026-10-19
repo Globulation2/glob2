@@ -1,0 +1,8 @@
+111:             return std::array<long long,6>{flagged,regret,missed,goal,unreachable,leftGoal};
+112:         };
+113: 
+114:     for (auto& e:field.episodes) if (unsigned(tick-e.tick)>=e.delay && unsigned(tick-e.tick)<32) {
+115:         ++e.queries;e.deferExtra+=quality(e.deferred.data())[1];e.refreshExtra+=quality(e.refreshed.data())[1];
+116:     }
+117:     const auto flags=quality(live);const auto a=live[here],b=fresh[here];
+118:     output<<query<<','<<tick<<','<<window<<','<<unsigned(tick-field.firstTick)<<','<<team<<','<<resource<<','<<swim

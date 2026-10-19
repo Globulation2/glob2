@@ -1,0 +1,97 @@
+diff --git a/src/map/gradient/ResourceGradientProbe.cpp b/src/map/gradient/ResourceGradientProbe.cpp
+index 1d88b420b..2291206eb 100644
+--- a/src/map/gradient/ResourceGradientProbe.cpp
++++ b/src/map/gradient/ResourceGradientProbe.cpp
+@@ -7,8 +7,39 @@
+ #include "SeedPoint.h"
+ #include <filesystem>
+ #include <stdexcept>
++#include <memory>
+ 
+ namespace {
++// BEGIN ISOLATED PAIRED-HORIZON ACCUMULATOR
++struct PairedShortCounters {
++    unsigned queries=0;
++    std::int64_t deferred=0,refreshed=0;
++    static constexpr bool eligible(unsigned age,unsigned delay) {return age>=delay && age<32;}
++    static constexpr bool complete(unsigned age) {return age>=32;}
++    void record(unsigned age,unsigned delay,std::int64_t a,std::int64_t b) {
++        if(eligible(age,delay)){++queries;deferred+=a;refreshed+=b;}
++    }
++};
++static_assert(!PairedShortCounters::eligible(7,8));
++static_assert(PairedShortCounters::eligible(8,8));
++static_assert(PairedShortCounters::eligible(31,8));
++static_assert(!PairedShortCounters::eligible(32,8));
++static_assert(!PairedShortCounters::complete(31) && PairedShortCounters::complete(32));
++// END ISOLATED PAIRED-HORIZON ACCUMULATOR
++struct PairedStudy {
++    std::ofstream output;
++    std::map<const ResourceGradientProbe::Episode*,PairedShortCounters> episodes;
++    explicit PairedStudy(const std::filesystem::path& path):output(path) {
++        if(!output)throw std::runtime_error("Cannot open paired horizon diagnostics");
++        output<<"tick,family,team,movement,material,key,serving_capture_tick,publication_delay,observed_through_tick,short_complete,full_complete,short_queries,defer_extra_32,refresh_extra_32,full_queries,defer_extra_128,refresh_extra_128\n";
++    }
++};
++// No registry initialization, streams or allocations occur with the probe off.
++// deque references survive append; entries are erased before each episode pop.
++auto& pairedStudies() {
++    static std::map<const ResourceGradientProbe*,std::unique_ptr<PairedStudy>> studies;
++    return studies;
++}
+ void identity(std::ostream& out,GradientFieldKey k) {out<<unsigned(k.family)<<','<<unsigned(k.team)<<','<<unsigned(k.swim)<<','<<unsigned(k.material)<<','<<k.packed();}
+ const Uint16* serving(Map& map,GradientFieldKey k) {
+     switch(k.family) {
+@@ -22,6 +53,7 @@ const Uint16* serving(Map& map,GradientFieldKey k) {
+ }
+ }
+ ResourceGradientProbe::ResourceGradientProbe(const char* path):output(path),study(std::filesystem::path(path).parent_path()/"gradient-episodes.csv"),planning(std::filesystem::path(path).parent_path()/"gradient-planning-quality.csv"),movement(std::filesystem::path(path).parent_path()/"gradient-contradictions.csv") {
++    pairedStudies().emplace(this,std::make_unique<PairedStudy>(std::filesystem::path(path).parent_path()/"paired-horizons.csv"));
+     seedScratch.materials.disabled=true; // Private captures are not owner-cache observations.
+     if(!output||!study||!planning||!movement)throw std::runtime_error("Cannot open unified gradient diagnostics");
+     output<<"query,tick,family,team,movement,material,key,extra_cost,false_unreachable,false_reachable,invalid_goal,missed_move,escape_failure,stall,guard_balance\n";
+@@ -29,7 +61,7 @@ ResourceGradientProbe::ResourceGradientProbe(const char* path):output(path),stud
+     planning<<"query,tick,family,team,movement,material,key,false_unreachable,false_reachable,live_value,fresh_value\n";
+     movement<<"epoch,family,team,movement,material,key,invalid_goal,reachable_no_move,movement_queries\n";
+ }
+-ResourceGradientProbe::~ResourceGradientProbe(){finishStudy(lastTick);writeMovementTotals();}
++ResourceGradientProbe::~ResourceGradientProbe(){finishStudy(lastTick);writeMovementTotals();pairedStudies().erase(this);}
+ GradientFieldKey ResourceGradientProbe::legacyKey(int key) {return {GradientFieldFamily::Materials,std::uint8_t(key/(MaterialCount*SWIM_CLASS_COUNT)),std::uint8_t(key%SWIM_CLASS_COUNT),std::uint8_t((key/SWIM_CLASS_COUNT)%MaterialCount)};}
+ void ResourceGradientProbe::publishedOverlap(GradientFieldKey key,unsigned tick,const Uint16* cells) {
+     if(!spatialEnabled || !gradient_seed_overlap::supported(key))return;
+@@ -65,8 +97,16 @@ void ResourceGradientProbe::writeEpisode(int key,const Episode& e,bool complete)
+     const auto& o=e.overlap;
+     study<<','<<gradient_seed_overlap::supported(field)<<','<<(gradient_seed_overlap::supported(field)&&!e.overlapEnabled?"disabled":gradient_seed_overlap::supportReason(field))<<','<<o.known<<','<<o.generation<<','<<o.publicationTick
+         <<','<<o.goalQueries<<','<<o.passabilityQueries<<','<<o.queries<<','<<o.goalAddedQueries<<','<<o.goalRemovedQueries<<','<<o.blockedQueries<<','<<o.openedQueries<<'\n';
++    auto& paired=*pairedStudies().at(this);
++    const auto& shortWindow=paired.episodes.at(&e);
++    paired.output<<e.tick<<',';identity(paired.output,field);
++    paired.output<<','<<e.servingCaptureTick<<','<<e.delay<<','<<lastTick<<','
++        <<(complete||PairedShortCounters::complete(unsigned(lastTick-e.tick)))<<','<<complete<<','
++        <<shortWindow.queries<<','<<shortWindow.deferred<<','<<shortWindow.refreshed<<','
++        <<e.queries<<','<<e.deferExtra<<','<<e.refreshExtra<<'\n';
++    paired.episodes.erase(&e);
+ }
+-void ResourceGradientProbe::finishStudy(unsigned tick){for(auto& [key,f]:fields){for(const auto&e:f.episodes)writeEpisode(key,e,complete(unsigned(tick-e.tick)));f.episodes.clear();}study.flush();}
++void ResourceGradientProbe::finishStudy(unsigned tick){for(auto& [key,f]:fields){for(const auto&e:f.episodes)writeEpisode(key,e,complete(unsigned(tick-e.tick)));f.episodes.clear();}study.flush();pairedStudies().at(this)->output.flush();}
+ ResourceGradientProbe::Field* ResourceGradientProbe::sampleField(unsigned tick,GradientFieldKey key){
+     lastTick=tick;if(tick%4096>=1024)return nullptr;
+     if(window!=tick/4096){finishStudy(tick);fields.clear();window=tick/4096;}
+@@ -98,7 +138,7 @@ void ResourceGradientProbe::stageEpisodes(Map& map){
+         e.overlapEnabled=spatialEnabled;
+         if(spatialEnabled)if(const auto history=movementHistory.find(packed);history!=movementHistory.end())e.overlap=history->second.overlap;
+         if(const auto& behavior=map.gradientRuntime->exploration){e.behaviorInterval=behavior->intervalFor(packed);e.behaviorSeed=behavior->seed;}
+-        e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));f.lastEpisode=lastTick;f.episodeKnown=true;
++        e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));pairedStudies().at(this)->episodes.emplace(&f.episodes.back(),PairedShortCounters{});f.lastEpisode=lastTick;f.episodeKnown=true;
+     }
+ }
+ void ResourceGradientProbe::observe(Map& map,const GradientQueryContext& context,const Uint16* live){
+@@ -109,7 +149,7 @@ void ResourceGradientProbe::observe(Map& map,const GradientQueryContext& context
+     const auto quality=[&](const Uint16*cells){const auto selected=map.selectGradientQuery(context,cells);const auto next=map.coordToIndex(context.x+selected.dx,context.y+selected.dy);const bool reachable=cells[here]>GRADIENT_UNREACHABLE;const bool comparable=selected.moved&&reference.moved&&((selected.travelRequired&&reference.travelRequired)||balancing)&&fresh[next]>GRADIENT_UNREACHABLE;
+         const int cost=comparable?std::max(0,score(reference)-score(selected)):0;const bool missed=!selected.moved&&reference.moved&&reference.travelRequired;const bool invalid=selected.atGoal&&!selected.goalValid;const bool stall=reachable&&selected.travelRequired&&!selected.moved&&!selected.atGoal;const bool escape=context.key.family==GradientFieldFamily::Forbidden&&missed;
+         return std::array<std::int64_t,5>{cost,stall,invalid,missed,escape};};
+-    for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){const auto a=quality(e.deferred.data()),b=quality(e.refreshed.data());++e.queries;const bool freshReachable=fresh[here]>GRADIENT_UNREACHABLE;
++    for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){const auto a=quality(e.deferred.data()),b=quality(e.refreshed.data());pairedStudies().at(this)->episodes.at(&e).record(unsigned(tick-e.tick),e.delay,a[0],b[0]);++e.queries;const bool freshReachable=fresh[here]>GRADIENT_UNREACHABLE;
+         e.deferFalseUnreachable+=e.deferred[here]<=GRADIENT_UNREACHABLE&&freshReachable;
+         e.refreshFalseUnreachable+=e.refreshed[here]<=GRADIENT_UNREACHABLE&&freshReachable;
+         e.deferFalseReachable+=e.deferred[here]>GRADIENT_UNREACHABLE&&!freshReachable;

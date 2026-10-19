@@ -1,0 +1,4 @@
+nox::game started
+nox::gui.game.checkSum() = 2f597174
+automaticEndingGame ended: 24576 ticks, 13 minutes, 39 seconds
+GLOB2_GAME_END ticks=24576 winner_team=-1 seed=3333364126 map="map.map" orders=0 players=team0:Maxima,team1:Warrush,team2:Maxima,team3:Econo

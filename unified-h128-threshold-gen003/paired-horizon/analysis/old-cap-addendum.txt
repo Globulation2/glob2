@@ -1,0 +1,18 @@
+14: struct ResourceGradientPolicy
+15: {
+16:     using Sources = ResourceGradientModel::Sources;
+17:     static constexpr unsigned MinimumInterval = 8, MaximumInterval = 128;
+18:     static constexpr int Threshold = 32000; // model output is milli direction cost
+19:     // These epochs describe the world captured for a particular field. Pending
+20:     // jobs carry their own copy; serving epochs change only at publication.
+21:     struct Capture {
+59:                 std::int64_t(bounded(added*4096/denominator)),std::int64_t(bounded(removed*4096/denominator))};
+60:         }
+61:         // The age cap applies to demanded fields. An idle field never rebuilds
+62:         // merely because time passed; another query must request it again.
+63:         bool refresh(std::uint32_t tick,const Sources& now) {
+64:             if (!std::exchange(requested,false) || std::uint32_t(tick-submitted)<MinimumInterval) return false;
+65:             return std::uint32_t(tick-submitted)>=MaximumInterval || ResourceGradientModel::predict(inputs(tick,now))>=Threshold;
+66:         }
+67:     };
+68:     void save(GAGCore::OutputStream*) const;

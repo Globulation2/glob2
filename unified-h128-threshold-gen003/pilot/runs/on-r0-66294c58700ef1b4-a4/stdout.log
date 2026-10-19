@@ -1,0 +1,5 @@
+nox::game started
+nox::gui.game.checkSum() = 85ae9878
+automaticEndingGame ended: 17408 ticks, 9 minutes, 40 seconds
+GLOB2_GAME_END ticks=17408 winner_team=-1 seed=3326282988 map="map.map" orders=0 players=team0:Nicowar,team1:Nicowar,team2:Nicowar,team3:Nicowar
+final: wrote /home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/prospective-study/runs/on-r0-66294c58700ef1b4-a4/final.game.gz

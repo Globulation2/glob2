@@ -1,0 +1,14 @@
+{
+  "status": "built-research-only",
+  "source_base": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "frozen_base_elf": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+  "pid": 942656,
+  "started_utc": "2026-10-19T11:18:43.389441+00:00",
+  "binary": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/runtime-research/build/glob2",
+  "binary_sha256": "affd7d2e5653a7f1a53d2869c53ec55262b3d730d5c3211edbf13593a552d6e2",
+  "patch_sha256": "7a783577ede12994756ad9d56245511cc81da47e6aebc4b9684833377eece407",
+  "reused_inputs": 644,
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "finished_utc": "2026-10-19T11:19:23.732872+00:00"
+}

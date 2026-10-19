@@ -1,0 +1,4436 @@
+{
+  "analysis_plan_sha256": "e29c75b7ace4fff1aa048dd43663048c82ce7ae1559aad0f5e9e0ef62a1d8286",
+  "analysis_lock_sha256": "4b0795b9818b152c7c4d4b2b0103bb7acb844bd1bf4152decc447c57c7ac238b",
+  "raw_lock_sha256": "e117043d296371cb5f81e9ed2851dfcd35ab0bdc60db77cab885e0683faa9f27",
+  "census": {
+    "66294c58700ef1b4": {
+      "raw": 29,
+      "both_complete": 29,
+      "short_only_complete": 0,
+      "both_censored": 0,
+      "unknown_capture": 0,
+      "no_movement_label": 0,
+      "eligible": 29
+    },
+    "0083541d8ee4d18b": {
+      "raw": 24,
+      "both_complete": 24,
+      "short_only_complete": 0,
+      "both_censored": 0,
+      "unknown_capture": 0,
+      "no_movement_label": 0,
+      "eligible": 24
+    },
+    "1d043310cbecdceb": {
+      "raw": 21,
+      "both_complete": 21,
+      "short_only_complete": 0,
+      "both_censored": 0,
+      "unknown_capture": 0,
+      "no_movement_label": 0,
+      "eligible": 21
+    }
+  },
+  "all_raw_rows": 74,
+  "eligible_rows": 74,
+  "primary": {
+    "status": "observed",
+    "rows": 34,
+    "maps": 3,
+    "distributions": {
+      "B32": {
+        "n": 34,
+        "mean": 1.2979797979797978,
+        "median": 0,
+        "p10": 0,
+        "p25": 0,
+        "p75": 0,
+        "p90": 8,
+        "min": -8,
+        "max": 14
+      },
+      "B128": {
+        "n": 34,
+        "mean": 2.954545454545454,
+        "median": 0,
+        "p10": -12,
+        "p25": 0,
+        "p75": 2,
+        "p90": 22,
+        "min": -40,
+        "max": 62
+      },
+      "Blate": {
+        "n": 34,
+        "mean": 1.6565656565656564,
+        "median": 0,
+        "p10": -12,
+        "p25": 0,
+        "p75": 0,
+        "p90": 20,
+        "min": -40,
+        "max": 50
+      },
+      "Q32": {
+        "n": 34,
+        "mean": 3.4065656565656566,
+        "median": 3,
+        "p10": 0,
+        "p25": 1,
+        "p75": 5,
+        "p90": 6,
+        "min": 0,
+        "max": 10
+      },
+      "Q128": {
+        "n": 34,
+        "mean": 16.348484848484848,
+        "median": 17,
+        "p10": 0,
+        "p25": 4,
+        "p75": 26,
+        "p90": 33,
+        "min": 0,
+        "max": 45
+      },
+      "Qlate": {
+        "n": 34,
+        "mean": 12.941919191919192,
+        "median": 13,
+        "p10": 0,
+        "p25": 2,
+        "p75": 20,
+        "p90": 28,
+        "min": 0,
+        "max": 40
+      }
+    },
+    "short_threshold_raw": 0,
+    "short_threshold_fraction": 0.0,
+    "ratios_positive_B32_only": {
+      "n": 7,
+      "mean": 2.727396021699819,
+      "median": 1.0,
+      "p10": -5.666666666666667,
+      "p25": 1.0,
+      "p75": 7.25,
+      "p90": 11.0,
+      "min": -5.666666666666667,
+      "max": 11.0
+    },
+    "undefined_ratio_rows": 27,
+    "late_gain_raw": 4,
+    "positive_to_nonpositive_raw": 1,
+    "late_cancellation_raw": 5,
+    "signs": {
+      "negative->negative": {
+        "raw": 1,
+        "fraction": 0.027777777777777776
+      },
+      "negative->zero": {
+        "raw": 0,
+        "fraction": 0.0
+      },
+      "negative->positive": {
+        "raw": 0,
+        "fraction": 0.0
+      },
+      "zero->negative": {
+        "raw": 3,
+        "fraction": 0.08585858585858586
+      },
+      "zero->zero": {
+        "raw": 19,
+        "fraction": 0.5707070707070707
+      },
+      "zero->positive": {
+        "raw": 4,
+        "fraction": 0.11616161616161616
+      },
+      "positive->negative": {
+        "raw": 1,
+        "fraction": 0.030303030303030304
+      },
+      "positive->zero": {
+        "raw": 0,
+        "fraction": 0.0
+      },
+      "positive->positive": {
+        "raw": 6,
+        "fraction": 0.16919191919191917
+      }
+    },
+    "rates": {
+      "32": {
+        "per_usable_tick": {
+          "n": 34,
+          "mean": 0.05408249158249158,
+          "median": 0.0,
+          "p10": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "p90": 0.3333333333333333,
+          "min": -0.3333333333333333,
+          "max": 0.5833333333333334
+        },
+        "per_query": {
+          "n": 27,
+          "mean": 0.30655270655270656,
+          "median": 0.0,
+          "p10": 0.0,
+          "p25": 0.0,
+          "p75": 0.3333333333333333,
+          "p90": 2.3333333333333335,
+          "min": -2.0,
+          "max": 2.8
+        },
+        "zero_query_rows": 7
+      },
+      "128": {
+        "per_usable_tick": {
+          "n": 34,
+          "mean": 0.02462121212121212,
+          "median": 0.0,
+          "p10": -0.1,
+          "p25": 0.0,
+          "p75": 0.016666666666666666,
+          "p90": 0.18333333333333332,
+          "min": -0.3333333333333333,
+          "max": 0.5166666666666667
+        },
+        "per_query": {
+          "n": 29,
+          "mean": 0.15348458397967787,
+          "median": 0.0,
+          "p10": -1.0303030303030303,
+          "p25": 0.0,
+          "p75": 0.17777777777777778,
+          "p90": 0.8421052631578947,
+          "min": -1.9047619047619047,
+          "max": 3.2222222222222223
+        },
+        "zero_query_rows": 5
+      },
+      "paired_positive_query_denominators": {
+        "rows": 27,
+        "short": {
+          "n": 27,
+          "mean": 0.30655270655270656,
+          "median": 0.0,
+          "p10": 0.0,
+          "p25": 0.0,
+          "p75": 0.3333333333333333,
+          "p90": 2.3333333333333335,
+          "min": -2.0,
+          "max": 2.8
+        },
+        "full": {
+          "n": 27,
+          "mean": 0.1652910904396531,
+          "median": 0.0,
+          "p10": -1.0303030303030303,
+          "p25": 0.0,
+          "p75": 0.17777777777777778,
+          "p90": 1.7894736842105263,
+          "min": -1.9047619047619047,
+          "max": 3.2222222222222223
+        },
+        "difference": {
+          "n": 27,
+          "mean": -0.14126161611305346,
+          "median": 0.0,
+          "p10": -1.7948717948717952,
+          "p25": -0.25,
+          "p75": 0.1,
+          "p90": 0.8421052631578947,
+          "min": -2.2303030303030305,
+          "max": 1.7894736842105263
+        }
+      },
+      "weighted_sum_benefit_per_weighted_sum_queries": {
+        "32": 0.38102297998517415,
+        "128": 0.18072289156626503
+      }
+    },
+    "bands": {
+      "24_40": {
+        "rows": 0,
+        "maps": 0,
+        "status": "INSUFFICIENT-SUPPORT",
+        "B128": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "p10": null,
+          "p25": null,
+          "p75": null,
+          "p90": null,
+          "min": null,
+          "max": null
+        }
+      },
+      "16_48": {
+        "rows": 0,
+        "maps": 0,
+        "status": "INSUFFICIENT-SUPPORT",
+        "B128": {
+          "n": 0,
+          "mean": null,
+          "median": null,
+          "p10": null,
+          "p25": null,
+          "p75": null,
+          "p90": null,
+          "min": null,
+          "max": null
+        }
+      }
+    },
+    "oracle_cutoff": {
+      "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+      "integer_cutoff_bound_at_least": 63,
+      "target_fraction": 0,
+      "fixed_cutoffs": {
+        "128": {
+          "cutoff_units": 128,
+          "short_ideal_raw": 0,
+          "short_ideal_fraction": 0.0,
+          "long_raw": 0,
+          "long_fraction": 0.0,
+          "false_positive_fraction": 0.0,
+          "false_negative_fraction": 0.0,
+          "disagreement_fraction": 0.0
+        },
+        "160": {
+          "cutoff_units": 160,
+          "short_ideal_raw": 0,
+          "short_ideal_fraction": 0.0,
+          "long_raw": 0,
+          "long_fraction": 0.0,
+          "false_positive_fraction": 0.0,
+          "false_negative_fraction": 0.0,
+          "disagreement_fraction": 0.0
+        }
+      }
+    }
+  },
+  "primary_per_map": {
+    "66294c58700ef1b4": {
+      "status": "observed",
+      "rows": 12,
+      "maps": 1,
+      "distributions": {
+        "B32": {
+          "n": 12,
+          "mean": 3.1666666666666665,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 8,
+          "p90": 14,
+          "min": -8,
+          "max": 14
+        },
+        "B128": {
+          "n": 12,
+          "mean": 14.499999999999998,
+          "median": 8,
+          "p10": -12,
+          "p25": -10,
+          "p75": 22,
+          "p90": 58,
+          "min": -18,
+          "max": 62
+        },
+        "Blate": {
+          "n": 12,
+          "mean": 11.333333333333332,
+          "median": 0,
+          "p10": -12,
+          "p25": -2,
+          "p75": 20,
+          "p90": 48,
+          "min": -18,
+          "max": 50
+        },
+        "Q32": {
+          "n": 12,
+          "mean": 4.583333333333333,
+          "median": 4,
+          "p10": 3,
+          "p25": 3,
+          "p75": 5,
+          "p90": 6,
+          "min": 3,
+          "max": 9
+        },
+        "Q128": {
+          "n": 12,
+          "mean": 19.5,
+          "median": 19,
+          "p10": 14,
+          "p25": 16,
+          "p75": 24,
+          "p90": 28,
+          "min": 5,
+          "max": 29
+        },
+        "Qlate": {
+          "n": 12,
+          "mean": 14.916666666666666,
+          "median": 15,
+          "p10": 11,
+          "p25": 12,
+          "p75": 19,
+          "p90": 20,
+          "min": 2,
+          "max": 22
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 5,
+        "mean": 4.935714285714286,
+        "median": 4.428571428571429,
+        "p10": 1.0,
+        "p25": 1.0,
+        "p75": 7.25,
+        "p90": 11.0,
+        "min": 1.0,
+        "max": 11.0
+      },
+      "undefined_ratio_rows": 7,
+      "late_gain_raw": 2,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 3,
+      "signs": {
+        "negative->negative": {
+          "raw": 1,
+          "fraction": 0.08333333333333333
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 2,
+          "fraction": 0.16666666666666666
+        },
+        "zero->zero": {
+          "raw": 2,
+          "fraction": 0.16666666666666666
+        },
+        "zero->positive": {
+          "raw": 2,
+          "fraction": 0.16666666666666666
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 5,
+          "fraction": 0.41666666666666663
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 12,
+            "mean": 0.13194444444444445,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 0.5833333333333334,
+            "min": -0.3333333333333333,
+            "max": 0.5833333333333334
+          },
+          "per_query": {
+            "n": 12,
+            "mean": 0.5851851851851851,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.8888888888888888,
+            "p90": 2.6666666666666665,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "zero_query_rows": 0
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 12,
+            "mean": 0.12083333333333332,
+            "median": 0.06666666666666667,
+            "p10": -0.1,
+            "p25": -0.08333333333333333,
+            "p75": 0.18333333333333332,
+            "p90": 0.48333333333333334,
+            "min": -0.15,
+            "max": 0.5166666666666667
+          },
+          "per_query": {
+            "n": 12,
+            "mean": 0.6246838341258913,
+            "median": 0.27586206896551724,
+            "p10": -0.8571428571428571,
+            "p25": -0.625,
+            "p75": 0.8421052631578947,
+            "p90": 2.5833333333333335,
+            "min": -1.0588235294117647,
+            "max": 3.2222222222222223
+          },
+          "zero_query_rows": 0
+        },
+        "paired_positive_query_denominators": {
+          "rows": 12,
+          "short": {
+            "n": 12,
+            "mean": 0.5851851851851851,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.8888888888888888,
+            "p90": 2.6666666666666665,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "full": {
+            "n": 12,
+            "mean": 0.6246838341258913,
+            "median": 0.27586206896551724,
+            "p10": -0.8571428571428571,
+            "p25": -0.625,
+            "p75": 0.8421052631578947,
+            "p90": 2.5833333333333335,
+            "min": -1.0588235294117647,
+            "max": 3.2222222222222223
+          },
+          "difference": {
+            "n": 12,
+            "mean": 0.039498648940706184,
+            "median": 0.0,
+            "p10": -1.0588235294117647,
+            "p25": -0.8571428571428571,
+            "p75": 0.5555555555555558,
+            "p90": 1.375,
+            "min": -1.7948717948717952,
+            "max": 1.7894736842105263
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.6909090909090909,
+          "128": 0.7435897435897435
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 63,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "0083541d8ee4d18b": {
+      "status": "observed",
+      "rows": 11,
+      "maps": 1,
+      "distributions": {
+        "B32": {
+          "n": 11,
+          "mean": 0.18181818181818182,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 2
+        },
+        "B128": {
+          "n": 11,
+          "mean": -3.272727272727273,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 2,
+          "min": -40,
+          "max": 2
+        },
+        "Blate": {
+          "n": 11,
+          "mean": -3.454545454545455,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": -40,
+          "max": 2
+        },
+        "Q32": {
+          "n": 11,
+          "mean": 2.5454545454545454,
+          "median": 1,
+          "p10": 0,
+          "p25": 1,
+          "p75": 6,
+          "p90": 6,
+          "min": 0,
+          "max": 6
+        },
+        "Q128": {
+          "n": 11,
+          "mean": 11.363636363636363,
+          "median": 8,
+          "p10": 0,
+          "p25": 3,
+          "p75": 21,
+          "p90": 24,
+          "min": 0,
+          "max": 26
+        },
+        "Qlate": {
+          "n": 11,
+          "mean": 8.818181818181818,
+          "median": 6,
+          "p10": 0,
+          "p25": 2,
+          "p75": 18,
+          "p90": 19,
+          "min": 0,
+          "max": 20
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 1,
+        "mean": 1.0,
+        "median": 1.0,
+        "p10": 1.0,
+        "p25": 1.0,
+        "p75": 1.0,
+        "p90": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "undefined_ratio_rows": 10,
+      "late_gain_raw": 1,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 1,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 1,
+          "fraction": 0.09090909090909091
+        },
+        "zero->zero": {
+          "raw": 8,
+          "fraction": 0.7272727272727273
+        },
+        "zero->positive": {
+          "raw": 1,
+          "fraction": 0.09090909090909091
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 1,
+          "fraction": 0.09090909090909091
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 11,
+            "mean": 0.007575757575757576,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.08333333333333333
+          },
+          "per_query": {
+            "n": 9,
+            "mean": 0.037037037037037035,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": 0.0,
+            "max": 0.3333333333333333
+          },
+          "zero_query_rows": 2
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 11,
+            "mean": -0.027272727272727275,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.016666666666666666,
+            "min": -0.3333333333333333,
+            "max": 0.016666666666666666
+          },
+          "per_query": {
+            "n": 9,
+            "mean": -0.19126984126984126,
+            "median": 0.0,
+            "p10": -1.9047619047619047,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -1.9047619047619047,
+            "max": 0.1
+          },
+          "zero_query_rows": 2
+        },
+        "paired_positive_query_denominators": {
+          "rows": 9,
+          "short": {
+            "n": 9,
+            "mean": 0.037037037037037035,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": 0.0,
+            "max": 0.3333333333333333
+          },
+          "full": {
+            "n": 9,
+            "mean": -0.19126984126984126,
+            "median": 0.0,
+            "p10": -1.9047619047619047,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -1.9047619047619047,
+            "max": 0.1
+          },
+          "difference": {
+            "n": 9,
+            "mean": -0.2283068783068783,
+            "median": 0.0,
+            "p10": -1.9047619047619047,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -1.9047619047619047,
+            "max": 0.1
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.07142857142857144,
+          "128": -0.28800000000000003
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 3,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "1d043310cbecdceb": {
+      "status": "observed",
+      "rows": 11,
+      "maps": 1,
+      "distributions": {
+        "B32": {
+          "n": 11,
+          "mean": 0.5454545454545454,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 6
+        },
+        "B128": {
+          "n": 11,
+          "mean": -2.3636363636363633,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": -34,
+          "max": 8
+        },
+        "Blate": {
+          "n": 11,
+          "mean": -2.909090909090909,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": -40,
+          "max": 8
+        },
+        "Q32": {
+          "n": 11,
+          "mean": 3.0909090909090913,
+          "median": 1,
+          "p10": 0,
+          "p25": 0,
+          "p75": 5,
+          "p90": 8,
+          "min": 0,
+          "max": 10
+        },
+        "Q128": {
+          "n": 11,
+          "mean": 18.181818181818183,
+          "median": 4,
+          "p10": 0,
+          "p25": 0,
+          "p75": 38,
+          "p90": 44,
+          "min": 0,
+          "max": 45
+        },
+        "Qlate": {
+          "n": 11,
+          "mean": 15.090909090909092,
+          "median": 3,
+          "p10": 0,
+          "p25": 0,
+          "p75": 33,
+          "p90": 36,
+          "min": 0,
+          "max": 40
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 1,
+        "mean": -5.666666666666666,
+        "median": -5.666666666666667,
+        "p10": -5.666666666666667,
+        "p25": -5.666666666666667,
+        "p75": -5.666666666666667,
+        "p90": -5.666666666666667,
+        "min": -5.666666666666667,
+        "max": -5.666666666666667
+      },
+      "undefined_ratio_rows": 10,
+      "late_gain_raw": 1,
+      "positive_to_nonpositive_raw": 1,
+      "late_cancellation_raw": 1,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 9,
+          "fraction": 0.8181818181818182
+        },
+        "zero->positive": {
+          "raw": 1,
+          "fraction": 0.09090909090909091
+        },
+        "positive->negative": {
+          "raw": 1,
+          "fraction": 0.09090909090909091
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 11,
+            "mean": 0.022727272727272728,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          },
+          "per_query": {
+            "n": 6,
+            "mean": 0.2,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 1.2,
+            "min": 0.0,
+            "max": 1.2
+          },
+          "zero_query_rows": 5
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 11,
+            "mean": -0.019696969696969695,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": -0.2833333333333333,
+            "max": 0.06666666666666667
+          },
+          "per_query": {
+            "n": 8,
+            "mean": -0.10656565656565657,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.17777777777777778,
+            "min": -1.0303030303030303,
+            "max": 0.17777777777777778
+          },
+          "zero_query_rows": 3
+        },
+        "paired_positive_query_denominators": {
+          "rows": 6,
+          "short": {
+            "n": 6,
+            "mean": 0.2,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 1.2,
+            "min": 0.0,
+            "max": 1.2
+          },
+          "full": {
+            "n": 6,
+            "mean": -0.14208754208754212,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.17777777777777778,
+            "min": -1.0303030303030303,
+            "max": 0.17777777777777778
+          },
+          "difference": {
+            "n": 6,
+            "mean": -0.34208754208754216,
+            "median": 0.0,
+            "p10": -2.2303030303030305,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.17777777777777778,
+            "min": -2.2303030303030305,
+            "max": 0.17777777777777778
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.17647058823529407,
+          "128": -0.12999999999999998
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 9,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    }
+  },
+  "families": {
+    "materials": {
+      "status": "observed",
+      "rows": 34,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 34,
+          "mean": 1.2979797979797978,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 8,
+          "min": -8,
+          "max": 14
+        },
+        "B128": {
+          "n": 34,
+          "mean": 2.954545454545454,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 2,
+          "p90": 22,
+          "min": -40,
+          "max": 62
+        },
+        "Blate": {
+          "n": 34,
+          "mean": 1.6565656565656564,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 0,
+          "p90": 20,
+          "min": -40,
+          "max": 50
+        },
+        "Q32": {
+          "n": 34,
+          "mean": 3.4065656565656566,
+          "median": 3,
+          "p10": 0,
+          "p25": 1,
+          "p75": 5,
+          "p90": 6,
+          "min": 0,
+          "max": 10
+        },
+        "Q128": {
+          "n": 34,
+          "mean": 16.348484848484848,
+          "median": 17,
+          "p10": 0,
+          "p25": 4,
+          "p75": 26,
+          "p90": 33,
+          "min": 0,
+          "max": 45
+        },
+        "Qlate": {
+          "n": 34,
+          "mean": 12.941919191919192,
+          "median": 13,
+          "p10": 0,
+          "p25": 2,
+          "p75": 20,
+          "p90": 28,
+          "min": 0,
+          "max": 40
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 7,
+        "mean": 2.727396021699819,
+        "median": 1.0,
+        "p10": -5.666666666666667,
+        "p25": 1.0,
+        "p75": 7.25,
+        "p90": 11.0,
+        "min": -5.666666666666667,
+        "max": 11.0
+      },
+      "undefined_ratio_rows": 27,
+      "late_gain_raw": 4,
+      "positive_to_nonpositive_raw": 1,
+      "late_cancellation_raw": 5,
+      "signs": {
+        "negative->negative": {
+          "raw": 1,
+          "fraction": 0.027777777777777776
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 3,
+          "fraction": 0.08585858585858586
+        },
+        "zero->zero": {
+          "raw": 19,
+          "fraction": 0.5707070707070707
+        },
+        "zero->positive": {
+          "raw": 4,
+          "fraction": 0.11616161616161616
+        },
+        "positive->negative": {
+          "raw": 1,
+          "fraction": 0.030303030303030304
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 6,
+          "fraction": 0.16919191919191917
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 34,
+            "mean": 0.05408249158249158,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": -0.3333333333333333,
+            "max": 0.5833333333333334
+          },
+          "per_query": {
+            "n": 27,
+            "mean": 0.30655270655270656,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "zero_query_rows": 7
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 34,
+            "mean": 0.02462121212121212,
+            "median": 0.0,
+            "p10": -0.1,
+            "p25": 0.0,
+            "p75": 0.016666666666666666,
+            "p90": 0.18333333333333332,
+            "min": -0.3333333333333333,
+            "max": 0.5166666666666667
+          },
+          "per_query": {
+            "n": 29,
+            "mean": 0.15348458397967787,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.17777777777777778,
+            "p90": 0.8421052631578947,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "zero_query_rows": 5
+        },
+        "paired_positive_query_denominators": {
+          "rows": 27,
+          "short": {
+            "n": 27,
+            "mean": 0.30655270655270656,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "full": {
+            "n": 27,
+            "mean": 0.1652910904396531,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.17777777777777778,
+            "p90": 1.7894736842105263,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "difference": {
+            "n": 27,
+            "mean": -0.14126161611305346,
+            "median": 0.0,
+            "p10": -1.7948717948717952,
+            "p25": -0.25,
+            "p75": 0.1,
+            "p90": 0.8421052631578947,
+            "min": -2.2303030303030305,
+            "max": 1.7894736842105263
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.38102297998517415,
+          "128": 0.18072289156626503
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 63,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "markets": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "guard": {
+      "status": "observed",
+      "rows": 19,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "B128": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Blate": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Q32": {
+          "n": 19,
+          "mean": 8.6,
+          "median": 7,
+          "p10": 0,
+          "p25": 1,
+          "p75": 18,
+          "p90": 19,
+          "min": 0,
+          "max": 19
+        },
+        "Q128": {
+          "n": 19,
+          "mean": 45.19259259259259,
+          "median": 31,
+          "p10": 2,
+          "p25": 7,
+          "p75": 94,
+          "p90": 98,
+          "min": 0,
+          "max": 113
+        },
+        "Qlate": {
+          "n": 19,
+          "mean": 36.592592592592595,
+          "median": 24,
+          "p10": 1,
+          "p25": 6,
+          "p75": 76,
+          "p90": 79,
+          "min": 0,
+          "max": 94
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "p10": null,
+        "p25": null,
+        "p75": null,
+        "p90": null,
+        "min": null,
+        "max": null
+      },
+      "undefined_ratio_rows": 19,
+      "late_gain_raw": 0,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 0,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 19,
+          "fraction": 1.0
+        },
+        "zero->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 19,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 3
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 19,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 18,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 1
+        },
+        "paired_positive_query_denominators": {
+          "rows": 16,
+          "short": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "full": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "difference": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.0,
+          "128": 0.0
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 1,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "clear": {
+      "status": "observed",
+      "rows": 15,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 15,
+          "mean": -0.2666666666666666,
+          "median": 0,
+          "p10": -8,
+          "p25": 0,
+          "p75": 0,
+          "p90": 6,
+          "min": -8,
+          "max": 6
+        },
+        "B128": {
+          "n": 15,
+          "mean": 14.0,
+          "median": 0,
+          "p10": -36,
+          "p25": 0,
+          "p75": 28,
+          "p90": 42,
+          "min": -50,
+          "max": 174
+        },
+        "Blate": {
+          "n": 15,
+          "mean": 14.266666666666666,
+          "median": 0,
+          "p10": -28,
+          "p25": 0,
+          "p75": 28,
+          "p90": 42,
+          "min": -42,
+          "max": 168
+        },
+        "Q32": {
+          "n": 15,
+          "mean": 4.6,
+          "median": 5,
+          "p10": 1,
+          "p25": 1,
+          "p75": 7,
+          "p90": 8,
+          "min": 1,
+          "max": 8
+        },
+        "Q128": {
+          "n": 15,
+          "mean": 23.266666666666666,
+          "median": 24,
+          "p10": 15,
+          "p25": 17,
+          "p75": 27,
+          "p90": 35,
+          "min": 7,
+          "max": 38
+        },
+        "Qlate": {
+          "n": 15,
+          "mean": 18.666666666666668,
+          "median": 19,
+          "p10": 11,
+          "p25": 14,
+          "p75": 24,
+          "p90": 28,
+          "min": 6,
+          "max": 32
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 2,
+        "mean": 15.833333333333334,
+        "median": 2.6666666666666665,
+        "p10": 2.6666666666666665,
+        "p25": 2.6666666666666665,
+        "p75": 29.0,
+        "p90": 29.0,
+        "min": 2.6666666666666665,
+        "max": 29.0
+      },
+      "undefined_ratio_rows": 13,
+      "late_gain_raw": 4,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 2,
+      "signs": {
+        "negative->negative": {
+          "raw": 2,
+          "fraction": 0.13333333333333333
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 7,
+          "fraction": 0.4666666666666667
+        },
+        "zero->positive": {
+          "raw": 4,
+          "fraction": 0.26666666666666666
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 2,
+          "fraction": 0.13333333333333333
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 15,
+            "mean": -0.011111111111111106,
+            "median": 0.0,
+            "p10": -0.3333333333333333,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.25,
+            "min": -0.3333333333333333,
+            "max": 0.25
+          },
+          "per_query": {
+            "n": 15,
+            "mean": 0.28492063492063496,
+            "median": 0.0,
+            "p10": -1.1428571428571428,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.75,
+            "min": -1.3333333333333333,
+            "max": 6.0
+          },
+          "zero_query_rows": 0
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 15,
+            "mean": 0.11666666666666665,
+            "median": 0.0,
+            "p10": -0.3,
+            "p25": 0.0,
+            "p75": 0.23333333333333334,
+            "p90": 0.35,
+            "min": -0.4166666666666667,
+            "max": 1.45
+          },
+          "per_query": {
+            "n": 15,
+            "mean": 1.8501858131166697,
+            "median": 0.0,
+            "p10": -0.9473684210526315,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -2.380952380952381,
+            "max": 24.857142857142858
+          },
+          "zero_query_rows": 0
+        },
+        "paired_positive_query_denominators": {
+          "rows": 15,
+          "short": {
+            "n": 15,
+            "mean": 0.28492063492063496,
+            "median": 0.0,
+            "p10": -1.1428571428571428,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.75,
+            "min": -1.3333333333333333,
+            "max": 6.0
+          },
+          "full": {
+            "n": 15,
+            "mean": 1.8501858131166697,
+            "median": 0.0,
+            "p10": -0.9473684210526315,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -2.380952380952381,
+            "max": 24.857142857142858
+          },
+          "difference": {
+            "n": 15,
+            "mean": 1.5652651781960347,
+            "median": 0.0,
+            "p10": -0.15740740740740744,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -1.2380952380952381,
+            "max": 18.857142857142858
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": -0.05797101449275362,
+          "128": 0.6017191977077364
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 175,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 1,
+            "long_fraction": 0.06666666666666667,
+            "false_positive_fraction": 0.06666666666666667,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.06666666666666667
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 1,
+            "long_fraction": 0.06666666666666667,
+            "false_positive_fraction": 0.06666666666666667,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.06666666666666667
+          }
+        }
+      }
+    },
+    "forbidden": {
+      "status": "observed",
+      "rows": 6,
+      "maps": 2,
+      "distributions": {
+        "B32": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "B128": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Blate": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Q32": {
+          "n": 6,
+          "mean": 0.16666666666666666,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 1,
+          "min": 0,
+          "max": 1
+        },
+        "Q128": {
+          "n": 6,
+          "mean": 1.1666666666666665,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 1,
+          "p90": 5,
+          "min": 0,
+          "max": 5
+        },
+        "Qlate": {
+          "n": 6,
+          "mean": 1.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 1,
+          "p90": 4,
+          "min": 0,
+          "max": 4
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "p10": null,
+        "p25": null,
+        "p75": null,
+        "p90": null,
+        "min": null,
+        "max": null
+      },
+      "undefined_ratio_rows": 6,
+      "late_gain_raw": 0,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 0,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 6,
+          "fraction": 1.0
+        },
+        "zero->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 6,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 5
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 6,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 3,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 3
+        },
+        "paired_positive_query_denominators": {
+          "rows": 1,
+          "short": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "full": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "difference": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.0,
+          "128": 0.0
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 1,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    }
+  },
+  "family_movement": {
+    "materials_ground": {
+      "status": "observed",
+      "rows": 34,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 34,
+          "mean": 1.2979797979797978,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 8,
+          "min": -8,
+          "max": 14
+        },
+        "B128": {
+          "n": 34,
+          "mean": 2.954545454545454,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 2,
+          "p90": 22,
+          "min": -40,
+          "max": 62
+        },
+        "Blate": {
+          "n": 34,
+          "mean": 1.6565656565656564,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 0,
+          "p90": 20,
+          "min": -40,
+          "max": 50
+        },
+        "Q32": {
+          "n": 34,
+          "mean": 3.4065656565656566,
+          "median": 3,
+          "p10": 0,
+          "p25": 1,
+          "p75": 5,
+          "p90": 6,
+          "min": 0,
+          "max": 10
+        },
+        "Q128": {
+          "n": 34,
+          "mean": 16.348484848484848,
+          "median": 17,
+          "p10": 0,
+          "p25": 4,
+          "p75": 26,
+          "p90": 33,
+          "min": 0,
+          "max": 45
+        },
+        "Qlate": {
+          "n": 34,
+          "mean": 12.941919191919192,
+          "median": 13,
+          "p10": 0,
+          "p25": 2,
+          "p75": 20,
+          "p90": 28,
+          "min": 0,
+          "max": 40
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 7,
+        "mean": 2.727396021699819,
+        "median": 1.0,
+        "p10": -5.666666666666667,
+        "p25": 1.0,
+        "p75": 7.25,
+        "p90": 11.0,
+        "min": -5.666666666666667,
+        "max": 11.0
+      },
+      "undefined_ratio_rows": 27,
+      "late_gain_raw": 4,
+      "positive_to_nonpositive_raw": 1,
+      "late_cancellation_raw": 5,
+      "signs": {
+        "negative->negative": {
+          "raw": 1,
+          "fraction": 0.027777777777777776
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 3,
+          "fraction": 0.08585858585858586
+        },
+        "zero->zero": {
+          "raw": 19,
+          "fraction": 0.5707070707070707
+        },
+        "zero->positive": {
+          "raw": 4,
+          "fraction": 0.11616161616161616
+        },
+        "positive->negative": {
+          "raw": 1,
+          "fraction": 0.030303030303030304
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 6,
+          "fraction": 0.16919191919191917
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 34,
+            "mean": 0.05408249158249158,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": -0.3333333333333333,
+            "max": 0.5833333333333334
+          },
+          "per_query": {
+            "n": 27,
+            "mean": 0.30655270655270656,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "zero_query_rows": 7
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 34,
+            "mean": 0.02462121212121212,
+            "median": 0.0,
+            "p10": -0.1,
+            "p25": 0.0,
+            "p75": 0.016666666666666666,
+            "p90": 0.18333333333333332,
+            "min": -0.3333333333333333,
+            "max": 0.5166666666666667
+          },
+          "per_query": {
+            "n": 29,
+            "mean": 0.15348458397967787,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.17777777777777778,
+            "p90": 0.8421052631578947,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "zero_query_rows": 5
+        },
+        "paired_positive_query_denominators": {
+          "rows": 27,
+          "short": {
+            "n": 27,
+            "mean": 0.30655270655270656,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "full": {
+            "n": 27,
+            "mean": 0.1652910904396531,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.17777777777777778,
+            "p90": 1.7894736842105263,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "difference": {
+            "n": 27,
+            "mean": -0.14126161611305346,
+            "median": 0.0,
+            "p10": -1.7948717948717952,
+            "p25": -0.25,
+            "p75": 0.1,
+            "p90": 0.8421052631578947,
+            "min": -2.2303030303030305,
+            "max": 1.7894736842105263
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.38102297998517415,
+          "128": 0.18072289156626503
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 63,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "materials_air": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "markets_ground": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "markets_air": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "guard_ground": {
+      "status": "observed",
+      "rows": 19,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "B128": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Blate": {
+          "n": 19,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Q32": {
+          "n": 19,
+          "mean": 8.6,
+          "median": 7,
+          "p10": 0,
+          "p25": 1,
+          "p75": 18,
+          "p90": 19,
+          "min": 0,
+          "max": 19
+        },
+        "Q128": {
+          "n": 19,
+          "mean": 45.19259259259259,
+          "median": 31,
+          "p10": 2,
+          "p25": 7,
+          "p75": 94,
+          "p90": 98,
+          "min": 0,
+          "max": 113
+        },
+        "Qlate": {
+          "n": 19,
+          "mean": 36.592592592592595,
+          "median": 24,
+          "p10": 1,
+          "p25": 6,
+          "p75": 76,
+          "p90": 79,
+          "min": 0,
+          "max": 94
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "p10": null,
+        "p25": null,
+        "p75": null,
+        "p90": null,
+        "min": null,
+        "max": null
+      },
+      "undefined_ratio_rows": 19,
+      "late_gain_raw": 0,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 0,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 19,
+          "fraction": 1.0
+        },
+        "zero->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 19,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 3
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 19,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 18,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 1
+        },
+        "paired_positive_query_denominators": {
+          "rows": 16,
+          "short": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "full": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "difference": {
+            "n": 16,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.0,
+          "128": 0.0
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 1,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "guard_air": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "clear_ground": {
+      "status": "observed",
+      "rows": 15,
+      "maps": 3,
+      "distributions": {
+        "B32": {
+          "n": 15,
+          "mean": -0.2666666666666666,
+          "median": 0,
+          "p10": -8,
+          "p25": 0,
+          "p75": 0,
+          "p90": 6,
+          "min": -8,
+          "max": 6
+        },
+        "B128": {
+          "n": 15,
+          "mean": 14.0,
+          "median": 0,
+          "p10": -36,
+          "p25": 0,
+          "p75": 28,
+          "p90": 42,
+          "min": -50,
+          "max": 174
+        },
+        "Blate": {
+          "n": 15,
+          "mean": 14.266666666666666,
+          "median": 0,
+          "p10": -28,
+          "p25": 0,
+          "p75": 28,
+          "p90": 42,
+          "min": -42,
+          "max": 168
+        },
+        "Q32": {
+          "n": 15,
+          "mean": 4.6,
+          "median": 5,
+          "p10": 1,
+          "p25": 1,
+          "p75": 7,
+          "p90": 8,
+          "min": 1,
+          "max": 8
+        },
+        "Q128": {
+          "n": 15,
+          "mean": 23.266666666666666,
+          "median": 24,
+          "p10": 15,
+          "p25": 17,
+          "p75": 27,
+          "p90": 35,
+          "min": 7,
+          "max": 38
+        },
+        "Qlate": {
+          "n": 15,
+          "mean": 18.666666666666668,
+          "median": 19,
+          "p10": 11,
+          "p25": 14,
+          "p75": 24,
+          "p90": 28,
+          "min": 6,
+          "max": 32
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 2,
+        "mean": 15.833333333333334,
+        "median": 2.6666666666666665,
+        "p10": 2.6666666666666665,
+        "p25": 2.6666666666666665,
+        "p75": 29.0,
+        "p90": 29.0,
+        "min": 2.6666666666666665,
+        "max": 29.0
+      },
+      "undefined_ratio_rows": 13,
+      "late_gain_raw": 4,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 2,
+      "signs": {
+        "negative->negative": {
+          "raw": 2,
+          "fraction": 0.13333333333333333
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 7,
+          "fraction": 0.4666666666666667
+        },
+        "zero->positive": {
+          "raw": 4,
+          "fraction": 0.26666666666666666
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 2,
+          "fraction": 0.13333333333333333
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 15,
+            "mean": -0.011111111111111106,
+            "median": 0.0,
+            "p10": -0.3333333333333333,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.25,
+            "min": -0.3333333333333333,
+            "max": 0.25
+          },
+          "per_query": {
+            "n": 15,
+            "mean": 0.28492063492063496,
+            "median": 0.0,
+            "p10": -1.1428571428571428,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.75,
+            "min": -1.3333333333333333,
+            "max": 6.0
+          },
+          "zero_query_rows": 0
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 15,
+            "mean": 0.11666666666666665,
+            "median": 0.0,
+            "p10": -0.3,
+            "p25": 0.0,
+            "p75": 0.23333333333333334,
+            "p90": 0.35,
+            "min": -0.4166666666666667,
+            "max": 1.45
+          },
+          "per_query": {
+            "n": 15,
+            "mean": 1.8501858131166697,
+            "median": 0.0,
+            "p10": -0.9473684210526315,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -2.380952380952381,
+            "max": 24.857142857142858
+          },
+          "zero_query_rows": 0
+        },
+        "paired_positive_query_denominators": {
+          "rows": 15,
+          "short": {
+            "n": 15,
+            "mean": 0.28492063492063496,
+            "median": 0.0,
+            "p10": -1.1428571428571428,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.75,
+            "min": -1.3333333333333333,
+            "max": 6.0
+          },
+          "full": {
+            "n": 15,
+            "mean": 1.8501858131166697,
+            "median": 0.0,
+            "p10": -0.9473684210526315,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -2.380952380952381,
+            "max": 24.857142857142858
+          },
+          "difference": {
+            "n": 15,
+            "mean": 1.5652651781960347,
+            "median": 0.0,
+            "p10": -0.15740740740740744,
+            "p25": 0.0,
+            "p75": 1.75,
+            "p90": 1.8666666666666667,
+            "min": -1.2380952380952381,
+            "max": 18.857142857142858
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": -0.05797101449275362,
+          "128": 0.6017191977077364
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 175,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 1,
+            "long_fraction": 0.06666666666666667,
+            "false_positive_fraction": 0.06666666666666667,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.06666666666666667
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 1,
+            "long_fraction": 0.06666666666666667,
+            "false_positive_fraction": 0.06666666666666667,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.06666666666666667
+          }
+        }
+      }
+    },
+    "clear_air": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    },
+    "forbidden_ground": {
+      "status": "observed",
+      "rows": 6,
+      "maps": 2,
+      "distributions": {
+        "B32": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "B128": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Blate": {
+          "n": 6,
+          "mean": 0.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 0
+        },
+        "Q32": {
+          "n": 6,
+          "mean": 0.16666666666666666,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 1,
+          "min": 0,
+          "max": 1
+        },
+        "Q128": {
+          "n": 6,
+          "mean": 1.1666666666666665,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 1,
+          "p90": 5,
+          "min": 0,
+          "max": 5
+        },
+        "Qlate": {
+          "n": 6,
+          "mean": 1.0,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 1,
+          "p90": 4,
+          "min": 0,
+          "max": 4
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "p10": null,
+        "p25": null,
+        "p75": null,
+        "p90": null,
+        "min": null,
+        "max": null
+      },
+      "undefined_ratio_rows": 6,
+      "late_gain_raw": 0,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 0,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->zero": {
+          "raw": 6,
+          "fraction": 1.0
+        },
+        "zero->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 6,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 5
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 6,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "per_query": {
+            "n": 3,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "zero_query_rows": 3
+        },
+        "paired_positive_query_denominators": {
+          "rows": 1,
+          "short": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "full": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "difference": {
+            "n": 1,
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.0,
+          "128": 0.0
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 1,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "forbidden_air": {
+      "status": "unmeasured",
+      "rows": 0,
+      "maps": 0
+    }
+  },
+  "primary_uncertainty": {
+    "status": "EXACT-DISCRETE-ONLY3CLUSTERS",
+    "groups": [
+      "50188509371e97f4",
+      "8200f8884b89e3e1",
+      "a701ceca2d835e82"
+    ],
+    "count_vectors": [
+      {
+        "counts": [
+          0,
+          0,
+          3
+        ],
+        "probability": 0.037037037037037035,
+        "mean_B128_minus_B32": -3.454545454545455,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          0,
+          1,
+          2
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": -3.272727272727273,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          0,
+          2,
+          1
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": -3.090909090909091,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          0,
+          3,
+          0
+        ],
+        "probability": 0.037037037037037035,
+        "mean_B128_minus_B32": -2.909090909090909,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          1,
+          0,
+          2
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": 1.4747474747474745,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          1,
+          1,
+          1
+        ],
+        "probability": 0.2222222222222222,
+        "mean_B128_minus_B32": 1.6565656565656564,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          1,
+          2,
+          0
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": 1.8383838383838382,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          2,
+          0,
+          1
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": 6.404040404040404,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          2,
+          1,
+          0
+        ],
+        "probability": 0.1111111111111111,
+        "mean_B128_minus_B32": 6.585858585858586,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      },
+      {
+        "counts": [
+          3,
+          0,
+          0
+        ],
+        "probability": 0.037037037037037035,
+        "mean_B128_minus_B32": 11.333333333333332,
+        "conditional_B128_median_24_40": null,
+        "oracle_matched_cutoff": null
+      }
+    ],
+    "intervals": {
+      "mean_B128_minus_B32": {
+        "status": "defined",
+        "probability_defined": 1.0,
+        "percentile95": [
+          -3.454545454545455,
+          11.333333333333332
+        ]
+      },
+      "conditional_B128_median_24_40": {
+        "status": "UNDEFINED-NO-SUPPORT",
+        "probability_defined": 0,
+        "percentile95": null
+      },
+      "oracle_matched_cutoff": {
+        "status": "UNDEFINED-NO-SUPPORT",
+        "probability_defined": 0,
+        "percentile95": null
+      }
+    },
+    "note": "For3maps all endpoint count vectors have probability1/27>2.5%; equal-tailed95% percentiles equal minimum/maximum of the exact weighted bootstrap distribution. Not a universal inference."
+  },
+  "leave_one_map_out": {
+    "66294c58700ef1b4": {
+      "status": "observed",
+      "rows": 22,
+      "maps": 2,
+      "distributions": {
+        "B32": {
+          "n": 22,
+          "mean": 0.36363636363636365,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": 0,
+          "max": 6
+        },
+        "B128": {
+          "n": 22,
+          "mean": -2.8181818181818183,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 2,
+          "min": -40,
+          "max": 8
+        },
+        "Blate": {
+          "n": 22,
+          "mean": -3.181818181818182,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 0,
+          "p90": 0,
+          "min": -40,
+          "max": 8
+        },
+        "Q32": {
+          "n": 22,
+          "mean": 2.8181818181818183,
+          "median": 1,
+          "p10": 0,
+          "p25": 0,
+          "p75": 5,
+          "p90": 6,
+          "min": 0,
+          "max": 10
+        },
+        "Q128": {
+          "n": 22,
+          "mean": 14.772727272727273,
+          "median": 8,
+          "p10": 0,
+          "p25": 1,
+          "p75": 26,
+          "p90": 38,
+          "min": 0,
+          "max": 45
+        },
+        "Qlate": {
+          "n": 22,
+          "mean": 11.954545454545455,
+          "median": 5,
+          "p10": 0,
+          "p25": 1,
+          "p75": 20,
+          "p90": 33,
+          "min": 0,
+          "max": 40
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 2,
+        "mean": -2.333333333333333,
+        "median": -5.666666666666667,
+        "p10": -5.666666666666667,
+        "p25": -5.666666666666667,
+        "p75": 1.0,
+        "p90": 1.0,
+        "min": -5.666666666666667,
+        "max": 1.0
+      },
+      "undefined_ratio_rows": 20,
+      "late_gain_raw": 2,
+      "positive_to_nonpositive_raw": 1,
+      "late_cancellation_raw": 2,
+      "signs": {
+        "negative->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 1,
+          "fraction": 0.045454545454545456
+        },
+        "zero->zero": {
+          "raw": 17,
+          "fraction": 0.7727272727272727
+        },
+        "zero->positive": {
+          "raw": 2,
+          "fraction": 0.09090909090909091
+        },
+        "positive->negative": {
+          "raw": 1,
+          "fraction": 0.045454545454545456
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 1,
+          "fraction": 0.045454545454545456
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 22,
+            "mean": 0.015151515151515152,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          },
+          "per_query": {
+            "n": 15,
+            "mean": 0.10222222222222221,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": 0.0,
+            "max": 1.2
+          },
+          "zero_query_rows": 7
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 22,
+            "mean": -0.023484848484848483,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.016666666666666666,
+            "min": -0.3333333333333333,
+            "max": 0.06666666666666667
+          },
+          "per_query": {
+            "n": 17,
+            "mean": -0.151409048467872,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -1.9047619047619047,
+            "max": 0.17777777777777778
+          },
+          "zero_query_rows": 5
+        },
+        "paired_positive_query_denominators": {
+          "rows": 15,
+          "short": {
+            "n": 15,
+            "mean": 0.10222222222222221,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.3333333333333333,
+            "min": 0.0,
+            "max": 1.2
+          },
+          "full": {
+            "n": 15,
+            "mean": -0.17159692159692158,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -1.9047619047619047,
+            "max": 0.17777777777777778
+          },
+          "difference": {
+            "n": 15,
+            "mean": -0.2738191438191438,
+            "median": 0.0,
+            "p10": -1.9047619047619047,
+            "p25": 0.0,
+            "p75": 0.0,
+            "p90": 0.1,
+            "min": -2.2303030303030305,
+            "max": 0.17777777777777778
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.12903225806451613,
+          "128": -0.19076923076923077
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 9,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "0083541d8ee4d18b": {
+      "status": "observed",
+      "rows": 23,
+      "maps": 2,
+      "distributions": {
+        "B32": {
+          "n": 23,
+          "mean": 1.856060606060606,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 2,
+          "p90": 8,
+          "min": -8,
+          "max": 14
+        },
+        "B128": {
+          "n": 23,
+          "mean": 6.0681818181818175,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 8,
+          "p90": 34,
+          "min": -34,
+          "max": 62
+        },
+        "Blate": {
+          "n": 23,
+          "mean": 4.212121212121211,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 8,
+          "p90": 34,
+          "min": -40,
+          "max": 50
+        },
+        "Q32": {
+          "n": 23,
+          "mean": 3.8371212121212124,
+          "median": 4,
+          "p10": 0,
+          "p25": 1,
+          "p75": 5,
+          "p90": 8,
+          "min": 0,
+          "max": 10
+        },
+        "Q128": {
+          "n": 23,
+          "mean": 18.84090909090909,
+          "median": 19,
+          "p10": 0,
+          "p25": 4,
+          "p75": 29,
+          "p90": 38,
+          "min": 0,
+          "max": 45
+        },
+        "Qlate": {
+          "n": 23,
+          "mean": 15.003787878787879,
+          "median": 15,
+          "p10": 0,
+          "p25": 2,
+          "p75": 22,
+          "p90": 33,
+          "min": 0,
+          "max": 40
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 6,
+        "mean": 3.036780383795309,
+        "median": 1.0,
+        "p10": -5.666666666666667,
+        "p25": 1.0,
+        "p75": 7.25,
+        "p90": 11.0,
+        "min": -5.666666666666667,
+        "max": 11.0
+      },
+      "undefined_ratio_rows": 17,
+      "late_gain_raw": 3,
+      "positive_to_nonpositive_raw": 1,
+      "late_cancellation_raw": 4,
+      "signs": {
+        "negative->negative": {
+          "raw": 1,
+          "fraction": 0.041666666666666664
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 2,
+          "fraction": 0.08333333333333333
+        },
+        "zero->zero": {
+          "raw": 11,
+          "fraction": 0.49242424242424243
+        },
+        "zero->positive": {
+          "raw": 3,
+          "fraction": 0.12878787878787878
+        },
+        "positive->negative": {
+          "raw": 1,
+          "fraction": 0.045454545454545456
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 5,
+          "fraction": 0.20833333333333331
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 23,
+            "mean": 0.07733585858585859,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.08333333333333333,
+            "p90": 0.3333333333333333,
+            "min": -0.3333333333333333,
+            "max": 0.5833333333333334
+          },
+          "per_query": {
+            "n": 18,
+            "mean": 0.4492374727668845,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.8888888888888888,
+            "p90": 2.6666666666666665,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "zero_query_rows": 5
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 23,
+            "mean": 0.05056818181818182,
+            "median": 0.0,
+            "p10": -0.1,
+            "p25": 0.0,
+            "p75": 0.06666666666666667,
+            "p90": 0.2833333333333333,
+            "min": -0.2833333333333333,
+            "max": 0.5166666666666667
+          },
+          "per_query": {
+            "n": 20,
+            "mean": 0.3167893117294501,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.5384615384615384,
+            "p90": 1.7894736842105263,
+            "min": -1.0588235294117647,
+            "max": 3.2222222222222223
+          },
+          "zero_query_rows": 3
+        },
+        "paired_positive_query_denominators": {
+          "rows": 18,
+          "short": {
+            "n": 18,
+            "mean": 0.4492374727668845,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.8888888888888888,
+            "p90": 2.6666666666666665,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "full": {
+            "n": 18,
+            "mean": 0.3540586425211501,
+            "median": 0.0,
+            "p10": -1.0303030303030303,
+            "p25": 0.0,
+            "p75": 0.7857142857142857,
+            "p90": 2.5833333333333335,
+            "min": -1.0588235294117647,
+            "max": 3.2222222222222223
+          },
+          "difference": {
+            "n": 18,
+            "mean": -0.0951788302457344,
+            "median": 0.0,
+            "p10": -1.7948717948717952,
+            "p25": -0.6130268199233716,
+            "p75": 0.4523809523809524,
+            "p90": 1.375,
+            "min": -2.2303030303030305,
+            "max": 1.7894736842105263
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.48371174728529115,
+          "128": 0.3220747889022919
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 63,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    },
+    "1d043310cbecdceb": {
+      "status": "observed",
+      "rows": 23,
+      "maps": 2,
+      "distributions": {
+        "B32": {
+          "n": 23,
+          "mean": 1.674242424242424,
+          "median": 0,
+          "p10": 0,
+          "p25": 0,
+          "p75": 2,
+          "p90": 8,
+          "min": -8,
+          "max": 14
+        },
+        "B128": {
+          "n": 23,
+          "mean": 5.613636363636362,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 8,
+          "p90": 34,
+          "min": -40,
+          "max": 62
+        },
+        "Blate": {
+          "n": 23,
+          "mean": 3.9393939393939386,
+          "median": 0,
+          "p10": -12,
+          "p25": 0,
+          "p75": 2,
+          "p90": 34,
+          "min": -40,
+          "max": 50
+        },
+        "Q32": {
+          "n": 23,
+          "mean": 3.5643939393939394,
+          "median": 4,
+          "p10": 1,
+          "p25": 1,
+          "p75": 6,
+          "p90": 6,
+          "min": 0,
+          "max": 9
+        },
+        "Q128": {
+          "n": 23,
+          "mean": 15.431818181818182,
+          "median": 18,
+          "p10": 3,
+          "p25": 8,
+          "p75": 24,
+          "p90": 26,
+          "min": 0,
+          "max": 29
+        },
+        "Qlate": {
+          "n": 23,
+          "mean": 11.867424242424242,
+          "median": 15,
+          "p10": 2,
+          "p25": 5,
+          "p75": 19,
+          "p90": 20,
+          "min": 0,
+          "max": 22
+        }
+      },
+      "short_threshold_raw": 0,
+      "short_threshold_fraction": 0.0,
+      "ratios_positive_B32_only": {
+        "n": 6,
+        "mean": 4.230810234541578,
+        "median": 1.0,
+        "p10": 1.0,
+        "p25": 1.0,
+        "p75": 7.25,
+        "p90": 11.0,
+        "min": 1.0,
+        "max": 11.0
+      },
+      "undefined_ratio_rows": 17,
+      "late_gain_raw": 3,
+      "positive_to_nonpositive_raw": 0,
+      "late_cancellation_raw": 4,
+      "signs": {
+        "negative->negative": {
+          "raw": 1,
+          "fraction": 0.041666666666666664
+        },
+        "negative->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "negative->positive": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "zero->negative": {
+          "raw": 3,
+          "fraction": 0.12878787878787878
+        },
+        "zero->zero": {
+          "raw": 10,
+          "fraction": 0.44696969696969696
+        },
+        "zero->positive": {
+          "raw": 3,
+          "fraction": 0.12878787878787878
+        },
+        "positive->negative": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->zero": {
+          "raw": 0,
+          "fraction": 0.0
+        },
+        "positive->positive": {
+          "raw": 6,
+          "fraction": 0.2537878787878788
+        }
+      },
+      "rates": {
+        "32": {
+          "per_usable_tick": {
+            "n": 23,
+            "mean": 0.06976010101010101,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.08333333333333333,
+            "p90": 0.3333333333333333,
+            "min": -0.3333333333333333,
+            "max": 0.5833333333333334
+          },
+          "per_query": {
+            "n": 21,
+            "mean": 0.3385185185185185,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "zero_query_rows": 2
+        },
+        "128": {
+          "per_usable_tick": {
+            "n": 23,
+            "mean": 0.046780303030303026,
+            "median": 0.0,
+            "p10": -0.1,
+            "p25": 0.0,
+            "p75": 0.06666666666666667,
+            "p90": 0.2833333333333333,
+            "min": -0.3333333333333333,
+            "max": 0.5166666666666667
+          },
+          "per_query": {
+            "n": 21,
+            "mean": 0.25750468019781164,
+            "median": 0.0,
+            "p10": -0.8571428571428571,
+            "p25": 0.0,
+            "p75": 0.5384615384615384,
+            "p90": 1.7894736842105263,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "zero_query_rows": 2
+        },
+        "paired_positive_query_denominators": {
+          "rows": 21,
+          "short": {
+            "n": 21,
+            "mean": 0.3385185185185185,
+            "median": 0.0,
+            "p10": 0.0,
+            "p25": 0.0,
+            "p75": 0.3333333333333333,
+            "p90": 2.3333333333333335,
+            "min": -2.0,
+            "max": 2.8
+          },
+          "full": {
+            "n": 21,
+            "mean": 0.25750468019781164,
+            "median": 0.0,
+            "p10": -0.8571428571428571,
+            "p25": 0.0,
+            "p75": 0.5384615384615384,
+            "p90": 1.7894736842105263,
+            "min": -1.9047619047619047,
+            "max": 3.2222222222222223
+          },
+          "difference": {
+            "n": 21,
+            "mean": -0.08101383832070684,
+            "median": 0.0,
+            "p10": -1.0588235294117647,
+            "p25": -0.25,
+            "p75": 0.1,
+            "p90": 0.8421052631578947,
+            "min": -1.9047619047619047,
+            "max": 1.7894736842105263
+          }
+        },
+        "weighted_sum_benefit_per_weighted_sum_queries": {
+          "32": 0.4697130712008501,
+          "128": 0.36377025036818844
+        }
+      },
+      "bands": {
+        "24_40": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        },
+        "16_48": {
+          "rows": 0,
+          "maps": 0,
+          "status": "INSUFFICIENT-SUPPORT",
+          "B128": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p25": null,
+            "p75": null,
+            "p90": null,
+            "min": null,
+            "max": null
+          }
+        }
+      },
+      "oracle_cutoff": {
+        "status": "NO_SHORT_THRESHOLD_POSITIVES-NO-POINT-CONVERSION",
+        "integer_cutoff_bound_at_least": 63,
+        "target_fraction": 0,
+        "fixed_cutoffs": {
+          "128": {
+            "cutoff_units": 128,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          },
+          "160": {
+            "cutoff_units": 160,
+            "short_ideal_raw": 0,
+            "short_ideal_fraction": 0.0,
+            "long_raw": 0,
+            "long_fraction": 0.0,
+            "false_positive_fraction": 0.0,
+            "false_negative_fraction": 0.0,
+            "disagreement_fraction": 0.0
+          }
+        }
+      }
+    }
+  },
+  "conclusion": "Primary near32 support absent or inadequate means no empirical32-to128 conversion;160 is only the steady-rate reference. Labels do not identify old EXPECTED-model cutoff or old policy performance."
+}

@@ -1,0 +1,217 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "name": "frozen-off-t1",
+      "value": null,
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "frozen-on-t1",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "frozen-on-t4",
+      "value": null,
+      "probe": true,
+      "threads": 4,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "research-off-t1",
+      "value": "128000",
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      },
+      "actual_threshold": 128000,
+      "input_sha256": "2a583573f3a9183e89edc7dc90ef59e1fe4cdf96a11aa8d1dfe3d6dd0db9fe75"
+    },
+    {
+      "name": "research-on-t1",
+      "value": "128000",
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      },
+      "actual_threshold": 128000,
+      "input_sha256": "2a583573f3a9183e89edc7dc90ef59e1fe4cdf96a11aa8d1dfe3d6dd0db9fe75"
+    },
+    {
+      "name": "research-on-t4",
+      "value": "128000",
+      "probe": true,
+      "threads": 4,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      },
+      "actual_threshold": 128000,
+      "input_sha256": "2a583573f3a9183e89edc7dc90ef59e1fe4cdf96a11aa8d1dfe3d6dd0db9fe75"
+    },
+    {
+      "name": "lower-1000-off",
+      "value": "1000",
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "3cd193346253820b7d8706120b459d11dffedcf0801792f441df1787722cf29d",
+        "snapshot.checksums": "1156aea588f6d53d3779e225a171f7662f14a86edc98143d494cadb299d918b7",
+        "game.replay.checksums": "0f628ef5093e36ff97fcaeebbab6cbcea1a7cbe52838ea88933a6b6f43f83e52",
+        "final.game.gz": "a3fd695e142a712e2839a06e3f1567a5beccc608725854a6f51c4f5cd2174124"
+      },
+      "actual_threshold": 1000,
+      "input_sha256": "097130f3d48d4dea0756efe23ddf5fbe1ef6119b357d0f1c57315bb87e840684"
+    },
+    {
+      "name": "lower-1000-on",
+      "value": "1000",
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "3cd193346253820b7d8706120b459d11dffedcf0801792f441df1787722cf29d",
+        "snapshot.checksums": "1156aea588f6d53d3779e225a171f7662f14a86edc98143d494cadb299d918b7",
+        "game.replay.checksums": "0f628ef5093e36ff97fcaeebbab6cbcea1a7cbe52838ea88933a6b6f43f83e52",
+        "final.game.gz": "a3fd695e142a712e2839a06e3f1567a5beccc608725854a6f51c4f5cd2174124"
+      },
+      "actual_threshold": 1000,
+      "input_sha256": "097130f3d48d4dea0756efe23ddf5fbe1ef6119b357d0f1c57315bb87e840684"
+    },
+    {
+      "name": "lower-4000-off",
+      "value": "4000",
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "e46adf505a53e2a16475b7346d8a1a47395c186c244423aacaaa0d833787c6c5",
+        "snapshot.checksums": "209a5b4fe7fc78385760d604db007e2cee5d8490256db1f4f41c0ce2ed482a4a",
+        "game.replay.checksums": "5e158bb2d6c12f99926885f94412347300ff67cd5bfea72fa0c0a8b90362605e",
+        "final.game.gz": "179311d6bb473a33d34cfe401d6c5d56dd534c34f3c497fc5874b7d931e37a85"
+      },
+      "actual_threshold": 4000,
+      "input_sha256": "5def257ac556028a4ab9872d1e6bf471e9f2fec7e38ad7e00459743948eab6aa"
+    },
+    {
+      "name": "lower-4000-on",
+      "value": "4000",
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "e46adf505a53e2a16475b7346d8a1a47395c186c244423aacaaa0d833787c6c5",
+        "snapshot.checksums": "209a5b4fe7fc78385760d604db007e2cee5d8490256db1f4f41c0ce2ed482a4a",
+        "game.replay.checksums": "5e158bb2d6c12f99926885f94412347300ff67cd5bfea72fa0c0a8b90362605e",
+        "final.game.gz": "179311d6bb473a33d34cfe401d6c5d56dd534c34f3c497fc5874b7d931e37a85"
+      },
+      "actual_threshold": 4000,
+      "input_sha256": "5def257ac556028a4ab9872d1e6bf471e9f2fec7e38ad7e00459743948eab6aa"
+    },
+    {
+      "name": "unset-default",
+      "value": null,
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "b21649c34f0c7b48e9cd8e5f7a63270d609178e157496d1d8f48e7dc02a8b7a9",
+        "snapshot.checksums": "2cdb012ab9d3a82741ae8cac80bdb7ed9163a76c66171ab7324dad5e6b18d8d7",
+        "game.replay.checksums": "7cc8ec7c094b7effbd12c36193aafb9b2ee89e5347058e60868ce91c1dc15ce3",
+        "final.game.gz": "2ddb90c483e92006aa3797883e119b8222578b18f5a3c28158e66a23c3d6b3d8"
+      },
+      "actual_threshold": 128000,
+      "input_sha256": "eeffb6797b35e1c872f7a7d5223328a8be28af8c6d9e27d633842b8b9b83f017"
+    },
+    {
+      "name": "maximum",
+      "value": "9223372036854775807",
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "b21649c34f0c7b48e9cd8e5f7a63270d609178e157496d1d8f48e7dc02a8b7a9",
+        "snapshot.checksums": "2cdb012ab9d3a82741ae8cac80bdb7ed9163a76c66171ab7324dad5e6b18d8d7",
+        "game.replay.checksums": "7cc8ec7c094b7effbd12c36193aafb9b2ee89e5347058e60868ce91c1dc15ce3",
+        "final.game.gz": "2ddb90c483e92006aa3797883e119b8222578b18f5a3c28158e66a23c3d6b3d8"
+      },
+      "actual_threshold": 9223372036854775807,
+      "input_sha256": "0c0224256aa3027a14a6ada2c1ddd7b59ba07e1754876a2e95722f09c28eda3a"
+    }
+  ],
+  "invalid": [
+    {
+      "value": "",
+      "returncode": 2
+    },
+    {
+      "value": "0",
+      "returncode": 2
+    },
+    {
+      "value": "-1",
+      "returncode": 2
+    },
+    {
+      "value": "+128000",
+      "returncode": 2
+    },
+    {
+      "value": " 128000",
+      "returncode": 2
+    },
+    {
+      "value": "128000 ",
+      "returncode": 2
+    },
+    {
+      "value": "junk",
+      "returncode": 2
+    },
+    {
+      "value": "1.5",
+      "returncode": 2
+    },
+    {
+      "value": "9223372036854775808",
+      "returncode": 2
+    }
+  ]
+}

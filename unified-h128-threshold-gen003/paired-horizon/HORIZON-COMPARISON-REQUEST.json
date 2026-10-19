@@ -1,0 +1,18 @@
+{
+  "user_request": "Equivalent H128 cutoff to32 atH32",
+  "old_code": "72d2f99",
+  "old_window_inclusive": [
+    8,
+    31
+  ],
+  "new_window_inclusive": [
+    8,
+    127
+  ],
+  "old_threshold_direction_units": 32,
+  "steady_rate_equivalent": 160,
+  "assumption": "constant signed benefit per usable tick; not a measured old-model policy equivalence",
+  "paired_observer_qualified": true,
+  "production_change": false,
+  "created_utc": "2026-10-19T11:29:19.371002+00:00"
+}

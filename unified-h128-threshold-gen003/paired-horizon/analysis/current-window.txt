@@ -1,0 +1,10 @@
+20:     static constexpr const char* CollectorContract="unified-gradient-spatial-h128-v3";
+21:     // Capture-anchored outcome window: default delay8 gives offsets [8,127].
+22:     static constexpr unsigned HorizonTicks=128;
+23:     static constexpr bool labelEligible(unsigned age,unsigned delay){return age>=delay && age<HorizonTicks;}
+24:     static constexpr bool complete(unsigned age){return age>=HorizonTicks;}
+25:     explicit ResourceGradientProbe(const char* path);
+26:     ~ResourceGradientProbe();
+27:     struct Episode {
+28:         unsigned tick=0,delay=8,queries=0,planningQueries=0,behaviorInterval=0,behaviorSeed=0;
+29:         gradient_seed_overlap::History overlap;

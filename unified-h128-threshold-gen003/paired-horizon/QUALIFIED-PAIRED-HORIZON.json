@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "research_only": true,
+  "source_base": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "binary": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/runtime/bin/glob2",
+  "runtime": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/runtime",
+  "binary_sha256": "425565fbc0222cfc0b0c073f5b6006fd5f8af8c3eba6bf44c4504c2a4f7e26ea",
+  "patch_sha256": "926cb30db4527f55a148a9aa73436260fe360a1ad28c073bfb4cc8734b069053",
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "sidecar_contract": "paired-direction-cost-h32-h128-v1",
+  "collector_contract_unchanged": "unified-gradient-spatial-h128-v3",
+  "threshold_milli": 128000,
+  "short_window": [
+    8,
+    32
+  ],
+  "full_window": [
+    8,
+    128
+  ],
+  "rows": 19,
+  "early_rows": 3,
+  "checks": {
+    "simulation_equivalence": true,
+    "original_four_CSVs_byte_exact": true,
+    "no_probe_off_sidecar": true,
+    "boundary_handcase_UBSan": true,
+    "full_and_short_censoring": true,
+    "original_link_inputs_unchanged": true
+  },
+  "runs": [
+    {
+      "name": "frozen-on",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-on",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-off",
+      "value": null,
+      "probe": false,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "paired-early",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "056851b06865660a1b5ee54ee1642ba6552e47c20c3df930a2f41d2aaa49734f",
+        "snapshot.checksums": "93ec7e16178be265b2ba12d7c941c1c2085729a93221c226c2c03e99ee826138",
+        "game.replay.checksums": "d2fe145306a15c3f444c945f9cc4e73114ce8e330dc281200b7ed01e7c528c7f",
+        "final.game.gz": "45ec641f1bb5016db3d52d4cac7e9d8c9ab9864aecd5e5a334bcdf08914e53c1"
+      }
+    },
+    {
+      "name": "paired-short-complete-full-censored",
+      "value": null,
+      "probe": true,
+      "threads": 1,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "06d7e74465e1a4a5b126b6ab813be61280a93a68f248e3edade5df9661921fa9",
+        "snapshot.checksums": "48760ad26f5cdc2652b72e08899b4f0a8ef918a14ef7a93d466c3965c27998e1",
+        "game.replay.checksums": "0b9a339ee459acc8f5663e673161aa2563f44330df5bdc7008b07f3f75e3b62e",
+        "final.game.gz": "97509977bd25db0d1c4c38cd58117dcb2b8dcfeed421e22edf1f43cd087bcc41"
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/build/paired-horizon.patch",
+      "sha256": "926cb30db4527f55a148a9aa73436260fe360a1ad28c073bfb4cc8734b069053"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/build/compile-commands.json",
+      "sha256": "f883a34ccbb014449809cbe4d1f677f2741e8f3f50810dd5d506df15b8cb44ae"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/build/link-command.json",
+      "sha256": "b8e6289f5c7c1108dbcd01c62605c5e7928496742bc3cee12cd3e9474cd649f4"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/build/reused-link-inputs.json",
+      "sha256": "2d89e269411ac433e23802b650d95d22c061f78556e174f29c36f24f22dc730f"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/qualification/status.json",
+      "sha256": "0057589cdf7004992b576a027cbef25ea9b15fe4a245373517c3ce5696ded90c"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/paired-horizon/qualification/boundaries.cpp",
+      "sha256": "862da6874a011f10f8a8e3df87e173c6999f63f226bd47b36c1a4504f34e113c"
+    }
+  ]
+}

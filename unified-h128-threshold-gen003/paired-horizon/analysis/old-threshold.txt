@@ -1,0 +1,16 @@
+16:     using Sources = ResourceGradientModel::Sources;
+17:     static constexpr unsigned MinimumInterval = 8, MaximumInterval = 128;
+18:     static constexpr int Threshold = 32000; // model output is milli direction cost
+19:     // These epochs describe the world captured for a particular field. Pending
+20:     // jobs carry their own copy; serving epochs change only at publication.
+21:     struct Capture {
+22:         std::uint32_t tick=0; Sources sources{};
+23:         void save(GAGCore::OutputStream*) const;
+63:         bool refresh(std::uint32_t tick,const Sources& now) {
+64:             if (!std::exchange(requested,false) || std::uint32_t(tick-submitted)<MinimumInterval) return false;
+65:             return std::uint32_t(tick-submitted)>=MaximumInterval || ResourceGradientModel::predict(inputs(tick,now))>=Threshold;
+66:         }
+67:     };
+68:     void save(GAGCore::OutputStream*) const;
+69:     void load(GAGCore::InputStream*,unsigned teams);
+70:     std::uint32_t checksum() const;

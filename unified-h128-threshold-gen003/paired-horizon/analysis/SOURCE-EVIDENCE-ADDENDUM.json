@@ -1,0 +1,8 @@
+{
+  "revision": "72d2f99d74be9009b8460a44193427f819abcd5b",
+  "path": "src/map/gradient/ResourceGradientPolicy.h",
+  "blob_sha256": "eaba207087929d845076576ec036d2fed5693faaa1f73fe890b1244ae016d34c",
+  "excerpt_sha256": "a50a14a88099161b6243b27d12656c21d6be7288dc334cf5f3a608db5c145bbe",
+  "interpretation": "Old MaximumInterval128 forces demanded refreshes in addition to predictedbenefit threshold32000. Current userremoved cap remainsabsent. A horizon-only scalar threshold cannot reproduce old scheduler frequency/quality. Diagnostic horizon32 is not a fixed periodic32 policy.",
+  "preserves_original_plan_source_evidence": true
+}

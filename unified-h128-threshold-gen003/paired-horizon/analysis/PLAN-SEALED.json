@@ -1,0 +1,26 @@
+{
+  "status": "PLAN-ONLY-FROZEN-COLLECTOR-RELEASED",
+  "sealed_utc": "2026-10-19T11:30:32.491340+00:00",
+  "mature_outcomes_read": false,
+  "files": {
+    "INPUTS-LOCK.json": "4b0795b9818b152c7c4d4b2b0103bb7acb844bd1bf4152decc447c57c7ac238b",
+    "PLAN-v1.json": "97b55bb68f90c99e1db570cf27259bcf4b9968727ad262aacd50ce5aac9c6f8a",
+    "PLAN-v1.sha256": "9b6ca168bcefab3168d2b0c0b558cea0d42cf2746088e957fabdd36a05e9ab19",
+    "PLAN.json": "e29c75b7ace4fff1aa048dd43663048c82ce7ae1559aad0f5e9e0ef62a1d8286",
+    "PLAN.md": "d5761d77181f378fea756932f73e8eee68dcbaa077956fb99069ee9300f92101",
+    "PLAN.sha256": "4cb3d3d17fcfe22ab8e500c451030efc7be3a4d8ed728906e76a71e10314b78a",
+    "SOURCE-EVIDENCE.json": "c56a3722bdad4947e303726725a8365b311e54827188c215a8c59e24271e7d2a",
+    "bindings/0083541d8ee4d18b-CHECKPOINT.json": "0f47b5802cf4c3ba9b8a8f91260405da4842825217c08c69b1a52265748d0db8",
+    "bindings/1d043310cbecdceb-CHECKPOINT.json": "fb5b89d21f250d82a7425d4fa598a1f48adb00fd0ea6102a9fd4b60b370ee487",
+    "bindings/66294c58700ef1b4-CHECKPOINT.json": "138bee1fc15dad9ce0ae365c951335cb919ad574e02e163eebf57797c7b3aa52",
+    "bindings/ACTUAL-REMOTE-BINDINGS.json": "07a8f57ed123c3e83f4c433a1ec86a4643e63e20da00f8b001f0eded173c7dd6",
+    "bindings/COLLECTOR-INPUTS.json": "ac0c3e0e1e46facf10c09b09609de29320c2bfabdd7b07cddc0fbcfbdaf7be35",
+    "bindings/QUALIFIED-PAIRED-HORIZON.json": "3542a037a62f5d0f325b34a16b18c49287a57829dd4e2f72f8a49d53f80dd45f",
+    "bindings/THRESHOLD-PILOT-PLAN.json": "0f96fffb459c07da81676bf6047ea6ae4b69ea8dbeaa8947670baa620c3a9f25",
+    "bindings/WARMUP-PROPOSAL.json": "9e7ce7e27fdd70d25401d35215908960ea216bfd8c023e61f42361b9f43667fb",
+    "current-score.txt": "e73c9389d4079d48c0aaba65108ac2db651760a46a76a9a9ac51a38240fd2846",
+    "current-window.txt": "a34e8d4ff8809e8563c4694a8fe30942a4da1f61994d61b71cf22de14a911f8c",
+    "old-threshold.txt": "d5c39ab0fc9849765ec325bccf52c7d22ed4d0ff6cf6e3a6a8cbb3c6c07139ae",
+    "old-window.txt": "213ce7e2acd9cf7786e091949da803b34aea188dff354efdbfb1049fc52e3193"
+  }
+}
