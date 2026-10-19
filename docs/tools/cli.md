@@ -632,6 +632,33 @@ Platform: all.
 glob2 map validate-set set.json --report-file artifacts/set-report.json --preview artifacts/set.png
 ```
 
+### `glob2 game migrate`
+
+Convert a private adaptive174 file without advancing simulation.
+
+```text
+glob2 game migrate [OPTIONS]
+```
+
+Outputs: migrated.map or migrated.game, result.json with provenance and verified state.
+
+Platform: all.
+
+| Option | Value / default | Meaning |
+| --- | --- | --- |
+| `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
+| `--profile` | string; default glob2-tournament | Isolated profile label. |
+| `--building-catalog` | file | Building catalog manifest. |
+| `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
+| `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
+| `--input` | file | Private format174 map or saved game. Required. |
+| `--legacy-adaptive-174` | flag; default false | Explicitly select the private adaptive174 binary layout; never inferred. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
+
+```sh
+glob2 game migrate --input private174.game.gz --legacy-adaptive-174 --output-dir artifacts/migration
+```
+
 ### `glob2 game run`
 
 Run or continue a structured headless game.
@@ -681,9 +708,10 @@ Platform: all.
 | `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
-| `--resource-gradient-probe` | flag; default false | Write sampled natural-resource pathfinding quality comparisons. |
-| `--resource-gradient-exploration` | comma-separated intervals | Headless probe-only field assignment: 0 uses adaptive32; other unique values are 8..65536 ticks. Rejects replay recording. |
-| `--resource-gradient-exploration-seed` | uint32; default 0 | Stable field-assignment seed; requires exploration. |
+| `--gradient-work-stats` | file | Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection. |
+| `--resource-gradient-probe` | flag; default false | Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias). |
+| `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals8..65536;0=adaptive only after unified model training. |
+| `--resource-gradient-exploration-seed` | integer; 0..4294967295 | Seed for deterministic per-field collection assignment. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |

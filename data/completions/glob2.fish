@@ -55,6 +55,8 @@ function __glob2_path
         set path 'dev dump-tiled'
       case 'dev|hive-worker'
         set path 'dev hive-worker'
+      case 'game|migrate'
+        set path 'game migrate'
       case 'game|run'
         set path 'game run'
       case 'game|repeat'
@@ -111,7 +113,7 @@ complete -c glob2 -n "__glob2_at ''" -f -a 'play replay map game match online ai
 complete -c glob2 -n "__glob2_at 'ai'" -f -a 'check'
 complete -c glob2 -n "__glob2_at 'assets'" -f -a 'compose-buildings render-skin skin-info'
 complete -c glob2 -n "__glob2_at 'dev'" -f -a 'random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker'
-complete -c glob2 -n "__glob2_at 'game'" -f -a 'run repeat'
+complete -c glob2 -n "__glob2_at 'game'" -f -a 'migrate run repeat'
 complete -c glob2 -n "__glob2_at 'info'" -f -a 'version sim-version catalog paths'
 complete -c glob2 -n "__glob2_at 'map'" -f -a 'generate study generators preview render import-image export-image inspect-package validate-set'
 complete -c glob2 -n "__glob2_at 'match'" -f -a 'verify'
@@ -251,6 +253,14 @@ complete -c glob2 -n "__glob2_at 'map validate-set'" -l gallery -r -f -a '0 1'
 complete -c glob2 -n "__glob2_at 'map validate-set'" -l phase -r
 complete -c glob2 -n "__glob2_at 'map validate-set'" -l variation -r
 complete -c glob2 -n "__glob2_at 'map validate-set'" -l help
+complete -c glob2 -n "__glob2_at 'game migrate'" -l output-dir -r -f -a '(__fish_complete_directories)'
+complete -c glob2 -n "__glob2_at 'game migrate'" -l profile -r
+complete -c glob2 -n "__glob2_at 'game migrate'" -l building-catalog -r
+complete -c glob2 -n "__glob2_at 'game migrate'" -l data-dir -r -f -a '(__fish_complete_directories)'
+complete -c glob2 -n "__glob2_at 'game migrate'" -l generator-package -r
+complete -c glob2 -n "__glob2_at 'game migrate'" -l input -r
+complete -c glob2 -n "__glob2_at 'game migrate'" -l legacy-adaptive-174
+complete -c glob2 -n "__glob2_at 'game migrate'" -l help
 complete -c glob2 -n "__glob2_at 'game run'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'game run'" -l profile -r
 complete -c glob2 -n "__glob2_at 'game run'" -l building-catalog -r
@@ -286,7 +296,10 @@ complete -c glob2 -n "__glob2_at 'game run'" -l save -r
 complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums team-timeline maxima'
 complete -c glob2 -n "__glob2_at 'game run'" -l write-replay
 complete -c glob2 -n "__glob2_at 'game run'" -l benchmark-warmup -r
+complete -c glob2 -n "__glob2_at 'game run'" -l gradient-work-stats -r
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-probe
+complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-exploration -r
+complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-exploration-seed -r
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-fields -r -f -a 'maxima'
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-interval -r
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-png
