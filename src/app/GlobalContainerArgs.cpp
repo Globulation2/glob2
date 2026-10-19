@@ -133,7 +133,7 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const
 {
     using namespace gradient_kernel;
-    auto c=settings.gradientConfiguration(runNoX);
+    auto c=settings.gradientConfiguration();
     if(const auto* value=std::getenv("GLOB2_GRADIENT_BACKEND");value && *value)c.backend=parseBackend(value).value_or(Backend::CPU);
     if(gpuComputeOverride)c.backend=*gpuComputeOverride?Backend::OpenCL:Backend::CPU;
     if(gradientBackendOverride)c.backend=*gradientBackendOverride;
