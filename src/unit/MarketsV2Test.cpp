@@ -3,6 +3,7 @@
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 #include "Order.h"
 #include "OrderValidation.h"
 #include "Version.h"
@@ -186,6 +187,32 @@ TEST_CASE("enabled supply networks repeat deterministically with save continuati
 	const auto trace=marketTrace(true);
 	CHECK(trace==marketTrace(true));
 	glob2test::expectGolden("markets-v2/enabled-checksums.txt",trace);
+}
+TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options{.discovered=true,.clearImmobile=true,.header=true};
+    options.experiments.set(ExperimentId::MarketsV2);
+    glob2test::HeadlessGame world(options);
+    auto* market=world.addBuilding("market",8,8);
+    REQUIRE(market);
+    market->setMaterial(CHERRY,20);
+    auto& targets=world.game.map.gradientRuntime->marketTargets;
+    world.game.map.ensureGradientMarketTargets(0,CHERRY);
+    REQUIRE(targets.initialized(0,CHERRY));
+    REQUIRE_FALSE(targets.inverse.empty());
+    const auto previousWorld=targets;
+    world.game.clearGame();
+    CHECK(targets.ledgers.empty());
+    CHECK(targets.inverse.empty());
+
+    // Map::clear is also a standalone reuse boundary. Seed it with the actual
+    // old-world derived cache independently of Game's already-tested teardown.
+    Map reused;
+    reused.gradientRuntime->marketTargets=previousWorld;
+    reused.clear();
+    CHECK(reused.gradientRuntime->marketTargets.ledgers.empty());
+    CHECK(reused.gradientRuntime->marketTargets.inverse.empty());
 }
 TEST_CASE("identical market workloads report routing cost [benchmark]")
 {

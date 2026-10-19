@@ -19,6 +19,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "gradient/GradientRuntime.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
 #include "HiringPipeline.h"
@@ -258,6 +259,10 @@ void Game::clearGame()
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
     map.computeExecutor().resetTelemetry();
+    // Supplier callbacks can run while teams are destroyed or reconstructed.
+    // Their derived ledger belongs to the old world; rebuild it only after the
+    // new authoritative world has loaded, without advancing its saved epochs.
+    map.gradientRuntime->marketTargets={};
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;

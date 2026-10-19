@@ -582,6 +582,7 @@ void Map::clear()
 	terrainSeedValue = 0;
     gradientRuntime->preparations.clear();
     gradientRuntime->adaptive={};
+    gradientRuntime->marketTargets={};
     if (auto& probe=gradientRuntime->qualityProbe) {
         probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;probe->resetMovement();
     }
