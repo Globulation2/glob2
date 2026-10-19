@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "group": "66294c58700ef1b4",
+      "arm": "gen004",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 3225539200,
+      "finalChecksum": 910715140,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    },
+    {
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 3225539200,
+      "finalChecksum": 4206759873,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "arm": "gen004",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 2623784120,
+      "finalChecksum": 2777311011,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 2623784120,
+      "finalChecksum": 3498101730,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 2187383412,
+      "finalChecksum": 3721707726,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "repeats": 4,
+      "observer_on": 1,
+      "initialChecksum": 2187383412,
+      "finalChecksum": 3993162155,
+      "ticks": 8192,
+      "gate": "final results only; full per-tick parity qualified separately"
+    }
+  ],
+  "cross_arm_equality_required": false
+}

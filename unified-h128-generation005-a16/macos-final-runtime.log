@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/qualify.py", line 28, in <module>
+    actual=(continued/n).read_text().splitlines();assert expected==actual,(n,'continuation mismatch');continuity[n]=len(actual)
+                                                         ^^^^^^^^^^^^^^^^
+AssertionError: ('world.checksums', 'continuation mismatch')

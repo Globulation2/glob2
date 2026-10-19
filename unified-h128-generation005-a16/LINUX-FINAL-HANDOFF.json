@@ -1,0 +1,17 @@
+{
+  "status": "QUALIFIED-HANDED-TO-EXISTING-GUARDIAN",
+  "utc": "2026-10-19T15:27:09.271511+00:00",
+  "gate": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/QUALIFIED-RESEARCH-CANDIDATE.json",
+  "gate_sha256": "a78ecaa5537f2a377f576186af4219f67de1cfcc1377a07cd4c11aa95c175991",
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "build_parity_runtime_package_terminal": true,
+  "actual_executions": 7,
+  "crossplatform_simulation_save_pairs": 28,
+  "crossplatform_diagnostic_pairs": 8,
+  "matched_header_raw_continuity": true,
+  "old_format_identity_mismatch_preserved": true,
+  "deployment_owner": "exploration_collector guardian10162",
+  "deployment_launched_by_this_agent": false,
+  "prospective_owner": "adaptive_review",
+  "stable_promotion": false
+}

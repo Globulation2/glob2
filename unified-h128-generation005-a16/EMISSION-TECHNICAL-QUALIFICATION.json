@@ -1,0 +1,20 @@
+{
+  "status": "PASS-TECHNICAL-RESEARCH-ONLY",
+  "utc": "2026-10-19T15:00:03.489367+00:00",
+  "input_sha256": "26a086c1aea2d541ec8ab89f58eabebc1dbcbb94ef9f1f530c120002e1441763",
+  "research_fit_sha256": "ec13620fce49515c480f41f93f6a14abf860a747d1a7e4a1d54b4c2a47213774",
+  "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "paired_audit_sha256": "ffcb0174b2c95104204d084fae3937457a28aa305c94d6bd815127e90543bceb",
+  "heads_unchanged_from_fit": true,
+  "strict_integer_bounds_validated": true,
+  "header_byteexact_codegen": true,
+  "threshold_milli": 16000,
+  "canonical_changes_only": [
+    "tools/models/adaptive-gradient.json",
+    "src/map/gradient/AdaptiveGradientModel.h"
+  ],
+  "relative_heldout_regret_change_pct": 0.15249845600917578,
+  "stable_promotion": false,
+  "native_build": "WAITING-ROOT-FROZEN-COMMIT"
+}

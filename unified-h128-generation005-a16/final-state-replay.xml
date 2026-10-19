@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="21" failures="0" errors="0" skipped="0"><testsuite name="AdaptiveGradientState"><testcase classname="AdaptiveGradientState" name="logical keys distinguish all families teams classes and materials" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="idle fields submit nothing and even demanded old fields require model benefit" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="cold history reactive model and deferred admissions obey one association and spacing" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="research intervals are explicit and ordinary demanded age never forces a refresh" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="benefit threshold is inclusive at16 units and the eight tick minimum remains" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="mutations never allocate unseen scopes and equivalent ground classes share turnover" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="capture baselines remain aligned while a delayed job is pending" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="query windows are exact including unsigned tick wrap" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="missing canonical target scope cannot silently disable turnover after loading" time="0.000132" status="run" />
+    <testcase classname="AdaptiveGradientState" name="binary and text state continuation preserve common captures and demand" time="0.000258" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.0011" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="paused turns retain the first snapshot for their shared simulation tick" time="0.000113" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay checks validate their original source tick" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay mismatch and missing terminal work fail validation" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="zero is a valid delayed checksum when explicitly present" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000255" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.00015" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

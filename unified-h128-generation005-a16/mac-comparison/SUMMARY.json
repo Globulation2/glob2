@@ -1,0 +1,1931 @@
+{
+  "status": "COMPLETE",
+  "aggregate": {
+    "gen004": {
+      "ticks": 98304,
+      "total_wall_seconds": 23.22934250079561,
+      "total_process_cpu_seconds": 21.895735,
+      "total_simulation_cpu_seconds": 18.596071,
+      "pooled_wall_tps": 4231.889042775665,
+      "simulation_cpu_ms_per_tick": 0.18916901652018228
+    },
+    "gen005": {
+      "ticks": 98304,
+      "total_wall_seconds": 23.37769408314489,
+      "total_process_cpu_seconds": 21.648468,
+      "total_simulation_cpu_seconds": 18.336899,
+      "pooled_wall_tps": 4205.034065822442,
+      "simulation_cpu_ms_per_tick": 0.18653258260091143
+    },
+    "change_pct": {
+      "total_wall_seconds": 0.6386387490054712,
+      "total_process_cpu_seconds": -1.1292929878809588,
+      "total_simulation_cpu_seconds": -1.3936922482173708,
+      "pooled_wall_tps": -0.6345860366794742,
+      "simulation_cpu_ms_per_tick": -1.393692248217382
+    },
+    "paired_repeat_cpu_change_pct": [
+      -1.9792436849078165,
+      0.7745530904430087,
+      -2.2393349526922957,
+      -2.136982271682375
+    ]
+  },
+  "quality_pooled": {
+    "gen004": {
+      "movement_observations": 5981,
+      "movement_totals": {
+        "extra_cost": 3900,
+        "false_unreachable": 42,
+        "false_reachable": 180,
+        "invalid_goal": 32,
+        "missed_move": 92,
+        "escape_failure": 0,
+        "stall": 132,
+        "guard_balance": 0
+      },
+      "movement_per_observation": {
+        "extra_cost": 0.6520648720949674,
+        "false_unreachable": 0.007022237084099649,
+        "false_reachable": 0.030095301788998496,
+        "invalid_goal": 0.005350275873599732,
+        "missed_move": 0.015382043136599232,
+        "escape_failure": 0.0,
+        "stall": 0.022069887978598896,
+        "guard_balance": 0.0
+      },
+      "planning_observations": 66407,
+      "planning_false_unreachable": 578,
+      "planning_false_reachable": 627,
+      "shared_gradient_jobs": 7217,
+      "building_gradient_jobs": 9677,
+      "lazy_search_resumes": 1905,
+      "lazy_settled_cost_delta": 5524248
+    },
+    "gen005": {
+      "movement_observations": 6789,
+      "movement_totals": {
+        "extra_cost": 3617,
+        "false_unreachable": 61,
+        "false_reachable": 227,
+        "invalid_goal": 50,
+        "missed_move": 108,
+        "escape_failure": 1,
+        "stall": 142,
+        "guard_balance": 0
+      },
+      "movement_per_observation": {
+        "extra_cost": 0.5327736043599941,
+        "false_unreachable": 0.008985122993077037,
+        "false_reachable": 0.03343644130210635,
+        "invalid_goal": 0.007364854912358227,
+        "missed_move": 0.015908086610693768,
+        "escape_failure": 0.00014729709824716454,
+        "stall": 0.020916187951097363,
+        "guard_balance": 0.0
+      },
+      "planning_observations": 102746,
+      "planning_false_unreachable": 581,
+      "planning_false_reachable": 617,
+      "shared_gradient_jobs": 7232,
+      "building_gradient_jobs": 9453,
+      "lazy_search_resumes": 1709,
+      "lazy_settled_cost_delta": 5224265
+    }
+  },
+  "plan_sha256": "b89c671792530b93f2ff5be1446e8831a8bf58ad0c166934bb494ed8c2d87c68",
+  "timing": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "arms": {
+        "gen004": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.14165988159179688,
+            "median": 0.1416239013671875,
+            "minimum": 0.14120654296875,
+            "maximum": 0.1421851806640625,
+            "repeats": [
+              0.14120654296875,
+              0.1415416259765625,
+              0.1417061767578125,
+              0.1421851806640625
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.1734246826171875,
+            "median": 0.1733944091796875,
+            "minimum": 0.17285437011718752,
+            "maximum": 0.17405554199218748,
+            "repeats": [
+              0.17285437011718752,
+              0.17337805175781248,
+              0.1734107666015625,
+              0.17405554199218748
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 1.4206949999999998,
+            "median": 1.4204469999999998,
+            "minimum": 1.416023,
+            "maximum": 1.4258629999999999,
+            "repeats": [
+              1.416023,
+              1.420313,
+              1.4205809999999999,
+              1.4258629999999999
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.4652158542594407,
+            "median": 1.462175354536157,
+            "minimum": 1.457670290954411,
+            "maximum": 1.4788424170110375,
+            "repeats": [
+              1.4579443340189755,
+              1.457670290954411,
+              1.4788424170110375,
+              1.4664063750533387
+            ]
+          },
+          "wall_tps": {
+            "mean": 5591.1776512024735,
+            "median": 5602.65810006652,
+            "minimum": 5539.467833602759,
+            "maximum": 5619.926571074094,
+            "repeats": [
+              5618.870219425935,
+              5619.926571074094,
+              5539.467833602759,
+              5586.445980707105
+            ]
+          }
+        },
+        "gen005": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.147298583984375,
+            "median": 0.1471898193359375,
+            "minimum": 0.146514892578125,
+            "maximum": 0.1482998046875,
+            "repeats": [
+              0.1482998046875,
+              0.147628173828125,
+              0.14675146484375,
+              0.146514892578125
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.17915277099609375,
+            "median": 0.1789847412109375,
+            "minimum": 0.178379150390625,
+            "maximum": 0.180262451171875,
+            "repeats": [
+              0.180262451171875,
+              0.17943420410156252,
+              0.1785352783203125,
+              0.178379150390625
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 1.4676195,
+            "median": 1.466243,
+            "minimum": 1.461282,
+            "maximum": 1.47671,
+            "repeats": [
+              1.47671,
+              1.4699250000000001,
+              1.462561,
+              1.461282
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.6187124790158123,
+            "median": 1.6619226665352471,
+            "minimum": 1.4739693329902366,
+            "maximum": 1.6770352500025183,
+            "repeats": [
+              1.6586547499755397,
+              1.6770352500025183,
+              1.6651905830949545,
+              1.4739693329902366
+            ]
+          },
+          "wall_tps": {
+            "mean": 5075.272986804876,
+            "median": 4929.249621304881,
+            "minimum": 4884.810858917664,
+            "maximum": 5557.7818456920795,
+            "repeats": [
+              4938.9422362434425,
+              4884.810858917664,
+              4919.557006366319,
+              5557.7818456920795
+            ]
+          }
+        }
+      },
+      "change_pct_gen005_vs_gen004": {
+        "benchmark_cpu_ms_per_tick": 3.9804511547076205,
+        "process_cpu_ms_per_tick": 3.302925680740776,
+        "total_cpu_seconds": 3.302925680740776,
+        "wall_seconds": 10.47604175931831,
+        "wall_tps": -9.227119876733724
+      }
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "arms": {
+        "gen004": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.221312744140625,
+            "median": 0.2216739501953125,
+            "minimum": 0.22001220703125,
+            "maximum": 0.221890869140625,
+            "repeats": [
+              0.221890869140625,
+              0.2217467041015625,
+              0.2216011962890625,
+              0.22001220703125
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.25676907348632816,
+            "median": 0.25699926757812497,
+            "minimum": 0.2553646240234375,
+            "maximum": 0.257713134765625,
+            "repeats": [
+              0.257713134765625,
+              0.25703259277343754,
+              0.25696594238281245,
+              0.2553646240234375
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 2.10345225,
+            "median": 2.1053379999999997,
+            "minimum": 2.0919470000000002,
+            "maximum": 2.111186,
+            "repeats": [
+              2.111186,
+              2.105611,
+              2.1050649999999997,
+              2.0919470000000002
+            ]
+          },
+          "wall_seconds": {
+            "mean": 2.248164499964332,
+            "median": 2.294013582984917,
+            "minimum": 2.1008132089627907,
+            "maximum": 2.3038176249247044,
+            "repeats": [
+              2.291742749977857,
+              2.3038176249247044,
+              2.296284415991977,
+              2.1008132089627907
+            ]
+          },
+          "wall_tps": {
+            "mean": 3649.338483486795,
+            "median": 3571.0372807068734,
+            "minimum": 3555.8370208526117,
+            "maximum": 3899.442351680823,
+            "repeats": [
+              3574.5722333273015,
+              3555.8370208526117,
+              3567.502328086445,
+              3899.442351680823
+            ]
+          }
+        },
+        "gen005": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.21165603637695313,
+            "median": 0.20739733886718748,
+            "minimum": 0.206876953125,
+            "maximum": 0.2249525146484375,
+            "repeats": [
+              0.206876953125,
+              0.2249525146484375,
+              0.207916748046875,
+              0.2068779296875
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.24736349487304687,
+            "median": 0.24284564208984374,
+            "minimum": 0.24211450195312498,
+            "maximum": 0.261648193359375,
+            "repeats": [
+              0.24211450195312498,
+              0.261648193359375,
+              0.2432738037109375,
+              0.24241748046875
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 2.02640175,
+            "median": 1.9893915,
+            "minimum": 1.9834019999999999,
+            "maximum": 2.143422,
+            "repeats": [
+              1.9834019999999999,
+              2.143422,
+              1.992899,
+              1.985884
+            ]
+          },
+          "wall_seconds": {
+            "mean": 2.1381243437936064,
+            "median": 2.0807695835246705,
+            "minimum": 2.0773118330398574,
+            "maximum": 2.313646375085227,
+            "repeats": [
+              2.0773118330398574,
+              2.313646375085227,
+              2.077432500082068,
+              2.0841066669672728
+            ]
+          },
+          "wall_tps": {
+            "mean": 3839.5798486363287,
+            "median": 3937.0150041977763,
+            "minimum": 3540.731240615037,
+            "maximum": 3943.5581455347246,
+            "repeats": [
+              3943.5581455347246,
+              3540.731240615037,
+              3943.3290851454276,
+              3930.700923250125
+            ]
+          }
+        }
+      },
+      "change_pct_gen005_vs_gen004": {
+        "benchmark_cpu_ms_per_tick": -4.363376271515507,
+        "process_cpu_ms_per_tick": -3.6630496366152454,
+        "total_cpu_seconds": -3.6630496366152565,
+        "wall_seconds": -4.894666567881112,
+        "wall_tps": 5.213036993152942
+      }
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "format": "2v2",
+      "arms": {
+        "gen004": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.204534423828125,
+            "median": 0.204419677734375,
+            "minimum": 0.203820556640625,
+            "maximum": 0.205477783203125,
+            "repeats": [
+              0.2040186767578125,
+              0.205477783203125,
+              0.2048206787109375,
+              0.203820556640625
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.23801104736328124,
+            "median": 0.23806890869140623,
+            "minimum": 0.237142578125,
+            "maximum": 0.2387637939453125,
+            "repeats": [
+              0.23773999023437498,
+              0.2387637939453125,
+              0.2383978271484375,
+              0.237142578125
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 1.9497865,
+            "median": 1.9502605,
+            "minimum": 1.942672,
+            "maximum": 1.955953,
+            "repeats": [
+              1.947566,
+              1.955953,
+              1.952955,
+              1.942672
+            ]
+          },
+          "wall_seconds": {
+            "mean": 2.0939552709751297,
+            "median": 2.0917862084461376,
+            "minimum": 2.0803879169980064,
+            "maximum": 2.111860750010237,
+            "repeats": [
+              2.0934570839162916,
+              2.0803879169980064,
+              2.0901153329759836,
+              2.111860750010237
+            ]
+          },
+          "wall_tps": {
+            "mean": 3912.3290492986416,
+            "median": 3916.2727021613737,
+            "minimum": 3879.0436348420653,
+            "maximum": 3937.7271580297543,
+            "repeats": [
+              3913.1444646932937,
+              3937.7271580297543,
+              3919.400939629454,
+              3879.0436348420653
+            ]
+          }
+        },
+        "gen005": {
+          "benchmark_cpu_ms_per_tick": {
+            "mean": 0.20064312744140625,
+            "median": 0.20065277099609374,
+            "minimum": 0.2005294189453125,
+            "maximum": 0.200737548828125,
+            "repeats": [
+              0.2007147216796875,
+              0.2005908203125,
+              0.200737548828125,
+              0.2005294189453125
+            ]
+          },
+          "process_cpu_ms_per_tick": {
+            "mean": 0.23414254760742187,
+            "median": 0.234095703125,
+            "minimum": 0.233941650390625,
+            "maximum": 0.23443713378906247,
+            "repeats": [
+              0.23443713378906247,
+              0.233941650390625,
+              0.23422802734375,
+              0.23396337890625
+            ]
+          },
+          "total_cpu_seconds": {
+            "mean": 1.91809575,
+            "median": 1.9177119999999999,
+            "minimum": 1.91645,
+            "maximum": 1.9205089999999998,
+            "repeats": [
+              1.9205089999999998,
+              1.91645,
+              1.918796,
+              1.916628
+            ]
+          },
+          "wall_seconds": {
+            "mean": 2.0875866979768034,
+            "median": 2.087732583459001,
+            "minimum": 2.0730610419996083,
+            "maximum": 2.1018205829896033,
+            "repeats": [
+              2.0730610419996083,
+              2.084700124920346,
+              2.0907650419976562,
+              2.1018205829896033
+            ]
+          },
+          "wall_tps": {
+            "mean": 3924.245677890064,
+            "median": 3923.8824686513626,
+            "minimum": 3897.5734019826764,
+            "maximum": 3951.6443722748554,
+            "repeats": [
+              3951.6443722748554,
+              3929.5819586104776,
+              3918.182978692248,
+              3897.5734019826764
+            ]
+          }
+        }
+      },
+      "change_pct_gen005_vs_gen004": {
+        "benchmark_cpu_ms_per_tick": -1.9025141655317213,
+        "process_cpu_ms_per_tick": -1.625344621064917,
+        "total_cpu_seconds": -1.625344621064928,
+        "wall_seconds": -0.3041408327390194,
+        "wall_tps": 0.30459167522114416
+      }
+    }
+  ],
+  "quality": [
+    {
+      "group": "66294c58700ef1b4",
+      "arm": "gen004",
+      "movement": {
+        "observations": 1399,
+        "totals": {
+          "extra_cost": 478,
+          "false_unreachable": 2,
+          "false_reachable": 50,
+          "invalid_goal": 8,
+          "missed_move": 10,
+          "escape_failure": 0,
+          "stall": 7,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 0.3416726233023588,
+          "false_unreachable": 0.0014295925661186562,
+          "false_reachable": 0.035739814152966405,
+          "invalid_goal": 0.005718370264474625,
+          "missed_move": 0.007147962830593281,
+          "escape_failure": 0.0,
+          "stall": 0.005003573981415297,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 25348,
+        "false_unreachable": 71,
+        "false_reachable": 183
+      },
+      "work": {
+        "events": {
+          "duplicate": 145656,
+          "request": 6458,
+          "admission": 6450,
+          "publication": 6382,
+          "prepared_search": 3736,
+          "search_resume": 843
+        },
+        "event_reasons": {
+          "duplicate:reactive": 145461,
+          "request:reactive": 4666,
+          "admission:reactive": 4663,
+          "request:model": 1483,
+          "admission:model": 1483,
+          "publication:restored_unknown": 8,
+          "publication:reactive": 4592,
+          "publication:model": 1479,
+          "prepared_search:restored_unknown": 3736,
+          "search_resume:restored_unknown": 843,
+          "request:cold": 309,
+          "admission:cold": 304,
+          "publication:cold": 303,
+          "duplicate:cold": 195
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 219,
+            "totals": {
+              "extra_cost": 203,
+              "false_unreachable": 2,
+              "false_reachable": 11,
+              "invalid_goal": 2,
+              "missed_move": 5,
+              "escape_failure": 0,
+              "stall": 1,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.9269406392694064,
+              "false_unreachable": 0.0091324200913242,
+              "false_reachable": 0.0502283105022831,
+              "invalid_goal": 0.0091324200913242,
+              "missed_move": 0.0228310502283105,
+              "escape_failure": 0.0,
+              "stall": 0.0045662100456621,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "duplicate": 302,
+            "publication": 809,
+            "request": 808,
+            "admission": 808
+          },
+          "admitted_field_cells": 6619136,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 6,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 3,
+              "invalid_goal": 3,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.5,
+              "invalid_goal": 0.5,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 210,
+            "request": 209,
+            "admission": 209,
+            "duplicate": 39
+          },
+          "admitted_field_cells": 1712128,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 578,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.0,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 98,
+            "admission": 98,
+            "publication": 98,
+            "duplicate": 2
+          },
+          "admitted_field_cells": 802816,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "duplicate": 145186,
+            "request": 3816,
+            "admission": 3808,
+            "publication": 3742,
+            "prepared_search": 3736,
+            "search_resume": 843
+          },
+          "admitted_field_cells": 31195136,
+          "lazy_settled_cost_delta": 2139506
+        },
+        "materials": {
+          "movement": {
+            "observations": 596,
+            "totals": {
+              "extra_cost": 275,
+              "false_unreachable": 0,
+              "false_reachable": 36,
+              "invalid_goal": 3,
+              "missed_move": 5,
+              "escape_failure": 0,
+              "stall": 6,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.46140939597315433,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.06040268456375839,
+              "invalid_goal": 0.0050335570469798654,
+              "missed_move": 0.008389261744966443,
+              "escape_failure": 0.0,
+              "stall": 0.010067114093959731,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 25348,
+          "work_events": {
+            "request": 1527,
+            "admission": 1527,
+            "duplicate": 127,
+            "publication": 1523
+          },
+          "admitted_field_cells": 12509184,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 2642,
+      "building_gradient_jobs": 3808
+    },
+    {
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "movement": {
+        "observations": 1591,
+        "totals": {
+          "extra_cost": 545,
+          "false_unreachable": 13,
+          "false_reachable": 58,
+          "invalid_goal": 9,
+          "missed_move": 21,
+          "escape_failure": 0,
+          "stall": 3,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 0.34255185417976114,
+          "false_unreachable": 0.008170961659333752,
+          "false_reachable": 0.036455059710873663,
+          "invalid_goal": 0.0056568196103079825,
+          "missed_move": 0.013199245757385292,
+          "escape_failure": 0.0,
+          "stall": 0.0018856065367693275,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 22520,
+        "false_unreachable": 107,
+        "false_reachable": 153
+      },
+      "work": {
+        "events": {
+          "duplicate": 147419,
+          "request": 6669,
+          "admission": 6660,
+          "publication": 6586,
+          "prepared_search": 3782,
+          "search_resume": 836
+        },
+        "event_reasons": {
+          "duplicate:reactive": 147186,
+          "request:reactive": 4853,
+          "admission:reactive": 4849,
+          "request:model": 1508,
+          "admission:model": 1508,
+          "publication:restored_unknown": 8,
+          "publication:reactive": 4769,
+          "publication:model": 1508,
+          "prepared_search:restored_unknown": 3782,
+          "search_resume:restored_unknown": 836,
+          "request:cold": 308,
+          "admission:cold": 303,
+          "publication:cold": 301,
+          "duplicate:cold": 233
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 243,
+            "totals": {
+              "extra_cost": 288,
+              "false_unreachable": 13,
+              "false_reachable": 28,
+              "invalid_goal": 3,
+              "missed_move": 16,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 1.1851851851851851,
+              "false_unreachable": 0.053497942386831275,
+              "false_reachable": 0.11522633744855967,
+              "invalid_goal": 0.012345679012345678,
+              "missed_move": 0.06584362139917696,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "duplicate": 308,
+            "publication": 885,
+            "request": 887,
+            "admission": 887
+          },
+          "admitted_field_cells": 7266304,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 6,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 3,
+              "invalid_goal": 3,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.5,
+              "invalid_goal": 0.5,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 239,
+            "request": 241,
+            "admission": 241,
+            "duplicate": 43
+          },
+          "admitted_field_cells": 1974272,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 857,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.0,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 121,
+            "admission": 121,
+            "publication": 118,
+            "duplicate": 3
+          },
+          "admitted_field_cells": 991232,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "duplicate": 146888,
+            "request": 3864,
+            "admission": 3855,
+            "publication": 3788,
+            "prepared_search": 3782,
+            "search_resume": 836
+          },
+          "admitted_field_cells": 31580160,
+          "lazy_settled_cost_delta": 2134579
+        },
+        "materials": {
+          "movement": {
+            "observations": 485,
+            "totals": {
+              "extra_cost": 257,
+              "false_unreachable": 0,
+              "false_reachable": 27,
+              "invalid_goal": 3,
+              "missed_move": 5,
+              "escape_failure": 0,
+              "stall": 3,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.5298969072164949,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.05567010309278351,
+              "invalid_goal": 0.006185567010309278,
+              "missed_move": 0.010309278350515464,
+              "escape_failure": 0.0,
+              "stall": 0.006185567010309278,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 22520,
+          "work_events": {
+            "request": 1556,
+            "admission": 1556,
+            "duplicate": 177,
+            "publication": 1556
+          },
+          "admitted_field_cells": 12746752,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 2805,
+      "building_gradient_jobs": 3855
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "movement": {
+        "observations": 1493,
+        "totals": {
+          "extra_cost": 1954,
+          "false_unreachable": 35,
+          "false_reachable": 60,
+          "invalid_goal": 17,
+          "missed_move": 61,
+          "escape_failure": 1,
+          "stall": 82,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 1.3087742799732083,
+          "false_unreachable": 0.02344273275284662,
+          "false_reachable": 0.04018754186202277,
+          "invalid_goal": 0.011386470194239785,
+          "missed_move": 0.04085733422638982,
+          "escape_failure": 0.0006697923643670462,
+          "stall": 0.05492297387809779,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 24741,
+        "false_unreachable": 90,
+        "false_reachable": 148
+      },
+      "work": {
+        "events": {
+          "publication": 4871,
+          "request": 4998,
+          "admission": 4978,
+          "duplicate": 51166,
+          "prepared_search": 2275,
+          "search_resume": 356
+        },
+        "event_reasons": {
+          "publication:restored_unknown": 3,
+          "request:model": 486,
+          "admission:model": 486,
+          "request:reactive": 4408,
+          "admission:reactive": 4393,
+          "publication:model": 486,
+          "publication:reactive": 4284,
+          "duplicate:reactive": 51004,
+          "prepared_search:restored_unknown": 2275,
+          "search_resume:restored_unknown": 356,
+          "request:cold": 104,
+          "duplicate:cold": 162,
+          "admission:cold": 99,
+          "publication:cold": 98
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 443,
+            "totals": {
+              "extra_cost": 218,
+              "false_unreachable": 34,
+              "false_reachable": 24,
+              "invalid_goal": 1,
+              "missed_move": 34,
+              "escape_failure": 0,
+              "stall": 2,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.49209932279909707,
+              "false_unreachable": 0.07674943566591422,
+              "false_reachable": 0.05417607223476298,
+              "invalid_goal": 0.002257336343115124,
+              "missed_move": 0.07674943566591422,
+              "escape_failure": 0.0,
+              "stall": 0.004514672686230248,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 998,
+            "admission": 998,
+            "publication": 998,
+            "duplicate": 191
+          },
+          "admitted_field_cells": 16351232,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 20,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 1,
+              "false_reachable": 14,
+              "invalid_goal": 14,
+              "missed_move": 1,
+              "escape_failure": 1,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.05,
+              "false_reachable": 0.7,
+              "invalid_goal": 0.7,
+              "missed_move": 0.05,
+              "escape_failure": 0.05,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 359,
+            "admission": 359,
+            "publication": 359,
+            "duplicate": 39
+          },
+          "admitted_field_cells": 5881856,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 60,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.0,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 384,
+            "admission": 384,
+            "publication": 384,
+            "duplicate": 27
+          },
+          "admitted_field_cells": 6291456,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 2452,
+            "request": 2580,
+            "duplicate": 50744,
+            "admission": 2560,
+            "prepared_search": 2275,
+            "search_resume": 356
+          },
+          "admitted_field_cells": 41943040,
+          "lazy_settled_cost_delta": 1265911
+        },
+        "materials": {
+          "movement": {
+            "observations": 970,
+            "totals": {
+              "extra_cost": 1736,
+              "false_unreachable": 0,
+              "false_reachable": 22,
+              "invalid_goal": 2,
+              "missed_move": 26,
+              "escape_failure": 0,
+              "stall": 80,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 1.7896907216494846,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.02268041237113402,
+              "invalid_goal": 0.002061855670103093,
+              "missed_move": 0.026804123711340205,
+              "escape_failure": 0.0,
+              "stall": 0.08247422680412371,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 24741,
+          "work_events": {
+            "request": 677,
+            "admission": 677,
+            "publication": 678,
+            "duplicate": 165
+          },
+          "admitted_field_cells": 11091968,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 2418,
+      "building_gradient_jobs": 2560
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "arm": "gen004",
+      "movement": {
+        "observations": 1645,
+        "totals": {
+          "extra_cost": 2836,
+          "false_unreachable": 23,
+          "false_reachable": 53,
+          "invalid_goal": 12,
+          "missed_move": 55,
+          "escape_failure": 0,
+          "stall": 112,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 1.7240121580547112,
+          "false_unreachable": 0.01398176291793313,
+          "false_reachable": 0.03221884498480243,
+          "invalid_goal": 0.00729483282674772,
+          "missed_move": 0.03343465045592705,
+          "escape_failure": 0.0,
+          "stall": 0.06808510638297872,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 29913,
+        "false_unreachable": 146,
+        "false_reachable": 258
+      },
+      "work": {
+        "events": {
+          "publication": 5246,
+          "request": 5361,
+          "admission": 5342,
+          "duplicate": 63850,
+          "prepared_search": 2503,
+          "search_resume": 500
+        },
+        "event_reasons": {
+          "publication:restored_unknown": 3,
+          "request:model": 553,
+          "admission:model": 553,
+          "request:reactive": 4744,
+          "admission:reactive": 4726,
+          "publication:model": 553,
+          "publication:reactive": 4627,
+          "duplicate:reactive": 63811,
+          "prepared_search:restored_unknown": 2503,
+          "search_resume:restored_unknown": 500,
+          "request:cold": 64,
+          "duplicate:cold": 39,
+          "admission:cold": 63,
+          "publication:cold": 63
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 370,
+            "totals": {
+              "extra_cost": 578,
+              "false_unreachable": 22,
+              "false_reachable": 17,
+              "invalid_goal": 1,
+              "missed_move": 22,
+              "escape_failure": 0,
+              "stall": 1,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 1.5621621621621622,
+              "false_unreachable": 0.05945945945945946,
+              "false_reachable": 0.04594594594594595,
+              "invalid_goal": 0.002702702702702703,
+              "missed_move": 0.05945945945945946,
+              "escape_failure": 0.0,
+              "stall": 0.002702702702702703,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 1040,
+            "admission": 1040,
+            "publication": 1039,
+            "duplicate": 196
+          },
+          "admitted_field_cells": 17039360,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 10,
+            "totals": {
+              "extra_cost": 4,
+              "false_unreachable": 0,
+              "false_reachable": 6,
+              "invalid_goal": 6,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.4,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.6,
+              "invalid_goal": 0.6,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 349,
+            "admission": 349,
+            "publication": 349,
+            "duplicate": 37
+          },
+          "admitted_field_cells": 5718016,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 153,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 1,
+              "false_reachable": 8,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 3,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.006535947712418301,
+              "false_reachable": 0.05228758169934641,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0196078431372549,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 379,
+            "admission": 379,
+            "publication": 379,
+            "duplicate": 31
+          },
+          "admitted_field_cells": 6209536,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 2651,
+            "request": 2766,
+            "duplicate": 63317,
+            "admission": 2747,
+            "prepared_search": 2503,
+            "search_resume": 500
+          },
+          "admitted_field_cells": 45006848,
+          "lazy_settled_cost_delta": 1535135
+        },
+        "materials": {
+          "movement": {
+            "observations": 1112,
+            "totals": {
+              "extra_cost": 2254,
+              "false_unreachable": 0,
+              "false_reachable": 22,
+              "invalid_goal": 5,
+              "missed_move": 33,
+              "escape_failure": 0,
+              "stall": 108,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 2.026978417266187,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.019784172661870502,
+              "invalid_goal": 0.0044964028776978415,
+              "missed_move": 0.029676258992805755,
+              "escape_failure": 0.0,
+              "stall": 0.09712230215827339,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 29913,
+          "work_events": {
+            "request": 827,
+            "admission": 827,
+            "publication": 828,
+            "duplicate": 269
+          },
+          "admitted_field_cells": 13549568,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 2595,
+      "building_gradient_jobs": 2747
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004",
+      "movement": {
+        "observations": 2937,
+        "totals": {
+          "extra_cost": 586,
+          "false_unreachable": 17,
+          "false_reachable": 77,
+          "invalid_goal": 12,
+          "missed_move": 27,
+          "escape_failure": 0,
+          "stall": 13,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 0.19952332311882873,
+          "false_unreachable": 0.005788219271365339,
+          "false_reachable": 0.026217228464419477,
+          "invalid_goal": 0.0040858018386108275,
+          "missed_move": 0.009193054136874362,
+          "escape_failure": 0.0,
+          "stall": 0.004426285325161729,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 11146,
+        "false_unreachable": 361,
+        "false_reachable": 186
+      },
+      "work": {
+        "events": {
+          "publication": 4948,
+          "request": 5211,
+          "admission": 5102,
+          "duplicate": 135494,
+          "search_resume": 562,
+          "prepared_search": 2968
+        },
+        "event_reasons": {
+          "publication:restored_unknown": 5,
+          "request:model": 1072,
+          "admission:model": 1072,
+          "request:reactive": 4073,
+          "duplicate:reactive": 135457,
+          "admission:reactive": 3965,
+          "publication:model": 1071,
+          "search_resume:restored_unknown": 562,
+          "publication:reactive": 3807,
+          "prepared_search:restored_unknown": 2968,
+          "request:cold": 66,
+          "admission:cold": 65,
+          "publication:cold": 65,
+          "duplicate:cold": 37
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 522,
+            "totals": {
+              "extra_cost": 448,
+              "false_unreachable": 17,
+              "false_reachable": 57,
+              "invalid_goal": 4,
+              "missed_move": 27,
+              "escape_failure": 0,
+              "stall": 11,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.8582375478927203,
+              "false_unreachable": 0.032567049808429116,
+              "false_reachable": 0.10919540229885058,
+              "invalid_goal": 0.007662835249042145,
+              "missed_move": 0.05172413793103448,
+              "escape_failure": 0.0,
+              "stall": 0.0210727969348659,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 421,
+            "admission": 421,
+            "duplicate": 151,
+            "publication": 421
+          },
+          "admitted_field_cells": 3448832,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 14,
+            "totals": {
+              "extra_cost": 4,
+              "false_unreachable": 0,
+              "false_reachable": 8,
+              "invalid_goal": 8,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.2857142857142857,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.5714285714285714,
+              "invalid_goal": 0.5714285714285714,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 169,
+            "admission": 169,
+            "publication": 168,
+            "duplicate": 47
+          },
+          "admitted_field_cells": 1384448,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 2205,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.0,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 359,
+            "admission": 359,
+            "publication": 359,
+            "duplicate": 26
+          },
+          "admitted_field_cells": 2940928,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 2971,
+            "request": 3231,
+            "duplicate": 135128,
+            "admission": 3122,
+            "search_resume": 562,
+            "prepared_search": 2968
+          },
+          "admitted_field_cells": 25575424,
+          "lazy_settled_cost_delta": 1849607
+        },
+        "materials": {
+          "movement": {
+            "observations": 196,
+            "totals": {
+              "extra_cost": 134,
+              "false_unreachable": 0,
+              "false_reachable": 12,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 2,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.6836734693877551,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.061224489795918366,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.01020408163265306,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 11146,
+          "work_events": {
+            "publication": 1029,
+            "request": 1031,
+            "admission": 1031,
+            "duplicate": 142
+          },
+          "admitted_field_cells": 8445952,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 1980,
+      "building_gradient_jobs": 3122
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "movement": {
+        "observations": 3705,
+        "totals": {
+          "extra_cost": 1118,
+          "false_unreachable": 13,
+          "false_reachable": 109,
+          "invalid_goal": 24,
+          "missed_move": 26,
+          "escape_failure": 0,
+          "stall": 57,
+          "guard_balance": 0
+        },
+        "per_observation": {
+          "extra_cost": 0.3017543859649123,
+          "false_unreachable": 0.0035087719298245615,
+          "false_reachable": 0.02941970310391363,
+          "invalid_goal": 0.006477732793522267,
+          "missed_move": 0.007017543859649123,
+          "escape_failure": 0.0,
+          "stall": 0.015384615384615385,
+          "guard_balance": 0.0
+        }
+      },
+      "planning": {
+        "observations": 55485,
+        "false_unreachable": 384,
+        "false_reachable": 316
+      },
+      "work": {
+        "events": {
+          "publication": 4955,
+          "request": 5199,
+          "admission": 5047,
+          "duplicate": 147868,
+          "search_resume": 517,
+          "prepared_search": 2941
+        },
+        "event_reasons": {
+          "publication:restored_unknown": 5,
+          "request:model": 999,
+          "admission:model": 999,
+          "request:reactive": 4133,
+          "duplicate:reactive": 147835,
+          "admission:reactive": 3982,
+          "publication:model": 999,
+          "search_resume:restored_unknown": 517,
+          "publication:reactive": 3885,
+          "prepared_search:restored_unknown": 2941,
+          "request:cold": 67,
+          "admission:cold": 66,
+          "publication:cold": 66,
+          "duplicate:cold": 33
+        }
+      },
+      "by_family": {
+        "clear": {
+          "movement": {
+            "observations": 435,
+            "totals": {
+              "extra_cost": 524,
+              "false_unreachable": 13,
+              "false_reachable": 62,
+              "invalid_goal": 2,
+              "missed_move": 15,
+              "escape_failure": 0,
+              "stall": 11,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 1.2045977011494253,
+              "false_unreachable": 0.029885057471264367,
+              "false_reachable": 0.1425287356321839,
+              "invalid_goal": 0.004597701149425287,
+              "missed_move": 0.034482758620689655,
+              "escape_failure": 0.0,
+              "stall": 0.02528735632183908,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 412,
+            "admission": 412,
+            "duplicate": 144,
+            "publication": 412
+          },
+          "admitted_field_cells": 3375104,
+          "lazy_settled_cost_delta": 0
+        },
+        "forbidden": {
+          "movement": {
+            "observations": 26,
+            "totals": {
+              "extra_cost": 18,
+              "false_unreachable": 0,
+              "false_reachable": 20,
+              "invalid_goal": 21,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.6923076923076923,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.7692307692307693,
+              "invalid_goal": 0.8076923076923077,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 192,
+            "admission": 192,
+            "publication": 192,
+            "duplicate": 46
+          },
+          "admitted_field_cells": 1572864,
+          "lazy_settled_cost_delta": 0
+        },
+        "guard": {
+          "movement": {
+            "observations": 2257,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.0,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.0,
+              "invalid_goal": 0.0,
+              "missed_move": 0.0,
+              "escape_failure": 0.0,
+              "stall": 0.0,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "request": 333,
+            "admission": 333,
+            "publication": 333,
+            "duplicate": 26
+          },
+          "admitted_field_cells": 2727936,
+          "lazy_settled_cost_delta": 0
+        },
+        "lazy_building": {
+          "movement": {
+            "observations": 0,
+            "totals": {
+              "extra_cost": 0,
+              "false_unreachable": 0,
+              "false_reachable": 0,
+              "invalid_goal": 0,
+              "missed_move": 0,
+              "escape_failure": 0,
+              "stall": 0,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": null,
+              "false_unreachable": null,
+              "false_reachable": null,
+              "invalid_goal": null,
+              "missed_move": null,
+              "escape_failure": null,
+              "stall": null,
+              "guard_balance": null
+            }
+          },
+          "planning_observations": 0,
+          "work_events": {
+            "publication": 2944,
+            "request": 3190,
+            "duplicate": 147453,
+            "admission": 3038,
+            "search_resume": 517,
+            "prepared_search": 2941
+          },
+          "admitted_field_cells": 24887296,
+          "lazy_settled_cost_delta": 1823775
+        },
+        "materials": {
+          "movement": {
+            "observations": 987,
+            "totals": {
+              "extra_cost": 576,
+              "false_unreachable": 0,
+              "false_reachable": 27,
+              "invalid_goal": 1,
+              "missed_move": 11,
+              "escape_failure": 0,
+              "stall": 46,
+              "guard_balance": 0
+            },
+            "per_observation": {
+              "extra_cost": 0.5835866261398176,
+              "false_unreachable": 0.0,
+              "false_reachable": 0.02735562310030395,
+              "invalid_goal": 0.0010131712259371835,
+              "missed_move": 0.011144883485309016,
+              "escape_failure": 0.0,
+              "stall": 0.04660587639311044,
+              "guard_balance": 0.0
+            }
+          },
+          "planning_observations": 55485,
+          "work_events": {
+            "publication": 1074,
+            "request": 1072,
+            "admission": 1072,
+            "duplicate": 199
+          },
+          "admitted_field_cells": 8781824,
+          "lazy_settled_cost_delta": 0
+        }
+      },
+      "gradient_jobs": 2009,
+      "building_gradient_jobs": 3038
+    }
+  ],
+  "limits": [
+    "Already examined three-state warm panel; not fresh generalization",
+    "Single Mac host; no processor pinning; OS scheduler may migrate between performance/efficiency cores",
+    "Load, process activity and available thermal diagnostics recorded at cell boundaries; no continuous thermal/host-load control and no cold/uncontended claim",
+    "ON timings excluded from CPU claims",
+    "Different policy trajectories may change workload",
+    "Research only; no model promotion/admission changes",
+    "Retired Dev observations excluded completely",
+    "OFF CPU measures normal headless benchmark simulation with probe/work/compute/checksum tracing disabled. ON diagnostics never enter CPU claims.",
+    "Retired Dev and Mac traced observations excluded completely."
+  ],
+  "uncertainty": "show all repeats and within-map range; three examined states cannot support population confidence intervals",
+  "parity": "Within-arm four OFF repeats and ON initialChecksum/finalChecksum/ticks exact; existing qualification supplies per-tick parity; cross-arm equality not required",
+  "population": "Three previously examined warm states, not a new test-set estimate",
+  "timing_scope": "Clean OFF only: probe, work, compute and checksum tracing disabled; engine measured simulation CPU; whole-process timing includes setup/teardown"
+}

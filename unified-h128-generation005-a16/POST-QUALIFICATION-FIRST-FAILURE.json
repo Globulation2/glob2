@@ -1,0 +1,12 @@
+{
+  "status": "FAILED-MAC",
+  "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "utc": "2026-10-19T15:08:55.873080+00:00",
+  "details": {
+    "status": "FAILED",
+    "utc": "2026-10-19T15:08:52.648864+00:00",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "step": "macos-final-runtime",
+    "returncode": 1
+  }
+}

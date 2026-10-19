@@ -1,0 +1,9 @@
+{
+  "pid": 14529,
+  "status": "WAITING-ALL1280-TERMINAL",
+  "utc": "2026-10-19T15:31:00.088110+00:00",
+  "fit_performed": false,
+  "expected_slots": 1280,
+  "source_status_sha256": "5db8fc7fb87c4e0fcc395b0eed8ab4dcde6e2556330878f45c3b1def6f196119",
+  "no_errors": true
+}

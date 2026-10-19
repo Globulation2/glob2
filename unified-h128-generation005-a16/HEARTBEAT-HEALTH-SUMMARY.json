@@ -1,0 +1,74 @@
+{
+  "utc": "2026-10-19T15:38:53.446438+00:00",
+  "exploration": {
+    "active": 39,
+    "completed": 19,
+    "failed": 38,
+    "pending": 32
+  },
+  "candidate": {
+    "active": 23,
+    "completed": 14,
+    "pending": 91
+  },
+  "failure_categories": {
+    "exploration": {
+      "timeout": 38
+    },
+    "candidate": {}
+  },
+  "total_physical_engines": 42,
+  "physical_by_experiment": {
+    "gradient-7cdcf09e7c712271a59ef7fd": 39,
+    "gradient-b561d986077d41310f64de37": 3
+  },
+  "remote_slot_budget": 48,
+  "oldest_process_age_seconds": 1376.279999999795,
+  "caps_all1800": true,
+  "mac_training_engines": 0,
+  "processes": {
+    "exploration": {
+      "pid": 7645,
+      "alive": true
+    },
+    "candidate": {
+      "pid": 14528,
+      "alive": true
+    },
+    "watcher": {
+      "pid": 14529,
+      "alive": true
+    }
+  },
+  "watcher_status": "WAITING-ALL1280-TERMINAL",
+  "watcher_updated_utc": "2026-10-19T15:39:01.097197+00:00",
+  "fit_performed": false,
+  "mac_free_gib": 76.45610809326172,
+  "hosts": [
+    {
+      "name": "therig.local",
+      "physical": 32,
+      "free_gib": 776.3161697387695,
+      "cpu_percent_mean": 86.14308201142106
+    },
+    {
+      "name": "devlaptop.local",
+      "physical": 8,
+      "free_gib": 450.66943740844727,
+      "cpu_percent_mean": 99.85670927753516
+    },
+    {
+      "name": "pharaoh-dev-1.local",
+      "physical": 1,
+      "free_gib": 91.63041687011719,
+      "cpu_percent_mean": 77.95457251722928
+    },
+    {
+      "name": "pharaoh-dev-2.local",
+      "physical": 1,
+      "free_gib": 56.192420959472656,
+      "cpu_percent_mean": 66.74766689527665
+    }
+  ],
+  "no_changes_to_jobs_or_sources": true
+}

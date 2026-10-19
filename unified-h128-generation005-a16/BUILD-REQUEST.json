@@ -1,0 +1,15 @@
+{
+  "status": "RESEARCH-BUILDS-RUNNING",
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "sim_revision": 90,
+  "save_version": 180,
+  "replay_floor": 180,
+  "save_floor": 58,
+  "threshold_milli": 16000,
+  "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "fit_input_sha256": "26a086c1aea2d541ec8ab89f58eabebc1dbcbb94ef9f1f530c120002e1441763",
+  "old179_warm_sha256": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be",
+  "stable_promotion": false,
+  "utc": "2026-10-19T15:01:20.586624+00:00"
+}

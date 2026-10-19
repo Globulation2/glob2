@@ -1,0 +1,18 @@
+{
+  "status": "WAITING-QUALIFIED-GEN005-NO-MODEL-OR-BINARY-BOUND",
+  "created_utc": "2026-10-19T14:59:54.227313+00:00",
+  "slots": 128,
+  "roles": "candidate",
+  "threshold_milli": 16000,
+  "horizon_ticks": 128,
+  "minimum_age_ticks": 8,
+  "publication_delay_ticks": 8,
+  "maximum_forced_age": null,
+  "timeout_seconds": 1800,
+  "process_attempts": 1,
+  "remote_slots": 48,
+  "mac_slots": 0,
+  "shared_roots_from": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/hosts-remote-only.json",
+  "gate_required": "QUALIFIED-RESEARCH-CANDIDATE.json",
+  "dispatch": false
+}

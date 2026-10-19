@@ -1,0 +1,13 @@
+{
+  "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "files": {
+    "src/app/Version.h": "9a7a589feb12182dda05b2cbe8e6d8217abc198b4d5443582fa0a3856a4e909e",
+    "src/game/SimRevision.h": "9ded0a9dfc6b74b6a2810bcd3b5aa04540b047c31722deae29951e57935384f8",
+    "src/map/gradient/AdaptiveGradientModel.h": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+    "src/map/gradient/AdaptiveGradientState.cpp": "def80ecd0009aec01c3503cbc5b6367aedcc6fc284e7e3f65bbcd15afc75911e",
+    "src/map/gradient/AdaptiveGradientState.h": "7584e86343e42c969fa5cdb3f230190034f7b9d0dc87354cc90fe734ac67e592",
+    "src/replay/ReplayReader.h": "d9de847a8c5aec04fd21126472ec86d7c6a29706957d843a7c3206a8afd06422",
+    "src/replay/ReplayStepCounterTest.cpp": "10bf105ef198d6602d5714de8631f169c84a715388e33bac40f2ceb272c8238c",
+    "tools/models/adaptive-gradient.json": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561"
+  }
+}

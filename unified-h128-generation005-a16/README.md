@@ -1,0 +1,25 @@
+# Adaptive16 generation five: qualification and Mac comparison
+
+Native source 4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e; golden fixture follow-up 59c842b24b16d86259f4aa21c9715613411718d8; documentation checkpoint 07ef1cc75. Integration base 7c83e71d0303da637d84b0a31eeb1d1adb38f388. Master 84edb385c was fetched; intervening changes affect CI/development configuration, not the tested simulation components. No unrelated rebase was performed while collectors were active.
+
+The cumulative 1024 planned slots contain 404 normal completions and 620 explicitly censored trajectories. There are 242497 complete episodes, 236957 eligible movement-label episodes, and 5540 planning-only exclusions; unknown captures are zero. Persistent whole-map splits contain 771 development and 253 held-out maps. Identical-row Adaptive16 decision regret changes from 2.93389274 to 2.93836688 (+0.15%, slightly worse); MAE changes from 8.17038 to 8.15522. This is a research checkpoint, not stable promotion. Markets are unmeasured; Guard balancing is off. No spatial inference features were added.
+
+## Focused release qualification
+
+SIM_REVISION90; save version180; replay acceptance floor180; durable save floor58. Adaptive state layout remains178. Threshold16000 milli direction-cost, H128 offsets8..127, minimum8, publication8, no maximum age. Generic twelve-feature deterministic integer inference is unchanged apart from fitted coefficients.
+
+Ordinary release Mac arm64 Apple Clang21 and Linux x86_64 GCC13.3 builds passed. Exact commands, flags, dependencies and source inputs are in BUILD-REQUEST/NATIVE-BUILD-INPUTS and scripts/logs. No fast/PCH/unity performance build was used. Numerical qualification passed530 bounded UBSan/Python/C++ parity vectors;17 golden cases were regenerated and independently verified;21 AdaptiveGradientState/ReplayStepCounter tests and the simulation-version check passed. Seven actual runtime executions on each platform yielded28 matching checksum/save pairs and8 matching diagnostic CSV pairs. Fresh observer/thread checks and mature save continuation passed. Windows, browser, mobile and unrelated full native suites were not repeated for this coefficient-only checkpoint.
+
+An initial old179-input versus new180-checkpoint raw checksum comparison failed because loaded MapHeader version participates in checksums. Independently parsed headers explain an exact XOR0xc0000; snapshots and final save bytes already matched. The actual corrected proof resaved the old input to180 after one tick, then compared independently executed180 checkpoint suffixes:512 raw world and513 snapshot entries matched, and all three final saves matched byte-for-byte. Original failures and the rejected zero-tick setup are preserved. No engine checksum masking, state change or production fix was introduced to obtain this result. See HEADER-METADATA-DIAGNOSIS and runtime MATURE-CONTINUITY receipts.
+
+## Performance and quality
+
+Only mac-comparison is the completed timing study. Three previously examined mature saved states,8192 additional ticks each, four balanced old/new repetitions,24 clean timing runs plus six separate diagnostic repeats. Both ordinary release binaries used identical assets and resolved libraries. Timing commands disable probe, work, compute telemetry and checksum tracing. Within-model repeat and observer final-checksum/tick gates passed. Earlier Dev and traced-Mac attempts are explicitly retired and excluded.
+
+New versus previous model CPU/tick:4FFA +3.98% worse;8FFA -4.36%;2v2 -1.90%. Pooled engine CPU/tick -1.39%; whole-process CPU21.895735 to21.648468 seconds (-1.13%); each arm98304 ticks; wall23.229343 to23.377694 seconds (+0.64%); pooled throughput4231.89 to4205.03 ticks/s (-0.63%). Paired aggregate repeat changes include one regression; this is a small mixed result, not a general performance win or thermal/isolation claim.
+
+Separate diagnostics show movement cost/observation roughly flat on4FFA, -24.1% on8FFA, +51.2% worse on2v2. Stall rates4FFA0.500% to0.189%;8FFA6.809% to5.492%;2v2 0.443% to1.538%. Query exposures differ, and planning errors remain separate; these are observed trajectories, not counterfactual labels or new held-out generalization. The full per-state/family/work and timing tables and uncertainty limits are in mac-comparison/README.md and SUMMARY.json.
+
+## Raw evidence
+
+runtime-files.json maps original relative paths to exact content-addressed objects in runtime-objects.tar.gz (sha256/<hash>). Commands, results, world/snapshot checksums, saves and diagnostic CSVs retain their original bytes. The manifest explicitly records excluded redundant diagnostic game.replay.checksums streams with original hashes; world/snapshot streams and final parity remain available. Profile preferences are excluded. SHA256.json covers published files. The gate, model, header, first actual fleet admissions and fit comparison accompany this evidence. Mac training remains disabled; remote research collection continues on the shared48-slot budget.

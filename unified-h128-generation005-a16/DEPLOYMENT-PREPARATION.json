@@ -1,0 +1,17 @@
+{
+  "status": "WAITING-QUALIFIED-FINAL-GEN005",
+  "expected_native_source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "expected_sim_revision": 90,
+  "expected_save_version": 180,
+  "expected_replay_floor": 180,
+  "expected_save_floor": 58,
+  "expected_threshold_milli": 16000,
+  "expected_model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "expected_header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "qualified_linux_bundle_metadata": "linux-bundles.json",
+  "post_qualification_receipt": "POST-QUALIFICATION.json",
+  "expected_post_qualification_status": "SOURCE-PUSHED-QUALIFIED-MAC",
+  "authorization": "Explicit parent continue authorization; dispatch only after exactnative,gate,bundles,and post-qualification source push+Mac pass receipt",
+  "remote_slots": 48,
+  "mac_slots": 0
+}

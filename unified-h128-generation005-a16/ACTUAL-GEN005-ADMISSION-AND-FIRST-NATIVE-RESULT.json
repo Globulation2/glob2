@@ -1,0 +1,81 @@
+{
+  "utc": "2026-10-19T15:31:29.005311+00:00",
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "qualified_gate_sha256": "a78ecaa5537f2a377f576186af4219f67de1cfcc1377a07cd4c11aa95c175991",
+  "expected_linux_elf_sha256": "5a5c74ece56f23507f137a871b076dbbc667c741b83f60caeee0174ed0c6e7fe",
+  "first_completed_native_results": [
+    {
+      "job": "116efdb866ec301b",
+      "attempt": "a020d5f92dc048f0875e3b7cb15358ed",
+      "host": "pharaoh-dev-1.local",
+      "native_artifact_sha256": "20e8addce572fa204f7c183184f98b460038012a0d771ebb6c2d4478241e8ef5",
+      "native_policy": {
+        "contract": "unified-gradient-h128-v2",
+        "collector_contract": "unified-gradient-spatial-h128-v3",
+        "model_trained": true,
+        "threshold_milli_direction_cost": 16000,
+        "prediction_horizon_ticks": 128,
+        "minimum_interval": 8,
+        "demanded_age_cap": null,
+        "mode": "shared-adaptive-model",
+        "spatial_overlap_collection": true,
+        "quality_collection": true
+      },
+      "ticks": 31298,
+      "bundle": "af9fc78ffb6653e23b5b7bb2890b0c06adae6db0ada498ff09b82c1d97eb5a63",
+      "bound_model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+      "bound_header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+      "model_hash_attestation": "Qualified immutable ELF+bundle/job identity, not a field printed by native result"
+    },
+    {
+      "job": "c3786a74c112e097",
+      "attempt": "7b26f2ddfdd44c448c5231c66bde4b3e",
+      "host": "pharaoh-dev-1.local",
+      "native_artifact_sha256": "d780bf309f01ef9320869c464647237895c946502b041eb6d157ce060219ab4a",
+      "native_policy": {
+        "contract": "unified-gradient-h128-v2",
+        "collector_contract": "unified-gradient-spatial-h128-v3",
+        "model_trained": true,
+        "threshold_milli_direction_cost": 16000,
+        "prediction_horizon_ticks": 128,
+        "minimum_interval": 8,
+        "demanded_age_cap": null,
+        "mode": "shared-adaptive-model",
+        "spatial_overlap_collection": true,
+        "quality_collection": true
+      },
+      "ticks": 20482,
+      "bundle": "af9fc78ffb6653e23b5b7bb2890b0c06adae6db0ada498ff09b82c1d97eb5a63",
+      "bound_model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+      "bound_header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+      "model_hash_attestation": "Qualified immutable ELF+bundle/job identity, not a field printed by native result"
+    }
+  ],
+  "actual_total_remote_engines": 48,
+  "actual_engines_by_experiment": {
+    "gradient-7cdcf09e7c712271a59ef7fd": 40,
+    "gradient-b561d986077d41310f64de37": 8
+  },
+  "host_actual_by_experiment": {
+    "therig.local": {
+      "gradient-7cdcf09e7c712271a59ef7fd": 32
+    },
+    "devlaptop.local": {
+      "gradient-7cdcf09e7c712271a59ef7fd": 8
+    },
+    "pharaoh-dev-1.local": {
+      "gradient-b561d986077d41310f64de37": 4
+    },
+    "pharaoh-dev-2.local": {
+      "gradient-b561d986077d41310f64de37": 4
+    }
+  },
+  "candidate_physically_running_hosts": [
+    "pharaoh-dev-1.local",
+    "pharaoh-dev-2.local"
+  ],
+  "candidate_queued_other_hosts": "Rig/Dev slots still occupied by fixed exploration; candidate admissions wait in SAME shared worker roots, not an independent48 pool",
+  "caps_all1800": true,
+  "mac_collection_engines": 0,
+  "health_receipt_sha256": "0369bc97e7cc4c2b9517e75c2936ddb53dd8dee6231a50c9af902011583314e8"
+}

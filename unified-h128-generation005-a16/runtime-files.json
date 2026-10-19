@@ -1,0 +1,2877 @@
+{
+  "files": [
+    {
+      "path": "runtime-macos/MATURE-CONTINUITY.json",
+      "sha256": "26ee685775a69c6ed068812eac016a8557304046f6d9ece4876af1aacdf739a9",
+      "size": 745
+    },
+    {
+      "path": "runtime-macos/REJECTED-ZERO-TICK-SETUP.json",
+      "sha256": "110b80c2ce16da07b345f828eb995860c0735c8d168bde523049abf045f16b24",
+      "size": 233
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/artifacts.json",
+      "sha256": "b3a6c332fa78bf26fd74268cc5a90fca662244317058d9b506323ba5ef51b477",
+      "size": 529
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/checkpoint-17920.game.gz",
+      "sha256": "754671c4349bc9e6f8a97d02ec42ae0dc02a93b88dea5a1c61e1ff80aa43fea0",
+      "size": 592019
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/checkpoint-18432.game.gz",
+      "sha256": "950ae1d7f6423d5f8a5524f73959e31d3affc49e991fdee127f1f2afd9045a1f",
+      "size": 530665
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/command.json",
+      "sha256": "b796027495690e3269439302934f04f328195115043acb6dfff8115d67a277b2",
+      "size": 799
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/game.replay",
+      "sha256": "ce83dea077bd8e90a8bb1bdbcee2a31471e4d752e1ea4375a775d3cfe483c83a",
+      "size": 7615837
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/game.replay.checksums",
+      "sha256": "1da3ab34fe3cfc30c1796250ca062a9aaf2f34ed1c5cd4a713df46c850572c19",
+      "size": 48676464
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/progress.jsonl",
+      "sha256": "d9cec36694d40276fee34311038e34e510d963b7d5b5ae8df90fe148647f5e82",
+      "size": 136
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/result.json",
+      "sha256": "d1a9e3d583874bdf511aad43f10b12e6add515e28e1ac792eadaad6e3b82d250",
+      "size": 18270
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/snapshot.checksums",
+      "sha256": "ccd5f4c3c8b569612752145eace59c093f95c1e22bbb11ed8a3fa1ea95f62ff3",
+      "size": 23296
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/stdout.log",
+      "sha256": "8aa5b4a004ea4b04f8abfeb4f9fc11cccb34ddb405a032efbf18e2fc16eae29a",
+      "size": 755
+    },
+    {
+      "path": "runtime-macos/header180-control-from17409/world.checksums",
+      "sha256": "45dba98b0fa54325ab36c8449c32a927b85fa1faabad0091ccf20d8a409bd69d",
+      "size": 17128
+    },
+    {
+      "path": "runtime-macos/input-job.json",
+      "sha256": "635faac3032302fc16b8cd8f953fde6dd1e63d89ddf1cef825f57cd7413b7f1e",
+      "size": 4268
+    },
+    {
+      "path": "runtime-macos/map.map.gz",
+      "sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+      "size": 23226
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/artifacts.json",
+      "sha256": "53346852eafb9b754325452a727ecd03ecd3bd912cdfa6251b8a685bfedec9bd",
+      "size": 476
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/checkpoint-18432.game.gz",
+      "sha256": "82a35b73f1333b707c00bce6a6955219584119813df68eb457704aa4687ad73d",
+      "size": 530665
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/command.json",
+      "sha256": "1e8ba6b1c5c5dd34b41eee4b2ea992489e8f626e8d11aa8695d84932aa282d2b",
+      "size": 801
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/game.replay",
+      "sha256": "05c5f3804347f36e9cb36616cbb7f1c50bc34d41f2137ecefff2bfc8228e4b4e",
+      "size": 6294603
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/game.replay.checksums",
+      "sha256": "e1792497fee4184cb5ed413dd334d1713cdb4e147d71fb65a3e3147f91e4caf1",
+      "size": 25021720
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/progress.jsonl",
+      "sha256": "f805009391864b9a357ecd2ef35ad9499e6a3a72fc0bea4236da702e7a52e31a",
+      "size": 68
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/result.json",
+      "sha256": "8453ed67325cd1060448b7e34b40459d066220fe9b13232b80e1e5da17431219",
+      "size": 18254
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/snapshot.checksums",
+      "sha256": "3adfd76422d261ddf068e3109bddf6c3f0abe0c623d535616008625a12e9106d",
+      "size": 11663
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/stdout.log",
+      "sha256": "8b1648ed28ab13fe17bbda2a12c657577930aaae262b5c4498ecf0aeb490353e",
+      "size": 576
+    },
+    {
+      "path": "runtime-macos/new180-continuation-t1/world.checksums",
+      "sha256": "b1e2422bb5a2a786188102d375b46a344bd7c646e9da4183eeaba031368453ba",
+      "size": 8566
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/artifacts.json",
+      "sha256": "fb80d6e54e70780f0b0ed2c8eaa956e75e2c623334125deccd77a9ff8c4a5231",
+      "size": 529
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/checkpoint-17920.game.gz",
+      "sha256": "e805feff723fa3bcd1ade2132ebd252163b41a08efd568b7fd45ca1c66cca384",
+      "size": 592019
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/checkpoint-18432.game.gz",
+      "sha256": "950ae1d7f6423d5f8a5524f73959e31d3affc49e991fdee127f1f2afd9045a1f",
+      "size": 530665
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/command.json",
+      "sha256": "f3ba44e2f59914ae7cc6297d2d354f88c3c110aad80604e0dff1f1f6b121cb15",
+      "size": 789
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/game.replay",
+      "sha256": "3bb27f5719c36bd67b20981eef4697c2097cc2403812968a341c3891f754f746",
+      "size": 7718071
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/game.replay.checksums",
+      "sha256": "10f660a4ac54a4e588a0e421f7870631a77750f5414990d91bba84d5f2b800b4",
+      "size": 48722528
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/progress.jsonl",
+      "sha256": "d9cec36694d40276fee34311038e34e510d963b7d5b5ae8df90fe148647f5e82",
+      "size": 136
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/result.json",
+      "sha256": "bd1f5efa728e9aebca1077c7c3f9418483d95f8ae44253d87f1821296b2bd644",
+      "size": 18270
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/snapshot.checksums",
+      "sha256": "8c5fd47255b49291df314076dd6fc25bc913b0a8145b9e7ba079973c487cd039",
+      "size": 23319
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/stdout.log",
+      "sha256": "b27490419b159a3a678ef52e3bf45440bd8253d564d0f5c2f3fbb7efcf4bae39",
+      "size": 749
+    },
+    {
+      "path": "runtime-macos/old179-mature-t1-probeoff/world.checksums",
+      "sha256": "0d24da4a567ccc4555c9aa6c42f54a78ed6b80ae1cc65d04ffd41132df6d7d34",
+      "size": 17145
+    },
+    {
+      "path": "runtime-macos/qualify-header-aligned.py",
+      "sha256": "d5406a38fade3b345c0c5c7d22f704734fcfc6b5975aaeec1a0232da7d8f80c4",
+      "size": 3211
+    },
+    {
+      "path": "runtime-macos/qualify.py",
+      "sha256": "3ea9feea0fcbca329dde57b779127c979e7473b72cf76e4ea4f43e6c8bf62976",
+      "size": 3506
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/artifacts.json",
+      "sha256": "70f1176c05bb5358e5c5ff86038f9bbba239859223fc18d55e16d5cf79212ebe",
+      "size": 380
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/command.json",
+      "sha256": "d53b440bcf4021a71142139ef4dfa7cbc0ff8c544d1b3fc39e30911116e9923e",
+      "size": 787
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/final.game.gz",
+      "sha256": "38d97a0101985723044c2b342341b88ebf0715ca990a06d923e0ae289c34e371",
+      "size": 506146
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/game.replay",
+      "sha256": "8eed2028b056ab73ecd029b8b9edc95494ab3257c7f7d58ad48808405294b612",
+      "size": 4503195
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/game.replay.checksums",
+      "sha256": "4179c3c1adf4d647481bb236b39d59f7bf50079bb86ba8277f1a4b59c53cff22",
+      "size": 46084
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/result.json",
+      "sha256": "d64516e466451122fba96a760a24112940e27246862263c70e05c2d0904d6650",
+      "size": 18009
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/snapshot.checksums",
+      "sha256": "3e588b01e8e99bbb0ee3640ddb5f2bdca1629dce7a334f6585c4695dbc67a4e8",
+      "size": 46
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/stdout.log",
+      "sha256": "c268be0716cb9aaa6b670c5cce4e7907eb4de7f08f55d92f52d6245ac5b589fb",
+      "size": 411
+    },
+    {
+      "path": "runtime-macos/resave179-as180-one-tick/world.checksums",
+      "sha256": "e247f9ad6f2500cd68055156204079e2bbd75b1b480487f63f63d0fe58c4180f",
+      "size": 17
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/artifacts.json",
+      "sha256": "781757fd6cd370445cbad0d737704f2f9ae52741a42e2fd9bce2e8cae3f72533",
+      "size": 215
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/command.json",
+      "sha256": "5274cd517958c40fecbb0c90b151d30c894871a211148afb5d262cae90fa2a41",
+      "size": 791
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/game.replay.checksums",
+      "sha256": "91b288c940b8065b5a59794510b0be8f1ba43c599c57f7e1bf5d64ddaf5f3081",
+      "size": 20
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/result.json",
+      "sha256": "731ac55a4c1373ecfb85c61b7c968a05827ee3ddb14483543ef9228a568a19af",
+      "size": 101
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/stderr.log",
+      "sha256": "c13b2bb97e9d6668db632b1e24e817635798eb6b43572db030f490e5ce0d2d3b",
+      "size": 98
+    },
+    {
+      "path": "runtime-macos/resave179-as180-zero-ticks/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "runtime-macos/status.json",
+      "sha256": "bd5c79ac6038c2feafdd6148b93c8419ee30060f57a1b99ece1d7b0724590341",
+      "size": 4039
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/artifacts.json",
+      "sha256": "0a83055c359f22b56158886dca17a331f4f889672ef934f5597730c5d380cce6",
+      "size": 524
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/command.json",
+      "sha256": "ce9c07f3766eca02141ad6b57faff1c0077adf149bb0c9f972b4b40c6e9405f7",
+      "size": 850
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/result.json",
+      "sha256": "15fca05ee705abab7c4514232d606a585c947b381b134abbfb0322baa1a33863",
+      "size": 13342
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/stdout.log",
+      "sha256": "34e0afaa260d21e34dd0398949e740fbf94f539df8a6c61f8d1ac1f56fd1aed7",
+      "size": 685
+    },
+    {
+      "path": "runtime-macos/t1-probeoff/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "runtime-macos/t1-probeon/artifacts.json",
+      "sha256": "4be14ed989f9445131677c48f59b78029d95df19b34fa14372f256cc4aae378b",
+      "size": 722
+    },
+    {
+      "path": "runtime-macos/t1-probeon/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t1-probeon/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-macos/t1-probeon/command.json",
+      "sha256": "dcd0b81d9639fbbdb960841594b9a8326d2612d96cd1f4fab7bcec0150782da1",
+      "size": 879
+    },
+    {
+      "path": "runtime-macos/t1-probeon/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t1-probeon/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-macos/t1-probeon/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-macos/t1-probeon/gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7",
+      "size": 469
+    },
+    {
+      "path": "runtime-macos/t1-probeon/gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8",
+      "size": 4615
+    },
+    {
+      "path": "runtime-macos/t1-probeon/gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484",
+      "size": 286774
+    },
+    {
+      "path": "runtime-macos/t1-probeon/gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad",
+      "size": 9631
+    },
+    {
+      "path": "runtime-macos/t1-probeon/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/t1-probeon/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/t1-probeon/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-macos/t1-probeon/result.json",
+      "sha256": "dbf8c80d694cabb84d29aa29073f16dd2aebcdae595acf764831b12cc651a580",
+      "size": 13341
+    },
+    {
+      "path": "runtime-macos/t1-probeon/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-macos/t1-probeon/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/t1-probeon/stdout.log",
+      "sha256": "d9b461d637068b97e858b6a2afa8368e3805e3997cd729e2a76a6ab5f0b87ab5",
+      "size": 682
+    },
+    {
+      "path": "runtime-macos/t1-probeon/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "runtime-macos/t4-probeon/artifacts.json",
+      "sha256": "9f2d788bb582c2aa8a01a7ea378a631ec8679cb457459dab7803f96c63ce3c9f",
+      "size": 722
+    },
+    {
+      "path": "runtime-macos/t4-probeon/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t4-probeon/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-macos/t4-probeon/command.json",
+      "sha256": "b7c687acea04d6346e930fd33d21c649bddfad850e95b5c4f3c8deec93444891",
+      "size": 879
+    },
+    {
+      "path": "runtime-macos/t4-probeon/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-macos/t4-probeon/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-macos/t4-probeon/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-macos/t4-probeon/gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7",
+      "size": 469
+    },
+    {
+      "path": "runtime-macos/t4-probeon/gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8",
+      "size": 4615
+    },
+    {
+      "path": "runtime-macos/t4-probeon/gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484",
+      "size": 286774
+    },
+    {
+      "path": "runtime-macos/t4-probeon/gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad",
+      "size": 9631
+    },
+    {
+      "path": "runtime-macos/t4-probeon/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-macos/t4-probeon/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-macos/t4-probeon/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-macos/t4-probeon/result.json",
+      "sha256": "ba4e86003f69c44d74c11beaebf265a1a2e78fcd28e61cbde330e810c04355f0",
+      "size": 13344
+    },
+    {
+      "path": "runtime-macos/t4-probeon/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-macos/t4-probeon/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-macos/t4-probeon/stdout.log",
+      "sha256": "3278044e55a1980a0387f9352d18a620d888eea08c357e4b120b192aa63faa66",
+      "size": 682
+    },
+    {
+      "path": "runtime-macos/t4-probeon/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "runtime-linux/MATURE-CONTINUITY.json",
+      "sha256": "26ee685775a69c6ed068812eac016a8557304046f6d9ece4876af1aacdf739a9",
+      "size": 745
+    },
+    {
+      "path": "runtime-linux/ORIGINAL-FIVE-RUN-STATUS.json",
+      "sha256": "b4a8fae70acd0e14a4b927fdaa2e1a533193b6ae45efbe26addfe41451a15371",
+      "size": 2973
+    },
+    {
+      "path": "runtime-linux/REJECTED-ZERO-TICK-SETUP.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size": 3
+    },
+    {
+      "path": "runtime-linux/header-aligned.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/artifacts.json",
+      "sha256": "6cbe128f29462f726143e2ce7c03f0a6f8139ec3ca24a8b333e1e26e8e62f012",
+      "size": 529
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/checkpoint-17920.game.gz",
+      "sha256": "754671c4349bc9e6f8a97d02ec42ae0dc02a93b88dea5a1c61e1ff80aa43fea0",
+      "size": 592019
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/checkpoint-18432.game.gz",
+      "sha256": "950ae1d7f6423d5f8a5524f73959e31d3affc49e991fdee127f1f2afd9045a1f",
+      "size": 530665
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/command.json",
+      "sha256": "fd6507809e023a3217a23ca874c08899d97cd4d7f3cc107c05f4bee3d3983d95",
+      "size": 798
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/game.replay",
+      "sha256": "ce83dea077bd8e90a8bb1bdbcee2a31471e4d752e1ea4375a775d3cfe483c83a",
+      "size": 7615837
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/game.replay.checksums",
+      "sha256": "1da3ab34fe3cfc30c1796250ca062a9aaf2f34ed1c5cd4a713df46c850572c19",
+      "size": 48676464
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/progress.jsonl",
+      "sha256": "d9cec36694d40276fee34311038e34e510d963b7d5b5ae8df90fe148647f5e82",
+      "size": 136
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/result.json",
+      "sha256": "ec161fe3139cd80b022afebad2c6eac2dc72c13b16fe5ed4815dd96c725aeefe",
+      "size": 18270
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/snapshot.checksums",
+      "sha256": "ccd5f4c3c8b569612752145eace59c093f95c1e22bbb11ed8a3fa1ea95f62ff3",
+      "size": 23296
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/stdout.log",
+      "sha256": "6dc19a77f14cd56dbabf0f50338fb7fd1264efedd8a15293951b4c81886ecaae",
+      "size": 752
+    },
+    {
+      "path": "runtime-linux/header180-control-from17409/world.checksums",
+      "sha256": "45dba98b0fa54325ab36c8449c32a927b85fa1faabad0091ccf20d8a409bd69d",
+      "size": 17128
+    },
+    {
+      "path": "runtime-linux/input-job.json",
+      "sha256": "635faac3032302fc16b8cd8f953fde6dd1e63d89ddf1cef825f57cd7413b7f1e",
+      "size": 4268
+    },
+    {
+      "path": "runtime-linux/map.map.gz",
+      "sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+      "size": 23226
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/artifacts.json",
+      "sha256": "8c9398976ec1ef2b3ce98a2c1b86f95c6ef96ae37f961ec0bac35245c6760e43",
+      "size": 476
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/checkpoint-18432.game.gz",
+      "sha256": "82a35b73f1333b707c00bce6a6955219584119813df68eb457704aa4687ad73d",
+      "size": 530665
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/command.json",
+      "sha256": "fdff40ef8339d5ee0e832dce4814b6491433e30524971814a4578113f40d6655",
+      "size": 800
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/game.replay",
+      "sha256": "05c5f3804347f36e9cb36616cbb7f1c50bc34d41f2137ecefff2bfc8228e4b4e",
+      "size": 6294603
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/game.replay.checksums",
+      "sha256": "e1792497fee4184cb5ed413dd334d1713cdb4e147d71fb65a3e3147f91e4caf1",
+      "size": 25021720
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/progress.jsonl",
+      "sha256": "f805009391864b9a357ecd2ef35ad9499e6a3a72fc0bea4236da702e7a52e31a",
+      "size": 68
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/result.json",
+      "sha256": "e3274b3e9d8326323cf2eefa825f401cb3799aef27ec74a71a79d4e58110fd1e",
+      "size": 18255
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/snapshot.checksums",
+      "sha256": "3adfd76422d261ddf068e3109bddf6c3f0abe0c623d535616008625a12e9106d",
+      "size": 11663
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/stdout.log",
+      "sha256": "aed2204bf61dba2a7ddc4a1e966ce7644c34b273a9f01521f6c88c7713e8d988",
+      "size": 574
+    },
+    {
+      "path": "runtime-linux/new180-continuation-t1/world.checksums",
+      "sha256": "b1e2422bb5a2a786188102d375b46a344bd7c646e9da4183eeaba031368453ba",
+      "size": 8566
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/artifacts.json",
+      "sha256": "3d40280cc80821b0dd96b4099e8d2eaee077dddd5343636edb0420c808be3ca1",
+      "size": 529
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/checkpoint-17920.game.gz",
+      "sha256": "e805feff723fa3bcd1ade2132ebd252163b41a08efd568b7fd45ca1c66cca384",
+      "size": 592019
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/checkpoint-18432.game.gz",
+      "sha256": "950ae1d7f6423d5f8a5524f73959e31d3affc49e991fdee127f1f2afd9045a1f",
+      "size": 530665
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/command.json",
+      "sha256": "74b3ba5cadc7083efc686000992fa9aceaf9b9c3219013d8e15e8fd4166069f0",
+      "size": 793
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/final.game.gz",
+      "sha256": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16",
+      "size": 530664
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/game.replay",
+      "sha256": "3bb27f5719c36bd67b20981eef4697c2097cc2403812968a341c3891f754f746",
+      "size": 7718071
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/game.replay.checksums",
+      "sha256": "10f660a4ac54a4e588a0e421f7870631a77750f5414990d91bba84d5f2b800b4",
+      "size": 48722528
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/progress.jsonl",
+      "sha256": "d9cec36694d40276fee34311038e34e510d963b7d5b5ae8df90fe148647f5e82",
+      "size": 136
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/result.json",
+      "sha256": "3d9fa7e121b6fac5378b18d07d1c8c01cf29362c91c693589c4727d8615a1751",
+      "size": 18270
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/snapshot.checksums",
+      "sha256": "8c5fd47255b49291df314076dd6fc25bc913b0a8145b9e7ba079973c487cd039",
+      "size": 23319
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/stdout.log",
+      "sha256": "0a20821c08b8cffc6a47fd23e736e177cb619351ef8e41ffdcb783248f5f312e",
+      "size": 746
+    },
+    {
+      "path": "runtime-linux/old179-mature-t1-probeoff/world.checksums",
+      "sha256": "0d24da4a567ccc4555c9aa6c42f54a78ed6b80ae1cc65d04ffd41132df6d7d34",
+      "size": 17145
+    },
+    {
+      "path": "runtime-linux/qualify-header-aligned.py",
+      "sha256": "df508081c1348968e2442ab21b6a8d49b61e07f5648f8c67aa564c32345e6c94",
+      "size": 3463
+    },
+    {
+      "path": "runtime-linux/qualify.py",
+      "sha256": "ba6aa79b7372b93db992b2d87de3eac485fc15476ead68fccfe51a58911801ce",
+      "size": 3331
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/artifacts.json",
+      "sha256": "484ef0f5e80e6ab55c36f072f39317547577993d0ada85012604b07b63fdc52e",
+      "size": 380
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/command.json",
+      "sha256": "ee82a8cb03e080f1d6946b548ea1a00e95d8ea290ad5bcd8eab95383512db7ab",
+      "size": 791
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/final.game.gz",
+      "sha256": "38d97a0101985723044c2b342341b88ebf0715ca990a06d923e0ae289c34e371",
+      "size": 506146
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/game.replay",
+      "sha256": "8eed2028b056ab73ecd029b8b9edc95494ab3257c7f7d58ad48808405294b612",
+      "size": 4503195
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/game.replay.checksums",
+      "sha256": "4179c3c1adf4d647481bb236b39d59f7bf50079bb86ba8277f1a4b59c53cff22",
+      "size": 46084
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/result.json",
+      "sha256": "40f862641628f653a4f27ee63b183facfd9b97ce08c4df3838a5a862efe450c8",
+      "size": 18009
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/snapshot.checksums",
+      "sha256": "3e588b01e8e99bbb0ee3640ddb5f2bdca1629dce7a334f6585c4695dbc67a4e8",
+      "size": 46
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/stdout.log",
+      "sha256": "e63de8c4491de0e19a4060d209f7b0770c851e811d5122b04f05c6188d65cccd",
+      "size": 410
+    },
+    {
+      "path": "runtime-linux/resave179-as180-one-tick/world.checksums",
+      "sha256": "e247f9ad6f2500cd68055156204079e2bbd75b1b480487f63f63d0fe58c4180f",
+      "size": 17
+    },
+    {
+      "path": "runtime-linux/status.json",
+      "sha256": "6985974e3b0c8e7a35aa86a693ba764c4406d8739d54a82f52ed9d1f5c820172",
+      "size": 4039
+    },
+    {
+      "path": "runtime-linux/supervisor.log",
+      "sha256": "14a07021a9a5342f2fc6123d608e08293e0b5493779f8023b931960e6ea13d09",
+      "size": 437
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/artifacts.json",
+      "sha256": "f5a6624c02f3f051d0158a5e069c9c52c68d0734bef532b0a0f17a9449c5bdb8",
+      "size": 524
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/command.json",
+      "sha256": "27908e59e8de427310342f5505d6c1de0aade76e1a93d436ddc83c63515728c7",
+      "size": 849
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/result.json",
+      "sha256": "91fef1a80c28a78a48586a895917240c7b2ab17df8585e9fb045bafb99a3387d",
+      "size": 13343
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/stdout.log",
+      "sha256": "229cb7cc6f906305cd16ef94fe1011cf0a41da91c2618efd2543ace0146786dd",
+      "size": 682
+    },
+    {
+      "path": "runtime-linux/t1-probeoff/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "runtime-linux/t1-probeon/artifacts.json",
+      "sha256": "107a514f59940b63bdb8d5ade1c680de6defdc8aad02e2f4fe7d37ad78747479",
+      "size": 722
+    },
+    {
+      "path": "runtime-linux/t1-probeon/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t1-probeon/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-linux/t1-probeon/command.json",
+      "sha256": "925acd8423623130a16959d105454c5b2fabbd3fd5211078acc69b56ce5ebbaa",
+      "size": 878
+    },
+    {
+      "path": "runtime-linux/t1-probeon/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t1-probeon/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-linux/t1-probeon/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-linux/t1-probeon/gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7",
+      "size": 469
+    },
+    {
+      "path": "runtime-linux/t1-probeon/gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8",
+      "size": 4615
+    },
+    {
+      "path": "runtime-linux/t1-probeon/gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484",
+      "size": 286774
+    },
+    {
+      "path": "runtime-linux/t1-probeon/gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad",
+      "size": 9631
+    },
+    {
+      "path": "runtime-linux/t1-probeon/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/t1-probeon/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/t1-probeon/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-linux/t1-probeon/result.json",
+      "sha256": "1c9c339b23882a86e2a9660fa74abcff298abed9f9735a3d7411fd5636cddd20",
+      "size": 13341
+    },
+    {
+      "path": "runtime-linux/t1-probeon/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-linux/t1-probeon/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/t1-probeon/stdout.log",
+      "sha256": "1be9ff61b9096699f87e0e40bec5f83cd2a8ac12cc2e67630f8a863bd88a7ae5",
+      "size": 679
+    },
+    {
+      "path": "runtime-linux/t1-probeon/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "runtime-linux/t4-probeon/artifacts.json",
+      "sha256": "9ebcd79d80648a177eb6f67d56a815194318dee04d34b0a6a51b183cb866ed7c",
+      "size": 722
+    },
+    {
+      "path": "runtime-linux/t4-probeon/checkpoint-1024.game.gz",
+      "sha256": "5bd3fbc6a0e2dbdcdf4ef8d4537800542645d6dc8f183fe240d59ebd4fa2416a",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t4-probeon/checkpoint-512.game.gz",
+      "sha256": "fba3c668bf096cce1a7b1a24b6c411ee5d0ee3172c6515d0bcc8304312e6ae26",
+      "size": 80711
+    },
+    {
+      "path": "runtime-linux/t4-probeon/command.json",
+      "sha256": "2700dc433f20631d47c70e795bc0ede2644edeaff5f0e8223231fd4465ebf37d",
+      "size": 878
+    },
+    {
+      "path": "runtime-linux/t4-probeon/final.game.gz",
+      "sha256": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46",
+      "size": 107333
+    },
+    {
+      "path": "runtime-linux/t4-probeon/game.replay",
+      "sha256": "08f43e9e5aaed9c7fce6171c2ae190de14ae72666bd97d3e8c53662747ab3dfe",
+      "size": 3041576
+    },
+    {
+      "path": "runtime-linux/t4-probeon/game.replay.checksums",
+      "sha256": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+      "size": 5691986
+    },
+    {
+      "path": "runtime-linux/t4-probeon/gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7",
+      "size": 469
+    },
+    {
+      "path": "runtime-linux/t4-probeon/gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8",
+      "size": 4615
+    },
+    {
+      "path": "runtime-linux/t4-probeon/gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484",
+      "size": 286774
+    },
+    {
+      "path": "runtime-linux/t4-probeon/gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad",
+      "size": 9631
+    },
+    {
+      "path": "runtime-linux/t4-probeon/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "runtime-linux/t4-probeon/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "runtime-linux/t4-probeon/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "size": 129
+    },
+    {
+      "path": "runtime-linux/t4-probeon/result.json",
+      "sha256": "3c7dc4c810f9fb1f39def0f35fba442176e4d4cbff2b6dbfbfdca2fdec1cd37b",
+      "size": 13344
+    },
+    {
+      "path": "runtime-linux/t4-probeon/snapshot.checksums",
+      "sha256": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+      "size": 18983
+    },
+    {
+      "path": "runtime-linux/t4-probeon/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "runtime-linux/t4-probeon/stdout.log",
+      "sha256": "d429da5aa84ae7413188fdad7614450211da95c30e8e4ffbff8d5b148e325a8f",
+      "size": 679
+    },
+    {
+      "path": "runtime-linux/t4-probeon/world.checksums",
+      "sha256": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+      "size": 15015
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/COMMAND.json",
+      "sha256": "46c8a731ddb715dead0d6ccee180786c9ae26f3b1aa23209c985af79227e6234",
+      "size": 82131
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/MEASUREMENT.json",
+      "sha256": "0547380f6698433fda26baca412cf31f6ace71db6da582099d92da35b6dc03db",
+      "size": 164206
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/artifacts.json",
+      "sha256": "ff357ec34a3db8421d0648b89bfd62aeaa1980499b2756d472edc29a8387082b",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/result.json",
+      "sha256": "62ad8712bb2882a30acc4d4c2967f7e8d02add579888722bbc8c304b768635b9",
+      "size": 19380
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/00-off-66294c58700ef1b4-gen004-r0/stdout.log",
+      "sha256": "f002795bc5ac89d3014cc7a75aa2c628a6ea0b3d57534cbfeb15a959cf9fc3c1",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/COMMAND.json",
+      "sha256": "136905d5d8e364ae36b3540b5e8e06b833ffded61962462e02288aafe87310e6",
+      "size": 82120
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/MEASUREMENT.json",
+      "sha256": "2e8e6af52d301a34d917a1a58b757c0517233d072b14408963365a0c09f47788",
+      "size": 164292
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/artifacts.json",
+      "sha256": "f95774939ce7bc50557c65f80c76a01a5658bf29b2ace1b65859bbb4be6980f0",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/result.json",
+      "sha256": "d27284ef92518d906c69b954b4fc974f61d321700acd555e13a45309a7828942",
+      "size": 19387
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/01-off-66294c58700ef1b4-gen005-r0/stdout.log",
+      "sha256": "84640ff3be7dec9c031937f4829ce6b2f276e36468e58e9bf26b0961e0514273",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/COMMAND.json",
+      "sha256": "93d9bfe8ce9944b3ce68dd898ef44fab1d71852e392a33cf26932baa8e6ad253",
+      "size": 82225
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/MEASUREMENT.json",
+      "sha256": "100713e0a23fd5e8820c1df4d5913fe7b63a49487054cce467ea50190337ddc3",
+      "size": 257788
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/artifacts.json",
+      "sha256": "88d6619206214924afce2b901e6bea39b858f6bbc586b631b3cd4e27bb789ec1",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/result.json",
+      "sha256": "590669f8cd597b8718f6b6ea84e591ef43926fec7ce46976ce4eb7003f001de2",
+      "size": 53713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/02-off-1d043310cbecdceb-gen004-r0/stdout.log",
+      "sha256": "106fe17d14ef2ae57e3970fa004705eec7dd1e2d03a31240e8bc390ea40c65dd",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/COMMAND.json",
+      "sha256": "eea8672e74090d0cdb691afeb4cd1666a21e0c7ca4d32691f07915a5fe455374",
+      "size": 82121
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/MEASUREMENT.json",
+      "sha256": "9396f171d14df3532c844569e403e4ef48bd4f8ba8eb88aa76c0ab55fc637889",
+      "size": 257706
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/artifacts.json",
+      "sha256": "46f26bfd6ed1e3772be330583a25e8a56f1c667f80e99139ae2852dbb9584e6b",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/result.json",
+      "sha256": "ebee1e23833eb3e1e1b37060739d132993470a625f1b7dbd3d94c67ae8f00c82",
+      "size": 53715
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/03-off-1d043310cbecdceb-gen005-r0/stdout.log",
+      "sha256": "456dfc85b19da738778adcd9e551c84898c57f00018d8a2d4682609a51a61639",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/COMMAND.json",
+      "sha256": "a9101a68b78ac7709476b758ad2439a1b42770720b8508fd594a7050dbfc2c90",
+      "size": 82131
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/MEASUREMENT.json",
+      "sha256": "4323f3fcda37574d27a13664a88809141687954125304893d1a4e75394243bc4",
+      "size": 209887
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/artifacts.json",
+      "sha256": "9e3633b16da9059f0de50c5a619d4ab0769d288f741c82aa9d0d2964efa6965b",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/result.json",
+      "sha256": "3f197592b9fe1e737bb8b1a5dd2007d5f409a4fa98002dfba2e312358e7123b0",
+      "size": 65086
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/04-off-0083541d8ee4d18b-gen004-r0/stdout.log",
+      "sha256": "495dff9144583299d5cc745a3ac4412fa3efbe9465d890045bb81eff75a2e320",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/COMMAND.json",
+      "sha256": "0f969fa0c01127818c499e38bd5087b7bc69caaebd506bb44cd42613958125d1",
+      "size": 82118
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/MEASUREMENT.json",
+      "sha256": "e8a5874cc832a8f17a51dd5cf137658ccd7bb9e698e454704f85e9a7a0549303",
+      "size": 209895
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/artifacts.json",
+      "sha256": "49f36669eab9b7bc2106c1db1e1233c75e5a8fbc1c782a49acb3a0a81c350fca",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/result.json",
+      "sha256": "edd1884e3ac86d776b5685827ed6b3883d4324088c957e10d2bed1dfffeeb679",
+      "size": 65086
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/05-off-0083541d8ee4d18b-gen005-r0/stdout.log",
+      "sha256": "4e782656b7362b302a0b4b3dccfd720837bf23c2c4903208709ad420663f9f55",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/COMMAND.json",
+      "sha256": "ea574bd5462a5db4a3fc0bdfbe8158b566fbb8b9f40f897baeaafe8a8d7a947e",
+      "size": 82118
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/MEASUREMENT.json",
+      "sha256": "2dae3b788f51ca2dd1a83b1b5e9ee83358f4190144958d01a4316cd216726d49",
+      "size": 257713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/artifacts.json",
+      "sha256": "e0f1913dbff202867fc7110822af2d701ae0b860b4e727cf448351a44d8b04d4",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/result.json",
+      "sha256": "7e205d10d29970489352b4170bbde3ce99fbd5ee180f85f97105a0e94ff453ee",
+      "size": 53718
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/06-off-1d043310cbecdceb-gen005-r1/stdout.log",
+      "sha256": "456dfc85b19da738778adcd9e551c84898c57f00018d8a2d4682609a51a61639",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/COMMAND.json",
+      "sha256": "4465102b1a9543da4bc5369dcead953cf1e8b3ff06e8d5f11a19290611841956",
+      "size": 82133
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/MEASUREMENT.json",
+      "sha256": "5939e68c1969c40d61b6aab52ae803883a151b629a9860827bccc4cb291ff5d2",
+      "size": 257698
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/artifacts.json",
+      "sha256": "aa8201c6fac2a75fde796882099e4fa031163b0de6ac508bf9088377f4532dd9",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/result.json",
+      "sha256": "afa384a78a40fb3008f8f3a16f1085d991fea9cc4fcb2532be93356bfeaf152c",
+      "size": 53713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/07-off-1d043310cbecdceb-gen004-r1/stdout.log",
+      "sha256": "106fe17d14ef2ae57e3970fa004705eec7dd1e2d03a31240e8bc390ea40c65dd",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/COMMAND.json",
+      "sha256": "9ec005ec2c1418aba42ad5b62873932855d4832ef9f757eb3dde1e78e267fe18",
+      "size": 82121
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/MEASUREMENT.json",
+      "sha256": "01cc716d72e8bfbcbcb0eab37a7e6307a64ee981b5547b3d72d44bea6fa265c8",
+      "size": 209885
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/artifacts.json",
+      "sha256": "21db2dc7e857df88ea9e383d80a4a7be34fdecf6d641a20ea00575d0894e45cd",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/result.json",
+      "sha256": "c66d7e780d872ccb66287814813580f1b92612dc9ffe226429de8926d22f80c5",
+      "size": 65089
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/08-off-0083541d8ee4d18b-gen005-r1/stdout.log",
+      "sha256": "4e782656b7362b302a0b4b3dccfd720837bf23c2c4903208709ad420663f9f55",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/COMMAND.json",
+      "sha256": "7630736ef72faeb2bc828a39d0e29e717d0bb4c77cc22312290756e10db7c6d5",
+      "size": 82130
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/MEASUREMENT.json",
+      "sha256": "64257de7ec6407070f242c0395865ba5a01ce36c5efcdece87bc9d78c0b75f82",
+      "size": 209876
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/artifacts.json",
+      "sha256": "74ea6059faa42b17ffc38aa1e4362ea4c2e17b8a93b96fb8e7628ef7e91f3cfc",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/result.json",
+      "sha256": "694a843b8f1474d9887e67c959706e5758d7e83b69ccfb8600bcc1c79421358e",
+      "size": 65089
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/09-off-0083541d8ee4d18b-gen004-r1/stdout.log",
+      "sha256": "495dff9144583299d5cc745a3ac4412fa3efbe9465d890045bb81eff75a2e320",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/COMMAND.json",
+      "sha256": "cbbb01813c4ae592cf8e24ea3f6ff1a209be2b5c4cc365ec71de055e063d6ac1",
+      "size": 82122
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/MEASUREMENT.json",
+      "sha256": "93cbb7f9d5b9833bc5c1a162f55ae6345fd2928149ab5f8f7a70779c49773afa",
+      "size": 164219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/artifacts.json",
+      "sha256": "5b9068d17739b9f7a4d424b57e88fb014fe426a2eff539234330e56c2eada90a",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/result.json",
+      "sha256": "329f7224baf275650670c9ddb81543b7d5e72e26d4ff212c02c0c0407947cb50",
+      "size": 19387
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/10-off-66294c58700ef1b4-gen005-r1/stdout.log",
+      "sha256": "84640ff3be7dec9c031937f4829ce6b2f276e36468e58e9bf26b0961e0514273",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/COMMAND.json",
+      "sha256": "c08b2ddd9b2b157bdce4ea116d0ce07fb654d0787c3080b3e2e705a097264efb",
+      "size": 82132
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/MEASUREMENT.json",
+      "sha256": "2e2e6d52c5287c1f7614f1cd8dfac90fe743dcb0817f462f6ad63bd7019abb94",
+      "size": 164195
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/artifacts.json",
+      "sha256": "34972fbbe11476da924814cfdad0675059d744e4dc95dfd6438ca373f2695d15",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/result.json",
+      "sha256": "6991177ae882a9a07d759ecece4e7f939f965e2485003d1fca5181b3b4f1583c",
+      "size": 19377
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/11-off-66294c58700ef1b4-gen004-r1/stdout.log",
+      "sha256": "f002795bc5ac89d3014cc7a75aa2c628a6ea0b3d57534cbfeb15a959cf9fc3c1",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/COMMAND.json",
+      "sha256": "400ff7a5fbaf357b0de4c68cc719f78c27e239af3ec9a4e2ff4490128007b915",
+      "size": 82123
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/MEASUREMENT.json",
+      "sha256": "d2b1a4a7671c1f366fe5d0f2b2a779430312f9e980e4edae3a9757a7caa08fe1",
+      "size": 209880
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/artifacts.json",
+      "sha256": "99138f0c08efd795fc1935309d256ea6c6919442f9a165b1f45e6e578921cc20",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/result.json",
+      "sha256": "dedd570f252c2dc0e4cbb2f13a26f7dcc6647d7975df7707d018b4fb4188941e",
+      "size": 65089
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/12-off-0083541d8ee4d18b-gen005-r2/stdout.log",
+      "sha256": "4e782656b7362b302a0b4b3dccfd720837bf23c2c4903208709ad420663f9f55",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/COMMAND.json",
+      "sha256": "f6d9846d375c2feb50057e2ff23b7c865de3d6cef0db685c3a8d7b2c2945c2af",
+      "size": 82039
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/MEASUREMENT.json",
+      "sha256": "ccfe9de008aaee42c05ccab2756ed9fdba21e4f9948fd5e2986e88227b557460",
+      "size": 209872
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/artifacts.json",
+      "sha256": "4f2decc1ba837804e049b3b4849288dab7f77125825c3be56f0bacdb948d4779",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/result.json",
+      "sha256": "440ba25d1eb44a45f03d2d7dfc366ca6f52ab5b12dc828b9f66cf10f1aadbf4a",
+      "size": 65086
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/13-off-0083541d8ee4d18b-gen004-r2/stdout.log",
+      "sha256": "495dff9144583299d5cc745a3ac4412fa3efbe9465d890045bb81eff75a2e320",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/COMMAND.json",
+      "sha256": "6a6d55be7b8d5f84a852dca5d34011d142443749d3fcdf3c0807c50ce9345712",
+      "size": 82117
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/MEASUREMENT.json",
+      "sha256": "f5f361e7306f19a0d9c25ee004f60105bf4f89deafc3e3a4a0d0437b0d097b8e",
+      "size": 164200
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/artifacts.json",
+      "sha256": "70f12f1d752e719c69dcc7ea499aac33ba7f60e7c153872f3bfac31d2152e148",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/result.json",
+      "sha256": "ba988d4868b5d9536ffd9b6e7b7435fdc83df224c5388c72879e2b5e95cb4e8c",
+      "size": 19391
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/14-off-66294c58700ef1b4-gen005-r2/stdout.log",
+      "sha256": "84640ff3be7dec9c031937f4829ce6b2f276e36468e58e9bf26b0961e0514273",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/COMMAND.json",
+      "sha256": "5f8aa1101eae854758737d5addfb59883a4b8bf038db352a50501882aa06afca",
+      "size": 82032
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/MEASUREMENT.json",
+      "sha256": "376d76855a527bb5d3e5c346fa8531b898c16bfe85893b41b5b85ca9e7913b8c",
+      "size": 164204
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/artifacts.json",
+      "sha256": "2023dcd0b5e5e350d57b1f94ed3144ec1ed108e931b6318f19887ce828fd5c5e",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/result.json",
+      "sha256": "0b477cb5e330cf118aa4701ac642c66e7726c4c588fa756eeb14dcb7eb87a90d",
+      "size": 19377
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/15-off-66294c58700ef1b4-gen004-r2/stdout.log",
+      "sha256": "f002795bc5ac89d3014cc7a75aa2c628a6ea0b3d57534cbfeb15a959cf9fc3c1",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/COMMAND.json",
+      "sha256": "a0b9bf62df9661101f9c879fc415deb642d8c5f52b4245c69458492514794539",
+      "size": 82121
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/MEASUREMENT.json",
+      "sha256": "0409094b99743b886cb7b8271003f038df70975891df1beda9e30451caf196f7",
+      "size": 257708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/artifacts.json",
+      "sha256": "46f26bfd6ed1e3772be330583a25e8a56f1c667f80e99139ae2852dbb9584e6b",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/result.json",
+      "sha256": "35aab4e29fd2d908c8483eb70e34493bc0e551935dac0abd27db1eced9c7846c",
+      "size": 53715
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/16-off-1d043310cbecdceb-gen005-r2/stdout.log",
+      "sha256": "456dfc85b19da738778adcd9e551c84898c57f00018d8a2d4682609a51a61639",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/COMMAND.json",
+      "sha256": "4f50232e0e57bed61301f7156cd2acd3d83067b5d0e2f5cc5a5affc1d41b2c1d",
+      "size": 82131
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/MEASUREMENT.json",
+      "sha256": "9fdb9da27ce2717008004eb923a4a568236a8ab7ac89c83af24ac3ff3e42bc18",
+      "size": 257721
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/artifacts.json",
+      "sha256": "554a3c53a72e96b7c15dec4fa24334535734aa4fef8b7c0c7e3467ae4e1cd034",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/result.json",
+      "sha256": "b0d280156f2a37490cf32d5993a5de843bccb9c06ca9088890d40307bddc9494",
+      "size": 53713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/17-off-1d043310cbecdceb-gen004-r2/stdout.log",
+      "sha256": "106fe17d14ef2ae57e3970fa004705eec7dd1e2d03a31240e8bc390ea40c65dd",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/COMMAND.json",
+      "sha256": "9586334e8ae049b850c215b486f184712b72191fb3414c2dd962e32c449577d8",
+      "size": 82131
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/MEASUREMENT.json",
+      "sha256": "13d6db84bf54434ef5e942f5031777a3038eff3af58faea634c97644cf4ad3d5",
+      "size": 164217
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/artifacts.json",
+      "sha256": "ff357ec34a3db8421d0648b89bfd62aeaa1980499b2756d472edc29a8387082b",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/result.json",
+      "sha256": "c5b973c96099e77d5a3138421731fb359f1e4f6f49a9888cc6ef40d9773e55de",
+      "size": 19380
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/18-off-66294c58700ef1b4-gen004-r3/stdout.log",
+      "sha256": "f002795bc5ac89d3014cc7a75aa2c628a6ea0b3d57534cbfeb15a959cf9fc3c1",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/COMMAND.json",
+      "sha256": "ffdca729fbfd2eb350814e684c9b8a42364890d8525c511da02092d2f0ab212c",
+      "size": 82119
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/MEASUREMENT.json",
+      "sha256": "2add5d3d206cfbd2941b25c2092408a4d53522940f72f174d735d07937f87e2b",
+      "size": 164213
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/artifacts.json",
+      "sha256": "bce6091931f7f4e1d1ede303ef3de8c6d368d5742d52cd918a02e0304a7edad9",
+      "size": 216
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/result.json",
+      "sha256": "b5b8647802fa3d8b21eb7a2babe3c6ff5d045c688086d073aabd9059a0a0aff6",
+      "size": 19388
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/19-off-66294c58700ef1b4-gen005-r3/stdout.log",
+      "sha256": "84640ff3be7dec9c031937f4829ce6b2f276e36468e58e9bf26b0961e0514273",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/COMMAND.json",
+      "sha256": "422c118353cb92b5c0dfee3c4eb04e7cd7f8c32c376cdcb0987b407fb7101c15",
+      "size": 82129
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/MEASUREMENT.json",
+      "sha256": "4b05c2dbbf64c968403e08325807c9b20e04ab18264f6d9a9cec96b84264083b",
+      "size": 256992
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/artifacts.json",
+      "sha256": "900563188943242c9e147efb223ba62d8bd51a3bda5888525252a8d2333b8dca",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/result.json",
+      "sha256": "55d461c135f2d2c8ba4fd717f9c801753d0e9aa692361d93d8ef6065f33b07e1",
+      "size": 53713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/20-off-1d043310cbecdceb-gen004-r3/stdout.log",
+      "sha256": "106fe17d14ef2ae57e3970fa004705eec7dd1e2d03a31240e8bc390ea40c65dd",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/COMMAND.json",
+      "sha256": "5f602436eeae770a90d289e159d31fafd2c2610d56fb9b3a7d48d66a5e5fc4e9",
+      "size": 81397
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/MEASUREMENT.json",
+      "sha256": "9517d228a93a5f7766eade237730b923bda76a3868f45b92deb9e1d421e521c4",
+      "size": 256981
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/artifacts.json",
+      "sha256": "1771d4abd0d37d8430ddaba3ac076c8ae08c102cc9c553d0e3a50a54b451f034",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/result.json",
+      "sha256": "fdc97e38665b0598962bf4f6ac70e96cc015a6e4f92f8cebeec6e740bed6a2cc",
+      "size": 53715
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/21-off-1d043310cbecdceb-gen005-r3/stdout.log",
+      "sha256": "456dfc85b19da738778adcd9e551c84898c57f00018d8a2d4682609a51a61639",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/COMMAND.json",
+      "sha256": "7cc63869650e3bc303ccedaa1ac660deeff26bed3cfceca356d906b91e2042ee",
+      "size": 81407
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/MEASUREMENT.json",
+      "sha256": "adacd25f601cea0e4dc1057563f5020518b046edc84971aec09e56666c51748c",
+      "size": 209147
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/artifacts.json",
+      "sha256": "ebf1d94adc12d05960f4085b0dabaf09df75d4536081c5fc596e70c6c8ec4bb8",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/result.json",
+      "sha256": "75fc767dc81fac587d25cadd386e8b235c1e5b2e7c59bfdf437bf75657deea14",
+      "size": 65086
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/22-off-0083541d8ee4d18b-gen004-r3/stdout.log",
+      "sha256": "495dff9144583299d5cc745a3ac4412fa3efbe9465d890045bb81eff75a2e320",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/COMMAND.json",
+      "sha256": "dfd1e6b734e5178108427862bdf914f9da7f1e56c4ef84e4f20e51aa88b0a94a",
+      "size": 81396
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/MEASUREMENT.json",
+      "sha256": "49ca2d9f90024f2e543ee775fb301f2e65b7cf8d2955b7ea25a4801b4f3de26f",
+      "size": 209160
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/artifacts.json",
+      "sha256": "508ee4655cc763ac897813beb49a197045b3cedcb25aeaded8cad89ad9fa908c",
+      "size": 219
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/result.json",
+      "sha256": "f075ce6aefa79f0670fbcbc1447c33c8c786bbdc1c94bf677c0469e6951c074e",
+      "size": 65086
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/23-off-0083541d8ee4d18b-gen005-r3/stdout.log",
+      "sha256": "4e782656b7362b302a0b4b3dccfd720837bf23c2c4903208709ad420663f9f55",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/COMMAND.json",
+      "sha256": "47769fc793834d7f3700f55b7d1da7b2049b6f61e27cd73616ed7da01df92297",
+      "size": 81676
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/MEASUREMENT.json",
+      "sha256": "d0fa6ed156e4b49f55849870eec2dfe090c29343fe894bcd598635a5f2163562",
+      "size": 164937
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/artifacts.json",
+      "sha256": "291f0b2c9f856fd4fb75916e7e84498008142bc1737c0424d0a6c52157b8b1dd",
+      "size": 712
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-contradictions.csv",
+      "sha256": "d0e1d1fbbdef1459ea2e08c900ee144650707dfdcb74e75326f71be9464f10d1",
+      "size": 1264
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-episodes.csv",
+      "sha256": "f2f2eda5ae985eae58d90dc2c0aeec1e136f6e1e54a8ad88ee7b2e1b5d9fea6c",
+      "size": 10763
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-planning-quality.csv",
+      "sha256": "b61d3f4d7d71d86449c89af6b068213d0e9057f9bb22e0e90bfb6a1c08392753",
+      "size": 991078
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-quality.csv",
+      "sha256": "1e56e7a135f890ab95aa22670a149948581fb3e486ed1899f74f60db8379a310",
+      "size": 59203
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-work.csv",
+      "sha256": "f0770e46ebeb0463ad2c3bae92f0dccf980224fffb697e887184bc0df02bb26f",
+      "size": 11189213
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-work.csv.intervals.csv",
+      "sha256": "53d6547e5ba64d08120df6a05da46bab0c1544a31df63abc8a882f255d550aad",
+      "size": 29380
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/gradient-work.csv.summary.csv",
+      "sha256": "ed6040376f7db8324e2eed0b8ad88692171bb51b7312cfec4cc5ed64df50e9c6",
+      "size": 2215
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/result.json",
+      "sha256": "31530b40be3bd9dd3813ef97c66fb67ea69450456bd2d69150807f8a3a6e5e4b",
+      "size": 19568
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/snapshot.checksums",
+      "sha256": "e746a210719ae119cca79f192a4b6095edb0d29a0335bac9de89cfe0f3191511",
+      "size": 186377
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/stdout.log",
+      "sha256": "f002795bc5ac89d3014cc7a75aa2c628a6ea0b3d57534cbfeb15a959cf9fc3c1",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/world.checksums",
+      "sha256": "b0c925c3eedccc80d50a78c494585ab642594c6dada356bcec60abfd3e65d962",
+      "size": 137172
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/COMMAND.json",
+      "sha256": "7ef2104559f930f6ed8f4ef8151810fd1f9d62aeff9f7542980140fa301acc29",
+      "size": 81671
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/MEASUREMENT.json",
+      "sha256": "ae3dab00feb199e1fd3aa2b1f6644e553b346b509549a37cd09b3fe0d7710455",
+      "size": 164950
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/artifacts.json",
+      "sha256": "d2156a61e23c0f4d5ad1a41632a24548950685b29d870640cd1e1871761a1f83",
+      "size": 712
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-contradictions.csv",
+      "sha256": "6c5db02408df652e90a72dcddd20e9d75008ef967e90c1584c31245c04055264",
+      "size": 1527
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-episodes.csv",
+      "sha256": "6be65b3f0b8a0ce071e9203cae7d0f08bbc395cd9b7d037cb6b17753b8f17339",
+      "size": 10926
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-planning-quality.csv",
+      "sha256": "5551ff191243bde7e8494df47e542d66b5aa6bad30e65ab5b914dbccd51ed0bc",
+      "size": 883888
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-quality.csv",
+      "sha256": "42291347aad5d2e0be2e4172a1ae6b3bf89823c91136b6b778b09dd851c0f6be",
+      "size": 69075
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-work.csv",
+      "sha256": "b6d3dde63256cb5e7abe12f2fefa101aacb26a9185c7c7763b4a169251c911f8",
+      "size": 11337406
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-work.csv.intervals.csv",
+      "sha256": "8706f3d123be8d63aa1de57c0480bfe50ce30e0aaaddabcb8c8346b294e1c870",
+      "size": 30239
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/gradient-work.csv.summary.csv",
+      "sha256": "d3bb9d784e506105bfb18c24d165c650572108111ee82cacd57224f164e204c0",
+      "size": 2220
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/result.json",
+      "sha256": "caa58f99568394e5d11f889585fe5e05ebc96f699b63ebe05dd5eafee37306ad",
+      "size": 19581
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/snapshot.checksums",
+      "sha256": "f84abb279ba8e2465dd8287a7788968ac72008586b3f76e7ac99514970c6fb9b",
+      "size": 186353
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "size": 60
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/stdout.log",
+      "sha256": "84640ff3be7dec9c031937f4829ce6b2f276e36468e58e9bf26b0961e0514273",
+      "size": 262
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/world.checksums",
+      "sha256": "a7fa8b961c9e27680e08e875ee3fae11e8dcd6f1346b83791eb0152d8c66937a",
+      "size": 137191
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/COMMAND.json",
+      "sha256": "de295dac36dea4636ac1a06eee404ed7c80f36fdaea92b5afb484de0fcfb6f1e",
+      "size": 81674
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/MEASUREMENT.json",
+      "sha256": "992ca6f482cb51ffcb01087452c9dc951f97216e5999c59cf8ba42a393ef993e",
+      "size": 258450
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/artifacts.json",
+      "sha256": "b6ec591e55f75504e82f46d6b57003de0b7889c58c5daba98ffd8dd6c776feed",
+      "size": 713
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-contradictions.csv",
+      "sha256": "dbdf74df07e255f19cb3f54756d46496ced17b101dbc785757b9ad8435ad9db2",
+      "size": 782
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-episodes.csv",
+      "sha256": "aa155419874c98992182c6df238f56a48ebf7714683f3831856e993f679f5dee",
+      "size": 9958
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-planning-quality.csv",
+      "sha256": "a712ef8c7023bfb55413d9d1d9920512771e435ec90a1f7904aa367dd19c9b09",
+      "size": 1051475
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-quality.csv",
+      "sha256": "f0065fbd982c018753a37580c71c345c3a0cd8bba45c291ab2e89f7b61d2dc0d",
+      "size": 63924
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-work.csv",
+      "sha256": "67e0ecf1319ced7bc69b0360c3f72c8ed075b188100ede58092bccae0f4ee975",
+      "size": 4501020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-work.csv.intervals.csv",
+      "sha256": "2b8c98f25d9cfc287a35b966bd322bafa6681f340777cfb2ff2af8972d028622",
+      "size": 24690
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/gradient-work.csv.summary.csv",
+      "sha256": "482b712a1861c0dec27deeb6933c30a61e89da4f5dfef8cf73f67060cd7093b6",
+      "size": 2202
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/result.json",
+      "sha256": "105aba4ac89ed35f3bfe96911018197378d5695a220c8797fd5301d4219f47cd",
+      "size": 53907
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/snapshot.checksums",
+      "sha256": "bc4b510f8a5cbbbb43afa8ed321f571a0871df9899ba8141eea7de3dac3f4e67",
+      "size": 186281
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/stdout.log",
+      "sha256": "456dfc85b19da738778adcd9e551c84898c57f00018d8a2d4682609a51a61639",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/world.checksums",
+      "sha256": "9aac721b00b099fe05242e0d2cc6e7912794c721bf14e807f73c4afe3329df9f",
+      "size": 137067
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/COMMAND.json",
+      "sha256": "3cd9878edeb68ce3da28b935c60c59adaa6cf520b7fd5fed1c9ac1c853135911",
+      "size": 81678
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/MEASUREMENT.json",
+      "sha256": "40d842ab569a3a0acf4f77b64795a78a7b95e35126b423d1d6e6de75674d0928",
+      "size": 258437
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/artifacts.json",
+      "sha256": "f13c3864449fa0c70d26fdb2c23a99b4f93afe4d8e693adfb6b16c944abebbdf",
+      "size": 714
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-contradictions.csv",
+      "sha256": "7494182b03df85943efc15554d1f1e2cb6f855b9defa30c7361495c451a6da9f",
+      "size": 757
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-episodes.csv",
+      "sha256": "2a9afa5e56a654b5d867ff4e997807d6b16e6a22a01bda480ebbd1ac7cfabe8e",
+      "size": 10537
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-planning-quality.csv",
+      "sha256": "c8e87ef19dd8cbb632e4e0aad7e9edbb187a3e2c99933fe5448966fec7120810",
+      "size": 1272887
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-quality.csv",
+      "sha256": "15ce2e86fb4ef325fda36c5928c17908821c813c721b76ae9395b22bd0a76865",
+      "size": 70389
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-work.csv",
+      "sha256": "a8c9f4fbd5d26d3a398c8cb5b785e3ed96a2bffa3ba758ff2f50338229a7f86b",
+      "size": 5433677
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-work.csv.intervals.csv",
+      "sha256": "eaa8d2a8e9493d6cbff855dd31cbe1ae46ad7fe3219a586d704c24dc9b8d6f30",
+      "size": 23927
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/gradient-work.csv.summary.csv",
+      "sha256": "f4820ae21723ddb02d1fa4bd1f83e52b8f62246c4c6342d34650810f51114519",
+      "size": 2202
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/result.json",
+      "sha256": "f954ce43af292b76153724cd7bf2f3248582352cd12808705750210d661dd1e7",
+      "size": 53905
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/snapshot.checksums",
+      "sha256": "e299bcd4ad6a274d3d9583ac47ffad2450c11d1a14681bd441f06139e46d16a1",
+      "size": 186364
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/stderr.log",
+      "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+      "size": 23020
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/stdout.log",
+      "sha256": "106fe17d14ef2ae57e3970fa004705eec7dd1e2d03a31240e8bc390ea40c65dd",
+      "size": 310
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/world.checksums",
+      "sha256": "ce705257359f02dc6c0a59e6e7b9d055e650408e3b47da00457d7a0e72baaff7",
+      "size": 137203
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/COMMAND.json",
+      "sha256": "b1f52261071e764b366e4ad87e46e16aa8947ba029c9e953401482ce228e8591",
+      "size": 81677
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/MEASUREMENT.json",
+      "sha256": "41de8e3f96b45a2a09f0139004458013d9cd3eb0a98952a6f6f129874755714d",
+      "size": 210632
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/artifacts.json",
+      "sha256": "371b8ba33fff333f4d4652e515f7c9e0e8e0a4b5613ba2b1366cf10489eac9a6",
+      "size": 715
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-contradictions.csv",
+      "sha256": "55a9a523e4b5ed895c756553df5878f99281daf9f708a1063931287af210df80",
+      "size": 584
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-episodes.csv",
+      "sha256": "552390df0c3d13f9ac51adb30b98a58a163c4c1c552c334f86d945e8c9869ef4",
+      "size": 10157
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-planning-quality.csv",
+      "sha256": "dddbcb2fab8e4eeb91f1ee263bcffb0121281b06060172a20c7b618cca7d0c8f",
+      "size": 410316
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-quality.csv",
+      "sha256": "7ce018345ed3ac9ec8c5e74cd831f0cb0a6417d07e11aaf04017c410e33650d1",
+      "size": 132405
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-work.csv",
+      "sha256": "d688a4ef4f23d439de87475c042b89fc7bb3f1be8fdd167123edb9fd0cffec0f",
+      "size": 10175814
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-work.csv.intervals.csv",
+      "sha256": "d70bb5c5257ba7167e0a29ac65edbd7dc1932239f0bb4fc135518adc42c27018",
+      "size": 23907
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/gradient-work.csv.summary.csv",
+      "sha256": "433e54942a6e3236ccd8bc3ec0c018a58c0f4b1f8a0b5acb8f6457737663c9fa",
+      "size": 2206
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/result.json",
+      "sha256": "fb2de808a2d26fea3897e6f8df644bcdc17ebe389eef213e4494c99d37a54c73",
+      "size": 65277
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/snapshot.checksums",
+      "sha256": "41da897809011353de698fbfaf3b97520018cf6c837261034cf78c2f2f243416",
+      "size": 186323
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/stdout.log",
+      "sha256": "495dff9144583299d5cc745a3ac4412fa3efbe9465d890045bb81eff75a2e320",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/world.checksums",
+      "sha256": "c781e7aa28151b59565a048514d83483fd42e565aec67a1c88fca1affdf8a745",
+      "size": 137052
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/COMMAND.json",
+      "sha256": "33304cca0afd6339cd9cb5a9f41bb48489e2b1761d94f93bc07bce5d10c4afbf",
+      "size": 81672
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/MEASUREMENT.json",
+      "sha256": "0bd59920a0e07ae51fc096de161018affca402441cad29c2a1084dce74992299",
+      "size": 210519
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/artifacts.json",
+      "sha256": "c884e5a357075d9eb0894a12df298f698cc81935f8d90829dd1b141315c36935",
+      "size": 716
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-contradictions.csv",
+      "sha256": "d28a1fe2943b3f3f1ea7fd341448d5e2403855c1e61bc731995339fcceb396c0",
+      "size": 587
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-episodes.csv",
+      "sha256": "c53bc1e0e8869ff65a9e1bfe4fd2064ebf4c28a62dd840ee0a23ea55e31da2ff",
+      "size": 12547
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-planning-quality.csv",
+      "sha256": "d764186b4a9705949cdddae157e1830120cb138db06b526eb9f9f2ed5030b8eb",
+      "size": 2093426
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-quality.csv",
+      "sha256": "9a7e595a0391c849a21fd1e0526d3e181616181aff72be418c282514cdf3bd2c",
+      "size": 160633
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-work.csv",
+      "sha256": "7135c4a8e05d5be2667fcc5298a62aed8e1e7a31d29c2a927c1dc4245c4381c9",
+      "size": 10980604
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-work.csv.intervals.csv",
+      "sha256": "0bda94c676a510fc6be70c45e791967b1d1d77f1ca7f4383324204dc00e77b08",
+      "size": 24028
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/gradient-work.csv.summary.csv",
+      "sha256": "bd36f4b6dab7a53d6a2493aa87d4d0937834ba56a801e66aab6a961ccbaab2cc",
+      "size": 2207
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/profile/keyboard-gui.txt",
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "size": 1811
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/profile/keyboard-mapedit.txt",
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "size": 708
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/progress.jsonl",
+      "sha256": "78b3d48601b0e8f0ef274cd43bdbcb7dd1a419e3df585de4c6cd0eac918793e6",
+      "size": 1088
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/result.json",
+      "sha256": "b67093651e1e627caa8699445c2f2f112fa0f5f20afe820e01b30a70a6b364bc",
+      "size": 65277
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/snapshot.checksums",
+      "sha256": "0b5b2171944b3f79820f8aa53cb7cdca3256d6d7c55e53e0247f3c1fa109a665",
+      "size": 186365
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/stderr.log",
+      "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+      "size": 45970
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/stdout.log",
+      "sha256": "4e782656b7362b302a0b4b3dccfd720837bf23c2c4903208709ad420663f9f55",
+      "size": 258
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/world.checksums",
+      "sha256": "cfa10e37bf37f2d46f20261884d7ab780905618f36f036268a862eb06590664e",
+      "size": 137160
+    }
+  ],
+  "excluded": [
+    {
+      "path": "prospective-study-macos-clean/runs/24-on-66294c58700ef1b4-gen004-r0/game.replay.checksums",
+      "sha256": "dd733f04fc734647cec04538645246a74e2748375535a8d3ad66ef586b4e2b6b",
+      "size": 434345882,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/25-on-66294c58700ef1b4-gen005-r0/game.replay.checksums",
+      "sha256": "76eefc132362759fd6c7424b0c1f1f43e0ad51d814191c737c3555bb7858339f",
+      "size": 446304170,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/26-on-1d043310cbecdceb-gen005-r0/game.replay.checksums",
+      "sha256": "c274accc2ae63ac40e0e56e46f42d21fb76aa47df08ebf281e952772ca3e294f",
+      "size": 358729152,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/27-on-1d043310cbecdceb-gen004-r0/game.replay.checksums",
+      "sha256": "97eaad0f2f58bd360d2bcb0a04be2acc27a5fbf32685c0642773aad3cc9ee44b",
+      "size": 372466750,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/28-on-0083541d8ee4d18b-gen004-r0/game.replay.checksums",
+      "sha256": "759f8e783d9c0f53f31b9b4a2120374fffe44deaa671a16ba3ce69459ea7c057",
+      "size": 402568292,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    },
+    {
+      "path": "prospective-study-macos-clean/runs/29-on-0083541d8ee4d18b-gen005-r0/game.replay.checksums",
+      "sha256": "09979d1ae4f9dc0f6a63e8760b5571b5cb6b2e227c95349679a7a2e2b83500ef",
+      "size": 406227654,
+      "reason": "Redundant diagnostic full replay trace; world/snapshot streams, final parity and exact command/result retained."
+    }
+  ]
+}

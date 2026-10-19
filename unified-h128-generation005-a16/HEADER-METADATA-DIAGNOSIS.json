@@ -1,0 +1,41 @@
+{
+  "status": "PASS-METADATA-DIAGNOSIS-AND-RAW-CONTINUITY",
+  "old_save_minor": 179,
+  "new_save_minor": 180,
+  "teams": 4,
+  "players": 4,
+  "terrain_keys": [
+    "barren-terrain",
+    "path-terrain"
+  ],
+  "required_resource_keys": [],
+  "header179": "0xefc88622",
+  "header180": "0xefc88621",
+  "header_xor": "0x3",
+  "game_subsequent_right_rotations": 14,
+  "formula": "Game contribution = rotr32(MapHeader179 XOR MapHeader180, 1 + teams + 1 + players + 1 + 1 + 2)",
+  "world_xor": "0xc0000",
+  "overlapping_world_ticks": 512,
+  "first_tick": 17920,
+  "last_tick": 18431,
+  "all_ticks_match_predicted_xor": true,
+  "important": "MapHeader uses historical arithmetic signed right shift, not ordinary unsigned rotate. Save writes current VERSION_MINOR without mutating live loaded versionMinor.",
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "input_hashes": {
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/runtime-macos/mature-t1-probeoff/final.game.gz": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/old179-mature-t1-probeoff/world.checksums": "0d24da4a567ccc4555c9aa6c42f54a78ed6b80ae1cc65d04ffd41132df6d7d34",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/new180-continuation-t1/world.checksums": "b1e2422bb5a2a786188102d375b46a344bd7c646e9da4183eeaba031368453ba"
+  },
+  "continuity_proof": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/MATURE-CONTINUITY.json",
+  "continuity_proof_sha256": "26ee685775a69c6ed068812eac016a8557304046f6d9ece4876af1aacdf739a9",
+  "control_method": "One real tick: old179 warm17408 advances to17409 and saves180; header180 control17409\u219218432 compared with header180 resume17920\u219218432",
+  "raw_equal_overlap": {
+    "world.checksums": 512,
+    "snapshot.checksums": 513
+  },
+  "all_three_final_saves_exact": true,
+  "old179_vs180_snapshot_suffix_exact": true,
+  "old179_vs180_predicted_xor_rows": 1023,
+  "successful_qualification_runs": 7,
+  "separate_cli_rejection": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/REJECTED-ZERO-TICK-SETUP.json"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASSED",
+  "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "utc": "2026-10-19T15:13:48.666045+00:00",
+  "binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+  "runtime_status": "passed",
+  "continuity_proof": "runtime-macos/MATURE-CONTINUITY.json",
+  "preserved_initial_failure": "MACOS-FINAL-QUALIFICATION-FIRST-FAILURE.json"
+}

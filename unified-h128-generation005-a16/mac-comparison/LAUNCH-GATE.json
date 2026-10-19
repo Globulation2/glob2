@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-19T15:32:16.367613+00:00",
+  "plan_sha256": "b89c671792530b93f2ff5be1446e8831a8bf58ad0c166934bb494ed8c2d87c68",
+  "builds_and_proofs_terminal": true,
+  "qualification_receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/MACOS-FINAL-QUALIFICATION.json",
+  "qualification_sha256": "c565ea5481f262b78bfc7b66bb916e66f603bd29e1d2c09b6cc895b3f19d78a0",
+  "binary_sha256": {
+    "gen004": "64807701b9096e38be0ddd4f97aea3673b6e3d3e3618bc0222135c53712979c1",
+    "gen005": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236"
+  },
+  "host_switch": "Explicit user instruction: MacBook is free; benchmark locally. Dev study retired and excluded.",
+  "tracing_correction": "Retired prior traced Dev/Mac runs. Clean OFF no --telemetry; final checksum gates per root instruction."
+}

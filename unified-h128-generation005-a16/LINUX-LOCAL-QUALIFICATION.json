@@ -1,0 +1,9 @@
+{
+  "status": "PASSED",
+  "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "utc": "2026-10-19T15:25:09.563291+00:00",
+  "binary_sha256": "5a5c74ece56f23507f137a871b076dbbc667c741b83f60caeee0174ed0c6e7fe",
+  "runtime_status": "passed",
+  "continuity_proof": "runtime-linux/MATURE-CONTINUITY.json",
+  "preserved_initial_failure": "LINUX-LOCAL-QUALIFICATION-FIRST-FAILURE.json"
+}

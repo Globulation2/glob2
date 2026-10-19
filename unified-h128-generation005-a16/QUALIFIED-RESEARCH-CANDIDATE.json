@@ -1,0 +1,106 @@
+{
+  "status": "QUALIFIED-FOR-RESEARCH-CANDIDATE-ONLY",
+  "utc": "2026-10-19T15:26:41.868836+00:00",
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "actual_native_build_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "integration_golden_revision": "59c842b24b16d86259f4aa21c9715613411718d8",
+  "sim_revision": 90,
+  "save_version": 180,
+  "replay_floor": 180,
+  "save_floor": 58,
+  "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "threshold_milli": 16000,
+  "prediction_horizon_ticks": 128,
+  "minimum_interval": 8,
+  "publication_delay": 8,
+  "maximum_interval": null,
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "model_contract": "unified-gradient-h128-v2",
+  "linux_binary_sha256": "5a5c74ece56f23507f137a871b076dbbc667c741b83f60caeee0174ed0c6e7fe",
+  "macos_binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+  "research_only": true,
+  "approved_for_candidate_collection": true,
+  "stable_promotion": false,
+  "bundles": [
+    {
+      "execution_pool": "small-pharaoh",
+      "id": "af9fc78ffb6653e23b5b7bb2890b0c06adae6db0ada498ff09b82c1d97eb5a63",
+      "directory": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/bundles/af9fc78ffb6653e23b5b7bb2890b0c06adae6db0ada498ff09b82c1d97eb5a63"
+    },
+    {
+      "execution_pool": "middle-linux",
+      "id": "953ec4d3f19d95f9c0cdf1276309b6daff595bcb3881f256578a9e70d5b3fdf6",
+      "directory": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/bundles/953ec4d3f19d95f9c0cdf1276309b6daff595bcb3881f256578a9e70d5b3fdf6"
+    }
+  ],
+  "qualified_linux_bundle_metadata": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux-bundles.json",
+  "runtime_archives": {
+    "linux": {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux-runtime.tar.gz",
+      "sha256": "fe18e0715e8c720c99b6268e4c85e0ba5515d03926a6f2a7367a57c4fea85e6d"
+    }
+  },
+  "checks": {
+    "ordinary_release": true,
+    "integer_bounds_parity_530_vectors": true,
+    "generated_header_exact": true,
+    "macos_17_goldens_update_verify": true,
+    "state_replay_21_cases": true,
+    "sim_revision_gate": true,
+    "fresh_observer_threads_cross_platform": true,
+    "save179_read_and180_raw_matched_header_continuity": true,
+    "source_pushed_qualified_mac": true
+  },
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux/CROSS-PLATFORM.json",
+      "sha256": "ab7aa6f243d5acd6af6975301e1da42a10af01b388ee25bbf8e05f7f8875aff3"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux/FROZEN.json",
+      "sha256": "de57deb6813d21be978bb0c45c274244371ee9d05a94db8537da16d4040a0c7c"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux/PARITY.json",
+      "sha256": "58f34dfee1684f0bbacf35c345a9e6ee08c3d024de78e4edec419c143d3deabd"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/LINUX-LOCAL-QUALIFICATION.json",
+      "sha256": "de82c12dd52ff6fa0a6f9902ba64b7b65233d9deb047d98d38db4ed6feeefb4e"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/MACOS-FINAL-QUALIFICATION.json",
+      "sha256": "c565ea5481f262b78bfc7b66bb916e66f603bd29e1d2c09b6cc895b3f19d78a0"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/POST-QUALIFICATION.json",
+      "sha256": "e16a42191ea9b3ec574717416ec29752062df4816467ac78a5b9729bbbee87e4"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-linux/MATURE-CONTINUITY.json",
+      "sha256": "26ee685775a69c6ed068812eac016a8557304046f6d9ece4876af1aacdf739a9"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/MATURE-CONTINUITY.json",
+      "sha256": "26ee685775a69c6ed068812eac016a8557304046f6d9ece4876af1aacdf739a9"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-linux/ORIGINAL-FIVE-RUN-STATUS.json",
+      "sha256": "b4a8fae70acd0e14a4b927fdaa2e1a533193b6ae45efbe26addfe41451a15371"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux-bundles.json",
+      "sha256": "0e3a6142a9af60c2878a6fdc9a27b86194c917675da0f384136adf053b1324b6"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/linux-runtime.tar.gz",
+      "sha256": "fe18e0715e8c720c99b6268e4c85e0ba5515d03926a6f2a7367a57c4fea85e6d"
+    }
+  ],
+  "limitations": [
+    "Research collection only; stable promotion remains separate.",
+    "Original179-vs180 raw checksum difference preserved and independently diagnosed as MapHeader loaded-format identity; two180 checkpoints match RAW world checksums, original scene and all finalsave bytes match.",
+    "Frozen legacy collector declaration retains historical128000field; actual model/runtime/cohort behavior16000 explicitly attested."
+  ]
+}

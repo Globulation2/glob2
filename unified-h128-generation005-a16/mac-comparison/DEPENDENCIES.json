@@ -1,0 +1,486 @@
+{
+  "gen004": {
+    "direct_commands": [
+      "\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)",
+      "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)",
+      "\t/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib (compatibility version 3.0.0, current version 3.0.0)",
+      "\t/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)",
+      "\t/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib (compatibility version 5.0.0, current version 5.0.0)",
+      "\t/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib (compatibility version 201.0.0, current version 201.0.0)",
+      "\t/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib (compatibility version 5.0.0, current version 5.5.0)",
+      "\t/opt/homebrew/opt/opus/lib/libopus.0.dylib (compatibility version 12.0.0, current version 12.1.0)",
+      "\t/opt/homebrew/opt/libogg/lib/libogg.0.dylib (compatibility version 0.0.0, current version 0.8.6)",
+      "\t/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib (compatibility version 203.0.0, current version 203.0.0)",
+      "\t/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib (compatibility version 409.0.0, current version 409.0.0)",
+      "\t/opt/homebrew/opt/speex/lib/libspeex.1.dylib (compatibility version 7.0.0, current version 7.2.0)",
+      "\t/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib (compatibility version 401.0.0, current version 401.18.0)",
+      "\t/opt/homebrew/opt/webp/lib/libwebp.7.dylib (compatibility version 10.0.0, current version 10.0.0)",
+      "\t/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib (compatibility version 2.0.0, current version 2.2.0)",
+      "\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 62460.1.2)",
+      "\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)",
+      "\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)",
+      "\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox (compatibility version 1.0.0, current version 3350.77.5)",
+      "\t/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia (compatibility version 1.0.0, current version 3350.77.5)",
+      "\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 758.27.0)",
+      "\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+      "\t/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)",
+      "\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+      "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)"
+    ],
+    "non_system_dylibs": {
+      "/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebp.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebp.7.2.0.dylib",
+        "sha256": "f42f3e0687cf1f7fd5a42c608152e0d4187540ac2e6675cb8af297e7befc4258"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3/3.4.18/lib/libSDL3.0.dylib",
+        "sha256": "599c1a000f96797ee4f53f756df0eb53bf9575ee0efffaea2ac55240a8f523a2"
+      },
+      "/opt/homebrew/opt/speex/lib/libspeex.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib",
+        "sha256": "55ef52576e74debea9150f320b280633a4710b8f46d133a008f4584fac750ddc"
+      },
+      "/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_image/3.4.8/lib/libSDL3_image.0.4.8.dylib",
+        "sha256": "4dfc509003ce515db84454a06cae84fb15d2c0c0f31dbd3d2ebfbe48fd154f65"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebpmux.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebpmux.3.1.2.dylib",
+        "sha256": "6e370882a34fe4f026e9c5cd614588d511e2f48664364b26eb5a93cb4942ec73"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/libwebp.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebp.7.2.0.dylib",
+        "sha256": "f42f3e0687cf1f7fd5a42c608152e0d4187540ac2e6675cb8af297e7befc4258"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/../lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebpdemux.2.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebpdemux.2.0.17.dylib",
+        "sha256": "d8b4a387561fd4c28aa7590fb41f62fbd6363f4c303d8cde2d2a971af4b6d699"
+      },
+      "/opt/homebrew/opt/libtiff/lib/libtiff.6.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libtiff/4.7.2/lib/libtiff.6.dylib",
+        "sha256": "ed5a54e3e8a621ba58f51ce632debb3f8d0ef068faf5bee887672581698e4cc1"
+      },
+      "/opt/homebrew/opt/jpeg-turbo/lib/libjpeg.8.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/lib/libjpeg.8.3.2.dylib",
+        "sha256": "e6585d0aee1969a63f288f97bbe3ef100ac787bc25ebcc4e6487b82b96cdbcae"
+      },
+      "/opt/homebrew/opt/xz/lib/liblzma.5.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/xz/5.8.4/lib/liblzma.5.dylib",
+        "sha256": "41cdf225f3e10fb54f952c8eca11c8a847d095470540dc42736ae7bd761beaa4"
+      },
+      "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+        "sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab"
+      },
+      "/opt/homebrew/opt/libpng/lib/libpng16.16.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libpng/1.6.59/lib/libpng16.16.dylib",
+        "sha256": "ec95a41f112fac5e0b077f129bccc67acf9b5ad1a01f56cc0ecebae2a8727ff2"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.12.0.dylib",
+        "sha256": "50ccacb1eccf7f398d556507a9181504107b6909a7e13806a37cb24866218d2d"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib",
+        "sha256": "6f07b64b1247ef2963b69813326a2ad363391e07b90e2dca6cf244f17176f884"
+      },
+      "/opt/homebrew/opt/brotli/lib/../lib/libbrotlicommon.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+        "sha256": "41ea919f6b53d772067477235cbe8fdf97aaad403c30a90512c6c4b17cd529ef"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+        "sha256": "41ea919f6b53d772067477235cbe8fdf97aaad403c30a90512c6c4b17cd529ef"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib",
+        "sha256": "23f7347022952e956a8fd9a045e32069c0d9adda23100af9d061502008976330"
+      },
+      "/opt/homebrew/opt/highway/lib/libhwy.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/highway/1.4.0/lib/libhwy.1.4.0.dylib",
+        "sha256": "ef81b48668eef31843d2a7221adfb1d93efa08ebe391c8ad596080760d6e530d"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/../lib/libjxl_cms.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl_cms.0.12.0.dylib",
+        "sha256": "fc0d4d74ec3888c430545fadb8fce168cdc127aac8dd25fd981df9072cf6bb71"
+      },
+      "/opt/homebrew/opt/little-cms2/lib/liblcms2.2.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/little-cms2/2.19.1/lib/liblcms2.2.dylib",
+        "sha256": "faf9c8f2322a2bb47d04d3077a79cc7103fba68a186697cf91e5f6ef467d1b77"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/libjxl_cms.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl_cms.0.12.0.dylib",
+        "sha256": "fc0d4d74ec3888c430545fadb8fce168cdc127aac8dd25fd981df9072cf6bb71"
+      },
+      "/opt/homebrew/opt/libavif/lib/libavif.16.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libavif/1.4.2/lib/libavif.16.4.2.dylib",
+        "sha256": "c8e0cb4f2b0c475108efc9b9f0bf5a9ec80c7ff3cf76c27902bc1e8754b247cc"
+      },
+      "/opt/homebrew/opt/aom/lib/libaom.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/aom/3.15.1/lib/libaom.3.15.1.dylib",
+        "sha256": "69944db15ebc3e944d025525143d675e77b8ed7978ea10dcf1046b20a40d7f64"
+      },
+      "/opt/homebrew/opt/libvmaf/lib/libvmaf.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libvmaf/3.2.1/lib/libvmaf.3.dylib",
+        "sha256": "f9ca4510cb08cca61ecd571fc417f2b4440c25555fbeefdb4b5477a35891de1c"
+      },
+      "/opt/homebrew/opt/dav1d/lib/libdav1d.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/dav1d/1.5.4/lib/libdav1d.7.dylib",
+        "sha256": "60c3a42a79582241ac77bbbba4c0137c2209204aecbc59e5d6392c2dc0a5b439"
+      },
+      "/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib/libSDL3_ttf.0.2.2.dylib",
+        "sha256": "60dfb261736dec24eef3fe98476616f22dd1aab51e575e2307c0041ffed79723"
+      },
+      "/opt/homebrew/opt/freetype/lib/libfreetype.6.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/freetype/2.14.3/lib/libfreetype.6.dylib",
+        "sha256": "e4b41d886673fd1c282764a3113224d83b09bd705d12db7c36366fb04b7592dc"
+      },
+      "/opt/homebrew/opt/harfbuzz/lib/libharfbuzz.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/harfbuzz/14.1.0/lib/libharfbuzz.0.dylib",
+        "sha256": "36ca136493d658fb8b624d95b07d405dbaabac83ba5a96e7e896fa4e4a415736"
+      },
+      "/opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib",
+        "sha256": "2cf0d45c18527e4a4b93c4c39fd8dd12f59f5be02d4dbf783e68deb58b41a6d9"
+      },
+      "/opt/homebrew/opt/glib/lib/libglib-2.0.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/glib/2.88.0/lib/libglib-2.0.0.dylib",
+        "sha256": "1f07f5d27059cc978f9ac1dddabf5837774b38f37959195572e46c6470883876"
+      },
+      "/opt/homebrew/opt/pcre2/lib/libpcre2-8.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/pcre2/10.48/lib/libpcre2-8.0.dylib",
+        "sha256": "6b698ffc744550e149829d94045912448b8ac4b692cb267dce9fc2f3ed60659d"
+      },
+      "/opt/homebrew/opt/gettext/lib/libintl.8.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/gettext/1.0/lib/libintl.8.dylib",
+        "sha256": "0c6d618e75fea85cc3d631e164a71766fba9341d19ce1f723300c52e63037c51"
+      },
+      "/opt/homebrew/opt/libogg/lib/libogg.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libogg/1.3.6/lib/libogg.0.8.6.dylib",
+        "sha256": "5c34fd5e4637d0f5d2997f333e3b19d3f9583243673499f81ee7be7d0067b62c"
+      },
+      "/opt/homebrew/opt/opus/lib/libopus.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/opus/1.6.1/lib/libopus.0.dylib",
+        "sha256": "435581a316f3dd41982f3101caa6be6ec974572e31765cd0e29c7cbe30198609"
+      },
+      "/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/opusfile/0.12_1/lib/libopusfile.0.dylib",
+        "sha256": "860c35f38650001b3d8c1ab77691981b1b2d9b067086b17db3596d8dd6ce3f51"
+      },
+      "/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_net/3.2.0/lib/libSDL3_net.0.2.0.dylib",
+        "sha256": "eeaea0c1865bd0756415ac357bcdc9cd4ce5ecc16077ca460aa5e7eb0ed7be7f"
+      },
+      "/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib",
+        "sha256": "b50e41d12013bfbd7cedf9c316211bb56aabbe08eeff4f0387f27fc9f39dda73"
+      },
+      "/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libepoxy/1.5.10/lib/libepoxy.0.dylib",
+        "sha256": "0db71bb57c728fd572c63dd9cd666dd7f7f6a8cab26b749e619c9d6853c0393e"
+      },
+      "/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib",
+        "sha256": "bae675614cd791d37ec35416ea9f87edcc85407d020810504cf458119b63522c"
+      },
+      "/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libssl.3.dylib",
+        "sha256": "c6ee373222087cf31bc2f3817537d268b3c23e56b7fadd44bbf5c2317caed349"
+      },
+      "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib",
+        "sha256": "bae675614cd791d37ec35416ea9f87edcc85407d020810504cf458119b63522c"
+      }
+    },
+    "dyld_shared_cache_paths": [
+      "/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation",
+      "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+      "/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox",
+      "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+      "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+      "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+      "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+      "/System/Library/Frameworks/CoreHaptics.framework/Versions/A/CoreHaptics",
+      "/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia",
+      "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+      "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+      "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+      "/System/Library/Frameworks/ForceFeedback.framework/Versions/A/ForceFeedback",
+      "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT",
+      "/System/Library/Frameworks/GameController.framework/Versions/A/GameController",
+      "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+      "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+      "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+      "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+      "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+      "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+      "/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox",
+      "/usr/lib/libSystem.B.dylib",
+      "/usr/lib/libbz2.1.0.dylib",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libiconv.2.dylib",
+      "/usr/lib/libobjc.A.dylib",
+      "/usr/lib/libz.1.dylib"
+    ]
+  },
+  "gen005": {
+    "direct_commands": [
+      "\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)",
+      "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)",
+      "\t/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib (compatibility version 3.0.0, current version 3.0.0)",
+      "\t/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)",
+      "\t/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib (compatibility version 5.0.0, current version 5.0.0)",
+      "\t/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib (compatibility version 201.0.0, current version 201.0.0)",
+      "\t/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib (compatibility version 5.0.0, current version 5.5.0)",
+      "\t/opt/homebrew/opt/opus/lib/libopus.0.dylib (compatibility version 12.0.0, current version 12.1.0)",
+      "\t/opt/homebrew/opt/libogg/lib/libogg.0.dylib (compatibility version 0.0.0, current version 0.8.6)",
+      "\t/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib (compatibility version 203.0.0, current version 203.0.0)",
+      "\t/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib (compatibility version 409.0.0, current version 409.0.0)",
+      "\t/opt/homebrew/opt/speex/lib/libspeex.1.dylib (compatibility version 7.0.0, current version 7.2.0)",
+      "\t/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib (compatibility version 401.0.0, current version 401.18.0)",
+      "\t/opt/homebrew/opt/webp/lib/libwebp.7.dylib (compatibility version 10.0.0, current version 10.0.0)",
+      "\t/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib (compatibility version 2.0.0, current version 2.2.0)",
+      "\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 62460.1.2)",
+      "\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)",
+      "\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)",
+      "\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT (compatibility version 1.0.0, current version 1.0.0)",
+      "\t/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox (compatibility version 1.0.0, current version 3350.77.5)",
+      "\t/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia (compatibility version 1.0.0, current version 3350.77.5)",
+      "\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 758.27.0)",
+      "\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+      "\t/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)",
+      "\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+      "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)"
+    ],
+    "non_system_dylibs": {
+      "/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebp.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebp.7.2.0.dylib",
+        "sha256": "f42f3e0687cf1f7fd5a42c608152e0d4187540ac2e6675cb8af297e7befc4258"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3/3.4.18/lib/libSDL3.0.dylib",
+        "sha256": "599c1a000f96797ee4f53f756df0eb53bf9575ee0efffaea2ac55240a8f523a2"
+      },
+      "/opt/homebrew/opt/speex/lib/libspeex.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib",
+        "sha256": "55ef52576e74debea9150f320b280633a4710b8f46d133a008f4584fac750ddc"
+      },
+      "/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_image/3.4.8/lib/libSDL3_image.0.4.8.dylib",
+        "sha256": "4dfc509003ce515db84454a06cae84fb15d2c0c0f31dbd3d2ebfbe48fd154f65"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebpmux.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebpmux.3.1.2.dylib",
+        "sha256": "6e370882a34fe4f026e9c5cd614588d511e2f48664364b26eb5a93cb4942ec73"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/libwebp.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebp.7.2.0.dylib",
+        "sha256": "f42f3e0687cf1f7fd5a42c608152e0d4187540ac2e6675cb8af297e7befc4258"
+      },
+      "/opt/homebrew/opt/webp/lib/../lib/../lib/libsharpyuv.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libsharpyuv.0.1.2.dylib",
+        "sha256": "755e13860aa122e98f1be1bb7d5fcf47b496ae27d5787fe783af3909721d2321"
+      },
+      "/opt/homebrew/opt/webp/lib/libwebpdemux.2.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebpdemux.2.0.17.dylib",
+        "sha256": "d8b4a387561fd4c28aa7590fb41f62fbd6363f4c303d8cde2d2a971af4b6d699"
+      },
+      "/opt/homebrew/opt/libtiff/lib/libtiff.6.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libtiff/4.7.2/lib/libtiff.6.dylib",
+        "sha256": "ed5a54e3e8a621ba58f51ce632debb3f8d0ef068faf5bee887672581698e4cc1"
+      },
+      "/opt/homebrew/opt/jpeg-turbo/lib/libjpeg.8.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/lib/libjpeg.8.3.2.dylib",
+        "sha256": "e6585d0aee1969a63f288f97bbe3ef100ac787bc25ebcc4e6487b82b96cdbcae"
+      },
+      "/opt/homebrew/opt/xz/lib/liblzma.5.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/xz/5.8.4/lib/liblzma.5.dylib",
+        "sha256": "41cdf225f3e10fb54f952c8eca11c8a847d095470540dc42736ae7bd761beaa4"
+      },
+      "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+        "sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab"
+      },
+      "/opt/homebrew/opt/libpng/lib/libpng16.16.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libpng/1.6.59/lib/libpng16.16.dylib",
+        "sha256": "ec95a41f112fac5e0b077f129bccc67acf9b5ad1a01f56cc0ecebae2a8727ff2"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl.0.12.0.dylib",
+        "sha256": "50ccacb1eccf7f398d556507a9181504107b6909a7e13806a37cb24866218d2d"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib",
+        "sha256": "6f07b64b1247ef2963b69813326a2ad363391e07b90e2dca6cf244f17176f884"
+      },
+      "/opt/homebrew/opt/brotli/lib/../lib/libbrotlicommon.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+        "sha256": "41ea919f6b53d772067477235cbe8fdf97aaad403c30a90512c6c4b17cd529ef"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+        "sha256": "41ea919f6b53d772067477235cbe8fdf97aaad403c30a90512c6c4b17cd529ef"
+      },
+      "/opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib",
+        "sha256": "23f7347022952e956a8fd9a045e32069c0d9adda23100af9d061502008976330"
+      },
+      "/opt/homebrew/opt/highway/lib/libhwy.1.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/highway/1.4.0/lib/libhwy.1.4.0.dylib",
+        "sha256": "ef81b48668eef31843d2a7221adfb1d93efa08ebe391c8ad596080760d6e530d"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/../lib/libjxl_cms.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl_cms.0.12.0.dylib",
+        "sha256": "fc0d4d74ec3888c430545fadb8fce168cdc127aac8dd25fd981df9072cf6bb71"
+      },
+      "/opt/homebrew/opt/little-cms2/lib/liblcms2.2.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/little-cms2/2.19.1/lib/liblcms2.2.dylib",
+        "sha256": "faf9c8f2322a2bb47d04d3077a79cc7103fba68a186697cf91e5f6ef467d1b77"
+      },
+      "/opt/homebrew/opt/jpeg-xl/lib/libjxl_cms.0.12.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/jpeg-xl/0.12.0_1/lib/libjxl_cms.0.12.0.dylib",
+        "sha256": "fc0d4d74ec3888c430545fadb8fce168cdc127aac8dd25fd981df9072cf6bb71"
+      },
+      "/opt/homebrew/opt/libavif/lib/libavif.16.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libavif/1.4.2/lib/libavif.16.4.2.dylib",
+        "sha256": "c8e0cb4f2b0c475108efc9b9f0bf5a9ec80c7ff3cf76c27902bc1e8754b247cc"
+      },
+      "/opt/homebrew/opt/aom/lib/libaom.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/aom/3.15.1/lib/libaom.3.15.1.dylib",
+        "sha256": "69944db15ebc3e944d025525143d675e77b8ed7978ea10dcf1046b20a40d7f64"
+      },
+      "/opt/homebrew/opt/libvmaf/lib/libvmaf.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libvmaf/3.2.1/lib/libvmaf.3.dylib",
+        "sha256": "f9ca4510cb08cca61ecd571fc417f2b4440c25555fbeefdb4b5477a35891de1c"
+      },
+      "/opt/homebrew/opt/dav1d/lib/libdav1d.7.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/dav1d/1.5.4/lib/libdav1d.7.dylib",
+        "sha256": "60c3a42a79582241ac77bbbba4c0137c2209204aecbc59e5d6392c2dc0a5b439"
+      },
+      "/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib/libSDL3_ttf.0.2.2.dylib",
+        "sha256": "60dfb261736dec24eef3fe98476616f22dd1aab51e575e2307c0041ffed79723"
+      },
+      "/opt/homebrew/opt/freetype/lib/libfreetype.6.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/freetype/2.14.3/lib/libfreetype.6.dylib",
+        "sha256": "e4b41d886673fd1c282764a3113224d83b09bd705d12db7c36366fb04b7592dc"
+      },
+      "/opt/homebrew/opt/harfbuzz/lib/libharfbuzz.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/harfbuzz/14.1.0/lib/libharfbuzz.0.dylib",
+        "sha256": "36ca136493d658fb8b624d95b07d405dbaabac83ba5a96e7e896fa4e4a415736"
+      },
+      "/opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib",
+        "sha256": "2cf0d45c18527e4a4b93c4c39fd8dd12f59f5be02d4dbf783e68deb58b41a6d9"
+      },
+      "/opt/homebrew/opt/glib/lib/libglib-2.0.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/glib/2.88.0/lib/libglib-2.0.0.dylib",
+        "sha256": "1f07f5d27059cc978f9ac1dddabf5837774b38f37959195572e46c6470883876"
+      },
+      "/opt/homebrew/opt/pcre2/lib/libpcre2-8.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/pcre2/10.48/lib/libpcre2-8.0.dylib",
+        "sha256": "6b698ffc744550e149829d94045912448b8ac4b692cb267dce9fc2f3ed60659d"
+      },
+      "/opt/homebrew/opt/gettext/lib/libintl.8.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/gettext/1.0/lib/libintl.8.dylib",
+        "sha256": "0c6d618e75fea85cc3d631e164a71766fba9341d19ce1f723300c52e63037c51"
+      },
+      "/opt/homebrew/opt/libogg/lib/libogg.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libogg/1.3.6/lib/libogg.0.8.6.dylib",
+        "sha256": "5c34fd5e4637d0f5d2997f333e3b19d3f9583243673499f81ee7be7d0067b62c"
+      },
+      "/opt/homebrew/opt/opus/lib/libopus.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/opus/1.6.1/lib/libopus.0.dylib",
+        "sha256": "435581a316f3dd41982f3101caa6be6ec974572e31765cd0e29c7cbe30198609"
+      },
+      "/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/opusfile/0.12_1/lib/libopusfile.0.dylib",
+        "sha256": "860c35f38650001b3d8c1ab77691981b1b2d9b067086b17db3596d8dd6ce3f51"
+      },
+      "/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/sdl3_net/3.2.0/lib/libSDL3_net.0.2.0.dylib",
+        "sha256": "eeaea0c1865bd0756415ac357bcdc9cd4ce5ecc16077ca460aa5e7eb0ed7be7f"
+      },
+      "/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib",
+        "sha256": "b50e41d12013bfbd7cedf9c316211bb56aabbe08eeff4f0387f27fc9f39dda73"
+      },
+      "/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/libepoxy/1.5.10/lib/libepoxy.0.dylib",
+        "sha256": "0db71bb57c728fd572c63dd9cd666dd7f7f6a8cab26b749e619c9d6853c0393e"
+      },
+      "/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib",
+        "sha256": "bae675614cd791d37ec35416ea9f87edcc85407d020810504cf458119b63522c"
+      },
+      "/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libssl.3.dylib",
+        "sha256": "c6ee373222087cf31bc2f3817537d268b3c23e56b7fadd44bbf5c2317caed349"
+      },
+      "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib": {
+        "resolved_path": "/opt/homebrew/Cellar/openssl@3/3.6.4/lib/libcrypto.3.dylib",
+        "sha256": "bae675614cd791d37ec35416ea9f87edcc85407d020810504cf458119b63522c"
+      }
+    },
+    "dyld_shared_cache_paths": [
+      "/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation",
+      "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+      "/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox",
+      "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+      "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+      "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+      "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+      "/System/Library/Frameworks/CoreHaptics.framework/Versions/A/CoreHaptics",
+      "/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia",
+      "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+      "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+      "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+      "/System/Library/Frameworks/ForceFeedback.framework/Versions/A/ForceFeedback",
+      "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT",
+      "/System/Library/Frameworks/GameController.framework/Versions/A/GameController",
+      "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+      "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+      "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+      "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+      "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+      "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+      "/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox",
+      "/usr/lib/libSystem.B.dylib",
+      "/usr/lib/libbz2.1.0.dylib",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libiconv.2.dylib",
+      "/usr/lib/libobjc.A.dylib",
+      "/usr/lib/libz.1.dylib"
+    ]
+  }
+}

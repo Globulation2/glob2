@@ -1,0 +1,32 @@
+{
+  "status": "COMPLETE-PASS",
+  "utc": "2026-10-19T15:37:38.063335+00:00",
+  "plan_sha256": "b89c671792530b93f2ff5be1446e8831a8bf58ad0c166934bb494ed8c2d87c68",
+  "off_runs": 24,
+  "on_runs": 6,
+  "all_off_trace_probe_work_disabled": true,
+  "all_runs_full_8192_ticks": true,
+  "repeat_and_observer_final_checksum_gate": "PASS",
+  "per_tick_parity_qualification": "round005 qualified receipt; not measured in clean OFF",
+  "host_loadavg1_range": [
+    2.0341796875,
+    2.58984375
+  ],
+  "thermal_outputs": [
+    "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+  ],
+  "hashes": {
+    "PLAN.json": "b89c671792530b93f2ff5be1446e8831a8bf58ad0c166934bb494ed8c2d87c68",
+    "run-study.py": "23577cb4417273b1ac25398c3f95720dc92952c3a2549094b36ce4df0bab6579",
+    "summarize.py": "26a8c7a17b631805247c87fb0f02ac40d817f96b8739927baa0ef2ac2d722d75",
+    "ASSETS.json": "69cc328dabd4d8ea8996290fe99193634fd98d2c93a0b7d22b2806c022321c41",
+    "DEPENDENCIES.json": "6b06df2884534abdf0b7e04574933c14df949ffe0101235af031831e0500809b",
+    "PARITY.json": "67dea2388c119fbaf8a24f07eccaba3d17d57c54eb56ad1a5aa4563b278fa485",
+    "SUMMARY.json": "c1a784fd0617bdceab9b6e2c97057c88928b0ad8bd77f9cc8ee9456f61f556e2",
+    "README.md": "2590af1e49750d49668cb02bfe3346cd19c80073e45bb91b96b1b2fb55636a16"
+  },
+  "retired_excluded": [
+    "prospective-study",
+    "prospective-study-macos"
+  ]
+}

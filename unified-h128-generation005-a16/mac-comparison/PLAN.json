@@ -1,0 +1,549 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-19T15:32:16.366812+00:00",
+  "status": "FROZEN-DESIGN-BEFORE-OUTCOMES",
+  "host": "MacBook-local",
+  "logical_cpu": null,
+  "nice": 0,
+  "additional_ticks": 8192,
+  "absolute_tick_limit": 24576,
+  "benchmark_warmup": 0,
+  "wall_cap_seconds": 1800,
+  "compute_threads": 1,
+  "gpu": "off",
+  "compute_telemetry": "off",
+  "checksum_sidecars": "ON only; OFF has no tracing, probe, work stats or compute telemetry; finalChecksum repeat/observer gates",
+  "maps": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "start_tick": 16384,
+      "save_minor": 178,
+      "sha256": "fa4506373ba0ea0bc24294a45582f0350c5f8f4ede2834fa84c1d1629dc5ce35",
+      "checkpoint": {
+        "active_teams": 4,
+        "baseline_threshold_milli": 128000,
+        "binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "group": "66294c58700ef1b4",
+        "load_check": {
+          "initialChecksum": 3225539200,
+          "measured_ticks": 1,
+          "returncode": 0,
+          "save_minor": 178,
+          "ticks": 16385
+        },
+        "loaded_tick": 16384,
+        "map_group": "50188509371e97f4",
+        "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+        "save_minor": 178,
+        "save_sha256": "fa4506373ba0ea0bc24294a45582f0350c5f8f4ede2834fa84c1d1629dc5ce35",
+        "saved_tick": 16384,
+        "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+        "team_counts": [
+          {
+            "alive": true,
+            "alliance": 3,
+            "buildings": 5,
+            "explorers": 3,
+            "team": 0,
+            "units": 27,
+            "warriors": 5,
+            "workers": 19
+          },
+          {
+            "alive": true,
+            "alliance": 4,
+            "buildings": 10,
+            "explorers": 4,
+            "team": 1,
+            "units": 64,
+            "warriors": 13,
+            "workers": 47
+          },
+          {
+            "alive": true,
+            "alliance": 2,
+            "buildings": 9,
+            "explorers": 10,
+            "team": 2,
+            "units": 68,
+            "warriors": 13,
+            "workers": 45
+          },
+          {
+            "alive": true,
+            "alliance": 1,
+            "buildings": 6,
+            "explorers": 3,
+            "team": 3,
+            "units": 30,
+            "warriors": 5,
+            "workers": 22
+          }
+        ],
+        "unit_count": 189,
+        "unusable_policy": "Preserved; no replacement/retry or outcome-based selection",
+        "usable_shared_checkpoint": true
+      },
+      "local_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/66294c58700ef1b4.game.gz"
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "start_tick": 16384,
+      "save_minor": 178,
+      "sha256": "8a4b056b0dc18a6788b130f44f638a8e4ecc3fe75a1eb4e31e3d4c54e5da2ea0",
+      "checkpoint": {
+        "active_teams": 5,
+        "baseline_threshold_milli": 128000,
+        "binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "group": "1d043310cbecdceb",
+        "load_check": {
+          "initialChecksum": 2623784120,
+          "measured_ticks": 1,
+          "returncode": 0,
+          "save_minor": 178,
+          "ticks": 16385
+        },
+        "loaded_tick": 16384,
+        "map_group": "8200f8884b89e3e1",
+        "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+        "save_minor": 178,
+        "save_sha256": "8a4b056b0dc18a6788b130f44f638a8e4ecc3fe75a1eb4e31e3d4c54e5da2ea0",
+        "saved_tick": 16384,
+        "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+        "team_counts": [
+          {
+            "alive": false,
+            "alliance": 8,
+            "buildings": 0,
+            "explorers": 0,
+            "team": 0,
+            "units": 0,
+            "warriors": 0,
+            "workers": 0
+          },
+          {
+            "alive": false,
+            "alliance": 7,
+            "buildings": 0,
+            "explorers": 0,
+            "team": 1,
+            "units": 0,
+            "warriors": 0,
+            "workers": 0
+          },
+          {
+            "alive": true,
+            "alliance": 4,
+            "buildings": 10,
+            "explorers": 5,
+            "team": 2,
+            "units": 40,
+            "warriors": 1,
+            "workers": 34
+          },
+          {
+            "alive": true,
+            "alliance": 6,
+            "buildings": 13,
+            "explorers": 7,
+            "team": 3,
+            "units": 89,
+            "warriors": 11,
+            "workers": 71
+          },
+          {
+            "alive": true,
+            "alliance": 5,
+            "buildings": 7,
+            "explorers": 0,
+            "team": 4,
+            "units": 27,
+            "warriors": 7,
+            "workers": 20
+          },
+          {
+            "alive": true,
+            "alliance": 2,
+            "buildings": 6,
+            "explorers": 1,
+            "team": 5,
+            "units": 7,
+            "warriors": 2,
+            "workers": 4
+          },
+          {
+            "alive": false,
+            "alliance": 3,
+            "buildings": 0,
+            "explorers": 0,
+            "team": 6,
+            "units": 0,
+            "warriors": 0,
+            "workers": 0
+          },
+          {
+            "alive": true,
+            "alliance": 1,
+            "buildings": 3,
+            "explorers": 2,
+            "team": 7,
+            "units": 34,
+            "warriors": 5,
+            "workers": 27
+          }
+        ],
+        "unit_count": 197,
+        "unusable_policy": "Preserved; no replacement/retry or outcome-based selection",
+        "usable_shared_checkpoint": true
+      },
+      "local_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/1d043310cbecdceb.game.gz"
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "format": "2v2",
+      "start_tick": 16384,
+      "save_minor": 178,
+      "sha256": "0827b66484228fba21ce8e57ddd3f5ac9304a2d24fa9aaf3cf74e908b794ffca",
+      "checkpoint": {
+        "active_teams": 3,
+        "baseline_threshold_milli": 128000,
+        "binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+        "format": "2v2",
+        "game_seed": 3333364126,
+        "group": "0083541d8ee4d18b",
+        "load_check": {
+          "initialChecksum": 2187383412,
+          "measured_ticks": 1,
+          "returncode": 0,
+          "save_minor": 178,
+          "ticks": 16385
+        },
+        "loaded_tick": 16384,
+        "map_group": "a701ceca2d835e82",
+        "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+        "save_minor": 178,
+        "save_sha256": "0827b66484228fba21ce8e57ddd3f5ac9304a2d24fa9aaf3cf74e908b794ffca",
+        "saved_tick": 16384,
+        "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+        "team_counts": [
+          {
+            "alive": true,
+            "alliance": 2,
+            "buildings": 26,
+            "explorers": 5,
+            "team": 0,
+            "units": 80,
+            "warriors": 20,
+            "workers": 55
+          },
+          {
+            "alive": true,
+            "alliance": 2,
+            "buildings": 1,
+            "explorers": 1,
+            "team": 1,
+            "units": 4,
+            "warriors": 0,
+            "workers": 3
+          },
+          {
+            "alive": true,
+            "alliance": 1,
+            "buildings": 22,
+            "explorers": 6,
+            "team": 2,
+            "units": 79,
+            "warriors": 25,
+            "workers": 48
+          },
+          {
+            "alive": false,
+            "alliance": 1,
+            "buildings": 0,
+            "explorers": 0,
+            "team": 3,
+            "units": 0,
+            "warriors": 0,
+            "workers": 0
+          }
+        ],
+        "unit_count": 163,
+        "unusable_policy": "Preserved; no replacement/retry or outcome-based selection",
+        "usable_shared_checkpoint": true
+      },
+      "local_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/threshold-sweep-gen003/public-ready/warm/0083541d8ee4d18b.game.gz"
+    }
+  ],
+  "schedule": [
+    {
+      "index": 0,
+      "kind": "off",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "gen004"
+    },
+    {
+      "index": 1,
+      "kind": "off",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005"
+    },
+    {
+      "index": 2,
+      "kind": "off",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "gen004"
+    },
+    {
+      "index": 3,
+      "kind": "off",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005"
+    },
+    {
+      "index": 4,
+      "kind": "off",
+      "repeat": 0,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004"
+    },
+    {
+      "index": 5,
+      "kind": "off",
+      "repeat": 0,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005"
+    },
+    {
+      "index": 6,
+      "kind": "off",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005"
+    },
+    {
+      "index": 7,
+      "kind": "off",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "gen004"
+    },
+    {
+      "index": 8,
+      "kind": "off",
+      "repeat": 1,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005"
+    },
+    {
+      "index": 9,
+      "kind": "off",
+      "repeat": 1,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004"
+    },
+    {
+      "index": 10,
+      "kind": "off",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005"
+    },
+    {
+      "index": 11,
+      "kind": "off",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "gen004"
+    },
+    {
+      "index": 12,
+      "kind": "off",
+      "repeat": 2,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005"
+    },
+    {
+      "index": 13,
+      "kind": "off",
+      "repeat": 2,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004"
+    },
+    {
+      "index": 14,
+      "kind": "off",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005"
+    },
+    {
+      "index": 15,
+      "kind": "off",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "gen004"
+    },
+    {
+      "index": 16,
+      "kind": "off",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005"
+    },
+    {
+      "index": 17,
+      "kind": "off",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "gen004"
+    },
+    {
+      "index": 18,
+      "kind": "off",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "gen004"
+    },
+    {
+      "index": 19,
+      "kind": "off",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005"
+    },
+    {
+      "index": 20,
+      "kind": "off",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "gen004"
+    },
+    {
+      "index": 21,
+      "kind": "off",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005"
+    },
+    {
+      "index": 22,
+      "kind": "off",
+      "repeat": 3,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004"
+    },
+    {
+      "index": 23,
+      "kind": "off",
+      "repeat": 3,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005"
+    },
+    {
+      "index": 24,
+      "kind": "on",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "gen004"
+    },
+    {
+      "index": 25,
+      "kind": "on",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005"
+    },
+    {
+      "index": 26,
+      "kind": "on",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005"
+    },
+    {
+      "index": 27,
+      "kind": "on",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "gen004"
+    },
+    {
+      "index": 28,
+      "kind": "on",
+      "repeat": 0,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen004"
+    },
+    {
+      "index": 29,
+      "kind": "on",
+      "repeat": 0,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005"
+    }
+  ],
+  "arms": {
+    "gen004": {
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/reference-macos/bin/glob2",
+      "binary_sha256": "64807701b9096e38be0ddd4f97aea3673b6e3d3e3618bc0222135c53712979c1",
+      "source": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+      "model_sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1",
+      "threshold_milli": 16000
+    },
+    "gen005": {
+      "binary": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/build/candidate-release/src/glob2",
+      "binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+      "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+      "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+      "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+      "threshold_milli": 16000
+    }
+  },
+  "launch_gates": [
+    "qualified Mac gen005 binary3781b889 and old648077 hashes",
+    "no local compiler/linker/proof/glob2 process at each cell boundary",
+    "no local training/collection",
+    "identical explicit data tree for both arms; unchanged relative to recorded asset revision23def6961cd5dbffdc49b1f3f0a4f1c9d4bcdef0",
+    "same Mach-O dependency load commands and resolved non-system dylib content",
+    "one comparison lock; no automatic retries"
+  ],
+  "analysis": {
+    "primary": "paired per-map ratio of mean clean OFF benchmark_run_cpu_ns/advanced_tick; four repeats",
+    "secondary": [
+      "whole-process user+system CPU/tick and total CPU",
+      "wall time and TPS",
+      "ON refresh jobs/lazy work and per-family work",
+      "ON direction cost, movement stalls, and planning metrics with distinct denominators"
+    ],
+    "uncertainty": "show all repeats and within-map range; three examined states cannot support population confidence intervals",
+    "censoring": "preserve early finishes/failures; no replacement; report observed ticks and do not compare total CPU as matched-horizon if any finish early",
+    "parity": "Within each arm all four clean OFF repeats and ON finalChecksum plus initialChecksum/ticks must match. Existing qualification supplies per-tick observer/thread/cross-platform proof."
+  },
+  "limits": [
+    "Already examined three-state warm panel; not fresh generalization",
+    "Single Mac host; no processor pinning; OS scheduler may migrate between performance/efficiency cores",
+    "Load, process activity and available thermal diagnostics recorded at cell boundaries; no continuous thermal/host-load control and no cold/uncontended claim",
+    "ON timings excluded from CPU claims",
+    "Different policy trajectories may change workload",
+    "Research only; no model promotion/admission changes",
+    "Retired Dev observations excluded completely",
+    "OFF CPU measures normal headless benchmark simulation with probe/work/compute/checksum tracing disabled. ON diagnostics never enter CPU claims.",
+    "Retired Dev and Mac traced observations excluded completely."
+  ],
+  "host_plan_revision": 3,
+  "supersedes_host_only": "Dev study retired; one completed row and one cancelled partial remain separate",
+  "retired_dev_plan_sha256": "740d37c1d08059b787cc628781837d8d2b26c59deba3702efa3dc8377e19679d",
+  "data_dir": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/data",
+  "working_directory": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "retired_mac_traced_plan_sha256": "d756d55bb94fd637ed3061ead33bb6e0c650dc7b50bcc53d90ed537758d9edda"
+}

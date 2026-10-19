@@ -1,0 +1,5 @@
+PASS glob2-unit-tests AdaptiveGradientState (10 cases) (0.0s)
+PASS glob2-unit-tests ReplayStepCounter (11 cases) (0.0s)
+
+2 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/final-state-replay.xml (21 cases)

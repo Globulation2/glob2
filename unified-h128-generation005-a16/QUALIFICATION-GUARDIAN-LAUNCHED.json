@@ -1,0 +1,13 @@
+{
+  "pid": 10162,
+  "utc": "2026-10-19T15:06:57.697477+00:00",
+  "script_sha256": "b22e4c94fd45bdb548960ae0c99c8375385c779b975c7bdb262b9a14c30d4a94",
+  "request_sha256": "0a006f89681439e0a1fcf90fb021d0cc93acf9a0f4eef63c02c7adc2b500bce1",
+  "post_receipt_schema": {
+    "path": "POST-QUALIFICATION.json",
+    "status": "SOURCE-PUSHED-QUALIFIED-MAC",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e"
+  },
+  "actual_linux_gate_and_bundles_also_required": true,
+  "existing48_roots_only": true
+}

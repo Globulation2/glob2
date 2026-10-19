@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/qualify-header-aligned.py", line 13, in <module>
+    normalized,n=run('resave179-as180-zero-ticks',1,False,warm,17408)
+                 ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/qualify.py", line 14, in run
+    row=dict(name=name,threads=threads,probe=probe,returncode=p.returncode,hashes={n:h(out/n) for n in ['world.checksums','snapshot.checksums','game.replay.checksums','final.game.gz'] if (out/n).exists()});runs.append(row);status('running');assert p.returncode==0,(name,p.returncode)
+                                                                                                                                                                                                                                                        ^^^^^^^^^^^^^^^
+AssertionError: ('resave179-as180-zero-ticks', 2)
