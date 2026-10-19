@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="1" errors="1" skipped="0"><testsuite name="EntityRandomLifecycle"><testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="4.22878" status="run">
+      <error message="exception">
+        Invalid saved routing flag
+      </error>
+    </testcase>
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="9.99427" status="run">
+      <failure message="0 &gt;  0" type="REQUIRE">
+test/SavegameSafetyHarness.cpp:769:
+REQUIRE( (static_cast&lt;unsigned char&gt;(bytes[pipeline+1])&lt;&lt;8 | static_cast&lt;unsigned char&gt;(bytes[pipeline+2]))&gt;0 ) is NOT correct!
+  values: REQUIRE( 0 &gt;  0 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

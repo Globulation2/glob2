@@ -1,0 +1,12 @@
+{
+  "original_map_format": 70,
+  "saved_format": 186,
+  "header_rotations_through_deep_checksum": 15,
+  "predicted_xor_delta": 33030144,
+  "observed_xor_deltas": [
+    33030144
+  ],
+  "compared_ticks": 2048,
+  "team_unit_building_record_differences": 0,
+  "final_routine_checksum_equal": true
+}

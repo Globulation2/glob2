@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="77" failures="0" errors="0" skipped="0"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="1.82649" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.7889" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="1.46334" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.824311" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.792843" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a saturated team cannot block another team or borrow its unused quota" time="2.78997" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.802084" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="1.15535" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="4.34513" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.73427" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="8.51415" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="empty building-draft174 runtime uses its widened queue count [save-format]" time="1.22895" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="historical byte-sized pending building jobs retain their deadlines [save-format]" time="1.66453" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.777391" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="mixed cold and warm deadlines preserve team FIFO without blocking other teams" time="1.29383" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="more than 255 pending building gradients survive binary and text saves [save-format]" time="142.488" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="more than 64 building refreshes retain their FIFO without synchronous overflow across saves" time="43.8525" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="observation phase is covered by both current checksum tiers" time="1.55458" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="owner observation at tick zero publishes cold fields and access metadata at tick one" time="1.81226" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="1.36274" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="25.5753" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.844422" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released and building-draft format lineages select independent layouts [save-format]" time="0" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released saves through format168 bootstrap only when their observation was not admitted" time="6.0044" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released173 and building drafts preserve queued and admitted building routes [save-format]" time="5.68671" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.870219" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="36.5458" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.839436" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="1.4883" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="4.88307" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="5.09663" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="19.5057" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.841657" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synthetic runtime rejects resource-only adaptive layouts instead of dropping their state [save-format]" time="3.96565" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="world observation publication and admission survive save boundaries" time="4.83882" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="3.40325" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="8.99008" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU fields keep their original worker" time="0.141413" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="kernel audit can retire safely before observation workers drain" time="0.097678" status="run" />
+    <testcase classname="GradientPipeline" name="kernel audit distinguishes owner preparation from deferred worker work" time="0.391446" status="run" />
+    <testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="4.66453" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.043043" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.059304" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="1.76383" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.77392" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.015671" status="run" />
+    <testcase classname="GradientPipeline" name="building quotas are independent per team and a full multi-team horizon restores" time="0.072049" status="run" />
+    <testcase classname="GradientPipeline" name="serial preparation computes at join and errors surface at the deadline" time="0.014489" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0.001602" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection survives worker scratch resizing" time="0.086177" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.024068" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.055328" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0.000117" status="run" />
+    <testcase classname="GradientPipeline" name="explicit CPU jobs bypass device ownership and retain publication deadlines" time="0.062173" status="run" />
+    <testcase classname="GradientPipeline" name="availability changes during seeding do not reinterpret captured CPU execution" time="0.019985" status="run" />
+    <testcase classname="GradientPipeline" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.071298" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow background initializer" time="0.003485" status="run" />
+    <testcase classname="GradientPipeline" name="application shutdown joins background initialization and later registrations restart" time="0.110004" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0.008922" status="run" />
+    <testcase classname="GradientPipeline" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.120003" status="run" />
+    <testcase classname="GradientPipeline" name="device adapters retain committed fields when another ready field declines" time="0.02395" status="run" />
+    <testcase classname="GradientPipeline" name="bounded required device queue recovers excess fields exactly once" time="0.009001" status="run" />
+    <testcase classname="GradientPipeline" name="malformed captured configurations decline and recover once" time="0.003197" status="run" />
+    <testcase classname="GradientPipeline" name="building initialization deadlines overtake refreshes and survive pending saves" time="0.01596" status="run" />
+    <testcase classname="GradientPipeline" name="mixed building deadlines retain bounded admission across the full executor horizon" time="0.035255" status="run" />
+    <testcase classname="GradientPipeline" name="an unfinished refresh batch cannot hold up an initial building field" time="0.003683" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.011399" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="paused turns retain the first snapshot for their shared simulation tick" time="0.000228" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay checks validate their original source tick" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay mismatch and missing terminal work fail validation" time="0.000127" status="run" />
+    <testcase classname="ReplayStepCounter" name="zero is a valid delayed checksum when explicitly present" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000719" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.009499" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,37 @@
+{
+  "holiday": {
+    "teams": 4,
+    "ticks": 4096,
+    "participants": [
+      1,
+      4
+    ],
+    "identical_trace_sha256": {
+      "world.checksums": "81285c9be5f79f6b38eb2c58bb36eacb5abd666c8c4fe4beecdc75c13bba5e1a",
+      "game.replay.checksums": "6a4cdd934daf4ddee648a5265bd68caaf61ab1dde69dea2717dbfbd400b9770d"
+    },
+    "final_checksum": 3604971230
+  },
+  "oazis": {
+    "teams": 11,
+    "ticks": 2048,
+    "participants": [
+      1,
+      4
+    ],
+    "identical_trace_sha256": {
+      "world.checksums": "8881c7a795a735c56a3350e64f69e5f9b0e953222a53d3223a1f7bd083066cc3",
+      "game.replay.checksums": "eda48edb45e50425c1e9af7875c4bced4a312e06f725521fcdad4ceebd99bee1"
+    },
+    "final_checksum": 1086634034
+  },
+  "canonical_continuation": {
+    "save_tick": 2048,
+    "end_tick": 4096,
+    "prefix_participants": 1,
+    "resume_participants": 4,
+    "all_raw_world_hashes_equal": true,
+    "compared_ticks": 4096,
+    "sha256": "d45d278a2336d6bdc5462d084395446ea5f1492b8f4dfe14836c3ad51acfe5f5"
+  }
+}

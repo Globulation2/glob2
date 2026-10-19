@@ -1,0 +1,119 @@
+{
+  "hosted_master_revision": "495e39db8f45766b94c762a2f1cd8609bf903550",
+  "current_master_revision": "71a3a23ae82ea1a97c3c63f54e1d486c35419542",
+  "production_source_delta": [],
+  "hosted_run": "https://github.com/Globulation2/glob2/actions/runs/39320985085",
+  "failures": [
+    {
+      "suite": "GradientPreparation",
+      "case": "stock changes during shared market work retain dirty demand through its fixed deadline",
+      "hosted_master_matches": [
+        "2026-10-19T21:23:52.0640807Z FAIL GradientPreparation/stock changes during shared market work retain dirty demand through its fixed deadline (0.1s)",
+        "2026-10-19T21:33:11.9322570Z ===== FAIL GradientPreparation/stock changes during shared market work retain dirty demand through its fixed deadline ====="
+      ]
+    },
+    {
+      "suite": "MapGradientInvalidation",
+      "case": "explicit research demanded escape refresh publishes complete fields after every seed transition",
+      "hosted_master_matches": [
+        "2026-10-19T21:27:21.1259230Z FAIL MapGradientInvalidation/explicit research demanded escape refresh publishes complete fields after every seed transition (2.1s)",
+        "2026-10-19T21:29:34.8113655Z ===== FAIL MapGradientInvalidation/explicit research demanded escape refresh publishes complete fields after every seed transition ====="
+      ]
+    },
+    {
+      "suite": "UnitCustomization",
+      "case": "direct flying carriers retain priced overlay and direct stock destinations",
+      "hosted_master_matches": [
+        "2026-10-19T21:27:45.2302119Z FAIL UnitCustomization/direct flying carriers retain priced overlay and direct stock destinations (0.1s)",
+        "2026-10-19T21:33:11.9388999Z ===== FAIL UnitCustomization/direct flying carriers retain priced overlay and direct stock destinations ====="
+      ]
+    },
+    {
+      "suite": "UnitCustomization",
+      "case": "direct flying clearers retain shared goals and clearing claims",
+      "hosted_master_matches": [
+        "2026-10-19T21:28:23.9175786Z FAIL UnitCustomization/direct flying clearers retain shared goals and clearing claims (0.1s)",
+        "2026-10-19T21:29:34.8277070Z ===== FAIL UnitCustomization/direct flying clearers retain shared goals and clearing claims ====="
+      ]
+    },
+    {
+      "suite": "UnitCustomization",
+      "case": "flying carriers steer directly between shared destination queries",
+      "hosted_master_matches": [
+        "2026-10-19T21:25:53.0203186Z FAIL UnitCustomization/flying carriers steer directly between shared destination queries (0.2s)",
+        "2026-10-19T21:26:39.1878716Z ===== FAIL UnitCustomization/flying carriers steer directly between shared destination queries ====="
+      ]
+    },
+    {
+      "suite": "UnitCustomization",
+      "case": "ground and airborne couriers collect mixed kinds and deliver through the engine",
+      "hosted_master_matches": [
+        "2026-10-19T21:28:24.8203396Z FAIL UnitCustomization/ground and airborne couriers collect mixed kinds and deliver through the engine (0.2s)",
+        "2026-10-19T21:29:34.8285457Z ===== FAIL UnitCustomization/ground and airborne couriers collect mixed kinds and deliver through the engine ====="
+      ]
+    },
+    {
+      "suite": "EntityRandomLifecycle",
+      "case": "format 150 text area saves retain funded services through current saves [save-format][artifacts]",
+      "hosted_master_matches": [
+        "2026-10-19T21:23:20.5571918Z PASS EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts] (1.3s)"
+      ]
+    },
+    {
+      "suite": "src/unit/MarketFetchHarness.cpp",
+      "case": "MarketFetch/market fields and pending publications survive binary and text saves [save-format]",
+      "hosted_master_matches": [
+        "2026-10-19T21:27:23.0652761Z FAIL MarketFetch/market fields and pending publications survive binary and text saves [save-format] (0.8s)",
+        "2026-10-19T21:29:34.8224365Z ===== FAIL MarketFetch/market fields and pending publications survive binary and text saves [save-format] ====="
+      ]
+    },
+    {
+      "suite": "SavegameSafety",
+      "case": "autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]",
+      "hosted_master_matches": [
+        "2026-10-19T21:25:54.8166207Z FAIL SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (2.2s)",
+        "2026-10-19T21:33:11.9380588Z ===== FAIL SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] ====="
+      ]
+    }
+  ],
+  "local_baseline_revision": "71a3a23ae82ea1a97c3c63f54e1d486c35419542",
+  "local_baseline_cases": {
+    "GradientPreparation/stock changes during shared market work retain dirty demand through its fixed deadline": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "MapGradientInvalidation/explicit research demanded escape refresh publishes complete fields after every seed transition": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "MarketFetch/market fields and pending publications survive binary and text saves [save-format]": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "UnitCustomization/direct flying carriers retain priced overlay and direct stock destinations": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "UnitCustomization/direct flying clearers retain shared goals and clearing claims": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "UnitCustomization/flying carriers steer directly between shared destination queries": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "UnitCustomization/ground and airborne couriers collect mixed kinds and deliver through the engine": {
+      "failed": true,
+      "report": "baseline-junit.xml"
+    },
+    "EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts]": {
+      "failed": true,
+      "report": "baseline-extra-junit.xml"
+    },
+    "SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]": {
+      "failed": true,
+      "report": "baseline-extra-junit.xml"
+    }
+  },
+  "legacy_text_fixture": "Missing legacy updated/dirty fields produce unstable reads: failed on PR and clean master GCC 15; final PR rerun passes without code changes. Retained debugger log identifies the missing updated field."
+}

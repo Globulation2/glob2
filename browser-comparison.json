@@ -1,0 +1,48 @@
+{
+  "commit": "db3ead501efa9f10d3aca7652ff3596c96a314a9",
+  "tests_passed": 24,
+  "browser_engines": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "trace_configurations": [
+    "serial/1",
+    "threaded/1",
+    "threaded/2",
+    "threaded/4",
+    "threaded/8",
+    "threaded/auto"
+  ],
+  "native_trace_sha256": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+  "browser_traces": {
+    "browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-1906e-imulation-trace-threaded-8--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-1906e-imulation-trace-threaded-8--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-1906e-imulation-trace-threaded-8--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-45ede-lation-trace-threaded-auto--firefox/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-45ede-lation-trace-threaded-auto--webkit/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432",
+    "browser-results/determinism-WebAssembly-pr-45ede-lation-trace-threaded-auto--chromium/wasm.replay.checksums": "c26d2c50df59c3d4306bbc58406c562d05de3431d9d2a67f493988e6dc25b432"
+  },
+  "golden_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "golden_trace_rows": 843,
+  "golden_traces": {
+    "browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--firefox/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--webkit/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--firefox/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--webkit/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--chromium/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+    "browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--chromium/verify-match.checksums.txt": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+  }
+}

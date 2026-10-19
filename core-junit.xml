@@ -1,0 +1,1354 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="219" failures="142" errors="0" skipped="0"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.560885" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.454542" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.638882" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.497291" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.467475" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a saturated team cannot block another team or borrow its unused quota" time="1.07263" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.443107" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.597251" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="1.05354" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.461542" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="2.88188" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="empty building-draft174 runtime uses its widened queue count [save-format]" time="0.622484" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="historical byte-sized pending building jobs retain their deadlines [save-format]" time="0.949684" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.456929" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="mixed cold and warm deadlines preserve team FIFO without blocking other teams" time="0.763402" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="more than 255 pending building gradients survive binary and text saves [save-format]" time="117.897" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="more than 64 building refreshes retain their FIFO without synchronous overflow across saves" time="31.0415" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="observation phase is covered by both current checksum tiers" time="0.56313" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="owner observation at tick zero publishes cold fields and access metadata at tick one" time="0.593144" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.712254" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="8.9454" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.501067" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released and building-draft format lineages select independent layouts [save-format]" time="0" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released saves through format168 bootstrap only when their observation was not admitted" time="3.17165" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released173 and building drafts preserve queued and admitted building routes [save-format]" time="1.99387" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.45269" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="31.4043" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.520167" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.58942" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="2.48925" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="1.51333" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="7.42643" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.500496" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synthetic runtime rejects resource-only adaptive layouts instead of dropping their state [save-format]" time="0.702173" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="world observation publication and admission survive save boundaries" time="2.32622" status="run" />
+  </testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="1.28965" status="run" />
+  <testcase classname="GradientPreparation" name="a locally blocked consumer field refreshes its stable supplier-cache destination" time="1.54246" status="run" />
+  <testcase classname="GradientPreparation" name="absent natural sources return shared negative guidance without enrolling rebuilds" time="2.33817" status="run" />
+  <testcase classname="GradientPreparation" name="air material planes and cache keys occupy an independent namespace" time="0.032982" status="run" />
+  <testcase classname="GradientPreparation" name="air shares preparation and lazy building fields while ignoring ground blockers" time="1.15536" status="run" />
+  <testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="1.40418" status="run" />
+  <testcase classname="GradientPreparation" name="authored air blockers constrain the common point router while forbidden paint only blocks ground" time="1.1722" status="run" />
+  <testcase classname="GradientPreparation" name="blocked live guidance and removed material goals deduplicate delayed refresh demand" time="2.98979" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="1.99657" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="1.68051" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="1.0789" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="1.38487" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="1.17001" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="1.01727" status="run" />
+  <testcase classname="GradientPreparation" name="consumer pool changes hard-supersede ground supplier fields at a stable identity" time="2.0791" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="1.36818" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="1.09433" status="run" />
+  <testcase classname="GradientPreparation" name="forbidden paint is ground-only for air material service guard and clearing queries" time="1.84381" status="run" />
+  <testcase classname="GradientPreparation" name="ground refreshes preserve warm air material seeds across edits" time="1.66418" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="0.684655" status="run" />
+  <testcase classname="GradientPreparation" name="material LRU retains a published result until its waiting reader observes it" time="1.73919" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.017664" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.596141" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="1.37858" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="5.35904" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air explorer recruitment does not create a combat field" time="1.34493" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air service choices keep geometric ranking without allocating fields" time="2.06345" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary flying building jobs and warrior recruitment avoid route fields" time="2.0559" status="run" />
+  <testcase classname="GradientPreparation" name="pending escape guidance preserves a material assignment without consuming RNG" time="1.11877" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="1.62161" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="1.28584" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.591073" status="run" />
+  <testcase classname="GradientPreparation" name="released ground and air draft routing layouts remain independent" time="1.1538" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="7.00168" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="47.2344" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="3.50683" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="1.65859" status="run" />
+  <testcase classname="GradientPreparation" name="stock changes during shared market work retain dirty demand through its fixed deadline" time="1.70496" status="run">
+      <failure message="false" type="REQUIRE">
+src/map/gradient/GradientPreparationTest.cpp:2182:
+REQUIRE( pending ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.886302" status="run" />
+  <testcase classname="GradientPreparation" name="the version-152 checksum adapter excludes newly introduced publication state" time="1.52175" status="run" />
+  <testcase classname="GradientPreparation" name="unreleased routing draft formats are rejected before reading runtime state" time="0" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="1.02071" status="run" />
+  <testcase classname="GradientPreparation" name="weighted AIR market oracle follows live pickup and uses AIR cost buckets" time="1.4093" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="18.8352" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="1.21346" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="2.18319" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="5.06259" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="2.41715" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="9.12039" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="61.0357" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="3.16411" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0.000175" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="2.82937" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads" time="2.05088" status="run" />
+  <testcase classname="MapGradientInvalidation" name="explicit research demanded escape refresh publishes complete fields after every seed transition" time="25.631" status="run">
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 7
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 9
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 10
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:250:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:247:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 11
+
+      </failure>
+    </testcase>
+  <testcase classname="MapGradientInvalidation" name="forbidden edits preserve published generations until delayed refresh" time="61.6493" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting delays complete routes across passable resources" time="3.79605" status="run" />
+  <testcase classname="MapGradientInvalidation" name="idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together" time="2.17598" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="HP rule arithmetic precedes the cached performance cap at creation rebind and training" time="1.21341" status="run" />
+  <testcase classname="UnitCustomization" name="active water-only cargo preserves queued and pending gradient deadlines [save-format]" time="78.3966" status="run" />
+  <testcase classname="UnitCustomization" name="air navigation ignores team paint and switches after terrain resource catalog and load changes" time="2.63468" status="run" />
+  <testcase classname="UnitCustomization" name="airborne clearing and magic coexist with held cargo" time="1.32905" status="run" />
+  <testcase classname="UnitCustomization" name="all locked capability ablations match fixed tick and RNG traces [golden][artifacts]" time="3.03266" status="run" />
+  <testcase classname="UnitCustomization" name="an explicit producer creates stationary units on a legal birth cell" time="1.27992" status="run" />
+  <testcase classname="UnitCustomization" name="batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks" time="6.14064" status="run" />
+  <testcase classname="UnitCustomization" name="cached performance caps preserve wide save validation and normalized continuation [save-format]" time="8.69286" status="run" />
+  <testcase classname="UnitCustomization" name="catalog derived vision cache preserves padding wire state and visibility continuation [save-format]" time="7.14817" status="run" />
+  <testcase classname="UnitCustomization" name="catalog resizing rejects in-flight projectile rows without publishing state" time="5.63209" status="run" />
+  <testcase classname="UnitCustomization" name="compact unit fields reject wide invalid values before conversion [save-format]" time="1.12189" status="run" />
+  <testcase classname="UnitCustomization" name="concurrent catalogs keep independent live performance and continuation" time="5.37787" status="run" />
+  <testcase classname="UnitCustomization" name="configured magic cooldown follows the magic level while imported tables retain legacy indexing" time="1.60952" status="run" />
+  <testcase classname="UnitCustomization" name="configured service multipliers shorten complete meals and healing visits" time="3.75206" status="run" />
+  <testcase classname="UnitCustomization" name="construction qualification excludes higher-level couriers in live and captured queries" time="1.08616" status="run" />
+  <testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="2.01698" status="run" />
+  <testcase classname="UnitCustomization" name="conversion claim release preserves the stock policy and is configurable" time="1.8239" status="run" />
+  <testcase classname="UnitCustomization" name="current saves reject invalid cached bounds and retain pending lethal state" time="1.40522" status="run" />
+  <testcase classname="UnitCustomization" name="current unit records require idle and service assignments to have no working purpose" time="6.78116" status="run" />
+  <testcase classname="UnitCustomization" name="custom carriers resume actual pickup and delivery including active water only fields" time="35.7662" status="run" />
+  <testcase classname="UnitCustomization" name="custom combat extremes preserve observer estimates and clamp lethal overkill" time="1.27339" status="run" />
+  <testcase classname="UnitCustomization" name="custom feeding healing and training resume entry interior and exit with exact reservations" time="37.5604" status="run" />
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="7.86932" status="run" />
+  <testcase classname="UnitCustomization" name="deleted units release wide cargo before a GID is reused" time="1.14833" status="run" />
+  <testcase classname="UnitCustomization" name="direct flight handles wrapped bearings arrival and fully occupied airspace" time="2.27589" status="run" />
+  <testcase classname="UnitCustomization" name="direct flying carriers retain priced overlay and direct stock destinations" time="1.35343" status="run">
+      <failure message="\x04 == \x03" type="REQUIRE">
+src/unit/UnitCustomizationTest.cpp:3699:
+REQUIRE( flyer-&gt;movement==Unit::MOV_FLYING_TARGET ) is NOT correct!
+  values: REQUIRE( \x04 == \x03 )
+
+      </failure>
+    </testcase>
+  <testcase classname="UnitCustomization" name="direct flying clearers retain shared goals and clearing claims" time="1.34588" status="run">
+      <failure message="65535 == 0" type="CHECK">
+src/unit/UnitCustomizationTest.cpp:3604:
+CHECK( map.isClearingAreaClaimed(18,12,0)==flyer-&gt;gid ) is NOT correct!
+  values: CHECK( 65535 == 0 )
+  logged: attached := false
+
+      </failure>
+      <failure message="\x04 == \x03" type="REQUIRE">
+src/unit/UnitCustomizationTest.cpp:3606:
+REQUIRE( flyer-&gt;movement==Unit::MOV_FLYING_TARGET ) is NOT correct!
+  values: REQUIRE( \x04 == \x03 )
+  logged: attached := false
+
+      </failure>
+    </testcase>
+  <testcase classname="UnitCustomization" name="disabling future flag recruitment preserves all existing job roles and memberships [save-format]" time="10.709" status="run" />
+  <testcase classname="UnitCustomization" name="documented bulk carrier setup enables an inherited-cost production recipe" time="1.62702" status="run" />
+  <testcase classname="UnitCustomization" name="empty direct flight guard queries preserve invalid target coordinates" time="1.17631" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]" time="4.20259" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index retains last slot and full occupied table oracle" time="1.46123" status="run" />
+  <testcase classname="UnitCustomization" name="extended cargo delivers one usable packet per completed work action" time="1.11221" status="run" />
+  <testcase classname="UnitCustomization" name="extreme hunger and experience saturate without changing valid stock arithmetic" time="1.17074" status="run" />
+  <testcase classname="UnitCustomization" name="flag recruitment refusal does not disable painted clearing or defense areas" time="4.38453" status="run" />
+  <testcase classname="UnitCustomization" name="flying carriers steer directly between shared destination queries" time="1.25162" status="run">
+      <failure message="\x04 == \x03" type="REQUIRE">
+src/unit/UnitCustomizationTest.cpp:3564:
+REQUIRE( flyer-&gt;movement==Unit::MOV_FLYING_TARGET ) is NOT correct!
+  values: REQUIRE( \x04 == \x03 )
+
+      </failure>
+    </testcase>
+  <testcase classname="UnitCustomization" name="fractional deliveries retain exact residuals across multipliers and reject overflow atomically" time="1.31678" status="run" />
+  <testcase classname="UnitCustomization" name="game save resumes mixed cargo and per entity RNG at every tick" time="4.40913" status="run" />
+  <testcase classname="UnitCustomization" name="ground and airborne couriers collect mixed kinds and deliver through the engine" time="2.63604" status="run">
+      <failure message="false" type="CHECK">
+src/unit/UnitCustomizationTest.cpp:1273:
+CHECK( sawMixed ) is NOT correct!
+  values: CHECK( false )
+  logged: key := 0x56f5cfc1d544
+
+      </failure>
+    </testcase>
+  <testcase classname="UnitCustomization" name="high unit IDs spawn work and resume all indexed state" time="32.7096" status="run" />
+  <testcase classname="UnitCustomization" name="hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]" time="29.5017" status="run" />
+  <testcase classname="UnitCustomization" name="idle clearing permission does not interrupt a transport assignment" time="1.16251" status="run" />
+  <testcase classname="UnitCustomization" name="idle flyers wander inside forbidden paint instead of requesting ground escape" time="1.06597" status="run" />
+  <testcase classname="UnitCustomization" name="idle painted clearing completes without permission to interrupt jobs [save-format]" time="4.44238" status="run" />
+  <testcase classname="UnitCustomization" name="imported movement tables retain historical course admission and direct grants" time="1.42482" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring finds a wanted material in overflow cargo and completes delivery" time="1.23539" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring respects retained packet capacity and material kind limits" time="1.99908" status="run" />
+  <testcase classname="UnitCustomization" name="labor and defense statistics require usable clocks and recruitment mobility" time="1.26927" status="run" />
+  <testcase classname="UnitCustomization" name="learning mask updates preserve every neighboring flag" time="0.001741" status="run" />
+  <testcase classname="UnitCustomization" name="legacy flying targets retain direct angular steering through forbidden paint" time="1.19358" status="run" />
+  <testcase classname="UnitCustomization" name="legacy setup sentinel retains resolved map definitions and cached unit values" time="1.3297" status="run" />
+  <testcase classname="UnitCustomization" name="maximum healing multiplier and health complete a diagonal service visit" time="1.30689" status="run" />
+  <testcase classname="UnitCustomization" name="migrated tables retain cached performance idle and contact policies" time="1.01687" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision changes with flight learned during a reserved service [save-format]" time="5.68413" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision follows cached flight rather than presentation or saved Race tables [save-format]" time="8.78647" status="run" />
+  <testcase classname="UnitCustomization" name="mixed combat and fractional regeneration continue with cached clocks cargo and random streams" time="4.81508" status="run" />
+  <testcase classname="UnitCustomization" name="mixed inventory and assigned purpose survive unit serialization" time="1.26708" status="run" />
+  <testcase classname="UnitCustomization" name="mixed melee and transport conserve multiple material kinds and rejected packets" time="1.10809" status="run" />
+  <testcase classname="UnitCustomization" name="mobility statistics respect swimming only and stationary definitions" time="1.17703" status="run" />
+  <testcase classname="UnitCustomization" name="ordinary flyers retain angular steering and local avoidance without movement fields" time="2.51568" status="run" />
+  <testcase classname="UnitCustomization" name="ordinary flying couriers export a deterministic direct flight setup [artifacts]" time="1.56479" status="run" />
+  <testcase classname="UnitCustomization" name="parallel construction qualification captures all courses before grants and preserves immobile definitions" time="5.21476" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement losses are assessed together before admission with a surviving mode alternative" time="5.54797" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically" time="3.8839" status="run" />
+  <testcase classname="UnitCustomization" name="passive healing and starvation damage are independent configured rates" time="1.51237" status="run" />
+  <testcase classname="UnitCustomization" name="pending lethal scouts have bounded attraction ranking and resolve death" time="1.5465" status="run" />
+  <testcase classname="UnitCustomization" name="restored unsafe ongoing training exits without charging materials or changing levels" time="4.13384" status="run" />
+  <testcase classname="UnitCustomization" name="retained single packets and kind limits do not withdraw incompatible resources" time="1.86892" status="run" />
+  <testcase classname="UnitCustomization" name="setup cancels obsolete live work clocks and claims without losing cargo or RNG" time="1.97435" status="run" />
+  <testcase classname="UnitCustomization" name="setup rejects immobile interior patients without publishing partial catalog state" time="4.35439" status="run" />
+  <testcase classname="UnitCustomization" name="setup releases original parallel course reservations before disabling learnability" time="2.59873" status="run" />
+  <testcase classname="UnitCustomization" name="setup scaling preserves lethal extremes and zero-kind inventories refuse packets" time="1.14773" status="run" />
+  <testcase classname="UnitCustomization" name="shared air routing stress exports a reproducible benchmark setup [artifacts]" time="3.68363" status="run" />
+  <testcase classname="UnitCustomization" name="stock capacity-one wide primary cargo survives unit and game continuation [save-format]" time="13.2731" status="run" />
+  <testcase classname="UnitCustomization" name="survival eligibility is independent of movement and work capabilities" time="1.7273" status="run" />
+  <testcase classname="UnitCustomization" name="swim only fields avoid land and stationary zero hunger units keep making medical progress" time="1.21337" status="run" />
+  <testcase classname="UnitCustomization" name="target search handles a defender whose effective melee strength saturates" time="1.20981" status="run" />
+  <testcase classname="UnitCustomization" name="tiling anchors and starting positions recognize producers of additional units" time="1.42042" status="run" />
+  <testcase classname="UnitCustomization" name="training rejects loss of the last movement mode before reservation or direct mutation" time="4.78719" status="run" />
+  <testcase classname="UnitCustomization" name="transport capability with a zero delivery clock cannot be hired" time="1.58488" status="run" />
+  <testcase classname="UnitCustomization" name="unit experiment gates control spawning and reject disabled live definitions" time="4.37168" status="run" />
+  <testcase classname="UnitCustomization" name="unit loading rejects mismatched assigned purposes and over-capacity primary packets" time="3.10543" status="run" />
+  <testcase classname="UnitCustomization" name="unusable retained fractional cargo releases its job and continues exactly after saving" time="9.03144" status="run" />
+  <testcase classname="UnitCustomization" name="water only exploration rejects dry steering and takes a valid water alternative" time="6.17916" status="run" />
+  <testcase classname="UnitCustomization" name="water only patrol ignores less explored dry neighbours without changing walker or flyer RNG" time="4.71303" status="run" />
+  <testcase classname="UnitCustomization" name="zero-consumption patients heal without a rebound meal despite retained low hunger" time="2.05693" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU fields keep their original worker" time="0.029849" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="kernel audit can retire safely before observation workers drain" time="0.004363" status="run" />
+    <testcase classname="GradientPipeline" name="kernel audit distinguishes owner preparation from deferred worker work" time="0.116927" status="run" />
+    <testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="1.95384" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.014355" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.022025" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.697157" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.22582" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.004738" status="run" />
+    <testcase classname="GradientPipeline" name="building quotas are independent per team and a full multi-team horizon restores" time="0.034471" status="run" />
+    <testcase classname="GradientPipeline" name="serial preparation computes at join and errors surface at the deadline" time="0.008966" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0.000282" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection survives worker scratch resizing" time="0.026402" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.006852" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.01395" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="explicit CPU jobs bypass device ownership and retain publication deadlines" time="0.018939" status="run" />
+    <testcase classname="GradientPipeline" name="availability changes during seeding do not reinterpret captured CPU execution" time="0.006255" status="run" />
+    <testcase classname="GradientPipeline" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.032659" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow background initializer" time="0.000183" status="run" />
+    <testcase classname="GradientPipeline" name="application shutdown joins background initialization and later registrations restart" time="0.100408" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0.000106" status="run" />
+    <testcase classname="GradientPipeline" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.028911" status="run" />
+    <testcase classname="GradientPipeline" name="device adapters retain committed fields when another ready field declines" time="0.00077" status="run" />
+    <testcase classname="GradientPipeline" name="bounded required device queue recovers excess fields exactly once" time="0.000921" status="run" />
+    <testcase classname="GradientPipeline" name="malformed captured configurations decline and recover once" time="0.00028" status="run" />
+    <testcase classname="GradientPipeline" name="building initialization deadlines overtake refreshes and survive pending saves" time="0.0013" status="run" />
+    <testcase classname="GradientPipeline" name="mixed building deadlines retain bounded admission across the full executor horizon" time="0.0094" status="run" />
+    <testcase classname="GradientPipeline" name="an unfinished refresh batch cannot hold up an initial building field" time="0.000319" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.001611" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="paused turns retain the first snapshot for their shared simulation tick" time="0.000132" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay checks validate their original source tick" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="delayed replay mismatch and missing terminal work fail validation" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="zero is a valid delayed checksum when explicitly present" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000562" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000268" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>
