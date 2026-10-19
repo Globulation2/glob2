@@ -1,0 +1,4 @@
+# Training only. PR prediction uses the Python standard library and inert JSON.
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1

@@ -1,25 +1,29 @@
-# Ci verification
+# CI verification
 
 Focused regression scenarios and commands. Start with the [native test guide](../../../test/README.md) for building, isolation and runner selection.
 
 ## CI coverage ownership
 
-Primary GCC 13 runs the complete applicable native suite. Secondary platforms
-use `python3 test/run_tests.py --coverage-profile compatibility` with the reviewed
-suite inventory in `test/ci-compatibility.json`; full nightly/release verification
-uses `--coverage-profile full`. Map-generator contracts run in their dedicated lane.
-Add new compatibility suites when introducing save, replay, scheduling, scripting
-or platform boundaries. The selector fails closed for shared/unknown inputs.
+Full master verification runs the complete native suite on its selected Linux
+platforms. Ordinary PRs rank a subset of logical checks, which can include
+individual native shards or generator groups. `ci:run` requests affected coverage
+and retains the complete primary GCC 13 suite when native verification applies;
+`ci:full` requests the full development matrix. Selected shards keep their original
+four-way case assignment. Map-generator contracts run in their dedicated jobs.
 
 `--write-inventory PATH` retains exact eligible and assigned cases, excluded cases,
-platform, profile and shard ownership alongside JUnit evidence. CI audits shard
-inventories for missing and duplicated cases. Empty compatibility selection fails
-rather than reporting a successful empty suite. Portable primary regressions need
-not be repeated on every compiler; platform, renderer and thread-count repeats
-must have a named compatibility purpose.
+platform, profile and shard ownership alongside JUnit evidence. CI audits missing
+and duplicated cases when all four native shards run; partial selection retains
+its inventories without claiming full coverage. The local
+`--coverage-profile compatibility` option uses the reviewed inventory in
+`test/ci-compatibility.json` and fails on empty selection. Add compatibility suites
+when introducing save, replay, scheduling, scripting or platform boundaries.
+Intentional repeats across platforms, renderers and thread counts need a named
+compatibility purpose.
 
-The [development reference](../verification.md#tiered-pull-request-coverage-rollout)
-records draft behavior, expansion labels, release-only checks and activation gates.
+The [development reference](../verification.md#predictive-pull-request-checks)
+records the ranking budget, prerequisites, draft behavior, expansion labels,
+trusted model refresh, fallbacks and exact selected-check completion gate.
 
 ## Native coverage workflow
 

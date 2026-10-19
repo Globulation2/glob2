@@ -1,0 +1,88 @@
+name: CI selection model
+on:
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+    branches: [master]
+  schedule:
+    - cron: '35 7 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ci-selection-model
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.head_branch == 'master' &&
+       github.event.workflow_run.event == 'push' &&
+       (github.event.workflow_run.conclusion == 'success' ||
+        github.event.workflow_run.conclusion == 'failure'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: .github/scripts/requirements-ci-model.txt
+      - name: Install training dependencies
+        run: python -m pip install -r .github/scripts/requirements-ci-model.txt
+      - name: Verify model export contracts
+        run: python -m unittest discover -s test/build_system -p test_ci_train_model.py -v
+      - name: Restore trusted state and collect completed master observations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          COMPLETED_RUN: ${{ github.event.workflow_run.id }}
+        run: |
+          python - <<'PY'
+          import json, os, shutil, sys
+          from pathlib import Path
+          sys.path.insert(0, '.github/scripts')
+          import ci_history
+          from ci_train_model import refresh_run_ids
+          destination = Path('artifacts/ci-predictor')
+          destination.mkdir(parents=True, exist_ok=True)
+          repo = os.environ['REPOSITORY']
+          if not ci_history.fetch_latest_bundle(repo, destination):
+              for name in ('model.json.gz', 'history.json.gz'):
+                  shutil.copyfile(Path('.github/ci') / name, destination / name)
+          history = ci_history.load_history(destination / 'history.json.gz')
+          requested = os.environ.get('COMPLETED_RUN', '')
+          api = ci_history.GitHub()
+          # Always backfill this recent window: GitHub concurrency may replace a
+          # pending refresh, even when the current trigger identifies one run.
+          response = api.json(f'https://api.github.com/repos/{repo}/actions/workflows/build.yml/runs?branch=master&status=completed&per_page=100')
+          run_ids = refresh_run_ids(history, response['workflow_runs'], requested)
+          for run_id in run_ids:
+              history = ci_history.collect_history(repo, run_id, history)
+          ci_history.save_history(history, destination / 'history.json.gz')
+          print(json.dumps({'collected_runs': len(run_ids), 'observations': len(history['records'])}))
+          PY
+      - name: Train with chronological publication guard
+        env:
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: >-
+          python .github/scripts/ci_train_model.py
+          --history artifacts/ci-predictor/history.json.gz
+          --model artifacts/ci-predictor/model.json.gz
+          --manifest artifacts/ci-predictor/manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-predictor
+          path: |
+            artifacts/ci-predictor/model.json.gz
+            artifacts/ci-predictor/history.json.gz
+            artifacts/ci-predictor/manifest.json
+          if-no-files-found: error
+          retention-days: 90

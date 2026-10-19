@@ -1,5 +1,6 @@
 import importlib.util
 import io
+import math
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,8 @@ sys.path.insert(0,str(ROOT/'.github/scripts'))
 import ci_changed_paths as selector
 import ci_coverage_baseline as guard
 import ci_policy as policy
+import ci_check_inventory as inventory
+import ci_verify_selection as gate
 
 class TierTest(unittest.TestCase):
     def profile(self,paths,event='pull_request'):
@@ -48,52 +51,78 @@ class TierTest(unittest.TestCase):
                 self.assertEqual(profile['profile'],'lightweight')
                 self.assertTrue(self.profile([path,'SConstruct'])['compatibility'])
                 self.assertTrue(self.profile([path,'SConstruct'])['android'])
-    def test_contract_only_selection_is_lightweight_before_tiers_are_enabled(self):
-        # Exercise the effective outputs, including the legacy Android fallback,
-        # rather than just the desired profile. Master must remain full coverage.
-        for event in ['pull_request','push']:
-            with self.subTest(event=event),tempfile.TemporaryDirectory() as directory:
-                old_cwd=Path.cwd()
-                try:
-                    os.chdir(directory)
-                    with patch.object(selector,'changed_paths',return_value=sorted(selector.CI_TOOL_TESTS)), \
-                         patch.object(guard,'activated',return_value=False), \
-                         patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
-                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
-                         patch('sys.stdout',new_callable=io.StringIO):
-                        selector.main()
-                    observed=json.loads(Path('artifacts/ci-selection.json').read_text())
-                    self.assertEqual(observed['selection']['native'],event=='push')
-                    self.assertEqual(observed['selection']['android'],event=='push')
-                    self.assertEqual(observed['full_matrix'], event=='push')
-                    self.assertFalse(observed['tiers_enabled'])
-                finally:
-                    os.chdir(old_cwd)
-    def test_default_pull_requests_defer_every_selected_check(self):
-        paths=['src/game/Game_sync.cpp','src/hud/GameGUI.h','mobile/android.py']
-        for draft in ['true','false']:
-            with self.subTest(draft=draft),tempfile.TemporaryDirectory() as directory:
-                old_cwd=Path.cwd()
-                try:
-                    os.chdir(directory)
-                    with patch.object(selector,'changed_paths',return_value=paths), \
-                         patch.object(guard,'activated',return_value=False), \
-                         patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
-                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':'pull_request','DRAFT':draft,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
-                         patch('sys.stdout',new_callable=io.StringIO), patch('sys.stderr',new_callable=io.StringIO):
-                        selector.main()
-                    observed=json.loads(Path('artifacts/ci-selection.json').read_text())
-                    outputs=dict(line.split('=',1) for line in Path('outputs').read_text().splitlines())
-                    self.assertEqual(observed['draft'],draft=='true')
-                    self.assertFalse(observed['selection']['native'])
-                    for key in ['native','browser','map_generators','deployment','cross_platform','android','compatibility']:
-                        self.assertEqual(outputs[key],'false',key)
-                finally:
-                    os.chdir(old_cwd)
-        # A draft push is still deferred only for pull requests; master is always full.
+    def selection(self, paths, event='pull_request', draft=False):
+        # A known passing observation for every current check isolates policy
+        # integration from missing-history expansion or a network dependency.
+        history = {'schema': 1, 'updated_at': 100, 'records': [
+            dict(name=check['name'], branch='master', event='push', sha='a'*40,
+                 run_id=i+1, attempt=1, created_at=1, end=2, seconds=1,
+                 failed=0, paths=['src/map/Map.cpp'])
+            for i, check in enumerate(inventory.inventory())]}
+        with tempfile.TemporaryDirectory() as directory:
+            old_cwd=Path.cwd()
+            try:
+                os.chdir(directory)
+                with patch.object(selector,'changed_paths',return_value=paths), \
+                     patch.object(selector,'_prediction_inputs',return_value=(history,None,[])), \
+                     patch.object(guard,'activated',return_value=False), \
+                     patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
+                     patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'DRAFT':str(draft).lower(),
+                         'GITHUB_OUTPUT':str(Path(directory)/'outputs'),
+                         'GITHUB_STEP_SUMMARY':str(Path(directory)/'summary')},clear=True), \
+                     patch('sys.stdout',new_callable=io.StringIO), patch('sys.stderr',new_callable=io.StringIO):
+                    selector.main()
+                observed=json.loads(Path('artifacts/ci-selection.json').read_text())
+                outputs=dict(line.split('=',1) for line in Path('outputs').read_text().splitlines())
+                return observed,outputs,Path('summary').read_text()
+            finally:
+                os.chdir(old_cwd)
+
+    def test_ci_contract_changes_require_full_inventory_even_without_old_tier_activation(self):
+        # The new policy treats edits to CI/build machinery as a full-inventory
+        # exception; the former cheap-contract shortcut is no longer effective.
+        for event in ('pull_request','push'):
+            with self.subTest(event=event):
+                observed,outputs,_=self.selection(sorted(selector.CI_TOOL_TESTS),event)
+                self.assertTrue(observed['selection']['native'])
+                self.assertTrue(observed['selection']['android'])
+                self.assertTrue(observed['full_matrix'])
+                self.assertFalse(observed['tiers_enabled'])
+                self.assertEqual(outputs['verification_mode'],'full')
+                self.assertEqual(set(observed['execution_plan']['executed_ids']),
+                                 {check['id'] for check in inventory.inventory()})
+
+    def test_default_pull_requests_execute_predictive_budget_in_draft_and_ready(self):
+        for draft in (True,False):
+            with self.subTest(draft=draft):
+                observed,outputs,summary=self.selection(['src/map/Map.cpp'],draft=draft)
+                plan=observed['execution_plan'];predictor=plan['predictor']
+                self.assertEqual(observed['draft'],draft)
+                self.assertEqual(outputs['verification_mode'],'predictive')
+                self.assertTrue(observed['predictive_enabled'])
+                self.assertFalse(observed['tiers_enabled'])
+                self.assertFalse(observed['full_matrix'])
+                candidates=[check for check in inventory.inventory() if not check.get('full_only')]
+                self.assertEqual(predictor['selected_count'],math.ceil(.12*len(candidates)))
+                self.assertEqual(len(plan['ranked_ids']),predictor['selected_count'])
+                self.assertEqual(plan['executed_ids'],inventory.dependency_closure(plan['ranked_ids']))
+                self.assertEqual(predictor['unknown_ids'],[])
+                for job,on in plan['jobs'].items():
+                    self.assertEqual(outputs['run_'+job.replace('-','_')],str(on).lower())
+                self.assertIn('Ranked budget: 12%',summary)
+        # Pushes retain the entire development inventory regardless of a draft
+        # PR's policy or the learned ranking.
+        master,_,_=self.selection(['src/map/Map.cpp'],event='push',draft=True)
+        self.assertTrue(master['full_matrix'])
         workflow=(ROOT/'.github/workflows/build.yml').read_text()
         self.assertIn('types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]',workflow)
         self.assertIn('DRAFT: ${{ github.event.pull_request.draft }}',workflow)
+
+    def test_cheap_only_summary_does_not_claim_engine_verification(self):
+        observed,outputs,summary=self.selection(['README.md'])
+        self.assertEqual(outputs['verification_mode'],'cheap-contracts')
+        self.assertEqual(observed['execution_plan']['executed_ids'],[])
+        self.assertIn('does not establish engine verification or acceptance of PR evidence',summary)
     def test_complete_browser_inventory_keeps_every_command(self):
         matrix=json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())
         self.assertEqual({x['browsers'] for x in matrix},{'chromium','firefox','webkit'})
@@ -146,48 +175,59 @@ class BaselineTest(unittest.TestCase):
 
 
 class AggregateGateTest(unittest.TestCase):
-    def test_selected_failures_and_cancellations_cannot_pass(self):
-        import re,os
-        from unittest.mock import patch
-        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  ci-result:\n',1)[1]
-        code=workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0]
-        import textwrap
-        code=textwrap.dedent(code)
-        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','web-build','web-native','web-deploy','web-test','browser-determinism','platform','platform-stack','music']
-        selected={k:'true' for k in policy.FLAGS}
-        needs={'changes':{'result':'success','outputs':selected},**{job:{'result':'success'} for job in jobs}}
-        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),GITHUB_EVENT_NAME='push'):
-            exec(code,{})
-        for job in jobs:
-            for result in ['failure','cancelled','skipped']:
-                modified=json.loads(json.dumps(needs));modified[job]['result']=result
-                with self.subTest(job=job,result=result),patch.dict(os.environ,NEEDS_JSON=json.dumps(modified),GITHUB_EVENT_NAME='push'):
-                    with self.assertRaises(AssertionError):exec(code,{})
-    def test_cheap_contract_summary_and_missing_jobs(self):
-        import os, textwrap
-        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  ci-result:\n',1)[1]
-        code=textwrap.dedent(workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0])
-        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','web-build','web-native','web-deploy','web-test','browser-determinism','platform','platform-stack','music']
-        needs={'changes':{'result':'success','outputs':{k:'false' for k in policy.FLAGS}},
-               **{job:{'result':'skipped'} for job in jobs}}
-        with tempfile.TemporaryDirectory() as directory:
-            summary=Path(directory)/'summary'
-            with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),VERIFICATION_MODE='cheap-contracts',GITHUB_STEP_SUMMARY=str(summary)):
-                exec(code,{})
-            self.assertIn('does not establish engine verification or acceptance of PR evidence',summary.read_text())
-        del needs['windows']
-        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs)):
-            with self.assertRaises(KeyError):exec(code,{})
-        needs['changes']['result']='failure'
-        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs)):
-            with self.assertRaises(AssertionError):exec(code,{})
+    def evidence(self, selected):
+        plan=inventory.execution_plan(selected)
+        plan.update(mode='predictive',run_attempt=2)
+        needs={'changes':{'result':'success'},**{
+            job:{'result':'success' if expected else 'skipped'}
+            for job,expected in plan['jobs'].items()}}
+        jobs=[dict(id=i+1,name=check['name'],status='completed',conclusion='success',run_attempt=2)
+              for i,check in enumerate(plan['expected_checks'])]
+        return needs,plan,jobs
 
-    def test_primary_gcc_gate_rejects_unexpected_compatibility_results(self):
-        import subprocess,os
-        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  linux-build:\n',1)[1].split('  linux-clang:\n',1)[0]
-        script=workflow.split('        run: |\n',1)[1]
-        import textwrap
-        script=textwrap.dedent(script)
-        for compatibility,gcc11,gcc13,okay in [('false','skipped','success',True),('true','success','success',True),('true','skipped','success',False),('false','failure','success',False),('false','skipped','cancelled',False)]:
-            result=subprocess.run(['bash','-e','-c',script],env=dict(os.environ,COMPATIBILITY=compatibility,GCC11=gcc11,GCC13=gcc13),capture_output=True)
-            self.assertEqual(result.returncode==0,okay)
+    def test_workflow_uses_real_fail_closed_gate_and_every_top_level_result(self):
+        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  ci-result:\n',1)[1]
+        self.assertIn('run: python3 .github/scripts/ci_verify_selection.py',workflow)
+        self.assertIn('CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}',workflow)
+        self.assertIn('NEEDS_JSON: ${{ toJSON(needs) }}',workflow)
+        for job in inventory.TOP_JOBS:
+            self.assertIn(job,workflow.split('    if:',1)[0])
+
+    def test_selected_failures_cancellations_and_unexpected_runs_cannot_pass(self):
+        needs,plan,jobs=self.evidence([check['id'] for check in inventory.inventory()])
+        self.assertTrue(gate.verify(needs,plan,jobs)['ok'])
+        for job,expected in plan['jobs'].items():
+            for result in ('failure','cancelled','skipped' if expected else 'success'):
+                modified=json.loads(json.dumps(needs));modified[job]['result']=result
+                with self.subTest(job=job,result=result):
+                    self.assertFalse(gate.verify(modified,plan,jobs)['ok'])
+        for index,job in enumerate(jobs):
+            for result in ('failure','cancelled','skipped'):
+                modified=[dict(item) for item in jobs];modified[index]['conclusion']=result
+                with self.subTest(check=job['name'],result=result):
+                    self.assertFalse(gate.verify(needs,plan,modified)['ok'])
+
+    def test_cheap_contract_gate_requires_selection_success_and_all_results(self):
+        needs,plan,jobs=self.evidence([])
+        self.assertTrue(gate.verify(needs,plan,jobs)['ok'])
+        del needs['windows']
+        self.assertFalse(gate.verify(needs,plan,jobs)['ok'])
+        needs,plan,jobs=self.evidence([])
+        needs['changes']['result']='failure'
+        self.assertFalse(gate.verify(needs,plan,jobs)['ok'])
+
+    def test_partial_primary_gcc_requires_exact_selected_shard_and_producer(self):
+        needs,plan,jobs=self.evidence(['native/gcc13/shard-2'])
+        self.assertEqual(set(plan['executed_ids']),{'native/gcc13/build','native/gcc13/shard-2'})
+        self.assertTrue(gate.verify(needs,plan,jobs)['ok'])
+        self.assertFalse(gate.verify(needs,plan)['ok'])
+        self.assertFalse(gate.verify(needs,plan,jobs[:1])['ok'])
+        old_attempt=[dict(job,run_attempt=1) for job in jobs]
+        self.assertFalse(gate.verify(needs,plan,old_attempt)['ok'])
+        for job in ('linux-gcc13-producer','linux-gcc13','linux-build'):
+            modified=json.loads(json.dumps(needs));modified[job]['result']='skipped'
+            self.assertFalse(gate.verify(modified,plan,jobs)['ok'])
+        # A partial GCC13 run does not turn unselected GCC11/Clang results into
+        # evidence, and an unexpected compatibility failure remains visible.
+        needs['linux-gcc11']['result']='failure'
+        self.assertFalse(gate.verify(needs,plan,jobs)['ok'])
