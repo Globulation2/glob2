@@ -1,0 +1,65 @@
+{
+  "status": "COMPLETE",
+  "pid": 291685,
+  "updated_utc": "2026-10-19T04:54:35.028458+00:00",
+  "input_sha256": "062b42e4a9c16e1527fc67f54ff5e67f73d202f41461e3922cf449ce93ba9b51",
+  "stages": {
+    "generic12": {
+      "started_utc": "2026-10-19T04:54:04.652369+00:00",
+      "input_sha256": "062b42e4a9c16e1527fc67f54ff5e67f73d202f41461e3922cf449ce93ba9b51",
+      "command": [
+        "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/analysis-tool-source/tools/adaptive_gradient_model.py",
+        "fit",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/completed/0592ad89853481cd95fe045e.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/61ac95f187bf495d82ea1308.cohort.json",
+        "--split-registry",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/map-splits.json",
+        "--expected-families",
+        "materials,guard,clear,forbidden",
+        "--collector-contract",
+        "unified-gradient-spatial-h128-v3",
+        "--output",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/generic-research.json"
+      ],
+      "returncode": 0,
+      "finished_utc": "2026-10-19T04:54:20.536301+00:00",
+      "output_sha256": "cf9206d0c4027c478c8eb74ecd0de0e03d18ced83b35cf6b869cab67c14f749d"
+    },
+    "spatial": {
+      "started_utc": "2026-10-19T04:54:20.537211+00:00",
+      "input_sha256": "062b42e4a9c16e1527fc67f54ff5e67f73d202f41461e3922cf449ce93ba9b51",
+      "command": [
+        "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/analysis-tool-source/tools/adaptive_gradient_spatial.py",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/completed/0592ad89853481cd95fe045e.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/terminal-export/61ac95f187bf495d82ea1308.cohort.json",
+        "--split-registry",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/map-splits.json",
+        "--output",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-research/spatial-research.json"
+      ],
+      "returncode": 0,
+      "finished_utc": "2026-10-19T04:54:35.027719+00:00",
+      "output_sha256": "7d7a7abc2b3f853b6ae81ac76fb2fa5fc7a652c7f84b7c04825ca8dded06c464"
+    }
+  },
+  "prospective_or_production_promotion": false,
+  "affinity": [
+    0
+  ],
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "dependencies": {
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1",
+    "scipy": "1.17.1"
+  }
+}

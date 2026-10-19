@@ -1,0 +1,42 @@
+{
+  "status": "QUALIFIED-FOR-RESEARCH-CANDIDATE-ONLY",
+  "source_revision": "6d9fcfc34f4bf154d462869c578c72424db8a49a",
+  "integration_head": "e72c04ea3",
+  "sim_revision": 85,
+  "save_version": 178,
+  "save_floor": 58,
+  "replay_floor": 178,
+  "model_sha256": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070",
+  "contract": "unified-gradient-h128-v2",
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "trained": true,
+  "threshold_milli": 128000,
+  "minimum_interval": 8,
+  "maximum_age": null,
+  "spatial_inference": false,
+  "integer_validation": "Actual fitted C++/Python512+530 boundary vectors UBSanPASS, checked int64bounds; same generatedheader",
+  "python_model_checks": "24 tests PASS; 1 optional dependency skip",
+  "goldens": "3 regenerated then verifiedPASS; SIM85recordgatePASS",
+  "mac_linux_smoke": "1024ticks samefrozenmap/seed, probeOFF/ON, participants1/4; allworld/snapshot/replay/finalsavesidentical",
+  "mac_binary_sha256": "cbfcaf2df4e749a8ccfce4a274b7ea2c138872af66141be12bd366d059711ac4",
+  "linux_binary_sha256": "46cbeb1d4250189fac9174247eb72aec23af62d3a558e051cb307154047a53dd",
+  "initial_architecture_evidence": "Prior broad Mac/Linux state/save/observer/platform proof unchanged exceptfittedcoefficients/SIM revision",
+  "stable_incumbent_promotion": false,
+  "prospective_performance_pending": true,
+  "training_accounting": {
+    "completed": 53,
+    "user_censored": 75,
+    "eligible": 31427,
+    "holdout_maps": 25,
+    "holdout_episodes": 5362
+  },
+  "observed_model_selection": "0percent onheldoutandCVatthreshold128; researchvalidationneeded",
+  "coverage_limitations": [
+    "Marketsunmeasured peruser",
+    "GuardbalancingOFF",
+    "75censoredtrajectoriesmissinglategame",
+    "veryoldhighdemandrare",
+    "SpatialonlyMaterials/Cleardiagnostic"
+  ],
+  "qualified_utc": "2026-10-19T05:02:39.741361+00:00"
+}

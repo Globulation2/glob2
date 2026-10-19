@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "vectors": 512,
+  "ubsan": true,
+  "scope": "actual fitted coefficients, boundary ages/counts, saturated transforms, uint64 event fractions",
+  "maximum_accumulator": 5801437031083459
+}
