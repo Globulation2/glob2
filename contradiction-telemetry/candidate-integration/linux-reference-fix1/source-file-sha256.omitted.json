@@ -1,0 +1,6 @@
+{
+  "artifact": "source-file-sha256.json",
+  "sha256": "b6b2a6f34e2b736cf5f9516d9297abb50a2350faf68d2cb32a6fcf19a373df10",
+  "bytes": 6065440,
+  "note": "Full dependency/source inventory retained in campaign; compact source provenance and verified result included here."
+}

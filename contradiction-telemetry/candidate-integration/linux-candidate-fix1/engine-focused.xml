@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="110" failures="0" errors="0" skipped="1"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.053155" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.03924" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.050409" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.039331" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.040748" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.041233" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.051864" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.085504" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.039711" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.251736" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="empty building-draft174 runtime uses its widened queue count [save-format]" time="0.050679" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.038838" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="more than 64 building refreshes retain their FIFO without synchronous overflow across saves" time="1.80113" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="observation phase is covered by both current checksum tiers" time="0.049224" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="owner observation at tick zero publishes cold fields and access metadata at tick one" time="0.050443" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.07151" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="0.651286" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.05148" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released and building-draft format lineages select independent layouts [save-format]" time="0" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released saves through format168 bootstrap only when their observation was not admitted" time="0.249508" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released173 and building drafts preserve queued and admitted building routes [save-format]" time="0.164767" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.039753" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="1.69738" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.039185" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.050275" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="0.196643" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="0.179556" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="0.814402" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.040773" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="world observation publication and admission survive save boundaries" time="0.197805" status="run" />
+  </testsuite><testsuite name="CommandLine"><testcase classname="CommandLine" name="completion scripts contain all command options without running jobs" time="0.000745" status="run" />
+  <testcase classname="CommandLine" name="default launch groups URLs and help paths" time="0.000461" status="run" />
+  <testcase classname="CommandLine" name="every leaf accepts a minimal request and rejects missing required inputs" time="0.003309" status="run" />
+  <testcase classname="CommandLine" name="malformed input fails before handlers" time="0.000698" status="run" />
+  <testcase classname="CommandLine" name="private save migration requires an explicit profile and input" time="0.000611" status="run" />
+  <testcase classname="CommandLine" name="registry describes every executable command and help is asset independent" time="0.006298" status="run" />
+  <testcase classname="CommandLine" name="saved games can use the normal presentation loop with explicit display" time="0.00055" status="run" />
+  <testcase classname="CommandLine" name="typed options equals ordered repeats and literal filenames" time="0.000467" status="run" />
+  </testsuite><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="a partially visited warm air cycle continues through binary and text saves" time="0.382317" status="run" />
+  <testcase classname="DelayedGradientPublication" name="all natural visitation flags initialize and clear including reserved material slots" time="0.028962" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold material and area fields publish identical generations with one two four and eight participants [artifacts]" time="0.151949" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold queued and privately completed fields continue through binary and text saves [artifacts]" time="1.08356" status="run" />
+  <testcase classname="DelayedGradientPublication" name="contradiction counters follow capture epochs through delayed publication and freeze episode features [artifacts]" time="0.057808" status="run" />
+  <testcase classname="DelayedGradientPublication" name="known-zero movement statistics retain first-use FIFO demand and exclude air from the adaptive policy" time="0.0568" status="run" />
+  <testcase classname="DelayedGradientPublication" name="map conversion preserves encoded construction until ordinary gameplay initializes it" time="0.14865" status="run" />
+  <testcase classname="DelayedGradientPublication" name="movement contradiction counters count goals stalls and unreachable queries once without owning RNG [artifacts]" time="0.05786" status="run" />
+  <testcase classname="DelayedGradientPublication" name="ordinary terrain edits with markets disabled round-trip binary and text saves" time="0.385314" status="run" />
+  <testcase classname="DelayedGradientPublication" name="planning probe observes scalar-only counterfactuals without changing movement demand [artifacts]" time="0.057035" status="run" />
+  <testcase classname="DelayedGradientPublication" name="private174 migration profile is explicit and does not replace published layouts" time="0.000137" status="run" />
+  <testcase classname="DelayedGradientPublication" name="production movement evidence needs no probe and excludes cold absent and air fields" time="0.057529" status="run" />
+  <testcase classname="DelayedGradientPublication" name="recruitment-only demand recovers a published unreachable natural field after terrain opens" time="0.057945" status="run" />
+  <testcase classname="DelayedGradientPublication" name="successful planning reads leave warm natural fields idle beyond the demanded age cap" time="0.056934" status="run" />
+  <testcase classname="DelayedGradientPublication" name="two demanded warm resources batch alongside one cold FIFO ticket at a shared deadline" time="0.085824" status="run" />
+  </testsuite><testsuite name="InitialBuildingGradient"><testcase classname="InitialBuildingGradient" name="cold initialization publishes a resumable frontier at fixed deadlines across worker counts [artifacts]" time="0.173739" status="run" />
+  <testcase classname="InitialBuildingGradient" name="cold requests beyond the former FIFO limit never initialize synchronously" time="0.057641" status="run" />
+  <testcase classname="InitialBuildingGradient" name="queued and privately completed cold initialization survives binary and text saves [artifacts]" time="2.76644" status="run" />
+  <testcase classname="InitialBuildingGradient" name="soft edits retain cold deadlines while a building reset supersedes its private result" time="0.057613" status="run" />
+  </testsuite><testsuite name="ResourceGradientPolicy"><testcase classname="ResourceGradientPolicy" name="binary and text continuation retain query windows capture epochs and pending demand" time="0.000581" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="capture save wire consumes obsolete IDs and invalidates unsupported baselines" time="0.000139" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="format174 policy continuation consumes legacy layout without invented history" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="known capture baselines reject reversed epochs and impossible event deltas" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="legacy capture lacks evidence until a real new capture is published" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="minimum spacing maximum age and source turnover are deterministic" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="movement baselines follow capture rather than delayed publication" time="0" status="run" />
+  <testcase classname="ResourceGradientPolicy" name="rolling demand matches exact query windows including tick wrap" time="0.000236" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="0.221537" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="0.092256" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.061343" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.039" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.039439" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.041123" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="0.366977" status="run" />
+  <testcase classname="TeamStatsPipeline" name="inspection admits no work and paused or waiting frames reuse the initial observation" time="0.042808" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="0.072103" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.060608" status="run" />
+  <testcase classname="TeamStatsPipeline" name="legacy zero-delay pending samples publish their original output before new delayed samples" time="0.039213" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.050738" status="run" />
+  <testcase classname="TeamStatsPipeline" name="movement class demand follows delayed publication and persists pending transitions" time="0.039777" status="run" />
+  <testcase classname="TeamStatsPipeline" name="movement classes count living ground units every sample including eliminated teams" time="0.039117" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.039594" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="0.071257" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.039917" status="run" />
+  <testcase classname="TeamStatsPipeline" name="remote map sweeps are periodic and explicit verification remains exhaustive" time="0.057165" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.038635" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.040684" status="run" />
+  <testcase classname="TeamStatsPipeline" name="secondary statistics are periodic while verification and entity checks stay immediate" time="0.056217" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="0.249415" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="4.69595" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="1.83948" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.200778" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="0.634821" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.041045" status="run" />
+  <testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="0.20011" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="0.568003" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="0.254648" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="0.12751" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.042778" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.040186" status="run" />
+  <testcase classname="TeamStatsSave" name="defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing" time="0.058468" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.039342" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.125888" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.058917" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.056029" status="run" />
+  <testcase classname="TeamStatsSave" name="nonuniform combat levels retain per-unit defender recruitment eligibility" time="0.058734" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.063199" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.046921" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.039548" status="run" />
+  <testcase classname="TeamStatsSave" name="retained format152 magic levels count each explorer once through migration and current continuation [save-format]" time="0.495178" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

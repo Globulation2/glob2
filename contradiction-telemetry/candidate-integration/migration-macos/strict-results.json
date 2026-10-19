@@ -1,0 +1,116 @@
+{
+  "source": "2d4dc8e9e",
+  "cases": [
+    {
+      "name": "plain",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/plain.map",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/plain",
+        "--profile",
+        "glob2-migration-test-plain"
+      ],
+      "expected_success": true,
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "name": "trailing",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/trailing.map",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/trailing",
+        "--profile",
+        "glob2-migration-test-trailing"
+      ],
+      "expected_success": false,
+      "returncode": 2,
+      "passed": true
+    },
+    {
+      "name": "truncated",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/truncated.map",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/truncated",
+        "--profile",
+        "glob2-migration-test-truncated"
+      ],
+      "expected_success": false,
+      "returncode": 3,
+      "passed": true
+    },
+    {
+      "name": "public173-rejected",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/qualification/map.map.gz",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/public173-rejected",
+        "--profile",
+        "glob2-migration-test-public173-rejected"
+      ],
+      "expected_success": false,
+      "returncode": 3,
+      "passed": true
+    },
+    {
+      "name": "already176-rejected",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/map/migrated.map",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/already176-rejected",
+        "--profile",
+        "glob2-migration-test-already176-rejected"
+      ],
+      "expected_success": false,
+      "returncode": 3,
+      "passed": true
+    },
+    {
+      "name": "text-option-rejected",
+      "argv": [
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/bin/glob2",
+        "game",
+        "migrate",
+        "--input",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/plain.map",
+        "--legacy-adaptive-174",
+        "--output-dir",
+        "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/text-option-rejected",
+        "--profile",
+        "glob2-migration-test-text-option-rejected",
+        "--input-format",
+        "text"
+      ],
+      "expected_success": false,
+      "returncode": 2,
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

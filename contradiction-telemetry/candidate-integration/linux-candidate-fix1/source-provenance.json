@@ -1,0 +1,12 @@
+{
+  "revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "prerequisite": "54cdc48bf240e8779b3d926107b323ecdad85926",
+  "bundle_ref": "refs/codex/gradient-candidate-2d4",
+  "bundle_sha256": "3641c144b8f30d0d50f85c2d36d509a2b4d864efd7b461a4d1d0458072d89702",
+  "model_sha256": "f6385494fc8ce3e36650ab98419c296ddc8ead1a4b7df01d829465b00470bbd6",
+  "header_sha256": "0e9ccfb6db10dd1e5cc3faa7c6dc0edb15275678fdc23903b95274a8547e9eb6",
+  "created": "2026-10-18T23:40:54.200041+00:00",
+  "purpose": "repaired combined candidate, frozen before Linux qualification",
+  "manifest_sha256": "99e9f02b5bb53afe2bddc59ae0fe0279f50e22122ddb5217e10adcb51e3639f0",
+  "tracked_files": 20654
+}

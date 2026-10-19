@@ -1,0 +1,25 @@
+{
+  "status": "qualified",
+  "revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "time": "2026-10-19T00:03:20.643535+00:00",
+  "outputs": {
+    "glob2-unit-tests": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/frozen/glob2-unit-tests",
+      "sha256": "c4a805cdb1e2e16566389b2cb6164c9ad0b9774607b23a0da381a378c56c4b80",
+      "bytes": 30173648
+    },
+    "glob2-engine-tests": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/frozen/glob2-engine-tests",
+      "sha256": "b5e7780413c234082b835cdab977f061ef6e8d9da6e0208a145b5a7d80f24a25",
+      "bytes": 83322144
+    },
+    "glob2": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/frozen/glob2",
+      "sha256": "6543e427ce2645a7c2e545be7efa5acefa5a8d713ba3ed035f8a7d7ea726ace1",
+      "bytes": 48093672
+    }
+  },
+  "tracked_clean": true,
+  "toolchain": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n"
+}

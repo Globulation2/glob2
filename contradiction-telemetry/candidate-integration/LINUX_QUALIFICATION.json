@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "created_utc": "2026-10-19T00:05:25.649218+00:00",
+  "arms": {
+    "linux-reference-fix1": {
+      "revision": "97bc11aeb0c93b38c22c0f3abbdec43e2379aad8",
+      "qualified_receipt_sha256": "438b217886979bcc58ac77a3531b951620d36c5283897812587c6b110ccd8e2d",
+      "binary_sha256": "8fef7b647cdd63ab6fc3396ca7278c323fc2afd2ffd7ab209c9c7f73ab53e0ce",
+      "engine_passed": 103,
+      "engine_skipped": 1,
+      "unit_passed": 25,
+      "engine_inventory": {
+        "status": "verified",
+        "filters": {
+          "ResourceGradientPolicy/*": 3,
+          "DelayedGradientPublication/*": 14,
+          "InitialBuildingGradient/*": 4,
+          "BuildingGradientInvalidation/*": 30,
+          "TeamStatsPipeline/*": 23,
+          "TeamStatsSave/*": 21,
+          "CommandLine/*": 8
+        },
+        "assigned": 103,
+        "xml_testcases": 104,
+        "inventory_fingerprint": "c5e6e0fc6e5374cc6fd545870bf0b91671fd3bbab9098b5dc57e234b50c7097f"
+      },
+      "unit_inventory": {
+        "status": "verified",
+        "filters": {
+          "ReplayStepCounter/*": 11,
+          "Gradient/*": 12,
+          "ResourceGradientContradictions/*": 2
+        },
+        "assigned": 25,
+        "xml_testcases": 25,
+        "inventory_fingerprint": "e0b5b88a85128cc9b330a259734aa3474ed6c4806e982bf1c0e6af84afb20502"
+      },
+      "toolchain": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n",
+      "tracked_clean": true
+    },
+    "linux-candidate-fix1": {
+      "revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+      "qualified_receipt_sha256": "9cf5f913e5661b5da245714260431adceb229224bb551d16cb2a5c411c0048a6",
+      "binary_sha256": "6543e427ce2645a7c2e545be7efa5acefa5a8d713ba3ed035f8a7d7ea726ace1",
+      "engine_passed": 109,
+      "engine_skipped": 1,
+      "unit_passed": 25,
+      "engine_inventory": {
+        "status": "verified",
+        "filters": {
+          "ResourceGradientPolicy/*": 8,
+          "DelayedGradientPublication/*": 15,
+          "InitialBuildingGradient/*": 4,
+          "BuildingGradientInvalidation/*": 30,
+          "TeamStatsPipeline/*": 23,
+          "TeamStatsSave/*": 21,
+          "CommandLine/*": 8
+        },
+        "assigned": 109,
+        "xml_testcases": 110,
+        "inventory_fingerprint": "9f2d9dea3c2af559886ac653762e4e4152ca400cf2d042cee88738b9203f43f6"
+      },
+      "unit_inventory": {
+        "status": "verified",
+        "filters": {
+          "ReplayStepCounter/*": 11,
+          "Gradient/*": 12,
+          "ResourceGradientContradictions/*": 2
+        },
+        "assigned": 25,
+        "xml_testcases": 25,
+        "inventory_fingerprint": "e0b5b88a85128cc9b330a259734aa3474ed6c4806e982bf1c0e6af84afb20502"
+      },
+      "toolchain": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n",
+      "tracked_clean": true
+    }
+  },
+  "build": {
+    "release": true,
+    "dev_fast": false,
+    "pch": false,
+    "unity": false,
+    "command": [
+      "scons",
+      "release=1",
+      "CXXFLAGS=",
+      "--build=build/reference-release",
+      "-j8",
+      "build/reference-release/src/glob2",
+      "engine-tests",
+      "unit-tests"
+    ],
+    "source_and_build_root": "/home/bradley/glob2-gradient-reference-54cdc48bf",
+    "incremental_reuse": "original54 build frozen; control97bc5compiles; candidate2d4 682compiles; priorarm frozen beforecheckout",
+    "dependencies": {
+      "SDL3": "/home/bradley/glob2/build/sdl3/prefix",
+      "recording": "/home/bradley/.local/share/glob2/development/dependencies/build-b2f8b01e7858d5108b038be8/prefix"
+    }
+  },
+  "runtime_cross_platform": {
+    "proof": "runtime-linux/CROSS_PLATFORM_PASSED.json",
+    "sha256": "bc11411e5d77821cbe685c8ca7047df5a39ae5908c4acca58e21af6453f8edb0",
+    "cases": 5,
+    "compared": [
+      "world.checksums",
+      "snapshot.checksums",
+      "game.replay.checksums",
+      "final.game.gz"
+    ],
+    "observer_on_off": true,
+    "threads": [
+      1,
+      4
+    ],
+    "continuation_176": [
+      2048,
+      4096
+    ]
+  },
+  "actual_private174_migration": {
+    "proof": "migration-linux/CROSS_PLATFORM_MIGRATION_PASSED.json",
+    "sha256": "ec511362e2cfd2892ede8ba8804016c4fe54b08e2b9fb356b62252dcdb5052ae",
+    "cases": [
+      "map",
+      "warm",
+      "later"
+    ],
+    "compared": [
+      "normalized_state",
+      "output_sha256",
+      "input_sha256",
+      "tick",
+      "ticks_advanced",
+      "source_version",
+      "save_version"
+    ],
+    "ticks_advanced": 0
+  },
+  "limits": [
+    "Linux x86_64 and macOS arm64 tested; no Windows/browser/mobile run in this wave",
+    "Focused native filter inventories are recorded rather than full engine matrix",
+    "New private174 migration is explicit; this evidence does not label private174 fixtures as published master174",
+    "Prospective/fleet research approval and model promotion remain parent-owned"
+  ]
+}

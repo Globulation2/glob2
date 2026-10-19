@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/reference-release",
+    "--binary",
+    "unit",
+    "-j2",
+    "--no-display",
+    "--exclude-tag",
+    "benchmark",
+    "--filter",
+    "ReplayStepCounter/*",
+    "--filter",
+    "Gradient/*",
+    "--filter",
+    "ResourceGradientContradictions/*",
+    "--junit",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/unit-focused.xml",
+    "--artifacts",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/unit-evidence",
+    "--write-inventory",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/unit-inventory.json"
+  ],
+  "cwd": "/home/bradley/glob2-gradient-reference-54cdc48bf",
+  "started": "2026-10-19T00:03:19.227267+00:00",
+  "cpus": [
+    1,
+    2,
+    4,
+    5,
+    8,
+    10,
+    12,
+    14
+  ],
+  "nice": 19
+}

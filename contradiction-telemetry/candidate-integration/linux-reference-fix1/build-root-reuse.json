@@ -1,0 +1,9 @@
+{
+  "cwd": "/home/bradley/glob2-gradient-reference-54cdc48bf",
+  "build": "build/reference-release",
+  "previous_completed_frozen_revision": "54cdc48bf240e8779b3d926107b323ecdad85926",
+  "revision": "97bc11aeb0c93b38c22c0f3abbdec43e2379aad8",
+  "reason": "identical absolute compiled paths and ordinary release options preserve valid object reuse",
+  "source_manifest_sha256": "b6b2a6f34e2b736cf5f9516d9297abb50a2350faf68d2cb32a6fcf19a373df10",
+  "time": "2026-10-18T23:50:12.520551+00:00"
+}

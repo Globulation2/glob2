@@ -1,0 +1,25 @@
+{
+  "status": "qualified",
+  "revision": "97bc11aeb0c93b38c22c0f3abbdec43e2379aad8",
+  "time": "2026-10-18T23:50:45.530523+00:00",
+  "outputs": {
+    "glob2-unit-tests": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-reference-fix1/frozen/glob2-unit-tests",
+      "sha256": "8d84bc2abc0f6e5e37672fdc2139012731e43b816c999bf3945bbd1c76f0210b",
+      "bytes": 30169248
+    },
+    "glob2-engine-tests": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-reference-fix1/frozen/glob2-engine-tests",
+      "sha256": "1b0ef8d47d319725c0484dffb0d7d3f99ca1e0961852949dc6e5b6ce7b01b152",
+      "bytes": 83275640
+    },
+    "glob2": {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-reference-fix1/frozen/glob2",
+      "sha256": "8fef7b647cdd63ab6fc3396ca7278c323fc2afd2ffd7ab209c9c7f73ab53e0ce",
+      "bytes": 48085480
+    }
+  },
+  "tracked_clean": true,
+  "toolchain": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n"
+}

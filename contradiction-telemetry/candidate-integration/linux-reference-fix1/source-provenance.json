@@ -1,0 +1,18 @@
+{
+  "revision": "97bc11aeb0c93b38c22c0f3abbdec43e2379aad8",
+  "prerequisite": "54cdc48bf240e8779b3d926107b323ecdad85926",
+  "repair_from": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "patch_sha256": "52ad109a2bd325cfb2d32eb2709c8efd0e6a05f06855ab5f5cee865ede1d4216",
+  "changed_files": [
+    "src/app/cli/CommandLine.cpp",
+    "src/app/cli/CommandLineTest.cpp",
+    "src/map/gradient/DelayedGradientPublicationHarness.cpp"
+  ],
+  "bundle_ref": "refs/heads/codex/gradient-incumbent-cli-repair",
+  "bundle_sha256": "d117d7f7f148bfaf52b9cb787c3e0b34fb8c94b7ca42eef7cc8f6fe6bd2cf8e4",
+  "manifest_sha256": "b6b2a6f34e2b736cf5f9516d9297abb50a2350faf68d2cb32a6fcf19a373df10",
+  "model_sha256": "f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217",
+  "header_sha256": "d9d54ae5f37bed9c13c6a94749f5527818370f6f71b3354b0961efbcfb8131ae",
+  "purpose": "INTERNAL controlled incumbent7 with same master/profile/CLI+fixture repairs, no selected counters or selected inference",
+  "created": "2026-10-18T23:40:41.895413+00:00"
+}

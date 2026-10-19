@@ -1,0 +1,11 @@
+{
+  "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "main_sha256": "6543e427ce2645a7c2e545be7efa5acefa5a8d713ba3ed035f8a7d7ea726ace1",
+  "bytes": 48093672,
+  "main": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/main-frozen/glob2",
+  "native_tests": "pending",
+  "approved_for_candidate_collection": false,
+  "scope": "frozen ordinary release main executable after stable link; full source manifest verified",
+  "source_manifest_sha256": "99e9f02b5bb53afe2bddc59ae0fe0279f50e22122ddb5217e10adcb51e3639f0",
+  "created_utc": "2026-10-18T23:59:44.515731+00:00"
+}

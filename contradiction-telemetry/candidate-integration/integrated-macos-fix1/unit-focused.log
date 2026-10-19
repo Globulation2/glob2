@@ -1,0 +1,6 @@
+PASS glob2-unit-tests ResourceGradientContradictions (2 cases) (0.1s)
+PASS glob2-unit-tests ReplayStepCounter (11 cases) (0.1s)
+PASS glob2-unit-tests Gradient (12 cases) (1.9s)
+
+3 passed, 0 failed, 0 skipped (2.1s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/unit-focused.xml (25 cases)

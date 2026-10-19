@@ -1,0 +1,59 @@
+{
+  "status": "macos-qualified-only",
+  "candidate_collection_approved": false,
+  "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "pr_revision": "3bff637cf",
+  "master_base": "7c83e71d0303da637d84b0a31eeb1d1adb38f388",
+  "native_tests": {
+    "engine_passed": 141,
+    "unit_passed": 25,
+    "display_only_skipped": 1
+  },
+  "runtime": "observer off/on,1/4threads and continuation exact",
+  "private174_migration": "3positive plus6strictcases pass",
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/runtime-provenance.json",
+      "sha256": "257c12e840e97162cb5f082b0d953bb560abf5a4e40cd8e905c80d92c6a91718"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/build-status.json",
+      "sha256": "fb1d19d3a68aa18cc325d78aa345d2d25170464cf245afd1570b34b8db5f9d31"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/engine-test-status.json",
+      "sha256": "a9d5975566101ce5648f536d5e2e43d6f5b6ff61035bc7e66df7125dcafb7c10"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/integrated-macos-fix1/unit-test-status.json",
+      "sha256": "7cb32e91b55390089e754b22ce558818e264390c9e7b3ee43dbc5e2b9f1c71b2"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/runtime-macos/status.json",
+      "sha256": "9358be74f42117de992922f069c839fde06439afe3bffa585bd6b0f5d6b0903e"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/initial-results.json",
+      "sha256": "36d81c9761cc45bbf641b2eeaca1348a4ac733158aec979c07ff1e72ea49d795"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/strict-results.json",
+      "sha256": "dc57b5508d74900e6030b264cc26f52b3db8ea1054b5e25a5f8e2c94a2cd231a"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/fresh-review/result.json",
+      "sha256": "b696d4fa9d86349d41eb783ede6785f665ca4a8d06cb09eae583c9360cd7cd4e"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/goldens-verify.xml",
+      "sha256": "09810edf1e6e1d00c4186231c6ae4c82500a6a32e47bc3a5136978d5449c4571"
+    }
+  ],
+  "remaining": [
+    "Linux candidate native checks",
+    "cross-platform runtime/save/telemetry",
+    "prospective CPU/direction/stall/planning comparison",
+    "fresh final qualification review"
+  ],
+  "generated_utc": "2026-10-18T23:59:37.079573+00:00"
+}

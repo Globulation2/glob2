@@ -1,0 +1,11 @@
+{
+  "status": "verified",
+  "filters": {
+    "ReplayStepCounter/*": 11,
+    "Gradient/*": 12,
+    "ResourceGradientContradictions/*": 2
+  },
+  "assigned": 25,
+  "xml_testcases": 25,
+  "inventory_fingerprint": "e0b5b88a85128cc9b330a259734aa3474ed6c4806e982bf1c0e6af84afb20502"
+}

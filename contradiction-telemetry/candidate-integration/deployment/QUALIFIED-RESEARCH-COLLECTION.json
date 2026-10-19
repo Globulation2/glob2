@@ -1,0 +1,65 @@
+{
+  "status": "qualified",
+  "qualification_scope": "RESEARCH CANDIDATE COLLECTION ONLY",
+  "approved_for_candidate_collection": true,
+  "stable_incumbent_promotion": false,
+  "merge_approved": false,
+  "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "model_sha256": "f6385494fc8ce3e36650ab98419c296ddc8ead1a4b7df01d829465b00470bbd6",
+  "header_sha256": "0e9ccfb6db10dd1e5cc3faa7c6dc0edb15275678fdc23903b95274a8547e9eb6",
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/MACOS_QUALIFICATION.json",
+      "sha256": "8c4f0ac3ff631cd3c30d717437e9f1bacef6643d222732f15345c6bc9e5ce1c5"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/runtime-macos/status.json",
+      "sha256": "9358be74f42117de992922f069c839fde06439afe3bffa585bd6b0f5d6b0903e"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/initial-results.json",
+      "sha256": "36d81c9761cc45bbf641b2eeaca1348a4ac733158aec979c07ff1e72ea49d795"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/migration-macos/strict-results.json",
+      "sha256": "dc57b5508d74900e6030b264cc26f52b3db8ea1054b5e25a5f8e2c94a2cd231a"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/research-admission-receipts/CROSS_PLATFORM_PASSED.json",
+      "sha256": "bc11411e5d77821cbe685c8ca7047df5a39ae5908c4acca58e21af6453f8edb0"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/research-admission-receipts/CROSS_PLATFORM_MIGRATION_PASSED.json",
+      "sha256": "ec511362e2cfd2892ede8ba8804016c4fe54b08e2b9fb356b62252dcdb5052ae"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/research-admission-receipts/linux-runtime.json",
+      "sha256": "261e5cc0e09f199c6c58bcc258eb46263ad479efbee21fe0d4033d88382ddb9f"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/fresh-review/research-collection-review.json",
+      "sha256": "2f06d2d99a9ed948e80274fe67907e75ef2ef5889be4af9dff8795ba99571b75"
+    }
+  ],
+  "binaries": [
+    {
+      "binary_sha256": "09032f30f6a119241f880ffcadf85b28bb6a3c4b9eda6f45e7ca39f660889819",
+      "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+      "platform": "macOS arm64"
+    },
+    {
+      "binary_sha256": "6543e427ce2645a7c2e545be7efa5acefa5a8d713ba3ed035f8a7d7ea726ace1",
+      "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+      "platform": "Linux x86_64"
+    }
+  ],
+  "native_candidate_checks": {
+    "Mac": "141engine25unitPASS;1display-onlyskip",
+    "Linux": "focused harness build/tests PENDING; ordinary main and5crossplatformruntimecasesPASS"
+  },
+  "prospective_cpu_quality": "PENDING; run in parallel with this research collection; stable incumbent unchanged",
+  "game_timeout_seconds": 1800,
+  "process_attempts": 1,
+  "user_authorization": "Keep computations moving; perform coefficient-only checks lightly; research collection does not wait for extended evaluations",
+  "created_utc": "2026-10-19T00:03:47.946502+00:00"
+}

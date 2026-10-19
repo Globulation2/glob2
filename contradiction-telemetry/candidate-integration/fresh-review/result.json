@@ -1,0 +1,35 @@
+{
+  "result": "pass",
+  "vectors": 4081,
+  "checks": [
+    "exact header regeneration",
+    "C++/Python input preparation",
+    "C++/Python candidate prediction",
+    "C++/Python frozen legacy prediction",
+    "UBSan"
+  ],
+  "commands": [
+    [
+      "c++",
+      "-std=c++20",
+      "-O2",
+      "-fsanitize=undefined",
+      "-fno-sanitize-recover=undefined",
+      "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/fresh-review/parity.cpp",
+      "-o",
+      "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/fresh-review/parity"
+    ],
+    [
+      "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/fresh-review/parity"
+    ]
+  ],
+  "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "source_sha256": {
+    "src/map/gradient/ResourceGradientModel.h": "0e9ccfb6db10dd1e5cc3faa7c6dc0edb15275678fdc23903b95274a8547e9eb6",
+    "tools/models/resource-gradient.json": "f6385494fc8ce3e36650ab98419c296ddc8ead1a4b7df01d829465b00470bbd6",
+    "tools/resource_gradient_codegen.py": "e5034790c9d4e5c554482c94caa6d200076971f4f4f39257878ae1b200ab5072",
+    "tools/resource_gradient_features.py": "59e5302902d52c1bb9fa9f36f3e99ce19a4d11134aa36a6c1eee28b8c7ebbd61",
+    "tools/resource_gradient_model.py": "ace441d2da776f3534091ed07c9c09543b1e1f68ef826500b621f0403df8f67a",
+    "tools/resource_gradient_deployment.py": "0437f9204be33111eac30114ac5a4123adecb21e83daec8a3e9041dd7a569106"
+  }
+}

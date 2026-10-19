@@ -1,0 +1,38 @@
+{
+  "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "source_status": "",
+  "native_source_manifest_sha256": "7335f12687e83606e0074997dd38dda40b66ab0ce6432b1e8c0b42de1f8c93b4",
+  "native_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "model_sha256": "f6385494fc8ce3e36650ab98419c296ddc8ead1a4b7df01d829465b00470bbd6",
+  "header_sha256": "0e9ccfb6db10dd1e5cc3faa7c6dc0edb15275678fdc23903b95274a8547e9eb6",
+  "argv": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "--build=build/candidate-release",
+    "-j4",
+    "build/candidate-release/src/glob2",
+    "engine-tests",
+    "unit-tests"
+  ],
+  "cwd": "/Users/bradley/.codex/worktrees/gradient-contradiction-candidate/glob2",
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "PYTHONPATH": "/Users/bradley/.codex/worktrees/gradient-contradiction-candidate/glob2"
+  },
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "disk_free_before": 13650341888,
+  "started_utc": "2026-10-18T23:39:45.766835+00:00",
+  "disk_guard_min_bytes": 2147483648,
+  "note": "Integrated candidate b35360305 ordinary release. Goldens and prospective/platform/migration validation remain pending. Frozen f65 collectors untouched.",
+  "binary_sha256": "09032f30f6a119241f880ffcadf85b28bb6a3c4b9eda6f45e7ca39f660889819",
+  "binary_bytes": 55132392,
+  "qualified_for_deployment": false,
+  "engine_tests_sha256": "6846301070aa079871b753c512e57f8dfe14614574352937bd6d272e57f3187c",
+  "unit_tests_sha256": "b0e4443ae374c7585f983eb96e27e08d616e8829b41880bea786f14c48d7f9c0"
+}

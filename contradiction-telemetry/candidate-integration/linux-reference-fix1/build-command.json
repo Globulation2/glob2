@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "--build=build/reference-release",
+    "-j8",
+    "build/reference-release/src/glob2",
+    "engine-tests",
+    "unit-tests"
+  ],
+  "cwd": "/home/bradley/glob2-gradient-reference-54cdc48bf",
+  "started": "2026-10-18T23:50:12.520888+00:00",
+  "cpus": [
+    1,
+    2,
+    4,
+    5,
+    8,
+    10,
+    12,
+    14
+  ],
+  "nice": 19
+}

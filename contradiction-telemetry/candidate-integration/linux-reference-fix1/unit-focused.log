@@ -1,0 +1,6 @@
+PASS glob2-unit-tests ResourceGradientContradictions (2 cases) (0.0s)
+PASS glob2-unit-tests ReplayStepCounter (11 cases) (0.0s)
+PASS glob2-unit-tests Gradient (12 cases) (1.1s)
+
+3 passed, 0 failed, 0 skipped (1.1s of test time)
+[run_tests] JUnit report: /home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-reference-fix1/unit-focused.xml (25 cases)

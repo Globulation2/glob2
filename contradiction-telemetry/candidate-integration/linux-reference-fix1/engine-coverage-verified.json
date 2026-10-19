@@ -1,0 +1,15 @@
+{
+  "status": "verified",
+  "filters": {
+    "ResourceGradientPolicy/*": 3,
+    "DelayedGradientPublication/*": 14,
+    "InitialBuildingGradient/*": 4,
+    "BuildingGradientInvalidation/*": 30,
+    "TeamStatsPipeline/*": 23,
+    "TeamStatsSave/*": 21,
+    "CommandLine/*": 8
+  },
+  "assigned": 103,
+  "xml_testcases": 104,
+  "inventory_fingerprint": "c5e6e0fc6e5374cc6fd545870bf0b91671fd3bbab9098b5dc57e234b50c7097f"
+}

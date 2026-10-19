@@ -1,0 +1,339 @@
+{
+  "schema": 3,
+  "features": [
+    "age",
+    "q32",
+    "q128",
+    "source_added",
+    "source_removed",
+    "source_added_frac_q12",
+    "source_removed_frac_q12",
+    "since_capture_empty_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_empty_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
+  ],
+  "threshold": 32000,
+  "transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "identity_q12",
+    "identity_q12"
+  ],
+  "positive_probability": {
+    "coef": [
+      6844663,
+      36386694,
+      22011031,
+      3861702,
+      7620005,
+      3050402,
+      7490915,
+      22306308,
+      6674182,
+      -5412855,
+      -74635590,
+      -56601238
+    ],
+    "bias": -1623778899167,
+    "shift": 28,
+    "accumulator_bound": 142792706161890
+  },
+  "positive_mean": {
+    "coef": [
+      -58171137,
+      977952577,
+      -87505368,
+      193036701,
+      -503413645,
+      32230101,
+      181052138,
+      62737141,
+      970575833,
+      83982823,
+      -977212399,
+      -7739608759
+    ],
+    "bias": -1123661484381,
+    "shift": 28,
+    "accumulator_bound": 8975161344187877
+  },
+  "negative_probability": {
+    "coef": [
+      -3634040,
+      8905598,
+      28376371,
+      3522056,
+      4932470,
+      -6754105,
+      6780328,
+      -10321621,
+      -5333312,
+      8009904,
+      73063124,
+      48686587
+    ],
+    "bias": -1640177425864,
+    "shift": 28,
+    "accumulator_bound": 130457360736259
+  },
+  "negative_mean": {
+    "coef": [
+      298636,
+      97506508,
+      23862009,
+      -9286167,
+      -114746528,
+      82412116,
+      -10961192,
+      -49471749,
+      485543647,
+      18992547,
+      269032873,
+      -1310600809
+    ],
+    "bias": 2222389705557,
+    "shift": 28,
+    "accumulator_bound": 1654766319546818
+  },
+  "provenance": {
+    "training_games": 124,
+    "planned_games": 128,
+    "provisional": true,
+    "manifest_sha256": "5cae22caf14ff71547a96aac13f859436b6615db46726c6dadfb994e0329f84a",
+    "split_registry_sha256": "15c6670f4e4e2e92faf3709f0834c6015e73de2b86f6ae69c1956f4334680508",
+    "reference_comparison_sha256": "6a87ba6f63b31e24f2f32940c315b947e9a88271949f1e5282e5136e2ed593e3",
+    "cross_validation": [
+      {
+        "episodes": 49364,
+        "states": 29,
+        "mae": 4.904173274855191,
+        "mse": 395.52358521706503,
+        "selected_pct": 2.0685645108124184,
+        "selected_actual_benefit": 56.14949552393175,
+        "positive_benefit_captured_fraction": 0.3788027874895303,
+        "missed_positive_benefit": 2.0893288586156484,
+        "negative_benefit_selected": 0.11257319320935354,
+        "threshold": 32.0,
+        "decision_regret": 1.1412543350506346,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 34.0,
+        "false_refresh_pct": 1.1480732465512964,
+        "missed_threshold_decision_pct": 2.191327122049051,
+        "absolute_error_p95": 23.634999999999998,
+        "absolute_error_p99": 71.695
+      },
+      {
+        "episodes": 49377,
+        "states": 30,
+        "mae": 4.808797745601187,
+        "mse": 378.93765475741003,
+        "selected_pct": 1.071871797197903,
+        "selected_actual_benefit": 72.16477464156648,
+        "positive_benefit_captured_fraction": 0.24526328079352172,
+        "missed_positive_benefit": 2.418495887338637,
+        "negative_benefit_selected": 0.012413491374298874,
+        "threshold": 32.0,
+        "decision_regret": 1.1089772550570713,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 32.0,
+        "false_refresh_pct": 0.5942070554972758,
+        "missed_threshold_decision_pct": 2.1582291595057215,
+        "absolute_error_p95": 21.967,
+        "absolute_error_p99": 62.755
+      },
+      {
+        "episodes": 47322,
+        "states": 30,
+        "mae": 4.4988910173404335,
+        "mse": 366.6911254336855,
+        "selected_pct": 1.247024260169394,
+        "selected_actual_benefit": 50.65683150161139,
+        "positive_benefit_captured_fraction": 0.22846884901084133,
+        "missed_positive_benefit": 2.274258728435951,
+        "negative_benefit_selected": 0.041759490979030416,
+        "threshold": 32.0,
+        "decision_regret": 1.182695040075413,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 34.0,
+        "false_refresh_pct": 0.7951808491722427,
+        "missed_threshold_decision_pct": 2.1407103799827385,
+        "absolute_error_p95": 21.265,
+        "absolute_error_p99": 64.377
+      }
+    ],
+    "holdout": {
+      "episodes": 40416,
+      "states": 31,
+      "mae": 4.781267811579661,
+      "mse": 353.82845173865815,
+      "selected_pct": 1.834043140392822,
+      "selected_actual_benefit": 56.664644376658025,
+      "positive_benefit_captured_fraction": 0.3552469898560802,
+      "missed_positive_benefit": 2.0780940371708354,
+      "negative_benefit_selected": 0.10573737616758455,
+      "threshold": 32.0,
+      "decision_regret": 1.1143963207190435,
+      "decision_regret_p95": 0.0,
+      "decision_regret_p99": 32.0,
+      "false_refresh_pct": 1.0620029729200307,
+      "missed_threshold_decision_pct": 1.9294698785100293,
+      "absolute_error_p95": 22.118000000000002,
+      "absolute_error_p99": 66.307
+    },
+    "selection": "Prespecified lean12 vs lean14: near-tied development CV, three production counters, no neighbour classification. Full18 has better development CV. Engineering candidate only; heldout was already inspected.",
+    "regularization": {
+      "logistic_C": 1,
+      "ridge_alpha": 100
+    },
+    "weighting": "equal format, role, cohort, map, collection, episode",
+    "prospective_validation_required": true
+  },
+  "deployment_contract": {
+    "id": "goal-stall-v1",
+    "base_features": [
+      "age",
+      "q32",
+      "q128",
+      "source_added",
+      "source_removed",
+      "source_added_frac_q12",
+      "source_removed_frac_q12"
+    ],
+    "diagnostic_contract": {
+      "version": 1,
+      "scope": "natural-ground-resource-movement",
+      "counters": [
+        "since_capture_empty_goal",
+        "since_capture_persistent_progress_blocked",
+        "since_capture_unit_progress_blocked",
+        "since_capture_sidestep_used",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries"
+      ],
+      "window": "since-field-capture",
+      "classification": "first-rejection-existing-check-order",
+      "capture_known": "contradiction_capture_known",
+      "denominator": "since_capture_movement_queries",
+      "future_stall_columns": [
+        "defer_stalls",
+        "refresh_stalls"
+      ],
+      "future_stall_definition": "reachable-non-goal-selector-no-move"
+    },
+    "counter_ids": [
+      0,
+      4,
+      5
+    ],
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "source_added",
+      "source_removed",
+      "source_added_frac_q12",
+      "source_removed_frac_q12",
+      "since_capture_empty_goal",
+      "since_capture_reachable_no_move",
+      "since_capture_movement_queries",
+      "since_capture_empty_goal_frac_q12",
+      "since_capture_reachable_no_move_frac_q12"
+    ],
+    "transforms": [
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "identity_q12",
+      "identity_q12"
+    ],
+    "rate": "floor(4096*min(uncapped_event_count,uncapped_movement_queries)/max(1,uncapped_movement_queries))"
+  },
+  "legacy": {
+    "schema": 1,
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "source_added",
+      "source_removed",
+      "source_added_frac_q12",
+      "source_removed_frac_q12"
+    ],
+    "threshold": 32000,
+    "positive_probability": {
+      "coef": [
+        13470807,
+        42231374,
+        15558727,
+        10040355,
+        12405886,
+        3318849,
+        9922545
+      ],
+      "bias": -1886441879996,
+      "shift": 28,
+      "accumulator_bound": 10617613981973
+    },
+    "negative_probability": {
+      "coef": [
+        13879570,
+        11261931,
+        33349407,
+        -2442545,
+        12864754,
+        4792900,
+        -954221
+      ],
+      "bias": -2060844642461,
+      "shift": 28,
+      "accumulator_bound": 8554845675053
+    },
+    "positive_mean": {
+      "coef": [
+        51477207,
+        1240365741,
+        -201788474,
+        206159315,
+        -317690104,
+        72505397,
+        187567494
+      ],
+      "bias": -5752064656374,
+      "shift": 28,
+      "accumulator_bound": 191689273783122
+    },
+    "negative_mean": {
+      "coef": [
+        -29797263,
+        183802549,
+        30807046,
+        54242320,
+        -50940482,
+        1610710,
+        51640750
+      ],
+      "bias": 1371287654695,
+      "shift": 28,
+      "accumulator_bound": 34258833850375
+    }
+  },
+  "legacy_source_sha256": "f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217",
+  "prospective_validation_required": true
+}

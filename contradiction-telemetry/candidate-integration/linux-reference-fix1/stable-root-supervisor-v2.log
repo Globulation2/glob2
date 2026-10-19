@@ -1,0 +1,17 @@
+From /home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-reference-fix1/source.bundle
+ * branch                codex/gradient-incumbent-cli-repair -> FETCH_HEAD
+Previous HEAD position was 54cdc48bf Integrate current master and preserve explicit private adaptive save migration
+HEAD is now at 97bc11aeb Repair migration command and integration fixtures in incumbent control
+From /home/bradley/glob2/artifacts/gradient-contradictions-20261018/candidate-next/linux-candidate-fix1/source.bundle
+ * branch                refs/codex/gradient-candidate-2d4 -> FETCH_HEAD
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  97bc11aeb Repair migration command and integration fixtures in incumbent control
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 97bc11aeb
+
+HEAD is now at 2d4dc8e9e Fix migration command registration and update integration fixtures

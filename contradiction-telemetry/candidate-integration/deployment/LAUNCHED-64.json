@@ -1,0 +1,62 @@
+{
+  "experiment": "gradient-67ef45c0c3abb354ae1abe77",
+  "jobs": {
+    "active": 50,
+    "completed": 3,
+    "pending": 11
+  },
+  "attempts": {
+    "accepted": 3,
+    "leased": 50
+  },
+  "failures": [],
+  "hosts": [
+    {
+      "host": "devlaptop.local",
+      "error": null,
+      "counts": {
+        "running": 8
+      },
+      "accepting": true,
+      "daemon": 3851892
+    },
+    {
+      "host": "macbook-local",
+      "error": null,
+      "counts": {
+        "running": 6
+      },
+      "accepting": true,
+      "daemon": 13893
+    },
+    {
+      "host": "pharaoh-dev-1.local",
+      "error": null,
+      "counts": {
+        "running": 4
+      },
+      "accepting": true,
+      "daemon": 577480
+    },
+    {
+      "host": "pharaoh-dev-2.local",
+      "error": null,
+      "counts": {
+        "acknowledged": 3,
+        "running": 1
+      },
+      "accepting": true,
+      "daemon": 1161585
+    },
+    {
+      "host": "therig.local",
+      "error": null,
+      "counts": {
+        "running": 18
+      },
+      "accepting": true,
+      "daemon": 38944
+    }
+  ],
+  "timestamp": "2026-10-19T00:09:12.020519+00:00"
+}
