@@ -1,0 +1,28 @@
+{
+  "scope": "independent read-only campaign driver review; synthetic map/worker fixtures and Python hook children only, no native/game/build/campaign launch",
+  "utc": "2026-10-19T06:03:52.094095+00:00",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-m",
+    "unittest",
+    "tools.test_adaptive_gradient_campaign",
+    "-v"
+  ],
+  "cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "returncode": 0,
+  "elapsed_seconds": 3.3697341249790043,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "files_before": {
+    "tools/adaptive_gradient_campaign.py": "5baf24da18ede576017c678a5e535b41cff2d91bf8d3f06b4a433205cbb41fdd",
+    "tools/test_adaptive_gradient_campaign.py": "6f00c4ac3d6c01903b4fdf46de9984f34768670565af47bd97934633e09b2e12",
+    "docs/development/resource-gradient-model.md": "98661c0645eb72509eea37d626f0c46ae0c6e1f1ff5c15d409b4ef49971e0830"
+  },
+  "files_after": {
+    "tools/adaptive_gradient_campaign.py": "5baf24da18ede576017c678a5e535b41cff2d91bf8d3f06b4a433205cbb41fdd",
+    "tools/test_adaptive_gradient_campaign.py": "6f00c4ac3d6c01903b4fdf46de9984f34768670565af47bd97934633e09b2e12",
+    "docs/development/resource-gradient-model.md": "98661c0645eb72509eea37d626f0c46ae0c6e1f1ff5c15d409b4ef49971e0830"
+  },
+  "unchanged_during_tests": true,
+  "log_sha256": "e0f4e35d5067831c826add7406854693c4910be623521dc64a2d4e492a901ca5"
+}

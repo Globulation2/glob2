@@ -1,0 +1,25 @@
+{
+  "base_revision": "65628bb1c689d0d878bf1f14a62995e73cf83bf4",
+  "files": {
+    "tools/adaptive_gradient_campaign.py": "5baf24da18ede576017c678a5e535b41cff2d91bf8d3f06b4a433205cbb41fdd",
+    "tools/test_adaptive_gradient_campaign.py": "6f00c4ac3d6c01903b4fdf46de9984f34768670565af47bd97934633e09b2e12",
+    "docs/development/resource-gradient-model.md": "98661c0645eb72509eea37d626f0c46ae0c6e1f1ff5c15d409b4ef49971e0830"
+  },
+  "commands": [
+    {
+      "command": "python3 -m unittest tools.test_adaptive_gradient_campaign -v",
+      "result": "15passed",
+      "log": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/campaign-focused-tests.log"
+    },
+    {
+      "command": "python3 -m unittest tools.test_adaptive_gradient_campaign tools.test_adaptive_gradient_model -v",
+      "result": "41tests,40passed,1existingnumpy-weight-test skipped",
+      "log": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/campaign-tooling-tests.log"
+    }
+  ],
+  "review": "candidate_fresh_review independently reran15tests PASS and verified frozenfilehashes; no remaining actionable blocker for tooling scope",
+  "git_diff_check": "pass",
+  "native_or_game_execution": false,
+  "live_campaign_changed": false,
+  "scope": "tooling orchestration; heavy coordinator/model/build stages mocked, real256plan/map-index/split preparation tested; supplied synchronous remote-fit/build adapters remain explicit integration boundary"
+}

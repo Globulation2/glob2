@@ -1,0 +1,74 @@
+{
+  "status": "no_remaining_actionable_blocker_in_reviewed_tooling_scope",
+  "utc": "2026-10-19T06:04:28.048055+00:00",
+  "checkout": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "reviewed_files": {
+    "tools/adaptive_gradient_campaign.py": "5baf24da18ede576017c678a5e535b41cff2d91bf8d3f06b4a433205cbb41fdd",
+    "tools/test_adaptive_gradient_campaign.py": "6f00c4ac3d6c01903b4fdf46de9984f34768670565af47bd97934633e09b2e12",
+    "docs/development/resource-gradient-model.md": "98661c0645eb72509eea37d626f0c46ae0c6e1f1ff5c15d409b4ef49971e0830"
+  },
+  "source_identity": "uncommitted frozen file hashes above; no tested commit SHA asserted",
+  "scope": [
+    "new permanent campaign orchestrator",
+    "focused orchestration/provenance/resume regressions",
+    "guide addition and explicit adapter responsibilities"
+  ],
+  "resolved_findings": [
+    {
+      "finding": "ordinary coordinator hosts may omit platform; previous collect crashed KeyError after preparing128 jobs",
+      "fix": "explicit nonempty os/arch validated before campaign ledger or any job creation; guide documents requirement",
+      "regression": "ordinary host missing platform rejects before prepare/coordinator calls"
+    },
+    {
+      "finding": "receipt written before hook exit could bypass failed or still-running build on resume",
+      "pre_fix_reproduction": "synthetic Python adapter wrote matching qualified-research receipt then exited1; first call raised exit1, second call returned receipt as success",
+      "fix": "request/receipt/argv-bound success marker after exit0; all unresolved running attempts or standalone receipts fail closed",
+      "regressions": [
+        "receipt then nonzero exit remains blocked on resume",
+        "actual live Python child writes early receipt; concurrent reuse blocked until successful completion"
+      ]
+    },
+    {
+      "finding": "Popen-to-running-marker crash window could orphan a hook and allow duplicate spawn",
+      "fix": "atomic launch-intent marker before Popen; any ambiguous marker blocks automatic replay",
+      "regression": "mock Popen asserts intent already exists, raises interrupted-spawn error; resume does not spawn"
+    },
+    {
+      "finding": "existing provisional round registry trusted after interrupted design; heldout exclusion could silently move into training fold",
+      "pre_fix_reproduction": "synthetic256-map design reused registry after historical-heldout -1 changed to0; previous implementation accepted0 despite unchanged prior registry",
+      "fix": "reconstruct expected registry from frozen previous assignments plus every predeclared fallback, compare exact provisional contents before reuse",
+      "regression": "real deterministic256-slot design rejects altered historical and newly assigned folds without overwriting corruption"
+    }
+  ],
+  "additional_hardening_reviewed": [
+    "ordinary O3/bootstrap flags, current model/collector contracts and common source/model/header/trained state preflight",
+    "sealed manifest episode bytes checked in stage provenance",
+    "terminal128 completed/user-censored accounting blocks unresolved/noncap failures",
+    "coordinator immutable submit resume retains attempts and roles",
+    "candidate collection gated by exact emitted hashes and qualified actual binary/bundle metadata"
+  ],
+  "verification": {
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-m",
+      "unittest",
+      "tools.test_adaptive_gradient_campaign",
+      "-v"
+    ],
+    "returncode": 0,
+    "tests": 15,
+    "unittest_seconds": 3.128,
+    "files_unchanged": true,
+    "log": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/campaign-driver-review/independent-focused-tests.log",
+    "log_sha256": "e0f4e35d5067831c826add7406854693c4910be623521dc64a2d4e492a901ca5",
+    "receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/campaign-driver-review/INDEPENDENT-TEST-RECEIPT.json",
+    "diff_check": "passed for the3reviewed paths"
+  },
+  "limitations": [
+    "No live campaign, real map generation, remote transfer/build hook, native engine check or campaign migration launched by review",
+    "Hooks are explicit trusted environment adapters, not self-contained remote build infrastructure",
+    "Remote fit adapter must hash-verify transferred episodes, preserve original/remote mapping and inventory, and map model provenance back to canonical request identities; its actual integration remains unverified",
+    "Mocked orchestration and Python child tests do not qualify remote fleet behavior or native simulation determinism",
+    "Existing active collectors/packages remain unchanged; no approval for active campaign migration or stable model promotion"
+  ]
+}
