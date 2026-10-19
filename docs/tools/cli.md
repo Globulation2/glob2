@@ -710,7 +710,7 @@ Platform: all.
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
 | `--gradient-work-stats` | file | Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection. |
 | `--resource-gradient-probe` | flag; default false | Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias). |
-| `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals8..65536;0=adaptive only after unified model training. |
+| `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training. |
 | `--resource-gradient-exploration-seed` | integer; 0..4294967295 | Seed for deterministic per-field collection assignment. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
