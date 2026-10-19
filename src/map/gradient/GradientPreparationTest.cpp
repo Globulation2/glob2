@@ -2250,6 +2250,9 @@ TEST_CASE("blocked live guidance and removed material goals deduplicate delayed 
             CHECK(audit.totals().owner==0);
         }
         if (scenario==2) { // local escape blockage requests an earlier forbidden field.
+            // Escape is required only inside a forbidden area. An outside tile
+            // is a valid arrival and must not count as a stalled escape query.
+            map.addForbidden(8,8,0);
             map.forbiddenGradient[0][0]=new Uint16[map.size];
             std::fill_n(map.forbiddenGradient[0][0],map.size,GRADIENT_AT_GOAL);
             blockNeighbors();
