@@ -1,0 +1,28 @@
+{
+  "status": "complete",
+  "sealed_utc": "2026-10-19T06:44:30.408310+00:00",
+  "files": {
+    "PLAN.json": "3d2b577d18992372d81ec95c21bf8e53ad5fdbd8c0c85cb93bbff5854a171b03",
+    "STUDY-REQUEST.json": "ce2b04ed3fad617bac92559c150bb68009bac51bea598115f9bc5739ad104bef",
+    "GEN001-BASELINE.json": "1310c8e1c4fe82c6b3a749f957d24496ec4c16999d988c14d5720f740d84d31b",
+    "run-quality.py": "607502246bd80d075e2bf680656b1b9450447147fc28fd996b3aa78f6c96e489",
+    "build-perf-only.py": "f83e573dbe8b79b6a1d4d4bef392903368e4ed9b7d5a281e842bf11c7c8a9a96",
+    "run-perf-study.py": "0166d8d041f2e02173cef4a5f706562a3a9cfea688492816527e288d20531d17",
+    "summarize-quality.py": "a66b5df6fb66ecdd3a55b7a272c60a1a351b6bae40cf6d6fa09c51f620d6c6b3",
+    "finalize-study.py": "1a4a6753bbd7de07d72136f8b5b4d8b0cbd0ca8749d1acbc4e1dbec4ea8e5971",
+    "wait-and-run.py": "1b354ec7b587b05961b5e363167e2c63d695ee45961a5db886898efe7b5a2a97",
+    "QUALITY-SUMMARY.json": "f91a427b74a17008f2705324f7585f9a4e16a4c503cb7f9580c275874ddf3bb7",
+    "TIMING-SUMMARY.json": "d5808141d3a01a4a7c1e5819ad7a0f163fc2562b29dd8fa637df28fc48ac568c",
+    "EQUIVALENCE-PASSED.json": "036bfe3717e5c71238f5310e581edd16f05e00a43d1d1229a5a4bc1835bb7152",
+    "STUDY-COMPLETE.json": "20df9ff4c76f954867507cafba6062bfd6f0de8f49569f06c80649e5b7036b23",
+    "QUALIFICATION-ACCEPTED.json": "5ecf8561883c610b3fa7603038c4be6f471431a40f8b73046400dcad1ec7da39",
+    "perf-build/STATUS.json": "b08f8632ba827397cd3512c5787b66d216186ba7adaede4325c064859c42aa25",
+    "perf-build/validation-only.patch": "b8764169fd8b1b0733cfb38f59bf360143f66dce2745b9b1ddee759a674207c9",
+    "perf-build/commands.json": "03c5a3bb7a0e366df7e3cc33e284e7d6ba2e80cc8f2ca40d31f40c32ac652d84",
+    "perf-build/link-command.json": "83c06f8097bfa0235706cb4eb292971c85ed1d7c4cc86790ba8d590a95b88278",
+    "perf-build/reused-link-inputs.json": "a3f36c98be74b5d03bec54b660670812a570f330ed9531b7af5e04c5d843ff1a",
+    "quality/STATUS.json": "cb72355ecab1ae1d58344bf8d23080e556d2dc2bbab0fb9fb1f627aa30ec7b5d",
+    "timing/STATUS.json": "6abeeff37dc519ce83cdc4c9a7c3dd5d062f695ff0bb2946dca739cde3ead76c"
+  },
+  "scope": "artifact-only repeated gen002 prospective study, no active/canonical source changes or stable promotion"
+}

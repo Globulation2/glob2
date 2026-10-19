@@ -1,0 +1,7 @@
+{
+  "same_terminal_result_checksum": 18,
+  "timing_runs": 18,
+  "all_shared_and_lazy_job_counts_equal": true,
+  "scope": "terminal result checksums only; not additional per-tick cross-generation determinism qualification",
+  "interpretation": "all timing arms also slowed24-32percent between walltime windows, so no coefficient-speed attribution under sharedSMT"
+}
