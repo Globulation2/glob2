@@ -19,8 +19,8 @@ CONTRACT=dict(id=CONTRACT_ID,features=list(BASE_FEATURES),counters=list(COUNTERS
  selector='real-family-selector;pre-decision-RNG-copy;forbidden-lexicographic-base-option',
  separate_outcomes=['stalls','invalid_goals','false_unreachable','false_reachable','missed_moves','escape_failures','planning'])
 # Capture/collector counters remain available even when inference selects only base7.
-SELECTED_FEATURES=BASE_FEATURES
-SELECTED_TRANSFORMS=TRANSFORMS[:7]
+SELECTED_FEATURES=FEATURES
+SELECTED_TRANSFORMS=TRANSFORMS
 
 def selected_transforms(features):
  if tuple(features)==BASE_FEATURES:return TRANSFORMS[:7]

@@ -7,8 +7,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 181
-// version 181 selects the final seven-input Adaptive16 model. The saved layout
+#define VERSION_MINOR 182
+// version 182 refits the validated twelve-input Adaptive16 model. The saved layout
+// remains version 178; earlier replay execution has different coefficients.
+// version 181 tested a seven-input Adaptive16 model. The saved layout
 // remains version 178; older replay execution uses different coefficients.
 // version 180 refits Adaptive16 on cumulative unified training data. The
 // saved layout remains version 178; replay execution uses the new coefficients.

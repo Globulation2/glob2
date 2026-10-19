@@ -500,9 +500,10 @@ checksum adapter remains available for diagnostic fixtures.
   explicit reactive recovery remain available without a model benefit prediction.
   Stable key order determines admission, and skipped work leaves capacity idle.
   One exact field can have only one queued or in-flight replacement.
-  The seven selected inputs describe serving-capture age, movement queries over
-  32 and 128 ticks, and effective target additions/removals with captured-count
-  fractions. Family and material identities are diagnostic groups, not inputs.
+  The twelve selected inputs describe serving-capture age, movement queries over
+  32 and 128 ticks, effective target additions/removals with captured-count
+  fractions, and since-capture contradiction counts and event rates. Family and
+  material identities are diagnostic groups, not inputs.
   Planning demand, including cached-unreachable answers, can request upkeep
   without incrementing movement-query counts. Capture metadata stays immutable
   while a replacement computes; save/load preserves captures, jobs and demand.

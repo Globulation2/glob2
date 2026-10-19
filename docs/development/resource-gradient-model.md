@@ -21,13 +21,18 @@ can recover. Team aliveness is not a substitute for actual demand.
 
 `AdaptiveGradientFeatures.h` defines seven base inputs: serving-capture age,
 movement queries over 32 and 128 ticks, effective target tiles added/removed, and
-their Q12 fractions relative to the captured target count. The selected model uses
-only these seven inputs. Same-row grouped ablations did not establish a benefit
-from adding contradiction counts or event rates, so those inputs are excluded.
-Three cumulative movement counters remain in capture/save bookkeeping for causal
-collector histories and backward compatibility; they do not enter inference.
-Family, material, map-generator and AI identities are diagnostic metadata,
-never model inputs.
+their Q12 fractions relative to the captured target count. Three cumulative
+since-capture counters add invalid-goal events, reachable required-travel queries
+that produced no move, and their movement-query denominator. Two Q12 event rates
+complete the twelve selected inputs. Rates use uncapped 64-bit counts before
+bounded count/log transforms. Family, material, map-generator and AI identities
+are diagnostic metadata, never model inputs.
+
+Feature removal must pass prospective reachability and missed-move checks as
+well as grouped direction-cost validation. Direction cost alone does not penalize
+all cached-unreachable stays: when the cached selector does not move but a fresh
+selector would, a smaller movement-cost score can coexist with worse guidance.
+A simpler fit is therefore not qualified solely by lower held-out direction cost.
 
 The target semantics and deployment threshold are separate from feature
 names. Models trained on the earlier 32-tick target are incompatible and their
@@ -81,7 +86,7 @@ forbidden destinations are eligible free outside tiles, with border seeds derive
 by the existing builder. Painted-tile counts are not interchangeable with these
 sets. Route-change epochs describe persistent changes, excluding ordinary moving
 unit congestion. Seed-cost changes, including weighted guard crowding, are
-separate diagnostic metadata; the seven selected features do not claim to fully
+separate diagnostic metadata; the selected features do not claim to fully
 observe those changes.
 
 ## Collection
@@ -189,7 +194,7 @@ preserves raw receipt/transport hashes, excludes unterminated final CSV bytes an
 incomplete horizons, validates derived rows with the same loader, and records
 censoring and unknown whole-game totals. It never calls a capped game completed.
 
-Fit the generic seven-input model and explicitly emit a research candidate:
+Fit the generic twelve-input model and explicitly emit a research candidate:
 
 ```sh
 python3 tools/adaptive_gradient_model.py fit \

@@ -66,7 +66,12 @@
     "target_added",
     "target_removed",
     "target_added_frac_q12",
-    "target_removed_frac_q12"
+    "target_removed_frac_q12",
+    "since_capture_invalid_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_invalid_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
   ],
   "transforms": [
     "log1p_q12",
@@ -75,70 +80,95 @@
     "log1p_q12",
     "log1p_q12",
     "log1p_q12",
-    "log1p_q12"
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "identity_q12",
+    "identity_q12"
   ],
   "threshold": 16000,
   "trained": true,
   "positive_probability": {
-    "accumulator_bound": 12174025912139,
-    "bias": -1450258979591,
     "coef": [
-      -4833734,
-      -35766283,
-      61305892,
-      10093447,
-      3828732,
-      2585141,
-      12942703
+      -24003190,
+      -41183652,
+      46778126,
+      11168335,
+      5979639,
+      1451381,
+      13246245,
+      86900066,
+      45855382,
+      21663006,
+      -209059984,
+      -76391754
     ],
-    "shift": 28
+    "bias": -988539742211,
+    "shift": 28,
+    "accumulator_bound": 310787396869269
   },
   "negative_probability": {
-    "accumulator_bound": 13542429543347,
-    "bias": -1387203976604,
     "coef": [
-      -11689393,
-      -39678540,
-      59929872,
-      -7437980,
-      17830428,
-      10570837,
-      1752887
+      -13893761,
+      -40520772,
+      58240064,
+      -7134650,
+      17943515,
+      10425460,
+      1763910,
+      24171040,
+      24745794,
+      2471068,
+      -151101139,
+      -1090936
     ],
-    "shift": 28
+    "bias": -1330152698790,
+    "shift": 28,
+    "accumulator_bound": 169956977564516
   },
   "positive_mean": {
-    "accumulator_bound": 242939327916982,
-    "bias": -11863076767870,
     "coef": [
-      9807517,
-      1432956749,
-      499715755,
-      -72581150,
-      -309456434,
-      298047328,
-      207899075
+      -419050168,
+      1241215863,
+      242030075,
+      -63943646,
+      -325782337,
+      292377222,
+      211377387,
+      -126896057,
+      2159348200,
+      482583960,
+      -1495467693,
+      -10755130372
     ],
-    "shift": 28
+    "bias": -1411609977654,
+    "shift": 28,
+    "accumulator_bound": 12706298455633339
   },
   "negative_mean": {
-    "accumulator_bound": 79911278523223,
-    "bias": 949767171577,
     "coef": [
-      -84592177,
-      505123029,
-      89055809,
-      -50482679,
-      -47344535,
-      153243964,
-      37361121
+      -207916811,
+      428197336,
+      4124316,
+      -50336831,
+      -46098504,
+      152373902,
+      34226573,
+      -546558476,
+      1019175597,
+      146881556,
+      105330933,
+      -1828511989
     ],
-    "shift": 28
+    "bias": 4232895989650,
+    "shift": 28,
+    "accumulator_bound": 2153267233699028
   },
   "deployment": {
     "threshold_milli": 16000,
     "source_fit_threshold_milli": 16000,
-    "source_model_sha256": "c36ef4e6f21c53cf424fc8dcea35d6ab196070d7bc7b55591d0afa79a8b8b726",
+    "source_model_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
     "source_candidate_contract_sha256": "e2bd6b6ffbf7694408cf41c2e91703e81d8c91d978847f4ab7aa06aa0f0a9840",
     "source_fit_metrics_threshold_milli": 16000,
     "fit_metrics_recomputed": false,
@@ -146,9 +176,7 @@
   },
   "prospective_validation_required": true,
   "provenance": {
-    "source_ablation_sha256": "90519b2746716742d6db1b1f23a60c21256d49b1a98949b5d01ed78b161178ec",
-    "source_generic12_fit_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
-    "source_fit_sha256": "c36ef4e6f21c53cf424fc8dcea35d6ab196070d7bc7b55591d0afa79a8b8b726",
+    "source_fit_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
     "split_registry_sha256": "f6ef2a80d892e670d26fe2f3b1ba792a6f35e243738b2d458449dba2d0a0c624",
     "eligible_episode_count": 287045,
     "development_map_count": 965,

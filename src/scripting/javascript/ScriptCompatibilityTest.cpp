@@ -136,8 +136,8 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::HeadlessGlobals globals(options);
 	// The final Adaptive16 coefficients require current replay execution.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 181);
-	CHECK(VERSION_MINOR == 181);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 182);
+	CHECK(VERSION_MINOR == 182);
 
 	CHECK(NET_PROTOCOL_VERSION == 72);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
