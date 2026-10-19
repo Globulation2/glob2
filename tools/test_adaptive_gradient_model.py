@@ -52,8 +52,13 @@ class UnifiedDatasetTests(unittest.TestCase):
  def test_uncapped_model_support_reports_older_demand_without_forcing_refresh(self):
   report=age_demand_support([dict(family='materials',group='map',age=4096,q128=32)])
   self.assertEqual(report['materials']['high_demand_age4096plus'],1);self.assertEqual(report['clear']['episodes'],0)
- def test_new_header_is_explicitly_untrained(self):
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());validate(model)
+ def test_untrained_bootstrap_rejects_inference_and_nonzero_coefficients(self):
+  # This contract remains valid after the committed deployment model is trained.
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text())
+  model['trained']=False
+  for name in ('positive_probability','negative_probability','positive_mean','negative_mean'):
+   model[name]=dict(coef=[0]*len(d.FEATURES),bias=0,shift=28)
+  validate(model)
   with self.assertRaisesRegex(ValueError,'No unified model'):predict(model,[0]*7,[0]*3)
   model['positive_mean']['bias']=1
   with self.assertRaisesRegex(ValueError,'Untrained'):validate(model)
