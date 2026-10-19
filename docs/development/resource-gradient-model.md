@@ -260,6 +260,16 @@ An unmeasured family receives neither synthetic zero labels nor a validation
 claim. Reports also score the same unified rows with
 the previous weighting, so a weighting change is not mistaken for a feature gain.
 
+The checked-in fit uses a derived view of the historical AI campaign that
+excludes Guard movement rows owned by Cabino, Castor, Cortex, Econo, Nicowar and
+Numbi. Its verified initial maps had no painted zones and its games accepted no
+external orders; those six implementations never paint Guard zones. Raw cohorts
+and persistent map splits are retained, with exclusions recorded separately.
+Maxima/Warrush zero-goal rows remain: zero eligible gradient goals cannot prove
+there were no painted tiles. This filter applies to that recorded campaign,
+not to AI identity at runtime or to future games with human-painted zones.
+Model provenance records both input identities and the exclusion manifest hash.
+
 Review pooled and per-family results, format/generator/size, age/demand,
 target-change, route-change and weighted-cost-change slices. A good pooled score
 cannot waive a guard or forbidden-escape regression. Coefficient emission is not
