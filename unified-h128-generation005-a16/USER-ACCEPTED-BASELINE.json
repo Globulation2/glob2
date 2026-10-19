@@ -1,0 +1,21 @@
+{
+  "status": "USER-ACCEPTED-ENGINE-BASELINE",
+  "accepted_utc": "2026-10-19T17:41:31.345955+00:00",
+  "native_source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "pr_checkpoint": "07ef1cc756d4d6314f133fc5e2a8b7dbe4fdf9c9",
+  "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "threshold_milli": 16000,
+  "horizon_ticks": 128,
+  "minimum_interval_ticks": 8,
+  "publication_ticks": 8,
+  "maximum_age": null,
+  "default_ordinary_engine": true,
+  "diagnostic_flags_required": false,
+  "master_merged": false,
+  "game_installed_or_released": false,
+  "future_refits": "Research candidates; acceptance not inherited automatically",
+  "training_continues": true,
+  "acceptance_basis": "User explicitly trusts current qualified model for real engine use; existing engine quality is the acceptance objective. Qualification and bounded CPU/quality evidence remain as published.",
+  "limitations": "Published benchmark covers examined states, not universal superiority or model-only attribution. Markets unmeasured; Guard balancing off."
+}

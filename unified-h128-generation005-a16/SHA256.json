@@ -98,5 +98,6 @@
   "runtime-objects.tar.gz": "c6a75735ab964a5cc3c08087e03b479052e1d941512b8a81d8e387e68a7608fe",
   "sim-revision-check.log": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
   "source-push.log": "9bb6ed72a3058e80e88155aa0d3a71c495583138187f2718310bb06ed0c3527b",
-  "verify-header-metadata.py": "79d8cc2506e4cc03fa7dc1afe5e095192dffe9754fe7ec8fadc418e40fed4de5"
+  "verify-header-metadata.py": "79d8cc2506e4cc03fa7dc1afe5e095192dffe9754fe7ec8fadc418e40fed4de5",
+  "USER-ACCEPTED-BASELINE.json": "e1fd4fd69c7e1cd945b2a49bc888d7e95150c93246689d06a13753beaaf4462b"
 }
