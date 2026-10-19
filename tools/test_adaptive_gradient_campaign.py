@@ -58,6 +58,15 @@ class CampaignTests(unittest.TestCase):
     def campaign(self):
         return c.Campaign(self.root / 'config.json', self.root / 'campaign')
 
+    def test_only_historical_threshold_hash_is_compatible(self):
+        bundle = c.inspect_bundle(self.bundle)
+        legacy = dict(c.spatial.CONTRACT, refresh_threshold_milli=128000)
+        bundle['build_options']['adaptive_gradient_contract_sha256'] = c.data.canonical_hash(legacy)
+        c.validate_bundle_set([bundle])
+        bundle['build_options']['adaptive_gradient_contract_sha256'] = c.data.canonical_hash(dict(legacy, refresh_threshold_milli=16000))
+        with self.assertRaisesRegex(ValueError, 'exact unified'):
+            c.validate_bundle_set([bundle])
+
     def test_real_design_preserves_historical_splits_and_predeclares_fallbacks(self):
         plan = c.tournament.plan(catalog(), 181101, 'remote-only')
         mapfile = self.root / 'map.map.gz'

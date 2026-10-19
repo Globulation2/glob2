@@ -49,12 +49,12 @@ TEST_CASE("research intervals are explicit and ordinary demanded age never force
     f.queried(4096);CHECK(f.evaluate(4096,{},true,low,4096).reason==AdaptiveGradientState::Reason::Bootstrap);
     f.queried(1000000);CHECK_FALSE(f.evaluate(1000000,{},true,low).requested());
 }
-TEST_CASE("benefit threshold is inclusive at128 units and the eight tick minimum remains") {
+TEST_CASE("benefit threshold is inclusive at16 units and the eight tick minimum remains") {
     AdaptiveGradientState::Field f;f.serving.known=true;f.submitted=0;
     f.queried(7);CHECK_FALSE(f.evaluate(7,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).requested());
     f.queried(8);CHECK_FALSE(f.evaluate(8,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold-1;}).requested());
     f.queried(8);CHECK(f.evaluate(8,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).reason==AdaptiveGradientState::Reason::Model);
-    CHECK(AdaptiveGradientState::Threshold==128000);
+    CHECK(AdaptiveGradientState::Threshold==16000);
 }
 TEST_CASE("mutations never allocate unseen scopes and equivalent ground classes share turnover") {
     AdaptiveGradientState state;const GradientFieldKey first{GradientFieldFamily::Markets,0,0,0},second{GradientFieldFamily::Markets,0,1,0};

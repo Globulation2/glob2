@@ -26,6 +26,7 @@ using BaseFeatures=std::array<I,BaseFeatureCount>;
 '''
     text += f'inline constexpr char ContractId[]="{f.CONTRACT_ID}";\n'
     text += f'inline constexpr bool Trained={str(model["trained"]).lower()};\n'
+    text += f'inline constexpr I ThresholdMilli={model["threshold"]};\n'
     text += f'inline constexpr unsigned CounterCount={len(f.COUNTER_IDS)};\n'
     text += 'inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={' + ','.join(map(str, f.COUNTER_IDS)) + '};\n'
     text += f'inline constexpr unsigned RequiredMovementMask={sum(1 << i for i in f.COUNTER_IDS)};\n'

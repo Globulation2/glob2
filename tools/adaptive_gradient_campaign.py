@@ -90,7 +90,7 @@ def validate_bundle_set(bundles):
         options = bundle['build_options']
         hashes = [options.get('model_sha256'), options.get('header_sha256')]
         if (any(not isinstance(h, str) or len(h) != 64 or any(v not in '0123456789abcdef' for v in h) for h in hashes)
-                or options.get('adaptive_gradient_contract_sha256') != data.canonical_hash(spatial.CONTRACT)
+                or not data.compatible_contract_hash(options.get('adaptive_gradient_contract_sha256'),spatial.CONTRACT)
                 or options.get('model_contract') != data.CONTRACT_ID
                 or options.get('collector_contract') != spatial.CONTRACT_ID
                 or type(options.get('unified_model_trained')) is not bool
@@ -109,7 +109,7 @@ def qualification(receipt, emitted, header):
     if (receipt.get('status') != 'qualified-research' or receipt.get('stable_promotion') is not False
             or receipt.get('model_sha256') != file_hash(emitted)
             or receipt.get('header_sha256') != file_hash(header)
-            or receipt.get('collector_contract_sha256') != data.canonical_hash(spatial.CONTRACT)):
+            or not data.compatible_contract_hash(receipt.get('collector_contract_sha256'),spatial.CONTRACT)):
         raise ValueError('Build hook did not qualify these exact research coefficients/collector')
     for check in ('integer_parity', 'determinism_smoke', 'simulation_gates'):
         if receipt.get('checks', {}).get(check) is not True:
@@ -370,7 +370,7 @@ class Campaign:
         request = dict(action='fit-unified-generic12', contract=spatial.CONTRACT,
                        manifests=checked_files(manifests), split_registry=str(registry),
                        split_registry_sha256=file_hash(registry), expected_families=self.config['expected_families'],
-                       output=str(research), research_only=True)
+                       output=str(research),threshold_milli=data.DEFAULT_THRESHOLD_MILLI,research_only=True)
         if 'fit_hook' in self.config:
             receipt = self.hook('fit_hook', request, directory / 'fit-hook')
             if receipt.get('status') != 'fit-complete' or receipt.get('model_sha256') != file_hash(research):
@@ -381,7 +381,7 @@ class Campaign:
                                       collector_contract=spatial.CONTRACT_ID))
         fitted = read(research)
         provenance = fitted.get('provenance', {})
-        if (fitted.get('candidate_contract') != data.CONTRACT
+        if (not data.compatible_contract(fitted.get('candidate_contract'))
                 or provenance.get('expected_families') != self.config['expected_families']
                 or {m['path']: m['sha256'] for m in provenance.get('manifests', [])} != request['manifests']
                 or provenance.get('split', {}).get('registry', {}).get('sha256') != file_hash(registry)):

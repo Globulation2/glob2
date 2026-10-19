@@ -12,8 +12,10 @@ from tools.resource_gradient_dataset import registered_split,balanced_weights as
 HEADS=integer.HEADS
 
 def validate(model):
- if model.get('schema')!=4 or model.get('contract')!=d.CONTRACT or tuple(model.get('features',()))!=d.FEATURES or tuple(model.get('transforms',()))!=d.TRANSFORMS or type(model.get('trained'))is not bool or model.get('threshold')!=128000:raise ValueError('Expected exact unified deployment contract')
- temporary=dict(model,schema=2,research_only=True);integer.validate_heads(temporary,research=True,expected_threshold=128000)
+ if model.get('schema')!=4 or not d.compatible_contract(model.get('contract')) or tuple(model.get('features',()))!=d.FEATURES or tuple(model.get('transforms',()))!=d.TRANSFORMS or type(model.get('trained'))is not bool:raise ValueError('Expected exact unified deployment contract')
+ threshold=d.threshold_milli(model.get('threshold'))
+ if 'deployment' in model and model['deployment'].get('threshold_milli')!=threshold:raise ValueError('Deployment threshold metadata disagrees with model')
+ temporary=dict(model,schema=2,research_only=True);integer.validate_heads(temporary,research=True,expected_threshold=threshold)
  if not model['trained'] and any(model[name]['bias'] or any(model[name]['coef']) for name in HEADS):raise ValueError('Untrained bootstrap cannot contain fitted resource coefficients')
 
 def predict(model,base,counts):
@@ -74,6 +76,7 @@ def require_family_support(rows,minimum,expected):
 
 def fit(a):
  from tools import adaptive_gradient_spatial as spatial
+ threshold=d.threshold_milli(getattr(a,'threshold_milli',d.DEFAULT_THRESHOLD_MILLI))
  expected=expected_family_scope(a.expected_families)
  allrows=spatial.load(a.manifest) if a.collector_contract==spatial.CONTRACT_ID else d.load(a.manifest);rows=d.eligible(allrows)
  registry=Path(a.split_registry)
@@ -91,18 +94,29 @@ def fit(a):
  require(dev,3);require(test,1);cv=[]
  for fold in range(3):
   training=[r for r in dev if folds[r['group']]!=fold];validation=[r for r in dev if folds[r['group']]==fold];require(training,2);require(validation,1)
-  model=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=128000);prior=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=128000);cv.append(dict(overall=integer.metrics(validation,model,weighting=d.balanced_weights),slices=slices(validation,model),prior_weight_fit_same_features=integer.metrics(validation,prior,weighting=d.balanced_weights)))
- model=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=128000);prior=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=128000);model['candidate_contract']=d.CONTRACT;model['provenance']=dict(expected_families=list(expected),not_required_families=[family for family in d.FAMILIES if family not in expected],unmeasured_families=[family for family,value in d.coverage(rows).items() if not value['episodes']],campaign_scope='Declared family coverage requirements; all observed eligible rows retained. Missing families remain unmeasured, never imputed.',collector_contract=a.collector_contract,manifests=[dict(path=str(p),sha256=d.file_hash(p)) for p in a.manifest],split=split,coverage=d.coverage(rows),age_demand_support=age_demand_support(rows),adaptive_policy=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,threshold=128000),unknown_or_planning_rows_excluded=len(allrows)-len(rows),development_maps=sorted({r['group'] for r in dev}),heldout_maps=sorted(held),cross_validation=cv,holdout=integer.metrics(test,model,weighting=d.balanced_weights),holdout_slices=slices(test,model),holdout_separate_outcomes=outcome_metrics(test),weighting_comparison=dict(same_features_and_rows_and_splits=True,new_weight_fit_new_score=integer.metrics(test,model,weighting=d.balanced_weights),new_weight_fit_prior_score=integer.metrics(test,model,weighting=prior_weights),prior_weight_fit_new_score=integer.metrics(test,prior,weighting=d.balanced_weights),prior_weight_fit_prior_score=integer.metrics(test,prior,weighting=prior_weights),prior_weight_model=prior),weighting='equal format/role/cohort/map/family/collection/episode',threshold=128000,note='Research only. Explicit emission and prospective per-family/total-compute validation required.')
+  model=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=threshold);prior=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=threshold);cv.append(dict(overall=integer.metrics(validation,model,weighting=d.balanced_weights),slices=slices(validation,model),prior_weight_fit_same_features=integer.metrics(validation,prior,weighting=d.balanced_weights)))
+ model=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=threshold);prior=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=threshold);model['candidate_contract']=d.CONTRACT;model['provenance']=dict(expected_families=list(expected),not_required_families=[family for family in d.FAMILIES if family not in expected],unmeasured_families=[family for family,value in d.coverage(rows).items() if not value['episodes']],campaign_scope='Declared family coverage requirements; all observed eligible rows retained. Missing families remain unmeasured, never imputed.',collector_contract=a.collector_contract,source_contract_sha256=sorted({r['source_contract_sha256'] for r in allrows}),collection_thresholds_milli=sorted({r['collection_threshold_milli'] for r in allrows if r['collection_threshold_milli'] is not None}),manifests=[dict(path=str(p),sha256=d.file_hash(p)) for p in a.manifest],split=split,coverage=d.coverage(rows),age_demand_support=age_demand_support(rows),adaptive_policy=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,threshold=threshold),unknown_or_planning_rows_excluded=len(allrows)-len(rows),development_maps=sorted({r['group'] for r in dev}),heldout_maps=sorted(held),cross_validation=cv,holdout=integer.metrics(test,model,weighting=d.balanced_weights),holdout_slices=slices(test,model),holdout_separate_outcomes=outcome_metrics(test),weighting_comparison=dict(same_features_and_rows_and_splits=True,new_weight_fit_new_score=integer.metrics(test,model,weighting=d.balanced_weights),new_weight_fit_prior_score=integer.metrics(test,model,weighting=prior_weights),prior_weight_fit_new_score=integer.metrics(test,prior,weighting=d.balanced_weights),prior_weight_fit_prior_score=integer.metrics(test,prior,weighting=prior_weights),prior_weight_model=prior),weighting='equal format/role/cohort/map/family/collection/episode',threshold=threshold,note='Research only. Explicit emission and prospective per-family/total-compute validation required.')
  integer.save(a.output,model)
 
 def emit(a):
  model=json.loads(Path(a.model).read_text())
- if a.contract!=d.CONTRACT_ID or model.get('candidate_contract')!=d.CONTRACT or model.get('schema')!=2 or not model.get('research_only'):raise ValueError('Explicit new unified research contract required')
- model=copy.deepcopy(model);model.update(schema=4,contract=d.CONTRACT,trained=True,prospective_validation_required=True);model.pop('research_only',None);validate(model)
+ if a.contract!=d.CONTRACT_ID or not d.compatible_contract(model.get('candidate_contract')) or model.get('schema')!=2 or not model.get('research_only'):raise ValueError('Explicit new unified research contract required')
+ source_threshold=d.threshold_milli(model.get('threshold'))
+ integer.validate_heads(model,research=True,expected_threshold=source_threshold)
+ model=copy.deepcopy(model)
+ # Threshold changes affect decisions/metrics, never the already fitted heads.
+ # Preserve original fit metrics and provenance under their original threshold.
+ threshold=d.threshold_milli(getattr(a,'threshold_milli',d.DEFAULT_THRESHOLD_MILLI))
+ model.update(schema=4,contract=d.CONTRACT,threshold=threshold,trained=True,prospective_validation_required=True,
+              deployment=dict(threshold_milli=threshold,source_fit_threshold_milli=source_threshold,
+                              source_model_sha256=d.file_hash(a.model),source_candidate_contract_sha256=d.canonical_hash(model['candidate_contract']),
+                              source_fit_metrics_threshold_milli=source_threshold,
+                              fit_metrics_recomputed=False,coefficients_refit=False))
+ model.pop('research_only',None);validate(model)
  from tools.adaptive_gradient_codegen import render
  header=render(model);integer.save(a.output,model);Path(a.header).write_text(header)
 
 def main():
- p=argparse.ArgumentParser();s=p.add_subparsers(dest='action',required=True);f=s.add_parser('fit');f.add_argument('--manifest',action='append',required=True);f.add_argument('--split-registry',required=True);f.add_argument('--output',required=True);f.add_argument('--expected-families',default=','.join(d.FAMILIES),help='Comma-separated required campaign families (default: all); does not filter observed rows');f.add_argument('--collector-contract',choices=['unified-gradient-h128-v2','unified-gradient-spatial-h128-v3'],default='unified-gradient-spatial-h128-v3');f.set_defaults(run=fit)
- e=s.add_parser('emit');e.add_argument('--model',required=True);e.add_argument('--contract',choices=[d.CONTRACT_ID],required=True);e.add_argument('--output',required=True);e.add_argument('--header',required=True);e.set_defaults(run=emit);a=p.parse_args();a.run(a)
+ p=argparse.ArgumentParser();s=p.add_subparsers(dest='action',required=True);f=s.add_parser('fit');f.add_argument('--manifest',action='append',required=True);f.add_argument('--split-registry',required=True);f.add_argument('--output',required=True);f.add_argument('--expected-families',default=','.join(d.FAMILIES),help='Comma-separated required campaign families (default: all); does not filter observed rows');f.add_argument('--collector-contract',choices=['unified-gradient-h128-v2','unified-gradient-spatial-h128-v3'],default='unified-gradient-spatial-h128-v3');f.add_argument('--threshold-milli',type=d.threshold_milli,default=d.DEFAULT_THRESHOLD_MILLI);f.set_defaults(run=fit)
+ e=s.add_parser('emit');e.add_argument('--model',required=True);e.add_argument('--contract',choices=[d.CONTRACT_ID],required=True);e.add_argument('--output',required=True);e.add_argument('--header',required=True);e.add_argument('--threshold-milli',type=d.threshold_milli,default=d.DEFAULT_THRESHOLD_MILLI);e.set_defaults(run=emit);a=p.parse_args();a.run(a)
 if __name__=='__main__':main()

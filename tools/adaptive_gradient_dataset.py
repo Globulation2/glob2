@@ -14,12 +14,56 @@ MOVEMENT_REACHABILITY=('defer_false_unreachable','refresh_false_unreachable','de
 CONTRACT_ID='unified-gradient-h128-v2'
 CONTRACT=dict(id=CONTRACT_ID,features=list(BASE_FEATURES),counters=list(COUNTERS),families=list(FAMILIES),
  capture_metadata=list(CAPTURE_COLUMNS),publication_delay=8,key='family:u8,team:u8,movement:u8,material:u8;255=none',target_semantics='effective-seed-membership-v1',
- label='movement-direction-extra-cost',benefit_unit='direction-cost',request_type='movement',future_offsets=[8,127],horizon_ticks=128,refresh_threshold_milli=128000,
+ label='movement-direction-extra-cost',benefit_unit='direction-cost',request_type='movement',future_offsets=[8,127],horizon_ticks=128,
  invalid_goal='cached-arrival-rejected-by-real-family-destination-predicate',stall='reachable-required-travel-selector-no-move',
  selector='real-family-selector;pre-decision-RNG-copy;forbidden-lexicographic-base-option',
  separate_outcomes=['stalls','invalid_goals','false_unreachable','false_reachable','missed_moves','escape_failures','planning'])
 COUNTER_IDS=(0,4,5)
 UINT64_MAX=(1<<64)-1
+DEFAULT_THRESHOLD_MILLI=16000
+MAX_THRESHOLD_MILLI=(1<<63)-1
+
+def threshold_milli(value):
+ """Positive signed-64-bit deployment behavior, independent of label semantics."""
+ if isinstance(value,str):
+  if not value or not value.isascii() or not value.isdecimal():raise ValueError('Threshold must be a positive integer milli direction-cost value')
+  value=int(value)
+ if type(value)is not int or not 0<value<=MAX_THRESHOLD_MILLI:raise ValueError('Threshold must be a positive signed-64-bit integer')
+ return value
+
+def declared_threshold_milli(value):
+ if type(value)is not int:raise ValueError('Threshold declaration must be an integer')
+ return threshold_milli(value)
+
+def label_contract(contract):
+ """Normalize only the historical misplaced behavior field; change nothing else.
+
+ Old sealed cohorts keep their exact contract/hash. Their threshold describes
+ collection behavior, not the unchanged capture-anchored H128 outcome label.
+ """
+ if not isinstance(contract,dict):raise ValueError('Explicit unified contract required')
+ normalized=dict(contract)
+ if 'refresh_threshold_milli' in normalized:declared_threshold_milli(normalized.pop('refresh_threshold_milli'))
+ return normalized
+
+def compatible_contract(actual,expected=CONTRACT):
+ try:return label_contract(actual)==label_contract(expected)
+ except ValueError:return False
+
+def compatible_contract_hash(value,expected=CONTRACT):
+ """Hash-only receipts permit exactly canonical or the frozen historical128 declaration."""
+ canonical=label_contract(expected)
+ return value in {canonical_hash(canonical),canonical_hash(dict(canonical,refresh_threshold_milli=128000))}
+
+def collection_threshold(metadata):
+ policy=metadata.get('policy',{})
+ direct=policy.get('threshold_milli')
+ nested=policy.get('adaptive',{}).get('threshold_milli')
+ declared=[declared_threshold_milli(v) for v in (direct,nested) if v is not None]
+ if len(set(declared))>1:raise ValueError('Conflicting collection behavior thresholds')
+ if declared:return declared[0]
+ legacy=metadata['contract'].get('refresh_threshold_milli')
+ return declared_threshold_milli(legacy) if legacy is not None else None
 
 def prepare(base,counts):
  if len(base)!=7 or len(counts)!=3 or any(type(v)is not int or v<0 or v>UINT64_MAX for v in [*base,*counts]):raise ValueError('Invalid generic integer inputs')
@@ -30,8 +74,9 @@ def load(manifests,expected_contract=CONTRACT):
  rows=[];seen={};cohorts={}
  for path in manifests:
   records,metadata=manifest_records(path)
-  if not metadata or metadata.get('contract')!=expected_contract:raise ValueError('Unified data requires the exact sealed '+expected_contract['id']+' contract; resource-only pooling is forbidden')
+  if not metadata or not compatible_contract(metadata.get('contract'),expected_contract):raise ValueError('Unified data requires the exact sealed '+expected_contract['id']+' contract; resource-only pooling is forbidden')
   if metadata.get('role') not in ('exploration','candidate'):raise ValueError('Explicit collection role required')
+  behavior_threshold=collection_threshold(metadata)
   declared=canonical_hash(metadata)
   if metadata['id'] in cohorts and cohorts[metadata['id']]!=declared:raise ValueError('Cohort identity changed')
   cohorts[metadata['id']]=declared
@@ -66,7 +111,7 @@ def load(manifests,expected_contract=CONTRACT):
       if k in row and not 0<=row[k]<=row['queries']:raise ValueError('Outcome exceeds movement-query denominator')
      for arm in ('defer','refresh'):
       if row[arm+'_false_unreachable']+row[arm+'_false_reachable']>row['queries']:raise ValueError('Mutually exclusive reachability outcomes exceed movement queries')
-     row.update(family=FAMILIES[family],family_id=family,group=group,format=record['format'],collection='|'.join(identity),cohort=metadata['id'],cohort_role=metadata['role'],generator=spec.get('generator','unknown'),dimensions=f"{spec.get('width','?')}x{spec.get('height','?')}",movement_label_available=int(row['movement_observed']>0),label_contract=canonical_hash(expected_contract),trajectory_status=record.get('trajectory_status','completed'))
+     row.update(family=FAMILIES[family],family_id=family,group=group,format=record['format'],collection='|'.join(identity),cohort=metadata['id'],cohort_role=metadata['role'],generator=spec.get('generator','unknown'),dimensions=f"{spec.get('width','?')}x{spec.get('height','?')}",movement_label_available=int(row['movement_observed']>0),label_contract=canonical_hash(label_contract(expected_contract)),source_contract_sha256=canonical_hash(metadata['contract']),collection_threshold_milli=behavior_threshold,trajectory_status=record.get('trajectory_status','completed'))
      rows.append(row)
  if not rows:raise ValueError('No complete generic episodes')
  return rows

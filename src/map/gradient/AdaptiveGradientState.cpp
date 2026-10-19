@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AdaptiveGradientState.h"
+#include "AdaptiveGradientModel.h"
 #include <Stream.h>
 #include <stdexcept>
+
+const std::int64_t AdaptiveGradientState::Threshold=AdaptiveGradientModel::ThresholdMilli;
 
 namespace {
 void write64(GAGCore::OutputStream* s,std::uint64_t value,const char* name) {

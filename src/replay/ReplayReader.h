@@ -22,10 +22,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 178 unifies demand-driven gradient scheduling
-//! and persists stable field identities with capture-aligned policy metadata.
+//! the reader still accepts. Version 179 uses the refitted Adaptive16 policy;
+//! older recorded orders cannot reproduce its gradient and movement decisions.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 178;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 179;
 
 
 /// This class is used for reading replays.

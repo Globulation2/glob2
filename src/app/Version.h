@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 178
+#define VERSION_MINOR 179
+// version 179 uses Adaptive16 with the refitted unified movement model. The
+// saved layout remains version 178; older replays use different movement decisions.
 // version 178 persists unified demand-driven gradient state and capture identities.
 // version 177 refreshes the adaptive movement model; serialized state remains version 176.
 // version 176 combines capture-aligned adaptive movement evidence with lazy building routing.

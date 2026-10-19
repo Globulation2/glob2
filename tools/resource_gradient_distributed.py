@@ -20,6 +20,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from tools.resource_gradient_dataset import FEATURES, canonical_hash, file_hash, seal
+from tools.adaptive_gradient_dataset import compatible_contract
 from tools.resource_gradient_tournament import digest, map_identity
 from tools.resource_gradient_experiments import exploration_seed_for_game
 from tools.tournaments.bundles import inspect_bundle
@@ -65,8 +66,9 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         if not metadata.get('id') or metadata.get('role') not in ('exploration','candidate'):raise ValueError('Explicit cohort id and role required')
         contract=metadata.get('contract',{})
         from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
-        unified=contract==UNIFIED_CONTRACT
-        if unified and any(b.get('build_options',{}).get('adaptive_gradient_contract_sha256')!=canonical_hash(UNIFIED_CONTRACT) for b in bundles):raise ValueError('Supplied bundle does not pin unified collector contract')
+        from tools.adaptive_gradient_dataset import compatible_contract,compatible_contract_hash,collection_threshold
+        unified=compatible_contract(contract,UNIFIED_CONTRACT)
+        if unified and any(not compatible_contract_hash(b.get('build_options',{}).get('adaptive_gradient_contract_sha256'),UNIFIED_CONTRACT) for b in bundles):raise ValueError('Supplied bundle does not pin unified collector contract')
         if not unified and (tuple(contract.get('features',()))!=FEATURES or contract.get('label')!='movement-direction-extra-cost'
             or contract.get('future_offsets')!=[8,31] or contract.get('benefit_unit')!='direction-cost'
             or contract.get('request_type')!='movement'):
@@ -80,6 +82,18 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
             for supplied in bundles:
                 if supplied.get('build_options',{}).get('contradiction_contract_sha256') != canonical_hash(CONTRADICTION_CONTRACT):
                     raise ValueError('Supplied bundle does not pin the contradiction contract')
+        from tools.adaptive_gradient_dataset import declared_threshold_milli
+        actual_threshold=collection_threshold(metadata)
+        if unified and actual_threshold is None:raise ValueError('Explicit unified collection threshold required')
+        for supplied in bundles:
+            options=supplied.get('build_options',{})
+            # Historical bundles predate this attestation. Keep them usable for
+            # comparisons, but never allow explicit model metadata to contradict
+            # the cohort's claimed behavior, even through the low-level API.
+            if 'refresh_threshold_milli' not in options:continue
+            attested=declared_threshold_milli(options['refresh_threshold_milli'])
+            if actual_threshold is None:raise ValueError('Explicit collection threshold required for attested bundle')
+            if attested!=actual_threshold:raise ValueError('Bundle refresh threshold differs from collection behavior')
         policy=metadata['policy'];intervals=policy.get('intervals',[])
         if 'model_sha256' not in policy or 'header_sha256' not in metadata:
             raise ValueError('Cohort must pin explicit model_sha256 and header_sha256')
@@ -200,9 +214,11 @@ def export(directory, output, allow_partial=False):
             artifacts[name]=dict(path=str(target.resolve()),sha256=file_hash(target),decoded_sha256=decoded.hexdigest(),decoded_bytes=decoded_bytes,transport=info)
         episode=artifacts['gradient-episodes.csv']
         from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
-        if metadata['contract']==UNIFIED_CONTRACT:
+        if compatible_contract(metadata['contract'],UNIFIED_CONTRACT):
             policy_result=record.get('result',{}).get('adaptive_gradient_policy',{})
             if policy_result.get('collector_contract')!='unified-gradient-spatial-h128-v3':raise ValueError('Runtime did not attest the spatial collector contract')
+            from tools.adaptive_gradient_dataset import collection_threshold,declared_threshold_milli
+            if 'threshold_milli_direction_cost' in policy_result and declared_threshold_milli(policy_result['threshold_milli_direction_cost'])!=collection_threshold(metadata):raise ValueError('Runtime threshold differs from sealed collection behavior')
             from tools.tournaments.jobs import resource_gradient_collection_outputs
             for name,required in resource_gradient_collection_outputs(record['job']['config']['resource_gradient_collection']).items():
                 if name not in artifacts:raise ValueError('Missing unified output: '+name)

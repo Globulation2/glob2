@@ -15,6 +15,7 @@ inline constexpr unsigned BaseFeatureCount=7;
 using BaseFeatures=std::array<I,BaseFeatureCount>;
 inline constexpr char ContractId[]="unified-gradient-h128-v2";
 inline constexpr bool Trained=true;
+inline constexpr I ThresholdMilli=16000;
 inline constexpr unsigned CounterCount=3;
 inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={0,4,5};
 inline constexpr unsigned RequiredMovementMask=49;
@@ -57,23 +58,23 @@ inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& c
     return {base[0],base[1],base[2],base[3],base[4],base[5],base[6],bounded(counts[0]),bounded(counts[1]),bounded(counts[2]),fraction(counts[0],counts[2]),fraction(counts[1],counts[2])};
 }
 inline I positive_probability(const std::array<I,12>& x) {
-    constexpr I c[]={-27605280,-43616143,45831552,11408438,7797487,275711,13297384,31189962,36343340,25386283,-141786848,-58456105};
-    I z=-926651327148LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={-25035335,-42403258,47186236,12639068,5171037,114915,13587799,80857178,44637303,22099574,-174770780,-71097023};
+    I z=-965584512365LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_probability(const std::array<I,12>& x) {
-    constexpr I c[]={-13163994,-39541544,61037722,-10668917,22579912,11461719,27162,93104323,25775495,13008,-274306075,-49080497};
-    I z=-1399625324974LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={-13284485,-39194060,58161506,-10431412,20782254,11614563,336397,46013623,24029189,1249750,-202041674,-17603392};
+    I z=-1345544961438LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I positive_mean(const std::array<I,12>& x) {
-    constexpr I c[]={-483484833,1318210709,169060990,-5504768,-238281439,251278625,267947687,-1408927181,2420159614,444415694,-1087120530,-10942535079};
-    I z=-734064630440LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={-451337735,1372130526,229939773,14854684,-363137507,238787612,281494439,-1553380066,2078913731,533404144,287865635,-10944674991};
+    I z=-3279988313584LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_mean(const std::array<I,12>& x) {
-    constexpr I c[]={-124759970,395831162,127422794,-75318476,-64922881,180365122,45390159,-390297920,257731144,61301223,301181027,-1066710589};
-    I z=1429060659118LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={-157191031,409007452,89845230,-47227415,-70264672,145031978,48289262,-602557799,457327617,73301398,480776760,-369948702};
+    I z=2933188921683LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline int predict(const BaseFeatures& base,const MovementCounts& counts) {

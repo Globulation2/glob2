@@ -28,15 +28,41 @@ complete the 12 inputs. Rates use uncapped 64-bit counts before bounded count/lo
 transforms. Family, material, map-generator and AI identities are diagnostic
 metadata, never model inputs.
 
-The target semantics and decision threshold version independently of feature
+The target semantics and deployment threshold are separate from feature
 names. Models trained on the earlier 32-tick target are incompatible and their
 coefficients are not reused or rescaled. The common integer model predicts
 `P(help)*E(amount|help) - P(hurt)*E(amount|hurt)` using two logistic and two linear
 heads. Integer Q12 log/Q16 sigmoid interpolation, bounded accumulators and portable
-64-bit fraction division make inference deterministic. The threshold is
-128,000 milli direction-cost units. Generated coefficients live in
+64-bit fraction division make inference deterministic. The default deployment threshold is
+16,000 milli direction-cost units. Generated coefficients live in
 `AdaptiveGradientModel.h`; `tools/models/adaptive-gradient.json` declares the
 matching contract and whether the model is trained.
+
+`fit`, `emit` and the spatial research comparison accept `--threshold-milli`
+(default `16000`), a positive signed 64-bit integer. The generated
+`AdaptiveGradientModel::ThresholdMilli` is the engine's threshold authority.
+Changing it does not rescale predictions or refit the four heads. Emitting an
+existing research fit at a different threshold preserves its original metrics
+and provenance, records their original evaluation threshold in `deployment`, and
+requires separate prospective validation. Re-evaluate metrics at the selected
+threshold rather than presenting the old fit report as a new threshold result.
+
+H128 label semantics remain offsets 8 through 127 regardless of collection
+policy. Historical H128v2/spatial-v3 cohort declarations included
+`refresh_threshold_milli`; loaders validate and remove only that behavior field
+when comparing label contracts. All other fields must match exactly. Original
+sealed contracts and hashes remain untouched; rows retain their source contract
+hash and actual collection threshold. Explicit `policy.threshold_milli` is
+authoritative, with the old declaration used only when policy metadata lacks it.
+Conflicting explicit policy declarations are rejected. New label contracts omit
+the threshold; old 128000 deployment models remain valid for comparisons.
+New supplied bundles must explicitly attest `build_options.refresh_threshold_milli`
+as a positive signed 64-bit integer. Every pool must agree, and preparation
+records that attested value as actual collection policy. Missing or contradictory
+attestations fail rather than assuming a default. Frozen historical exports remain
+readable and their bytes are not amended.
+Hash-only qualification receipts accept only the canonical declaration or the
+explicitly reconstructed historical 128000 declaration.
 
 An untrained header is an explicit placeholder, not a mapped resource-only model.
 Ordinary execution retains cold/reactive/history initialization without a forced
@@ -166,10 +192,12 @@ Fit the unchanged generic 12-input model and explicitly emit a research candidat
 python3 tools/adaptive_gradient_model.py fit \
   --manifest artifacts/exploration.cohort.json \
   --collector-contract unified-gradient-spatial-h128-v3 \
-  --split-registry artifacts/map-splits.json --output artifacts/research.json
+  --split-registry artifacts/map-splits.json --threshold-milli 16000 \
+  --output artifacts/research.json
 python3 tools/adaptive_gradient_model.py emit \
   --model artifacts/research.json --contract unified-gradient-h128-v2 \
-  --output artifacts/candidate.json --header artifacts/AdaptiveGradientModel.h
+  --threshold-milli 16000 --output artifacts/candidate.json \
+  --header artifacts/AdaptiveGradientModel.h
 ```
 
 The new loader rejects resource-only datasets. Older tools/data remain available
@@ -391,7 +419,7 @@ weights and persistent map splits. Variants compare the baseline 12 inputs with
 overlap counts, fractions, their combination and directional diagnostics.
 Development-fold regret selects a research variant; held-out comparisons remain
 exploratory. Reports include separate family/scenario slices, calibration around
-the 128-unit threshold and benefit captured at equal weighted episode-selection
+the configured deployment threshold and benefit captured at equal weighted episode-selection
 shares. Those shares are offline ranking diagnostics, not measured simulation
 refresh rates or CPU savings. Stalls, planning and escape outcomes remain separate
 from direction-cost labels. Missing resource/clear fold coverage blocks the fit;

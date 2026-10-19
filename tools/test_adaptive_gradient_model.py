@@ -43,12 +43,42 @@ class UnifiedDatasetTests(unittest.TestCase):
   weights=d.balanced_weights(rows);total=sum(weights)
   for family,expected in [('materials',.25),('forbidden',.25),('guard',.5)]:self.assertAlmostEqual(sum(w for w,r in zip(weights,rows) if r['family']==family)/total,expected)
  def test_horizon_and_threshold_semantics_reject_old_thirty_two_target(self):
-  self.assertEqual(d.CONTRACT['future_offsets'],[8,127]);self.assertEqual(d.CONTRACT['horizon_ticks'],128);self.assertEqual(d.CONTRACT['refresh_threshold_milli'],128000)
+  self.assertEqual(d.CONTRACT['future_offsets'],[8,127]);self.assertEqual(d.CONTRACT['horizon_ticks'],128);self.assertNotIn('refresh_threshold_milli',d.CONTRACT)
   with tempfile.TemporaryDirectory() as tmp:
    p=self.fixture(pathlib.Path(tmp));document=json.loads(p.read_text());document['cohort']['contract']['future_offsets']=[8,31];document['content_sha256']=d.canonical_hash(dict(cohort=document['cohort'],records=document['records']));p.write_text(json.dumps(document))
    with self.assertRaises(ValueError):d.load([p])
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['threshold']=32000
-  with self.assertRaises(ValueError):validate(model)
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['threshold']=16000;validate(model)
+  for value in (0,-1,True,1.5,1<<63):
+   model['threshold']=value
+   with self.assertRaises(ValueError):validate(model)
+ def test_threshold_only_legacy_contract_compatibility_preserves_provenance(self):
+  from tools import adaptive_gradient_spatial as spatial
+  for expected in (d.CONTRACT,spatial.CONTRACT):
+   for threshold in (16000,128000):
+    legacy=dict(expected,refresh_threshold_milli=threshold)
+    self.assertTrue(d.compatible_contract(legacy,expected));self.assertNotEqual(d.canonical_hash(legacy),d.canonical_hash(expected))
+   changed=dict(expected,future_offsets=[8,31]);self.assertFalse(d.compatible_contract(changed,expected))
+   self.assertFalse(d.compatible_contract(dict(expected,refresh_threshold_milli=0),expected));self.assertFalse(d.compatible_contract(dict(expected,refresh_threshold_milli='16000'),expected))
+   self.assertTrue(d.compatible_contract_hash(d.canonical_hash(dict(expected,refresh_threshold_milli=128000)),expected))
+   self.assertFalse(d.compatible_contract_hash(d.canonical_hash(dict(expected,refresh_threshold_milli=16000)),expected))
+  with tempfile.TemporaryDirectory() as tmp:
+   p=self.fixture(pathlib.Path(tmp));doc=json.loads(p.read_text());doc['cohort']['contract']['refresh_threshold_milli']=128000;doc['cohort']['policy']['threshold_milli']=16000
+   original=d.canonical_hash(doc['cohort']['contract']);doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc));row=d.load([p])[0]
+   self.assertEqual(row['collection_threshold_milli'],16000);self.assertEqual(row['source_contract_sha256'],original);self.assertEqual(row['label_contract'],d.canonical_hash(d.CONTRACT));self.assertEqual(json.loads(p.read_text())['cohort']['contract']['refresh_threshold_milli'],128000)
+   doc['cohort']['policy']['adaptive']={'threshold_milli':128000};doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc))
+   with self.assertRaisesRegex(ValueError,'Conflicting'):d.load([p])
+ def test_emit_threshold_override_keeps_heads_predictions_and_source_metrics(self):
+  from types import SimpleNamespace
+  from tools.adaptive_gradient_model import emit
+  from tools.adaptive_gradient_codegen import render
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model.update(schema=2,research_only=True,threshold=128000,candidate_contract=dict(d.CONTRACT,refresh_threshold_milli=128000));model['provenance']={'threshold':128000,'holdout':{'threshold':128}}
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);source=root/'research.json';source.write_text(json.dumps(model));before=file_hash(source);a=SimpleNamespace(model=str(source),contract=d.CONTRACT_ID,output=str(root/'emitted.json'),header=str(root/'model.h'),threshold_milli=16000);emit(a);new=json.loads(pathlib.Path(a.output).read_text());validate(new)
+   self.assertEqual(new['threshold'],16000);self.assertEqual(new['deployment']['source_fit_metrics_threshold_milli'],128000);self.assertFalse(new['deployment']['coefficients_refit']);self.assertEqual(new['provenance'],model['provenance']);self.assertEqual(file_hash(source),before)
+   for name in ('positive_probability','negative_probability','positive_mean','negative_mean'):self.assertEqual(new[name],model[name])
+   old=dict(new,threshold=128000,deployment=dict(new['deployment'],threshold_milli=128000));self.assertEqual(predict(new,[32,1,2,3,4,5,6],[1,1,2]),predict(old,[32,1,2,3,4,5,6],[1,1,2]));self.assertIn('ThresholdMilli=16000',pathlib.Path(a.header).read_text());self.assertIn('ThresholdMilli=128000',render(old))
+   wrong=copy.deepcopy(new);wrong['deployment']['threshold_milli']=128000
+   with self.assertRaisesRegex(ValueError,'Deployment threshold'):validate(wrong)
  def test_uncapped_model_support_reports_older_demand_without_forcing_refresh(self):
   report=age_demand_support([dict(family='materials',group='map',age=4096,q128=32)])
   self.assertEqual(report['materials']['high_demand_age4096plus'],1);self.assertEqual(report['clear']['episodes'],0)
@@ -103,7 +133,7 @@ class UnifiedTournamentTests(unittest.TestCase):
   from tools.adaptive_gradient_tournament import plan,ADAPTIVE_POLICY
   from tools.test_resource_gradient_tournament import catalog
   from collections import Counter
-  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8);self.assertIsNone(ADAPTIVE_POLICY['forced_age_cap']);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],128000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
+  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8);self.assertIsNone(ADAPTIVE_POLICY['forced_age_cap']);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
   a=plan(catalog(),181101);self.assertEqual(a,plan(catalog(),181101));slots=a['unified']['slots']
   self.assertEqual(len(slots),256);self.assertEqual(Counter(r['role'] for r in slots),{'exploration':128,'candidate':128})
   for role in ['exploration','candidate']:self.assertEqual(set(Counter(r['spec']['format'] for r in slots if r['role']==role).values()),{16})

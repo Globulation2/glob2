@@ -61,7 +61,9 @@ def variants():
 def extra_metrics(rows,model,comparable_rates):
  import numpy as np
  w=base.balanced_weights(rows);pred=np.array([integer.predict(model,[r[k] for k in model['features']])/1000 for r in rows]);y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows]);total=float(np.sum(w*np.maximum(y,0)));calibration=[]
- for low,high in ((0,64),(64,96),(96,112),(112,128),(128,144),(144,160),(160,192),(192,256),(256,float('inf'))):
+ threshold=model['threshold']/1000
+ edges=[threshold*x for x in (0,.5,.75,.875,1,1.125,1.25,1.5,2)]+[float('inf')]
+ for low,high in zip(edges,edges[1:]):
   mask=(pred>=low)&(pred<high);calibration.append(dict(predicted_range=[low,high if high!=float('inf') else None],episodes=int(mask.sum()),weight=float(w[mask].sum()),predicted_mean=float(np.average(pred[mask],weights=w[mask])) if mask.any() else None,observed_mean=float(np.average(y[mask],weights=w[mask])) if mask.any() else None))
  # Weighted top-score ranks; exact tied scores are fractionally selected together,
  # yielding the requested refresh share without outcome-based tie breaking.
@@ -76,6 +78,7 @@ def extra_metrics(rows,model,comparable_rates):
  return dict(near_threshold_calibration=calibration,comparable_selection_rates=curves)
 
 def compare(a):
+ threshold=base.threshold_milli(getattr(a,'threshold_milli',base.DEFAULT_THRESHOLD_MILLI))
  rows=load(a.manifest);chosen=eligible(rows)
  if not chosen:raise ValueError('No validated known resource/clear ground spatial episodes')
  registry=Path(a.split_registry)
@@ -96,8 +99,8 @@ def compare(a):
   for fold in range(3):
    train=[r for r in dev if folds[r['group']]!=fold];validation=[r for r in dev if folds[r['group']]==fold]
    require(train);require(validation)
-   model=integer.fit_heads(train,features,transforms,weighting=base.balanced_weights,threshold=128000);cv.append(integer.metrics(validation,model,weighting=base.balanced_weights))
-  model=integer.fit_heads(dev,features,transforms,weighting=base.balanced_weights,threshold=128000);slices={}
+   model=integer.fit_heads(train,features,transforms,weighting=base.balanced_weights,threshold=threshold);cv.append(integer.metrics(validation,model,weighting=base.balanced_weights))
+  model=integer.fit_heads(dev,features,transforms,weighting=base.balanced_weights,threshold=threshold);slices={}
   for key in ('family','format','generator','dimensions','movement'):
    groups=collections.defaultdict(list)
    for r in test:groups[str(r.get(key,'unknown'))].append(r)
@@ -109,4 +112,4 @@ def compare(a):
  integer.save(a.output,report)
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--manifest',action='append',required=True);p.add_argument('--split-registry',required=True);p.add_argument('--output',required=True);compare(p.parse_args())
+ p=argparse.ArgumentParser();p.add_argument('--manifest',action='append',required=True);p.add_argument('--split-registry',required=True);p.add_argument('--output',required=True);p.add_argument('--threshold-milli',type=base.threshold_milli,default=base.DEFAULT_THRESHOLD_MILLI);compare(p.parse_args())

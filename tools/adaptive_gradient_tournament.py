@@ -16,7 +16,25 @@ from tools.tournaments.common import store_artifact
 from tools.tournaments.bundles import inspect_bundle
 from tools.tournaments.common import atomic_json
 
-ADAPTIVE_POLICY=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=128000,horizon_ticks=128)
+ADAPTIVE_POLICY=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=d.DEFAULT_THRESHOLD_MILLI,horizon_ticks=128)
+
+def policy_from_bundles(bundles):
+ """Use the actual compiled model's qualified behavior, not a stale tool default.
+
+ The collector contract describes H128 labels independently of the admission
+ threshold. Future bundles must attest their model/deployment threshold; an old
+ bundle without that attestation must be repackaged and qualified explicitly.
+ This leaves already-frozen campaigns and their original metadata untouched.
+ """
+ thresholds=[]
+ for bundle in bundles:
+  value=bundle.get('build_options',{}).get('refresh_threshold_milli')
+  if type(value)is not int:
+   raise ValueError('Every supplied bundle must attest integer refresh_threshold_milli')
+  thresholds.append(d.threshold_milli(value))
+ if not thresholds or len(set(thresholds))!=1:
+  raise ValueError('Supplied bundle model refresh thresholds must agree')
+ return dict(ADAPTIVE_POLICY,threshold_milli=thresholds[0])
 
 ROUTING = {
  'remote-only': dict(small=32,middle=224,large=0,description='Pharaoh small32; Rig/dev all remaining224; Mac paused'),
@@ -134,7 +152,7 @@ def prepare(a):
  if len(modelhash)!=1 or len(headerhash)!=1 or None in modelhash|headerhash:raise ValueError('Pin common actual model/header in all bundles')
  if a.role=='candidate' and a.intervals:raise ValueError('Candidate role cannot silently use a fixed exploration override')
  intervals=(a.intervals or '8,16,32,64,128,256,512,1024,4096') if a.role=='exploration' else ''
- policy=dict(**ADAPTIVE_POLICY,name='all-family-fixed-interval-bootstrap' if a.role=='exploration' else 'unified-adaptive128',model_sha256=next(iter(modelhash)),seed=a.seed,intervals=[int(x) for x in intervals.split(',')] if intervals else [])
+ policy=dict(**policy_from_bundles(supplied),name='all-family-fixed-interval-bootstrap' if a.role=='exploration' else 'unified-adaptive',model_sha256=next(iter(modelhash)),seed=a.seed,intervals=[int(x) for x in intervals.split(',')] if intervals else [])
  if a.role=='exploration' and (not policy['intervals'] or 0 in policy['intervals']):raise ValueError('Bootstrap requires explicit nonzero all-family intervals; no legacy adaptive0 fallback')
  if a.role=='candidate':
   for b in supplied:

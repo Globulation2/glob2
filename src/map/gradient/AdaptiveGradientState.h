@@ -21,7 +21,9 @@ struct AdaptiveGradientState
     using Counts=AdaptiveGradientFeatures::Counts;
     using Inputs=AdaptiveGradientFeatures::Base;
     static constexpr unsigned MinimumInterval=8, QueryHistoryTicks=128;
-    static constexpr std::int64_t Threshold=128000;
+    // The generated deployment model owns its benefit cutoff. Define this in
+    // the implementation so coefficient updates do not widen header rebuilds.
+    static const std::int64_t Threshold;
     struct Targets {
         std::uint64_t added=0,removed=0,routeEpoch=0,seedCostEpoch=0;
         auto operator<=>(const Targets&) const = default;
