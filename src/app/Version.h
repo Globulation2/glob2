@@ -7,8 +7,32 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 168
-// version 168 admits four building gradients per team per tick and widens pending counts.
+#define VERSION_MINOR 186
+// version 186 admits four building gradients per team per tick and widens pending counts.
+// version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
+// Existing saves retain their masks and committed jobs; counts rebuild on load.
+// version 184 deploys Adaptive24 with a 32-tick minimum refresh interval.
+// The saved layout remains version 178; existing committed jobs keep their deadlines.
+// version 183 selects per-family Adaptive16 models with a combined fallback and
+// demanded capture-age 1024 safety refresh. The saved layout remains version 178.
+// version 182 refits the validated twelve-input Adaptive16 model. The saved layout
+// remains version 178; earlier replay execution has different coefficients.
+// version 181 tested a seven-input Adaptive16 model. The saved layout
+// remains version 178; older replay execution uses different coefficients.
+// version 180 refits Adaptive16 on cumulative unified training data. The
+// saved layout remains version 178; replay execution uses the new coefficients.
+// version 179 uses Adaptive16 with the refitted unified movement model. The
+// saved layout remains version 178; older replays use different movement decisions.
+// version 178 persists unified demand-driven gradient state and capture identities.
+// version 177 refreshes the adaptive movement model; serialized state remains version 176.
+// version 176 combines capture-aligned adaptive movement evidence with lazy building routing.
+// version 175 integrates lazy initial building fields with ground/air routing.
+// version 173 integrates delayed ground guidance with the air routing layout.
+// version 172 combines air routing with tagged snapshot checksum metadata.
+// version 171 appends one shared air routing class and preserves released save layouts.
+// Version 169 is released delayed ground guidance; draft format 170 is rejected.
+
+// version 168 uses delayed snapshot checksums and tagged order checksum metadata.
 // version 167 uses one completed observation per owner boundary and saves boundary phase markers.
 // version 166 saves append-ordered entity populations and the live task cursor.
 // version 165 changes routine checksum coverage/mixing, not save encodings.
@@ -207,7 +231,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 71
+#define NET_PROTOCOL_VERSION 72
+// Protocol 72 adds explicit presence and source ticks to order checksum envelopes.
 // Protocol 71 applies private-stock and cached-performance caps (format 160).
 // Protocol 70 transfers complete delayed measurement frames (format 158).
 // Protocol 68 transfers area-effect funding and fractional services.

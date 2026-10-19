@@ -5,6 +5,9 @@
 
 #include <memory>
 #include "ReplayTelemetry.h"
+#include "ChecksumSample.h"
+#include <map>
+#include <deque>
 #include <assert.h>
 #include <string>
 #include "Types.h"
@@ -19,16 +22,17 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 168 changes building gradient admission
-//! from four per map to four per team, changing simulation trajectories.
+//! the reader still accepts. Version 186 admits four building gradients per team per tick;
+//! older recorded orders cannot reproduce its gradient and movement decisions.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 168;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 186;
+
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
-/// If this replay stores checksums, they are checked every time an order is read.
-/// The replay ends early if both the checksum given to this class by setCheckSum(checksum) != 0
-/// AND the order written in the replay file != 0 AND both don't match.
+/// Source-tagged checksums are validated when their local snapshot results arrive.
+/// Call finishChecksumValidation() after draining terminal results to reject missing
+/// checks. Synchronous harnesses can instead supply hashes with setCheckSum().
 class ReplayReader
 {
 public:
@@ -67,8 +71,12 @@ public:
 	/// Increments the current step number
 	void advanceStep();
 
-	/// Set the checksum. 0 means no testing is done for checksum matches.
+	/// Synchronous harness API. The engine uses source-tagged publishChecksum instead.
+    /// Set the checksum. 0 means no testing is done for checksum matches.
 	void setCheckSum(Uint32 checksum = 0);
+    void enableDeferredChecksums() { deferredChecksums=true; }
+    void publishChecksum(ChecksumSample sample);
+    void finishChecksumValidation();
 
 	/// Get the next order on the current step
 	std::shared_ptr<Order> retrieveOrder();
@@ -77,7 +85,12 @@ public:
 	bool hasTelemetry() const { return telemetry.available(); }
 
   private:
-	ReplayTelemetry::Stream telemetry;
+    bool deferredChecksums = false;
+    std::map<Uint32,Uint32> expectedChecksums, readyChecksums;
+    std::deque<Uint32> readyChecksumOrder;
+    void expectChecksum(ChecksumSample sample);
+    void validateChecksum(Uint32 expected, Uint32 actual);
+    ReplayTelemetry::Stream telemetry;
 	/// You shouldn't copy-construct this class
 	ReplayReader(const ReplayReader &copy) { assert(false); };
 

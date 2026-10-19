@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
+#include "ChecksumSchedule.h"
 #include "TerrainResourceProperties.h"
 #include "TeamStat.h"
 #include <bit>
@@ -17,6 +18,14 @@ Requirements presentationRequirements(CaptureOptions options)
 }
 }
 Handle Handle::simulationView() const { return project(Simulation); }
+Handle Handle::checksumView(bool mapChecksums) const
+{
+    auto mask = bit(Component::Catalogs) | bit(Component::Entities) | bit(Component::Teams) | bit(Component::Terrain);
+    if (mapChecksums && SimulationChecksum::secondaryDue(tick))
+        mask |= bit(Component::Resources) | bit(Component::Occupancy)
+            | bit(Component::Areas);
+    return project(mask);
+}
 Handle Handle::turretView() const
 { return project(bit(Component::Occupancy)|bit(Component::Terrain)|bit(Component::Entities)|bit(Component::Teams)|bit(Component::Catalogs)); }
 

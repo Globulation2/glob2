@@ -16,8 +16,24 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
+namespace {
+// Crowding eligibility changes independently of tile movement when a warrior
+// enters/leaves a building or finishes a capability upgrade. Stack-only and
+// owner-thread; this records a conservative event, not a weighted seed change.
+struct GuardCostEligibility {
+    Unit& unit;
+    bool before;
+    static bool eligible(const Unit& unit) {
+        return !unit.isDead && unit.displacement!=Unit::DIS_INSIDE && unit.hasCapability(UnitRuntimeTraits::GuardIdle);
+    }
+    explicit GuardCostEligibility(Unit& value):unit(value),before(eligible(value)) {}
+    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->gradientGuardCostsChanged(unit.owner->teamNumber);}
+};
+}
+
 void Unit::handleDisplacement(void)
 {
+    const GuardCostEligibility guardCostEligibility(*this);
 	switch (activity)
 	{
 		case ACT_RANDOM:
@@ -217,7 +233,7 @@ void Unit::handleDisplacement(void)
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
-							int bestResource=-1;
+							int bestResource=-1, pendingResource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
 
 							Map* map=owner->map;
@@ -226,8 +242,12 @@ void Unit::handleDisplacement(void)
 								const int need=needs[r];
 								if (need<=0 || (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(r))) continue;
 								int distance;
-								const bool available=performance[FLY]?findMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding):map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
-								if (!available || (distance<<1)>=timeLeft) continue;
+								const auto route=performance[FLY]
+									? queryMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding)
+									: map->queryMaterialDistance(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								if (route==RouteResult::Pending) { if (pendingResource<0) pendingResource=r; continue; }
+								if (route!=RouteResult::Reachable || (distance<<1)>=timeLeft) continue;
+
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
 							}
@@ -235,6 +255,13 @@ void Unit::handleDisplacement(void)
 							if (verbose)
 								printf("guid=(%d) bestResource=%d, minValue=%d\n", gid, bestResource, minValue);
 
+							if (bestResource<0 && pendingResource>=0) {
+								destinationPurpose=pendingResource;
+								setTargetBuilding(nullptr);
+								displacement=DIS_GOING_TO_RESOURCE;
+								setValidTarget(false);
+								break;
+							}
 							if (bestResource>=0)
 							{
 								destinationPurpose=bestResource;
@@ -248,16 +275,14 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										setValidTarget(false);
 									}
-									else if (findMaterialDestination(destinationPurpose,&targetX,&targetY,&dummyDist,attachedBuilding->fetchesFromMarkets(),attachedBuilding))
-									{
-										displacement=DIS_GOING_TO_RESOURCE;
-										setValidTarget(true);
-									}
-									else
-									{
-										assert(false);//You can remove this assert(), but *do* notice me!
-										stopAttachedForBuilding(false);
-									}
+                                    else {
+                                        const auto route=queryMaterialDestination(destinationPurpose,&targetX,&targetY,&dummyDist,attachedBuilding->fetchesFromMarkets(),attachedBuilding);
+                                        if (route==RouteResult::Pending) {
+                                            displacement=DIS_GOING_TO_RESOURCE; setValidTarget(false);
+                                        } else if (route==RouteResult::Reachable) {
+                                            displacement=DIS_GOING_TO_RESOURCE; setValidTarget(true);
+                                        } else stopAttachedForBuilding(false);
+                                    }
 								}
 							}
 							else
@@ -564,6 +589,7 @@ void Unit::applyPartialInsideBenefit()
 
 void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 {
+    const GuardCostEligibility guardCostEligibility(*this);
 	applyPartialInsideBenefit();
 	standardRandomActivity();
 	insideTimeout=0;

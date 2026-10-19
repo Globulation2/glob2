@@ -5,7 +5,6 @@
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "field/TerrainMovementCosts.h"
-#include "field/AirPathfind.h"
 #include <queue>
 #include <tuple>
 
@@ -20,11 +19,18 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//the initial node, a small optimization since we don't need the whole path
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
-	const bool canSwim = swimClass > 0;
 	// Step costs and the heuristic are in gradient units (see MapInternal.h).
-	const int heuristicStep = hasTerrainMovementModifiers() ? minStepCost(swimClass)
-        : (swimClass > 0 ? std::min(GRADIENT_STEP, gradient_kernel::WATER_STEP[swimClass]) : GRADIENT_STEP);
-	const int maximumCost = maximumLength * GRADIENT_STEP;
+    const int heuristicStep=hasMovementCostModifiers(swimClass) ? minStepCost(swimClass)
+        : (gradient_kernel::weightedClass(swimClass) ? std::min(GRADIENT_STEP,gradient_kernel::WATER_STEP[swimClass]) : GRADIENT_STEP);
+    if(maximumLength<0) return false;
+    const int maximumCost=int(std::min<std::int64_t>(GRADIENT_COST_LIMIT,std::int64_t(maximumLength)*GRADIENT_STEP));
+    const bool air=swimClass==AIR_MOVEMENT_CLASS;
+    const auto blockedAirGoal=[&] {
+        const auto i=coordToIndex(targetX,targetY);
+        return !terrainPropertiesAt(i).flyable || resourceBlocksAir(i) || getAirUnit(targetX,targetY)!=NOGUID;
+    };
+    const bool approach=air && blockedAirGoal();
+    AStarAlgorithmPoint reached;
 
 	using Entry = std::tuple<unsigned, int, unsigned>;
 
@@ -36,7 +42,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//These are all the examined points, so that these positions on aStarPoints
 	//Can be reset later. Why not reset or re-allocate the whole thing every
 	//call? Its slow! Use reserve to avoid doing this multiple times
-	aStarExaminedPoints.reserve(maximumLength*2 + 6);
+	aStarExaminedPoints.reserve(std::min(size,std::size_t(maximumCost)*2+6));
 	aStarExaminedPoints.push_back((x << hDec) + y);
 
 	while(!openList.empty())
@@ -49,8 +55,9 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
         if (pos.isClosed || pos.moveCost != queuedCost) continue;
 		pos.isClosed = true;
 
-		if(pos.x == targetX && pos.y == targetY)
+		if((pos.x == targetX && pos.y == targetY) || (approach && warpDistMax(pos.x,pos.y,targetX,targetY)<=1))
 		{
+			reached=pos;
 			break;
 		}
 
@@ -75,9 +82,8 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
-						if((swimClass!=WATER_ONLY_CLASS || terrainPropertiesAt(nx,ny).swimmable) && (isFreeForGroundUnit(nx, ny, canSwim, teamMask) ||
-                            (nx == targetX && ny == targetY &&
-                             gradient_kernel::terrainAllowsGround(terrainPropertiesAt(nx,ny),swimClass))))
+                        if(isFreeForMovement(nx,ny,swimClass,teamMask) ||
+                            (!air && nx==targetX && ny==targetY && gradient_kernel::terrainAllowsGround(terrainPropertiesAt(nx,ny),swimClass)))
 						{
 							//If the parent cell is the starting cell, add in the starting direction
 							if(pos.dx == 0 && pos.dy == 0)
@@ -108,7 +114,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		}
 	}
 
-	AStarAlgorithmPoint final = aStarPoints[(targetX << hDec) + targetY];
+	AStarAlgorithmPoint final = reached;
 
 	//Clear all of the examined points for the next call to this algorithm
 	for(unsigned i=0; i<aStarExaminedPoints.size(); ++i)
@@ -128,17 +134,8 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	return true;
 }
 
-// Air units retain direct steering on uniform maps. This path is only used when
-// terrain changes air access or travel speed; A* then routes around no-fly cells
-// and measures the same destination-entry multiplier as actual movement.
-bool Map::pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy)
+// Compatibility entry point for existing callers. All movement uses the same A*.
+bool Map::pathfindAirPointToPoint(int x,int y,int targetX,int targetY,int* dx,int* dy)
 {
-    PERF_SCOPE_TIME(PathPoint);
-    *dx = *dy = 0;
-    x &= wMask; y &= hMask; targetX &= wMask; targetY &= hMask;
-	const unsigned minimum = terrainMinimumAir;
-	return field::airRoute(
-		w, h, x, y, targetX, targetY, minimum, aStarPoints, aStarExaminedPoints,
-		[&](int px, int py) { return isFreeForAirUnit(px, py); },
-		[&](int px, int py) { return cellRule(coordToIndex(px, py)).airRouteCost; }, dx, dy);
+    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,AIR_MOVEMENT_CLASS,0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
 }

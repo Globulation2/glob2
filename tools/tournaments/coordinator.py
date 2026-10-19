@@ -189,6 +189,27 @@ class Coordinator:
                 inputs[name] = source
         return inputs
 
+    def _pending_jobs(self, batch_size=128):
+        # Finish each read statement before caller code can acquire a write lock.
+        # Keeping a streaming SELECT alive across BEGIN IMMEDIATE pins a WAL
+        # snapshot; another connection's commit then causes SQLITE_BUSY_SNAPSHOT,
+        # which SQLite's busy timeout cannot repair. Keyset batches retain bounded
+        # memory while reaching eligible work beyond an arbitrarily long prefix.
+        ordinal = -1
+        while True:
+            cursor = self.db.execute(
+                "SELECT * FROM jobs WHERE state='pending' AND ordinal>? ORDER BY ordinal LIMIT ?",
+                (ordinal, batch_size))
+            try:
+                rows = cursor.fetchall()
+            finally:
+                cursor.close()
+            if not rows:
+                return
+            for row in rows:
+                ordinal = row['ordinal']
+                yield row
+
     def dispatch(self, host, status, now=None):
         now = time.time() if now is None else now
         self.expire(now)
@@ -222,10 +243,9 @@ class Coordinator:
         buffered_seconds = sum(json.loads(self.db.execute('SELECT spec FROM jobs WHERE id=?',
                                (r['job_id'],)).fetchone()[0])['limits'].get('estimated_seconds',60)
                                for r in computing)
-        # Stream candidates and stop as soon as the host is full. This avoids
-        # materializing every pending job while still reaching eligible work
-        # after an arbitrarily long prefix assigned to another platform.
-        for row in self.db.execute("SELECT * FROM jobs WHERE state='pending' ORDER BY ordinal"):
+        # Bounded, completed SELECTs allow concurrent writers between candidates.
+        # Conditional updates below recheck candidates that another lane leased.
+        for row in self._pending_jobs():
             if len(dispatched) >= room:
                 break
             job = json.loads(row['spec'])
@@ -234,13 +254,13 @@ class Coordinator:
                 continue
             parents = [self.db.execute('SELECT state,accepted FROM jobs WHERE id=?', (dep,)).fetchone() for dep in job['depends_on']]
             if any(parent['state'] in ('failed', 'cancelled', 'blocked') for parent in parents):
-                self.db.execute("UPDATE jobs SET state='blocked' WHERE id=?", (job['id'],))
+                self.db.execute("UPDATE jobs SET state='blocked' WHERE id=? AND state='pending'", (job['id'],))
                 continue
             if any(not parent['accepted'] for parent in parents):
                 continue
             inputs = self.resolve_inputs(job)
             if inputs is None:
-                self.db.execute("UPDATE jobs SET state='blocked' WHERE id=?", (job['id'],))
+                self.db.execute("UPDATE jobs SET state='blocked' WHERE id=? AND state='pending'", (job['id'],))
                 continue
             # Prefer another eligible, recently connected host for a repeat attempt.
             previous = self.db.execute('SELECT host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()

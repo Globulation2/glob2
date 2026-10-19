@@ -1,8 +1,11 @@
 """Job-type adapters; scheduling and transport have no experiment-specific logic."""
+import csv
+import re
 from pathlib import Path
 from .common import read_json
 
 _TYPES = {}
+_UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
 
 
 def register_job_type(name, adapter):
@@ -18,6 +21,70 @@ def get_job_type(name):
         raise ValueError('unknown job type: ' + name) from None
 
 
+def resource_gradient_collection_outputs(collection):
+    """Files kept by the generic worker, including zero-row oracle streams.
+
+    Explicit required outputs bypass the worker's outcome-only artifact pruning.
+    Keep this adapter local to the tournament package so remote zip workers need
+    no imports from the model fitting tools or scientific Python environment.
+    """
+    if collection.get('contract') in _UNIFIED_COLLECTORS:
+        identity={'family','team','movement','material','key'}
+        outputs={
+            'gradient-episodes.csv':identity|{'tick','complete','publication_delay','queries','defer_extra','refresh_extra',
+                'age','q32','q128','target_added','target_removed','target_added_frac_q12','target_removed_frac_q12',
+                'since_capture_invalid_goal','since_capture_reachable_no_move','since_capture_movement_queries',
+                'capture_known','movement_observed','defer_false_unreachable','refresh_false_unreachable',
+                'defer_false_reachable','refresh_false_reachable','defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals',
+                'defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures',
+                'guard_balance_queries','route_changes','seed_cost_changes','planning_queries',
+                'serving_capture_tick','captured_goal_count','capture_target_added_epoch','capture_target_removed_epoch',
+                'capture_route_epoch','capture_seed_cost_epoch','current_target_added_epoch','current_target_removed_epoch',
+                'current_route_epoch','current_seed_cost_epoch'},
+            'gradient-quality.csv':identity|{'query','tick','extra_cost','false_unreachable','false_reachable','invalid_goal','missed_move','escape_failure','stall','guard_balance'},
+            'gradient-planning-quality.csv':identity|{'query','tick','false_unreachable','false_reachable'},
+            'gradient-contradictions.csv':identity|{'epoch','invalid_goal','reachable_no_move','movement_queries'},
+        }
+        if collection.get('contract')=='unified-gradient-spatial-h128-v3':
+            # Historical v3 output remains readable, but current v4 never writes it.
+            outputs['gradient-episodes.csv']|={'overlap_supported','overlap_support_reason','overlap_history_known','overlap_generation','overlap_publication_tick','queries_near_goal_change','queries_near_passability_change','overlap_movement_queries','queries_near_goal_added','queries_near_goal_removed','queries_near_blocked','queries_near_opened'}
+        if collection.get('exploration') is not None:outputs['gradient-decisions.csv']={'tick','key','behavior_seed','behavior_interval','reason','admitted'}
+        return outputs
+    outputs = {
+        'gradient-episodes.csv': {'tick', 'key', 'complete', 'queries', 'defer_extra',
+            'refresh_extra', 'age', 'q32', 'q128', 'source_added', 'source_removed',
+            'source_added_frac_q12', 'source_removed_frac_q12', 'planning_queries',
+            'defer_planning_false_negative', 'defer_planning_false_positive',
+            'refresh_planning_false_negative', 'refresh_planning_false_positive',
+            'behavior_interval', 'behavior_seed', 'movement_observed'},
+        'gradient-quality.csv': {'query', 'tick', 'extra_cost', 'false_unreachable',
+                                 'false_reachable', 'flagged'},
+        'gradient-planning-quality.csv': {'query', 'tick', 'false_unreachable', 'false_reachable'},
+    }
+    if collection.get('exploration') is not None:
+        outputs['gradient-decisions.csv'] = {'tick', 'key', 'behavior_seed', 'behavior_interval',
+                                              'reason', 'admitted'}
+    return outputs
+
+
+def _validate_resource_gradient_collection(collection):
+    if not isinstance(collection, dict) or set(collection) - {'exploration', 'seed', 'threads', 'contract'}:
+        raise ValueError('resource_gradient_collection must contain only exploration, seed, threads and contract')
+    if 'contract' in collection and collection['contract'] not in _UNIFIED_COLLECTORS:
+        raise ValueError('Unknown explicit gradient collection contract')
+    if type(collection.get('seed', 0)) is not int or not 0 <= collection.get('seed', 0) <= 2**32-1:
+        raise ValueError('resource gradient exploration seed must be a uint32 integer')
+    if 'threads' in collection and (type(collection['threads']) is not int or not 1 <= collection['threads'] <= 64):
+        raise ValueError('resource gradient collection threads must be an integer in 1..64')
+    if 'exploration' in collection:
+        value = collection['exploration']
+        if not isinstance(value, str) or not re.fullmatch(r'[0-9]+(?:,[0-9]+)*', value):
+            raise ValueError('resource gradient exploration must be comma-separated integer intervals')
+        intervals = [int(part) for part in value.split(',')]
+        if len(intervals) != len(set(intervals)) or any(n != 0 and not 8 <= n <= 65536 for n in intervals):
+            raise ValueError('resource gradient exploration intervals must be unique: 0 or 8..65536')
+
+
 class EngineJob:
     def __init__(self, kind):
         self.kind = kind
@@ -29,12 +96,27 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
+        if self.kind == 'game' and 'resource_gradient_collection' in config:
+            collection = config['resource_gradient_collection']
+            _validate_resource_gradient_collection(collection)
+            if 'generator' in config:
+                raise ValueError('resource gradient collection requires a frozen map or save input; inline generation is forbidden')
+            if job['outputs'].get('replay'):
+                raise ValueError('resource gradient collection cannot record replay output')
+            if job['outputs'].get('result', 'full') != 'full':
+                raise ValueError('resource gradient collection requires full result provenance')
+            requested = job['outputs'].get('required', [])
+            if not isinstance(requested, list) or any(not isinstance(name, str) for name in requested):
+                raise ValueError('resource gradient collection required outputs must be a list of filenames')
+            missing = resource_gradient_collection_outputs(collection).keys() - set(requested)
+            if missing:
+                raise ValueError('resource gradient collection requires output files: ' + ', '.join(sorted(missing)))
         if self.kind == 'game':
             # A game either loads a map or a save, or generates its own map inline;
             # exactly one of the three.
@@ -117,6 +199,20 @@ class EngineJob:
             for telemetry in outputs.get('telemetry', []):
                 add('--telemetry', telemetry)
             if outputs.get('replay', False): args.append('--write-replay')
+            if 'resource_gradient_collection' in config:
+                collection = config['resource_gradient_collection']
+                args.append('--resource-gradient-probe')
+                # Match the permanent collector: host GPU/profile defaults must
+                # not alter collection execution or add incidental timing work.
+                add('--gpu', 'off')
+                add('--compute-telemetry', 'off')
+                # Non-affinity hosts need an explicit per-job participant budget.
+                # Allocation-backed hosts leave this unset; their worker supplies it.
+                if 'threads' in collection:
+                    add('--compute-threads', collection['threads'])
+                if 'exploration' in collection:
+                    add('--resource-gradient-exploration', collection['exploration'])
+                    add('--resource-gradient-exploration-seed', collection.get('seed', 0))
         else:
             add('--seed', job['seeds']['map'])
             for key, value in sorted(config.get('params', {}).items()):
@@ -137,6 +233,18 @@ class EngineJob:
             raise ValueError('unsupported engine result schema')
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
+        if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
+            collection=job['config']['resource_gradient_collection']
+            if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:
+                raise ValueError('engine did not attest the requested collector contract')
+            for name, required in resource_gradient_collection_outputs(job['config']['resource_gradient_collection']).items():
+                artifact = path.parent / name
+                if not artifact.is_file():
+                    raise ValueError('missing resource gradient collection output: ' + name)
+                with artifact.open(newline='') as stream:
+                    fields = csv.DictReader(stream).fieldnames or []
+                if not required <= set(fields):
+                    raise ValueError('resource gradient collection output schema mismatch: ' + name)
         return result
 
 

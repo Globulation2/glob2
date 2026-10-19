@@ -10,7 +10,7 @@ on:
         required: true
         type: string
   pull_request:
-    # PRs run cheap contracts unless ci:run or ci:full requests hosted verification.
+    # PRs run cheap contracts plus a 12% ranked check budget; ci:full runs everything.
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]
   schedule:
     - cron: '0 6 * * *'
@@ -63,6 +63,37 @@ jobs:
       full_matrix: ${{ steps.select.outputs.full_matrix }}
       draft: ${{ steps.select.outputs.draft }}
       verification_mode: ${{ steps.select.outputs.verification_mode }}
+      job_plan: ${{ steps.select.outputs.job_plan }}
+      variants_matrix: ${{ steps.select.outputs.variants_matrix }}
+      gcc11_shards: ${{ steps.select.outputs.gcc11_shards }}
+      gcc13_shards: ${{ steps.select.outputs.gcc13_shards }}
+      gcc11_generators: ${{ steps.select.outputs.gcc11_generators }}
+      gcc13_generators: ${{ steps.select.outputs.gcc13_generators }}
+      gcc11_regressions: ${{ steps.select.outputs.gcc11_regressions }}
+      gcc13_regressions: ${{ steps.select.outputs.gcc13_regressions }}
+      clang_regressions: ${{ steps.select.outputs.clang_regressions }}
+      run_android: ${{ steps.select.outputs.run_android }}
+      run_macos: ${{ steps.select.outputs.run_macos }}
+      run_tsan: ${{ steps.select.outputs.run_tsan }}
+      run_native_coverage: ${{ steps.select.outputs.run_native_coverage }}
+      run_linux_gcc11: ${{ steps.select.outputs.run_linux_gcc11 }}
+      run_linux_gcc13_producer: ${{ steps.select.outputs.run_linux_gcc13_producer }}
+      run_linux_gcc13: ${{ steps.select.outputs.run_linux_gcc13 }}
+      run_linux_build: ${{ steps.select.outputs.run_linux_build }}
+      run_linux_clang: ${{ steps.select.outputs.run_linux_clang }}
+      run_linux: ${{ steps.select.outputs.run_linux }}
+      run_linux_variants: ${{ steps.select.outputs.run_linux_variants }}
+      run_linux_map_generators_standalone: ${{ steps.select.outputs.run_linux_map_generators_standalone }}
+      run_linux_map_generators: ${{ steps.select.outputs.run_linux_map_generators }}
+      run_windows: ${{ steps.select.outputs.run_windows }}
+      run_web_build: ${{ steps.select.outputs.run_web_build }}
+      run_web_native: ${{ steps.select.outputs.run_web_native }}
+      run_web_deploy: ${{ steps.select.outputs.run_web_deploy }}
+      run_web_test: ${{ steps.select.outputs.run_web_test }}
+      run_browser_determinism: ${{ steps.select.outputs.run_browser_determinism }}
+      run_platform: ${{ steps.select.outputs.run_platform }}
+      run_platform_stack: ${{ steps.select.outputs.run_platform_stack }}
+      run_music: ${{ steps.select.outputs.run_music }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -102,8 +133,9 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
           DRAFT: ${{ github.event.pull_request.draft }}
           CI_CALLED_FULL: ${{ inputs.revision != '' }}
-          CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
-          CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
+          CI_PREDICTIVE_ENABLED: ${{ vars.CI_PREDICTIVE_ENABLED || 'true' }}
+          CI_PR_CHECK_BUDGET: ${{ vars.CI_PR_CHECK_BUDGET || '0.12' }}
+          CI_PR_FULL_AUDIT_PERCENT: ${{ vars.CI_PR_FULL_AUDIT_PERCENT || '0' }}
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
@@ -118,7 +150,7 @@ jobs:
 
   android:
     needs: changes
-    if: ${{ needs.changes.outputs.android == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_android == 'true' }}
     uses: ./.github/workflows/mobile.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -126,7 +158,7 @@ jobs:
 
   macos:
     needs: changes
-    if: ${{ needs.changes.outputs.macos == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_macos == 'true' }}
     uses: ./.github/workflows/ci-macos.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -134,7 +166,7 @@ jobs:
 
   tsan:
     needs: changes
-    if: ${{ needs.changes.outputs.tsan == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_tsan == 'true' }}
     uses: ./.github/workflows/thread-sanitizer.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -142,7 +174,7 @@ jobs:
   native-coverage:
     name: Native Clang coverage
     needs: changes
-    if: ${{ needs.changes.outputs.coverage == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_native_coverage == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     steps:
@@ -188,7 +220,7 @@ jobs:
   linux-gcc11:
     name: Linux GCC 11 build and tests
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_gcc11 == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -196,15 +228,18 @@ jobs:
       runner: ubuntu-22.04
       compiler: g++-11
       c_compiler: gcc-11
-      run_tests: true
+      run_regressions: ${{ needs.changes.outputs.gcc11_regressions == 'true' }}
+      run_tests: ${{ needs.changes.outputs.gcc11_shards != '[]' }}
       coverage_profile: ${{ needs.changes.outputs.secondary_profile }}
-      map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
+      test_shards: ${{ needs.changes.outputs.gcc11_shards }}
+      generator_suites: ${{ needs.changes.outputs.gcc11_generators }}
+      map_generators: ${{ needs.changes.outputs.gcc11_generators != '[]' }}
       runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
 
   linux-gcc13-producer:
     name: Primary Linux programs
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -213,12 +248,12 @@ jobs:
       compiler: g++-13
       c_compiler: gcc-13
       build_only: true
-      web_native: ${{ needs.changes.outputs.browser == 'true' }}
+      web_native: ${{ needs.changes.outputs.run_web_native == 'true' }}
 
   linux-gcc13:
     name: Linux GCC 13 build and tests
     needs: [changes, linux-gcc13-producer]
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_gcc13 == 'true' && needs.linux-gcc13-producer.result == 'success' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -226,30 +261,40 @@ jobs:
       runner: ubuntu-24.04
       compiler: g++-13
       c_compiler: gcc-13
+      run_regressions: ${{ needs.changes.outputs.gcc13_regressions == 'true' }}
       reuse_build: true
-      run_tests: true
-      map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
+      test_shards: ${{ needs.changes.outputs.gcc13_shards }}
+      generator_suites: ${{ needs.changes.outputs.gcc13_generators }}
+      run_tests: ${{ needs.changes.outputs.gcc13_shards != '[]' }}
+      map_generators: ${{ needs.changes.outputs.gcc13_generators != '[]' }}
       runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
 
   linux-build:
-    needs: [changes, linux-gcc11, linux-gcc13]
-    if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
+    needs: [changes, linux-gcc11, linux-gcc13-producer, linux-gcc13]
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_build == 'true' }}
     runs-on: ubuntu-24.04
     steps:
-      - name: Require both GCC platforms
+      - name: Require every selected Linux producer and check
         env:
-          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
-          GCC11: ${{ needs.linux-gcc11.result }}
-          GCC13: ${{ needs.linux-gcc13.result }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}
         run: |
-          expected=skipped
-          if [ "$COMPATIBILITY" = true ]; then expected=success; fi
-          test "$GCC11" = "$expected" && test "$GCC13" = success
+          python3 - <<'PYTHON'
+          import json, os
+          needs = json.loads(os.environ['NEEDS_JSON'])
+          plan = json.loads(os.environ['CI_JOB_PLAN'])
+          assert needs['changes']['result'] == 'success', 'Selection failed'
+          for job, result in needs.items():
+              if job == 'changes':
+                  continue
+              expected = 'success' if plan['jobs'][job] else 'skipped'
+              assert result['result'] == expected, f"{job}: {result['result']}, expected {expected}"
+          PYTHON
 
   linux-clang:
     name: Linux Clang compatibility
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.variants == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_clang == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -257,32 +302,41 @@ jobs:
       runner: ubuntu-24.04
       compiler: clang-18
       c_compiler: clang-18
+      run_regressions: ${{ needs.changes.outputs.clang_regressions == 'true' }}
+      test_shards: '[]'
+      generator_suites: '[]'
 
   linux:
     name: linux (${{ matrix.image }})
     needs: [changes, linux-build, linux-clang]
-    if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux == 'true' }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         image: ['ubuntu:22.04', 'ubuntu:24.04']
     steps:
-      - name: Require every Linux build and test shard
+      - name: Require every selected Linux producer and check
         env:
-          BUILD_RESULT: ${{ needs.linux-build.result }}
-          COMPATIBILITY: ${{ needs.changes.outputs.variants }}
-          CLANG_RESULT: ${{ needs.linux-clang.result }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}
         run: |
-          echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT"
-          expected=skipped
-          if [ "$COMPATIBILITY" = true ]; then expected=success; fi
-          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = "$expected"
+          python3 - <<'PYTHON'
+          import json, os
+          needs = json.loads(os.environ['NEEDS_JSON'])
+          plan = json.loads(os.environ['CI_JOB_PLAN'])
+          assert needs['changes']['result'] == 'success', 'Selection failed'
+          for job, result in needs.items():
+              if job == 'changes':
+                  continue
+              expected = 'success' if plan['jobs'][job] else 'skipped'
+              assert result['result'] == expected, f"{job}: {result['result']}, expected {expected}"
+          PYTHON
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.variants == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_variants == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -299,18 +353,7 @@ jobs:
       CCACHE_MAXSIZE: 5G
     strategy:
       fail-fast: false
-      matrix:
-        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
-        # 1.74 (catches C++20 features the oldest supported compiler lacks),
-        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
-        # that no longer come in transitively).
-        include:
-          - image: ubuntu:22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
+      matrix: ${{ fromJSON(needs.changes.outputs.variants_matrix) }}
     steps:
       - name: Install dependencies
         id: install_dependencies
@@ -412,7 +455,7 @@ jobs:
   linux-map-generators-standalone:
     name: Golden-only build and checks (${{ matrix.runner }})
     needs: changes
-    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && needs.changes.outputs.native != 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_map_generators_standalone == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -438,29 +481,30 @@ jobs:
 
   linux-map-generators:
     needs: [changes, linux-gcc11, linux-gcc13, linux-map-generators-standalone]
-    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_linux_map_generators == 'true' }}
     runs-on: ubuntu-24.04
     steps:
-      - name: Require selected generator checks
+      - name: Require every selected Linux producer and check
         env:
-          NATIVE: ${{ needs.changes.outputs.native }}
-          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
-          GCC11: ${{ needs.linux-gcc11.result }}
-          GCC13: ${{ needs.linux-gcc13.result }}
-          STANDALONE: ${{ needs.linux-map-generators-standalone.result }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}
         run: |
-          if [ "$NATIVE" = true ]; then
-            expected=skipped
-            if [ "$COMPATIBILITY" = true ]; then expected=success; fi
-            test "$GCC11" = "$expected" && test "$GCC13" = success
-          else
-            test "$STANDALONE" = success
-          fi
+          python3 - <<'PYTHON'
+          import json, os
+          needs = json.loads(os.environ['NEEDS_JSON'])
+          plan = json.loads(os.environ['CI_JOB_PLAN'])
+          assert needs['changes']['result'] == 'success', 'Selection failed'
+          for job, result in needs.items():
+              if job == 'changes':
+                  continue
+              expected = 'success' if plan['jobs'][job] else 'skipped'
+              assert result['result'] == expected, f"{job}: {result['result']}, expected {expected}"
+          PYTHON
 
   windows:
     name: windows (mingw-w64)
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_windows == 'true' }}
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -753,7 +797,7 @@ jobs:
   web-build:
     name: browser build (WebAssembly)
     needs: changes
-    if: ${{ needs.changes.outputs.browser == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_web_build == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -966,7 +1010,7 @@ jobs:
   web-native:
     name: browser native WSS server, router and transport
     needs: [changes, linux-gcc13-producer]
-    if: ${{ !cancelled() && needs.changes.outputs.browser == 'true' && (needs.changes.outputs.native != 'true' || needs.linux-gcc13-producer.result == 'success') }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_web_native == 'true' && (needs.changes.outputs.run_linux_gcc13_producer != 'true' || needs.linux-gcc13-producer.result == 'success') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -980,12 +1024,12 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
-        if: ${{ needs.changes.outputs.native == 'true' }}
+        if: ${{ needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
         with:
           name: linux-test-programs-ubuntu-24.04
           path: artifacts/ci-native
       - name: Reuse exact primary client and transport programs
-        if: ${{ needs.changes.outputs.native == 'true' }}
+        if: ${{ needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
         run: |
           tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
           python3 .github/scripts/ci_build_provenance.py verify --compiler g++-13
@@ -1053,7 +1097,7 @@ jobs:
         id: build_transport_integration_fixture
         continue-on-error: true
         run: |
-          if [ '${{ needs.changes.outputs.native }}' = true ]; then
+          if [ '${{ needs.changes.outputs.run_linux_gcc13_producer }}' = true ]; then
             test -x build/linux/client/release/src/net-connection-test
             test -x build/linux/client/release/src/lan-discovery-test
             exit 0
@@ -1126,7 +1170,7 @@ jobs:
   web-deploy:
     name: browser self-hosting deployment
     needs: [changes, web-build]
-    if: ${{ needs.changes.outputs.deployment == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_web_deploy == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -1162,7 +1206,7 @@ jobs:
   web-test:
     name: browser tests (${{ matrix.name }})
     needs: [changes, web-build, web-native]
-    if: ${{ !cancelled() && needs.changes.outputs.browser == 'true' && needs.web-build.result == 'success' && needs.web-native.result == 'success' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_web_test == 'true' && needs.web-build.result == 'success' && needs.web-native.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
@@ -1269,7 +1313,7 @@ jobs:
     env:
       COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
     needs: [changes, linux, windows, web-test, macos]
-    if: ${{ !cancelled() && needs.changes.outputs.cross_platform == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_browser_determinism == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -1342,7 +1386,7 @@ jobs:
   platform:
     name: platform (TypeScript)
     needs: changes
-    if: ${{ needs.changes.outputs.platform == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_platform == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
@@ -1410,7 +1454,7 @@ jobs:
   music:
     name: music pipeline (Python)
     needs: changes
-    if: ${{ needs.changes.outputs.music == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_music == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -1447,7 +1491,7 @@ jobs:
   platform-stack:
     name: self-hosted platform stack
     needs: changes
-    if: ${{ needs.changes.outputs.platform_stack == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.run_platform_stack == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
@@ -1479,50 +1523,19 @@ jobs:
 
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack, music]
-    if: ${{ !cancelled() }}
+    permissions:
+      contents: read
+      actions: read
+    needs: [changes, android, macos, tsan, native-coverage, linux-gcc11, linux-gcc13-producer, linux-gcc13, linux-build, linux-clang, linux, linux-variants, linux-map-generators-standalone, linux-map-generators, windows, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack, music]
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
-    env:
-      NEEDS_JSON: ${{ toJSON(needs) }}
-      VERIFICATION_MODE: ${{ needs.changes.outputs.verification_mode }}
     steps:
-      - name: Verify all selected jobs completed successfully
-        run: |
-          python3 - <<'PY'
-          import json
-          import os
-
-          needs = json.loads(os.environ['NEEDS_JSON'])
-          mode = os.environ.get('VERIFICATION_MODE', 'unknown')
-          summary = os.environ.get('GITHUB_STEP_SUMMARY')
-          if summary:
-              with open(summary, 'a') as target:
-                  target.write(f'Verification mode: **{mode}**.\n')
-                  if mode in ('cheap-contracts', 'nightly-reused'):
-                      target.write('This run checked cheap contracts only; success does not establish engine verification or acceptance of PR evidence.\n')
-          assert needs['changes']['result'] == 'success', 'Change detection failed'
-          selected = needs['changes']['outputs']
-          expected = {
-              'android': selected['android'] == 'true',
-              'macos': selected['macos'] == 'true',
-              'tsan': selected['tsan'] == 'true',
-              'native-coverage': selected['coverage'] == 'true',
-              'linux': selected['native'] == 'true',
-              'linux-variants': selected['native'] == 'true' and selected['variants'] == 'true',
-              'linux-map-generators': selected['map_generators'] == 'true',
-              'windows': selected['windows'] == 'true',
-              'web-build': selected['browser'] == 'true',
-              'web-native': selected['browser'] == 'true',
-              'web-deploy': selected['deployment'] == 'true',
-              'web-test': selected['browser'] == 'true',
-              'browser-determinism': selected['cross_platform'] == 'true',
-              'platform': selected['platform'] == 'true',
-              'platform-stack': selected['platform_stack'] == 'true',
-              'music': selected['music'] == 'true',
-          }
-          for job, should_run in expected.items():
-              required = 'success' if should_run else 'skipped'
-              actual = needs[job]['result']
-              print(f'{job}: {actual} (expected {required})')
-              assert actual == required, f'{job}: {actual}, expected {required}'
-          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+      - name: Verify every selected check and prerequisite completed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          CI_JOB_PLAN: ${{ needs.changes.outputs.job_plan }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/ci_verify_selection.py

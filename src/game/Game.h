@@ -204,8 +204,8 @@ public:
 	virtual ~Game();
 
 	///Loads data from a stream
-	bool load(GAGCore::InputStream *stream);
-    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
 
 	//! Check some available integrity constraints
 	bool integrity(void);
@@ -269,8 +269,9 @@ public:
 	void cancelAI(unsigned player);
 	void drainAI();
     void drainHiring();
+    bool preparingBuildingGradient(const Building&, int slot) const;
     void saveHiring(GAGCore::OutputStream*);
-    void loadHiring(GAGCore::InputStream*);
+    void loadHiring(GAGCore::InputStream*, int versionMinor);
     Uint32 hiringChecksum() const;
     std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
     const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;
@@ -527,6 +528,7 @@ private:
 	static void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& unit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion = 0);
 	static bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y, const SceneMap& map);
 public:
+	// Explicit live-world diagnostic/verification API. Routine engine checks use snapshot jobs.
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false, bool legacy152=false);
 
 	/// Sets the alliances from the GameHeader alliance teams

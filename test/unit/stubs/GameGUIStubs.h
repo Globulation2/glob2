@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "SaveLoadProfile.h"
 #include <Stream.h>
 #include <string>
 
@@ -13,7 +14,7 @@ public:
   Game *replayTelemetryGame();
   explicit GameGUI(bool persistPreferences = true);
   ~GameGUI();
-  bool load(GAGCore::InputStream *stream, bool ignoreGUIData = false);
+  bool load(GAGCore::InputStream *stream, bool ignoreGUIData = false,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
   void save(GAGCore::OutputStream *stream, const std::string name,
 			DeferredGameSHA1 *deferredSHA1 = nullptr);
 };

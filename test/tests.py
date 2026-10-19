@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/map/gradient/GradientLegacyQueueHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/gradient/GradientMarketTurnoverHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
@@ -48,6 +50,7 @@ ENGINE_TESTS = [
     ('#src/ai/warrush/WarrushObservationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/engine/AIOrderSchedulerTest.cpp',
     '#src/ai/engine/AIPipelineTest.cpp',
+    '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
     ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
@@ -56,7 +59,7 @@ ENGINE_TESTS = [
     ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
-    '#src/building/BuildingStockTest.cpp',
+    ('#src/building/BuildingStockTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/building/MaterialDemandTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
@@ -104,7 +107,8 @@ ENGINE_TESTS = [
     ('#src/scripting/javascript/ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/scripting/javascript/ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingExpelHarness.cpp',
-    '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
+    ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/InitialBuildingGradientHarness.cpp',
     '#src/building/FetchApportionmentHarness.cpp',
     '#src/hud/GameGUISelectionHarness.cpp',
     '#src/render/scene/SceneExtractTest.cpp',
@@ -140,7 +144,8 @@ ENGINE_TESTS = [
     ('#src/map/gradient/ClearingFlagGradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/cortex/CortexGeometryHarness.cpp',
     '#src/unit/EnteringUnitSaveHarness.cpp',
-    '#src/map/gradient/MapGradientInvalidationTest.cpp',
+    ('#src/map/gradient/MapGradientInvalidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/nicowar/NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
@@ -220,6 +225,11 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/map/gradient/LegacyResourceGradientStateTest.cpp',
+    '#src/map/gradient/ResourceGradientExplorationTest.cpp',
+    '#src/map/gradient/GradientMarketTargetsTest.cpp',
+    '#src/map/gradient/GradientTargetCellTest.cpp',
+    '#src/map/gradient/AdaptiveGradientStateTest.cpp',
     '#src/building/HiringRankingTest.cpp',
     '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
@@ -432,6 +442,10 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
+    '#src/map/gradient/LegacyResourceGradientState.cpp',
+    '#src/map/gradient/AdaptiveGradientState.cpp',
+    '#src/map/gradient/MapGradientTargets.cpp',
+    '#src/map/gradient/MapGradientMarketTargets.cpp',
     '#src/resource/ResourceRegistry.cpp',
     '#src/map/pathfind/MapPathfindPoint.cpp',
     '#src/net/message/MessageRecipients.cpp',

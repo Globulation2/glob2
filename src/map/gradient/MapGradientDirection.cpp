@@ -42,7 +42,6 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
 {
 	PERF_SCOPE_TIME(PathDirection);
-	const bool canSwim = swimClass > 0;
 	Uint16 here = gradient[coordToIndex(x, y)];
 	// Settling the whole cost layer of `here` also finalizes every better or
 	// equal-valued neighbor inspected below; worse neighbors cannot be selected.
@@ -64,8 +63,8 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 		int ddy = tabClose[d][1];
 		size_t n = coordToIndex(x + ddx, y + ddy);
 		Uint16 g = gradient[n];
-		if ((swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(n).swimmable) || g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
-			continue;
+        if (g <= GRADIENT_UNREACHABLE) continue;
+		if (!isFreeForMovement(x+ddx,y+ddy,swimClass,teamMask)) continue;
 		if (guardAreaMask && !(areaCells[n].guard & guardAreaMask))
 			continue;
 		if (g > here)

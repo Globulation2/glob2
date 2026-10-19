@@ -27,7 +27,7 @@
 
 namespace SimulationSnapshot
 {
-static_assert(SWIM_CLASS_COUNT<=8);
+static_assert(MOVEMENT_CLASS_COUNT<=16);
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game)
 {
 	auto result = std::make_shared<std::vector<BuildingKindView>>();
@@ -159,7 +159,7 @@ Handle capture(const Game& game,
         if (storage) ++storage->coreMaterializations;
         entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
         entities->extraProduction.clear();
-        entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0);
+        entities->unitCargo = game.unitCargo; entities->availableMovementClasses.fill(0);
         if (storage) for (const auto& [gid, inventory] : game.unitCargo.entries())
             storage->entitySidecarBytesCopied += sizeof(gid) + inventory.size() * sizeof(UnitCargoEntry);
     }
@@ -426,7 +426,7 @@ Handle capture(const Game& game,
 			if (storage) storage->entityBytesCopied += sizeof(UnitState);
 			v.identity = Game::refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
-                if(!v.performance[FLY] && !v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableGroundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
+                if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<(v.performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(v.performance[WALK],v.performance[SWIM])));
 			v.attached = Game::refOf(u->attachedBuilding);
 			v.target = Game::refOf(u->targetBuilding);
 		}
@@ -483,7 +483,7 @@ Handle capture(const Game& game,
             for (unsigned r=0;r<EntityDiagnostics::FailReasons;++r) value.failingUnits[r]=b->unitsFailingByReason[r];
             if (b->verbose==1 || b->verbose==2) {
                 int swim=b->verbose==1 ? 0 : 1;
-                while (b->verbose==2 && swim<SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+                while (b->verbose==2 && swim<MOVEMENT_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
                 auto guard=SharedBuildingGradient::lock(b->sharedGradient[swim]);
                 if (b->globalGradient[swim]) value.gradient.assign(b->globalGradient[swim],b->globalGradient[swim]+cellCount);
             }

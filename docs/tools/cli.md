@@ -269,7 +269,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -336,7 +336,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -632,6 +632,33 @@ Platform: all.
 glob2 map validate-set set.json --report-file artifacts/set-report.json --preview artifacts/set.png
 ```
 
+### `glob2 game migrate`
+
+Convert a private adaptive174 file without advancing simulation.
+
+```text
+glob2 game migrate [OPTIONS]
+```
+
+Outputs: migrated.map or migrated.game, result.json with provenance and verified state.
+
+Platform: all.
+
+| Option | Value / default | Meaning |
+| --- | --- | --- |
+| `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
+| `--profile` | string; default glob2-tournament | Isolated profile label. |
+| `--building-catalog` | file | Building catalog manifest. |
+| `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
+| `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
+| `--input` | file | Private format174 map or saved game. Required. |
+| `--legacy-adaptive-174` | flag; default false | Explicitly select the private adaptive174 binary layout; never inferred. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
+
+```sh
+glob2 game migrate --input private174.game.gz --legacy-adaptive-174 --output-dir artifacts/migration
+```
+
 ### `glob2 game run`
 
 Run or continue a structured headless game.
@@ -651,7 +678,7 @@ Platform: all.
 | `--building-catalog` | file | Building catalog manifest. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -681,6 +708,10 @@ Platform: all.
 | `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
+| `--gradient-work-stats` | file | Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection. |
+| `--resource-gradient-probe` | flag; default false | Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias). |
+| `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training. |
+| `--resource-gradient-exploration-seed` | integer; 0..4294967295 | Seed for deterministic per-field collection assignment. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |
@@ -751,7 +782,7 @@ Platform: all.
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--display` | flag; default false | Render the saved game through the normal presentation loop. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -804,7 +835,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-verify | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -848,7 +879,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -916,7 +947,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -986,7 +1017,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -1036,7 +1067,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-turn-client | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--orders-per-second` | real; default 0.5; 0..2147483647 | Synthetic order rate. |
 | `--max-seconds` | real; default 1800; seconds; 0..2147483647 | Maximum runtime in seconds. |
@@ -1214,7 +1245,7 @@ Platform: all.
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -1318,7 +1349,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |

@@ -45,7 +45,7 @@ bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsig
 // reaches this test double; that lifecycle is covered by engine harnesses.
 #include "gradient/GradientRuntime.h"
 void Map::finishGradientPipeline(JoinContext) {
-    if (gradientRuntime->preparation.job) std::abort();
+    if (!gradientRuntime->preparations.empty()) std::abort();
     gradientRuntime->pipeline.finish();
 }
 // Unit fixtures never schedule building fields; clearing only drops storage.

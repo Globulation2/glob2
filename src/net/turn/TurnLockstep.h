@@ -51,8 +51,7 @@ namespace Turn
 		const TurnSession& turn() const { return session; }
 		const std::shared_ptr<TurnTransport>& transport() const { return link; }
 
-		/// Called on every advanceStep with the tick about to execute and the state
-		/// checksum before it: the value a ChecksumReport for that tick carries.
+		/// Called when a delayed sample is delivered, tagged with its original source turn.
 		std::function<void(std::uint32_t tick, Uint32 checksum)> onChecksum;
 		/// Checks every order of a human seat before the engine executes it (the engine
 		/// installs OrderValidation::validate on its game). An order that is not
@@ -114,6 +113,8 @@ namespace Turn
 		}
 		bool orderReceived(int playerNumber) override { return session.orderReceived(playerNumber); }
 		void advanceStep(Uint32 checksum) override;
+        void advanceStep() override { session.advanceStep(); }
+        void publishChecksum(ChecksumSample sample) override;
 		bool tickReady() override { return session.tickReady(); }
 		Uint32 getWaitingOnMask() override { return session.getWaitingOnMask(); }
 		/// Always true: the relay arbitrates checksums, and a divergence reaches the

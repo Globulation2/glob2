@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "TeamStat.h"
+#include "SaveLoadProfile.h"
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "StatsChecksum.h"
@@ -48,6 +49,13 @@ void leaveStatSection(StatisticsChecksum auto*) {}
 template<class T, std::size_t N>
 void statValue(StatisticsChecksum auto* stream, const char*, const std::array<T,N>& values) {
 	for (const auto& value:values) statValue(stream,"",value);
+}
+void statValue(GAGCore::ChecksumStream* stream, const char*, const bool& value) { stream->addUint32(value); }
+void statValue(GAGCore::OutputStream* stream, const char* name, const bool& value) { stream->writeUint32(value,name); }
+void statValue(GAGCore::InputStream* stream, const char* name, bool& value) {
+    const auto flag=stream->readUint32(name);
+    if (flag>1) throw std::runtime_error("Invalid statistics flag");
+    value=flag;
 }
 // Second byte of each cold sampling qualification row: independent uniform
 // defender qualification and flag recruitment policy. Keep rows at two bytes.
@@ -217,7 +225,7 @@ void unitStatValue(Stream* stream,const char* name,const std::array<UnitStatisti
 
 // Fields are grouped by the save format that introduced them; a stream written
 // at versionMinor carries exactly the groups that existed then.
-template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat, int versionMinor = VERSION_MINOR)
+template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat, int versionMinor = VERSION_MINOR,bool privateAdaptive174=false)
 {
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"variants",stat.variants);
 	statValue(stream, "tick", stat.tick);
@@ -289,16 +297,28 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 		statValue(stream, "intruderLevels", stat.intruderLevels);
 		statValue(stream, "defenceTick", stat.defenceTick);
 	}
+    if (hasAdaptiveGradientState(versionMinor,privateAdaptive174)) {
+        statValue(stream,"movementClassesKnown",stat.movementClassesKnown);
+        statValue(stream,"groundUnitsByMovementClass",stat.groundUnitsByMovementClass);
+        if constexpr (std::is_base_of_v<GAGCore::InputStream,Stream>) {
+            Uint64 total=0;
+            for (auto count:stat.groundUnitsByMovementClass) total+=count;
+            if (total>Unit::MAX_COUNT) throw std::runtime_error("Invalid movement-class population");
+        }
+    } else if constexpr (std::is_base_of_v<GAGCore::InputStream,Stream>) {
+        stat.movementClassesKnown=false;
+        stat.groundUnitsByMovementClass.fill(0);
+    }
 }
 
 // Packed history rows have the fixed size of one record in the save's own format.
-size_t measurementRecordBytes(int versionMinor, size_t catalogSize,std::size_t unitCount=NB_UNIT_TYPE)
+size_t measurementRecordBytes(int versionMinor, size_t catalogSize,std::size_t unitCount=NB_UNIT_TYPE,bool privateAdaptive174=false)
 {
     GAGCore::BinaryOutputStream stream(new GAGCore::MemoryStreamBackend);
     GameplayMeasurements value{};
     value.variants.resize(catalogSize);
     value.configureUnits(unitCount);
-    measurementFields(&stream,value,versionMinor);
+    measurementFields(&stream,value,versionMinor,privateAdaptive174);
     return stream.getPosition();
 }
 
@@ -943,7 +963,7 @@ int TeamStats::getStarvingUnits() const
 	return (stats[statsIndex].needFoodCritical);
 }
 
-bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174)
 {
     publishedMeasurements.reset();
     displaySnapshot.reset();
@@ -1030,7 +1050,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		coverageStartTick = stream->readUint32("coverageStartTick");
-		measurementFields(stream, editMeasurements(), versionMinor);
+		measurementFields(stream, editMeasurements(), versionMinor,privateAdaptive174);
 		const Uint32 count = stream->readUint32("measurementCount");
 		if (editMeasurements().tick < coverageStartTick || count > Uint64(editMeasurements().tick) / 512 + 1)
 			throw std::runtime_error("Invalid gameplay statistics coverage");
@@ -1039,7 +1059,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         {
 			stream->readEnterSection(i);
 			GameplayMeasurements sample;
-			measurementFields(stream, sample, versionMinor);
+			measurementFields(stream, sample, versionMinor,privateAdaptive174);
 			stream->readLeaveSection();
 			if (sample.births.size()!=editMeasurements().births.size() || sample.variants.size() != editMeasurements().variants.size() || sample.tick < coverageStartTick || sample.tick > editMeasurements().tick ||
 				(sample.tick & 511) ||
@@ -1048,7 +1068,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			measurementHistory.push_back(sample);
         };
         if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
-            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(versionMinor, editMeasurements().variants.size(),editMeasurements().births.size()),readMeasurement);
+            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(versionMinor, editMeasurements().variants.size(),editMeasurements().births.size(),privateAdaptive174),readMeasurement);
         else for(Uint32 i=0;i<count;++i) readMeasurement(stream,i);
 		needsMeasurementInitialization = false;
 		extendedCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS
@@ -1102,7 +1122,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		aiTelemetry.clear();
     if(versionMinor>=FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE) {
         collectionEnabled=stream->readUint8("collectionEnabled");
-        stream->readEnterSection("collector");measurementFields(stream,collectedMeasurements,versionMinor);stream->readLeaveSection();
+        stream->readEnterSection("collector");measurementFields(stream,collectedMeasurements,versionMinor,privateAdaptive174);stream->readLeaveSection();
         sourceTick=stream->readUint32("sourceTick");publishedTick=stream->readUint32("publishedTick");
         if(sourceTick>publishedTick) throw std::runtime_error("Invalid published statistics tick");
     } else {collectionEnabled=false;sourceTick=publishedTick=editMeasurements().tick;}
@@ -1375,6 +1395,8 @@ void TeamStats::rebuildMeasurementCountReset()
 void TeamStats::beginMeasurementSnapshot(Team *team)
 {
     configureUnits(team->race.unitTypeCount());
+    editMeasurements().movementClassesKnown=true;
+    editMeasurements().groundUnitsByMovementClass.fill(0);
 	editMeasurements().tick = team->game->stepCounter;
 	editMeasurements().variants.resize(team->game->buildingsTypes.size());
 	if (measurementCountCatalogSize != editMeasurements().variants.size())
@@ -1393,6 +1415,9 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 {
 	if (u && !u->isDead)
 	{
+        if (!u->performance[FLY] && (u->performance[WALK] || u->performance[SWIM])) {
+            ++editMeasurements().groundUnitsByMovementClass[u->swimClass()];
+        }
 		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++editMeasurements().carried[u->carriedMaterial];
         if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo())
@@ -1940,7 +1965,7 @@ void TeamStats::finishAggregate(TeamStat& stat, const UnitStatistics<std::array<
 
 namespace
 {
-template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &sample)
+template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &sample, int versionMinor = VERSION_MINOR,bool privateAdaptive174=false)
 {
 	statValue(stream, "tick", sample.tick);
 	statValue(stream, "prestige", sample.prestige);
@@ -1950,12 +1975,12 @@ template <class Stream, class Sample> void sampleFields(Stream *stream, Sample &
 	if (sample.aggregate)
 	{
 		enterStatSection(stream, "aggregateStat");
-		liveStatFields(stream, sample.stat);
-		unitStatValue(stream, "eligible", sample.eligible, VERSION_MINOR);
+		liveStatFields(stream, sample.stat, versionMinor);
+		unitStatValue(stream, "eligible", sample.eligible, versionMinor);
 		leaveStatSection(stream);
 	}
 	enterStatSection(stream, "measurements");
-	measurementFields(stream, sample.frame ? *sample.frame : sample.measurements);
+	measurementFields(stream, sample.frame ? *sample.frame : sample.measurements, versionMinor,privateAdaptive174);
 	leaveStatSection(stream);
 }
 } // namespace
@@ -1978,7 +2003,7 @@ void TeamStats::saveSample(GAGCore::OutputStream *stream, const TeamStatsSample 
         stream->writeLeaveSection();
 	}
 }
-TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionMinor)
+TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionMinor,bool privateAdaptive174)
 {
 	TeamStatsSample sample;
 	const auto aggregate = stream->readUint8("aggregate"), periodic = stream->readUint8("periodic");
@@ -1993,7 +2018,7 @@ TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionM
         if(finalized>1) throw std::runtime_error("Invalid finalized statistics flag");
         sample.finalized=finalized;
     }
-	sampleFields(stream, sample);
+	sampleFields(stream, sample, versionMinor,privateAdaptive174);
 	const auto count = stream->readCount("coverage");
 	if (count > Building::MAX_COUNT)
 		throw std::runtime_error("Invalid pending statistics coverage");
@@ -2022,6 +2047,8 @@ Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothe
 	stream.addUint32(Uint32(stats.publishedTick));
 	stream.addUint32(Uint32(statsIndex));
 	stream.addUint32(Uint32(smoothedIndex));
+    stream.addUint32(stats.measurements().movementClassesKnown);
+    for (auto count : stats.measurements().groundUnitsByMovementClass) stream.addUint32(count);
 	liveStatFields(&stream, *stats.getLatestStat());
 	stream.addUint32(Uint32(smoothing.size()));
 	for (const auto &sample : smoothing) smoothedStatFields(&stream, sample);

@@ -55,7 +55,12 @@ with delay 0. Compare the same initial state, seed, delay and orders across work
 counts and platforms when checking determinism.
 
 `--rule buildingGradientDelay=N` (1 through 8, default 8) sets how many ticks a
-scheduled building walking field waits between capture and publication. It cannot
+scheduled building walking-field refresh waits between capture and publication.
+Missing-field initialization instead publishes one tick after admission, including
+first use after idle eviction; this fixed delay has no additional user setting.
+Initialization and refreshes use separate batches ordered by publication deadline,
+while their shared admission limit remains four requests per observation. FIFO
+waiting before admission adds to either delay. The match rule cannot
 change while scheduled building fields are pending. Format 148 saves the pending
 fields and the request queue; older saves restore none and start the pipeline at
 the delay their header implies (8 before format 148).
@@ -72,9 +77,15 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-Scheduled building fields use the production depth predictor. Experimental
-full/lazy and operating-point overrides are retired; readers still resolve
-unsettled cells on the owner before using them.
+Scheduled building fields retain the production depth predictor and lazy
+reader/hiring expansion. Missing fields, including those evicted while idle, use
+the fixed one-tick initialization delay; warm refreshes use `buildingGradientDelay`.
+Saving preserves queued work and pending publication deadlines without publishing
+early. Material and area cold requests, recurring refreshes and zone-edit
+rebuilds use FIFO admission and fixed publication deadlines. Natural-material
+queries with authoritative zero source counts retain their immediate shared
+negative answer and skip periodic rebuilds. Format 169 saves that queued demand and completed
+unpublished outputs, preserving remaining deadlines and the save floor of 58.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
@@ -172,7 +183,7 @@ Turns custom-game rules on for `dev random-games --display` and `dev random-game
 | `noPermadeath` | 0-1 | No permadeath |
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
-| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking field (default 8) |
+| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking-field refresh (default 8); missing fields initialize one tick after admission |
 | `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
 | `winProbabilityPermille` | 0 or 501-1000 | Estimated win-probability condition (0 = off); distinct from the sudden-death timer |
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |
@@ -249,6 +260,42 @@ Same as `dev random-games` but **with GUI** — useful for visually verifying AI
 The rendering thread polls pending artwork with the application's 2 ms budget,
 including when simulation runs on a separate thread, so HD reloads finish during
 automatic matches too.
+
+## Unified gradient diagnostics
+
+`game run --resource-gradient-probe` retains its historical name but collects the
+`unified-gradient-h128-v4` contract for material, shared-market, guard, clearing and
+forbidden-escape fields, including applicable air movement classes. Explicit
+family/team/movement/material identities accompany all streams. It produces
+`gradient-quality.csv`, `gradient-episodes.csv`, separate planning outcomes and
+non-overlapping movement totals. Episodes freeze serving-capture metadata and
+compare deferred versus delayed-refresh alternatives over capture-anchored
+offsets 8 through 127 under the normal eight-tick publication delay. An episode
+is complete at age 128 ticks. Incomplete horizons and unknown historical counters are not fitted as complete
+known examples. Equal-quality alternative directions score zero; stalls,
+reachability, invalid destinations, forbidden failures and planning outcomes are
+separate from direction cost. Guard balancing uses its real RNG/context and
+weighted goals without treating intentional stays as failures.
+
+The oracle uses private current-world snapshots, selectors and RNG copies. It
+must not request/publish a live field or change simulation execution. These
+reference calculations and streams exist only when collection is enabled, and
+make diagnostic CPU unsuitable for production performance comparisons.
+
+For work counts without quality collection, `--gradient-work-stats PATH` enables
+raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`
+outputs. It is independently opt-in and defaults off. Result metadata records
+the separate model and collector contracts, whether a generic model is trained,
+the 24,000 milli-unit threshold, 32-tick warm admission minimum, 1,024-tick
+demanded-field safety cap and explicit fixed-interval research overrides.
+The cap permits admission at that age; it does not bypass capacity or the
+eight-tick publication delay. An untrained
+placeholder cannot be mistaken for a qualified adaptive model.
+
+See [the model workflow](resource-gradient-model.md) for the new dataset contract,
+fixed-interval bootstrap tournament, whole-map splits and family-balanced fitting.
+Resource-only datasets remain separate unless an explicit validated compatibility
+mapping is introduced.
 
 ## Verifying a match record
 
@@ -428,16 +475,88 @@ The `ReplayWriter` records live during gameplay:
 [u16 VERSION_MAJOR]          — replay format version
 [u16 VERSION_MINOR]
 [order stream]               — repeating until NullOrder:
-  u16 stepsSinceLastOrder    — tick delta since previous order
+  u32 stepsSinceLastOrder    — tick delta since previous order
   NetSendOrder:
     u32 size                 — byte count of order data
     u8  orderType            — order type ID (see Order.h)
     [order data bytes]       — type-specific payload
     u8  sender               — player index
-    u32 checksum             — game state checksum at this tick
+    u32 checksum             — routine snapshot checksum for source tick
+    u8  hasChecksum          — explicit presence; zero is a valid hash
+    u32 checksumTick         — source simulation tick
   ...
-[u16 0 + NullOrder]          — end marker
+[u32 delta + NullOrder]          — end marker
 ```
+
+## Routine and deep checksums
+
+Format 168 rejects older replays and uses schema-3 snapshot checksums. Existing
+save loaders and their minimum format remain supported, including the older order
+envelope layout in saved AI queues. Routine hashing runs on the shared compute
+executor with a one-tick deadline; zero-worker configurations compute immediately
+so the delivery delay retains only the scalar result. Results retain their source
+tick. Replays buffer recorded orders until the matching result is ready, and
+playback validates expected hashes when local results arrive. Paused network
+turns may edit the same simulation tick; their recorded orders share that tick's
+first snapshot hash, because playback applies them together. Network reports
+continue to distinguish those turns and validate their intermediate worlds.
+Finalization drains all remaining work before reporting playback success or
+completing a recording.
+
+Routine hashing follows the original lightweight field-XOR/rotate approach,
+reading selected unit/building fields directly from frozen records. It retains
+entity RNG fingerprints, staffing/list counts, stock, production/funding facts
+and team alliances/vision masks, prestige and player masks. Only immutable
+unit/resource/terrain catalog fingerprints are included; there is no authored
+building catalog or rule-value walk. RNG fingerprints retain their existing
+word mixer. The field mixer has the original non-cryptographic collision
+limitations. Neither padding, pointers nor native byte order enter the result.
+
+Local and AI-only games skip map-cell hashing. Games started with remote players
+include the original captured map subset every 32 absolute simulation ticks:
+terrain vertices, resource values and may-grow flags, building/ground/air
+occupancy, forbidden/farm masks and referenced resource stock. Replay loading
+preserves that policy from the recorded player types before replacing them with
+replay-driven AI. Live capture and replay loading use the same setup-based policy:
+an AI-only turn session skips map sweeps too. Choosing a turn transport does not
+change checksum coverage. The policy remains fixed for a remote session even when
+seats leave. It does not add fertility, immobile markers, guard/clear masks, visibility
+or source-count sweeps. Interned terrain-rule indices and stock allocation slots
+are excluded. No map hash tree, canonical packing buffer or configuration digest
+cache is maintained. Completed jobs release their snapshot leases immediately;
+this adds no snapshot capture payload.
+
+Sampling cadence is not a bound on remote detection latency. Network reports use
+only their source turn's checksum. At the default 25-turn report interval and
+with continuous simulation advancement, reports include a map sweep every 800
+turns, the common multiple of 25 and 32. Pauses change the relationship between
+source turns and simulation ticks. Delivery delay and network arbitration add
+latency after a sampled result; transient map differences can escape entirely.
+
+The routine tier deliberately omits live relationships beyond captured counts
+and attachment/target presence, extra entity fields not covered by the original
+selection, scripts, world RNG, projectiles, uncaptured team bookkeeping, authored
+building definitions and rules, pending jobs and scheduling/cache metadata.
+Differences there can be detected later when they affect captured state, or may
+remain undetected. `Game::checkSum` remains an explicit live-world diagnostic API;
+its heavy mode retains comprehensive existing coverage and can join pending work.
+`GLOB2_CHECKSUM_SIDECAR=1` opts into that heavy calculation and detailed entity
+breakdowns. It does not change the routine hash or require peers to opt in.
+With headless checksum telemetry, `world.checksums` contains deep live-world hashes
+and `snapshot.checksums` contains `source_turn world_tick routine_hash` rows. The
+binary `.checksums` sidecar's total is the deep hash (header flag bit 0). Deep and
+routine hashes use different algorithms and observation boundaries and must not
+be compared directly.
+`game run` result fields `initialChecksum` and `finalChecksum` use the routine
+snapshot schema, identified by `checksum_algorithm: "snapshot-v3"`. They do not
+trigger deep verification. `match verify`'s `checksums.txt` always contains routine
+source-turn hashes, including the terminal samples.
+
+Matching routine hashes establishes agreement only on the selected observation
+fields. For simulation-equivalence evidence, compare deep per-tick traces and
+save/replay continuations separately: routine reports cannot establish agreement
+on the omitted state. Evaluate changes in coverage separately from worker
+offloading when measuring checksum optimizations.
 
 ## AI Types
 
@@ -485,8 +604,9 @@ publishes due results, captures once, then admits work before applying orders an
 advancing. Newly admitted AI/statistics work configured with delay zero is due at
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
-old pending results keep their original deadlines. Replay floor 167 and the sim
-revision gate distinguish the changed timing. Runtime world publication and
+old pending results keep their original deadlines. The current replay floor 174
+also requires adaptive ground-resource scheduling and the integrated delayed-ground
+and air-routing state; the sim revision gates these rules. Runtime world publication and
 AI-order delivery remain separate: world results publish before capture, while
 due AI orders enter the command schedule and undergo live order validation. See the
 [owner timing contract](../architecture/simulation.md#completed-world-observations).
@@ -509,13 +629,17 @@ the serial fallback publishes on the same ticks. `--compute-threads 1` is the
 owner-only control; all deferred producers submit to the same executor and the
 owner computes their jobs at joins when there are no workers.
 
-Periodic material, market, guard and clear gradients use the same executor as AI.
+Material, market, consumer-specific supplier, guard, clear and forbidden gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads, or one participant when the hardware count is
-unavailable. Browser automatic sizing remains capped at eight. Linux/Android CPU
-affinity is reported separately and does not resize the pool.
+`--compute-threads auto|N` controls the shared pool for all sessions; native `auto`
+prefers physical cores, filtered by affinity where topology discovery supports it.
+Fallbacks are eligible logical CPUs, the hardware thread hint, then one participant.
+For a selected count below four CPUs, auto adds the owner as an extra participant
+so each CPU can have a background worker. At four or more, the total participant
+count equals the selected CPU count. Unknown counts retain the serial fallback.
+Browser auto applies the same rule to its logical-CPU hint, capped at eight. See
+[compute sizing](compute-benchmarks.md) for platform detection and limitations.
 N is a positive unsigned participant count including the owner. Explicit counts
 remain unchanged unless the platform cannot run threads, when execution uses one
 participant while retaining the requested count in diagnostics. Saving drains

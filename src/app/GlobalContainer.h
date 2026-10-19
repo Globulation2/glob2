@@ -135,8 +135,8 @@ public:
 	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
-	// Zero selects the reported logical CPU count (one if unavailable).
-	// Counts include the simulation owner; affinity is reported separately.
+	// Zero selects automatic sizing (see defaultComputeThreadCount).
+	// Counts include the simulation owner.
 	unsigned computeThreads = 0;
     ApplicationResourcePlan resourcePlan; // Frozen setup provenance for this session.
     ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;

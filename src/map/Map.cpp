@@ -7,6 +7,8 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientTargetCell.h"
+#include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "render/SoftwareTerrainCache.h"
@@ -54,22 +56,17 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleVa
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MaterialSlotCount; r++)
-			for (int s=0; s<SWIM_CLASS_COUNT; s++)
+			for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 			{
 				materialGradients[t][r][s] = NULL;
-				gradientUpdated[t][r][s] = false;
 				marketMaterialGradients[t][r][s] = NULL;
-				marketGradientDirty[t][r][s] = false;
-				marketGradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 		{
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
 			clearAreasGradient[t][s] = NULL;
-			guardGradientUpdated[t][s] = false;
-			clearGradientUpdated[t][s] = false;
 		}
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
@@ -108,6 +105,7 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!waterSnapshot)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
 		// Called by independent executor jobs too; do not dispatch while holding
 		// this lock. All readers share this one initialization pass.
@@ -132,6 +130,7 @@ Map::frozenTerrainMovementSnapshot(unsigned swim) const
 	auto &cached = terrainMovementSnapshots[swim];
 	if (!cached)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
 		snapshot->cells.resize(size);
 		auto &movement = snapshot->movement;
@@ -215,8 +214,8 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 	const auto &rule = cellRuleData[ruleIndex];
 	const auto &p = rule.properties;
 	const unsigned edge = rule.ground[p.swimmable ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
-	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
-		if (gradient_kernel::terrainAllowsGround(p, sw))
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
+		if (gradient_kernel::terrainAllowsMovement(p, sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
 			if (add)
@@ -263,9 +262,9 @@ void Map::updateTerrainSummary()
 	airTerrainConstraints = terrainFeatures[2];
 	projectileBlockingTerrain = terrainFeatures[3];
 	terrainBucketCount = terrainFeatures[5] ? 256 : terrainFeatures[4] ? 128 : 64;
-	terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
 	terrainMinimumAir = GRADIENT_STEP;
-	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
+	for (unsigned sw = 0; sw < MOVEMENT_CLASS_COUNT; ++sw)
 		for (unsigned cost = 1; cost < terrainMinimumGround[sw]; ++cost)
 			if (terrainGroundCostCounts[sw][cost])
 			{
@@ -356,6 +355,8 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 {
 	const auto old = cellRules[index];
 	if (old == rule) return;
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	if (--cellRuleCounts[old] == 0)
 		adjustTerrainFeatures(old, false);
 	if (cellRuleCounts[rule]++ == 0)
@@ -382,6 +383,7 @@ void Map::changeCellRule(size_t index, std::uint16_t rule)
 		before.airSpeedQ8 != after.airSpeedQ8 ||
 		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::writeVertex(size_t index, TerrainType type)
@@ -449,20 +451,13 @@ void Map::finishTerrainEdit()
 	{
 		bumpTopologyGeneration();
 		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
-				// A queued field owns an immutable snapshot of the old terrain.
-				// Prevent its delayed publication from undoing this invalidation.
-				gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
-				gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
-				guardGradientUpdated[team][swim] = clearGradientUpdated[team][swim] = false;
-				for (int resource = 0; resource < MaterialCount; ++resource)
-				{
-					gradientRuntime->pipeline.invalidate(&materialGradients[team][resource][swim]);
-					gradientUpdated[team][resource][swim] = false;
-				}
-				// Escape fields have no dirty flag. Their scheduled seed comparison
-				// cannot detect a cost-only change such as grass becoming trail.
+                // Cell edits are soft changes: publish the captured complete
+                // field at its original deadline, then refresh the dirty plane.
+                // Repeated painting must not starve all visible generations.
+                // Escape fields use the same delayed refresh contract, including
+                // cost-only terrain changes such as grass becoming trail.
 				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
 			}
 	}
@@ -585,7 +580,13 @@ void Map::clear()
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
-	gradientRuntime->preparation={};
+    gradientRuntime->preparations.clear();
+    gradientRuntime->adaptive={};
+    gradientRuntime->marketTargets={};
+    if (auto& probe=gradientRuntime->qualityProbe) {
+        probe->finishStudy(probe->lastTick);probe->fields.clear();probe->window=UINT32_MAX;probe->resetMovement();
+    }
+    gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
@@ -597,6 +598,7 @@ void Map::clear()
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
 	gradientRuntime->safety.reset();
+    gradientRuntime->directFlight = {};
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{
@@ -609,6 +611,7 @@ void Map::clear()
 	resourceStocks.clear();
 	freeResourceStocks.clear();
 	materialSourceCounts.fill(0);
+	paintedAreaCounts={};
 	vertexTerrain.clear();
 	cellRules.clear();
 	refreshLiveView();
@@ -638,26 +641,26 @@ void Map::clear()
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
 		for (int r=0; r<MaterialCount; ++r)
-			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				delete[] materialGradients[t][r][swim];
+				materialGradientStale[t][r][swim]=false;
 				materialGradients[t][r][swim] = NULL;
-				gradientUpdated[t][r][swim] = false;
 				delete[] marketMaterialGradients[t][r][swim];
+				marketMaterialGradientStale[t][r][swim]=false;
 				marketMaterialGradients[t][r][swim] = NULL;
-				marketGradientDirty[t][r][swim] = false;
-				marketGradientUpdated[t][r][swim] = false;
 			}
-		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+		for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
 		{
 			delete[] forbiddenGradient[t][swim];
+			forbiddenGradientStale[t][swim]=false;
 			forbiddenGradient[t][swim] = NULL;
 			delete[] guardAreasGradient[t][swim];
+			guardGradientStale[t][swim]=false;
 			guardAreasGradient[t][swim] = NULL;
 			delete[] clearAreasGradient[t][swim];
+			clearGradientStale[t][swim]=false;
 			clearAreasGradient[t][swim] = NULL;
-			guardGradientUpdated[t][swim] = false;
-			clearGradientUpdated[t][swim] = false;
 		}
 		delete[] exploredArea[t];
 		exploredArea[t] = NULL;
@@ -681,10 +684,6 @@ void Map::clear()
 	sizeSector=0;
 	displayedTeam = NO_DISPLAYED_TEAM;
 
-	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MaterialCount; r++)
-			for (int s=0; s<SWIM_CLASS_COUNT; s++)
-				gradientUpdated[t][r][s]=false;
 }
 
 
@@ -777,4 +776,10 @@ EntityRandom& Map::privateRandom(RandomDomain domain)
 {
     // Standalone authoring maps have a fixed seed until a request sets one.
     return worldRandom.get(game ? game->gameHeader.getRandomSeed() : 0, domain);
+}
+
+// Shared by seed preparation and mutation metadata as well as resource queries.
+bool Map::farmAreasEnabled() const
+{
+	return game && game->gameHeader.hasExperiment(ExperimentId::FarmAreas);
 }

@@ -38,6 +38,30 @@ std::vector<Uint8> engineTick(LockstepSession &session, int players, int local,
 
 TEST_SUITE("LockstepSession")
 {
+    TEST_CASE("delayed samples compare source ticks rather than front orders") {
+        NetEngine engine(2,0);
+        auto remote=[](Uint32 tick,Uint32 value) {
+            auto order=std::make_shared<NullOrder>();
+            order->hasGameCheckSum=true; order->gameCheckSumTick=tick; order->gameCheckSum=value;
+            return order;
+        };
+        engine.publishChecksum({10,111});
+        engine.pushOrder(remote(11,999),1,false); engine.advanceStep();
+        REQUIRE(engine.tickReady()); CHECK(engine.matchCheckSums()); engine.clearTopOrders();
+        engine.publishChecksum({11,222});
+        engine.pushOrder(remote(10,111),1,false); engine.advanceStep();
+        REQUIRE(engine.tickReady()); CHECK_FALSE(engine.matchCheckSums());
+    }
+    TEST_CASE("explicit presence distinguishes zero hashes from missing startup samples") {
+        NetEngine engine(2,0);
+        auto remote=std::make_shared<NullOrder>();
+        remote->hasGameCheckSum=true; remote->gameCheckSumTick=0; remote->gameCheckSum=0;
+        engine.pushOrder(remote,1,false); engine.advanceStep();
+        CHECK(engine.matchCheckSums()); engine.clearTopOrders();
+        engine.publishChecksum({0,1}); engine.pushOrder(std::make_shared<NullOrder>(),1,false); engine.advanceStep();
+        CHECK_FALSE(engine.matchCheckSums());
+    }
+
 	TEST_CASE("single player executes the local order on the tick after it is submitted")
 	{
 		std::unique_ptr<LockstepSession> session = std::make_unique<NetEngine>(2, 0);
@@ -82,6 +106,8 @@ TEST_SUITE("LockstepSession")
 		LockstepSession &session = engine;
 		auto remote = std::make_shared<NullOrder>();
 		remote->gameCheckSum = 2;
+        remote->hasGameCheckSum=true;
+        remote->gameCheckSumTick=0;
 		session.pushOrder(remote, 1, false);
 		session.advanceStep(1);
 		REQUIRE(session.tickReady());

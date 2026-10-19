@@ -137,7 +137,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	for(int i=0; i<GESize; ++i)
 		eventCooldownTimers[i]=0;
 
-	if (!stats.load(stream, versionMinor))
+	if (!stats.load(stream, versionMinor,game->mapHeader.privateAdaptive174))
 	{
 		stream->readLeaveSection();
 		co_return false;

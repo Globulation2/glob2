@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "sim/snapshot/TeamRecords.h"
 #include "WorldSnapshot.h"
 #include "SnapshotStore.h"
@@ -645,7 +646,7 @@ TEST_SUITE("WorldSnapshot")
 		REQUIRE(building); REQUIRE(worker);
 		building->unitsWorking.push_back(worker);
 		game.map.setResourceByIndex(20, 20,WHEAT, 1);
-		game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), 0);
+		glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), 0); });
 		SimulationSnapshot::Store store;
 		auto mutateAndCapture = [&] {
 			++game.stepCounter;

@@ -79,7 +79,7 @@ TEST_CASE("binary and text saves restore nonslot order scheduler and continuatio
 		}
 	}
 }
-TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order") {
+TEST_CASE("formats164 through166 preserve population encoding and scheduler boundaries") {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
 	auto& game=world.game; auto* team=game.teams[0];
@@ -114,10 +114,10 @@ TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order"
 		HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game,int version)
 			: LegacyPopulationOutput(backend,&game,version),version(version) {}
 		void writeSint32(Sint32 value,std::string_view name) override {
-			BinaryOutputStream::writeSint32(name=="versionMinor" ? version : value,name);
+			LegacyPopulationOutput::writeSint32(name=="versionMinor" ? version : value,name);
 		}
 	};
-	for (int version : {164,165}) {
+	for (int version : {164,165,166}) {
 		CAPTURE(version);
 		auto* backend=new GAGCore::MemoryStreamBackend;
 		HistoricalOutput output(backend,game,version);
@@ -129,7 +129,7 @@ TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order"
 		auto* loaded=restored.game.teams[0];
 		CHECK(populationOrder(loaded->liveUnits)==expectedUnits);
 		CHECK(populationOrder(loaded->liveBuildings)==expectedBuildings);
-		CHECK(loaded->taskSwapNext==Unit::GIDtoID(expectedUnits.front()));
+		CHECK(loaded->taskSwapNext==Unit::GIDtoID(version<166 ? expectedUnits.front() : expectedUnits.back()));
 		CHECK(loaded->liveUnits.matches(loaded->myUnits,Unit::MAX_COUNT));
 		CHECK(loaded->liveBuildings.matches(loaded->myBuildings,Building::MAX_COUNT));
 		CHECK(restored.game.teams[1]->liveUnits.empty());
@@ -160,8 +160,17 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         expectedNext=team->taskSwapNext;
         REQUIRE_FALSE(std::is_sorted(expectedUnits.begin(),expectedUnits.end()));
         REQUIRE_FALSE(std::is_sorted(expectedBuildings.begin(),expectedBuildings.end()));
+        // Released format166 used synchronous cold construction. Prime complete
+        // reference generations so the historical save contains representable
+        // warm jobs rather than new-format cold publication requests.
+        for (auto* building:team->liveBuildings) {
+            const auto slot=building->routeSlot(0,BuildingRoute::Automatic);
+            REQUIRE(!building->globalGradient[slot]);
+            building->globalGradient[slot]=game.map.acquireBuildingGradientBuffer();
+            game.map.updateGlobalGradient(building,0);
+        }
         game.map.setResourceByIndex(20,20,WHEAT,1);
-        game.map.getMaterialGradientSlot(0,WHEAT,0);
+        glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);
         game.map.configureCompute(1);
         game.map.configureGradientPipeline(0,3);
         game.observeCompletedWorld();
@@ -171,7 +180,7 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         REQUIRE(pendingFields>0); REQUIRE(pendingGrowth==1);
         struct HistoricalOutput : glob2test::LegacyPopulationOutput {
             HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game)
-                : LegacyPopulationOutput(backend,&game,166) {}
+                : LegacyPopulationOutput(backend,&game,166,GradientLayout::PreservePending) {}
             void writeSint32(Sint32 value,std::string_view name) override {
                 BinaryOutputStream::writeSint32(name=="versionMinor" ? 166 : value,name);
             }

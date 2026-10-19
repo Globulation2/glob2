@@ -27,6 +27,7 @@ MapHeader::MapHeader()
 
 void MapHeader::reset()
 {
+    privateAdaptive174=false;
 	historicalGrowthLayout = false;
 	versionMajor = VERSION_MAJOR;
 	versionMinor = VERSION_MINOR;
@@ -45,6 +46,7 @@ void MapHeader::reset()
 
 bool MapHeader::load(GAGCore::InputStream *stream)
 {
+    privateAdaptive174=false;
 	// The same header is read from local files, imports and network messages.
 	// Do not expose partially read fields if validation fails.
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
@@ -71,7 +73,7 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 	mapName = stream->readText("mapName");
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
-	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR)
+	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR || versionMinor==170)
 		return false;
 
 	numberOfTeams = stream->readSint32("numberOfTeams");

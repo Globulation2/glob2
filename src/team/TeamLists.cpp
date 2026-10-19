@@ -22,9 +22,10 @@ void Team::createLists(void)
 	canExchange.clear();
 	for (Building* building : liveBuildings)
 		{
-			addToStaticAbilitiesLists(building);
+			addToStaticAbilitiesLists(building,false);
 			building->update();
 		}
+    for(int material=0;material<MaterialCount;++material)map->dirtyMarketGradientsSlot(teamNumber,material);
 }
 
 
@@ -83,8 +84,9 @@ void Team::removeFromAbilitiesLists(Building *building)
 {
 	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
 	building->cancelProduction();
-	stockSuppliers.remove(building);
+	const auto removedStock=stockSuppliers.remove(building);
 	directStockSuppliers.remove(building);
+    if(removedStock)for(int material=0;material<MaterialCount;++material)map->dirtyMarketGradientsSlot(teamNumber,material);
 	combatFlags.remove(building);
 	for (int ui=0; ui<NB_ABILITY; ui++)
 		if (building->type->upgrade[ui]) canUpgrade[ui].remove(building);
@@ -112,14 +114,19 @@ void Team::removeFromAbilitiesLists(Building *building)
 
 
 
-void Team::addToStaticAbilitiesLists(Building *building)
+void Team::addToStaticAbilitiesLists(Building *building,bool notifyMarketTargets)
 {
 	if (building->type->runtimeSuppliesDirectStock && building->buildingState == Building::ALIVE && std::find(directStockSuppliers.begin(),directStockSuppliers.end(),building)==directStockSuppliers.end()) directStockSuppliers.push_back(building);
 	if (building->runtime->attractsRole(2) && std::find(combatFlags.begin(),combatFlags.end(),building)==combatFlags.end()) combatFlags.push_back(building);
 	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
 	if (building->type->runtimeSuppliesStock && building->buildingState == Building::ALIVE &&
 		std::find(stockSuppliers.begin(), stockSuppliers.end(), building) == stockSuppliers.end())
-		stockSuppliers.push_back(building);
+    {
+        stockSuppliers.push_back(building);
+        // A newly completed or restored supplier can already contain stock.
+        // Diff after list membership changes, using the final current inventory.
+        if(notifyMarketTargets)for(int material=0;material<MaterialCount;++material)map->dirtyMarketGradientsSlot(teamNumber,material);
+    }
 	if (building->type->canExchange)
 		if (std::find(canExchange.begin(), canExchange.end(), building) == canExchange.end()) canExchange.push_back(building);
 

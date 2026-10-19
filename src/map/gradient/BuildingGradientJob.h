@@ -26,6 +26,7 @@ struct Job
 	// workers never read either.
 	std::uint32_t epoch = 0, captureTick = 0, generation = 0;
 	int depthTarget = 0;
+    std::uint8_t workReason=255; // Observer only; no save/checksum semantics.
 	// Owner scalars and immutable cost planes, taken at the observation boundary
 	// together with the snapshot lease the seeder reads.
 	gradient_preparation::BuildingSeed seed;

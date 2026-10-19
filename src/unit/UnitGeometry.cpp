@@ -8,6 +8,7 @@
 #include "Building.h"
 
 #include "Utilities.h"
+#include "gradient/DirectFlightDirection.h"
 
 void Unit::setNewValidDirectionGround(void)
 {
@@ -32,7 +33,7 @@ void Unit::setNewValidDirectionAir(void)
 {
 	assert(performance[FLY]);
 	int i=0;
-	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	while ( i<8 && !owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me))
 	{
 		direction=(direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
@@ -46,59 +47,22 @@ void Unit::setNewValidDirectionAir(void)
 	}
 }
 
+// Preserve the original angular bearing and deterministic avoidance order on
+// unconstrained maps. Destination selection remains in the shared query layer.
 void Unit::flyToTarget()
 {
-	assert(performance[FLY]);
-    if (owner->map->hasAirTerrainConstraints())
-    {
-        dx = dy = 0;
-        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,pathDx,pathDy); });
-        directionFromDxDy();
-        return;
+    assert(performance[FLY]);
+    const auto step=direct_flight::select(posX,posY,targetX,targetY,owner->map->getW(),owner->map->getH(),
+        [&](int x,int y){return owner->map->isFreeForMovement(x,y,AIR_MOVEMENT_CLASS,owner->me);});
+    findDisplacement([&](int* x,int* y){*x=step.dx;*y=step.dy;return true;});
+    directionFromDxDy();
+    if(directGradientDecision) {
+        const auto key=*directGradientDecision;directGradientDecision.reset();
+        const auto* cells=*owner->map->gradientFieldDestination(key);
+        owner->map->directGradientMovement(key,posX,posY,entityRandom,cells,dx||dy,true,false);
     }
-	int ldx=targetX-posX;
-	int ldy=targetY-posY;
-	findDisplacement([&](int* pathDx, int* pathDy) { simplifyDirection(ldx, ldy, pathDx, pathDy); return true; });
-	directionFromDxDy();
-	Map *map=owner->map;
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	int cDirection=direction;
-	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	dx=0;
-	dy=0;
-	direction=UNIT_DIRECTION_NONE;
-	if (verbose)
-		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
-}
 
+}
 
 void Unit::escapeGroundTarget()
 {
@@ -195,36 +159,12 @@ int Unit::directionFromDxDy(int dx, int dy)
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapW=owner->map->getW();
-	int mapH=owner->map->getH();
-	if (ldx>(mapW>>1))
-		ldx-=mapW;
-	else if (ldx<-(mapW>>1))
-		ldx+=mapW;
-	if (ldy>(mapH>>1))
-		ldy-=mapH;
-	else if (ldy<-(mapH>>1))
-		ldy+=mapH;
+    const auto step=direct_flight::bearing(ldx,ldy,owner->map->getW(),owner->map->getH());
+    *cdx=step.dx;*cdy=step.dy;
 
-        /* We consider a cell to be vertical or horizontal in
-           direction (rather than diagonal) if it is 2.41 times more
-           vertical than horizontal, or vice versa.  This is because
-           the halfway point between 45 degrees and 90 degrees is 67.5
-           degrees and sin(67.5 deg) / cos(67.5 deg) =
-           2.41421356237. */
-	if ((100 * abs(ldx)) > (241 * abs(ldy)))
-	{
-		*cdx=SIGN(ldx);
-		*cdy=0;
-	}
-	else if ((100 * abs(ldy)) > (241 * abs(ldx)))
-	{
-		*cdx=0;
-		*cdy=SIGN(ldy);
-	}
-	else
-	{
-		*cdx=SIGN(ldx);
-		*cdy=SIGN(ldy);
-	}
+}
+
+int Unit::movementClass() const
+{
+    return performance[FLY]>0 ? AIR_MOVEMENT_CLASS : swimClass();
 }

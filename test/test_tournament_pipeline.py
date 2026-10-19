@@ -48,6 +48,75 @@ class PipelineTests(unittest.TestCase):
         self.coordinator = Coordinator.submit(root,manifest,[self.root/'bundles'/self.bundle['id']])
         return self.coordinator
 
+    def test_dispatch_finishes_read_before_another_connection_commits(self):
+        c = self.expand(3)
+        entered, release = threading.Event(), threading.Event()
+        from tools.tournaments.coordinator import eligible as real_eligible
+        first = True
+        def eligible_after_commit(*args):
+            nonlocal first
+            if first:
+                first = False
+                entered.set()
+                if not release.wait(5):
+                    raise AssertionError('writer did not release dispatch')
+            return real_eligible(*args)
+        def dispatch():
+            lane = Coordinator(c.root, repair=False, manifest=c.manifest)
+            try:
+                return lane.dispatch('lane', self.status | {'slots': 1})
+            finally:
+                lane.close()
+        with patch('tools.tournaments.coordinator.eligible', side_effect=eligible_after_commit), concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(dispatch)
+            try:
+                self.assertTrue(entered.wait(5))
+                # A different SQLite connection commits after candidate SELECT.
+                # A still-live SELECT would make the next BEGIN IMMEDIATE fail
+                # with SQLITE_BUSY_SNAPSHOT, independent of busy_timeout.
+                c.host_status('writer', self.status)
+            finally:
+                release.set()
+            attempts = future.result(timeout=5)
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(c.db.execute("SELECT count(*) FROM attempts WHERE state='leased'").fetchone()[0], 1)
+
+    def test_concurrent_host_dispatch_does_not_duplicate_leases(self):
+        c = self.expand(24)
+        barrier = threading.Barrier(2)
+        local = threading.local()
+        from tools.tournaments.coordinator import eligible as real_eligible
+        def simultaneous_candidates(*args):
+            if not getattr(local, 'entered', False):
+                local.entered = True
+                barrier.wait(timeout=5)
+            return real_eligible(*args)
+        def dispatch(host):
+            lane = Coordinator(c.root, repair=False, manifest=c.manifest)
+            try:
+                return lane.dispatch(host, self.status | {'slots': 12})
+            finally:
+                lane.close()
+        with patch('tools.tournaments.coordinator.eligible', side_effect=simultaneous_candidates), concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            futures = [pool.submit(dispatch, host) for host in ('first', 'second')]
+            attempts = [a for future in futures for a in future.result(timeout=10)]
+        self.assertEqual(len(attempts), 24)
+        self.assertEqual(len({a['job']['id'] for a in attempts}), 24)
+        self.assertEqual(len({a['id'] for a in attempts}), 24)
+        self.assertEqual(c.db.execute("SELECT count(*) FROM attempts WHERE state='leased'").fetchone()[0], 24)
+
+    def test_pending_keyset_batches_reach_long_ineligible_prefix(self):
+        c = self.expand(260)
+        seen = []
+        def eligible_only_last(bundle, status, kind):
+            seen.append(1)
+            return len(seen) == 260
+        with patch('tools.tournaments.coordinator.eligible', side_effect=eligible_only_last):
+            attempts = c.dispatch('lane', self.status)
+        self.assertEqual(len(attempts), 1)
+        self.assertEqual(attempts[0]['job']['seeds']['map'], 259)
+        self.assertEqual(len(seen), 260)
+
     def test_completed_backlog_frees_compute_buffer_but_missing_delivery_does_not(self):
         c=self.expand(4)
         status=self.status | {'slots':2}

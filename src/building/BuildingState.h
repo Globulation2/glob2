@@ -86,7 +86,7 @@ struct BuildingStateRecord
 	Sint32 bullets;
 	Uint32 seenByMask;
 	// Footprint, clearing and combat access, each without/with swimming.
-	static constexpr unsigned LockCount = 9;
+	static constexpr unsigned LockCount = 12;
 	Uint16 lockedMask = 0;
 	bool isLocked(unsigned access) const { return (lockedMask & Uint16(1u << access)) != 0; }
 	void setLocked(unsigned access, bool enabled)

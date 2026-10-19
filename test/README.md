@@ -39,6 +39,10 @@ python3 test/run_tests.py --binary engine --in-process     # fast local loop, no
 python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 ```
 
+The `Maxima.Farming` fertility-cache case checks correctness in every build and
+enforces its CPU-time budget only in optimized builds without coverage
+instrumentation. Fast development builds report that timing for diagnosis.
+
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 

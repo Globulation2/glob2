@@ -17,8 +17,8 @@
     },
     {
       "name": "resourceTraits",
-      "parameters": ["materials", "blocked", "visible", "clearable", "farmable"],
-      "expression": ["bitOr", "materials", ["bitOr", ["shift", "blocked", 16], ["bitOr", ["shift", "visible", 17], ["bitOr", ["shift", "clearable", 18], ["shift", "farmable", 19]]]]]
+      "parameters": ["materials", "blocked", "visible", "clearable", "farmable", "blockedAir"],
+      "expression": ["bitOr", ["bitOr", "materials", ["bitOr", ["shift", "blocked", 16], ["bitOr", ["shift", "visible", 17], ["bitOr", ["shift", "clearable", 18], ["shift", "farmable", 19]]]]], ["shift", "blockedAir", 20]]
     }
   ]
 }

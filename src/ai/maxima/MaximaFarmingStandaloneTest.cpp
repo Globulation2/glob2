@@ -250,10 +250,10 @@ TEST_SUITE("Maxima.Farming")
 		// Keep the same work budget; elapsed time also counts unrelated builds
 		// and other processes that prevent this test from getting CPU time.
 		REQUIRE(cpuMicroseconds>=0);
-		// The release suite enforces the production CPU budget. O0 source
-		// coverage adds counters to every branch, so it records the same work
-		// and verifies its results without comparing instrumented CPU cost.
-#ifndef GLOB2_TEST_COVERAGE
+		// Enforce the production CPU budget only with optimized GCC/Clang
+		// builds. Fast development and source coverage builds still check the
+		// cache results and report timing, but their CPU cost is not comparable.
+#if defined(__OPTIMIZE__) && !defined(GLOB2_TEST_COVERAGE)
 		REQUIRE(cpuMicroseconds<100000);
 #endif
 	}

@@ -30,6 +30,7 @@ _glob2() {
       'dev|dump-wheat') command_path='dev dump-wheat';;
       'dev|dump-tiled') command_path='dev dump-tiled';;
       'dev|hive-worker') command_path='dev hive-worker';;
+      'game|migrate') command_path='game migrate';;
       'game|run') command_path='game run';;
       'game|repeat') command_path='game repeat';;
       'info|version') command_path='info version';;
@@ -59,7 +60,7 @@ _glob2() {
     'ai') compadd check;;
     'assets') compadd compose-buildings render-skin skin-info;;
     'dev') compadd random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker;;
-    'game') compadd run repeat;;
+    'game') compadd migrate run repeat;;
     'info') compadd version sim-version catalog paths;;
     'map') compadd generate study generators preview render import-image export-image inspect-package validate-set;;
     'match') compadd verify;;
@@ -221,6 +222,16 @@ _glob2() {
       '--variation[variation]:value:' \
       '--help[help]' \
       '*:file:_files';;
+    'game migrate') _arguments -s \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--profile[profile]:value:' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--input[input]:value:_files' \
+      '--legacy-adaptive-174[legacy-adaptive-174]' \
+      '--help[help]' \
+      '*:file:_files';;
     'game run') _arguments -s \
       '--output-dir[output-dir]:value:_files -/' \
       '--profile[profile]:value:' \
@@ -257,6 +268,10 @@ _glob2() {
       '*--telemetry[telemetry]:value:(checksums team-timeline maxima)' \
       '--write-replay[write-replay]' \
       '--benchmark-warmup[benchmark-warmup]:value:' \
+      '--gradient-work-stats[gradient-work-stats]:value:_files' \
+      '--resource-gradient-probe[resource-gradient-probe]' \
+      '--resource-gradient-exploration[resource-gradient-exploration]:value:' \
+      '--resource-gradient-exploration-seed[resource-gradient-exploration-seed]:value:' \
       '--diagnostic-fields[diagnostic-fields]:value:(maxima)' \
       '--diagnostic-interval[diagnostic-interval]:value:' \
       '--diagnostic-png[diagnostic-png]' \

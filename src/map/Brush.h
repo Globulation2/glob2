@@ -195,6 +195,7 @@ protected:
 	std::vector<AppliedBrush> applications;
 	//! The actual dimensions of the resulting applications
 	AreaDimensions dim;
+	int mapWidth = 0, mapHeight = 0;
 	
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
@@ -205,6 +206,8 @@ public:
 	//! Return a bitmap which is the result of the fusion of all accumulated brush applications
 	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map);
 	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
+	//! Fold redundant torus copies only when necessary to fit an order codec bound.
+	bool getOrderBitmap(Utilities::BitArray *array, AreaDimensions *dim, int maximumSide);
 	//! Return the area surface
 	unsigned getAreaSurface(void);
 	//! Return the number of brush applied

@@ -140,6 +140,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 		versionProblem = "the record names sim version " + record.simVersion + " but this verifier is " + current.key();
 
 	const auto runStart = std::chrono::steady_clock::now();
+    std::map<std::uint32_t, Uint32> checksums; // Outlives engine callbacks on every exit.
 	Engine engine;
 	Engine::TurnMatchStart start;
 	start.setup = setup;
@@ -161,7 +162,6 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	globals.replayWriter = std::make_unique<ReplayWriter>();
 	globals.replayWriter->init(replay, engine.gui);
 
-	std::map<std::uint32_t, Uint32> checksums;
 	Turn::TurnLockstepSession& lockstep = *engine.turnLockstep();
 	lockstep.onChecksum = [&checksums](std::uint32_t tick, Uint32 checksum) { checksums.emplace(tick, checksum); };
 
@@ -194,6 +194,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	// The checksum a client would report for endTick itself: the state before the
 	// next tick, taken where the engine takes it.
 	engine.gatherAndAdvanceOrders(true);
+    engine.flushChecksums();
 	engine.trackTeamEliminations();
 	const auto runEnd = std::chrono::steady_clock::now();
 	Game& game = engine.gui.game;

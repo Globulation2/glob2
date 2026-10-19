@@ -91,7 +91,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		std::optional<TerrainRegistry::Movement::Prepared> prepared;
 		bool preparedChanged = false;
 	};
-	std::array<MovementCheckpoint, std::size(gradient_kernel::WATER_STEP)> checkpoints;
+	std::array<MovementCheckpoint, MOVEMENT_CLASS_COUNT> checkpoints;
 	for (unsigned sw = 0; sw < movement_.size(); ++sw)
 	{
 		const auto &m = movement_[sw];
@@ -139,7 +139,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 			}
 			m.profileIds.push_back(static_cast<std::uint8_t>(profile));
 			const auto &p = rule.properties;
-			if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
+			if (gradient_kernel::terrainAllowsMovement(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
 			if (prepare && (m.profiles.size() != checkpoints[sw].profiles || !m.prepared))
 			{
 				auto &checkpoint = checkpoints[sw];
@@ -156,7 +156,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		GradientPreparationRule preparation;
 		for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
 		{
-			if (gradient_kernel::terrainAllowsGround(rule.properties, sw)) preparation.accessibility |= 1u << sw;
+			if (gradient_kernel::terrainAllowsMovement(rule.properties, sw)) preparation.accessibility |= 1u << sw;
 			preparation.costs[sw] = rule.ground[sw].cardinal | (rule.ground[sw].diagonal << 16);
 		}
 		rules_.push_back(std::move(rule));

@@ -25,7 +25,7 @@ struct HistoricalStockOutput : glob2test::LegacyPopulationOutput {
     void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
-        BinaryOutputStream::writeSint32(value,name);
+        LegacyPopulationOutput::writeSint32(value,name);
     }
 };
 std::string historicalGame(Game& game,int slot,Sint32 stock,int version=VERSION_MINOR) {
@@ -525,4 +525,97 @@ TEST_SUITE("BuildingStock")
         }
     }
 
+}
+
+TEST_CASE("format167 warm consumer fields restore complete arrays and pool policy through current continuation [save-format][artifacts]" * doctest::test_suite("BuildingStock"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool shared : {false,true}) {
+        CAPTURE(shared);
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game=world.game; auto& map=game.map;
+        auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        for (const char* name : {"inn","hospital"}) {
+            auto& variant=catalog["variants"][game.buildingsTypes.getFinishedTypeNum(name)];
+            variant["properties"]["maxMaterial"][WHEAT]=20;
+            auto& market=variant["semantics"]["market"];
+            market["suppliesStock"]=false;
+            market["suppliesDirectStock"]=true;
+            market["suppliesDirectStockMaterials"]={"food"};
+            market["fetchesDirectStock"]=true;
+            market["fetchesDirectStockMaterials"]={"food"};
+            market["sharedStock"]=shared && std::string_view(name)=="inn";
+        }
+        game.buildingsTypes.loadSnapshotJson(catalog.dump()); game.configureBuildingCatalog();
+        auto* consumer=world.addBuilding("inn",4,4);
+        auto* supplier=world.addBuilding("hospital",20,20);
+        REQUIRE(consumer); REQUIRE(supplier);
+        REQUIRE(consumer->usesTeamMaterials()==shared);
+        supplier->setMaterial(WHEAT,10);
+        const Uint16* field=nullptr;
+        for(unsigned tick=0;!field && tick<32;++tick) {
+            field=map.getMaterialGradientSlot(0,WHEAT,0,false,consumer);
+            if(!field) game.step(0);
+        }
+        REQUIRE(field); REQUIRE(map.gradientRuntime->materialFields.size()==1);
+        REQUIRE(field[map.coordToIndex(12,12)]>GRADIENT_UNREACHABLE);
+        const std::vector<Uint16> expected(field,field+map.getW()*map.getH());
+        const auto key=map.gradientRuntime->materialFields.begin()->first;
+        auto& entry=map.gradientRuntime->materialFields.begin()->second;
+        REQUIRE(entry.consumer==consumer->gid); REQUIRE(entry.excludesShared==shared);
+        bool inFlight=false;
+        for(const auto& queued:map.gradientRuntime->fieldRequests) if(queued.slot==&entry.published) inFlight=true;
+        map.gradientRuntime->pipeline.visitLogical([&](auto* slot,unsigned,bool) {
+            if(slot==&entry.published) inFlight=true;
+        });
+        REQUIRE_FALSE(inFlight);
+        // Version167 used the same cache arrays and metadata, but had no
+        // delayed-publication hold or captured shared-pool policy fields.
+        struct Cache167Output : GAGCore::BinaryOutputStream {
+            using BinaryOutputStream::BinaryOutputStream;
+            void writeUint8(Uint8 value,std::string_view name) override {
+                if(name!="excludesShared" && name!="awaitingFirstRead") BinaryOutputStream::writeUint8(value,name);
+            }
+            void writeUint32(Uint32 value,std::string_view name) override {
+                if(name!="publishedStep") BinaryOutputStream::writeUint32(value,name);
+            }
+        };
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        Cache167Output oldCache(memory); map.saveMaterialRoutingCache(&oldCache); oldCache.flush();
+        const auto cacheBytes=memory->takeContents();
+        // New hold metadata did not exist in167. Pin its defined migration
+        // defaults in the expected world before comparing complete continuation.
+        entry.awaitingFirstRead=false; entry.publishedStep=0;
+        glob2test::HeadlessGame migrated({.header=true});
+        REQUIRE(loadGame(migrated.game,saveGame(game)));
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(cacheBytes.data(),cacheBytes.size()));
+        input.seekFromStart(0);
+        migrated.game.map.loadMaterialRoutingCache(&input,true,167);
+        REQUIRE(migrated.game.map.gradientRuntime->materialFields.size()==1);
+        const auto& restored=migrated.game.map.gradientRuntime->materialFields.at(key);
+        CHECK(restored.consumer==entry.consumer); CHECK(restored.identity==entry.identity);
+        CHECK(restored.type==entry.type); CHECK(restored.x==entry.x); CHECK(restored.y==entry.y);
+        CHECK(restored.sourceRevision==entry.sourceRevision); CHECK(restored.topology==entry.topology);
+        CHECK(restored.builtStep==entry.builtStep); CHECK(restored.recency==entry.recency);
+        CHECK(restored.team==entry.team); CHECK(restored.resource==entry.resource);
+        CHECK(restored.swim==entry.swim); CHECK(restored.modes==entry.modes);
+        CHECK(restored.excludesShared==shared);
+        CHECK_FALSE(restored.awaitingFirstRead); CHECK(restored.publishedStep==0);
+        REQUIRE(restored.published); CHECK(restored.cells.get()==restored.published);
+        CHECK(std::equal(expected.begin(),expected.end(),restored.published));
+        auto* copiedConsumer=migrated.game.resolveBuilding(Game::refOf(consumer)); REQUIRE(copiedConsumer);
+        CHECK(migrated.game.map.lookupMaterialGradientSlot(0,WHEAT,0,false,copiedConsumer)==restored.published);
+        CHECK(continuationComponents(migrated.game)==continuationComponents(game));
+        const auto upgradedBytes=saveGame(migrated.game);
+        glob2test::HeadlessGame upgraded({.header=true}); REQUIRE(loadGame(upgraded.game,upgradedBytes));
+        const auto directory=glob2test::artifactDir()/(shared?"shared":"private");
+        saveArtifact(directory/"format167-consumer-cache.bin",cacheBytes);
+        saveArtifact(directory/"upgraded-current.game",upgradedBytes);
+        for(unsigned tick=0;tick<32;++tick) {
+            CAPTURE(tick);
+            game.step(0); migrated.game.step(0); upgraded.game.step(0);
+            CHECK(continuationComponents(migrated.game)==continuationComponents(game));
+            CHECK(continuationComponents(upgraded.game)==continuationComponents(game));
+        }
+    }
 }

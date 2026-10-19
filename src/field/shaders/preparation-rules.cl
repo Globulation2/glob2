@@ -6,6 +6,6 @@ uint materialSeed(uint forbidden, uint mobile, uint blocked, uint building, uint
 uint clearSeed(uint forbidden, uint mobile, uint blocked, uint building, uint open, uint clearable, uint farmable, uint clear, uint farm, uint farmEnabled) {
     return (forbidden != 0u ? 0u : (((clearable != 0u && ((clear != 0u || ((farmEnabled != 0u && ((farm != 0u && (farmable == 0u ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u ? 65535u : (((blocked != 0u || ((building != 0u || (mobile == 0u ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u ? 0u : open)));
 }
-uint resourceTraits(uint materials, uint blocked, uint visible, uint clearable, uint farmable) {
-    return (materials | ((blocked << 16u) | ((visible << 17u) | ((clearable << 18u) | (farmable << 19u)))));
+uint resourceTraits(uint materials, uint blocked, uint visible, uint clearable, uint farmable, uint blockedAir) {
+    return ((materials | ((blocked << 16u) | ((visible << 17u) | ((clearable << 18u) | (farmable << 19u))))) | (blockedAir << 20u));
 }

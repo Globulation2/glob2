@@ -765,10 +765,14 @@ static void checkRandomContinuation(bool text, bool ai)
 		REQUIRE(output.pipelineStart>output.runtimeStart);
 		// Reject invalid queue sizes, deadlines, destinations and cancellation flags.
 		const auto pipeline=output.pipelineStart;
-		REQUIRE(static_cast<unsigned char>(bytes[pipeline+1])>0);
+		// Format 174 batches pending fields: uint16 count, uint32 destination.
+		REQUIRE((static_cast<unsigned char>(bytes[pipeline+1])<<8 |
+		         static_cast<unsigned char>(bytes[pipeline+2]))>0);
+		const auto destination=pipeline+3;
+		const auto remaining=destination+sizeof(Uint32);
 		for (const auto [offset,value] : std::vector<std::pair<size_t,unsigned char>>{
-			{pipeline,0}, {pipeline,17}, {pipeline+1,17},
-			{pipeline+2,255}, {pipeline+4,0}, {pipeline+4,17}, {pipeline+5,2}}) {
+			{pipeline,0}, {pipeline,17}, {pipeline+1,255},
+			{destination,255}, {remaining,0}, {remaining,17}, {remaining+1,2}}) {
 			auto malformed=bytes; malformed[offset]=value;
 			auto bad=input(malformed,true); bool rejected=false;
 			try { rejected=!restored.load(bad.get()); } catch(const std::exception &) { rejected=true; }

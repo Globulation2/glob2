@@ -15,6 +15,9 @@
 
 #pragma once
 
+// Sparse common field policy state, including serving/pending capture metadata.
+static constexpr int FILE_FORMAT_VERSION_UNIFIED_GRADIENTS = 178;
+
 // === Save-format minor-version feature gates ===
 // Each constant is the FIRST versionMinor at which the named feature
 // appears in the save stream. Loaders write/read the new field if
@@ -279,6 +282,12 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
 // Completed pending measurement frames replace raw labour deltas.
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
 
+// Published movement-class counts and stale suspended shared fields.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_DEMAND = 176;
+// Selected movement counters and serving/pending capture baselines. Counter
+// blocks carry stable IDs so later model feature selections remain readable.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS = 176;
+
 // Cached hiring suggestions and their pending deadlines.
 static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;
 
@@ -291,5 +300,34 @@ static constexpr int FILE_FORMAT_VERSION_INTRUSIVE_POPULATION = 166;
 // One immutable world observation per owner boundary; persisted admission phase.
 static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
 
-// Per-team building gradient admission; pending counts widen from 8 to 16 bits.
-static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 168;
+// Tagged snapshot checksums in order/replay envelopes, including saved AI queues.
+static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;
+
+// Shared air movement class; eight-class historical routing remains readable.
+static constexpr int FILE_FORMAT_VERSION_UNIFIED_MOVEMENT = 171;
+
+// Air-routing draft saves at 171 predate tagged order metadata. Master saves
+// at 168/169 already carry it; 172 combines the air and tagged layouts.
+inline constexpr bool hasSnapshotChecksumMetadata(unsigned version)
+{
+    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version == 169 || (version >= 172 && version != 174);
+}
+// Cold gradient demand, stable cache destinations and unpublished complete fields.
+static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 169;
+
+// Air-only drafts 171/172 predate the released delayed-ground state.
+inline constexpr bool hasDelayedGradientState(unsigned version)
+{ return version == FILE_FORMAT_VERSION_DELAYED_GRADIENTS || (version >= 173 && version != 174); }
+
+// The published building-gradient draft174 predates the air/ground integration.
+// Keep its save layout distinct from released master173 and integrated175+.
+inline constexpr bool hasUnifiedMovement(unsigned version)
+{ return version >= FILE_FORMAT_VERSION_UNIFIED_MOVEMENT && version != 174; }
+static constexpr int FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT = 174;
+inline constexpr bool hasInitialBuildingGradient(unsigned version)
+{ return version == 170 || version >= FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT; }
+static constexpr int FILE_FORMAT_VERSION_HIRING_GRADIENTS = 174;
+static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 174;
+
+// Per-team building admission widens pending counts from 8 to 16 bits.
+static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 186;

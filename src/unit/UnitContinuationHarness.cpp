@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -8,16 +9,32 @@
 #include "Building.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 #include <vector>
 #include <algorithm>
 
-namespace
-{
 struct UnitActivityAccess : Unit
 {
-    static void run(Unit& unit) { const auto activity=&UnitActivityAccess::handleActivity; (unit.*activity)(); }
+    static bool pending(const Unit& unit) { return unit.gradientDecisionPending; }
+	static void route(Unit &unit)
+	{
+		const auto movement = &UnitActivityAccess::handleMovement;
+		(unit.*movement)();
+	}
+	static void move(Unit &unit)
+	{
+		const auto action = &UnitActivityAccess::handleActionGoingDxDy;
+		(unit.*action)();
+	}
+	static void run(Unit &unit)
+	{
+		const auto activity = &UnitActivityAccess::handleActivity;
+		(unit.*activity)();
+	}
 };
+namespace
+{
 static std::vector<Uint32> state(Game& game)
 {
     std::vector<Uint32> result, buildings, units;
@@ -148,7 +165,234 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
-    TEST_CASE("medical abort clears every working purpose before idle or service continuation")
+	TEST_CASE("a pending building route steers while retaining assignment and random state until "
+			  "publication")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned participants : {1u, 2u, 4u, 8u})
+		{
+			CAPTURE(participants);
+			glob2test::HeadlessGame world({.clearImmobile = true, .header = true, .seed = 4921});
+			auto &game = world.game;
+			game.gameHeader.setBuildingGradientDelay(3);
+			game.map.configureCompute(participants);
+			game.map.configureGradientPipeline(participants - 1, 3);
+			auto *unit = world.addUnit(WORKER, 16, 16);
+			auto *building = world.addBuilding("inn", 4, 4);
+			REQUIRE(unit);
+			REQUIRE(building);
+			unit->destinationPurpose = FEED;
+			building->unitsInside.push_back(unit);
+			unit->subscriptionSuccess(building, true, false, UnitJobPurpose::None);
+			const auto activity = unit->activity;
+			const auto random = unit->entityRandom;
+			const auto assertSteering = [&]
+			{
+				UnitActivityAccess::route(*unit);
+				CHECK(unit->targetBuilding == building);
+				CHECK(unit->attachedBuilding == building);
+				CHECK(unit->activity == activity);
+				CHECK(unit->jobPurpose == UnitJobPurpose::None);
+				CHECK(unit->entityRandom == random);
+				CHECK(unit->posX == 16);
+				CHECK(unit->posY == 16);
+				CHECK(unit->dx == -1);
+				CHECK(unit->dy == -1);
+				CHECK(UnitActivityAccess::pending(*unit));
+				CHECK(std::find(building->unitsInside.begin(), building->unitsInside.end(), unit) !=
+					  building->unitsInside.end());
+			};
+			assertSteering();
+            // Missing fields publish one advance after admission, regardless of refresh delay.
+			for (int tick = 0; tick < 1; ++tick)
+			{
+				game.map.advanceGradientPipeline();
+				assertSteering();
+				++game.stepCounter;
+				game.map.stagePeriodicGradientPreparation();
+				game.map.preparePendingGradient(game.captureReadBoundary());
+			}
+			game.map.advanceGradientPipeline();
+			UnitActivityAccess::route(*unit);
+			CHECK(unit->attachedBuilding == building);
+			CHECK(!UnitActivityAccess::pending(*unit));
+			CHECK((unit->dx != 0 || unit->dy != 0));
+			game.map.finishGradientPipeline();
+		}
+	}
+
+	TEST_CASE("pending steering tries flyer turns around occupied ground and waits when surrounded")
+	{
+		glob2test::HeadlessGlobals globals;
+		// An eastward heading tries E, SE, NE, S, N, SW, NW, W in that order.
+		const int steps[8][2] = {{1, 0},  {1, 1},  {1, -1},  {0, 1},
+								 {0, -1}, {-1, 1}, {-1, -1}, {-1, 0}};
+		for (int blocked = 0; blocked <= 8; ++blocked)
+		{
+			CAPTURE(blocked);
+			glob2test::HeadlessGame world({.clearImmobile = true, .header = true, .seed = 4921});
+			world.game.map.configureGradientPipeline(0, 3);
+			auto *unit = world.addUnit(WORKER, 8, 8);
+			auto *building = world.addBuilding("inn", 20, 7);
+			REQUIRE(unit);
+			REQUIRE(building);
+			for (int i = 0; i < blocked; ++i)
+				REQUIRE(world.addUnit(WORKER, 8 + steps[i][0], 8 + steps[i][1]));
+			unit->destinationPurpose = FEED;
+			building->unitsInside.push_back(unit);
+			unit->subscriptionSuccess(building, true, false, UnitJobPurpose::None);
+			const auto random = unit->entityRandom;
+			UnitActivityAccess::route(*unit);
+			REQUIRE(UnitActivityAccess::pending(*unit));
+			CHECK(unit->dx == (blocked == 8 ? 0 : steps[blocked][0]));
+			CHECK(unit->dy == (blocked == 8 ? 0 : steps[blocked][1]));
+			CHECK(unit->attachedBuilding == building);
+			CHECK(unit->targetBuilding == building);
+			CHECK(unit->entityRandom == random);
+		}
+	}
+
+	TEST_CASE("pending steering respects forbidden terrain and mobility and wraps toward flags")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.clearImmobile = true, .header = true, .seed = 4921});
+		auto *unit = world.addUnit(WORKER, 1, 8);
+		auto *flag = world.addBuilding("warflag", 29, 8);
+		REQUIRE(unit);
+		REQUIRE(flag);
+		const auto random = unit->entityRandom;
+		unit->followPendingBuildingRoute(*flag, BuildingRoute::Combat);
+		CHECK(unit->dx == -1);
+		CHECK(unit->dy == 0);
+		for (int y = 7; y <= 9; ++y)
+			for (int x = 0; x <= 2; ++x)
+				if (x != 1 || y != 8)
+					world.game.map.setAreaMask(world.game.map.coordToIndex(x, y), &Tile::forbidden,
+											   world.team->me);
+		unit->followPendingBuildingRoute(*flag, BuildingRoute::Combat);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == 0);
+		for (int y = 7; y <= 9; ++y)
+			for (int x = 0; x <= 2; ++x)
+				world.game.map.setAreaMask(world.game.map.coordToIndex(x, y), &Tile::forbidden, 0);
+		unit->performance[WALK] = 0;
+		unit->performance[SWIM] = 16;
+		unit->followPendingBuildingRoute(*flag, BuildingRoute::Combat);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == 0); // A pure swimmer cannot take a land step.
+		unit->performance[SWIM] = 0;
+		unit->followPendingBuildingRoute(*flag, BuildingRoute::Combat);
+		CHECK(unit->dx == 0);
+		CHECK(unit->dy == 0);
+		CHECK(unit->entityRandom == random);
+	}
+
+	TEST_CASE("pending flag and clearing routes preserve the working job and clearing claim")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool clearing : {false, true})
+		{
+			CAPTURE(clearing);
+			glob2test::HeadlessGame world({.clearImmobile = true, .header = true, .seed = 4921});
+			world.game.map.configureGradientPipeline(0, 3);
+			auto *unit = world.addUnit(clearing ? WORKER : WARRIOR, 4, 16);
+			auto *flag = world.addBuilding(clearing ? "clearingflag" : "warflag", 20, 16);
+			REQUIRE(unit);
+			REQUIRE(flag);
+			const auto purpose = clearing ? UnitJobPurpose::Clear : UnitJobPurpose::Defend;
+			flag->unitsWorking.push_back(unit);
+			unit->subscriptionSuccess(flag, false, true, purpose);
+			if (clearing)
+			{
+				unit->displacement = Unit::DIS_CLEARING_RESOURCES;
+				unit->previousClearingArea = Unit::ClearingAreaClaim{8, 8};
+				unit->previousClearingAreaDistance = 7;
+				world.game.map.setClearingAreaClaimed(8, 8, 0, unit->gid);
+			}
+			const auto random = unit->entityRandom;
+			UnitActivityAccess::route(*unit);
+			REQUIRE(UnitActivityAccess::pending(*unit));
+			CHECK(unit->dx == 1);
+			CHECK(unit->dy == 0);
+			CHECK(unit->attachedBuilding == flag);
+			CHECK(unit->targetBuilding == flag);
+			CHECK(unit->jobPurpose == purpose);
+			CHECK(unit->entityRandom == random);
+			if (clearing)
+			{
+				REQUIRE(unit->previousClearingArea);
+				CHECK(unit->previousClearingAreaDistance == 7);
+				CHECK(world.game.map.isClearingAreaClaimed(8, 8, 0) == unit->gid);
+			}
+		}
+	}
+
+	TEST_CASE(
+		"movement chosen while pending survives binary and text save continuation [artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+		for (bool text : {false, true})
+		{
+			CAPTURE(text);
+			glob2test::HeadlessGame world(
+				{.clearImmobile = true, .loadDefaultRace = true, .header = true, .seed = 4921});
+			auto &game = world.game;
+			game.gameHeader.setBuildingGradientDelay(3);
+			game.map.configureGradientPipeline(0, 3);
+			auto *unit = world.addUnit(WORKER, 16, 16);
+			auto *building = world.addBuilding("inn", 4, 4);
+			REQUIRE(unit);
+			REQUIRE(building);
+			building->setMaterial(WHEAT, 20);
+			unit->destinationPurpose = FEED;
+			building->unitsInside.push_back(unit);
+			unit->subscriptionSuccess(building, true, false, UnitJobPurpose::None);
+			UnitActivityAccess::route(*unit);
+			REQUIRE(UnitActivityAccess::pending(*unit));
+			UnitActivityAccess::move(*unit);
+			REQUIRE(unit->posX == 15);
+			REQUIRE(unit->posY == 15);
+			const auto before = state(game);
+			auto *storage = new GAGCore::MemoryStreamBackend;
+			std::unique_ptr<GAGCore::OutputStream> output(
+				text ? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(storage))
+					 : static_cast<GAGCore::OutputStream *>(
+						   new GAGCore::BinaryOutputStream(storage)));
+			game.save(output.get(), false, "pending steering continuation");
+			output->flush();
+			const auto bytes = storage->takeContents();
+			glob2test::writeFile(glob2test::artifactDir() / (text ? "pending.txt" : "pending.game"),
+								 bytes);
+			std::vector<std::vector<Uint32>> expected;
+			for (int tick = 0; tick < 128; ++tick)
+			{
+				game.step(0);
+				expected.push_back(state(game));
+			}
+			const auto random = game.syncRandom;
+			GameGUI resumed;
+			auto backend =
+				std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(), bytes.size());
+			backend->seekFromStart(0);
+			std::unique_ptr<GAGCore::InputStream> input(
+				text ? static_cast<GAGCore::InputStream *>(
+						   new GAGCore::TextInputStream(backend.release()))
+					 : static_cast<GAGCore::InputStream *>(
+						   new GAGCore::BinaryInputStream(backend.release())));
+			REQUIRE(resumed.game.load(input.get()));
+			resumed.game.setWaitingOnMask(0);
+			REQUIRE(state(resumed.game) == before);
+			for (int tick = 0; tick < 128; ++tick)
+			{
+				CAPTURE(tick);
+				resumed.game.step(0);
+				REQUIRE(state(resumed.game) == expected[tick]);
+			}
+			CHECK(resumed.game.syncRandom == random);
+		}
+	}
+
+	TEST_CASE("medical abort clears every working purpose before idle or service continuation")
     {
         glob2test::HeadlessGlobals globals;
         for (auto purpose : {UnitJobPurpose::Transport,UnitJobPurpose::Clear,UnitJobPurpose::Explore,UnitJobPurpose::Defend})
@@ -173,6 +417,8 @@ TEST_SUITE("UnitContinuation")
                 if (medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT, 20);
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
+                if (!unit->performance[FLY] || world.game.map.hasAirRoutingConstraints())
+                    glob2test::awaitBuildingGradient(world.game,service,unit->movementClass());
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);

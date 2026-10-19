@@ -26,7 +26,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         ? (gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
           | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
         : 0u;
-    Uint32 cs = worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    Uint32 cs = (legacy152 ? 0 : gradientRuntime->adaptive.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)
@@ -65,8 +65,61 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 		const auto& entry=gradientRuntime->materialFields.at(key);
 		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
-		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
+        if (!legacy152) {
+            cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1)^Uint32(entry.excludesShared<<2);
+            cs=rotl1(cs)^entry.publishedStep;
+        }
+        if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];
 	}
+
+    // The explicit historical representation predates delayed publication.
+    // Keep its checksum layout stable even when the new queues are empty.
+    if (!legacy152) {
+        cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
+        for (const auto& queued:gradientRuntime->fieldRequests) {
+            const auto& request=queued.request;
+            // Hash stored request metadata without reverse-looking up its slot
+            // in the destination registry on every tick.
+            cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
+            cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+        }
+        if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
+            cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
+        });
+        const auto mix=[&](Uint32 value) { cs=rotl1(cs)^value; };
+        mix(gradientRuntime->buildingRequests.size());
+        for (const auto& r:gradientRuntime->buildingRequests) {
+            const auto* b=buildingGradientDestination(r.team,r.building,r.identity);
+            mix(r.team); mix(r.building); mix(r.identity); mix(r.slot);
+            mix(r.stale || !b || b->refreshEpoch[r.slot]!=r.epoch);
+        }
+        gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
+            const auto* b=buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
+            mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);
+            mix(p.captureTick); mix(p.generation); mix(remaining);
+            mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
+        });
+        if (includePending) gradientRuntime->pipeline.visitAdaptiveCaptures([&](auto key,bool,const auto& capture,bool legacy) {
+            mix64(key.packed());mix64(legacy);mix64(capture.tick);
+            // goalCount is derived worker output and is installed only after
+            // joining. Hash owner-captured metadata, never partially-built data.
+            mix64(capture.targets.added);mix64(capture.targets.removed);
+            mix64(capture.targets.routeEpoch);mix64(capture.targets.seedCostEpoch);
+            mix64(capture.known);for(auto value:capture.baseline)mix64(value);
+        });
+
+    }
+    // Suspended freshness changes the next explicit query, so it is simulation state.
+    for (int t=0; !legacy152 && game && t<game->teamsCount(); ++t)
+        for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+            Uint32 stale=Uint32(forbiddenGradientStale[t][sw])
+                | (Uint32(guardGradientStale[t][sw])<<1) | (Uint32(clearGradientStale[t][sw])<<2);
+            for (int r=0; r<MaterialCount; ++r) {
+                stale |= Uint32(materialGradientStale[t][r][sw]) << (3+r);
+                stale |= Uint32(marketMaterialGradientStale[t][r][sw]) << (3+MaterialCount+r);
+            }
+            if (stale) mix64((Uint64(t*SWIM_CLASS_COUNT+sw)<<32)|stale);
+        }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)

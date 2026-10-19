@@ -32,6 +32,7 @@ _glob2_complete() {
       'dev|dump-wheat') path='dev dump-wheat';;
       'dev|dump-tiled') path='dev dump-tiled';;
       'dev|hive-worker') path='dev hive-worker';;
+      'game|migrate') path='game migrate';;
       'game|run') path='game run';;
       'game|repeat') path='game repeat';;
       'info|version') path='info version';;
@@ -61,7 +62,7 @@ _glob2_complete() {
     'ai') opts='check';;
     'assets') opts='compose-buildings render-skin skin-info';;
     'dev') opts='random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker';;
-    'game') opts='run repeat';;
+    'game') opts='migrate run repeat';;
     'info') opts='version sim-version catalog paths';;
     'map') opts='generate study generators preview render import-image export-image inspect-package validate-set';;
     'match') opts='verify';;
@@ -78,7 +79,8 @@ _glob2_complete() {
     'map export-image') opts='--data-dir --generator-package --output --help ';;
     'map inspect-package') opts='--output --report-file --help ';;
     'map validate-set') opts='--report-file --preview --gallery --phase --variation --help ';;
-    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
+    'game migrate') opts='--output-dir --profile --building-catalog --data-dir --generator-package --input --legacy-adaptive-174 --help ';;
+    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --gradient-work-stats --resource-gradient-probe --resource-gradient-exploration --resource-gradient-exploration-seed --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
     'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
     'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --instance --help ';;
@@ -212,6 +214,12 @@ _glob2_complete() {
     'map validate-set|--gallery') kind='enum'; values='0 1';;
     'map validate-set|--phase') kind='integer'; values='';;
     'map validate-set|--variation') kind='integer'; values='';;
+    'game migrate|--output-dir') kind='directory'; values='';;
+    'game migrate|--profile') kind='string'; values='';;
+    'game migrate|--building-catalog') kind='file'; values='';;
+    'game migrate|--data-dir') kind='directory'; values='';;
+    'game migrate|--generator-package') kind='file'; values='';;
+    'game migrate|--input') kind='file'; values='';;
     'game run|--output-dir') kind='directory'; values='';;
     'game run|--profile') kind='string'; values='';;
     'game run|--building-catalog') kind='file'; values='';;
@@ -246,6 +254,9 @@ _glob2_complete() {
     'game run|--save') kind='string'; values='';;
     'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima';;
     'game run|--benchmark-warmup') kind='integer'; values='';;
+    'game run|--gradient-work-stats') kind='file'; values='';;
+    'game run|--resource-gradient-exploration') kind='intervals'; values='';;
+    'game run|--resource-gradient-exploration-seed') kind='integer'; values='';;
     'game run|--diagnostic-fields') kind='enum'; values='maxima';;
     'game run|--diagnostic-interval') kind='integer'; values='';;
     'game run|--building-artwork') kind='file'; values='';;

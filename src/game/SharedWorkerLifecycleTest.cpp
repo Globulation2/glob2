@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
 #include "field/GradientConstants.h"
@@ -12,6 +13,7 @@
 #include <thread>
 #include <nlohmann/json.hpp>
 #include "Brush.h"
+#include "EntityRandom.h"
 #include <algorithm>
 
 TEST_SUITE("SharedWorkerLifecycle") {
@@ -68,6 +70,7 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     REQUIRE(map.materialAmountAt(index, MaterialId::Gold) == 2);
     REQUIRE(map.materialAmountAt(index, MaterialId::Food) == 3);
     map.getMaterialGradient(0, MaterialId::Gold, 0);
+    map.getClearAreasGradient(0,0); // area work remains periodic without movement demand
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.stagePeriodicGradientPreparation();
@@ -80,10 +83,14 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     CHECK_FALSE(map.hasPendingGradientPreparation());
     CHECK(map.materialAmountAt(index, MaterialId::Gold) == 1);
     CHECK(map.materialAmountAt(index, MaterialId::Food) == 3);
-    // Finish respects publication deadlines; advancing safely publishes the
-    // prepared goal after the immutable definition snapshot was replaced.
+    // Catalog replacement hard-invalidates old outputs. Retire them at their
+    // original deadlines, then admit fresh demand against the new definition.
     for (int tick = 0; tick < 3; ++tick) map.advanceGradientPipeline();
-    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0)[index] == GRADIENT_AT_GOAL);
+    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0) == nullptr);
+    const auto* field = glob2test::awaitGradient(source.game, [&] {
+        return map.getMaterialGradient(0, MaterialId::Gold, 0);
+    });
+    CHECK(field[index] == GRADIENT_AT_GOAL);
 }
 TEST_CASE("pending gradient work survives a save and continues at the same deadlines") {
     glob2test::HeadlessGlobals globals;
@@ -95,12 +102,27 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
-    map.getClearAreasGradient(0, 0);
     map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
+    // Establish the first delayed generations before testing a warm batch.
+    for (int r:{WHEAT,WOOD}) glob2test::awaitGradient(source.game,[&] {
+        return map.getMaterialGradientSlot(0,r,0);
+    });
+    map.resetGradientPipeline();
+    map.configureGradientPipeline(2,3);
+    map.getClearAreasGradient(0,0);
+    source.game.stepCounter+=128;
+    // Successful planning reads are deliberately passive. Exercise actual
+    // movement demand so both warm fields join the cold area's saved batch.
+    EntityRandom random;
+    for (int r:{WHEAT,WOOD}) {
+        int dx=0,dy=0;bool stop=false;
+        map.pathfindMaterial(random,0,r,0,10,10,&dx,&dy,&stop,nullptr);
+    }
     source.game.observeCompletedWorld();
     REQUIRE_FALSE(map.hasPendingGradientPreparation());
-    REQUIRE(map.gradientPipelineStatus().jobs > 0);
+    REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field
+    REQUIRE(map.gradientPipelineStatus().pending >= 3);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
     source.save(&writer, "pending worker continuation");

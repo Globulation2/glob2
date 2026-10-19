@@ -3,7 +3,12 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+struct GradientTargetCell;
 #include "OwnerRandom.h"
+#include "gradient/FieldReadiness.h"
+#include "gradient/GradientFieldIdentity.h"
+#include "gradient/GradientQueryContext.h"
+#include "gradient/ResourceGradientContradictions.h"
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include <array>
@@ -105,6 +110,7 @@ enum AreaType
 class Map
 {
 	friend class ResourceSeedCache;
+	friend struct ResourceGradientProbe;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
@@ -125,6 +131,10 @@ class Map
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	// Derived from painted masks, independent of reachable gradient goals.
+	std::array<std::array<Uint32, Team::MAX_COUNT>, 4> paintedAreaCounts{};
+	void paintedAreaMaskChanged(AreaType kind, Uint32 before, Uint32 after);
+	void rebuildPaintedAreaCounts();
 	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markResource(size_t index) { resourceChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
@@ -133,7 +143,7 @@ class Map
 	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
-	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); }
+	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
 	//! Size the trackers to the current dimensions; every chunk becomes dirty.
 	void resetChangeTracking()
 	{
@@ -145,7 +155,7 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
-	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, SWIM_CLASS_COUNT> terrainMovementSnapshots;
+	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, MOVEMENT_CLASS_COUNT> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
@@ -159,7 +169,7 @@ class Map
 	void releaseResourceStock(size_t index);
 	void refreshResourceTotal(size_t index);
 	void rebuildResourceState();
-	void materialStockChanged(size_t index, MaterialMask before);
+	void materialStockChanged(size_t index, MaterialMask before, MaterialMask beforeAvailable, bool notifyTargets=true);
 	bool harvestMaterial(size_t index, int material);
 	// Terrain is stored once per vertex, and only there: vertex (x,y) is the
 	// top-left corner of cell (x,y). Each cell's rules are derived from its four
@@ -175,9 +185,9 @@ class Map
 	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
-	std::array<std::array<unsigned, 182>, SWIM_CLASS_COUNT> terrainGroundCostCounts{};
+	std::array<std::array<unsigned, 182>, MOVEMENT_CLASS_COUNT> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, SWIM_CLASS_COUNT> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	std::array<unsigned, MOVEMENT_CLASS_COUNT> terrainMinimumGround = gradient_kernel::MINIMUM_MOVEMENT_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
@@ -275,16 +285,21 @@ public:
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
-	void resetGradientPipeline() noexcept;
+	// Live-world resets retain supplier turnover history; world replacement must
+	// discard derived supplier ledgers before teams are destroyed or reconstructed.
+	void resetGradientPipeline(bool replacingWorld=false) noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+    void configureGradientWorkStats(const std::string& csvPath);
+    void configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
+        const std::string& decisionPath);
     void applyGradientBackendRequest();
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
 	// requests refreshes of existing fields and keeps serving the old ones;
-	// at the next observation up to four requests per team are staged, captured
-	// from the shared observation, built on workers and published
-	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// after the tick up to four requests per team are staged, captured at the
+	// observation boundary, built on workers and published
+	// buildingGradientDelay ticks later. Cold fields queue an initial resumable search; area and
 	// team-wide resets keep old walking fields serving instead of making them
 	// cold (Building::keepsStaleGradients).
 	//! Why a building walking field was built on the owner. cold_* name what
@@ -312,9 +327,9 @@ public:
 	//! Follow the header's buildingGradientDelay now; throws with pending work.
 	void ensureBuildingGradientPipeline();
 	bool buildingGradientPipelineActive() const;
-	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! Queue initialization or refresh of a walking field (slot = routeSlot). False
 	//! when the caller must rebuild synchronously (no pipeline: a map without
-	//! a game, or no existing field).
+	//! a game).
 	bool requestBuildingRefresh(Building *building, int slot);
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
@@ -401,8 +416,8 @@ public:
 			((Uint32(1) << Team::MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
-	// Standalone map callers capture/submit periodic preparation here. Game defers
-	// selection until its entire tick (including scripts/fog/projects) is complete.
+	// Applies live map mutations only. The Game observation boundary publishes
+	// due fields, captures the completed world, and submits subsequent jobs.
 	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
@@ -653,8 +668,22 @@ public:
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
+    bool hasMovementCostModifiers(int movement) const
+    { return movement==AIR_MOVEMENT_CLASS ? hasAirTerrainConstraints() : hasTerrainMovementModifiers(); }
+    unsigned movementQueueBuckets(int movement) const
+    { return movement==AIR_MOVEMENT_CLASS ? 256u : terrainQueueBuckets(); }
+    bool isFreeForMovement(int x, int y, int movement, Uint32 teamMask) const
+    {
+        if(movement==AIR_MOVEMENT_CLASS)
+            return isFreeForAirUnit(x,y);
+        return (movement!=WATER_ONLY_CLASS || terrainPropertiesAt(x,y).swimmable)
+            && isFreeForGroundUnit(x,y,movement>0,teamMask);
+    }
 	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
 	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }
+    // Forbidden paint applies only to ground movement. Transient air traffic
+    // uses local avoidance; neither disables direct flight.
+    bool hasAirRoutingConstraints() const;
 	bool hasProjectileBlockingTerrain() const { return projectileBlockingTerrain; }
 	bool projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const;
 	ExperimentSet requiredTerrainExperiments() const;
@@ -775,6 +804,16 @@ public:
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
+	Uint32 paintedAreaTileCount(AreaType kind, int team) const
+	{
+		assert(unsigned(kind)<paintedAreaCounts.size() && unsigned(team)<Team::MAX_COUNT);
+		return paintedAreaCounts[kind][team];
+	}
+	bool hasClearingArea(int team) const
+	{
+		return paintedAreaTileCount(ClearingArea,team) ||
+			(farmAreasEnabled() && paintedAreaTileCount(FarmArea,team));
+	}
 
 	Uint32 getForbidden(int x, int y) const
 	{
@@ -894,8 +933,6 @@ public:
     bool takeHarvestMaterialSlot(int x,int y,int dx,int dy,int material,Uint32 teamMask) { return validMaterial(material) && takeHarvest(x,y,dx,dy,static_cast<MaterialId>(material),teamMask); }
 
 private:
-	//! Allocate/refresh and mark use, without exposing the possibly partial field.
-	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Read or move on a prepared field. Both settle their input cell first;
 	//! neither refreshes the field or changes its use timestamp.
 	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
@@ -1080,20 +1117,48 @@ public:
 	//! withMarkets: the variant where the team's stocked markets are goals too,
 	//! priced by each supplier's configured pickup penalty. Used when a
 	//! consumer enables stock fetching (Building::fetchesFromMarkets).
-	Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
-    Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
+    const Uint16* lookupMaterialGradientSlot(int team, int material, int swim, bool markets = false, const Building* consumer = nullptr) const;
+    const Uint16* lookupForbiddenGradient(int team, int swim) const { return forbiddenGradient[team][swim]; }
+    const Uint16* lookupGuardAreasGradient(int team, int swim) const { return guardAreasGradient[team][swim]; }
+    const Uint16* lookupClearAreasGradient(int team, int swim) const { return clearAreasGradient[team][swim]; }
+	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr, std::optional<GradientFieldKey>* selectedKey = nullptr);
+    const Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
+
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).
 	unsigned materialSupplyModesSlot(const Building* consumer, int resource) const;
-	Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
+	const Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
 	bool stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
 	void setMaterialRoutingCacheBudget(Uint64 bytes);
 	Uint64 materialRoutingCacheBytes() const;
 	void saveMaterialRoutingCache(GAGCore::OutputStream* stream) const;
 	void loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor);
-	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
-	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
-	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
+    unsigned gradientDestination(Uint16* const*) const;
+    Uint16** gradientDestination(unsigned, unsigned savedClasses=MOVEMENT_CLASS_COUNT);
+    std::optional<GradientFieldKey> gradientFieldKey(Uint16* const* slot) const;
+    Uint16** gradientFieldDestination(GradientFieldKey);
+    GradientTargetCell captureGradientTargetCell(size_t) const;
+    void gradientTargetCellChanged(size_t,const GradientTargetCell&);
+    void gradientMarketSupplierMasks(size_t,GradientTargetCell&) const;
+    void ensureGradientMarketTargets(int team,int material);
+    bool gradientMarketSupplierGoal(GradientFieldKey,size_t) const;
+    void gradientGuardCostsChanged(int team);
+    void gradientAlliancesChanged(unsigned team, Uint32 previousAllies);
+    void gradientSupplierTargetsChanged(int team,int material);
+    bool gradientGoalValid(GradientFieldKey,int x,int y) const;
+    GradientQueryResult selectGradientQueryImpl(GradientQueryContext&,const Uint16*) const;
+    GradientQueryResult selectGradientQuery(const GradientQueryContext&,const Uint16*) const;
+    std::optional<GradientFieldKey> materialGradientFieldKey(int team,int material,int swim,const Uint16*) const;
+    void directGradientMovement(GradientFieldKey,int x,int y,const EntityRandom&,const Uint16*,bool moved,bool destinationValid,bool recordDemand=true);
+    void gradientMovementDemand(GradientFieldKey);
+    void gradientMovementOutcome(const GradientQueryContext&,const Uint16*,const GradientQueryResult&);
+    bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
+    StepResult queryMaterialStep(EntityRandom&, int, Uint8, int, int, int, int*, int*, bool*, Building*, bool = false);
+
+    StepResult queryForbiddenStep(const Uint16*, int, int, int, int, int*, int*);
+	const Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
+	const Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
+	const Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
 	//! Guard-area balancing: out[i] = number of the team's warriors within
 	//! GUARD_CROWD_RADIUS tiles of tile i (units inside buildings excluded).
 	//! Separable box sum, linear in map size. Returns false, leaving out
@@ -1124,9 +1189,11 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
+	RouteResult queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-		return getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer)[coordToIndex(x, y)];
+		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer);
+		return field ? field[coordToIndex(x, y)] : GRADIENT_UNREACHABLE;
 	}
 	
 	// Chamfer distance transform on a pre-seeded Uint8 buffer. Caller fills the
@@ -1141,7 +1208,7 @@ public:
 	//! field. With maxCost, propagation does not add cells beyond the cap; existing
 	//! seeds remain. Uses worker-owned scratch storage: parallel calls must use this
 	//! Map's executor and distinct fields.
-	//! swimClass must be in [0, SWIM_CLASS_COUNT).
+	//! swimClass must be in [0, MOVEMENT_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family);
@@ -1159,11 +1226,18 @@ public:
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
 
-	//! Initialize a fresh building field and retain its search frontier. Point
-	//! queries extend it on demand; buildingGradient returns a complete field.
+	//! Request a lazy building field. A fresh field is Pending until publication;
+	//! point reads then extend its retained frontier and buildingGradient completes it.
+    FieldReadiness requestBuildingField(Building*,int,BuildingRoute = BuildingRoute::Automatic);
+    const Uint16* lookupBuildingField(const Building*,int,BuildingRoute = BuildingRoute::Automatic) const;
+    RouteResult queryBuildingDistance(Building*,int,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
+    StepResult queryBuildingStep(EntityRandom&,Building*,int,int,int,int*,int*,BuildingRoute = BuildingRoute::Automatic);
+	//! Allocate/refresh and mark use without completing the lazy generation.
+	//! Warm fields retain their published guidance while a refresh is queued.
+	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	//! Initialize a lazy field from the current map; point reads settle demand.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Complete field, refreshed as needed; NULL when locked. Point queries use
-	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
+	//! Complete a lazy generation; return NULL when its route is locked.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	// Owner-only: establish a safe generation without querying or finishing it.
 	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);
@@ -1182,6 +1256,7 @@ public:
 	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
+    StepResult queryAreaStep(EntityRandom&, AreaKind, int, int, int, int, int*, int*);
 	//! Find the best direction toward a guard or clear area; return true if one has been found.
 	bool pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
@@ -1266,14 +1341,22 @@ public:
 protected:
 	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed
 	// [team][swim class]; NULL until a unit of that class asks for one.
-	// Map owns the buffers and frees them on clear. Resource/guard/clear fields
-	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
+	// Map owns the buffers and frees them on clear. Shared fields refresh only
+    // for cold initialization, explicit reactive events or demanded policy decisions;
+    // publication occurs at deterministic completed-world boundaries.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
-	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
+    // Suspended ground fields keep their storage; renewed demand queues a refresh.
+    bool materialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool marketMaterialGradientStale[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT]{};
+    bool forbiddenGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool guardGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+    bool clearGradientStale[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT]{};
+
 	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
-	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MaterialSlotCount][MOVEMENT_CLASS_COUNT];
 	// Dense registry of the published planes in both arrays above, maintained
 	// by every publication site so a capture visits only live planes. Plane
 	// generations are kept per key and survive republication, so a consumer
@@ -1291,10 +1374,10 @@ protected:
 	void rebuildPlaneRegistry();
 	
 	// Used to go out of forbidden areas
-	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	Uint16 *forbiddenGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	
 	// Used to attract idle warriors into guard areas
-	Uint16 *guardAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	Uint16 *guardAreasGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	//! Guard-area balancing: replace the zero cost of every painted seed in
 	//! gradient with its crowding cost (MapInternal.h).
 	void seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const;
@@ -1304,7 +1387,7 @@ protected:
 	
 	// Used to attract idle workers into clearing
 	// areas that aren't clear
-	Uint16 *clearAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	Uint16 *clearAreasGradient[Team::MAX_COUNT][MOVEMENT_CLASS_COUNT];
 	
 public:
 	//! Live published material planes in publication order; every plane has size cells.
@@ -1327,19 +1410,8 @@ private:
 public:
 	
 protected:
-	//Used for scheduling computation time.
-	bool gradientUpdated[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
-	//! A market's stock of the resource switched: rebuild the twin before its plain
-	//! gradient's next turn in the round robin.
-	bool marketGradientDirty[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
-	bool marketGradientUpdated[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];
-	//! Whether tile gid is one of teamNumber's alive markets holding resourceType.
-	bool isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const;
-	//Used for scheduling computation time on the guard area gradients
-	bool guardGradientUpdated[Team::MAX_COUNT][SWIM_CLASS_COUNT];
-	//Used for scheduling computation time on the clear area gradients
-	bool clearGradientUpdated[Team::MAX_COUNT][SWIM_CLASS_COUNT];
-	
+    bool isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const;
+
 	Uint8 **listedAddr;
 	size_t size;
 

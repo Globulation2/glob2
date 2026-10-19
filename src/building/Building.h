@@ -53,7 +53,7 @@ static constexpr int MATERIAL_TYPE_NONE = -1;
 /// `[canSwim]` where `canSwim == 0` means the no-swim variant and
 /// `canSwim == 1` means the can-swim variant. Used both as the array
 /// dimension and as the loop bound in `for (canSwim=0; canSwim<...; …)`.
-static constexpr int SWIM_VARIANT_COUNT = 3;
+static constexpr int SWIM_VARIANT_COUNT = 4;
 
 /// Index into a `[SWIM_VARIANT_COUNT]` array selecting the variant
 /// reachable by units that have the SWIM ability. Used at sites that
@@ -63,7 +63,7 @@ static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
 enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automatic };
 inline constexpr int BUILDING_ROUTE_COUNT = 3;
-inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT;
+inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * MOVEMENT_CLASS_COUNT;
 inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
 static_assert(BUILDING_ACCESS_COUNT == BuildingStateRecord::LockCount);
 
@@ -639,9 +639,9 @@ public:
 	GradientDrop gradientDrop[BUILDING_GRADIENT_COUNT] {};
 	BuildingRoute resolveRoute(BuildingRoute route) const;
 	int routeSlot(int swimClass, BuildingRoute route) const
-	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }
+	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * MOVEMENT_CLASS_COUNT + swimClass; }
 	int routeAccess(int swimClass, BuildingRoute route) const
-	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass == SWIM_CLASS_COUNT-1 ? 2 : int(swimClass > 0)); }
+	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + int(swimAccessVariant(swimClass)); }
 	int workRoleTarget(int role) const; // -1 delivery, otherwise attracted unit class
 	bool subscribeWorkStep();
 

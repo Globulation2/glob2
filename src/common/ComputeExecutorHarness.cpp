@@ -20,10 +20,13 @@
 
 TEST_SUITE("ComputeExecutor")
 {
-TEST_CASE("automatic sizing respects platform limits and supports unknown CPU counts")
+TEST_CASE("automatic sizing adds an owner below four CPUs and respects platform limits")
 {
     CHECK(defaultComputeThreadCount(0) == 1);
-    CHECK(defaultComputeThreadCount(1) == 1);
+    CHECK(defaultComputeThreadCount(1) == 2);
+    CHECK(defaultComputeThreadCount(2) == 3);
+    CHECK(defaultComputeThreadCount(3) == 4);
+    CHECK(defaultComputeThreadCount(4) == 4);
 #ifdef __EMSCRIPTEN__
     CHECK(defaultComputeThreadCount(12) == 8);
     CHECK(defaultComputeThreadCount(128) == 8);
@@ -49,6 +52,12 @@ TEST_CASE("thread configuration accepts auto and rejects malformed or overflowin
     CHECK(parseComputeThreadCount("128") == 128);
     CHECK(parseComputeThreadCount(std::to_string(std::numeric_limits<unsigned>::max())) == std::numeric_limits<unsigned>::max());
     CHECK(resolveComputeThreadCount(0, 0) == 1);
+    for (unsigned hardware : {1u, 2u, 3u, 4u})
+    {
+        CHECK(resolveComputeThreadCount(0, hardware) == (hardware < 4 ? hardware + 1 : hardware));
+        for (unsigned requested : {1u, 2u, 3u, 4u})
+            CHECK(resolveComputeThreadCount(requested, hardware) == requested);
+    }
 #ifdef __EMSCRIPTEN__
     CHECK(resolveComputeThreadCount(0, 128) == 8);
 #else

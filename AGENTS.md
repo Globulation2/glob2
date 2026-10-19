@@ -170,35 +170,39 @@ result, verification and limits in the PR.
 
 ## Validation and CI feedback
 
-Keep unfinished PRs in draft. Draft and ready PRs run cheap contracts by default;
-becoming ready does not start expensive CI. Relevant local or VM testing is the
-standard merge verification path. Maintainers accept the evidence, including for
-their own PRs; hosted CI success is not a merge prerequisite. `ci:run` explicitly
-requests hosted affected checks and `ci:full` requests the full development matrix,
-even in draft. `ci:windows`, `ci:android` and `ci:browsers` expand coverage when
-hosted verification is requested; they do not start it on their own. A successful
-cheap-only `Relevant checks passed` result establishes neither engine verification
-nor acceptance of local evidence.
+Keep unfinished PRs in draft. Draft and ready PRs run cheap contracts and, for
+ordinary engine changes, a predictive subset of hosted checks. The default ranking
+budget is 12% of eligible logical checks, rounded up. New checks with no history
+and required build prerequisites are added. This is a check-count budget, not a runner-time or error
+recall guarantee. Documentation and other cheap-only changes remain cheap.
+Becoming ready re-evaluates the same policy. Relevant local or VM testing remains
+the standard merge verification path, and maintainers may accept their own evidence.
+A successful `Relevant checks passed` result verifies the selected inventory; it
+does not establish that unselected checks passed or accept local evidence.
 
-Choose focused tests from the change's actual risks and explain both coverage and
-omissions; local verification need not reproduce the CI matrix. Record evidence
-in a PR comment: tested commit SHA and base revision, OS/architecture/toolchain,
-dependencies and build flags, exact commands and results, coverage rationale,
-omitted checks and limitations. Attach logs and applicable checksums, saves,
-replays or screenshots through links reviewers can access; files left only on a
-local machine are insufficient evidence. Use the [evidence template](docs/development/verification.md#local-and-vm-pr-verification).
-Refresh evidence when later edits affect tested behavior, dependencies or
-integration. Preserve all affected simulation determinism, save/load,
-replay/network, platform compatibility and simulation-version requirements;
-focused testing does not waive those boundaries.
+`ci:run` requests affected hosted verification, including the complete primary
+GCC 13 suite when native checks apply. `ci:full` requests the full development
+matrix, even in draft. `ci:windows`, `ci:android` and `ci:browsers` expand selected
+engine verification; they do not start engine checks on cheap-only changes.
+CI/build/test infrastructure changes and an unavailable PR diff select full
+verification. The selector retains explicit prerequisites and rejects missing,
+failed, cancelled or unexpectedly skipped selected jobs.
 
-Hosted affected verification keeps the complete primary GCC 13 suite for ordinary
-engine changes. The selector adds compatibility checks for changed boundaries; unknown/shared build inputs fail
-closed to full development verification. Add new native compatibility suites to
-`test/ci-compatibility.json` and shared boundaries to `.github/scripts/ci_policy.py`.
-Intentional repeats across platforms, browser engines and renderers must remain
-explicit. Release/store packaging, signing, metadata and upload validation belong
-in release workflows, not routine PR or master validation.
+Repository variables control ordinary PR prediction: `CI_PR_CHECK_BUDGET` is a
+fraction in `(0, 1]` and defaults to `0.12`; `CI_PR_FULL_AUDIT_PERCENT` is a sampling
+percentage in `[0, 100]` and defaults to `0`; `CI_PREDICTIVE_ENABLED=false` selects
+full PR coverage. Every retained master push still runs the full development
+matrix. See [PR verification and CI](docs/development/verification.md) for the
+trusted model/history artifact, retraining guard, fallbacks and timing evidence.
+
+Choose focused local checks from the change's actual risks and explain coverage
+and omissions. Record tested revision/base, environment, commands, results,
+coverage rationale and accessible evidence in the PR using the
+[evidence template](docs/development/verification.md#local-and-vm-pr-verification).
+Refresh evidence when later edits affect tested behavior or integration. Preserve
+all affected simulation determinism, save/load, replay/network, platform and
+simulation-version requirements; focused or predictive coverage does not waive
+those boundaries.
 
 Full master CI detects regressions asynchronously after merges. Every retained
 master push runs the full development matrix, irrespective of tier-reduction
@@ -229,8 +233,8 @@ results to confirm recovery. Master need not become green before other PRs merge
 For CI speed changes, record queue delay, execution time, runner minutes and time
 to result separately. Preserve the selected-case inventory and compare ten
 successful runs with matching event and coverage before claiming savings. Keep
-projections distinct from measurements; require a complete hosted master/nightly pass of the current coverage policy
-before enabling reduced compatibility tiers.
+projections distinct from measurements. Preserve the full master inventory when
+changing predictive PR selection; partial PR success is not a full checkpoint.
 Reuse artifacts only when source revision, compiler, flags and dependency inputs
 match. Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
 concurrency or rebuilding the same inputs. Keep repair PRs focused so unrelated
