@@ -22,10 +22,6 @@
 
 // Resource grid mutations + resource availability + points/area names
 
-bool Map::farmAreasEnabled() const
-{
-	return game && game->gameHeader.hasExperiment(ExperimentId::FarmAreas);
-}
 
 bool Map::canResourceEverGrowHereByIndex(int x, int y, int resourceType) const
 {

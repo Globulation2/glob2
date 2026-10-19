@@ -86,7 +86,11 @@ GradientQueryResult Map::selectGradientQueryImpl(GradientQueryContext& context,c
     if(here<=GRADIENT_UNREACHABLE)return result;
     if(context.mode==GradientQueryContext::Mode::DirectFlight) {
         Sint32 tx=0,ty=0;
-        result.moved=getGlobalGradientDestination(cells,x,y,&tx,&ty);
+        const bool exactPeak=getGlobalGradientDestination(cells,x,y,&tx,&ty);
+        // Material pickup accepts weighted supplier peaks; its live destination
+        // reader uses ascent coordinates, not the exact65535 return flag.
+        const bool material=key.family==GradientFieldFamily::Materials || key.family==GradientFieldFamily::Markets;
+        result.moved=material || exactPeak;
         if(result.moved) {
             result.goalValid=gradientGoalValid(key,tx,ty);
             const auto step=direct_flight::select(x,y,tx,ty,getW(),getH(),

@@ -74,8 +74,15 @@ Counterfactual alternatives use independent RNG copies and a private current-wor
 oracle; they never publish or request live fields. Equal-quality directions have
 zero cost. Actual guard-balancing moves can be direction-scored without treating
 an intentional guard stay, clearing arrival or completed escape as a stall.
-Planning, reachability and escape failures are not silently added to direction
-cost. Episodes apply the real publication delay and retain only complete initial
+Movement counterfactual columns `defer_false_unreachable`,
+`refresh_false_unreachable`, `defer_false_reachable` and
+`refresh_false_reachable` compare each alternative’s raw field value at the
+query cell (`>1` means reachable) against the current fresh field. Their
+denominator is episode movement `queries`; per-arm false-reachable and
+false-unreachable events are mutually exclusive. They remain distinct from
+planning-query errors and selector arrival/intentional-stay outcomes. Missing
+columns are rejected, never filled with zeros. Planning, reachability and escape
+failures are not silently added to direction cost. Episodes apply the real publication delay and retain only complete initial
 future horizons. The 128-tick window starts at capture, includes offsets 8 through
 127 under the normal delay, and completes at age 128; it is not 128 additional
 ticks after publication. The training contract requires the capture-anchored offsets 8..127 (complete at age 128 ticks).
@@ -98,16 +105,17 @@ Create a 256-game plan from a frozen engine catalog:
 
 ```sh
 python3 tools/adaptive_gradient_tournament.py plan \
-  --catalog artifacts/catalog.json --seed 181101 --routing remote-only \
+  --catalog artifacts/catalog.json --seed 181101 --routing with-mac \
   --output artifacts/plan.json
 ```
 
 The plan reserves 128 exploration and 128 candidate games, 16 of each role per
 format. It freezes map/seed identities and size pools before outcomes: small work
-on Pharaoh hosts and all remaining work on Rig/devlaptop while Mac games are
-paused. This `remote-only` routing freezes 32 small and 224 remote middle-pool
-slots. Explicit `--routing with-mac` instead freezes 32 small, 192 middle and
-32 largest Mac slots. Routing changes require a new plan before outcomes;
+on Pharaoh hosts, middle work on Rig/devlaptop and the largest work on the
+MacBook. Current campaign invocation explicitly uses `--routing with-mac`, which
+freezes 32 small, 192 middle and 32 largest Mac slots. The optional
+`--routing remote-only` capability instead freezes 32 small and 224 remote
+middle-pool slots when local games must be excluded. Routing changes require a new plan before outcomes;
 preparation rejects relabelled pool assignments. Both modes run largest work
 first within each pool.
 Preparation uses immutable accepted map inputs and architecture-specific ordinary

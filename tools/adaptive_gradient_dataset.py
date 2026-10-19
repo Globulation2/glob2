@@ -10,6 +10,7 @@ FRACTIONS=tuple(k+'_frac_q12' for k in COUNTERS[:2])
 FEATURES=(*BASE_FEATURES,*COUNTERS,*FRACTIONS)
 TRANSFORMS=('log1p_q12',)*10+('identity_q12',)*2
 CAPTURE_COLUMNS=('serving_capture_tick','captured_goal_count','capture_target_added_epoch','capture_target_removed_epoch','capture_route_epoch','capture_seed_cost_epoch','current_target_added_epoch','current_target_removed_epoch','current_route_epoch','current_seed_cost_epoch')
+MOVEMENT_REACHABILITY=('defer_false_unreachable','refresh_false_unreachable','defer_false_reachable','refresh_false_reachable')
 CONTRACT_ID='unified-gradient-h128-v2'
 CONTRACT=dict(id=CONTRACT_ID,features=list(BASE_FEATURES),counters=list(COUNTERS),families=list(FAMILIES),
  capture_metadata=list(CAPTURE_COLUMNS),publication_delay=8,key='family:u8,team:u8,movement:u8,material:u8;255=none',target_semantics='effective-seed-membership-v1',
@@ -43,7 +44,7 @@ def load(manifests,expected_contract=CONTRACT):
     continue
    seen[identity]=metadata['id'];spec=record.get('spec',{});group=record.get('map_group') or record['group']
    with (gzip.open(p,'rt') if p.suffix=='.gz' else p.open()) as stream:
-    reader=csv.DictReader(stream);required={'family','team','movement','material','key','tick','complete','publication_delay','queries','defer_extra','refresh_extra','capture_known','movement_observed',*BASE_FEATURES,*COUNTERS,*CAPTURE_COLUMNS}
+    reader=csv.DictReader(stream);required={'family','team','movement','material','key','tick','complete','publication_delay','queries','defer_extra','refresh_extra','capture_known','movement_observed',*BASE_FEATURES,*COUNTERS,*CAPTURE_COLUMNS,*MOVEMENT_REACHABILITY}
     if not required<=set(reader.fieldnames or ()):raise ValueError('Missing generic episode columns')
     for line in reader:
      if None in line or None in line.values():raise ValueError('Truncated/malformed episode record; derive a validated newline-complete artifact first')
@@ -61,8 +62,10 @@ def load(manifests,expected_contract=CONTRACT):
      if [row[k] for k in BASE_FEATURES]!=expected:raise ValueError('Features disagree with serving capture metadata')
      values=prepare([row[k] for k in BASE_FEATURES],[row[k] for k in COUNTERS]);row.update(zip(FRACTIONS,values[-2:]))
      if any(row[k]<0 for k in ('queries','defer_extra','refresh_extra')):raise ValueError('Negative direction label')
-     for k in ('defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals','defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures'):
+     for k in (*MOVEMENT_REACHABILITY,'defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals','defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures'):
       if k in row and not 0<=row[k]<=row['queries']:raise ValueError('Outcome exceeds movement-query denominator')
+     for arm in ('defer','refresh'):
+      if row[arm+'_false_unreachable']+row[arm+'_false_reachable']>row['queries']:raise ValueError('Mutually exclusive reachability outcomes exceed movement queries')
      row.update(family=FAMILIES[family],family_id=family,group=group,format=record['format'],collection='|'.join(identity),cohort=metadata['id'],cohort_role=metadata['role'],generator=spec.get('generator','unknown'),dimensions=f"{spec.get('width','?')}x{spec.get('height','?')}",movement_label_available=int(row['movement_observed']>0),label_contract=canonical_hash(expected_contract),trajectory_status=record.get('trajectory_status','completed'))
      rows.append(row)
  if not rows:raise ValueError('No complete generic episodes')

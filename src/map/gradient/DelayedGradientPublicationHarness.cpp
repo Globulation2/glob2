@@ -247,6 +247,54 @@ TEST_CASE("successful planning reads leave warm natural fields idle beyond query
     CHECK(map.gradientPipelineStatus().pending==0);
 }
 
+TEST_CASE("stale forbidden natural reads demand recovery without material escape evidence [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game;auto& map=game.map;map.configureGradientPipeline(0,3);fixedResearchIntervals(map,8);
+    map.setResourceByIndex(20,20,WHEAT,1);map.markImmobileUnit(8,8,0);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    for(unsigned tick=0;tick<4;++tick)advanceFields(game);
+    REQUIRE(map.materialGradients[0][WHEAT][0][map.coordToIndex(8,8)]==GRADIENT_FORBIDDEN);
+    const GradientFieldKey key{GradientFieldFamily::Materials,0,0,WHEAT};auto& field=map.gradientRuntime->adaptive.fields.at(key);
+    map.clearImmobileUnit(8,8);
+    const auto path=(glob2test::artifactDir()/"stale-zero-demand-probe.csv").string();
+    map.gradientRuntime->qualityProbe=std::make_unique<ResourceGradientProbe>(path.c_str());auto& probe=*map.gradientRuntime->qualityProbe;
+    EntityRandom random;random.seed(42,54);int dx=0,dy=0;bool stop=false;
+    const auto before=field.total;
+    map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false);
+    CHECK(field.demand);CHECK(field.count128==1);CHECK(field.total==before);
+    CHECK_FALSE(probe.movementHistory.contains(int(key.packed())));
+    while(game.stepCounter<8) {advanceFields(game);CHECK(field.submitted==1);}
+    // Repeated movement reads are demand, while escape remains its own evidence.
+    map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false);
+    advanceFields(game);CHECK(field.submitted==9);
+    for(unsigned tick=0;tick<3;++tick)advanceFields(game);
+    CHECK(map.materialGradients[0][WHEAT][0][map.coordToIndex(8,8)]>GRADIENT_UNREACHABLE);
+}
+
+TEST_CASE("episode movement reachability alternatives are separate from planning [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game;auto& map=game.map;map.configureGradientPipeline(0,3);map.setResourceByIndex(20,20,WHEAT,1);
+    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
+    for(unsigned tick=0;tick<4;++tick)advanceFields(game);
+    const GradientFieldKey key{GradientFieldFamily::Materials,0,0,WHEAT};const int packed=int(key.packed());
+    const auto* live=map.materialGradients[0][WHEAT][0];
+    const auto path=(glob2test::artifactDir()/"movement-reachability-probe.csv").string();ResourceGradientProbe probe(path.c_str());probe.window=0;
+    ResourceGradientProbe::Episode episode;episode.tick=16;episode.delay=8;
+    episode.deferred.assign(map.size,GRADIENT_UNREACHABLE);episode.refreshed.assign(live,live+map.size);
+    probe.fields[packed].episodes.push_back(std::move(episode));
+    EntityRandom random;random.seed(42,54);const GradientQueryContext context{key,8,8,random};
+    game.stepCounter=23;probe.observe(map,context,live);CHECK(probe.fields.at(packed).episodes.front().queries==0);
+    game.stepCounter=24;probe.observe(map,context,live);
+    map.replaceResource(20,20,Resource{});game.stepCounter=25;probe.observe(map,context,live);
+    const auto& e=probe.fields.at(packed).episodes.front();CHECK(e.queries==2);CHECK(e.planningQueries==0);
+    CHECK(e.deferFalseUnreachable==1);CHECK(e.refreshFalseUnreachable==0);CHECK(e.deferFalseReachable==0);CHECK(e.refreshFalseReachable==1);
+    CHECK(e.deferFalseNegative==0);CHECK(e.refreshFalsePositive==0);
+}
+
 TEST_CASE("direct warm recovery retains demand but cannot bypass minimum8")
 {
     glob2test::HeadlessGlobals globals;

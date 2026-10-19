@@ -6,7 +6,7 @@ from tools.resource_gradient_dataset import seal,file_hash
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 class UnifiedDatasetTests(unittest.TestCase):
  def fixture(self,root,**updates):
-  row=dict(tick=300,family=0,team=0,movement=0,material=1,key=1,complete=1,publication_delay=8,queries=2,defer_extra=9,refresh_extra=1,capture_known=1,movement_observed=1,**dict(zip(d.BASE_FEATURES,[32,1,2,3,4,5,6])),**dict(zip(d.COUNTERS,[1,1,2])));row.update(dict(serving_capture_tick=268,captured_goal_count=4096,capture_target_added_epoch=0,capture_target_removed_epoch=0,capture_route_epoch=0,capture_seed_cost_epoch=0,current_target_added_epoch=3,current_target_removed_epoch=4,current_route_epoch=0,current_seed_cost_epoch=0,target_added_frac_q12=3,target_removed_frac_q12=4));row.update(updates);p=root/'episodes.csv'
+  row=dict(tick=300,family=0,team=0,movement=0,material=1,key=1,complete=1,publication_delay=8,queries=2,defer_extra=9,refresh_extra=1,capture_known=1,movement_observed=1,**dict.fromkeys(d.MOVEMENT_REACHABILITY,0),**dict(zip(d.BASE_FEATURES,[32,1,2,3,4,5,6])),**dict(zip(d.COUNTERS,[1,1,2])));row.update(dict(serving_capture_tick=268,captured_goal_count=4096,capture_target_added_epoch=0,capture_target_removed_epoch=0,capture_route_epoch=0,capture_seed_cost_epoch=0,current_target_added_epoch=3,current_target_removed_epoch=4,current_route_epoch=0,current_seed_cost_epoch=0,target_added_frac_q12=3,target_removed_frac_q12=4));row.update(updates);p=root/'episodes.csv'
   with p.open('w') as out:w=csv.DictWriter(out,fieldnames=list(row));w.writeheader();w.writerow(row)
   records=[dict(group='map-group',format='1v1',binary_sha256='a'*64,episode_sha256=file_hash(p),episodes=p.name,spec=dict(generator='river',width=64,height=64))];manifest=root/'raw.json';manifest.write_text(json.dumps(records));target=root/'sealed.json';seal(manifest,target,dict(id='cohort',role='exploration',policy={'name':'fixed-interval-bootstrap'},contract=d.CONTRACT));return target
  def test_schema_and_uncapped_rates(self):
@@ -17,6 +17,19 @@ class UnifiedDatasetTests(unittest.TestCase):
   for changes in [dict(key=42),dict(age=33),dict(since_capture_invalid_goal=3),dict(family=4,material=1,key=4<<24|1)]:
    with tempfile.TemporaryDirectory() as tmp:
     with self.assertRaises(ValueError):d.load([self.fixture(pathlib.Path(tmp),**changes)])
+ def test_counterfactual_movement_reachability_is_required_and_uses_movement_denominator(self):
+  for changes in [dict(defer_false_unreachable=3),dict(refresh_false_reachable=-1),dict(defer_false_unreachable=2,defer_false_reachable=1)]:
+   with tempfile.TemporaryDirectory() as tmp:
+    with self.assertRaises(ValueError):d.load([self.fixture(pathlib.Path(tmp),**changes)])
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);p=self.fixture(root,defer_false_unreachable=1,refresh_false_reachable=2);self.assertEqual(d.load([p])[0]['refresh_false_reachable'],2)
+   doc=json.loads(p.read_text());csvpath=root/doc['records'][0]['episodes']
+   with csvpath.open() as source:rows=list(csv.DictReader(source))
+   fields=[k for k in rows[0] if k!='defer_false_unreachable']
+   with csvpath.open('w') as out:
+    writer=csv.DictWriter(out,fieldnames=fields);writer.writeheader();writer.writerow({k:rows[0][k] for k in fields})
+   doc['records'][0]['episode_sha256']=file_hash(csvpath);doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc))
+   with self.assertRaisesRegex(ValueError,'Missing generic episode'):d.load([p])
  def test_resource_only_never_silently_mapped(self):
   with tempfile.TemporaryDirectory() as tmp:
    p=self.fixture(pathlib.Path(tmp));document=json.loads(p.read_text());document['cohort']['contract']['id']='goal-stall-v1';document['content_sha256']=d.canonical_hash(dict(cohort=document['cohort'],records=document['records']));p.write_text(json.dumps(document))

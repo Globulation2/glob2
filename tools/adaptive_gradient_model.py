@@ -51,7 +51,7 @@ def outcome_metrics(rows):
   subset=[r for r in rows if r['family']==family]
   if not subset:result[family]=dict(episodes=0,measured=False);continue
   w=d.balanced_weights(subset);entry=dict(episodes=len(subset),measured=True,scope='possibly-overlapping-counterfactual-episode-queries')
-  for denominator,columns in [('queries',['defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals','defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures']),('planning_queries',['defer_planning_false_negative','defer_planning_false_positive','refresh_planning_false_negative','refresh_planning_false_positive'])]:
+  for denominator,columns in [('queries',list(d.MOVEMENT_REACHABILITY)+['defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals','defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures']),('planning_queries',['defer_planning_false_negative','defer_planning_false_positive','refresh_planning_false_negative','refresh_planning_false_positive'])]:
    den=sum(weight*r.get(denominator,0) for weight,r in zip(w,subset))
    for column in columns:
     entry[column]=dict(events=sum(r.get(column,0) for r in subset),denominator=denominator,weighted_rate=sum(weight*r.get(column,0) for weight,r in zip(w,subset))/den if den else None)

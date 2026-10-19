@@ -775,3 +775,9 @@ EntityRandom& Map::privateRandom(RandomDomain domain)
     // Standalone authoring maps have a fixed seed until a request sets one.
     return worldRandom.get(game ? game->gameHeader.getRandomSeed() : 0, domain);
 }
+
+// Shared by seed preparation and mutation metadata as well as resource queries.
+bool Map::farmAreasEnabled() const
+{
+	return game && game->gameHeader.hasExperiment(ExperimentId::FarmAreas);
+}

@@ -16,7 +16,7 @@ HISTORY=('overlap_supported','overlap_history_known','overlap_generation','overl
 RATES=tuple(k+'_frac_q12' for k in COUNTS[:2])
 DIRECTIONAL_RATES=tuple(k+'_frac_q12' for k in DIRECTIONAL)
 CONTRACT=copy.deepcopy(base.CONTRACT)
-CONTRACT.update(id=CONTRACT_ID,model_feature_contract=base.CONTRACT_ID,spatial=dict(
+CONTRACT.update(id=CONTRACT_ID,model_feature_contract=base.CONTRACT_ID,movement_counterfactual_reachability=dict(columns=list(base.MOVEMENT_REACHABILITY),denominator='queries',definition='raw-field-value-at-query-cell>1;each-defer/refreshed-vs-current-fresh',classification='independent-of-selector-arrival-or-intentional-stay;separate-from-planning-and-direction-cost'),spatial=dict(
  schema=1,region_tiles=4,scope='validated-materials-and-clear-ground;other-families-explicitly-unsupported',movement_classes=list(range(8)),
  history='publication-generation;reset-on-actual-publication;not-capture-baseline',
  metadata=[*HISTORY,'overlap_support_reason'],counts=list(COUNTS),directional=list(DIRECTIONAL),

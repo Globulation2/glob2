@@ -192,7 +192,7 @@ TEST_CASE("forbidden edits preserve published generations until delayed refresh"
     }
 }
 
-TEST_CASE("scheduled escape maintenance publishes complete fields after every seed transition") {
+TEST_CASE("explicit research demanded escape refresh publishes complete fields after every seed transition") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
     for (int mutation=0;mutation<12;++mutation) for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
         CAPTURE(swim); CAPTURE(mutation);
@@ -217,18 +217,22 @@ TEST_CASE("scheduled escape maintenance publishes complete fields after every se
         case 6:map.setBuilding(21,20,1,1,NOGBID); break;
         case 7:map.paintCell(21,20,WATER); break;
         case 8:map.paintCell(21,20,GRASS); break;
-        case 9:edit(f,20,20,true); break;
-        case 10:edit(f,20,20,false); break;
+        // Direct point edits exercise target metadata; explicit brush recovery
+        // is covered separately by the forbidden-edit continuity test.
+        case 9:map.addForbidden(25,20,0); break;
+        case 10:map.removeForbidden(20,20,0); break;
         case 11:{auto r=map.getResource(20,20); r.type=WOOD; map.replaceResource(20,20,r); break;}
         }
         const auto expected=referenceArea(f,gradient_preparation::Kind::Forbidden,0,swim);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
         const auto jobs=map.gradientPipelineStatus().jobs;
-        const int classes=f.game.hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-        const unsigned cycle=8*f.game.teamsCount()*classes;
-        // Select the next scheduled visit for team 0's class without running
-        // unrelated ticks. Work is still captured/admitted at its normal phase.
-        f.game.stepCounter=((f.game.stepCounter+cycle-1)/cycle)*cycle+8*swim;
+        // World edits alone do not revive the removed periodic round. This
+        // untrained fixture declares research behavior before demanding work.
+        map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
+        map.gradientRuntime->exploration->intervals={8};
+        for(unsigned idle=0;idle<8;++idle)boundary(f,true);
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+        int dx=0,dy=0;map.queryForbiddenStep(nullptr,0,swim,20,20,&dx,&dy);
         boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs+1);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
@@ -240,6 +244,10 @@ TEST_CASE("scheduled escape maintenance publishes complete fields after every se
 TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
     Fixture f(1); player(f); auto& map=f.game.map;
+    // This is a reachability/recovery fixture, not a trained-model acceptance
+    // test. Only explicit research demand supplies the warm policy here.
+    map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
+    map.gradientRuntime->exploration->intervals={8};
     map.addForbidden(20,20,0);
     for (int y=19;y<=21;++y) for (int x=19;x<=21;++x)
         if (x!=20 || y!=20) map.setResourceByIndex(x,y,WHEAT,1);
@@ -253,7 +261,7 @@ TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repe
     map.replaceResource(21,20,Resource{}); map.setResourcesGrow(21,20,false);
     int dx=0,dy=0;
     CHECK(map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Blocked);
-    const unsigned bound=8*f.game.teamsCount()*LEGACY_SWIM_CLASS_COUNT+16;
+    const unsigned bound=AdaptiveGradientState::MinimumInterval+map.gradientPipelineStatus().delay+2;
     await(f,[&]{return map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Step;},true,bound);
     CHECK(dx==1); CHECK(dy==0);
 }

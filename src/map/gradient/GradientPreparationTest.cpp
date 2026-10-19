@@ -8,6 +8,7 @@
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/GradientSeedOverlap.h"
+#include "gradient/DirectFlightDirection.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
 #include <map>
@@ -2460,4 +2461,35 @@ TEST_CASE("published natural and clear seed classes survive scalar SIMD and terr
             }
         }
     }
+}
+
+TEST_CASE("weighted AIR market oracle follows live pickup and uses AIR cost buckets" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    auto& spec=catalog["variants"][game.buildingsTypes.getFinishedTypeNum("inn")];
+    spec["properties"]["maxMaterial"][WHEAT]=20;spec["semantics"]["occupiesGround"]=false;
+    auto& market=spec["semantics"]["market"];market["suppliesStock"]=true;market["suppliesStockExperiment"]="";
+    market["suppliesStockMaterials"]={"food"};market["pickupPenalty"]=7;
+    game.buildingsTypes.loadSnapshotJson(catalog.dump());game.gameHeader.getExperiments().set(ExperimentId::MarketsV2,true);game.configureBuildingCatalog();
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:air-oracle-hazard","name":"Air hazard","base":"grass","properties":{"airHealthQ8":-256},"appearance":"grass"}]})");
+    map.setGame(&game);map.paintCell(12,8,*map.terrainRegistry().find("test:air-oracle-hazard"));
+    CHECK(map.terrainQueueBuckets()==64);CHECK(map.movementQueueBuckets(AIR_MOVEMENT_CLASS)==256);
+    auto* supplier=world.addBuilding("inn",20,20);REQUIRE(supplier);supplier->setMaterial(WHEAT,10);
+    map.configureGradientPipeline(0,3);
+    const auto* live=glob2test::awaitGradient(game,[&](){return map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,true);});REQUIRE(live);
+    CHECK(*std::max_element(live,live+map.size)<GRADIENT_AT_GOAL);
+    Sint32 tx=0,ty=0;int distance=0;
+    REQUIRE(map.materialAvailableUpdateSlot(0,WHEAT,AIR_MOVEMENT_CLASS,8,8,&tx,&ty,&distance,true,nullptr));
+    Sint32 px=0,py=0;CHECK_FALSE(map.getGlobalGradientDestination(live,8,8,&px,&py));CHECK(px==tx);CHECK(py==ty);
+    const GradientFieldKey key{GradientFieldFamily::Markets,0,AIR_MOVEMENT_CLASS,WHEAT};EntityRandom random;random.seed(42,54);
+    GradientQueryContext context{key,8,8,random};context.mode=GradientQueryContext::Mode::DirectFlight;
+    const auto expected=direct_flight::select(8,8,tx,ty,map.getW(),map.getH(),[&](int x,int y){return map.isFreeForMovement(x,y,AIR_MOVEMENT_CLASS,1);});
+    const auto result=map.selectGradientQuery(context,live);CHECK(result.moved);CHECK(result.goalValid);CHECK(result.dx==expected.dx);CHECK(result.dy==expected.dy);
+    const auto path=(glob2test::artifactDir()/"weighted-air-oracle.csv").string();ResourceGradientProbe probe(path.c_str());std::vector<Uint16> fresh;
+    const auto checksum=game.checkSum();CHECK_NOTHROW(probe.rebuildFresh(map,key,fresh));CHECK(fresh==std::vector<Uint16>(live,live+map.size));CHECK(game.checkSum()==checksum);
+    CHECK_NOTHROW(probe.observe(map,context,live));CHECK(game.checkSum()==checksum);
 }

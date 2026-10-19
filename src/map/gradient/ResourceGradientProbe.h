@@ -30,6 +30,7 @@ struct ResourceGradientProbe {
         bool overlapEnabled=true;
         bool movementObserved=false,contradictionCaptureKnown=false;
         unsigned guardBalanceQueries=0;
+        unsigned deferFalseUnreachable=0,refreshFalseUnreachable=0,deferFalseReachable=0,refreshFalseReachable=0;
         unsigned deferStalls=0,refreshStalls=0,deferInvalidGoals=0,refreshInvalidGoals=0;
         unsigned deferMissedMoves=0,refreshMissedMoves=0,deferEscapeFailures=0,refreshEscapeFailures=0;
         unsigned deferFalseNegative=0,deferFalsePositive=0,refreshFalseNegative=0,refreshFalsePositive=0;

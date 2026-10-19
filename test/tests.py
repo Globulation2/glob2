@@ -144,7 +144,7 @@ ENGINE_TESTS = [
     ('#src/map/gradient/ClearingFlagGradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/cortex/CortexGeometryHarness.cpp',
     '#src/unit/EnteringUnitSaveHarness.cpp',
-    '#src/map/gradient/MapGradientInvalidationTest.cpp',
+    ('#src/map/gradient/MapGradientInvalidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/map/gradient/ResourceGradientPolicyTest.cpp',
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
