@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "archive_sha256": "c586cf2b92a16770259c9aa82fbae98f601f6cc53ac7a40e3366f45ae3771ddc",
+  "archive_bytes": 5580263,
+  "index_sha256": "dfbfd347108fd734fd127c82c716fe49837e9b5bae227fa1b64dba9bec39b71b",
+  "logical_files": 599,
+  "unique_objects": 279,
+  "decoded_objects_verified": true
+}

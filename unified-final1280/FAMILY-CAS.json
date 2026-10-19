@@ -1,0 +1,2378 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "path": "prototypes/BUILD-LAUNCH.json",
+      "sha256": "d41ab9598931b281c9af5de1347248281f90db90c83fc319ee7e3f2c72864d00",
+      "bytes": 79,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/BUILD-LAUNCH.json"
+    },
+    {
+      "path": "prototypes/BUILD-STATUS.json",
+      "sha256": "5f0b2d5c6c763d73dc102f9fafcdeeba3103a93651f73dcb025b3d9dba249187",
+      "bytes": 6090,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/BUILD-STATUS.json"
+    },
+    {
+      "path": "prototypes/COMMON-NATIVE-SHA256.json",
+      "sha256": "d6824fbee62abf38403aca1c6e8174622f6249a27687b32c8d9a3d5909419394",
+      "bytes": 210070,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/COMMON-NATIVE-SHA256.json"
+    },
+    {
+      "path": "prototypes/CPU-SUMMARY.json",
+      "sha256": "0e4393875192a81cc1f24c6c8cd6eed7f9cd2d66fd2a465f7cf9fb73d03515a4",
+      "bytes": 1575,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/CPU-SUMMARY.json"
+    },
+    {
+      "path": "prototypes/HEADERS-PARITY.json",
+      "sha256": "f10fe92761ed35c499fa32530627e6719ef2760ed9acc3ec279f70c7d791e887",
+      "bytes": 2805,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/HEADERS-PARITY.json"
+    },
+    {
+      "path": "prototypes/QUALIFIED-PROTOTYPES.json",
+      "sha256": "7f015f9e1082c00dfdeae761d3ee7de1933dec4f28cd1e509699d851db431433",
+      "bytes": 6183,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/QUALIFIED-PROTOTYPES.json"
+    },
+    {
+      "path": "prototypes/QUALITY-PLAN-DRAFT.json",
+      "sha256": "dbb0fd1b35c5cda1e9f53b4793fa8e519e1442852a67680cef513904877a4801",
+      "bytes": 6676,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/QUALITY-PLAN-DRAFT.json"
+    },
+    {
+      "path": "prototypes/QUALITY-SUMMARY.json",
+      "sha256": "9ce3ead2b026a2229d57c06752c7165d14910e150dd4306e12d06e3b240f0ca9",
+      "bytes": 9933,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/QUALITY-SUMMARY.json"
+    },
+    {
+      "path": "prototypes/before-generated-header.h",
+      "sha256": "d38639258d8cc9f729882633cd6b12ed6dddd33209478df8a348636c541dd21f",
+      "bytes": 8147,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/before-generated-header.h"
+    },
+    {
+      "path": "prototypes/build-all.py",
+      "sha256": "db444f68c9733b6e2054970858eabe7c894036501f26d3a9aa292ede735ae877",
+      "bytes": 3305,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/build-all.py"
+    },
+    {
+      "path": "prototypes/build-supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/build-supervisor.log"
+    },
+    {
+      "path": "prototypes/cpu/ASSETS-BEFORE.json",
+      "sha256": "f57d8b9ff3d0c189fb43ed6b04f981348e11dac158e4fcdb165ac1757724c838",
+      "bytes": 987480,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/ASSETS-BEFORE.json"
+    },
+    {
+      "path": "prototypes/cpu/DEPENDENCIES.json",
+      "sha256": "514a694a17edde8af657756af627f5d8c19a7696260ae13733a02f8a78400f72",
+      "bytes": 48397,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/DEPENDENCIES.json"
+    },
+    {
+      "path": "prototypes/cpu/LAUNCH.json",
+      "sha256": "b5509effb4bc235c6bcdc06889f6c1e4f40e6e580fab16d8464a80eacacc9071",
+      "bytes": 141,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/LAUNCH.json"
+    },
+    {
+      "path": "prototypes/cpu/PLAN.json",
+      "sha256": "d54f53586e76972cd3c59dcb27cac7e6ca8c74cd0d73c9914875531d7c6f8962",
+      "bytes": 9632,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/PLAN.json"
+    },
+    {
+      "path": "prototypes/cpu/START.json",
+      "sha256": "5dd02a5d29deb1f2f73abecf380e00b64951ade5e13fb73226a51a9705d774e6",
+      "bytes": 174,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/START.json"
+    },
+    {
+      "path": "prototypes/cpu/STATUS.json",
+      "sha256": "f77f8c990437cac17216d9d4cc6b7184745a421cbeffa5f26372951669c7614c",
+      "bytes": 6001401,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/STATUS.json"
+    },
+    {
+      "path": "prototypes/cpu/SUPERVISOR.json",
+      "sha256": "5bc998890bfa11a845bf9316de96eab282e1dfdfde6f885eea753e59187e8983",
+      "bytes": 86,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/SUPERVISOR.json"
+    },
+    {
+      "path": "prototypes/cpu/mac-observation-helpers.py",
+      "sha256": "8ef73f487910e304af8050360737c0bf510493b9642a1a006432c49bf36dc085",
+      "bytes": 2567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/mac-observation-helpers.py"
+    },
+    {
+      "path": "prototypes/cpu/run.py",
+      "sha256": "a0e4d7ec75addf537f78486179578417cee9ce2fc93410ec546df680ed1d640b",
+      "bytes": 6511,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/run.py"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/COMMAND.json",
+      "sha256": "ef436d50a035e520def1a9c4cd6bfb4a05ff1a2d50452adc151d1901f54161e3",
+      "bytes": 78966,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/MEASUREMENT.json",
+      "sha256": "df9f3af45472ec448d447caf9e21f97a8d437692a193f4965081e12f08679f60",
+      "bytes": 160919,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/artifacts.json",
+      "sha256": "0c7c371fedbac8f0e44d891e96f887fb45c8ea221e8294b1857a12e451b45e14",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/result.json",
+      "sha256": "ae42b130093b7de6e61e5a1704c4021bc61a759d191f5e2eece56243695c6bc6",
+      "bytes": 19373,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/stdout.log",
+      "sha256": "947a7fa9d5ee7d0ee8d3e9210c978b276cd899875dab30782161b74c368a3859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-00-66294c58700ef1b4-shared12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/COMMAND.json",
+      "sha256": "6b331485c64146423096629ebf1a1740803bc9490470ee5aaae51ed454100a17",
+      "bytes": 78968,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/MEASUREMENT.json",
+      "sha256": "d1766c1c82988ec8a094632b3c9a51b14bfea218c395cb50da0dad4f1cac9610",
+      "bytes": 160950,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/artifacts.json",
+      "sha256": "d3e0e113370ffffb3bbba74519c89dcbe435d4ba9eb88982699fe3f4e28d06a4",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/result.json",
+      "sha256": "a256fd00ff13e759a12ea6c96bd3af34f8aaef11a0a43d8efb2e76f02521bf4e",
+      "bytes": 19388,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/stdout.log",
+      "sha256": "008d3332d6e9865c2e98010392ee08840f12a26d862ae75fb8f59960c7261859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-01-66294c58700ef1b4-onehot17-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/COMMAND.json",
+      "sha256": "1ba089fc84091b08a4abb540e75e7e989965f4f2a4f81b3b7188835007f4e01d",
+      "bytes": 78973,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/MEASUREMENT.json",
+      "sha256": "662fd689f0b35b46499f7548f4028debd5b033cfdf44a84b8593e477d2957005",
+      "bytes": 160908,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/artifacts.json",
+      "sha256": "7070f5d3143a8d777a754dabc90d29d25fe38dfbd067538543dcbada63fdc2cb",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/result.json",
+      "sha256": "450565de94386ad0b60c40932796af81bc63a2ffc99993c5e971ba86ae18a6b9",
+      "bytes": 19357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/stdout.log",
+      "sha256": "2ca1ecc8aaa42c12c338cc970aabff78cc6d824f1f26faa2dc87f2f26bc5c613",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-02-66294c58700ef1b4-experts12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/COMMAND.json",
+      "sha256": "af0d39da51ddb805fd4b7e04d0b57c2a09631563e4ffc3560d15180d8d63fae4",
+      "bytes": 78970,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/MEASUREMENT.json",
+      "sha256": "15ab85e10ef92fc8f576a127e8511d0a6215ec9db7220dd29afc7761d561ebab",
+      "bytes": 254735,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/artifacts.json",
+      "sha256": "6e11f8c2c9ad130f8de28c964116626f666c6e931f9fc94d14cb83ccfe0a2b97",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/result.json",
+      "sha256": "b42c674acce200439a69bb33da3d88fc474d543721f451e3424ec6f536c0e523",
+      "bytes": 53602,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/stdout.log",
+      "sha256": "18fb203d80de2805169b93b04a89a753f7d28f4c137fd9b16d98973621623bcb",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-03-1d043310cbecdceb-shared12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/COMMAND.json",
+      "sha256": "b5dc509b5287411c7defb9343828a335d80f55581f6c046124c584c65e0f8ebf",
+      "bytes": 78966,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/MEASUREMENT.json",
+      "sha256": "cb4335a8b352a277ca73be04d2ab2d6e2c71426cd4c3ba4aa5957959afcee133",
+      "bytes": 254659,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/artifacts.json",
+      "sha256": "f065ee5ed7226d3974f7344cdee153f39245dbfff2c6dd25643cb3b69ca2c10e",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/result.json",
+      "sha256": "9b591d0ce4015a4ae3addea80df185ffd4dfb326cb06fe727a5d35d13aec2de1",
+      "bytes": 53548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/stdout.log",
+      "sha256": "97cb024d629d601e84a32488a7cddf8b616ffd9e36ba9b668266db77d2c5804c",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-04-1d043310cbecdceb-onehot17-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/COMMAND.json",
+      "sha256": "81acfc9500cfafc71f8da54e815138ddfeab524f89af7b7191a3c1991bf8db61",
+      "bytes": 78970,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/MEASUREMENT.json",
+      "sha256": "87b8c1d619e7f5add0d9474ee122c6bee7c97c08b2c429e96fef3153525e93de",
+      "bytes": 254679,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/artifacts.json",
+      "sha256": "e3b2c44d29140c66a595c12fdbffb48851c57faf052bd398914e22dbcf0a6a95",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/result.json",
+      "sha256": "5d216cdd227bfcc7620bca231ee7df66391da3aada3d8247abdea119e81e9eca",
+      "bytes": 53567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/stdout.log",
+      "sha256": "c30719afa9af331f9b039c09731168b0e6aa43e61e50506a9bc259bf223c4fc7",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-05-1d043310cbecdceb-experts12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/COMMAND.json",
+      "sha256": "417528ae871f4d06fa601448ab6c9ef00962d84e27dac2cd8b5ba73e01e24c09",
+      "bytes": 78971,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/MEASUREMENT.json",
+      "sha256": "5e1f82f83d773c89f207fc47c6fd00e36e48489e49f03d455c467852a6003921",
+      "bytes": 254680,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/artifacts.json",
+      "sha256": "c5b352f415e2c05a27f23302731f621f72b0dfc2a41bced05abc8f497e9f4df6",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/result.json",
+      "sha256": "76f69b7e51f5b68819000470f345f0a4690cb3bcf2fa7f24d46d1640d7e7a214",
+      "bytes": 53567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/stdout.log",
+      "sha256": "c30719afa9af331f9b039c09731168b0e6aa43e61e50506a9bc259bf223c4fc7",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-06-1d043310cbecdceb-experts12-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/COMMAND.json",
+      "sha256": "3a399f4f569cb066773102903aeea0e8f74fd8a3d905408030c65571595c085a",
+      "bytes": 78966,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/MEASUREMENT.json",
+      "sha256": "bf8106db738d18669bcda0c48f93b93b419b9f42e03e2389f8cc887efa385ce9",
+      "bytes": 254664,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/artifacts.json",
+      "sha256": "f065ee5ed7226d3974f7344cdee153f39245dbfff2c6dd25643cb3b69ca2c10e",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/result.json",
+      "sha256": "d5b0f60c3916154cd79bab112bf1e9708d5f808470c92ff9814c2d920a9d844e",
+      "bytes": 53548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/stdout.log",
+      "sha256": "97cb024d629d601e84a32488a7cddf8b616ffd9e36ba9b668266db77d2c5804c",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-07-1d043310cbecdceb-onehot17-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/COMMAND.json",
+      "sha256": "d9e872c2e63b7f983d4ad7462acc8eba3b2e507b29184e0b22b7ecd303661d30",
+      "bytes": 78963,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/MEASUREMENT.json",
+      "sha256": "efd8afc019cf9e6f4c352e69d48d6e4160a19f71a5e67af56a46d96223ead582",
+      "bytes": 254703,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/artifacts.json",
+      "sha256": "0c87e7006fd5149926cb1647c8008febf7b73bb3a0deb210be31505ef74c10a3",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/result.json",
+      "sha256": "04044af5539e341185993d4570fc3d5d3f0c3393a06c1217e27af297e7dfeba4",
+      "bytes": 53599,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/stdout.log",
+      "sha256": "18fb203d80de2805169b93b04a89a753f7d28f4c137fd9b16d98973621623bcb",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-08-1d043310cbecdceb-shared12-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/COMMAND.json",
+      "sha256": "ffd40437b9bd6ddde2903ffdfa0a30247f7dad3ef13ab7ea0c5da9548f851648",
+      "bytes": 78967,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/MEASUREMENT.json",
+      "sha256": "0a3f384adf3cef1802ec31f048caaae62c0270f740db339afb1eaa3608962f11",
+      "bytes": 160938,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/artifacts.json",
+      "sha256": "9b28ef710224bee81c1dad793bca0723bcc38986ce00e71be208719de4e43175",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/result.json",
+      "sha256": "b309780b41d29fd068e75f39c35b58f25183efefda7d79994e289061d176a547",
+      "bytes": 19360,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/stdout.log",
+      "sha256": "2ca1ecc8aaa42c12c338cc970aabff78cc6d824f1f26faa2dc87f2f26bc5c613",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-09-66294c58700ef1b4-experts12-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/COMMAND.json",
+      "sha256": "f1e9e9f67508dc7fadbb8e7954ded82c4b98ae5b6d655d29c07c7157839a934f",
+      "bytes": 78964,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/MEASUREMENT.json",
+      "sha256": "56dcf3d050e190789d8de83d1561b78f48ffd11483c6ce6ab462ade478c8c830",
+      "bytes": 160943,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/artifacts.json",
+      "sha256": "6d81885d79941fc65abeade4f778a096ae76519d66cb08f8b681eff5a63e296e",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/result.json",
+      "sha256": "233249cbda120031d3ac1559168908d8184cc404f408c3d828db8e0640e58281",
+      "bytes": 19387,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/stdout.log",
+      "sha256": "008d3332d6e9865c2e98010392ee08840f12a26d862ae75fb8f59960c7261859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-10-66294c58700ef1b4-onehot17-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/COMMAND.json",
+      "sha256": "b06b2533908df425ea94ebd28f26b5dbfa505611dfc2eff396e018eac3271a61",
+      "bytes": 78971,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/MEASUREMENT.json",
+      "sha256": "acffaaba0bb1336053a485b84d8ddd4fcc6447f3caab2594349677369fe5a1df",
+      "bytes": 160935,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/artifacts.json",
+      "sha256": "f6fbae56af0b2ccf681fe2504757790c6ef902163b74cfcde5fa718986d8d1c7",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/result.json",
+      "sha256": "02d80db03c0a6925fe17b5092e5f102a3a0b4b45dcbd5b58d970742102295ea0",
+      "bytes": 19374,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/stdout.log",
+      "sha256": "947a7fa9d5ee7d0ee8d3e9210c978b276cd899875dab30782161b74c368a3859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-11-66294c58700ef1b4-shared12-r1/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/COMMAND.json",
+      "sha256": "7cd851c35c66d5b67e8e2926e4b40324aae96a38826b9aae876e6cc78077a5b7",
+      "bytes": 78970,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/MEASUREMENT.json",
+      "sha256": "465197b985b7ce355d87bb7a67b3375fa2af6695b6b890ef48d7af850826369f",
+      "bytes": 160967,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/artifacts.json",
+      "sha256": "8667013b15773e5c95aea2b490c5cbbba1bcff331dfe20ba9fcb7bd38166cf67",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/result.json",
+      "sha256": "4a7560ed69ef7c9e12d645dc9499bf9b263374c16f2c73eb32b18ce8001c8c9b",
+      "bytes": 19390,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/stdout.log",
+      "sha256": "008d3332d6e9865c2e98010392ee08840f12a26d862ae75fb8f59960c7261859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-12-66294c58700ef1b4-onehot17-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/COMMAND.json",
+      "sha256": "9486bffc398c82c5b0bce090441ff6b788b490f26f8912af3684e5762c4240ad",
+      "bytes": 78970,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/MEASUREMENT.json",
+      "sha256": "b895eb23a101c95b5e8a8d8554a7fd52b7a28599ec5068a0f337285aec5d3c31",
+      "bytes": 160929,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/artifacts.json",
+      "sha256": "192a4827998d144658715bc895f9d21647b42f2ab2c95cceea6570097b905c76",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/result.json",
+      "sha256": "e90fdf32ba2942b7fe3f1d5e6e83d53ad709f2c6898d11adada69da1ce6f6cc9",
+      "bytes": 19376,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/stdout.log",
+      "sha256": "947a7fa9d5ee7d0ee8d3e9210c978b276cd899875dab30782161b74c368a3859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-13-66294c58700ef1b4-shared12-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/COMMAND.json",
+      "sha256": "17dc8a4323b4ad1bfffec5ef7aa6b03c267f1e6bd1eed4732311377f9a805bae",
+      "bytes": 78968,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/MEASUREMENT.json",
+      "sha256": "7e5f7b196fff6b9febb6f9bd7a32e0749f3b1e438cb39492616b82c9f6e9be5c",
+      "bytes": 160900,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/artifacts.json",
+      "sha256": "78927aad630c9d1af022a12b0ddda0be7cc949007e54e361bc68720701842c1c",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/result.json",
+      "sha256": "fe078c4d396a05e814bf3973a9d51a421f30386e285f1d39e11463e3e60a0a26",
+      "bytes": 19357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/stdout.log",
+      "sha256": "2ca1ecc8aaa42c12c338cc970aabff78cc6d824f1f26faa2dc87f2f26bc5c613",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-14-66294c58700ef1b4-experts12-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/COMMAND.json",
+      "sha256": "52d7dd7211d563e9e3f399784d9660093fa709891ed4990c6e44dee65af6a12b",
+      "bytes": 78964,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/MEASUREMENT.json",
+      "sha256": "b396ae4f283b26f34572b33e7d8933df16dc0314874c05a10ab6eb505e646222",
+      "bytes": 254661,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/artifacts.json",
+      "sha256": "9d90c2d1a91a01d5c7043eb4f6a5fcc798b51d27fd68285571d6ec8755fe7c3b",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/result.json",
+      "sha256": "c0af5630f5dc0afac62f16e64f434f48c618fe85ad44c6e0179b16cce70985e1",
+      "bytes": 53551,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/stdout.log",
+      "sha256": "97cb024d629d601e84a32488a7cddf8b616ffd9e36ba9b668266db77d2c5804c",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-15-1d043310cbecdceb-onehot17-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/COMMAND.json",
+      "sha256": "fa50a542bfb589dbdc277e683112544580c2bd9f869e89f584a796113b00a7cf",
+      "bytes": 78963,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/MEASUREMENT.json",
+      "sha256": "b8575267a23cc84f5f91ede68908f7cd430ebc6b1baf0768b8498b92bafbea9a",
+      "bytes": 254732,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/artifacts.json",
+      "sha256": "0c87e7006fd5149926cb1647c8008febf7b73bb3a0deb210be31505ef74c10a3",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/result.json",
+      "sha256": "54c482720ba952ee86150a8ec25431c0014e6448b8e45c7f76d071614154744e",
+      "bytes": 53599,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/stdout.log",
+      "sha256": "18fb203d80de2805169b93b04a89a753f7d28f4c137fd9b16d98973621623bcb",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-16-1d043310cbecdceb-shared12-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/COMMAND.json",
+      "sha256": "11fe42a2a8c7c30ff6c9d62b4bb8f7ab225d5ff0d3b58359e6fcf8c1a478c386",
+      "bytes": 78972,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/MEASUREMENT.json",
+      "sha256": "de5c6f056926efbd9294f2dc55bde304110753cc8628d40519ac7169bd4c1cb6",
+      "bytes": 254679,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/artifacts.json",
+      "sha256": "64bdb126bb513daba17b0cc923acf79f705ed8456e3d6082f9b7e40c6fda1ed2",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/result.json",
+      "sha256": "5976bd46b77e999502eb80f6c0e442bab67d17a0052069948483c0dafa0995b4",
+      "bytes": 53566,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/stdout.log",
+      "sha256": "c30719afa9af331f9b039c09731168b0e6aa43e61e50506a9bc259bf223c4fc7",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-17-1d043310cbecdceb-experts12-r2/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/COMMAND.json",
+      "sha256": "a4405174982b3a9bb3db13e11cff2740e187da43cbbdd59e6e1c049bbfb5ab1d",
+      "bytes": 78971,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/MEASUREMENT.json",
+      "sha256": "67fbd5124b113e0057c3762c0202f1b4cc5e208c0ba6b0cb93130cb0f8618dde",
+      "bytes": 254695,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/artifacts.json",
+      "sha256": "c5b352f415e2c05a27f23302731f621f72b0dfc2a41bced05abc8f497e9f4df6",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/result.json",
+      "sha256": "eff77f50bb0bd43cfa1d11cf3de05718aa6e974521b3c9c017ffce5c8678ae38",
+      "bytes": 53567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/stdout.log",
+      "sha256": "c30719afa9af331f9b039c09731168b0e6aa43e61e50506a9bc259bf223c4fc7",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-18-1d043310cbecdceb-experts12-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/COMMAND.json",
+      "sha256": "ec4446440234b671b4320b3a9ea2952eb6fa4766322f0520a73237bcbfbfd2f2",
+      "bytes": 78968,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/MEASUREMENT.json",
+      "sha256": "6ec05853f290486edb3634b75aaa18e39b54391e35890ec12f7182b018466bb4",
+      "bytes": 254713,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/artifacts.json",
+      "sha256": "38989c7eac064dead8ed570953355bc4a4b9455521b5aa3285d16b3ab21cf2b2",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/result.json",
+      "sha256": "901cd1ea07a5d8bc1604603e0cdfcc45ade0483d5e6fecebfd1d49befce6eadc",
+      "bytes": 53599,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/stdout.log",
+      "sha256": "18fb203d80de2805169b93b04a89a753f7d28f4c137fd9b16d98973621623bcb",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-19-1d043310cbecdceb-shared12-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/COMMAND.json",
+      "sha256": "0c0a1b496e3a00d950ed350e38712df8c03abeaf2d264989f359061b174ea780",
+      "bytes": 78968,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/MEASUREMENT.json",
+      "sha256": "8d3ceeab990aa04adce038224081762a8937f7cbd54da3c3c8236caf95a6b0ca",
+      "bytes": 254663,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/artifacts.json",
+      "sha256": "ca0ffa58d1ebac8daeb50d650289615655338010646044e2b716d418e26c4201",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/result.json",
+      "sha256": "a12a0b276c330c9d55abf3eb7bcfcea7ddc530bdd8adc0b0bd74d976e43466e1",
+      "bytes": 53551,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/stdout.log",
+      "sha256": "97cb024d629d601e84a32488a7cddf8b616ffd9e36ba9b668266db77d2c5804c",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-20-1d043310cbecdceb-onehot17-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/COMMAND.json",
+      "sha256": "5b2ec31f8dab77dc01e307ef2aa24ec7f8532cbe40d1c037f88e70b672cf6e90",
+      "bytes": 78971,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/MEASUREMENT.json",
+      "sha256": "4a483968dd1aa702c5778f925c1dbda56400b9609319086194c4ff68d9bd84ce",
+      "bytes": 160905,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/artifacts.json",
+      "sha256": "c40a09171b2b75a2a212f31431071532bbfd69707d83c838ffbd9f7e3cc012bf",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/result.json",
+      "sha256": "39d478de4c0a4b307d0287b1600f7f7797858a21a5e8b856b631c370133785df",
+      "bytes": 19357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/stdout.log",
+      "sha256": "2ca1ecc8aaa42c12c338cc970aabff78cc6d824f1f26faa2dc87f2f26bc5c613",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-21-66294c58700ef1b4-experts12-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/COMMAND.json",
+      "sha256": "ae4118b04c3ac8808c6a7b7811b01f31c95e8ca00ca11babf871f39818f1274e",
+      "bytes": 78968,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/MEASUREMENT.json",
+      "sha256": "3659b7b9fb08c4700ce0674b66ef7564dcf60a05c8e217203adb3fb481eea92b",
+      "bytes": 160917,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/artifacts.json",
+      "sha256": "ac767336605d6f7ccdf5373eff96f2689a9bc890b738575b6b3c92838d3e0de1",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/result.json",
+      "sha256": "f1ae1f24562aea6ab895567d1dc049f429673fd12dc467771fbd41a6d745f5f3",
+      "bytes": 19373,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/stdout.log",
+      "sha256": "947a7fa9d5ee7d0ee8d3e9210c978b276cd899875dab30782161b74c368a3859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-22-66294c58700ef1b4-shared12-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/COMMAND.json",
+      "sha256": "567532562632f2f8a5e66baf8618eb32b5b5da3fccd9c8c5e878a93814f58a5f",
+      "bytes": 78967,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/COMMAND.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/MEASUREMENT.json",
+      "sha256": "2c6ac8da9b76b83e66ba28b7bddcf873e2d9cba536af64edb06fa35b1ac895ec",
+      "bytes": 160934,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/artifacts.json",
+      "sha256": "fe3d7940b2bc77225397a6678b969f2cbc6ca7bd98d2ccb7ee2d0b3ca676c2c9",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/artifacts.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/progress.jsonl"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/result.json",
+      "sha256": "4c4893ca36892eed01dfa17bff5ea8db568207c96335b9f43e1aa536d7193184",
+      "bytes": 19388,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/result.json"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/stderr.log"
+    },
+    {
+      "path": "prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/stdout.log",
+      "sha256": "008d3332d6e9865c2e98010392ee08840f12a26d862ae75fb8f59960c7261859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/runs/cpu-23-66294c58700ef1b4-onehot17-r3/stdout.log"
+    },
+    {
+      "path": "prototypes/cpu/setup-failed-dependency-key.log",
+      "sha256": "983fdf3201725557d1faa6a09c6a4a866a55654841d4dbd3cd62154b3e583e83",
+      "bytes": 555,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/setup-failed-dependency-key.log"
+    },
+    {
+      "path": "prototypes/cpu/supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/cpu/supervisor.log"
+    },
+    {
+      "path": "prototypes/experts12/AdaptiveGradientModel.h",
+      "sha256": "12621ea5b7cfdd4371c969ca69049a4f8242bdffe164d6f1bebd56b75197551d",
+      "bytes": 14618,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/AdaptiveGradientModel.h"
+    },
+    {
+      "path": "prototypes/experts12/BUILD.json",
+      "sha256": "a1c58acf23bb2ec4d3877bd53b47217a09d4aa51f50b38f57cb9d5658b41a35e",
+      "bytes": 1802,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/BUILD.json"
+    },
+    {
+      "path": "prototypes/experts12/NATIVE-INPUTS.json",
+      "sha256": "1faf77ae10289b190f29a152a43029be327027d5221a8ddfb79c819f50357b4d",
+      "bytes": 210184,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/NATIVE-INPUTS.json"
+    },
+    {
+      "path": "prototypes/experts12/build.log",
+      "sha256": "c84a94bcf196cfc99f2c6664fdf4390574623d647fd0ee3c717df9e738031905",
+      "bytes": 91403,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/build.log"
+    },
+    {
+      "path": "prototypes/experts12/parity.cpp",
+      "sha256": "b9bc95b39164a1a787b0964f63f0d9eb6e93403a900b578080609513559ea4e0",
+      "bytes": 289,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/parity.cpp"
+    },
+    {
+      "path": "prototypes/experts12/source.patch",
+      "sha256": "f077715a25baf0f9346693061122c8b080ad974e4b88fe16d4621ffe71b45f37",
+      "bytes": 25653,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/source.patch"
+    },
+    {
+      "path": "prototypes/generate-headers.py",
+      "sha256": "70c3ef0941e70ea5f644ed3595170785bbc5800ff415d5faa97540fd1bf29441",
+      "bytes": 5495,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/generate-headers.py"
+    },
+    {
+      "path": "prototypes/mac-observation-helpers.py",
+      "sha256": "8ef73f487910e304af8050360737c0bf510493b9642a1a006432c49bf36dc085",
+      "bytes": 2567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/mac-observation-helpers.py"
+    },
+    {
+      "path": "prototypes/onehot17/AdaptiveGradientModel.h",
+      "sha256": "cddcf7236b3bcd738709d80ce33132ba1565512610251ab6787c2a1bdaeff2f1",
+      "bytes": 8641,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/AdaptiveGradientModel.h"
+    },
+    {
+      "path": "prototypes/onehot17/BUILD.json",
+      "sha256": "ea1641d7d2f0c9180b29f3f1d364469dacbab39ff8f5741f705003753b2d8815",
+      "bytes": 1800,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/BUILD.json"
+    },
+    {
+      "path": "prototypes/onehot17/NATIVE-INPUTS.json",
+      "sha256": "ce7f7073844919814e6388852d56395ec78ee33d18d6323ca3c51c446032a43d",
+      "bytes": 210184,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/NATIVE-INPUTS.json"
+    },
+    {
+      "path": "prototypes/onehot17/build.log",
+      "sha256": "c84a94bcf196cfc99f2c6664fdf4390574623d647fd0ee3c717df9e738031905",
+      "bytes": 91403,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/build.log"
+    },
+    {
+      "path": "prototypes/onehot17/parity.cpp",
+      "sha256": "b9bc95b39164a1a787b0964f63f0d9eb6e93403a900b578080609513559ea4e0",
+      "bytes": 289,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/parity.cpp"
+    },
+    {
+      "path": "prototypes/onehot17/source.patch",
+      "sha256": "46c8dffb675c4fac3e8f6164b39fd95adff2abe5a4d777e4498a2a0bba579c69",
+      "bytes": 21922,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/source.patch"
+    },
+    {
+      "path": "prototypes/quality/ASSETS-BEFORE.json",
+      "sha256": "f57d8b9ff3d0c189fb43ed6b04f981348e11dac158e4fcdb165ac1757724c838",
+      "bytes": 987480,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/ASSETS-BEFORE.json"
+    },
+    {
+      "path": "prototypes/quality/LAUNCH.json",
+      "sha256": "b2947940f7f7a0703474e79ec128db37d9b3bc0c194e735c63aea49924c4610c",
+      "bytes": 131,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/LAUNCH.json"
+    },
+    {
+      "path": "prototypes/quality/PLAN.json",
+      "sha256": "3c7f25c34379bf7b36a365a04c28150d780fe0834ebf3d2d3413921fe02b2b54",
+      "bytes": 7075,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/PLAN.json"
+    },
+    {
+      "path": "prototypes/quality/STATUS.json",
+      "sha256": "27a47abb066f844850880d5f1eec05274e79ed381585e3be1a10f70f52072e70",
+      "bytes": 1501856,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/STATUS.json"
+    },
+    {
+      "path": "prototypes/quality/mac-observation-helpers.py",
+      "sha256": "8ef73f487910e304af8050360737c0bf510493b9642a1a006432c49bf36dc085",
+      "bytes": 2567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/mac-observation-helpers.py"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/COMMAND.json",
+      "sha256": "edb608a3edcedf3992281f47e0f0b653f214a67223a5c0f39d0a3829d3d469a6",
+      "bytes": 79219,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/MEASUREMENT.json",
+      "sha256": "f8f8ce6d396f37055a7ff5dbf9e39cb582f208be27e7452019309e452688ac93",
+      "bytes": 161136,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/artifacts.json",
+      "sha256": "aa3b95f3134c377068c9e44ce44dff915e09a94113412922969f7dc84921e49a",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-contradictions.csv",
+      "sha256": "b9bf572c5781774b027c8c6bf0c8979d116429026409b1ec219a8fe240a87ce6",
+      "bytes": 1236,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-episodes.csv",
+      "sha256": "3fed10009b31494b1bd7e6aea2843c04009fa33a7d235f02e4e7fa6bd0c38d1d",
+      "bytes": 8075,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-planning-quality.csv",
+      "sha256": "a775a17686f9a4cfb721fd28565ee5058e0603d549ab1b5385d3c068dcc923ff",
+      "bytes": 2780781,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-quality.csv",
+      "sha256": "3fee71da40097b56495d1f520330ea07267822103891d6ed3c8c2623a8f9d070",
+      "bytes": 67025,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv",
+      "sha256": "db2f91d48255e48fbac2a31c46a6d7913848049d3a9b311a2c4125e708b9fdb5",
+      "bytes": 8555862,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv.intervals.csv",
+      "sha256": "5bc23d7c94279ed6b2b361a9144ad92ff3708bc9ff599d9136210476f4654fbd",
+      "bytes": 29185,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv.summary.csv",
+      "sha256": "4d26e3fee5509be0f1ee42e0c1b4fc1b9f34675b398a9006291f926401bf43c6",
+      "bytes": 2242,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/result.json",
+      "sha256": "c84c432f93256635c351e07ea74c86aa778e8218afc1b7248752e1372fb44832",
+      "bytes": 19569,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/stdout.log",
+      "sha256": "947a7fa9d5ee7d0ee8d3e9210c978b276cd899875dab30782161b74c368a3859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-00-66294c58700ef1b4-shared12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/COMMAND.json",
+      "sha256": "b051895f896310c8dfeedaa7ee3c3e06ccbc659b169d5d6fe4a00fde7f7fab5e",
+      "bytes": 79219,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/MEASUREMENT.json",
+      "sha256": "b6d0c99dfc32d1ce7498c7f9214c8cbc8b390165bf27328444af9b3f0774e0f4",
+      "bytes": 161173,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/artifacts.json",
+      "sha256": "95c85efc99b3bdd55250825c0c54ebf3ae39840683d4e07b1d04ed056bad4470",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-contradictions.csv",
+      "sha256": "ababb50033e7024c36114a35d280ca9a6e44fde1f83f11aa6c956ab49b286c7f",
+      "bytes": 1159,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-episodes.csv",
+      "sha256": "f79c74ab67efe1e15cc133e89b3603a855c1f6469c28999ff0496d09ee501d44",
+      "bytes": 7222,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-planning-quality.csv",
+      "sha256": "1ac469a03d5bb84f7a79fd59695de817a0b8b7017d992d44ead9bc7b825af26b",
+      "bytes": 3198474,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-quality.csv",
+      "sha256": "e940f4b9ff636fabfd2bb01035ea037490d705d8ded771e4ea6306fe9346448f",
+      "bytes": 72818,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv",
+      "sha256": "7fe7e997cab682afccbfe1da6c9c33c89c38fbec1fd6da4f8c594c0cdcd59ce5",
+      "bytes": 8045257,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv.intervals.csv",
+      "sha256": "b1d817a737673162ebf4376f141c093e2ab20122c4daa264cc3c406dd9846b92",
+      "bytes": 27092,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv.summary.csv",
+      "sha256": "caae44c773f8dcb248bfb7e45740c24266cb21e66e0d52d50b8e5a7af0b76064",
+      "bytes": 2234,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/result.json",
+      "sha256": "d9f597842ef388ee705f4e1016a4c5c45dc57682356dd195e5fa18aea35cb313",
+      "bytes": 19583,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/stdout.log",
+      "sha256": "008d3332d6e9865c2e98010392ee08840f12a26d862ae75fb8f59960c7261859",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-01-66294c58700ef1b4-onehot17-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/COMMAND.json",
+      "sha256": "149b9f818f04d774afea573f4047429cce6c852c5cfc3a5db900d08a0ef2dcb0",
+      "bytes": 79225,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/MEASUREMENT.json",
+      "sha256": "99e6a3d99270e1acc41b050b0e8c34112bef0c831c6af5a9281631cdbb26d188",
+      "bytes": 161131,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/artifacts.json",
+      "sha256": "93dbecc80f54854827ccfbc167b020c6b085ea15b6bba5af7b2eeeee18670fb8",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-contradictions.csv",
+      "sha256": "53807ca584bdd61de01fb482101ba247da4aae93cc22c65e8c18395060a29ff9",
+      "bytes": 1202,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-episodes.csv",
+      "sha256": "9b8bd2b95c3b73baf96a2d64fe1d4fc3522af888e6bea8a22675d49be50c976e",
+      "bytes": 7497,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-planning-quality.csv",
+      "sha256": "7de5c961f7027215123211838ce6fb2103d296a50c2df4b5b58833251688844c",
+      "bytes": 2622610,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-quality.csv",
+      "sha256": "2922b3686bc04ab82beb71b703fb992ddc199004fd0c6951d049247fe621a87d",
+      "bytes": 73094,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv",
+      "sha256": "a3d0bf9e764d52fd9d78632b60045acb7ddadd3c51a65178c30bb46dc358955b",
+      "bytes": 8938342,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv.intervals.csv",
+      "sha256": "44feeb94e082eb6011befd6d099567807681205d75f51e980e16f275d976c1b1",
+      "bytes": 29286,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv.summary.csv",
+      "sha256": "4004a5d93f58cf922c724b501567e70dd820bd4221612afd5eb5e51b7c629a0d",
+      "bytes": 2243,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/result.json",
+      "sha256": "7bb6552bb41c8d1e82a0cc43cab0d024c0cb97dea18eb80ae8be4a9d293efd68",
+      "bytes": 19556,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/stdout.log",
+      "sha256": "2ca1ecc8aaa42c12c338cc970aabff78cc6d824f1f26faa2dc87f2f26bc5c613",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-02-66294c58700ef1b4-experts12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/COMMAND.json",
+      "sha256": "f0d3da0639799011e01bc84013eef96b645455ef6b66f7e60651ca2aba07bc39",
+      "bytes": 79223,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/MEASUREMENT.json",
+      "sha256": "74bd62c6deb9e57ea7e4ababf3b123560ab272c9fff09d685f62115cec9dd7ed",
+      "bytes": 254930,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/artifacts.json",
+      "sha256": "54a8d66d47e071cec8d799e5ac2ab3017e433b11c848a3bf5f5a361176a954b4",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-contradictions.csv",
+      "sha256": "cfb4e4c26e1abbb01ead7f0d5861f691c2a6b08b7eaca2de23d2a72b45273d2b",
+      "bytes": 688,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-episodes.csv",
+      "sha256": "9672b46adfaa0ba3484f66318cb0d5cb3a7241271f438b2e3993276f28f6f9db",
+      "bytes": 8275,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-planning-quality.csv",
+      "sha256": "e72df35ad512349b86114d0657335da57c529b974d83e1a010a836e6e69abf73",
+      "bytes": 107529,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-quality.csv",
+      "sha256": "7f0707ab4115c23a9b5f8665dd901e921154e2c1889b00c9312c27cffe07163f",
+      "bytes": 87896,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv",
+      "sha256": "d274de19fe1d0ff7ea730ef539e04e614e203ae9b493b1a807233ef75b2fd1c9",
+      "bytes": 1247763,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv.intervals.csv",
+      "sha256": "34b4d370f8d15e55d204f850b4d48c9d904217176175d7449b47fb92afd42d02",
+      "bytes": 19276,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv.summary.csv",
+      "sha256": "2183f812a9650b2b95c97c99451bec3c357b3a9a4988ec2ff0866ae7de5b9efd",
+      "bytes": 2236,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/result.json",
+      "sha256": "5b4d1d26013c4c4b63a0674a5519a734c924979fbb65e12882ecb1a762211313",
+      "bytes": 53783,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/stdout.log",
+      "sha256": "18fb203d80de2805169b93b04a89a753f7d28f4c137fd9b16d98973621623bcb",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-03-1d043310cbecdceb-shared12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/COMMAND.json",
+      "sha256": "cbaae5c9d387d3c7349e31b1a8a0f47a7d09380455237a9152ae53a1c8d1ae83",
+      "bytes": 79223,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/MEASUREMENT.json",
+      "sha256": "11d3b4e493c56e701892ad6f5e2599c201fe9f793beeea519ccd19084f950099",
+      "bytes": 254879,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/artifacts.json",
+      "sha256": "95e6730821c91e47f9aea4b38e4352480fd6e09f2933f07340c23d7216821752",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-contradictions.csv",
+      "sha256": "e5df2c9864181de6b1d7e5ffbd8b6b501df895a7103997e57570b04b318f2f49",
+      "bytes": 789,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-episodes.csv",
+      "sha256": "add475348e7f2d83cc26f3780f628e25975ee1598fb30d820b96d5cb7d2616bf",
+      "bytes": 8667,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-planning-quality.csv",
+      "sha256": "67ae3654ae16819934e2825090386e63c4f6eedcf133ac22e3fe0d4a7c421e38",
+      "bytes": 320597,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-quality.csv",
+      "sha256": "628b4192257b125c724efffef30ac28a05f08f7ebe4399c2e1d455c86f63d85d",
+      "bytes": 85925,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv",
+      "sha256": "e1ebc92a1f743883c094de188f527474e038583a9114e704ea1ee7055e116941",
+      "bytes": 1374029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv.intervals.csv",
+      "sha256": "18ae3c2d29070dec2e4ab17db6b708c03bf9aa35011609d551f87c12e808790e",
+      "bytes": 18891,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv.summary.csv",
+      "sha256": "57c87c90f66e9331bf8203080499f8d0e9e7d4c1adc62c218d5d5a3f7a166184",
+      "bytes": 2226,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/result.json",
+      "sha256": "1e608a136504bb39c1280b1da1968b72760c105694e26a248d214fe45db77a1c",
+      "bytes": 53735,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/stdout.log",
+      "sha256": "97cb024d629d601e84a32488a7cddf8b616ffd9e36ba9b668266db77d2c5804c",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-04-1d043310cbecdceb-onehot17-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/COMMAND.json",
+      "sha256": "34008146b305692be2d0472a414158ce0dc840cda582d6b5c2ecca60430eee0c",
+      "bytes": 79225,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/COMMAND.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/MEASUREMENT.json",
+      "sha256": "7ebc47cf4dd9bfa0029bcc0717efad1e58d284f14b80416fa4a4d0fd3a9354cf",
+      "bytes": 254892,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/artifacts.json",
+      "sha256": "426e54084a6463cd96e4dc1fb946e2a4924719024de0b615796d5a3287d84368",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/artifacts.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-contradictions.csv",
+      "sha256": "7932163bab6435514c682f50c23cd3a0500df7f790f9f50ff3146ae5a5504b6e",
+      "bytes": 733,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-episodes.csv",
+      "sha256": "0ed98b8da230b9a486cdf5727178101e4eb0831303e1a26ff585f2b6e1868030",
+      "bytes": 7912,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-planning-quality.csv",
+      "sha256": "f8d5144499ff9938f35ae4f240cf9db84c2d4eeb698f468f67eec9576a61024f",
+      "bytes": 109425,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-quality.csv",
+      "sha256": "6208279ba571be202fa5ff7ab1442e30c6d3087930212232c3d7200eecdb7155",
+      "bytes": 63538,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-quality.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv",
+      "sha256": "9ce016964ec3aab457faf4267ab4ec5f556acb96f0da8e5ecfa2d478e3c60e75",
+      "bytes": 1203016,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv.intervals.csv",
+      "sha256": "9bd922081d732822d19ee21f5795325b32af32ff4332922e9d0c945346e67793",
+      "bytes": 19482,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv.summary.csv",
+      "sha256": "c527499b6a61ac28096ca5d76577cc8faddc89c34704c7d2634638a29940dcda",
+      "bytes": 2223,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/progress.jsonl"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/result.json",
+      "sha256": "4f8545dc5ce996cb90a2d4a127d28576f362ca2d0e40e4c7c2ceafd76b024e61",
+      "bytes": 53755,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/result.json"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/stderr.log"
+    },
+    {
+      "path": "prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/stdout.log",
+      "sha256": "c30719afa9af331f9b039c09731168b0e6aa43e61e50506a9bc259bf223c4fc7",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality/runs/quality-05-1d043310cbecdceb-experts12-r0/stdout.log"
+    },
+    {
+      "path": "prototypes/quality-supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/quality-supervisor.log"
+    },
+    {
+      "path": "prototypes/run-quality.py",
+      "sha256": "d556999fce37137618da052c51d03a5c6a9daec017e7428d2dbcccef97cb72c8",
+      "bytes": 6030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/run-quality.py"
+    },
+    {
+      "path": "prototypes/shared12/AdaptiveGradientModel.h",
+      "sha256": "da22275387e417a1132281be25ad72f6063bdd59d1b5c6a030f9e54888706385",
+      "bytes": 8284,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/AdaptiveGradientModel.h"
+    },
+    {
+      "path": "prototypes/shared12/BUILD.json",
+      "sha256": "cc1253eb5776322b0f2e0ebc02b09bf7feecb14eecc3ef4f89fa59cc2cb66545",
+      "bytes": 1800,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/BUILD.json"
+    },
+    {
+      "path": "prototypes/shared12/NATIVE-INPUTS.json",
+      "sha256": "c5735b69f1df47593caf7df88670e4859b6c393ea9a70432a9510aa3be4bf432",
+      "bytes": 210184,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/NATIVE-INPUTS.json"
+    },
+    {
+      "path": "prototypes/shared12/build.log",
+      "sha256": "8ee65e7b219280fbdd355fed45861348794ce5edbe3d1f5ac690051c3de58962",
+      "bytes": 541187,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/build.log"
+    },
+    {
+      "path": "prototypes/shared12/parity.cpp",
+      "sha256": "b9bc95b39164a1a787b0964f63f0d9eb6e93403a900b578080609513559ea4e0",
+      "bytes": 289,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/parity.cpp"
+    },
+    {
+      "path": "prototypes/shared12/source.patch",
+      "sha256": "805acf193b7f58688451a8c93eefc6ae6be1d6b81c967d92a322f78bec4add70",
+      "bytes": 16509,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/source.patch"
+    },
+    {
+      "path": "additional-heldout/LAUNCH.json",
+      "sha256": "6c0b121fc05304e5edbc06dcd7d0fbaf9451d21c2fea5852c62d16de562c1909",
+      "bytes": 286,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/LAUNCH.json"
+    },
+    {
+      "path": "additional-heldout/PLAN.json",
+      "sha256": "70579f3d852dcfe10dad3f75bb409a604b901369e0fa8af3af3f7ab3f1fb1ef3",
+      "bytes": 5055,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/PLAN.json"
+    },
+    {
+      "path": "additional-heldout/SEALED.json",
+      "sha256": "3297dbf902d40ebc3c887e91d2c41c27b51a7d44b0ee5e3f35be91dd385468a4",
+      "bytes": 21770,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/SEALED.json"
+    },
+    {
+      "path": "additional-heldout/SELECTION.json",
+      "sha256": "88bb245c13b4e0974c89bf7cd0d9f840f0fc1230e069ff067a505c2b673b0b33",
+      "bytes": 4041,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/SELECTION.json"
+    },
+    {
+      "path": "additional-heldout/STATUS.json",
+      "sha256": "c2a42b977958b1a9be202ae1940fb1667280eeafc38013008c404bd5e78465d6",
+      "bytes": 488781,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/STATUS.json"
+    },
+    {
+      "path": "additional-heldout/SUMMARY.json",
+      "sha256": "6bd1462ad8041091c6c7268bf5a342e0556e2447cc059ea0b9fcf2e67a955f49",
+      "bytes": 25385,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/SUMMARY.json"
+    },
+    {
+      "path": "additional-heldout/SUPERVISOR-STARTUP-NO-GAMES.json",
+      "sha256": "4a62dc31cbb364949cd4f9459e6ec248abf327e4e21e6de192c27e5ab0f99583",
+      "bytes": 236,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/SUPERVISOR-STARTUP-NO-GAMES.json"
+    },
+    {
+      "path": "additional-heldout/run-panel.py",
+      "sha256": "1294db38472c95141d4b50d61dfcf8e3e13823f970425d8387098b59a03802e9",
+      "bytes": 5078,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/run-panel.py"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/COMMAND.json",
+      "sha256": "e108b2850530d162b10a634b62733900ff6f24a47ac875ea43b6d2d4b9f44900",
+      "bytes": 1893,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/RECEIPT.json",
+      "sha256": "d6c29fa392bf8126c230bc6ea0c2b26981d7a5acdf20d4d8516d114bd4224278",
+      "bytes": 82598,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/artifacts.json",
+      "sha256": "655b469d73dfa581013b3f54ef0250878037fab5ead40ab0bb757d387641101e",
+      "bytes": 751,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/final.game.gz",
+      "sha256": "306510aad996d7e833068f47084f15536d62d947b9f8c1f3209f4784505a6517",
+      "bytes": 633095,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-contradictions.csv",
+      "sha256": "83971efad1d737cb7b6786fd3e0f3c45155503f244ea1bddbd5eb4e2cc5a51c8",
+      "bytes": 958,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-contradictions.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-episodes.csv",
+      "sha256": "74f1c8cfc8f3d483a6104d0ecdf8bfcfae9e2aae04d1f7f826673c5750f2c60f",
+      "bytes": 7697,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-episodes.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-planning-quality.csv",
+      "sha256": "7f8ae59cb00641a2582b35321e08dadd1b4e5bc3e51d0ee631b011ac50c16327",
+      "bytes": 426844,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-planning-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-quality.csv",
+      "sha256": "4e92f680f1720c1ea1144530a8586811202f478a2119642135e46aca0076c5a4",
+      "bytes": 31925,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-work.csv",
+      "sha256": "141a16913583ef54796b1233f4a497ae7b0f52c92862fc017cac770fb3b993fd",
+      "bytes": 2057314,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-work.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-work.csv.intervals.csv",
+      "sha256": "128d67e71d62a0d00e3fe358613a4afde7cf013b54944f43e17fc548ca72a75b",
+      "bytes": 16443,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/gradient-work.csv.summary.csv",
+      "sha256": "a7c329e47d67c62bb74af9a82d5584c9274ae772e476ef924097ae4e248aabb5",
+      "bytes": 2206,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/progress.jsonl",
+      "sha256": "99844c2435d79d848f9e173f0ba1a7d12c13a8909766a1a59567887ea8dc1cb0",
+      "bytes": 1115,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/result.json",
+      "sha256": "6f2e236b8a7decab9e372c8cc942374ddac6724b41cb810cac439bc5832fa55b",
+      "bytes": 38787,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/stderr.log",
+      "sha256": "6aef8eab6d87fc649e52eb74bfdab08d973b8c789f69bb6677497f012640d357",
+      "bytes": 23161,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-experts12/stdout.log",
+      "sha256": "68884d70c0b86a197e306e3bec9635b8767aaa49ee6fdcdcdb3a15091aaf42b1",
+      "bytes": 396,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-experts12/stdout.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/COMMAND.json",
+      "sha256": "bcd49e287008c377c0f46435b4703e839bb50760b144db1881cec432b1de4eb3",
+      "bytes": 1888,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/RECEIPT.json",
+      "sha256": "8aee90532666dd96535bba3e38d2feca589c9bc30af7ec8d6cc31a98ceb35370",
+      "bytes": 82616,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/artifacts.json",
+      "sha256": "494d5a6a5f0730ea080ca7d05712f0cbfc4d76b5b6c9f0f3d6224074f0f8c21d",
+      "bytes": 752,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/final.game.gz",
+      "sha256": "3aa54c00b7eec9a1f21ce8332db44b72c106599f0c1aaed78d1230dc41065efb",
+      "bytes": 735598,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-contradictions.csv",
+      "sha256": "bc2efac2a2f8464c2ef3198edfe010d1071246d669d56f9cd838f39fa5a4909b",
+      "bytes": 1200,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-contradictions.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-episodes.csv",
+      "sha256": "c180083bd51d1407699f14c00c75bc225f6215e6c71cbc0cf3f7fd5e9302e755",
+      "bytes": 6548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-episodes.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-planning-quality.csv",
+      "sha256": "39c078d1d35ba2ed49c6413934c4ed556577191b2fc27ab1786ef8f09145b19f",
+      "bytes": 776707,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-planning-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-quality.csv",
+      "sha256": "2219e12aa3c402cdf162a8ae49007c0455ce22adc3c80eae52777312cca3f078",
+      "bytes": 20644,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-work.csv",
+      "sha256": "388d9526a37b3bd7053b8795079c03e9dad585012489de935fe35b3cf96618a9",
+      "bytes": 2034430,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-work.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-work.csv.intervals.csv",
+      "sha256": "948a10129dc19d5edb34eb5c3bcc35f4965cea79d6626cff2634349dd554864d",
+      "bytes": 15330,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/gradient-work.csv.summary.csv",
+      "sha256": "e29d7698064fadd786e2b08104f5e6a512115af52a69f0649e3c4c02413cbbf9",
+      "bytes": 2207,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/progress.jsonl",
+      "sha256": "99844c2435d79d848f9e173f0ba1a7d12c13a8909766a1a59567887ea8dc1cb0",
+      "bytes": 1115,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/result.json",
+      "sha256": "c6f0fd76d66fc62a80d544adc647cb237a805f4b9ea78875885bb2a5cf7f9cb1",
+      "bytes": 38807,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/stderr.log",
+      "sha256": "6aef8eab6d87fc649e52eb74bfdab08d973b8c789f69bb6677497f012640d357",
+      "bytes": 23161,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-00c17a21624f0590-shared12/stdout.log",
+      "sha256": "39cb74eef51654f0dd62ff42e293ca9f73c6cc4eedfd4a06b67173035391a083",
+      "bytes": 395,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-00c17a21624f0590-shared12/stdout.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/COMMAND.json",
+      "sha256": "cea4ff02fa1c6206ae4576e122d828cc672b0934ab6f52e85a1eaa4f9b941c86",
+      "bytes": 1893,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/RECEIPT.json",
+      "sha256": "5461b8dde069d9a144908e501237764e3ffc8c5f79c3f873faf53601083842d7",
+      "bytes": 59201,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/artifacts.json",
+      "sha256": "f9ae71d5041a93ed29501ca732aae39904cfb61e68e7bf0cfa3101d08bd694b6",
+      "bytes": 746,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/final.game.gz",
+      "sha256": "e2b3e5dc862ab918aed768c30d3a5013625288fe85d927ac4bac62d41536128a",
+      "bytes": 215294,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-contradictions.csv",
+      "sha256": "b0378ac29e94df87177b385c4eb563ac217eec569b77f1b4ab308467fdf8a8fc",
+      "bytes": 483,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-contradictions.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-episodes.csv",
+      "sha256": "99b872f330d513e4434081ef9e5fcb5bd526f68fb10a125481137e57e2211fb5",
+      "bytes": 4951,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-episodes.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-planning-quality.csv",
+      "sha256": "5a76010f65cfbe2daaf2ecee286ea8bcf06fb1d3ddcaf15160a08a1cd3a6540b",
+      "bytes": 484007,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-planning-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-quality.csv",
+      "sha256": "569aaef3fac8187198b77bcccf560faac974ac29f4555cc017eb9261b5d6bad6",
+      "bytes": 22730,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv",
+      "sha256": "6eeab3de4df83ea333aafa19698f93f62366a58eb3e4a131ef5e19cbb105b0a7",
+      "bytes": 605220,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv.intervals.csv",
+      "sha256": "1bf6efa15f163968d2de9b8aee211981e453317f2979060dc053b8a48b1e1bd5",
+      "bytes": 6633,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv.summary.csv",
+      "sha256": "cee24038533b0e570050db64fc7e067598a802fe66f83f1267e9d8f533d5b468",
+      "bytes": 2175,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/progress.jsonl",
+      "sha256": "99844c2435d79d848f9e173f0ba1a7d12c13a8909766a1a59567887ea8dc1cb0",
+      "bytes": 1115,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/result.json",
+      "sha256": "704e45c9997f9101166f194bab015c6db391cecf5a1fff9e472f37a871ddab38",
+      "bytes": 15307,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-experts12/stdout.log",
+      "sha256": "a77b41963f8dee639a57f47f60e49eb44d4508d8fad7b6a392f3b42432a09e82",
+      "bytes": 396,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-experts12/stdout.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/COMMAND.json",
+      "sha256": "7cdfbd7ebf7e5122c3d3214796cb2151871090266042a50875254dffdbd36165",
+      "bytes": 1888,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/RECEIPT.json",
+      "sha256": "3b7b80823367abafd214a86e2c619f324b522a1f1cc51412ce3a27f6cfb2fdba",
+      "bytes": 59190,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/artifacts.json",
+      "sha256": "0a504592aafffedef4bdf419de5534d735dce4822b6427f9f22c54147988661e",
+      "bytes": 746,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/final.game.gz",
+      "sha256": "60cba9b34d174b1fb7a572aec5e5250648880db3020961468ab20bfa46c651d9",
+      "bytes": 220263,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-contradictions.csv",
+      "sha256": "4e960410b4b51ef98eafd241b90ea5da5851f3d92a2f2aab10d558011e0b500d",
+      "bytes": 538,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-contradictions.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-episodes.csv",
+      "sha256": "ab9bfced741365f3cd07ad5e156e1386cc5b065fcaae5647320fdaf971d06793",
+      "bytes": 5212,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-episodes.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-planning-quality.csv",
+      "sha256": "a2c676f18563f29e0b8831a96cb70d468addbaa66e8869211c1c2f8ea454c481",
+      "bytes": 627292,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-planning-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-quality.csv",
+      "sha256": "6fa125d4b73924a353c8243ad504169a2c576939c41665b3da3add3726a35ad6",
+      "bytes": 24213,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-quality.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv",
+      "sha256": "4132bee90804a73aa1e6227b01f5caa4c2cee7003a373b52d8851f742ca7820b",
+      "bytes": 602262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv.intervals.csv",
+      "sha256": "3cd4f43a17d92b521fe182a6d47cbe02d2f206d04522be46fb0c9efeb66a1403",
+      "bytes": 6312,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv.summary.csv",
+      "sha256": "b2786c632961fba9d4b512b5d03aa0b4ba7ec8fadbbfed6fb7aa5fdf9d636bb6",
+      "bytes": 2178,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/progress.jsonl",
+      "sha256": "99844c2435d79d848f9e173f0ba1a7d12c13a8909766a1a59567887ea8dc1cb0",
+      "bytes": 1115,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/result.json",
+      "sha256": "b7d753da030d4611f46ff369c25cb4a633b403476c6ed21a9f0be1fa6c61cde8",
+      "bytes": 15298,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/quality-170bc677a854ceb2-shared12/stdout.log",
+      "sha256": "d5568ba91645216b1a73605d290d9804c65d4c4f25f49b436b4bc63539a054c0",
+      "bytes": 395,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/quality-170bc677a854ceb2-shared12/stdout.log"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/COMMAND.json",
+      "sha256": "41db8c5ea8aee1ba6e11b84cc479668c7fa542840188a277229daf5e5ad7b9a3",
+      "bytes": 1719,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/RECEIPT.json",
+      "sha256": "859b23048cbe84dbea4abe8cc5eda70b6d818d3ed9d6c88e2355c77de97016db",
+      "bytes": 76187,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/artifacts.json",
+      "sha256": "411bbdf79160a365137d36f481903f2e8b17783946e233850484deaa7b577d2b",
+      "bytes": 395,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/final.game.gz",
+      "sha256": "089d9586e6a1f852db4b5c5242c07719b56506e998e1641a0fec1f55844edd76",
+      "bytes": 358322,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/progress.jsonl",
+      "sha256": "a40d561bc423ea4399a73bddbcdef0d9c9de0eac18ed3701c51bb7b3349ff206",
+      "bytes": 1053,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/result.json",
+      "sha256": "d414ff17f3f950b105a6fa1825fdc1aeea5c9448381a1760b48f17d12a5ed4af",
+      "bytes": 37517,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/stderr.log",
+      "sha256": "6aef8eab6d87fc649e52eb74bfdab08d973b8c789f69bb6677497f012640d357",
+      "bytes": 23161,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/warm-00c17a21624f0590/stdout.log",
+      "sha256": "aef7301d1f12f99f5319875e6d7ab58ea87d24b7488042c27c38a9c997162696",
+      "bytes": 381,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-00c17a21624f0590/stdout.log"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/COMMAND.json",
+      "sha256": "720cb5e3b5a2dc49d1da3f295702f98deeeedcb400e71b9672f5d33a566c1191",
+      "bytes": 1719,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/COMMAND.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/RECEIPT.json",
+      "sha256": "91844d464359075fe81fa19ea2e68ac05aab8bb5378a17e82ca87e8f099a84da",
+      "bytes": 52807,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/RECEIPT.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/artifacts.json",
+      "sha256": "45bd3ec70b8161d77b4fc614a37927e27d88bf2aa09912c3acf78db8be46aed1",
+      "bytes": 393,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/artifacts.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/final.game.gz",
+      "sha256": "d043c796a2fd9b077443637e4f44dead741c0ad86a2a814f2050c5fc074ab56b",
+      "bytes": 193535,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/final.game.gz"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/progress.jsonl",
+      "sha256": "a40d561bc423ea4399a73bddbcdef0d9c9de0eac18ed3701c51bb7b3349ff206",
+      "bytes": 1053,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/progress.jsonl"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/result.json",
+      "sha256": "d9c5ba59fd053f2b3ab8f78d17f4d8c1a6be1bebf306f5e1d20e25205e20316e",
+      "bytes": 14053,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/result.json"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/stderr.log"
+    },
+    {
+      "path": "additional-heldout/runs/warm-170bc677a854ceb2/stdout.log",
+      "sha256": "8fe6dce7976fc32f7b643c0baa3bab8a2a2de2223458b1b4da525277cf12c8bf",
+      "bytes": 381,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/runs/warm-170bc677a854ceb2/stdout.log"
+    },
+    {
+      "path": "additional-heldout/summarize.py",
+      "sha256": "e0c7364479488eafe9a59d5848e3d6380471506dff8d062c9f6ba61c29d8e972",
+      "bytes": 4280,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/summarize.py"
+    },
+    {
+      "path": "additional-heldout/supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/supervisor.log"
+    },
+    {
+      "path": "additional-heldout/warm-00c17a21624f0590.json",
+      "sha256": "901e8bf3441436f3bd0c8c31e7f06cb74bc23a3491ebfbc8e9c7aaaa13df1e5b",
+      "bytes": 328,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/warm-00c17a21624f0590.json"
+    },
+    {
+      "path": "additional-heldout/warm-170bc677a854ceb2.json",
+      "sha256": "f4c0ea0869a605682a013939fc871a5d7ab5073dd6e670aae4b176e203d3b45a",
+      "bytes": 328,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/family-quality-heldout-panel/warm-170bc677a854ceb2.json"
+    },
+    {
+      "path": "inputs/66294c58700ef1b4/initial.map.gz",
+      "sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+      "bytes": 22379,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/66294c58700ef1b4/map.map.gz"
+    },
+    {
+      "path": "inputs/66294c58700ef1b4/warm.game.gz",
+      "sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+      "bytes": 474027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz"
+    },
+    {
+      "path": "inputs/1d043310cbecdceb/initial.map.gz",
+      "sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+      "bytes": 35207,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/1d043310cbecdceb/map.map.gz"
+    },
+    {
+      "path": "inputs/1d043310cbecdceb/warm.game.gz",
+      "sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+      "bytes": 731751,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz"
+    },
+    {
+      "path": "inputs/00c17a21624f0590/initial.map.gz",
+      "sha256": "e34b5d68a9647feb779964c160e611617c58f14316022991f9b5717f44051908",
+      "bytes": 23938,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/maps/00c17a21624f0590/map.map.gz"
+    },
+    {
+      "path": "inputs/170bc677a854ceb2/initial.map.gz",
+      "sha256": "8b67ce15f7023898c2d0c9f1d20f9bc535be51bd99596390ed5fd5018e508f79",
+      "bytes": 33404,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/170bc677a854ceb2/map.map.gz"
+    }
+  ],
+  "logical_files": 395,
+  "unique_objects": 292,
+  "scope": "Frozen capped shared12/onehot17/experts prototypes: 24 OFF CPU, six original ON quality, two metadata-selected warmups and four additional ON continuations. No binaries/compiler objects/dependency trees."
+}

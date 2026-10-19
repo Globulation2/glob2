@@ -1,0 +1,19 @@
+{
+  "status": "PREPARED-NATIVE-QUALIFICATION-PENDING",
+  "model_sha256": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+  "header_sha256": "d38639258d8cc9f729882633cd6b12ed6dddd33209478df8a348636c541dd21f",
+  "benchmark_archive": {
+    "status": "PASS",
+    "archive_sha256": "c586cf2b92a16770259c9aa82fbae98f601f6cc53ac7a40e3366f45ae3771ddc",
+    "archive_bytes": 5580263,
+    "index_sha256": "dfbfd347108fd734fd127c82c716fe49837e9b5bae227fa1b64dba9bec39b71b",
+    "logical_files": 599,
+    "unique_objects": 279,
+    "decoded_objects_verified": true
+  },
+  "source_boundaries": {
+    "measured_prototype": "e01fe4d1+selected1280generic12;181/SIM91",
+    "final": "182/SIM92 native proof pending"
+  },
+  "not_published": true
+}

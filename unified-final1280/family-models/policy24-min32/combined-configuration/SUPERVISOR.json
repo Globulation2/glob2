@@ -1,0 +1,8 @@
+{
+  "pid": 30160,
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/final184-policy/combined-configuration-study/run.py"
+  ],
+  "plan_sha256": "e626b5a7a7ba380235e01cf40b621cee6698dd1c8331b4977ac16b59fad544b5"
+}

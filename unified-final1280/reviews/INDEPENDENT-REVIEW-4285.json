@@ -1,0 +1,14 @@
+{
+  "status": "SOURCE_AND_MODEL_APPROVED_PENDING_FINAL_QUALIFICATION",
+  "source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "findings": [],
+  "checks": "Read-only final source/model/docs delta and actual PR scope reviewed. Python deployment validation passed and generated header exactly matches checked-in JSON render.",
+  "architecture": "Same selected12 generic inputs, four measured family experts, one combined fallback for Markets/unknown/new family IDs; no identity or zone count added as inference feature. Threshold24/min32/cap1024/publication8 retained.",
+  "filter": "Conservative recorded-campaign seat filter excludes49925 Guard rows from six nonpainting AIs; preserves Maxima/Warrush zero-goal rows, raw cohorts, original1280slots and315heldout/965development split. Provenance distinguishes original collection min8 from fit/deployment metadata and binds exclusion/source/split hashes.",
+  "interpretation": "No universal improvement claim: identical retained-row pooled regret improves modestly while Guard regret is unchanged and Guard calibration/MAE can worsen. No prospective185 or final-master performance claim inferred from184 study.",
+  "pending": "Ordinary final185 native/golden/runtime/save/replay/cross-platform qualification and final fixture review; source/model changes themselves approved.",
+  "limits": "No new Windows/browser/mobile coverage. Prior184 performance remains historical baseline. No additional feature experiment or collection requested.",
+  "utc": "2026-10-19T20:23:04.451331+00:00"
+}

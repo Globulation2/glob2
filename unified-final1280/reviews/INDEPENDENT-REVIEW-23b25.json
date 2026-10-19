@@ -1,0 +1,29 @@
+{
+  "status": "CHANGES_REQUESTED",
+  "reviewed_head": "23b25d6a075bf1c6ab1b835588cffcd9f5c9052f",
+  "production_source": "fe0754bcc82977e2b16c0b713978ce019b0f2506",
+  "master": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "merge_base": "7c83e71d0303da637d84b0a31eeb1d1adb38f388",
+  "scope": "Read-only independent PR source/scope/architecture/docs review, using triple-dot PR diff. No source changes or builds by reviewer.",
+  "production_source_verdict": "Approved: Adaptive24, minimum32 per warm field, cap1024, cold exception, retained in-flight deadlines, family experts and combined fallback, save/replay version gates.",
+  "findings": [
+    {
+      "priority": "P1",
+      "file": "tools/adaptive_gradient_tournament.py",
+      "line": 166,
+      "problem": "Default exploration includes8/16 but current C++ parseIntervals rejects intervals below new minimum32; default permanent collection fails before games.",
+      "remedy": "Derive default intervals from attested bundle minimum; reject explicit below-minimum requests at prepare; align CLI/docs/error text. Keep historical bundles/exports interpretable."
+    }
+  ],
+  "cleanliness": "No committed development artifacts/dated experiment reports in actual PR diff; no live spatial/fork/onehot branch found. Historical save decoder and permanent collection/training helpers are justified. Current master changes after merge-base concern CI/dev tooling and do not overlap production source.",
+  "evidence_inspected": [
+    "macos184/status.json",
+    "macos184/runtime-status.json",
+    "linux184/QUALIFICATION-SUMMARY.json",
+    "linux184/STATUS.json",
+    "CROSS-PLATFORM-FINAL184.json"
+  ],
+  "evidence_status": "Mac/Linux PASS; Linux64 scheduled/88JUnit plus17goldens and8runtime; cross-platform32 simulation/save pairs and16diagnostic pairs exact.",
+  "limits": "Windows/browser/mobile not newly verified. Final24/min32 performance study still active and has not been interpreted. Qualification covers production scheduler but does not catch default exploration preparation mismatch.",
+  "utc": "2026-10-19T20:00:33.004485+00:00"
+}

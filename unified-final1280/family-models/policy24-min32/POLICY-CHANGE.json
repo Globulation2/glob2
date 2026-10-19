@@ -1,0 +1,31 @@
+{
+  "status": "PASS-FROZEN-TOOLING",
+  "previous_model_sha256": "31e81be7d41ad545b1757eb75668e78d5d31bc07373754824195c1f8a24ddd57",
+  "current_threshold_milli": 24000,
+  "current_minimum_interval_ticks": 32,
+  "previous_threshold_milli": 16000,
+  "previous_minimum_interval_ticks": 8,
+  "exact_combined_and_four_experts_unchanged": true,
+  "exact_historical_provenance_contract_transforms_unchanged": true,
+  "source_files": {
+    "tools/adaptive_gradient_dataset.py": "c363c7bc6928575d7d51e0e868f638e4dc809d3aa66cf260b3bdebad9d054672",
+    "tools/adaptive_gradient_model.py": "6d71e9f09b1abcac4fc121f89ed1065e17f3e91af7fdb2e4ec4e93ebb39d86d5",
+    "tools/adaptive_gradient_codegen.py": "7381034eb924e679acc60ac09edc6835db3a27617e6d794ef835ac675fcac46f",
+    "tools/test_adaptive_gradient_model.py": "07f62a3caeb4c8f490c61cc23b97937fca10052b844f71f07b844d4488001cbe",
+    "tools/models/adaptive-gradient.json": "0a7f1197fa5deb5c0995c05190bbc48f3899213617b2bec658a799c432458a68",
+    "src/map/gradient/AdaptiveGradientModel.h": "61a7e3555a67e31d791f15c6d9c8ea0f86e71f805932390999837650e117b5ed"
+  },
+  "tests": {
+    "relevant": 104,
+    "standalone_worker": 7,
+    "ubsan_cases": 4240,
+    "python311_syntax": true,
+    "exact_original_coefficients": true
+  },
+  "receipts": {
+    "PARITY.json": "b05a36063d3beeb03f06e750149d69a0ddfe562433283dba97cb814490913446",
+    "tests-final.log": "49333ac4f8340bdd03d511f170c8987bfc0ebfff4a3a14e1a94d5b1b3721d94a",
+    "worker-tests-final.log": "ded50f496622bc1c550ffe7707c05bab517d4daa1c26eb99eba07f9d49cdd26b"
+  },
+  "limits": "Native main build and combined24/min32 prospective comparison pending parent. Historical offline metrics apply neither warm spacing nor demanded age cap."
+}

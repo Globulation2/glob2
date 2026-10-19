@@ -1,0 +1,353 @@
+{
+  "schema": 1,
+  "status": "PREPARED-NOT-LAUNCHED",
+  "prior_plan_sha256": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+  "maps": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/66294c58700ef1b4/map.map.gz",
+      "map_sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz",
+      "warm_sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          2,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "generator": "polder",
+        "generator_params": {
+          "algae-amount": 75,
+          "crop-crossings": 1,
+          "dyke-spacing": 32,
+          "fruit-amount": 125,
+          "ground": 1,
+          "hamlets": 1,
+          "row-angle": 2,
+          "stone-amount": 100,
+          "village-size": 16,
+          "water-crossings": 1,
+          "wheat-amount": 75,
+          "wood-amount": 75,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 330329066,
+        "players": 4,
+        "width": 128
+      }
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/1d043310cbecdceb/map.map.gz",
+      "map_sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz",
+      "warm_sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "maxima",
+          "warrush",
+          "castor",
+          "castor",
+          "warrush"
+        ],
+        "alliances": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          2,
+          3,
+          1
+        ],
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "generator": "fjord-continent",
+        "generator_params": {
+          "algae-amount": 150,
+          "bank-deposits": 1,
+          "coast-roughness": 23,
+          "continent-size": 34,
+          "fjord-width": 4,
+          "fruit-amount": 150,
+          "lake-connected": 0,
+          "lake-size": 30,
+          "resource-islands": 3,
+          "sandy-lake-shore": 1,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3680668015,
+        "players": 8,
+        "width": 128
+      }
+    }
+  ],
+  "arms": [
+    {
+      "id": "master_reference",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos-strict-assets/bin/glob2-master-84edb385c",
+      "binary_sha256": "da5eeacf577e3b29dbfe570dfbc0dd71a529fb8af765995ab8ab3f378de79713",
+      "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+      "env": {},
+      "research": false
+    },
+    {
+      "id": "gen005_reference",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/immutable-gen005-glob2",
+      "binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+      "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+      "env": {},
+      "research": false
+    },
+    {
+      "id": "final7",
+      "binary": "BIND-FROM-FINAL-QUALIFICATION",
+      "binary_sha256": "BIND-FROM-FINAL-QUALIFICATION",
+      "source": "BIND-FROM-FINAL-QUALIFICATION",
+      "env": {},
+      "research": false
+    }
+  ],
+  "cpu_schedule": [
+    {
+      "index": 0,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 1,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 2,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "final7"
+    },
+    {
+      "index": 3,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 4,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 5,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "final7"
+    },
+    {
+      "index": 6,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "final7"
+    },
+    {
+      "index": 7,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 8,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 9,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "final7"
+    },
+    {
+      "index": 10,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 11,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 12,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 13,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 14,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "final7"
+    },
+    {
+      "index": 15,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 16,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 17,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "final7"
+    },
+    {
+      "index": 18,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "final7"
+    },
+    {
+      "index": 19,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 20,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005_reference"
+    },
+    {
+      "index": 21,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "final7"
+    },
+    {
+      "index": 22,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 23,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005_reference"
+    }
+  ],
+  "quality_schedule": [
+    {
+      "index": 0,
+      "phase": "quality",
+      "group": "66294c58700ef1b4",
+      "arm": "gen005_reference",
+      "repeat": 0
+    },
+    {
+      "index": 1,
+      "phase": "quality",
+      "group": "66294c58700ef1b4",
+      "arm": "final7",
+      "repeat": 0
+    },
+    {
+      "index": 2,
+      "phase": "quality",
+      "group": "1d043310cbecdceb",
+      "arm": "gen005_reference",
+      "repeat": 0
+    },
+    {
+      "index": 3,
+      "phase": "quality",
+      "group": "1d043310cbecdceb",
+      "arm": "final7",
+      "repeat": 0
+    }
+  ],
+  "master_data_dir": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/data",
+  "common_cwd": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2",
+  "benchmark_warmup": 256,
+  "cpu_measured_ticks": 8192,
+  "wall_cap_seconds": 1800,
+  "compute_threads": 1,
+  "gpu": "off",
+  "compute_telemetry": "off",
+  "cpu_metric": "result.benchmark_run_cpu_ns / benchmark_measured_ticks (excludes256settling); process user+system/wall include load+settle",
+  "quality_definition": "Separate full8192window observerON, filter ticks[16640,24832); movement extra_cost/invalid_goal/stall/missedmove/escape/reachability; planning separate; per-familywork admissions/preparations/publications. No model or observer in CPUarms except normalproduction7/12 inference.",
+  "limitations": [
+    "Two already examined175states; not independent generalization",
+    "Interleaved4repeats characterize spread, not populationCI",
+    "Mac load/thermal sampled, not isolated physicalCPU",
+    "Wholebranchmaster vsfinal includes all PR changes; final7 vsgen005 also includescleanup, notpurefeaturecausality"
+  ],
+  "launch_requires": "Root explicitSTART.json bound finalnativequalification+binary; no compiler/gameprocesses; no automaticwaitinglauncher"
+}

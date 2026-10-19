@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "production_source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "fixture_commit": "5f0f3abdfd60f5956d67186ec37d2d542f105e6e",
+  "save_format": 185,
+  "sim_revision": 95,
+  "policy": {
+    "threshold_milli": 24000,
+    "minimum_interval": 32,
+    "publication_delay": 8,
+    "horizon": 128,
+    "demanded_age_cap": 1024
+  },
+  "model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "environment": {
+    "os": "Ubuntu24.04.5LTS",
+    "arch": "x86_64",
+    "cpu": "AMD Ryzen7 6800H",
+    "compiler": "GCC13.3.0",
+    "glibc": "2.39",
+    "python": "3.12.3",
+    "ordinary_release": true,
+    "flags": [
+      "release=1",
+      "dev_fast=0",
+      "pch=0",
+      "unity=0",
+      "linker=default",
+      "CXXFLAGS=",
+      "-O3",
+      "-j8"
+    ],
+    "dependencies": {
+      "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+      "recording_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-b2f8b01e7858d5108b038be8/prefix"
+    }
+  },
+  "binaries": {
+    "main": {
+      "path": "/home/bradley/glob2-gradient-unified-h128/build/unified-release/src/glob2",
+      "sha256": "59f6919ad46c156cbe36123c7dcb2eea8b0e7b5205ddbd882c5f367d6ee1dbbe"
+    },
+    "engine": {
+      "path": "/home/bradley/glob2-gradient-unified-h128/build/unified-release/test/glob2-engine-tests",
+      "sha256": "57fe2606b39bd5fa49a74cbea1bea3af395fe4b76d9e76562f51e2a30f6c65c9"
+    },
+    "unit": {
+      "path": "/home/bradley/glob2-gradient-unified-h128/build/unified-release/test/glob2-unit-tests",
+      "sha256": "2c5791cd3275e383a5e9fe96e7a0cb4eb12488daade957297fa4e1d29ae8b989"
+    }
+  },
+  "results": {
+    "build": "PASS",
+    "focused_scheduled": 72,
+    "focused_junit_cases": 97,
+    "focused_failed": 0,
+    "golden_cases": 17,
+    "golden_failed": 0,
+    "runtime_cases": 8,
+    "crossplatform_simulation_save_pairs": 32,
+    "crossplatform_diagnostic_pairs": 16,
+    "byte_differences": 0
+  },
+  "coverage": "Painted zone counters, load/rebuild, first paint/erase/repaint, Farm-only demand, absence suppresses demand/RNG, restored queues, exploration CLI; affected adaptive state/delayed/market/building/replay acceptance; actual observer/thread/save continuity and Mac/Linux execution.",
+  "limitations": "No new Windows/browser/mobile verification; no unchanged broad engine/kernel/TeamStats suites repeated.184 evidence preserved. Not a CPU performance study.",
+  "utc": "2026-10-19T20:36:45.138507+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "APPROVED_PENDING_LINUX_AND_CROSS_PLATFORM185",
+  "source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "fixture_head": "5f0f3abdfd60f5956d67186ec37d2d542f105e6e",
+  "findings": [],
+  "fixture_review": "Final delta contains exactly12 simulation fixture/trace files, no production edits; source/model approval retained.",
+  "performance_review": "32 CPU cells plus6 separate diagnostics, all successful. Independently recomputed pooled simulation CPU/tick from raw benchmark_run_cpu_ns and measured_ticks: master0.1545316162, final0.1213017273 milliseconds; final\u221221.5036%. Refit-only\u22120.2677% with mixed repeat range is correctly called effectively flat. CPU command receipts contain no probe/work/checksum-telemetry flags. Summary reports within-arm/observer parity.",
+  "interpretation": "READOUT and PR narrative correctly separate whole-PR CPU from learned-model attribution, local paired range from population CI, raw quality totals from denominator changes, and mixed planning/trajectory effects. Gate-only unchanged raw errors is limited to examined panels; refit4FFA improves some raw metrics,8FFA unchanged; no universal quality claim.",
+  "evidence": "FinalMac185 PASS17goldens/72focused97JUnit/8runtime/versionCLI. Model42tests+4240UBSan prior reviewed. Linux/cross-platform185 still pending;184 must not substitute.",
+  "publication": "PR body still requires actual evidence URL and finalLinux/cross-platform results before publication/merge. Windows/browser/mobile and interactive feel omissions remain explicit.",
+  "utc": "2026-10-19T20:31:05.048461+00:00"
+}

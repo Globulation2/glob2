@@ -1,0 +1,40 @@
+{
+  "status": "PASS-STAGED-NUMERIC-CANDIDATE",
+  "model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "raw_fit_sha256": "4751d99599a9faeb57fd27714f43e0954442cda41e609dbcc02f98e34b357acf",
+  "training_input_sha256": "b9b47c820f694b4d0f91d07fe7de0cae0d8e43a6400817fe8fdcfba1a48408de",
+  "exclusions_sha256": "73c94a2494a1e27d87eb6906cd956246ea9d14e115fcbb2bfeac67b7d8c8fe50",
+  "cases": 4240,
+  "families": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    255,
+    4294967295
+  ],
+  "ubsan": true,
+  "bounds_all_heads": true,
+  "threshold_milli": 24000,
+  "minimum_interval_ticks": 32,
+  "cap_ticks": 1024,
+  "combined_and_expert_heads_exact_raw_fit": true,
+  "canonical_modified": false,
+  "command": [
+    "g++",
+    "-std=c++20",
+    "-O2",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=undefined",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/final1280-guard-filtered/staged/parity.cpp",
+    "-o",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/final1280-guard-filtered/staged/parity"
+  ],
+  "permanent_model_tests_pass": true,
+  "model_tests_log_sha256": "f20bf90ec212b889001d63c173d31ebd584570a00268ad447c74f513ca283d9e",
+  "numeric_model_before_metadata_cleanup_sha256": "46b936c0509158a0d07eb64d68f65ea9d223870fcfd3834245229b958b2988c7",
+  "metadata_only_cleanup": "Removed conversational approximation boolean; criterion/assumptions, coefficients and generated header unchanged."
+}

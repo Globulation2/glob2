@@ -1,0 +1,180 @@
+{
+  "schema": 4,
+  "contract": {
+    "id": "unified-gradient-h128-v2",
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "target_added",
+      "target_removed",
+      "target_added_frac_q12",
+      "target_removed_frac_q12"
+    ],
+    "counters": [
+      "since_capture_invalid_goal",
+      "since_capture_reachable_no_move",
+      "since_capture_movement_queries"
+    ],
+    "families": [
+      "materials",
+      "markets",
+      "guard",
+      "clear",
+      "forbidden"
+    ],
+    "capture_metadata": [
+      "serving_capture_tick",
+      "captured_goal_count",
+      "capture_target_added_epoch",
+      "capture_target_removed_epoch",
+      "capture_route_epoch",
+      "capture_seed_cost_epoch",
+      "current_target_added_epoch",
+      "current_target_removed_epoch",
+      "current_route_epoch",
+      "current_seed_cost_epoch"
+    ],
+    "publication_delay": 8,
+    "key": "family:u8,team:u8,movement:u8,material:u8;255=none",
+    "target_semantics": "effective-seed-membership-v1",
+    "label": "movement-direction-extra-cost",
+    "benefit_unit": "direction-cost",
+    "request_type": "movement",
+    "future_offsets": [
+      8,
+      127
+    ],
+    "horizon_ticks": 128,
+    "invalid_goal": "cached-arrival-rejected-by-real-family-destination-predicate",
+    "stall": "reachable-required-travel-selector-no-move",
+    "selector": "real-family-selector;pre-decision-RNG-copy;forbidden-lexicographic-base-option",
+    "separate_outcomes": [
+      "stalls",
+      "invalid_goals",
+      "false_unreachable",
+      "false_reachable",
+      "missed_moves",
+      "escape_failures",
+      "planning"
+    ]
+  },
+  "features": [
+    "age",
+    "q32",
+    "q128",
+    "target_added",
+    "target_removed",
+    "target_added_frac_q12",
+    "target_removed_frac_q12"
+  ],
+  "transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12"
+  ],
+  "threshold": 16000,
+  "trained": true,
+  "positive_probability": {
+    "accumulator_bound": 12174025912139,
+    "bias": -1450258979591,
+    "coef": [
+      -4833734,
+      -35766283,
+      61305892,
+      10093447,
+      3828732,
+      2585141,
+      12942703
+    ],
+    "shift": 28
+  },
+  "negative_probability": {
+    "accumulator_bound": 13542429543347,
+    "bias": -1387203976604,
+    "coef": [
+      -11689393,
+      -39678540,
+      59929872,
+      -7437980,
+      17830428,
+      10570837,
+      1752887
+    ],
+    "shift": 28
+  },
+  "positive_mean": {
+    "accumulator_bound": 242939327916982,
+    "bias": -11863076767870,
+    "coef": [
+      9807517,
+      1432956749,
+      499715755,
+      -72581150,
+      -309456434,
+      298047328,
+      207899075
+    ],
+    "shift": 28
+  },
+  "negative_mean": {
+    "accumulator_bound": 79911278523223,
+    "bias": 949767171577,
+    "coef": [
+      -84592177,
+      505123029,
+      89055809,
+      -50482679,
+      -47344535,
+      153243964,
+      37361121
+    ],
+    "shift": 28
+  },
+  "deployment": {
+    "threshold_milli": 16000,
+    "source_fit_threshold_milli": 16000,
+    "source_model_sha256": "c36ef4e6f21c53cf424fc8dcea35d6ab196070d7bc7b55591d0afa79a8b8b726",
+    "source_candidate_contract_sha256": "e2bd6b6ffbf7694408cf41c2e91703e81d8c91d978847f4ab7aa06aa0f0a9840",
+    "source_fit_metrics_threshold_milli": 16000,
+    "fit_metrics_recomputed": false,
+    "coefficients_refit": false
+  },
+  "prospective_validation_required": true,
+  "provenance": {
+    "source_ablation_sha256": "90519b2746716742d6db1b1f23a60c21256d49b1a98949b5d01ed78b161178ec",
+    "source_generic12_fit_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
+    "source_fit_sha256": "c36ef4e6f21c53cf424fc8dcea35d6ab196070d7bc7b55591d0afa79a8b8b726",
+    "split_registry_sha256": "f6ef2a80d892e670d26fe2f3b1ba792a6f35e243738b2d458449dba2d0a0c624",
+    "eligible_episode_count": 287045,
+    "development_map_count": 965,
+    "heldout_map_count": 315,
+    "expected_families": [
+      "materials",
+      "guard",
+      "clear",
+      "forbidden"
+    ],
+    "unmeasured_families": [
+      "markets"
+    ],
+    "collector_contracts": [
+      "unified-gradient-spatial-h128-v3"
+    ],
+    "collection_thresholds_milli": [
+      16000,
+      128000
+    ],
+    "training_input_sha256": "a044f373dcedcec9f3f63d2b54768124e2a75193cc5f604a57f040a5bf486a25",
+    "training_game_slots": 1280,
+    "terminal_counts": {
+      "completed": 500,
+      "user-censored": 780
+    },
+    "analysis_source_identity_sha256": "0747473fd0fd38a8bc598a74efc947ac4abedcdb5c43ca1890a08d763b613111"
+  }
+}

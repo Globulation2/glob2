@@ -1,0 +1,182 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "3876ffb46a55e4d7a0b034d107232cbae7e31aa5b9e615957b0b78ec8257b641",
+    "bytes": 4078
+  },
+  {
+    "path": "comparison/CAS-VERIFIED.json",
+    "sha256": "fda98953efe4bd8b66148d2bf0abd9c4494a4b787efc7290d59a111703c1807e",
+    "bytes": 274
+  },
+  {
+    "path": "comparison/CAS.json",
+    "sha256": "9a7ef820570fde15a2d03fd4e1ca9c76341e508b0e470ae98309bb314b76799d",
+    "bytes": 129862
+  },
+  {
+    "path": "comparison/MACOS185-QUALIFICATION.json",
+    "sha256": "5d6fdee2f9abb3c307844957ef323c0355c26e168e55d26dfca4de7043635217",
+    "bytes": 124
+  },
+  {
+    "path": "comparison/PLAN.json",
+    "sha256": "d5dbb95106d5a1f0ccf92ed16945208a78a9ca944603fcadb24cbffd9b54a7a0",
+    "bytes": 13859
+  },
+  {
+    "path": "comparison/READOUT.md",
+    "sha256": "a4989a1cd3fd238b13c99152b3632dd708cb214ccc0b13347fb90f869c2519f6",
+    "bytes": 4508
+  },
+  {
+    "path": "comparison/SOURCE-QUALIFICATION.json",
+    "sha256": "d289ec93be31a35f29a18d1a1f9f13fd9c8b080e02f9967d10e07b901e474dd0",
+    "bytes": 617
+  },
+  {
+    "path": "comparison/STATUS.json",
+    "sha256": "82857219c84c16a728670ba75fc63c273360f7571d5eab1f446e30f359dee459",
+    "bytes": 9682420
+  },
+  {
+    "path": "comparison/SUMMARY.json",
+    "sha256": "3720f9d92c29054133b7fbe5b29eb87791ddf8c325f94c50d402ae9ce134c2f0",
+    "bytes": 51284
+  },
+  {
+    "path": "comparison/package.py",
+    "sha256": "117b4f416789a4945878d73364267bc4902e074b86ef16e7280e5f1c3d4cef03",
+    "bytes": 3084
+  },
+  {
+    "path": "comparison/raw-cpu-cas.tar.gz",
+    "sha256": "9b4b83b906f28a640bc7111456869b895e0832de93aa797c1e5e9e3546e44152",
+    "bytes": 4861425
+  },
+  {
+    "path": "comparison/unpack.py",
+    "sha256": "0842b440332542fc4944edebbc0a24e4c94e7b522b8b759408a91096cc30f7ef",
+    "bytes": 1330
+  },
+  {
+    "path": "training/AUDIT.json",
+    "sha256": "86dc767548816dd138213b9a43ca9ca2103c9ff3f2f07b4ce7a30c13bb161cbb",
+    "bytes": 1830
+  },
+  {
+    "path": "training/DERIVATION.json",
+    "sha256": "0de7a5de51fabe43b7e1dc6e5335ad75286eaf46c9e5070206787a52772f3b73",
+    "bytes": 364340
+  },
+  {
+    "path": "training/FILTERED-EVIDENCE-FILES.json",
+    "sha256": "34a52cde501da1ea7cee5d6b47063ad4ccef9b6b700b074d47fb30c5252bee7c",
+    "bytes": 375331
+  },
+  {
+    "path": "training/FILTERED-EVIDENCE-VERIFIED.json",
+    "sha256": "7edfac7bc99a42b726e088624b1f1961535ab35685ee1895cc40d1b17f72c7ff",
+    "bytes": 272
+  },
+  {
+    "path": "training/FILTERED-TRAINING-INPUTS.json",
+    "sha256": "b9b47c820f694b4d0f91d07fe7de0cae0d8e43a6400817fe8fdcfba1a48408de",
+    "bytes": 6955
+  },
+  {
+    "path": "training/FIT-COMMAND.json",
+    "sha256": "3f90e0990a98c661d3d4645da7c9e3e678b9e304a2e062d60af7b2ee7d535e81",
+    "bytes": 5725
+  },
+  {
+    "path": "training/GAME-PROVENANCE.json",
+    "sha256": "1516d504b7ae522936937d7b9dcb08292a4c9298bbb0d3640401fdfa8ea7ade1",
+    "bytes": 653646
+  },
+  {
+    "path": "training/LOCAL-VERIFIED.json",
+    "sha256": "459d182fcb188f2388ca935b75e87810ce9584dcb68e8f8ce4eb7a719c33defc",
+    "bytes": 307
+  },
+  {
+    "path": "training/MAP-PROVENANCE.json",
+    "sha256": "9a3daf4b02a65202b596775650d084d314267193b832c452c56cc8eabb5e4f21",
+    "bytes": 3268793
+  },
+  {
+    "path": "training/PAIRED-REPORT.json",
+    "sha256": "01c2821a5202e9d4ca3fdafd553a0018d398470ea23aa4cb3a093d9b7da38fca",
+    "bytes": 234707
+  },
+  {
+    "path": "training/READOUT.md",
+    "sha256": "57b4406e26cc2fe7339a86650b0f2b804947dad7d1ccab6adcfed544d5f7a0e7",
+    "bytes": 3070
+  },
+  {
+    "path": "training/STATUS.json",
+    "sha256": "35ca2a6a1a70def20a67e97039257539cc50ae7514ad254b95c7ff63624dcf66",
+    "bytes": 228
+  },
+  {
+    "path": "training/compare.py",
+    "sha256": "bf8ff458b6b31d21e67ce8efd06bb5fe44c64f240892823747ed9ada86bd1943",
+    "bytes": 6455
+  },
+  {
+    "path": "training/derive-and-fit.py",
+    "sha256": "cf942ba99612e05d2ea9d49dc3023a5d25c3caca1b324b99e55999a9e22b82b9",
+    "bytes": 7665
+  },
+  {
+    "path": "training/filtered-family-research.json",
+    "sha256": "4751d99599a9faeb57fd27714f43e0954442cda41e609dbcc02f98e34b357acf",
+    "bytes": 476267
+  },
+  {
+    "path": "training/filtered-training-raw.tar.gz",
+    "sha256": "9a2186a2d804ed0180b02a7166020dd8f2601f5c28fead0ecee53b31047525b7",
+    "bytes": 14194574
+  },
+  {
+    "path": "training/fit-tooling-source.tar.gz",
+    "sha256": "2fc372ae5751719f043c418901441ac0950ea530ce2af33c1120fd1c1a01c3e5",
+    "bytes": 1415481
+  },
+  {
+    "path": "training/reproduce-filtered-fit.py",
+    "sha256": "acd7816e05177c466fc195ae0e276c46ba386f9133f55d4c59811469aea7c042",
+    "bytes": 2819
+  },
+  {
+    "path": "training/stage-and-qualify.py",
+    "sha256": "4c03ed5a745382f623d2b42c56255bcb630a44278f9ca3d5efbadfe1a6d7cce4",
+    "bytes": 6041
+  },
+  {
+    "path": "training/staged/AdaptiveGradientModel.h",
+    "sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+    "bytes": 10842
+  },
+  {
+    "path": "training/staged/NUMERIC-QUALIFICATION.json",
+    "sha256": "ebd89afff19c4077ba0c99f5043eff9ac6fac53fa03adbf878334a4a977e9432",
+    "bytes": 1547
+  },
+  {
+    "path": "training/staged/deployment-before-provenance-cleanup.json",
+    "sha256": "46b936c0509158a0d07eb64d68f65ea9d223870fcfd3834245229b958b2988c7",
+    "bytes": 13568
+  },
+  {
+    "path": "training/staged/deployment.json",
+    "sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+    "bytes": 13525
+  },
+  {
+    "path": "training/staged/model-tests.log",
+    "sha256": "f20bf90ec212b889001d63c173d31ebd584570a00268ad447c74f513ca283d9e",
+    "bytes": 7807
+  }
+]

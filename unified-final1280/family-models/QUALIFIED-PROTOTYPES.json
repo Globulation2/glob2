@@ -1,0 +1,126 @@
+{
+  "status": "PASS-RESEARCH-PROTOTYPE-ONLY",
+  "not_production_qualification": true,
+  "cap1024": true,
+  "version182_sim92_uncommitted_research": true,
+  "parity": "2650actualUBSanvectorsperarm",
+  "ordinary_builds": [
+    {
+      "status": "PASS-RESEARCH-PROTOTYPE",
+      "variant": "shared12",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/shared12/glob2",
+      "binary_sha256": "2b6091a07fa8c43b9afa557ac29585beef33addff8fceb1e14c3871711b4141e",
+      "header_sha256": "da22275387e417a1132281be25ad72f6063bdd59d1b5c6a030f9e54888706385",
+      "source": "96733c1900a93f23eb7a346f8e7064d465bfbac8",
+      "working_tree_native_patch_sha256": "805acf193b7f58688451a8c93eefc6ae6be1d6b81c967d92a322f78bec4add70",
+      "native_inputs_sha256": "c5735b69f1df47593caf7df88670e4859b6c393ea9a70432a9510aa3be4bf432",
+      "command": [
+        "scons",
+        "release=1",
+        "CXXFLAGS=",
+        "dev_fast=0",
+        "pch=0",
+        "unity=0",
+        "linker=default",
+        "--build=build/candidate-release",
+        "-j6",
+        "build/candidate-release/src/glob2"
+      ],
+      "cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+      "environment_override": {
+        "PYTHONPATH": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2"
+      },
+      "version": 182,
+      "sim_revision": 92,
+      "actual_demand_age_cap": 1024,
+      "canonical_json_is_shared12_not_variant_identity": true,
+      "variant_models": {
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/generic12-compact-candidate.json": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-main-effects/family17-research.json": "cda26329e4882c7f0d1d88dd7b7429acb2ee6c3e11491f27e6012191721f0a61",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-experts/family-experts-research.json": "7fa728ebf2b3a72e89ac2d8131513299726dd8cea39c8877951c0991cf44b09e"
+      },
+      "ordinary_release": true,
+      "pch": false,
+      "unity": false
+    },
+    {
+      "status": "PASS-RESEARCH-PROTOTYPE",
+      "variant": "onehot17",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/onehot17/glob2",
+      "binary_sha256": "670a51b74b287e6f4c2db8e7b52fbec0e2971cecb1c81fc5ead8134fd1eb1e44",
+      "header_sha256": "cddcf7236b3bcd738709d80ce33132ba1565512610251ab6787c2a1bdaeff2f1",
+      "source": "96733c1900a93f23eb7a346f8e7064d465bfbac8",
+      "working_tree_native_patch_sha256": "46c8dffb675c4fac3e8f6164b39fd95adff2abe5a4d777e4498a2a0bba579c69",
+      "native_inputs_sha256": "ce7f7073844919814e6388852d56395ec78ee33d18d6323ca3c51c446032a43d",
+      "command": [
+        "scons",
+        "release=1",
+        "CXXFLAGS=",
+        "dev_fast=0",
+        "pch=0",
+        "unity=0",
+        "linker=default",
+        "--build=build/candidate-release",
+        "-j6",
+        "build/candidate-release/src/glob2"
+      ],
+      "cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+      "environment_override": {
+        "PYTHONPATH": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2"
+      },
+      "version": 182,
+      "sim_revision": 92,
+      "actual_demand_age_cap": 1024,
+      "canonical_json_is_shared12_not_variant_identity": true,
+      "variant_models": {
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/generic12-compact-candidate.json": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-main-effects/family17-research.json": "cda26329e4882c7f0d1d88dd7b7429acb2ee6c3e11491f27e6012191721f0a61",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-experts/family-experts-research.json": "7fa728ebf2b3a72e89ac2d8131513299726dd8cea39c8877951c0991cf44b09e"
+      },
+      "ordinary_release": true,
+      "pch": false,
+      "unity": false
+    },
+    {
+      "status": "PASS-RESEARCH-PROTOTYPE",
+      "variant": "experts12",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-prototypes/experts12/glob2",
+      "binary_sha256": "adde9a7de6e6d33dfa347c345383e559436fc69533647625e87b48fdb161bf17",
+      "header_sha256": "12621ea5b7cfdd4371c969ca69049a4f8242bdffe164d6f1bebd56b75197551d",
+      "source": "96733c1900a93f23eb7a346f8e7064d465bfbac8",
+      "working_tree_native_patch_sha256": "f077715a25baf0f9346693061122c8b080ad974e4b88fe16d4621ffe71b45f37",
+      "native_inputs_sha256": "1faf77ae10289b190f29a152a43029be327027d5221a8ddfb79c819f50357b4d",
+      "command": [
+        "scons",
+        "release=1",
+        "CXXFLAGS=",
+        "dev_fast=0",
+        "pch=0",
+        "unity=0",
+        "linker=default",
+        "--build=build/candidate-release",
+        "-j6",
+        "build/candidate-release/src/glob2"
+      ],
+      "cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+      "environment_override": {
+        "PYTHONPATH": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2"
+      },
+      "version": 182,
+      "sim_revision": 92,
+      "actual_demand_age_cap": 1024,
+      "canonical_json_is_shared12_not_variant_identity": true,
+      "variant_models": {
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/generic12-compact-candidate.json": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-main-effects/family17-research.json": "cda26329e4882c7f0d1d88dd7b7429acb2ee6c3e11491f27e6012191721f0a61",
+        "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/family-experts/family-experts-research.json": "7fa728ebf2b3a72e89ac2d8131513299726dd8cea39c8877951c0991cf44b09e"
+      },
+      "ordinary_release": true,
+      "pch": false,
+      "unity": false
+    }
+  ],
+  "quality_runs": 6,
+  "off_timing_runs": 24,
+  "observer_initial_final_checksum_parity": true
+}

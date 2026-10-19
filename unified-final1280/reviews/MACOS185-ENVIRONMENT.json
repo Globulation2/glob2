@@ -1,0 +1,25 @@
+{
+  "qualified_production_source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "fixture_revision": "5f0f3abdfd60f5956d67186ec37d2d542f105e6e",
+  "integration_base": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "scons": "SCons by Steven Knight et al.:\n\tSCons: v4.11.1.b97f32b9adab83a96af767ec1d7dc8d7a41c7c74, Wed, 26 Aug 2026 21:18:42 -0700, by bdbaddog on M1Dog2021\n\tSCons path: ['/opt/homebrew/Cellar/scons/4.11.1/libexec/lib/python3.14/site-packages/SCons']\nCopyright (c) 2001 - 2026 The SCons Foundation",
+  "python": "3.14.7",
+  "build_options": [
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "--build=build/candidate-release",
+    "-j6"
+  ],
+  "binary_sha256": "3f953154f7ddfc8fadeb04d2b95636a7735ad0abd914c6a8cf26e6e4c7c1e271",
+  "source_model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "generated_header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "risk_coverage": "Derived zone counter lifecycle, query gating, retained save masks/jobs, integer inference, observer/thread/platform determinism, simulation/replay/network acceptance and exact committed goldens.",
+  "omitted": "Windows, web, Android, iOS and interactive gameplay feel not executed for this final revision. Existing unrelated background activity retained; benchmark results are local matched panels, not isolated-core/population estimates."
+}

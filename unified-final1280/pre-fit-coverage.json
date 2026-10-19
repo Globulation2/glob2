@@ -1,0 +1,76 @@
+{
+  "rows": 293779,
+  "generic_known": 287045,
+  "spatial_known": 200204,
+  "coverage": {
+    "materials": {
+      "maps": 1280,
+      "episodes": 111995
+    },
+    "markets": {
+      "maps": 0,
+      "episodes": 0
+    },
+    "guard": {
+      "maps": 1157,
+      "episodes": 69716
+    },
+    "clear": {
+      "maps": 1277,
+      "episodes": 88209
+    },
+    "forbidden": {
+      "maps": 1172,
+      "episodes": 17125
+    }
+  },
+  "age_demand": {
+    "materials": {
+      "episodes": 111995,
+      "maps": 1280,
+      "maximum_age": 71599,
+      "high_demand_age128plus": 5134,
+      "high_demand_age512plus": 1688,
+      "high_demand_age4096plus": 74
+    },
+    "markets": {
+      "episodes": 0,
+      "maps": 0,
+      "maximum_age": null,
+      "high_demand_age128plus": 0,
+      "high_demand_age512plus": 0,
+      "high_demand_age4096plus": 0
+    },
+    "guard": {
+      "episodes": 69716,
+      "maps": 1157,
+      "maximum_age": 85887,
+      "high_demand_age128plus": 15346,
+      "high_demand_age512plus": 10374,
+      "high_demand_age4096plus": 6033
+    },
+    "clear": {
+      "episodes": 88209,
+      "maps": 1277,
+      "maximum_age": 86904,
+      "high_demand_age128plus": 14218,
+      "high_demand_age512plus": 9508,
+      "high_demand_age4096plus": 6424
+    },
+    "forbidden": {
+      "episodes": 17125,
+      "maps": 1172,
+      "maximum_age": 41420,
+      "high_demand_age128plus": 0,
+      "high_demand_age512plus": 0,
+      "high_demand_age4096plus": 0
+    }
+  },
+  "expected_families": [
+    "materials",
+    "guard",
+    "clear",
+    "forbidden"
+  ],
+  "campaign_scope": "Required materials,guard,clear,forbidden; Markets unmeasured outside declared campaign scope; no imputation"
+}

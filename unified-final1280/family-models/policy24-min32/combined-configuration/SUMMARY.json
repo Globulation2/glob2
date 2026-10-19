@@ -1,0 +1,1686 @@
+{
+  "status": "COMPLETE",
+  "latest_model_sha256": "0a7f1197fa5deb5c0995c05190bbc48f3899213617b2bec658a799c432458a68",
+  "header_sha256": "61a7e3555a67e31d791f15c6d9c8ea0f86e71f805932390999837650e117b5ed",
+  "arms": {
+    "threshold16_minimum8": {
+      "cells": 8,
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.12473901367187501,
+      "total_simulation_cpu_seconds": 8.174896,
+      "total_process_cpu_seconds": 10.669195,
+      "wall_seconds": 11.197933209012263,
+      "gross_ticks_per_wall_second": 6035.399456178878,
+      "measured_ticks_per_wall_second": 5852.508563567396,
+      "periodic_jobs": 19032,
+      "lazy_building_jobs": 18044
+    },
+    "threshold24_minimum8": {
+      "cells": 8,
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.11799618530273438,
+      "total_simulation_cpu_seconds": 7.732998,
+      "total_process_cpu_seconds": 10.231164,
+      "wall_seconds": 10.980071333819069,
+      "gross_ticks_per_wall_second": 6155.151268629605,
+      "measured_ticks_per_wall_second": 5968.631533216587,
+      "periodic_jobs": 14044,
+      "lazy_building_jobs": 15416,
+      "versus16": {
+        "pooled_cpu_fraction": -0.054055488901632476,
+        "paired_repeat_values": [
+          -0.06105925342716778,
+          -0.07372832251531991,
+          -0.009387997160783979,
+          -0.07229879137632267
+        ],
+        "paired_repeat_min": -0.07372832251531991,
+        "paired_repeat_max": -0.009387997160783979
+      }
+    },
+    "threshold24_minimum32": {
+      "cells": 8,
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.11972447204589844,
+      "total_simulation_cpu_seconds": 7.8462629999999995,
+      "total_process_cpu_seconds": 10.372639,
+      "wall_seconds": 11.601682958891615,
+      "gross_ticks_per_wall_second": 5825.361737557491,
+      "measured_ticks_per_wall_second": 5648.835624298174,
+      "periodic_jobs": 12636,
+      "lazy_building_jobs": 17172,
+      "versus16": {
+        "pooled_cpu_fraction": -0.04020026676791988,
+        "paired_repeat_values": [
+          -0.04122924608729406,
+          -0.0620065317780365,
+          -0.02191148904620155,
+          -0.035700643220022754
+        ],
+        "paired_repeat_min": -0.0620065317780365,
+        "paired_repeat_max": -0.02191148904620155
+      },
+      "versus24_minimum8": {
+        "pooled_cpu_fraction": 0.014646971329877356,
+        "paired_repeat_values": [
+          0.02111955137984367,
+          0.012654808542904128,
+          -0.012642176603477107,
+          0.03945036162084592
+        ],
+        "paired_repeat_min": -0.012642176603477107,
+        "paired_repeat_max": 0.03945036162084592
+      }
+    }
+  },
+  "per_state": {
+    "1d043310cbecdceb": {
+      "threshold16_minimum8": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.1205643310546875,
+        "total_simulation_cpu_seconds": 3.950652,
+        "total_process_cpu_seconds": 5.265655,
+        "wall_seconds": 5.546999749029055,
+        "gross_ticks_per_wall_second": 6091.941865675213,
+        "measured_ticks_per_wall_second": 5907.337566715358,
+        "periodic_jobs": 6264,
+        "lazy_building_jobs": 4704
+      },
+      "threshold24_minimum8": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.12052194213867189,
+        "total_simulation_cpu_seconds": 3.949263,
+        "total_process_cpu_seconds": 5.278756,
+        "wall_seconds": 5.753207874833606,
+        "gross_ticks_per_wall_second": 5873.592739072952,
+        "measured_ticks_per_wall_second": 5695.605080313166,
+        "periodic_jobs": 5504,
+        "lazy_building_jobs": 3864
+      },
+      "threshold24_minimum32": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.1211453857421875,
+        "total_simulation_cpu_seconds": 3.969692,
+        "total_process_cpu_seconds": 5.284453,
+        "wall_seconds": 5.633125375956297,
+        "gross_ticks_per_wall_second": 5998.801330471606,
+        "measured_ticks_per_wall_second": 5817.019471972467,
+        "periodic_jobs": 5088,
+        "lazy_building_jobs": 5092
+      }
+    },
+    "66294c58700ef1b4": {
+      "threshold16_minimum8": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.1289136962890625,
+        "total_simulation_cpu_seconds": 4.224244,
+        "total_process_cpu_seconds": 5.40354,
+        "wall_seconds": 5.650933459983207,
+        "gross_ticks_per_wall_second": 5979.89699211578,
+        "measured_ticks_per_wall_second": 5798.687992354696,
+        "periodic_jobs": 12768,
+        "lazy_building_jobs": 13340
+      },
+      "threshold24_minimum8": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.11547042846679688,
+        "total_simulation_cpu_seconds": 3.783735,
+        "total_process_cpu_seconds": 4.952408,
+        "wall_seconds": 5.226863458985463,
+        "gross_ticks_per_wall_second": 6465.062702548394,
+        "measured_ticks_per_wall_second": 6269.151711562078,
+        "periodic_jobs": 8540,
+        "lazy_building_jobs": 11552
+      },
+      "threshold24_minimum32": {
+        "cells": 4,
+        "measured_ticks": 32768,
+        "advanced_ticks": 33792,
+        "cpu_ms_per_measured_tick": 0.11830355834960937,
+        "total_simulation_cpu_seconds": 3.8765709999999998,
+        "total_process_cpu_seconds": 5.088186,
+        "wall_seconds": 5.968557582935318,
+        "gross_ticks_per_wall_second": 5661.66942857594,
+        "measured_ticks_per_wall_second": 5490.103688316063,
+        "periodic_jobs": 7548,
+        "lazy_building_jobs": 12080
+      }
+    }
+  },
+  "quality": [
+    {
+      "arm": "threshold16_minimum8",
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "movement": {
+        "queries": 1596,
+        "metrics": {
+          "extra_cost": {
+            "count": 1155,
+            "per_query": 0.7236842105263158
+          },
+          "false_unreachable": {
+            "count": 3,
+            "per_query": 0.0018796992481203006
+          },
+          "false_reachable": {
+            "count": 52,
+            "per_query": 0.03258145363408521
+          },
+          "invalid_goal": {
+            "count": 14,
+            "per_query": 0.008771929824561403
+          },
+          "missed_move": {
+            "count": 9,
+            "per_query": 0.005639097744360902
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 4,
+            "per_query": 0.002506265664160401
+          }
+        },
+        "fresh_correctable_stalls": 0,
+        "stalls_without_recorded_fresh_correction": 4
+      },
+      "per_family": {
+        "0": {
+          "queries": 1123,
+          "metrics": {
+            "extra_cost": {
+              "count": 586,
+              "per_query": 0.5218165627782725
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 21,
+              "per_query": 0.018699910952804988
+            },
+            "invalid_goal": {
+              "count": 1,
+              "per_query": 0.0008904719501335708
+            },
+            "missed_move": {
+              "count": 1,
+              "per_query": 0.0008904719501335708
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 3,
+              "per_query": 0.0026714158504007124
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 3
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 75,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "3": {
+          "queries": 392,
+          "metrics": {
+            "extra_cost": {
+              "count": 565,
+              "per_query": 1.441326530612245
+            },
+            "false_unreachable": {
+              "count": 3,
+              "per_query": 0.007653061224489796
+            },
+            "false_reachable": {
+              "count": 25,
+              "per_query": 0.06377551020408163
+            },
+            "invalid_goal": {
+              "count": 7,
+              "per_query": 0.017857142857142856
+            },
+            "missed_move": {
+              "count": 8,
+              "per_query": 0.02040816326530612
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 1,
+              "per_query": 0.002551020408163265
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 1
+        },
+        "4": {
+          "queries": 6,
+          "metrics": {
+            "extra_cost": {
+              "count": 4,
+              "per_query": 0.6666666666666666
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 6,
+              "per_query": 1.0
+            },
+            "invalid_goal": {
+              "count": 6,
+              "per_query": 1.0
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 56251,
+        "false_unreachable": 50,
+        "false_reachable": 88
+      },
+      "work": {
+        "admissions": 6331,
+        "admissions_by_reason": {
+          "cold": 397,
+          "model": 2022,
+          "reactive": 3837,
+          "age_cap": 75
+        },
+        "admissions_by_family": {
+          "lazy_building": 3257,
+          "materials": 2181,
+          "clear": 623,
+          "forbidden": 160,
+          "guard": 110
+        },
+        "admitted_field_cells": 51863552,
+        "prepared_search_events": 3189,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 10,
+        "positive_captured_goals": 0,
+        "maximum_captured_goals": 0
+      },
+      "periodic_jobs_whole_process": 3192,
+      "lazy_jobs_whole_process": 3335
+    },
+    {
+      "arm": "threshold24_minimum8",
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "movement": {
+        "queries": 1129,
+        "metrics": {
+          "extra_cost": {
+            "count": 1237,
+            "per_query": 1.095659875996457
+          },
+          "false_unreachable": {
+            "count": 6,
+            "per_query": 0.005314437555358724
+          },
+          "false_reachable": {
+            "count": 53,
+            "per_query": 0.046944198405668734
+          },
+          "invalid_goal": {
+            "count": 15,
+            "per_query": 0.013286093888396812
+          },
+          "missed_move": {
+            "count": 21,
+            "per_query": 0.018600531443755536
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 7,
+            "per_query": 0.006200177147918512
+          }
+        },
+        "fresh_correctable_stalls": 4,
+        "stalls_without_recorded_fresh_correction": 3
+      },
+      "per_family": {
+        "0": {
+          "queries": 720,
+          "metrics": {
+            "extra_cost": {
+              "count": 236,
+              "per_query": 0.3277777777777778
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 26,
+              "per_query": 0.03611111111111111
+            },
+            "invalid_goal": {
+              "count": 2,
+              "per_query": 0.002777777777777778
+            },
+            "missed_move": {
+              "count": 5,
+              "per_query": 0.006944444444444444
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 5,
+              "per_query": 0.006944444444444444
+            }
+          },
+          "fresh_correctable_stalls": 3,
+          "stalls_without_recorded_fresh_correction": 2
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 45,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "3": {
+          "queries": 361,
+          "metrics": {
+            "extra_cost": {
+              "count": 1001,
+              "per_query": 2.772853185595568
+            },
+            "false_unreachable": {
+              "count": 6,
+              "per_query": 0.01662049861495845
+            },
+            "false_reachable": {
+              "count": 25,
+              "per_query": 0.06925207756232687
+            },
+            "invalid_goal": {
+              "count": 11,
+              "per_query": 0.030470914127423823
+            },
+            "missed_move": {
+              "count": 16,
+              "per_query": 0.0443213296398892
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 2,
+              "per_query": 0.00554016620498615
+            }
+          },
+          "fresh_correctable_stalls": 1,
+          "stalls_without_recorded_fresh_correction": 1
+        },
+        "4": {
+          "queries": 3,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 2,
+              "per_query": 0.6666666666666666
+            },
+            "invalid_goal": {
+              "count": 2,
+              "per_query": 0.6666666666666666
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 37676,
+        "false_unreachable": 253,
+        "false_reachable": 169
+      },
+      "work": {
+        "admissions": 4853,
+        "admissions_by_reason": {
+          "cold": 273,
+          "model": 919,
+          "reactive": 3586,
+          "age_cap": 75
+        },
+        "admissions_by_family": {
+          "lazy_building": 2810,
+          "materials": 1125,
+          "clear": 668,
+          "forbidden": 161,
+          "guard": 89
+        },
+        "admitted_field_cells": 39755776,
+        "prepared_search_events": 2749,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 7,
+        "positive_captured_goals": 0,
+        "maximum_captured_goals": 0
+      },
+      "periodic_jobs_whole_process": 2135,
+      "lazy_jobs_whole_process": 2888
+    },
+    {
+      "arm": "threshold24_minimum32",
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "movement": {
+        "queries": 1407,
+        "metrics": {
+          "extra_cost": {
+            "count": 1645,
+            "per_query": 1.1691542288557213
+          },
+          "false_unreachable": {
+            "count": 7,
+            "per_query": 0.004975124378109453
+          },
+          "false_reachable": {
+            "count": 60,
+            "per_query": 0.042643923240938165
+          },
+          "invalid_goal": {
+            "count": 20,
+            "per_query": 0.014214641080312722
+          },
+          "missed_move": {
+            "count": 21,
+            "per_query": 0.014925373134328358
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 7,
+            "per_query": 0.004975124378109453
+          }
+        },
+        "fresh_correctable_stalls": 4,
+        "stalls_without_recorded_fresh_correction": 3
+      },
+      "per_family": {
+        "0": {
+          "queries": 864,
+          "metrics": {
+            "extra_cost": {
+              "count": 658,
+              "per_query": 0.7615740740740741
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 36,
+              "per_query": 0.041666666666666664
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 3,
+              "per_query": 0.003472222222222222
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 5,
+              "per_query": 0.005787037037037037
+            }
+          },
+          "fresh_correctable_stalls": 3,
+          "stalls_without_recorded_fresh_correction": 2
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 90,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "3": {
+          "queries": 444,
+          "metrics": {
+            "extra_cost": {
+              "count": 983,
+              "per_query": 2.213963963963964
+            },
+            "false_unreachable": {
+              "count": 7,
+              "per_query": 0.015765765765765764
+            },
+            "false_reachable": {
+              "count": 19,
+              "per_query": 0.04279279279279279
+            },
+            "invalid_goal": {
+              "count": 15,
+              "per_query": 0.033783783783783786
+            },
+            "missed_move": {
+              "count": 18,
+              "per_query": 0.04054054054054054
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 2,
+              "per_query": 0.0045045045045045045
+            }
+          },
+          "fresh_correctable_stalls": 1,
+          "stalls_without_recorded_fresh_correction": 1
+        },
+        "4": {
+          "queries": 9,
+          "metrics": {
+            "extra_cost": {
+              "count": 4,
+              "per_query": 0.4444444444444444
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 5,
+              "per_query": 0.5555555555555556
+            },
+            "invalid_goal": {
+              "count": 5,
+              "per_query": 0.5555555555555556
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 33650,
+        "false_unreachable": 104,
+        "false_reachable": 101
+      },
+      "work": {
+        "admissions": 4745,
+        "admissions_by_reason": {
+          "model": 793,
+          "cold": 372,
+          "reactive": 3503,
+          "age_cap": 77
+        },
+        "admissions_by_family": {
+          "materials": 973,
+          "lazy_building": 2939,
+          "guard": 102,
+          "clear": 577,
+          "forbidden": 154
+        },
+        "admitted_field_cells": 38871040,
+        "prepared_search_events": 2892,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 7,
+        "positive_captured_goals": 0,
+        "maximum_captured_goals": 0
+      },
+      "periodic_jobs_whole_process": 1887,
+      "lazy_jobs_whole_process": 3020
+    },
+    {
+      "arm": "threshold16_minimum8",
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "movement": {
+        "queries": 1213,
+        "metrics": {
+          "extra_cost": {
+            "count": 864,
+            "per_query": 0.7122835943940643
+          },
+          "false_unreachable": {
+            "count": 40,
+            "per_query": 0.03297609233305853
+          },
+          "false_reachable": {
+            "count": 38,
+            "per_query": 0.031327287716405604
+          },
+          "invalid_goal": {
+            "count": 10,
+            "per_query": 0.008244023083264633
+          },
+          "missed_move": {
+            "count": 35,
+            "per_query": 0.028854080791426217
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 46,
+            "per_query": 0.03792250618301731
+          }
+        },
+        "fresh_correctable_stalls": 7,
+        "stalls_without_recorded_fresh_correction": 39
+      },
+      "per_family": {
+        "0": {
+          "queries": 112,
+          "metrics": {
+            "extra_cost": {
+              "count": 82,
+              "per_query": 0.7321428571428571
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 12,
+              "per_query": 0.10714285714285714
+            },
+            "invalid_goal": {
+              "count": 1,
+              "per_query": 0.008928571428571428
+            },
+            "missed_move": {
+              "count": 7,
+              "per_query": 0.0625
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 16,
+              "per_query": 0.14285714285714285
+            }
+          },
+          "fresh_correctable_stalls": 6,
+          "stalls_without_recorded_fresh_correction": 10
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 433,
+          "metrics": {
+            "extra_cost": {
+              "count": 98,
+              "per_query": 0.22632794457274827
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 7,
+              "per_query": 0.016166281755196306
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 10,
+              "per_query": 0.023094688221709007
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 10
+        },
+        "3": {
+          "queries": 661,
+          "metrics": {
+            "extra_cost": {
+              "count": 684,
+              "per_query": 1.0347957639939485
+            },
+            "false_unreachable": {
+              "count": 40,
+              "per_query": 0.060514372163388806
+            },
+            "false_reachable": {
+              "count": 17,
+              "per_query": 0.025718608169440244
+            },
+            "invalid_goal": {
+              "count": 7,
+              "per_query": 0.01059001512859304
+            },
+            "missed_move": {
+              "count": 28,
+              "per_query": 0.04236006051437216
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 20,
+              "per_query": 0.030257186081694403
+            }
+          },
+          "fresh_correctable_stalls": 1,
+          "stalls_without_recorded_fresh_correction": 19
+        },
+        "4": {
+          "queries": 7,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 2,
+              "per_query": 0.2857142857142857
+            },
+            "invalid_goal": {
+              "count": 2,
+              "per_query": 0.2857142857142857
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 2129,
+        "false_unreachable": 3,
+        "false_reachable": 32
+      },
+      "work": {
+        "admissions": 2587,
+        "admissions_by_reason": {
+          "reactive": 2396,
+          "model": 99,
+          "cold": 24,
+          "age_cap": 66,
+          "history_initialization": 2
+        },
+        "admissions_by_family": {
+          "lazy_building": 1120,
+          "clear": 499,
+          "guard": 287,
+          "materials": 526,
+          "forbidden": 155
+        },
+        "admitted_field_cells": 42385408,
+        "prepared_search_events": 960,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 12,
+        "positive_captured_goals": 5,
+        "maximum_captured_goals": 181
+      },
+      "periodic_jobs_whole_process": 1566,
+      "lazy_jobs_whole_process": 1176
+    },
+    {
+      "arm": "threshold24_minimum8",
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "movement": {
+        "queries": 1763,
+        "metrics": {
+          "extra_cost": {
+            "count": 2218,
+            "per_query": 1.2580828133862734
+          },
+          "false_unreachable": {
+            "count": 13,
+            "per_query": 0.00737379466817924
+          },
+          "false_reachable": {
+            "count": 49,
+            "per_query": 0.027793533749290982
+          },
+          "invalid_goal": {
+            "count": 16,
+            "per_query": 0.009075439591605219
+          },
+          "missed_move": {
+            "count": 44,
+            "per_query": 0.024957458876914352
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 67,
+            "per_query": 0.03800340328984685
+          }
+        },
+        "fresh_correctable_stalls": 19,
+        "stalls_without_recorded_fresh_correction": 48
+      },
+      "per_family": {
+        "0": {
+          "queries": 252,
+          "metrics": {
+            "extra_cost": {
+              "count": 350,
+              "per_query": 1.3888888888888888
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 16,
+              "per_query": 0.06349206349206349
+            },
+            "invalid_goal": {
+              "count": 2,
+              "per_query": 0.007936507936507936
+            },
+            "missed_move": {
+              "count": 13,
+              "per_query": 0.051587301587301584
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 44,
+              "per_query": 0.1746031746031746
+            }
+          },
+          "fresh_correctable_stalls": 11,
+          "stalls_without_recorded_fresh_correction": 33
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 846,
+          "metrics": {
+            "extra_cost": {
+              "count": 1056,
+              "per_query": 1.24822695035461
+            },
+            "false_unreachable": {
+              "count": 4,
+              "per_query": 0.004728132387706856
+            },
+            "false_reachable": {
+              "count": 14,
+              "per_query": 0.016548463356973995
+            },
+            "invalid_goal": {
+              "count": 1,
+              "per_query": 0.001182033096926714
+            },
+            "missed_move": {
+              "count": 8,
+              "per_query": 0.009456264775413711
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 15,
+              "per_query": 0.01773049645390071
+            }
+          },
+          "fresh_correctable_stalls": 4,
+          "stalls_without_recorded_fresh_correction": 11
+        },
+        "3": {
+          "queries": 659,
+          "metrics": {
+            "extra_cost": {
+              "count": 812,
+              "per_query": 1.2321699544764795
+            },
+            "false_unreachable": {
+              "count": 9,
+              "per_query": 0.013657056145675266
+            },
+            "false_reachable": {
+              "count": 17,
+              "per_query": 0.025796661608497723
+            },
+            "invalid_goal": {
+              "count": 11,
+              "per_query": 0.01669195751138088
+            },
+            "missed_move": {
+              "count": 23,
+              "per_query": 0.03490136570561457
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 8,
+              "per_query": 0.012139605462822459
+            }
+          },
+          "fresh_correctable_stalls": 4,
+          "stalls_without_recorded_fresh_correction": 4
+        },
+        "4": {
+          "queries": 6,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 2,
+              "per_query": 0.3333333333333333
+            },
+            "invalid_goal": {
+              "count": 2,
+              "per_query": 0.3333333333333333
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 3205,
+        "false_unreachable": 18,
+        "false_reachable": 98
+      },
+      "work": {
+        "admissions": 2192,
+        "admissions_by_reason": {
+          "reactive": 2063,
+          "cold": 29,
+          "age_cap": 59,
+          "model": 40,
+          "history_initialization": 1
+        },
+        "admissions_by_family": {
+          "lazy_building": 910,
+          "clear": 571,
+          "guard": 230,
+          "materials": 352,
+          "forbidden": 129
+        },
+        "admitted_field_cells": 35913728,
+        "prepared_search_events": 785,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 16,
+        "positive_captured_goals": 11,
+        "maximum_captured_goals": 180
+      },
+      "periodic_jobs_whole_process": 1376,
+      "lazy_jobs_whole_process": 966
+    },
+    {
+      "arm": "threshold24_minimum32",
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "movement": {
+        "queries": 1461,
+        "metrics": {
+          "extra_cost": {
+            "count": 1170,
+            "per_query": 0.8008213552361396
+          },
+          "false_unreachable": {
+            "count": 9,
+            "per_query": 0.006160164271047228
+          },
+          "false_reachable": {
+            "count": 79,
+            "per_query": 0.054072553045859
+          },
+          "invalid_goal": {
+            "count": 14,
+            "per_query": 0.009582477754962354
+          },
+          "missed_move": {
+            "count": 34,
+            "per_query": 0.02327173169062286
+          },
+          "escape_failure": {
+            "count": 0,
+            "per_query": 0.0
+          },
+          "stall": {
+            "count": 29,
+            "per_query": 0.019849418206707735
+          }
+        },
+        "fresh_correctable_stalls": 16,
+        "stalls_without_recorded_fresh_correction": 13
+      },
+      "per_family": {
+        "0": {
+          "queries": 209,
+          "metrics": {
+            "extra_cost": {
+              "count": 218,
+              "per_query": 1.0430622009569377
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 27,
+              "per_query": 0.1291866028708134
+            },
+            "invalid_goal": {
+              "count": 4,
+              "per_query": 0.019138755980861243
+            },
+            "missed_move": {
+              "count": 13,
+              "per_query": 0.06220095693779904
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 14,
+              "per_query": 0.06698564593301436
+            }
+          },
+          "fresh_correctable_stalls": 9,
+          "stalls_without_recorded_fresh_correction": 5
+        },
+        "1": {
+          "queries": 0,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "false_reachable": {
+              "count": 0,
+              "per_query": null
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": null
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": null
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": null
+            },
+            "stall": {
+              "count": 0,
+              "per_query": null
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        },
+        "2": {
+          "queries": 727,
+          "metrics": {
+            "extra_cost": {
+              "count": 376,
+              "per_query": 0.517193947730399
+            },
+            "false_unreachable": {
+              "count": 4,
+              "per_query": 0.005502063273727648
+            },
+            "false_reachable": {
+              "count": 26,
+              "per_query": 0.03576341127922971
+            },
+            "invalid_goal": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "missed_move": {
+              "count": 6,
+              "per_query": 0.008253094910591471
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 5,
+              "per_query": 0.0068775790921595595
+            }
+          },
+          "fresh_correctable_stalls": 2,
+          "stalls_without_recorded_fresh_correction": 3
+        },
+        "3": {
+          "queries": 521,
+          "metrics": {
+            "extra_cost": {
+              "count": 576,
+              "per_query": 1.1055662188099808
+            },
+            "false_unreachable": {
+              "count": 5,
+              "per_query": 0.009596928982725527
+            },
+            "false_reachable": {
+              "count": 23,
+              "per_query": 0.044145873320537425
+            },
+            "invalid_goal": {
+              "count": 7,
+              "per_query": 0.013435700575815739
+            },
+            "missed_move": {
+              "count": 15,
+              "per_query": 0.028790786948176585
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 10,
+              "per_query": 0.019193857965451054
+            }
+          },
+          "fresh_correctable_stalls": 5,
+          "stalls_without_recorded_fresh_correction": 5
+        },
+        "4": {
+          "queries": 4,
+          "metrics": {
+            "extra_cost": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_unreachable": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "false_reachable": {
+              "count": 3,
+              "per_query": 0.75
+            },
+            "invalid_goal": {
+              "count": 3,
+              "per_query": 0.75
+            },
+            "missed_move": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "escape_failure": {
+              "count": 0,
+              "per_query": 0.0
+            },
+            "stall": {
+              "count": 0,
+              "per_query": 0.0
+            }
+          },
+          "fresh_correctable_stalls": 0,
+          "stalls_without_recorded_fresh_correction": 0
+        }
+      },
+      "planning": {
+        "queries": 2649,
+        "false_unreachable": 4,
+        "false_reachable": 152
+      },
+      "work": {
+        "admissions": 2403,
+        "admissions_by_reason": {
+          "reactive": 2304,
+          "model": 18,
+          "cold": 24,
+          "age_cap": 56,
+          "history_initialization": 1
+        },
+        "admissions_by_family": {
+          "lazy_building": 1217,
+          "clear": 478,
+          "guard": 255,
+          "forbidden": 183,
+          "materials": 270
+        },
+        "admitted_field_cells": 39370752,
+        "prepared_search_events": 1009,
+        "prepared_search_field_cells": 0
+      },
+      "guard_episode_support": {
+        "complete_known": 15,
+        "positive_captured_goals": 10,
+        "maximum_captured_goals": 179
+      },
+      "periodic_jobs_whole_process": 1272,
+      "lazy_jobs_whole_process": 1273
+    }
+  ],
+  "all_timed_and_observer_checksums_match": true,
+  "actual_policies_verified": [
+    {
+      "threshold": 16000,
+      "minimum": 8
+    },
+    {
+      "threshold": 24000,
+      "minimum": 8
+    },
+    {
+      "threshold": 24000,
+      "minimum": 32
+    }
+  ],
+  "cap": 1024,
+  "publication_delay": 8,
+  "label_horizon": 128,
+  "caveats": [
+    "Two previously studied states; not independent generalization.",
+    "Paired repeat range is not a population confidence interval.",
+    "Process CPU/wall/job totals include loading and256settle; simulationCPU metric excludes settling.",
+    "Quality and work windows filter16640<=tick<24832; trajectories and query denominators differ.",
+    "Stalls without recorded fresh correction are not automatically proven congestion.",
+    "Markets/newfamily support is absent; no fallback cost attribution.",
+    "The24/min8 control is a research-only State literal override; final24/min32 is the qualified production configuration.",
+    "Load/thermal/power observed, no uncontended physical-core claim."
+  ],
+  "plan_sha256": "e626b5a7a7ba380235e01cf40b621cee6698dd1c8331b4977ac16b59fad544b5",
+  "raw_status_sha256": "56c55fc961bf9d0606876e686dda707d6e0c74d48924516589c4d393bda289a9"
+}

@@ -1,0 +1,8 @@
+{
+  "pid": 22376,
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/final183-threshold-sweep/run.py"
+  ],
+  "plan_sha256": "57ec487709cd9409d0ddd7928a8f9c7586d92dab475219285acac8ecb630533d"
+}

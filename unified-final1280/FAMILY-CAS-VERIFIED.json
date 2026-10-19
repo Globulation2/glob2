@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "archive_sha256": "e9214638a354c8de557f75f611e8c6bee6a35986d12973048dd09cd719a0e304",
+  "archive_bytes": 8346932,
+  "index_sha256": "aea001c3beb3a61b91ec07894829eb04fb2336ef4b9c4ec24ac122a71d318ef1",
+  "logical_files": 395,
+  "unique_objects": 292
+}

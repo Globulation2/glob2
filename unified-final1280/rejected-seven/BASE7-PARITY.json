@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "vectors": 530,
+  "ubsan": true,
+  "counts_ignored_and_abi_retained": true,
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "command": [
+    "clang++",
+    "-std=c++20",
+    "-O2",
+    "-fsanitize=undefined",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/parity7.cpp",
+    "-o",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/parity7"
+  ],
+  "model_sha256": "4c63a4673af7856d9b4fa56b3e126a6e8e8768014ede19792397dd0730b39ee7",
+  "header_sha256": "5ac83aedcaf8dd4075c0b164de5d2a00cbdc1e353bd7b99fd505abf8fade6237",
+  "full_research_sha256": "c36ef4e6f21c53cf424fc8dcea35d6ab196070d7bc7b55591d0afa79a8b8b726",
+  "dead_rate_helpers_removed": true
+}

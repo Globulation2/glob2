@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "suite_tests": 89,
+  "worker_tests": 7,
+  "model_actual_ubsan_vectors": 530,
+  "snapshot_sha256": "9ed17f796c64a053b893c1cd16de6899fb5b4f2d4a479343e396f918b66530f9",
+  "source_manifest": "source-sha256.json",
+  "logs": [
+    "tests.log",
+    "worker-tests.log"
+  ]
+}

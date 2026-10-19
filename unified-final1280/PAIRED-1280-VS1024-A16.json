@@ -1,0 +1,2197 @@
+{
+  "status": "PASS-TECHNICAL-RESEARCH-ONLY",
+  "utc": "2026-10-19T17:55:32.393584+00:00",
+  "input_sha256": "a044f373dcedcec9f3f63d2b54768124e2a75193cc5f604a57f040a5bf486a25",
+  "model_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
+  "incumbent_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "slots": 1280,
+  "terminal_counts": {
+    "completed": 500,
+    "user-censored": 780
+  },
+  "censor_raw_categories": {
+    "timeout": 777,
+    "crash": 3
+  },
+  "cohort_accounting": [
+    {
+      "path": "round001-candidate-export/terminal-accounting.json",
+      "counts": {
+        "completed": 46,
+        "user-censored": 82
+      },
+      "recovered_complete_episodes": 17296,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 366
+    },
+    {
+      "path": "round001-exploration-export/terminal-accounting.json",
+      "counts": {
+        "completed": 53,
+        "user-censored": 75
+      },
+      "recovered_complete_episodes": 16773,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 612
+    },
+    {
+      "path": "round002-candidate-export/terminal-accounting.json",
+      "counts": {
+        "completed": 52,
+        "user-censored": 76
+      },
+      "recovered_complete_episodes": 19313,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 731
+    },
+    {
+      "path": "round002-exploration-export/terminal-accounting.json",
+      "counts": {
+        "completed": 51,
+        "user-censored": 77
+      },
+      "recovered_complete_episodes": 16531,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 378
+    },
+    {
+      "path": "round003-candidate-export/terminal-accounting.json",
+      "counts": {
+        "completed": 51,
+        "user-censored": 77
+      },
+      "recovered_complete_episodes": 18270,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 408
+    },
+    {
+      "path": "round003-exploration-export/terminal-accounting.json",
+      "counts": {
+        "completed": 44,
+        "user-censored": 84
+      },
+      "recovered_complete_episodes": 17025,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 389
+    },
+    {
+      "path": "round004-candidate-export/terminal-accounting.json",
+      "counts": {
+        "completed": 54,
+        "user-censored": 74
+      },
+      "recovered_complete_episodes": 11060,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 0
+    },
+    {
+      "path": "round004-exploration-export/terminal-accounting.json",
+      "counts": {
+        "completed": 53,
+        "user-censored": 75
+      },
+      "recovered_complete_episodes": 12060,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 0
+    },
+    {
+      "path": "round005-candidate-export/terminal-accounting.json",
+      "counts": {
+        "completed": 52,
+        "user-censored": 76
+      },
+      "recovered_complete_episodes": 12891,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 0
+    },
+    {
+      "path": "round005-exploration-export/terminal-accounting.json",
+      "counts": {
+        "completed": 44,
+        "user-censored": 84
+      },
+      "recovered_complete_episodes": 13672,
+      "excluded_incomplete_horizons": 0,
+      "discarded_unterminated_bytes": 0
+    }
+  ],
+  "immutable_files_verified": 11827,
+  "rows": 293779,
+  "eligible": 287045,
+  "heldout_rows": 67018,
+  "heldout_maps": 315,
+  "development_maps": 965,
+  "same_rows_weights_threshold": true,
+  "threshold_milli": 16000,
+  "weighting": "equal format/role/cohort/map/family/collection/episode",
+  "weight_mass": {
+    "format": {
+      "16ffa": 0.1250000000000142,
+      "1v1": 0.125000000000015,
+      "2v2": 0.12500000000002137,
+      "3ffa": 0.1250000000000109,
+      "4ffa": 0.12500000000001518,
+      "4v4": 0.12500000000001146,
+      "8ffa": 0.12500000000001082,
+      "8v8": 0.12500000000001427
+    },
+    "cohort_role": {
+      "candidate": 0.5000000000000664,
+      "exploration": 0.5000000000000786
+    },
+    "family": {
+      "clear": 0.26696304563494144,
+      "forbidden": 0.23401661706351554,
+      "guard": 0.22893229166669593,
+      "materials": 0.2700880456349428
+    }
+  },
+  "collection_thresholds": [
+    16000,
+    128000
+  ],
+  "incumbent": {
+    "episodes": 67018,
+    "states": 315,
+    "mae": 7.744209481718365,
+    "mse": 2134.8094777164824,
+    "selected_pct": 5.437268650162635,
+    "selected_actual_benefit": 33.13119831520468,
+    "positive_benefit_captured_fraction": 0.4472702834046239,
+    "missed_positive_benefit": 2.638618073418623,
+    "negative_benefit_selected": 0.3337441533234373,
+    "threshold": 16.0,
+    "decision_regret": 2.8964596494398083,
+    "decision_regret_p95": 16.0,
+    "decision_regret_p99": 60.0,
+    "false_refresh_pct": 4.241792126127768,
+    "missed_threshold_decision_pct": 2.9850820624304792,
+    "absolute_error_p95": 27.508,
+    "absolute_error_p99": 124.007
+  },
+  "new": {
+    "episodes": 67018,
+    "states": 315,
+    "mae": 7.818299519889156,
+    "mse": 2136.174905990189,
+    "selected_pct": 5.552406355101867,
+    "selected_actual_benefit": 33.0922446022808,
+    "positive_benefit_captured_fraction": 0.4559014337018465,
+    "missed_positive_benefit": 2.5974147357205415,
+    "negative_benefit_selected": 0.3389638580944607,
+    "threshold": 16.0,
+    "decision_regret": 2.8788980493030274,
+    "decision_regret_p95": 16.0,
+    "decision_regret_p99": 60.0,
+    "false_refresh_pct": 4.340776071405136,
+    "missed_threshold_decision_pct": 2.968928302768617,
+    "absolute_error_p95": 27.742,
+    "absolute_error_p99": 123.798
+  },
+  "delta_regret": -0.017561600136780875,
+  "relative_regret_change_pct": -0.6063126113349249,
+  "subgroups": {
+    "format": {
+      "16ffa": {
+        "episodes": 9356,
+        "maps": 45,
+        "weight_mass": 0.1250000000000142,
+        "incumbent": {
+          "regret": 2.8431555189123,
+          "selected_pct": 5.779708712813907
+        },
+        "new": {
+          "regret": 2.8758338146612323,
+          "selected_pct": 5.797641454738792
+        },
+        "delta_regret": 0.03267829574893222
+      },
+      "1v1": {
+        "episodes": 7787,
+        "maps": 39,
+        "weight_mass": 0.125000000000015,
+        "incumbent": {
+          "regret": 3.202865350132852,
+          "selected_pct": 4.836235909005011
+        },
+        "new": {
+          "regret": 3.1004868869241378,
+          "selected_pct": 5.138853706932276
+        },
+        "delta_regret": -0.10237846320871435
+      },
+      "2v2": {
+        "episodes": 8074,
+        "maps": 40,
+        "weight_mass": 0.12500000000002137,
+        "incumbent": {
+          "regret": 2.7144421969327177,
+          "selected_pct": 4.822212828758172
+        },
+        "new": {
+          "regret": 2.72687255990855,
+          "selected_pct": 4.877368862730979
+        },
+        "delta_regret": 0.012430362975832221
+      },
+      "3ffa": {
+        "episodes": 10209,
+        "maps": 38,
+        "weight_mass": 0.1250000000000109,
+        "incumbent": {
+          "regret": 3.118290912231179,
+          "selected_pct": 6.894694499089256
+        },
+        "new": {
+          "regret": 2.977712931518327,
+          "selected_pct": 7.107802750437145
+        },
+        "delta_regret": -0.1405779807128522
+      },
+      "4ffa": {
+        "episodes": 8083,
+        "maps": 41,
+        "weight_mass": 0.12500000000001518,
+        "incumbent": {
+          "regret": 2.9726225889307454,
+          "selected_pct": 5.498284020836384
+        },
+        "new": {
+          "regret": 2.955519278014118,
+          "selected_pct": 5.620589607321826
+        },
+        "delta_regret": -0.0171033109166272
+      },
+      "4v4": {
+        "episodes": 5663,
+        "maps": 32,
+        "weight_mass": 0.12500000000001146,
+        "incumbent": {
+          "regret": 2.4730850924251024,
+          "selected_pct": 5.129983636391994
+        },
+        "new": {
+          "regret": 2.4754329252581324,
+          "selected_pct": 5.151720890771486
+        },
+        "delta_regret": 0.0023478328330299725
+      },
+      "8ffa": {
+        "episodes": 9783,
+        "maps": 46,
+        "weight_mass": 0.12500000000001082,
+        "incumbent": {
+          "regret": 2.6829803003121544,
+          "selected_pct": 4.009042107438473
+        },
+        "new": {
+          "regret": 2.7320146857225764,
+          "selected_pct": 4.1941046229661785
+        },
+        "delta_regret": 0.04903438541042204
+      },
+      "8v8": {
+        "episodes": 8063,
+        "maps": 34,
+        "weight_mass": 0.12500000000001427,
+        "incumbent": {
+          "regret": 3.1642352356414167,
+          "selected_pct": 6.527987486967893
+        },
+        "new": {
+          "regret": 3.1873113124171453,
+          "selected_pct": 6.531168944916252
+        },
+        "delta_regret": 0.023076076775728538
+      }
+    },
+    "generator": {
+      "allotments": {
+        "episodes": 743,
+        "maps": 4,
+        "weight_mass": 0.010119047619048813,
+        "incumbent": {
+          "regret": 0.7986448897157897,
+          "selected_pct": 2.919529167541116
+        },
+        "new": {
+          "regret": 0.8218749782113649,
+          "selected_pct": 2.851205377848248
+        },
+        "delta_regret": 0.023230088495575174
+      },
+      "amphitheatre": {
+        "episodes": 1134,
+        "maps": 4,
+        "weight_mass": 0.010535714285715547,
+        "incumbent": {
+          "regret": 5.0254584913937315,
+          "selected_pct": 10.035347190806101
+        },
+        "new": {
+          "regret": 5.019741515337773,
+          "selected_pct": 10.196020374078156
+        },
+        "delta_regret": -0.005716976055958334
+      },
+      "anthill": {
+        "episodes": 2781,
+        "maps": 14,
+        "weight_mass": 0.05355654761905343,
+        "incumbent": {
+          "regret": 1.8245783551853902,
+          "selected_pct": 4.498346131472955
+        },
+        "new": {
+          "regret": 1.8496027675846927,
+          "selected_pct": 4.652571487269365
+        },
+        "delta_regret": 0.02502441239930242
+      },
+      "bajada": {
+        "episodes": 1649,
+        "maps": 5,
+        "weight_mass": 0.016041666666668834,
+        "incumbent": {
+          "regret": 2.315085150731999,
+          "selected_pct": 6.22906714398389
+        },
+        "new": {
+          "regret": 2.295063569424653,
+          "selected_pct": 6.103932260812979
+        },
+        "delta_regret": -0.020021581307346104
+      },
+      "bastion-keys": {
+        "episodes": 787,
+        "maps": 3,
+        "weight_mass": 0.01145833333333493,
+        "incumbent": {
+          "regret": 1.8803325290878563,
+          "selected_pct": 5.674737005858663
+        },
+        "new": {
+          "regret": 1.914815287708546,
+          "selected_pct": 5.795557277541005
+        },
+        "delta_regret": 0.034482758620689724
+      },
+      "braided-delta": {
+        "episodes": 241,
+        "maps": 1,
+        "weight_mass": 0.003125000000000368,
+        "incumbent": {
+          "regret": 2.2612554112554117,
+          "selected_pct": 9.70779220779221
+        },
+        "new": {
+          "regret": 2.2993506493506497,
+          "selected_pct": 9.945887445887449
+        },
+        "delta_regret": 0.03809523809523796
+      },
+      "braided-river": {
+        "episodes": 745,
+        "maps": 6,
+        "weight_mass": 0.015119047619049458,
+        "incumbent": {
+          "regret": 1.965428829330041,
+          "selected_pct": 1.1454936813000896
+        },
+        "new": {
+          "regret": 1.965428829330041,
+          "selected_pct": 1.1454936813000896
+        },
+        "delta_regret": 0.0
+      },
+      "breachable-highlands": {
+        "episodes": 42,
+        "maps": 1,
+        "weight_mass": 0.003125000000000369,
+        "incumbent": {
+          "regret": 0.7727272727272726,
+          "selected_pct": 0.0
+        },
+        "new": {
+          "regret": 0.7727272727272726,
+          "selected_pct": 0.0
+        },
+        "delta_regret": 0.0
+      },
+      "canals": {
+        "episodes": 434,
+        "maps": 3,
+        "weight_mass": 0.011160714285715561,
+        "incumbent": {
+          "regret": 4.078304350335509,
+          "selected_pct": 4.828161340024817
+        },
+        "new": {
+          "regret": 4.326173202794526,
+          "selected_pct": 4.598653143303506
+        },
+        "delta_regret": 0.2478688524590167
+      },
+      "caravanserai": {
+        "episodes": 680,
+        "maps": 3,
+        "weight_mass": 0.006994047619048427,
+        "incumbent": {
+          "regret": 3.8979294464400844,
+          "selected_pct": 3.8470111448834854
+        },
+        "new": {
+          "regret": 3.8979294464400844,
+          "selected_pct": 3.8470111448834854
+        },
+        "delta_regret": 0.0
+      },
+      "carousel": {
+        "episodes": 171,
+        "maps": 1,
+        "weight_mass": 0.0017857142857144977,
+        "incumbent": {
+          "regret": 1.0512820512820513,
+          "selected_pct": 0.0
+        },
+        "new": {
+          "regret": 1.0512820512820513,
+          "selected_pct": 0.0
+        },
+        "delta_regret": 0.0
+      },
+      "central-quarry": {
+        "episodes": 1374,
+        "maps": 8,
+        "weight_mass": 0.02616071428571697,
+        "incumbent": {
+          "regret": 1.9165749237975502,
+          "selected_pct": 3.8922930830218743
+        },
+        "new": {
+          "regret": 2.021630367281884,
+          "selected_pct": 3.896698635437226
+        },
+        "delta_regret": 0.10505544348433382
+      },
+      "city-states": {
+        "episodes": 674,
+        "maps": 3,
+        "weight_mass": 0.009077380952382053,
+        "incumbent": {
+          "regret": 4.663225899541548,
+          "selected_pct": 4.48472393975644
+        },
+        "new": {
+          "regret": 4.674935501415083,
+          "selected_pct": 4.601819958491802
+        },
+        "delta_regret": 0.011709601873535647
+      },
+      "comb": {
+        "episodes": 694,
+        "maps": 2,
+        "weight_mass": 0.010416666666667808,
+        "incumbent": {
+          "regret": 1.3064390302873048,
+          "selected_pct": 4.953225987167995
+        },
+        "new": {
+          "regret": 1.3163822121054864,
+          "selected_pct": 5.027089623531632
+        },
+        "delta_regret": 0.009943181818181657
+      },
+      "concrete-islands": {
+        "episodes": 651,
+        "maps": 4,
+        "weight_mass": 0.00949404761904874,
+        "incumbent": {
+          "regret": 1.7597448609739386,
+          "selected_pct": 6.393031157042114
+        },
+        "new": {
+          "regret": 1.783272686503989,
+          "selected_pct": 6.540080066604928
+        },
+        "delta_regret": 0.023527825530050395
+      },
+      "contested-commons": {
+        "episodes": 1194,
+        "maps": 3,
+        "weight_mass": 0.011160714285715533,
+        "incumbent": {
+          "regret": 5.131535004945854,
+          "selected_pct": 12.292806478748473
+        },
+        "new": {
+          "regret": 5.221420040798681,
+          "selected_pct": 11.994090715259583
+        },
+        "delta_regret": 0.08988503585282714
+      },
+      "continents": {
+        "episodes": 755,
+        "maps": 7,
+        "weight_mass": 0.020416666666669008,
+        "incumbent": {
+          "regret": 1.1347607356583878,
+          "selected_pct": 3.600930167985561
+        },
+        "new": {
+          "regret": 1.1304361486807395,
+          "selected_pct": 3.6422324031653472
+        },
+        "delta_regret": -0.004324586977648259
+      },
+      "coral": {
+        "episodes": 1079,
+        "maps": 4,
+        "weight_mass": 0.00875000000000106,
+        "incumbent": {
+          "regret": 2.422239010294878,
+          "selected_pct": 7.550111455461569
+        },
+        "new": {
+          "regret": 2.471216790528461,
+          "selected_pct": 8.4427723902117
+        },
+        "delta_regret": 0.0489777802335829
+      },
+      "crater-lakes": {
+        "episodes": 1729,
+        "maps": 10,
+        "weight_mass": 0.03324404761905144,
+        "incumbent": {
+          "regret": 3.3318518067852523,
+          "selected_pct": 4.98001161933548
+        },
+        "new": {
+          "regret": 3.4958069723768346,
+          "selected_pct": 5.6572169756327835
+        },
+        "delta_regret": 0.1639551655915823
+      },
+      "drowned-forest": {
+        "episodes": 136,
+        "maps": 1,
+        "weight_mass": 0.0041666666666671575,
+        "incumbent": {
+          "regret": 1.8775510204081636,
+          "selected_pct": 4.591836734693878
+        },
+        "new": {
+          "regret": 1.8775510204081636,
+          "selected_pct": 4.591836734693878
+        },
+        "delta_regret": 0.0
+      },
+      "drumlin-field": {
+        "episodes": 775,
+        "maps": 5,
+        "weight_mass": 0.021250000000002548,
+        "incumbent": {
+          "regret": 3.2416165609362095,
+          "selected_pct": 3.8321701578562997
+        },
+        "new": {
+          "regret": 3.237161445556725,
+          "selected_pct": 3.804325686734518
+        },
+        "delta_regret": -0.004455115379484731
+      },
+      "emoji": {
+        "episodes": 369,
+        "maps": 2,
+        "weight_mass": 0.015625000000001842,
+        "incumbent": {
+          "regret": 1.652412434102575,
+          "selected_pct": 6.426256520153233
+        },
+        "new": {
+          "regret": 1.652412434102575,
+          "selected_pct": 6.426256520153233
+        },
+        "delta_regret": 0.0
+      },
+      "encircled-kingdom": {
+        "episodes": 648,
+        "maps": 3,
+        "weight_mass": 0.0069940476190484486,
+        "incumbent": {
+          "regret": 2.4927880935840525,
+          "selected_pct": 4.674590932818394
+        },
+        "new": {
+          "regret": 2.489514771161794,
+          "selected_pct": 4.756423993374859
+        },
+        "delta_regret": -0.003273322422258307
+      },
+      "even-ground": {
+        "episodes": 2191,
+        "maps": 9,
+        "weight_mass": 0.026800595238098173,
+        "incumbent": {
+          "regret": 1.7679899270159207,
+          "selected_pct": 4.80658123212615
+        },
+        "new": {
+          "regret": 1.7684068445541508,
+          "selected_pct": 5.095519828411919
+        },
+        "delta_regret": 0.00041691753823003275
+      },
+      "everglades": {
+        "episodes": 1901,
+        "maps": 9,
+        "weight_mass": 0.022708333333336446,
+        "incumbent": {
+          "regret": 4.405050300562775,
+          "selected_pct": 2.4170374523783056
+        },
+        "new": {
+          "regret": 4.417115239684415,
+          "selected_pct": 2.4924433218885516
+        },
+        "delta_regret": 0.012064939121640528
+      },
+      "faulted-city": {
+        "episodes": 667,
+        "maps": 3,
+        "weight_mass": 0.018452380952383163,
+        "incumbent": {
+          "regret": 5.461407941212005,
+          "selected_pct": 0.6795940558173251
+        },
+        "new": {
+          "regret": 5.461407941212005,
+          "selected_pct": 0.6795940558173251
+        },
+        "delta_regret": 0.0
+      },
+      "fingerprint": {
+        "episodes": 879,
+        "maps": 4,
+        "weight_mass": 0.012500000000001477,
+        "incumbent": {
+          "regret": 2.2123937843231514,
+          "selected_pct": 5.165262822293171
+        },
+        "new": {
+          "regret": 2.2075276042744894,
+          "selected_pct": 5.134849196989035
+        },
+        "delta_regret": -0.004866180048662017
+      },
+      "fjord-continent": {
+        "episodes": 1680,
+        "maps": 10,
+        "weight_mass": 0.025535714285717142,
+        "incumbent": {
+          "regret": 3.762484188832166,
+          "selected_pct": 7.110010690824757
+        },
+        "new": {
+          "regret": 3.195670432661281,
+          "selected_pct": 7.564118150207709
+        },
+        "delta_regret": -0.5668137561708853
+      },
+      "forts": {
+        "episodes": 891,
+        "maps": 6,
+        "weight_mass": 0.016785714285716243,
+        "incumbent": {
+          "regret": 2.0392549536453664,
+          "selected_pct": 2.2757367019364185
+        },
+        "new": {
+          "regret": 2.0611573316178324,
+          "selected_pct": 2.4126265642643285
+        },
+        "delta_regret": 0.02190237797246608
+      },
+      "gauntlet": {
+        "episodes": 351,
+        "maps": 3,
+        "weight_mass": 0.007708333333334239,
+        "incumbent": {
+          "regret": 0.3741534638086362,
+          "selected_pct": 2.2822822822822824
+        },
+        "new": {
+          "regret": 0.39745262503883194,
+          "selected_pct": 2.748265506886196
+        },
+        "delta_regret": 0.023299161230195764
+      },
+      "glacis": {
+        "episodes": 563,
+        "maps": 3,
+        "weight_mass": 0.006369047619048368,
+        "incumbent": {
+          "regret": 0.8886335626989833,
+          "selected_pct": 4.589024682482626
+        },
+        "new": {
+          "regret": 0.8584394577385231,
+          "selected_pct": 4.400311526479751
+        },
+        "delta_regret": -0.030194104960460155
+      },
+      "hedgerow-country": {
+        "episodes": 525,
+        "maps": 2,
+        "weight_mass": 0.004583333333333862,
+        "incumbent": {
+          "regret": 1.0122968758488187,
+          "selected_pct": 1.8292298550925394
+        },
+        "new": {
+          "regret": 1.049106239064546,
+          "selected_pct": 2.0592883751908357
+        },
+        "delta_regret": 0.036809363215727364
+      },
+      "hidden-oasis": {
+        "episodes": 653,
+        "maps": 3,
+        "weight_mass": 0.008125000000000934,
+        "incumbent": {
+          "regret": 3.6728569080295412,
+          "selected_pct": 9.539588528989809
+        },
+        "new": {
+          "regret": 3.6728569080295412,
+          "selected_pct": 9.539588528989809
+        },
+        "delta_regret": 0.0
+      },
+      "hilbert-river": {
+        "episodes": 293,
+        "maps": 1,
+        "weight_mass": 0.0031250000000003753,
+        "incumbent": {
+          "regret": 1.5572916666666665,
+          "selected_pct": 1.5625000000000004
+        },
+        "new": {
+          "regret": 1.5572916666666665,
+          "selected_pct": 1.5625000000000004
+        },
+        "delta_regret": 0.0
+      },
+      "hills": {
+        "episodes": 548,
+        "maps": 3,
+        "weight_mass": 0.010833333333334628,
+        "incumbent": {
+          "regret": 2.4533421386940883,
+          "selected_pct": 11.155171662441985
+        },
+        "new": {
+          "regret": 2.5258863162613987,
+          "selected_pct": 11.595068018564385
+        },
+        "delta_regret": 0.07254417756731035
+      },
+      "honeycomb-isle": {
+        "episodes": 2359,
+        "maps": 7,
+        "weight_mass": 0.02583333333333636,
+        "incumbent": {
+          "regret": 2.027637499212863,
+          "selected_pct": 3.9081253576916373
+        },
+        "new": {
+          "regret": 2.038095892666403,
+          "selected_pct": 3.9734903167762634
+        },
+        "delta_regret": 0.010458393453539827
+      },
+      "hungry-marches": {
+        "episodes": 876,
+        "maps": 3,
+        "weight_mass": 0.0077083333333341966,
+        "incumbent": {
+          "regret": 3.590097239262576,
+          "selected_pct": 7.1999507074493305
+        },
+        "new": {
+          "regret": 3.665991049333601,
+          "selected_pct": 7.50536810147432
+        },
+        "delta_regret": 0.07589381007102514
+      },
+      "islands": {
+        "episodes": 4532,
+        "maps": 13,
+        "weight_mass": 0.034508928571432854,
+        "incumbent": {
+          "regret": 6.688386867702638,
+          "selected_pct": 13.037453733176962
+        },
+        "new": {
+          "regret": 6.686470735931608,
+          "selected_pct": 13.35204545419934
+        },
+        "delta_regret": -0.0019161317710301162
+      },
+      "isles": {
+        "episodes": 944,
+        "maps": 5,
+        "weight_mass": 0.023660714285717158,
+        "incumbent": {
+          "regret": 2.0669583069398043,
+          "selected_pct": 8.761856860601798
+        },
+        "new": {
+          "regret": 2.0853566265550922,
+          "selected_pct": 8.900099082087861
+        },
+        "delta_regret": 0.018398319615287928
+      },
+      "karst-towers": {
+        "episodes": 342,
+        "maps": 5,
+        "weight_mass": 0.013958333333334955,
+        "incumbent": {
+          "regret": 3.1046085901221985,
+          "selected_pct": 0.971080426743289
+        },
+        "new": {
+          "regret": 3.136912107500343,
+          "selected_pct": 1.2267948615622015
+        },
+        "delta_regret": 0.03230351737814452
+      },
+      "last-treeline": {
+        "episodes": 580,
+        "maps": 2,
+        "weight_mass": 0.005000000000000572,
+        "incumbent": {
+          "regret": 1.6521464396221606,
+          "selected_pct": 3.1994657586447954
+        },
+        "new": {
+          "regret": 1.7203282578039787,
+          "selected_pct": 3.6256021222811587
+        },
+        "delta_regret": 0.06818181818181812
+      },
+      "lava-shield": {
+        "episodes": 115,
+        "maps": 1,
+        "weight_mass": 0.0020833333333335766,
+        "incumbent": {
+          "regret": 1.3715486194477786,
+          "selected_pct": 4.6968787515005985
+        },
+        "new": {
+          "regret": 1.3715486194477786,
+          "selected_pct": 4.6968787515005985
+        },
+        "delta_regret": 0.0
+      },
+      "locust": {
+        "episodes": 1023,
+        "maps": 4,
+        "weight_mass": 0.012291666666668031,
+        "incumbent": {
+          "regret": 3.9251259908894816,
+          "selected_pct": 6.290187174803003
+        },
+        "new": {
+          "regret": 3.8728699601582792,
+          "selected_pct": 6.040572595661645
+        },
+        "delta_regret": -0.05225603073120233
+      },
+      "marchland": {
+        "episodes": 1256,
+        "maps": 5,
+        "weight_mass": 0.017083333333335202,
+        "incumbent": {
+          "regret": 3.5314033228029413,
+          "selected_pct": 11.64756241641826
+        },
+        "new": {
+          "regret": 3.6083974251886466,
+          "selected_pct": 12.143527719979588
+        },
+        "delta_regret": 0.07699410238570525
+      },
+      "maze": {
+        "episodes": 1994,
+        "maps": 6,
+        "weight_mass": 0.017202380952383068,
+        "incumbent": {
+          "regret": 6.077450573119268,
+          "selected_pct": 6.153290728652204
+        },
+        "new": {
+          "regret": 6.038905505863206,
+          "selected_pct": 6.107848230228985
+        },
+        "delta_regret": -0.038545067256062104
+      },
+      "old-growth": {
+        "episodes": 1401,
+        "maps": 4,
+        "weight_mass": 0.01958333333333549,
+        "incumbent": {
+          "regret": 6.431765787977242,
+          "selected_pct": 12.494407789496877
+        },
+        "new": {
+          "regret": 6.3068685388770644,
+          "selected_pct": 12.63913085881444
+        },
+        "delta_regret": -0.12489724910017763
+      },
+      "old-town": {
+        "episodes": 1042,
+        "maps": 3,
+        "weight_mass": 0.016785714285716215,
+        "incumbent": {
+          "regret": 1.572951416180773,
+          "selected_pct": 2.9580686680225217
+        },
+        "new": {
+          "regret": 1.5777558087682815,
+          "selected_pct": 2.8980137606786647
+        },
+        "delta_regret": 0.0048043925875085325
+      },
+      "orchard-commons": {
+        "episodes": 310,
+        "maps": 2,
+        "weight_mass": 0.009375000000001108,
+        "incumbent": {
+          "regret": 1.1581305633937216,
+          "selected_pct": 4.327962485857223
+        },
+        "new": {
+          "regret": 1.1581305633937216,
+          "selected_pct": 4.327962485857223
+        },
+        "delta_regret": 0.0
+      },
+      "plantations": {
+        "episodes": 1591,
+        "maps": 6,
+        "weight_mass": 0.014702380952382962,
+        "incumbent": {
+          "regret": 2.4023888780762808,
+          "selected_pct": 8.464335823556631
+        },
+        "new": {
+          "regret": 2.437732391610859,
+          "selected_pct": 8.685232783147743
+        },
+        "delta_regret": 0.0353435135345781
+      },
+      "polder": {
+        "episodes": 1457,
+        "maps": 7,
+        "weight_mass": 0.02395833333333628,
+        "incumbent": {
+          "regret": 1.5968516468096507,
+          "selected_pct": 6.54614741650885
+        },
+        "new": {
+          "regret": 1.575872418808765,
+          "selected_pct": 6.666976797312177
+        },
+        "delta_regret": -0.020979228000885808
+      },
+      "portage-lakes": {
+        "episodes": 1105,
+        "maps": 6,
+        "weight_mass": 0.020625000000002485,
+        "incumbent": {
+          "regret": 1.59051306098841,
+          "selected_pct": 4.213552198327091
+        },
+        "new": {
+          "regret": 1.6159724046295718,
+          "selected_pct": 3.8681654893040185
+        },
+        "delta_regret": 0.02545934364116187
+      },
+      "rain-shadow": {
+        "episodes": 1289,
+        "maps": 8,
+        "weight_mass": 0.022708333333336175,
+        "incumbent": {
+          "regret": 4.253786732636768,
+          "selected_pct": 1.903303980884255
+        },
+        "new": {
+          "regret": 4.260168862672667,
+          "selected_pct": 1.9431922936086268
+        },
+        "delta_regret": 0.006382130035898825
+      },
+      "rice-terraces": {
+        "episodes": 236,
+        "maps": 3,
+        "weight_mass": 0.010833333333334617,
+        "incumbent": {
+          "regret": 1.2255633255633256,
+          "selected_pct": 2.1901709401709395
+        },
+        "new": {
+          "regret": 1.2255633255633256,
+          "selected_pct": 2.1901709401709395
+        },
+        "delta_regret": 0.0
+      },
+      "ring-world": {
+        "episodes": 46,
+        "maps": 1,
+        "weight_mass": 0.003125000000000367,
+        "incumbent": {
+          "regret": 0.0,
+          "selected_pct": 0.0
+        },
+        "new": {
+          "regret": 0.0,
+          "selected_pct": 0.0
+        },
+        "delta_regret": 0.0
+      },
+      "river": {
+        "episodes": 1819,
+        "maps": 7,
+        "weight_mass": 0.020654761904764438,
+        "incumbent": {
+          "regret": 2.5855792643311593,
+          "selected_pct": 6.86913292156245
+        },
+        "new": {
+          "regret": 2.5634193285476,
+          "selected_pct": 6.730633322915206
+        },
+        "delta_regret": -0.022159935783559348
+      },
+      "rugged-archipelago": {
+        "episodes": 1265,
+        "maps": 5,
+        "weight_mass": 0.016562500000001645,
+        "incumbent": {
+          "regret": 6.24285820115087,
+          "selected_pct": 12.140138971644138
+        },
+        "new": {
+          "regret": 6.113840698566197,
+          "selected_pct": 12.154163043063257
+        },
+        "delta_regret": -0.1290175025846736
+      },
+      "savannah": {
+        "episodes": 1464,
+        "maps": 6,
+        "weight_mass": 0.021250000000002472,
+        "incumbent": {
+          "regret": 2.9681271228438852,
+          "selected_pct": 7.142795136059883
+        },
+        "new": {
+          "regret": 2.97181836404948,
+          "selected_pct": 7.391070586191466
+        },
+        "delta_regret": 0.0036912412055949417
+      },
+      "shattered-coast": {
+        "episodes": 512,
+        "maps": 5,
+        "weight_mass": 0.01544642857143043,
+        "incumbent": {
+          "regret": 1.9601323094480505,
+          "selected_pct": 2.517253113088779
+        },
+        "new": {
+          "regret": 2.0142293618000924,
+          "selected_pct": 2.8530550821113825
+        },
+        "delta_regret": 0.054097052352041874
+      },
+      "sierpinski-gardens": {
+        "episodes": 182,
+        "maps": 1,
+        "weight_mass": 0.002083333333333579,
+        "incumbent": {
+          "regret": 2.011237406354947,
+          "selected_pct": 5.592870059416171
+        },
+        "new": {
+          "regret": 1.9606044949625419,
+          "selected_pct": 5.2764143632136395
+        },
+        "delta_regret": -0.05063291139240511
+      },
+      "spider-web": {
+        "episodes": 1655,
+        "maps": 11,
+        "weight_mass": 0.03595238095238501,
+        "incumbent": {
+          "regret": 2.919793555838882,
+          "selected_pct": 3.610490806681947
+        },
+        "new": {
+          "regret": 2.401101203599941,
+          "selected_pct": 3.7092158832760265
+        },
+        "delta_regret": -0.5186923522389408
+      },
+      "stone-highlands": {
+        "episodes": 2311,
+        "maps": 12,
+        "weight_mass": 0.04011904761905261,
+        "incumbent": {
+          "regret": 2.4229893415691475,
+          "selected_pct": 4.191524643661168
+        },
+        "new": {
+          "regret": 2.359091447956315,
+          "selected_pct": 3.7998903061081655
+        },
+        "delta_regret": -0.06389789361283249
+      },
+      "swamp": {
+        "episodes": 679,
+        "maps": 5,
+        "weight_mass": 0.012514880952382476,
+        "incumbent": {
+          "regret": 2.917050218620466,
+          "selected_pct": 4.959465636694911
+        },
+        "new": {
+          "regret": 2.917050218620466,
+          "selected_pct": 4.959465636694911
+        },
+        "delta_regret": 0.0
+      },
+      "switchbacks": {
+        "episodes": 52,
+        "maps": 2,
+        "weight_mass": 0.006666666666667454,
+        "incumbent": {
+          "regret": 0.23148148148148145,
+          "selected_pct": 0.0
+        },
+        "new": {
+          "regret": 0.23148148148148145,
+          "selected_pct": 0.0
+        },
+        "delta_regret": 0.0
+      },
+      "tidal-flats": {
+        "episodes": 685,
+        "maps": 4,
+        "weight_mass": 0.010014880952382127,
+        "incumbent": {
+          "regret": 0.6790655342707149,
+          "selected_pct": 0.9996229911257962
+        },
+        "new": {
+          "regret": 0.6946673173316361,
+          "selected_pct": 1.1110642987038053
+        },
+        "delta_regret": 0.015601783060921193
+      },
+      "watershed": {
+        "episodes": 2352,
+        "maps": 9,
+        "weight_mass": 0.02252976190476446,
+        "incumbent": {
+          "regret": 3.8893669839773604,
+          "selected_pct": 4.093262292926362
+        },
+        "new": {
+          "regret": 4.031916424100337,
+          "selected_pct": 4.928215857573974
+        },
+        "delta_regret": 0.14254944012297655
+      },
+      "who-ate-the-map": {
+        "episodes": 917,
+        "maps": 4,
+        "weight_mass": 0.011875000000001485,
+        "incumbent": {
+          "regret": 2.8288931308768213,
+          "selected_pct": 7.16600852214261
+        },
+        "new": {
+          "regret": 2.8565233953491913,
+          "selected_pct": 7.233046747075572
+        },
+        "delta_regret": 0.027630264472370047
+      }
+    },
+    "dimensions": {
+      "128x128": {
+        "episodes": 10608,
+        "maps": 38,
+        "weight_mass": 0.11973214285715811,
+        "incumbent": {
+          "regret": 3.1655600866096836,
+          "selected_pct": 7.535668482790536
+        },
+        "new": {
+          "regret": 3.163608442552446,
+          "selected_pct": 7.621040047407836
+        },
+        "delta_regret": -0.0019516440572373561
+      },
+      "128x256": {
+        "episodes": 8435,
+        "maps": 32,
+        "weight_mass": 0.10421130952382739,
+        "incumbent": {
+          "regret": 2.997717492220214,
+          "selected_pct": 5.800353607750608
+        },
+        "new": {
+          "regret": 3.021162408398153,
+          "selected_pct": 6.027143307269524
+        },
+        "delta_regret": 0.023444916177938868
+      },
+      "128x64": {
+        "episodes": 2725,
+        "maps": 13,
+        "weight_mass": 0.03982142857143348,
+        "incumbent": {
+          "regret": 2.363525098802668,
+          "selected_pct": 4.819182914932655
+        },
+        "new": {
+          "regret": 2.460885796075723,
+          "selected_pct": 5.309954053817435
+        },
+        "delta_regret": 0.09736069727305496
+      },
+      "256x128": {
+        "episodes": 6900,
+        "maps": 27,
+        "weight_mass": 0.08523809523811134,
+        "incumbent": {
+          "regret": 2.831693067575754,
+          "selected_pct": 5.399488159589113
+        },
+        "new": {
+          "regret": 2.6299629966638656,
+          "selected_pct": 5.59728277112718
+        },
+        "delta_regret": -0.20173007091188833
+      },
+      "256x256": {
+        "episodes": 10761,
+        "maps": 53,
+        "weight_mass": 0.17974702380954127,
+        "incumbent": {
+          "regret": 3.5086971760093366,
+          "selected_pct": 6.086338991929539
+        },
+        "new": {
+          "regret": 3.502567450351599,
+          "selected_pct": 6.130581145126075
+        },
+        "delta_regret": -0.006129725657737506
+      },
+      "256x512": {
+        "episodes": 6735,
+        "maps": 36,
+        "weight_mass": 0.12424107142858419,
+        "incumbent": {
+          "regret": 3.047445695539646,
+          "selected_pct": 4.798254122291381
+        },
+        "new": {
+          "regret": 3.0673430064085068,
+          "selected_pct": 4.768109645848477
+        },
+        "delta_regret": 0.019897310868860707
+      },
+      "512x256": {
+        "episodes": 5939,
+        "maps": 43,
+        "weight_mass": 0.12840773809525544,
+        "incumbent": {
+          "regret": 1.900992200091944,
+          "selected_pct": 3.085622350080079
+        },
+        "new": {
+          "regret": 1.8885885687464317,
+          "selected_pct": 3.0781641445222516
+        },
+        "delta_regret": -0.012403631345512256
+      },
+      "512x512": {
+        "episodes": 10929,
+        "maps": 50,
+        "weight_mass": 0.16122023809525607,
+        "incumbent": {
+          "regret": 2.3803854032483254,
+          "selected_pct": 5.309862244126622
+        },
+        "new": {
+          "regret": 2.4227067305654426,
+          "selected_pct": 5.3648124907848995
+        },
+        "delta_regret": 0.04232132731711724
+      },
+      "64x128": {
+        "episodes": 2834,
+        "maps": 13,
+        "weight_mass": 0.03244047619047957,
+        "incumbent": {
+          "regret": 4.390089373943496,
+          "selected_pct": 8.272852142308027
+        },
+        "new": {
+          "regret": 4.430605578286181,
+          "selected_pct": 8.959202736586791
+        },
+        "delta_regret": 0.040516204342684325
+      },
+      "64x64": {
+        "episodes": 1152,
+        "maps": 10,
+        "weight_mass": 0.024940476190479163,
+        "incumbent": {
+          "regret": 3.6076468033089237,
+          "selected_pct": 2.7106049357785396
+        },
+        "new": {
+          "regret": 3.031552488401266,
+          "selected_pct": 3.131805203096363
+        },
+        "delta_regret": -0.5760943149076576
+      }
+    },
+    "family": {
+      "clear": {
+        "episodes": 20591,
+        "maps": 313,
+        "weight_mass": 0.26696304563494144,
+        "incumbent": {
+          "regret": 1.7060264066888686,
+          "selected_pct": 3.5438039137873365
+        },
+        "new": {
+          "regret": 1.7183662429633724,
+          "selected_pct": 3.5036642899019523
+        },
+        "delta_regret": 0.012339836274503746
+      },
+      "forbidden": {
+        "episodes": 4437,
+        "maps": 287,
+        "weight_mass": 0.23401661706351554,
+        "incumbent": {
+          "regret": 0.0,
+          "selected_pct": 0.0
+        },
+        "new": {
+          "regret": 0.0,
+          "selected_pct": 0.0
+        },
+        "delta_regret": 0.0
+      },
+      "guard": {
+        "episodes": 15943,
+        "maps": 278,
+        "weight_mass": 0.22893229166669593,
+        "incumbent": {
+          "regret": 1.0355915388730481,
+          "selected_pct": 6.237804566417567
+        },
+        "new": {
+          "regret": 1.0687504877913159,
+          "selected_pct": 6.449181452884453
+        },
+        "delta_regret": 0.03315894891826776
+      },
+      "materials": {
+        "episodes": 26047,
+        "maps": 315,
+        "weight_mass": 0.2700880456349428,
+        "incumbent": {
+          "regret": 8.160054972335944,
+          "selected_pct": 11.341372264904853
+        },
+        "new": {
+          "regret": 8.05472993097951,
+          "selected_pct": 11.628176910315888
+        },
+        "delta_regret": -0.1053250413564335
+      }
+    },
+    "age_bucket": {
+      "0-31": {
+        "episodes": 17156,
+        "maps": 303,
+        "weight_mass": 0.2861208870306499,
+        "incumbent": {
+          "regret": 2.775977937317559,
+          "selected_pct": 4.285245936081
+        },
+        "new": {
+          "regret": 2.759856868835067,
+          "selected_pct": 4.186720326482198
+        },
+        "delta_regret": -0.01612106848249173
+      },
+      "128-511": {
+        "episodes": 15661,
+        "maps": 315,
+        "weight_mass": 0.24069637555146828,
+        "incumbent": {
+          "regret": 3.4032873296216786,
+          "selected_pct": 5.70505079213492
+        },
+        "new": {
+          "regret": 3.412651148678809,
+          "selected_pct": 5.888778776452025
+        },
+        "delta_regret": 0.009363819057130573
+      },
+      "32-127": {
+        "episodes": 14854,
+        "maps": 309,
+        "weight_mass": 0.22111621753784852,
+        "incumbent": {
+          "regret": 3.828411288657744,
+          "selected_pct": 5.272795090680598
+        },
+        "new": {
+          "regret": 3.7081238549501823,
+          "selected_pct": 5.304911643717815
+        },
+        "delta_regret": -0.12028743370756168
+      },
+      "4096+": {
+        "episodes": 7243,
+        "maps": 154,
+        "weight_mass": 0.08209122614220188,
+        "incumbent": {
+          "regret": 0.7955289317789667,
+          "selected_pct": 3.6739687374174905
+        },
+        "new": {
+          "regret": 0.8613899442367973,
+          "selected_pct": 4.104325074188848
+        },
+        "delta_regret": 0.0658610124578306
+      },
+      "512-4095": {
+        "episodes": 12104,
+        "maps": 307,
+        "weight_mass": 0.16997529373793493,
+        "incumbent": {
+          "regret": 2.1838802422715395,
+          "selected_pct": 8.062843127837914
+        },
+        "new": {
+          "regret": 2.2191090565796463,
+          "selected_pct": 8.396275760913358
+        },
+        "delta_regret": 0.03522881430810676
+      }
+    },
+    "cohort": {
+      "unified-h128-round001-bootstrap": {
+        "episodes": 5362,
+        "maps": 25,
+        "weight_mass": 0.10312500000000746,
+        "incumbent": {
+          "regret": 2.4982226016246347,
+          "selected_pct": 4.553722077922779
+        },
+        "new": {
+          "regret": 2.5305656857619923,
+          "selected_pct": 4.58104328403749
+        },
+        "delta_regret": 0.032343084137357536
+      },
+      "unified-h128-round001-candidate-gen001": {
+        "episodes": 8553,
+        "maps": 38,
+        "weight_mass": 0.1000000000000124,
+        "incumbent": {
+          "regret": 3.4133593367482846,
+          "selected_pct": 8.26603668442556
+        },
+        "new": {
+          "regret": 3.4875714791970043,
+          "selected_pct": 8.76316823580718
+        },
+        "delta_regret": 0.07421214244871965
+      },
+      "unified-h128-round002-candidate-gen002-refit256": {
+        "episodes": 9169,
+        "maps": 36,
+        "weight_mass": 0.10000000000000989,
+        "incumbent": {
+          "regret": 4.936158994766172,
+          "selected_pct": 11.257692042737858
+        },
+        "new": {
+          "regret": 4.9252551718454445,
+          "selected_pct": 11.4317056705597
+        },
+        "delta_regret": -0.01090382292072789
+      },
+      "unified-h128-round002-exploration-seed181102": {
+        "episodes": 4585,
+        "maps": 21,
+        "weight_mass": 0.10312500000001121,
+        "incumbent": {
+          "regret": 2.302297651806619,
+          "selected_pct": 6.220709036490901
+        },
+        "new": {
+          "regret": 2.318255009891118,
+          "selected_pct": 6.308898566754129
+        },
+        "delta_regret": 0.01595735808449872
+      },
+      "unified-h128-round003-candidate-gen003-refit512": {
+        "episodes": 8820,
+        "maps": 33,
+        "weight_mass": 0.10000000000001068,
+        "incumbent": {
+          "regret": 3.000974284777465,
+          "selected_pct": 7.471812595527788
+        },
+        "new": {
+          "regret": 3.064651397729633,
+          "selected_pct": 7.726559917570622
+        },
+        "delta_regret": 0.06367711295216782
+      },
+      "unified-h128-round003-exploration-seed181103": {
+        "episodes": 8210,
+        "maps": 42,
+        "weight_mass": 0.10312500000001348,
+        "incumbent": {
+          "regret": 2.5492154813613754,
+          "selected_pct": 5.752301112284856
+        },
+        "new": {
+          "regret": 2.565444045024655,
+          "selected_pct": 5.811138723465508
+        },
+        "delta_regret": 0.016228563663279516
+      },
+      "unified-h128-round004-candidate-gen004-a16-refit768-remote-only": {
+        "episodes": 6046,
+        "maps": 34,
+        "weight_mass": 0.10000000000001363,
+        "incumbent": {
+          "regret": 2.9567961713907494,
+          "selected_pct": 1.4607901175640376
+        },
+        "new": {
+          "regret": 2.945377945697581,
+          "selected_pct": 1.516655670091087
+        },
+        "delta_regret": -0.011418225693168527
+      },
+      "unified-h128-round004-exploration-seed181104-remote-only-user-override": {
+        "episodes": 4267,
+        "maps": 24,
+        "weight_mass": 0.08750000000000914,
+        "incumbent": {
+          "regret": 1.7148600243425893,
+          "selected_pct": 3.303519031001979
+        },
+        "new": {
+          "regret": 1.5264353975143197,
+          "selected_pct": 3.1922809609911376
+        },
+        "delta_regret": -0.18842462682826966
+      },
+      "unified-h128-round005-candidate-gen005-a16-refit1024-remote-only": {
+        "episodes": 5806,
+        "maps": 28,
+        "weight_mass": 0.10000000000001279,
+        "incumbent": {
+          "regret": 3.1743224926657607,
+          "selected_pct": 2.4367726597882258
+        },
+        "new": {
+          "regret": 3.1857391991781943,
+          "selected_pct": 2.4223282433347135
+        },
+        "delta_regret": 0.011416706512433539
+      },
+      "unified-h128-round005-exploration-incumbent-e1-a16-remote-only": {
+        "episodes": 6200,
+        "maps": 34,
+        "weight_mass": 0.10312500000001101,
+        "incumbent": {
+          "regret": 2.330247482419381,
+          "selected_pct": 3.438361833380165
+        },
+        "new": {
+          "regret": 2.1321636971960642,
+          "selected_pct": 3.5368830357192333
+        },
+        "delta_regret": -0.1980837852233166
+      }
+    },
+    "trajectory_status": {
+      "completed": {
+        "episodes": 28552,
+        "maps": 115,
+        "weight_mass": 0.35089285714290436,
+        "incumbent": {
+          "regret": 2.8720699413569193,
+          "selected_pct": 5.970978179056585
+        },
+        "new": {
+          "regret": 2.8540884493785974,
+          "selected_pct": 6.220134637846015
+        },
+        "delta_regret": -0.017981491978321884
+      },
+      "user-censored": {
+        "episodes": 38466,
+        "maps": 200,
+        "weight_mass": 0.64910714285724,
+        "incumbent": {
+          "regret": 2.909644182144864,
+          "selected_pct": 5.148757171682139
+        },
+        "new": {
+          "regret": 2.8923095661810203,
+          "selected_pct": 5.191447324677589
+        },
+        "delta_regret": -0.01733461596384389
+      }
+    }
+  },
+  "separate_outcomes": {
+    "materials": {
+      "episodes": 27598,
+      "measured": true,
+      "scope": "possibly-overlapping-counterfactual-episode-queries",
+      "defer_false_unreachable": {
+        "events": 3160,
+        "denominator": "queries",
+        "weighted_rate": 0.005209449900198266
+      },
+      "refresh_false_unreachable": {
+        "events": 4125,
+        "denominator": "queries",
+        "weighted_rate": 0.0073097563352243515
+      },
+      "defer_false_reachable": {
+        "events": 23975,
+        "denominator": "queries",
+        "weighted_rate": 0.04837992930896231
+      },
+      "refresh_false_reachable": {
+        "events": 18335,
+        "denominator": "queries",
+        "weighted_rate": 0.03666349288104249
+      },
+      "defer_stalls": {
+        "events": 18967,
+        "denominator": "queries",
+        "weighted_rate": 0.026157578522227633
+      },
+      "refresh_stalls": {
+        "events": 18516,
+        "denominator": "queries",
+        "weighted_rate": 0.025317557195344707
+      },
+      "defer_invalid_goals": {
+        "events": 3645,
+        "denominator": "queries",
+        "weighted_rate": 0.0063192670173444244
+      },
+      "refresh_invalid_goals": {
+        "events": 2086,
+        "denominator": "queries",
+        "weighted_rate": 0.0032607988635965186
+      },
+      "defer_missed_moves": {
+        "events": 14794,
+        "denominator": "queries",
+        "weighted_rate": 0.022944991682312222
+      },
+      "refresh_missed_moves": {
+        "events": 13534,
+        "denominator": "queries",
+        "weighted_rate": 0.02109203193566208
+      },
+      "defer_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "refresh_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "defer_planning_false_negative": {
+        "events": 338052,
+        "denominator": "planning_queries",
+        "weighted_rate": 0.0115577592536419
+      },
+      "defer_planning_false_positive": {
+        "events": 275862,
+        "denominator": "planning_queries",
+        "weighted_rate": 0.009338177532323461
+      },
+      "refresh_planning_false_negative": {
+        "events": 358362,
+        "denominator": "planning_queries",
+        "weighted_rate": 0.012883357335934893
+      },
+      "refresh_planning_false_positive": {
+        "events": 204832,
+        "denominator": "planning_queries",
+        "weighted_rate": 0.006888482871614429
+      },
+      "guard_balance_queries": 0
+    },
+    "markets": {
+      "episodes": 0,
+      "measured": false
+    },
+    "guard": {
+      "episodes": 15943,
+      "measured": true,
+      "scope": "possibly-overlapping-counterfactual-episode-queries",
+      "defer_false_unreachable": {
+        "events": 479,
+        "denominator": "queries",
+        "weighted_rate": 0.0008913896644618191
+      },
+      "refresh_false_unreachable": {
+        "events": 421,
+        "denominator": "queries",
+        "weighted_rate": 0.0008334168118661196
+      },
+      "defer_false_reachable": {
+        "events": 527,
+        "denominator": "queries",
+        "weighted_rate": 0.0008467900999934683
+      },
+      "refresh_false_reachable": {
+        "events": 493,
+        "denominator": "queries",
+        "weighted_rate": 0.0007907969398059521
+      },
+      "defer_stalls": {
+        "events": 654,
+        "denominator": "queries",
+        "weighted_rate": 0.0007028664286173097
+      },
+      "refresh_stalls": {
+        "events": 647,
+        "denominator": "queries",
+        "weighted_rate": 0.0007045493865875996
+      },
+      "defer_invalid_goals": {
+        "events": 388,
+        "denominator": "queries",
+        "weighted_rate": 0.0006616016654726356
+      },
+      "refresh_invalid_goals": {
+        "events": 376,
+        "denominator": "queries",
+        "weighted_rate": 0.0006467565625304838
+      },
+      "defer_missed_moves": {
+        "events": 806,
+        "denominator": "queries",
+        "weighted_rate": 0.001378543871180395
+      },
+      "refresh_missed_moves": {
+        "events": 736,
+        "denominator": "queries",
+        "weighted_rate": 0.001316303031001596
+      },
+      "defer_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "refresh_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "defer_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "defer_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "guard_balance_queries": 0
+    },
+    "clear": {
+      "episodes": 20591,
+      "measured": true,
+      "scope": "possibly-overlapping-counterfactual-episode-queries",
+      "defer_false_unreachable": {
+        "events": 17946,
+        "denominator": "queries",
+        "weighted_rate": 0.02131696977022964
+      },
+      "refresh_false_unreachable": {
+        "events": 11790,
+        "denominator": "queries",
+        "weighted_rate": 0.015137722358330235
+      },
+      "defer_false_reachable": {
+        "events": 23014,
+        "denominator": "queries",
+        "weighted_rate": 0.03679563580486773
+      },
+      "refresh_false_reachable": {
+        "events": 20761,
+        "denominator": "queries",
+        "weighted_rate": 0.030309505954384492
+      },
+      "defer_stalls": {
+        "events": 1566,
+        "denominator": "queries",
+        "weighted_rate": 0.002009751296974686
+      },
+      "refresh_stalls": {
+        "events": 1607,
+        "denominator": "queries",
+        "weighted_rate": 0.0018980036330095136
+      },
+      "defer_invalid_goals": {
+        "events": 2730,
+        "denominator": "queries",
+        "weighted_rate": 0.00365552809119632
+      },
+      "refresh_invalid_goals": {
+        "events": 1980,
+        "denominator": "queries",
+        "weighted_rate": 0.0024923564593892092
+      },
+      "defer_missed_moves": {
+        "events": 19193,
+        "denominator": "queries",
+        "weighted_rate": 0.022942452140338982
+      },
+      "refresh_missed_moves": {
+        "events": 12886,
+        "denominator": "queries",
+        "weighted_rate": 0.0164792344784333
+      },
+      "defer_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "refresh_escape_failures": {
+        "events": 0,
+        "denominator": "queries",
+        "weighted_rate": 0.0
+      },
+      "defer_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "defer_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "guard_balance_queries": 0
+    },
+    "forbidden": {
+      "episodes": 4437,
+      "measured": true,
+      "scope": "possibly-overlapping-counterfactual-episode-queries",
+      "defer_false_unreachable": {
+        "events": 23,
+        "denominator": "queries",
+        "weighted_rate": 0.009716387198907385
+      },
+      "refresh_false_unreachable": {
+        "events": 16,
+        "denominator": "queries",
+        "weighted_rate": 0.007302580375143366
+      },
+      "defer_false_reachable": {
+        "events": 2154,
+        "denominator": "queries",
+        "weighted_rate": 0.6690884375793025
+      },
+      "refresh_false_reachable": {
+        "events": 1968,
+        "denominator": "queries",
+        "weighted_rate": 0.606148191260195
+      },
+      "defer_stalls": {
+        "events": 1,
+        "denominator": "queries",
+        "weighted_rate": 0.0006059095299846901
+      },
+      "refresh_stalls": {
+        "events": 1,
+        "denominator": "queries",
+        "weighted_rate": 0.0006059095299846901
+      },
+      "defer_invalid_goals": {
+        "events": 2230,
+        "denominator": "queries",
+        "weighted_rate": 0.7000889675854777
+      },
+      "refresh_invalid_goals": {
+        "events": 2052,
+        "denominator": "queries",
+        "weighted_rate": 0.6387756313021549
+      },
+      "defer_missed_moves": {
+        "events": 23,
+        "denominator": "queries",
+        "weighted_rate": 0.01488969070927118
+      },
+      "refresh_missed_moves": {
+        "events": 30,
+        "denominator": "queries",
+        "weighted_rate": 0.008082397836808492
+      },
+      "defer_escape_failures": {
+        "events": 23,
+        "denominator": "queries",
+        "weighted_rate": 0.01488969070927118
+      },
+      "refresh_escape_failures": {
+        "events": 30,
+        "denominator": "queries",
+        "weighted_rate": 0.008082397836808492
+      },
+      "defer_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "defer_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_negative": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "refresh_planning_false_positive": {
+        "events": 0,
+        "denominator": "planning_queries",
+        "weighted_rate": null
+      },
+      "guard_balance_queries": 0
+    }
+  },
+  "excluded_population": {
+    "unknown_capture": 0,
+    "no_movement_label": 6734,
+    "cold_outcome_measured": false,
+    "cold_note": "No dedicated cold target; unknown captures and no-movement/planning populations are separate, never imputed.",
+    "planning_not_direction_target": true,
+    "stall_rates_scope": "possibly-overlapping-episode-query-outcomes;not-unique-live-game-rate"
+  },
+  "bounds_validated": true,
+  "stable_promotion": false,
+  "spatial_comparison": {
+    "same_rows_weights_threshold": true,
+    "rows": 46638,
+    "maps": 315,
+    "known_materials_clear_only": true,
+    "cv_selected_variant": "directional_counts_fractions",
+    "variants": {
+      "baseline12": {
+        "development_cv_regret": 4.045650730203028,
+        "holdout": {
+          "episodes": 46638,
+          "states": 315,
+          "mae": 14.007495069736414,
+          "mse": 3976.139205119596,
+          "selected_pct": 13.30922694715726,
+          "selected_actual_benefit": 37.954131026292835,
+          "positive_benefit_captured_fraction": 0.659880910349062,
+          "missed_positive_benefit": 3.0986063204725007,
+          "negative_benefit_selected": 0.9603492196535802,
+          "threshold": 16.0,
+          "decision_regret": 4.403662393130793,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 88.0,
+          "false_refresh_pct": 9.412333466553962,
+          "missed_threshold_decision_pct": 4.099134167200806,
+          "absolute_error_p95": 49.549,
+          "absolute_error_p99": 200.417
+        }
+      },
+      "overlap_counts": {
+        "development_cv_regret": 3.9394196564725674,
+        "holdout": {
+          "episodes": 46638,
+          "states": 315,
+          "mae": 13.889641956170667,
+          "mse": 3963.3848699906384,
+          "selected_pct": 13.242032201418267,
+          "selected_actual_benefit": 37.278403847332775,
+          "positive_benefit_captured_fraction": 0.6476409911879129,
+          "missed_positive_benefit": 3.2101163533663715,
+          "negative_benefit_selected": 0.9638223792318981,
+          "threshold": 16.0,
+          "decision_regret": 4.507894426284742,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 88.0,
+          "false_refresh_pct": 9.357614537751257,
+          "missed_threshold_decision_pct": 4.111609984137096,
+          "absolute_error_p95": 49.55,
+          "absolute_error_p99": 199.572
+        }
+      },
+      "overlap_fractions": {
+        "development_cv_regret": 4.05127526111596,
+        "holdout": {
+          "episodes": 46638,
+          "states": 315,
+          "mae": 13.97374037962118,
+          "mse": 3974.5972660227985,
+          "selected_pct": 13.473622585945897,
+          "selected_actual_benefit": 37.43410076744541,
+          "positive_benefit_captured_fraction": 0.6603010318704061,
+          "missed_positive_benefit": 3.094778863440497,
+          "negative_benefit_selected": 0.9718486549480531,
+          "threshold": 16.0,
+          "decision_regret": 4.437637673599445,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 90.0,
+          "false_refresh_pct": 9.51261948140742,
+          "missed_threshold_decision_pct": 4.035024543265627,
+          "absolute_error_p95": 49.239,
+          "absolute_error_p99": 200.446
+        }
+      },
+      "overlap_counts_fractions": {
+        "development_cv_regret": 3.9680371696311973,
+        "holdout": {
+          "episodes": 46638,
+          "states": 315,
+          "mae": 13.874318731832435,
+          "mse": 3956.603319085353,
+          "selected_pct": 13.758661215432383,
+          "selected_actual_benefit": 36.78417421700516,
+          "positive_benefit_captured_fraction": 0.6636171947220008,
+          "missed_positive_benefit": 3.064567436077767,
+          "negative_benefit_selected": 0.9847796267468857,
+          "threshold": 16.0,
+          "decision_regret": 4.465963398753385,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 84.0,
+          "false_refresh_pct": 9.693954738532762,
+          "missed_threshold_decision_pct": 3.931321170904484,
+          "absolute_error_p95": 49.834,
+          "absolute_error_p99": 200.351
+        }
+      },
+      "directional_counts_fractions": {
+        "development_cv_regret": 3.9297229674857364,
+        "holdout": {
+          "episodes": 46638,
+          "states": 315,
+          "mae": 13.891965564043376,
+          "mse": 3945.743149170853,
+          "selected_pct": 13.845337427890033,
+          "selected_actual_benefit": 36.74209677670495,
+          "positive_benefit_captured_fraction": 0.6652256945320111,
+          "missed_positive_benefit": 3.049913428615581,
+          "negative_benefit_selected": 0.9733762688045314,
+          "threshold": 16.0,
+          "decision_regret": 4.453774227342068,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 84.0,
+          "false_refresh_pct": 9.78244502007424,
+          "missed_threshold_decision_pct": 3.933135239988312,
+          "absolute_error_p95": 50.081,
+          "absolute_error_p99": 200.579
+        }
+      }
+    },
+    "incumbent_generic12_same_rows": {
+      "episodes": 46638,
+      "states": 315,
+      "mae": 13.093756586968347,
+      "mse": 4022.124020337998,
+      "selected_pct": 7.7977633174850665,
+      "selected_actual_benefit": 44.505752927304286,
+      "positive_benefit_captured_fraction": 0.4502199169880131,
+      "missed_positive_benefit": 5.008692813564753,
+      "negative_benefit_selected": 0.6312108847361975,
+      "threshold": 16.0,
+      "decision_regret": 5.102776370558113,
+      "decision_regret_p95": 16.0,
+      "decision_regret_p99": 121.0,
+      "false_refresh_pct": 5.482423717491389,
+      "missed_threshold_decision_pct": 5.680688047810426,
+      "absolute_error_p95": 48.176,
+      "absolute_error_p99": 207.055
+    },
+    "new_generic12_same_rows": {
+      "episodes": 46638,
+      "states": 315,
+      "mae": 13.166056421608317,
+      "mse": 4023.891192046098,
+      "selected_pct": 7.907513689796741,
+      "selected_actual_benefit": 44.57095648185818,
+      "positive_benefit_captured_fraction": 0.4572797895987456,
+      "missed_positive_benefit": 4.944374853888342,
+      "negative_benefit_selected": 0.6415276348721957,
+      "threshold": 16.0,
+      "decision_regret": 5.0663352205875665,
+      "decision_regret_p95": 16.0,
+      "decision_regret_p99": 118.0,
+      "false_refresh_pct": 5.566942242934222,
+      "missed_threshold_decision_pct": 5.655456200941587,
+      "absolute_error_p95": 48.325,
+      "absolute_error_p99": 206.676
+    },
+    "production_features_changed": false
+  }
+}

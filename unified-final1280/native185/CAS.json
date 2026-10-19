@@ -1,0 +1,1802 @@
+{
+  "schema": 1,
+  "scope": "Final185 A24/min32/8publication/1024cap native qualification: ordinary Mac/Linux commands/logs,72 Linux focus+17goldens,8runtime/platform raw checksum/save/replay/diagnostic files and exact original inputs. No binaries/dependencies/compiler objects;183 history remains separately preserved.",
+  "logical_files": 299,
+  "unique_objects": 173,
+  "entries": [
+    {
+      "path": "macos185/ENVIRONMENT.json",
+      "sha256": "71dc7accc7d8cc570b65e83ae7b599bde9d17de3aedfe79c2ee610ce60552a34",
+      "bytes": 1757,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/ENVIRONMENT.json"
+    },
+    {
+      "path": "macos185/FROZEN-SOURCE.json",
+      "sha256": "e7f2a7ab70746371cf026d4c6f2af566e5b1d5d5283202cbae8cd84e649800e5",
+      "bytes": 691,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/FROZEN-SOURCE.json"
+    },
+    {
+      "path": "macos185/PREPARATION.json",
+      "sha256": "b0032ad73e2f8571120345f25a0b39e384c7590ac19fd74f879811e258df2ac4",
+      "bytes": 259,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/PREPARATION.json"
+    },
+    {
+      "path": "macos185/cli-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/cli-check.log"
+    },
+    {
+      "path": "macos185/final-release.log",
+      "sha256": "90c181f53cf1527c1cd3c228b6d4dc27e1768cbcf7947d3ac5584e68323fcb97",
+      "bytes": 167669,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/final-release.log"
+    },
+    {
+      "path": "macos185/finish.py",
+      "sha256": "6ee62bb2cedadb075a225c255438f2a28f4067ecafa6bea3c8e6706024ff364e",
+      "bytes": 2143,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/finish.py"
+    },
+    {
+      "path": "macos185/focused.log",
+      "sha256": "8007d07708783c72b15575699e261201d1f3ed24a4ffd1e6cbb96a0799983ae5",
+      "bytes": 8531,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/focused.log"
+    },
+    {
+      "path": "macos185/focused.xml",
+      "sha256": "bd1a05f700ca9868d205c4f8188c49a757f3b078491d445e036553a33efe1828",
+      "bytes": 16537,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/focused.xml"
+    },
+    {
+      "path": "macos185/goldens-update.log",
+      "sha256": "c89c250b68e8593797405cb0a31baac279232331f8c59e510ee807b49289582e",
+      "bytes": 2047,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/goldens-update.log"
+    },
+    {
+      "path": "macos185/goldens-update.xml",
+      "sha256": "6019ad2240091428990bca9b184fb57e6a979d6eb83a26281d3872dd02e076d0",
+      "bytes": 3523,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/goldens-update.xml"
+    },
+    {
+      "path": "macos185/goldens-verify.log",
+      "sha256": "b5a8d2b70a0b0e2b12dca81c8946c2b0786439eeb376f9fb5f1a1ed2321dfebc",
+      "bytes": 2046,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/goldens-verify.log"
+    },
+    {
+      "path": "macos185/goldens-verify.xml",
+      "sha256": "422df259e2b5e4fc12d105aba13b3564b2dd13f52ea5565a9368b13b0b413daa",
+      "bytes": 3517,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/goldens-verify.xml"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/artifacts.json",
+      "sha256": "71c9ae8fdcb9f6493b085eb7e30cfada610555e2e778a41b7039cdad036576c2",
+      "bytes": 380,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/artifacts.json"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/command.json",
+      "sha256": "1c81aa8e77f7f80b3ce214dc73b212bbf2f234b0b3e775a29c1c0409e530b770",
+      "bytes": 747,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/command.json"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/final.game.gz",
+      "sha256": "00df2945417d2efd8473087032bf863c7fa80b1988a4fac959148a943a72ebd5",
+      "bytes": 506140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/final.game.gz"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/game.replay.checksums",
+      "sha256": "4179c3c1adf4d647481bb236b39d59f7bf50079bb86ba8277f1a4b59c53cff22",
+      "bytes": 46084,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/game.replay.checksums"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/result.json",
+      "sha256": "71e10be667feeb4eb1e9779712449916604d4325d6db982331f9c49daf3438a0",
+      "bytes": 17960,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/result.json"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/snapshot.checksums",
+      "sha256": "3e588b01e8e99bbb0ee3640ddb5f2bdca1629dce7a334f6585c4695dbc67a4e8",
+      "bytes": 46,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/snapshot.checksums"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/stderr.log"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/stdout.log",
+      "sha256": "f95ff9056da8cf049d9b408043d5883d33895608cd743640c27f288577422bb2",
+      "bytes": 391,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/stdout.log"
+    },
+    {
+      "path": "macos185/legacy179-normalize185/world.checksums",
+      "sha256": "e247f9ad6f2500cd68055156204079e2bbd75b1b480487f63f63d0fe58c4180f",
+      "bytes": 17,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/legacy179-normalize185/world.checksums"
+    },
+    {
+      "path": "macos185/mature-off/artifacts.json",
+      "sha256": "362b3f255748f9965172578acf1988913a1e5f6ff620357879384ad8d9c0f4e9",
+      "bytes": 529,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/artifacts.json"
+    },
+    {
+      "path": "macos185/mature-off/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "macos185/mature-off/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "macos185/mature-off/command.json",
+      "sha256": "56d27392c17a8283bcae161676980eb0c3c8498915f7b21b2b89602482fc3d7b",
+      "bytes": 709,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/command.json"
+    },
+    {
+      "path": "macos185/mature-off/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/final.game.gz"
+    },
+    {
+      "path": "macos185/mature-off/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/game.replay.checksums"
+    },
+    {
+      "path": "macos185/mature-off/result.json",
+      "sha256": "26ca6985b8d30f06bbc33d2b4fc0b1b7d906918b86b08091c4b09670a798d572",
+      "bytes": 18219,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/result.json"
+    },
+    {
+      "path": "macos185/mature-off/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/snapshot.checksums"
+    },
+    {
+      "path": "macos185/mature-off/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/stderr.log"
+    },
+    {
+      "path": "macos185/mature-off/stdout.log",
+      "sha256": "7ebb324f85498f3e1ea22d4cf11cb32da352dfee3f334d0506d30ecf4678269e",
+      "bytes": 650,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/stdout.log"
+    },
+    {
+      "path": "macos185/mature-off/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-off/world.checksums"
+    },
+    {
+      "path": "macos185/mature-on/artifacts.json",
+      "sha256": "12230d974659a1a10ac44dfadc5e11ff8235f8608a87fff6616d641010d07e98",
+      "bytes": 723,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/artifacts.json"
+    },
+    {
+      "path": "macos185/mature-on/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "macos185/mature-on/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "macos185/mature-on/command.json",
+      "sha256": "566e8d7603349771e2a5c5698554832d15bbfad92a5916215aa9dd00f3a150fa",
+      "bytes": 738,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/command.json"
+    },
+    {
+      "path": "macos185/mature-on/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/final.game.gz"
+    },
+    {
+      "path": "macos185/mature-on/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/game.replay.checksums"
+    },
+    {
+      "path": "macos185/mature-on/gradient-contradictions.csv",
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d",
+      "bytes": 873,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "macos185/mature-on/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/gradient-episodes.csv"
+    },
+    {
+      "path": "macos185/mature-on/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "macos185/mature-on/gradient-quality.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/gradient-quality.csv"
+    },
+    {
+      "path": "macos185/mature-on/result.json",
+      "sha256": "cebd862258f1152aa6ae499fe3ca38dc375f1a0e6e568d38a3a517d8b9838b00",
+      "bytes": 18218,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/result.json"
+    },
+    {
+      "path": "macos185/mature-on/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/snapshot.checksums"
+    },
+    {
+      "path": "macos185/mature-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/stderr.log"
+    },
+    {
+      "path": "macos185/mature-on/stdout.log",
+      "sha256": "d54678fd5415ae06d10be1e0e03a555059cc04d91e4ce5756c1997f92f04bb9d",
+      "bytes": 647,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/stdout.log"
+    },
+    {
+      "path": "macos185/mature-on/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-on/world.checksums"
+    },
+    {
+      "path": "macos185/mature-resumed/artifacts.json",
+      "sha256": "88fa37691da7f64c42459029c5c24571cdd775b7546962fe84055b89a6ec5c85",
+      "bytes": 476,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/artifacts.json"
+    },
+    {
+      "path": "macos185/mature-resumed/checkpoint-18432.game.gz",
+      "sha256": "a7692c9005f905f44b339064faea9c16e791d08b7c0216675ce93f5f228d470a",
+      "bytes": 590029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "macos185/mature-resumed/command.json",
+      "sha256": "bc91f34f5360ebff301d4cc782bbbf3e66fed3d962fb93ab07c0af0b0627ef07",
+      "bytes": 716,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/command.json"
+    },
+    {
+      "path": "macos185/mature-resumed/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/final.game.gz"
+    },
+    {
+      "path": "macos185/mature-resumed/game.replay.checksums",
+      "sha256": "e44642d9712e35aaa2ae9b8da0293c8eb8dcc3b53dd0c91f8ecd96d8f56464c1",
+      "bytes": 25002602,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/game.replay.checksums"
+    },
+    {
+      "path": "macos185/mature-resumed/result.json",
+      "sha256": "faed71d2391b15702fc9d97eb9167c99436265ac039b1c6bf41ee1ce2e069af4",
+      "bytes": 18204,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/result.json"
+    },
+    {
+      "path": "macos185/mature-resumed/snapshot.checksums",
+      "sha256": "1ec49eec9d58822c1ae3c1f24efea786992ac86645cfd4822e7dbb40a8bf642d",
+      "bytes": 11674,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/snapshot.checksums"
+    },
+    {
+      "path": "macos185/mature-resumed/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/stderr.log"
+    },
+    {
+      "path": "macos185/mature-resumed/stdout.log",
+      "sha256": "e68db8129820017748a0c946f2eda3fafeb0ab6468dab4d34ac2250190dc6f24",
+      "bytes": 524,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/stdout.log"
+    },
+    {
+      "path": "macos185/mature-resumed/world.checksums",
+      "sha256": "addd3b12b7bf230e408f997c37888e037200270b07e216e29d9d8cdb8c90117a",
+      "bytes": 8575,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-resumed/world.checksums"
+    },
+    {
+      "path": "macos185/mature-t4-on/artifacts.json",
+      "sha256": "ea2e8a47d1f7f2389b92cff732a1547f01527a48c46ba44894bdc976a3928a2b",
+      "bytes": 723,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/artifacts.json"
+    },
+    {
+      "path": "macos185/mature-t4-on/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "macos185/mature-t4-on/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "macos185/mature-t4-on/command.json",
+      "sha256": "8846518459973d6be18a12740927765c4a8be112e8708894890f8a337139e822",
+      "bytes": 744,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/command.json"
+    },
+    {
+      "path": "macos185/mature-t4-on/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/final.game.gz"
+    },
+    {
+      "path": "macos185/mature-t4-on/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/game.replay.checksums"
+    },
+    {
+      "path": "macos185/mature-t4-on/gradient-contradictions.csv",
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d",
+      "bytes": 873,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "macos185/mature-t4-on/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/gradient-episodes.csv"
+    },
+    {
+      "path": "macos185/mature-t4-on/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "macos185/mature-t4-on/gradient-quality.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/gradient-quality.csv"
+    },
+    {
+      "path": "macos185/mature-t4-on/result.json",
+      "sha256": "757beb9b2b9dd6a8426f99302ea0adbb612c8583407b29bc87b50df72f813527",
+      "bytes": 18221,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/result.json"
+    },
+    {
+      "path": "macos185/mature-t4-on/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/snapshot.checksums"
+    },
+    {
+      "path": "macos185/mature-t4-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/stderr.log"
+    },
+    {
+      "path": "macos185/mature-t4-on/stdout.log",
+      "sha256": "279e971ca63eacd5ad9a2ae51b63991b0d2afefc70904254a28ec8761d3b72a2",
+      "bytes": 656,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/stdout.log"
+    },
+    {
+      "path": "macos185/mature-t4-on/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/mature-t4-on/world.checksums"
+    },
+    {
+      "path": "macos185/qualify.py",
+      "sha256": "21c8869f626fe60699b832b86a954c917d55b5555ff15aa002d85c0d74da47ed",
+      "bytes": 3542,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/qualify.py"
+    },
+    {
+      "path": "macos185/runtime-status.json",
+      "sha256": "978ace5f3c7fed03e82ec4ef3eb9632d61adc408237c2874a1719503b43c8ccf",
+      "bytes": 4312,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/runtime-status.json"
+    },
+    {
+      "path": "macos185/runtime.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/runtime.log"
+    },
+    {
+      "path": "macos185/status.json",
+      "sha256": "5d6fdee2f9abb3c307844957ef323c0355c26e168e55d26dfca4de7043635217",
+      "bytes": 124,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/status.json"
+    },
+    {
+      "path": "macos185/t1-off/artifacts.json",
+      "sha256": "ca00451fdb448304a565c2fb17fc1e55483ea35a7a047125345f667b7941a75f",
+      "bytes": 522,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/artifacts.json"
+    },
+    {
+      "path": "macos185/t1-off/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "macos185/t1-off/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/checkpoint-512.game.gz"
+    },
+    {
+      "path": "macos185/t1-off/command.json",
+      "sha256": "51cdd772c1437b36ef0ce429c1b314fa4ad626f5a45daebec8040b0cd7780473",
+      "bytes": 804,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/command.json"
+    },
+    {
+      "path": "macos185/t1-off/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/final.game.gz"
+    },
+    {
+      "path": "macos185/t1-off/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/game.replay.checksums"
+    },
+    {
+      "path": "macos185/t1-off/result.json",
+      "sha256": "2fcd95de0c8ea8323a1e4a9e25a5edff7f0048faa5990b5762c78d2e971bb4e8",
+      "bytes": 13301,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/result.json"
+    },
+    {
+      "path": "macos185/t1-off/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/snapshot.checksums"
+    },
+    {
+      "path": "macos185/t1-off/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/stderr.log"
+    },
+    {
+      "path": "macos185/t1-off/stdout.log",
+      "sha256": "84f16e3e64d18f41b2e4262c2ad8de407d363fc4cee0861c768c9b84aaae25b3",
+      "bytes": 616,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/stdout.log"
+    },
+    {
+      "path": "macos185/t1-off/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-off/world.checksums"
+    },
+    {
+      "path": "macos185/t1-on/artifacts.json",
+      "sha256": "c163f39b42c96fe8a390ec6894f08ef36a9442e0e441586dc670b6ed74e35204",
+      "bytes": 720,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/artifacts.json"
+    },
+    {
+      "path": "macos185/t1-on/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "macos185/t1-on/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/checkpoint-512.game.gz"
+    },
+    {
+      "path": "macos185/t1-on/command.json",
+      "sha256": "b905ddaec5f184b1b61b83474f4b838c740458759d74f15dd99815baf504c98c",
+      "bytes": 833,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/command.json"
+    },
+    {
+      "path": "macos185/t1-on/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/final.game.gz"
+    },
+    {
+      "path": "macos185/t1-on/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/game.replay.checksums"
+    },
+    {
+      "path": "macos185/t1-on/gradient-contradictions.csv",
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8",
+      "bytes": 357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "macos185/t1-on/gradient-episodes.csv",
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6",
+      "bytes": 2941,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/gradient-episodes.csv"
+    },
+    {
+      "path": "macos185/t1-on/gradient-planning-quality.csv",
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf",
+      "bytes": 264142,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "macos185/t1-on/gradient-quality.csv",
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b",
+      "bytes": 8370,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/gradient-quality.csv"
+    },
+    {
+      "path": "macos185/t1-on/result.json",
+      "sha256": "cd683ab5f32b1a2b96cce713f2b4d8fa7d9076e55e0de3a510df6025155e12e6",
+      "bytes": 13301,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/result.json"
+    },
+    {
+      "path": "macos185/t1-on/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/snapshot.checksums"
+    },
+    {
+      "path": "macos185/t1-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/stderr.log"
+    },
+    {
+      "path": "macos185/t1-on/stdout.log",
+      "sha256": "7cf14d69dacbc00c8b8d782953fbbda2379da8db16b21bb6182f46f029b5ba2f",
+      "bytes": 613,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/stdout.log"
+    },
+    {
+      "path": "macos185/t1-on/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t1-on/world.checksums"
+    },
+    {
+      "path": "macos185/t4-on/artifacts.json",
+      "sha256": "888048f3242962fdf8e9ed8a60a3498c64532e9ced6b9b06db9965c31a776544",
+      "bytes": 720,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/artifacts.json"
+    },
+    {
+      "path": "macos185/t4-on/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "macos185/t4-on/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/checkpoint-512.game.gz"
+    },
+    {
+      "path": "macos185/t4-on/command.json",
+      "sha256": "fa60ea2addb0c19a4307726ca2a143486cba6625fe5b888f7b9c1df42a1c41ff",
+      "bytes": 833,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/command.json"
+    },
+    {
+      "path": "macos185/t4-on/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/final.game.gz"
+    },
+    {
+      "path": "macos185/t4-on/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/game.replay.checksums"
+    },
+    {
+      "path": "macos185/t4-on/gradient-contradictions.csv",
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8",
+      "bytes": 357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "macos185/t4-on/gradient-episodes.csv",
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6",
+      "bytes": 2941,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/gradient-episodes.csv"
+    },
+    {
+      "path": "macos185/t4-on/gradient-planning-quality.csv",
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf",
+      "bytes": 264142,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "macos185/t4-on/gradient-quality.csv",
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b",
+      "bytes": 8370,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/gradient-quality.csv"
+    },
+    {
+      "path": "macos185/t4-on/result.json",
+      "sha256": "a3bdb764b4388f50484b02a38022a984e8293f7c0a743a0bd9480af8d721cabb",
+      "bytes": 13304,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/result.json"
+    },
+    {
+      "path": "macos185/t4-on/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/snapshot.checksums"
+    },
+    {
+      "path": "macos185/t4-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/stderr.log"
+    },
+    {
+      "path": "macos185/t4-on/stdout.log",
+      "sha256": "974be4868041a9cfddda2e1fea70e6304ebcb58f9cf689a183f00ac52225f59e",
+      "bytes": 613,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/stdout.log"
+    },
+    {
+      "path": "macos185/t4-on/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/t4-on/world.checksums"
+    },
+    {
+      "path": "macos185/version-gate.log",
+      "sha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
+      "bytes": 100,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/version-gate.log"
+    },
+    {
+      "path": "linux185/BUILD-PASS.json",
+      "sha256": "9cfc5453dfd332f403b8b67a9f50fb822e400084ce9040acb1e548c4142d866d",
+      "bytes": 774,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/BUILD-PASS.json"
+    },
+    {
+      "path": "linux185/EXPECTED-PRIOR.json",
+      "sha256": "9d9c653fc1c3e25872104d5bf2ce1a252ecb4d2962becfe9e69cbefbd599f09a",
+      "bytes": 1114,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/EXPECTED-PRIOR.json"
+    },
+    {
+      "path": "linux185/FINAL-FIXTURES-READY.json",
+      "sha256": "77b3b7c585825d2c530d9f86e6c3a22a48462e92893e7ef39761a9e77491a08b",
+      "bytes": 1709,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/FINAL-FIXTURES-READY.json"
+    },
+    {
+      "path": "linux185/FINAL-FIXTURES-READY.pending.json",
+      "sha256": "77b3b7c585825d2c530d9f86e6c3a22a48462e92893e7ef39761a9e77491a08b",
+      "bytes": 1709,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/FINAL-FIXTURES-READY.pending.json"
+    },
+    {
+      "path": "linux185/FROZEN-SOURCE.json",
+      "sha256": "e7f2a7ab70746371cf026d4c6f2af566e5b1d5d5283202cbae8cd84e649800e5",
+      "bytes": 691,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/FROZEN-SOURCE.json"
+    },
+    {
+      "path": "linux185/PREPARATION.json",
+      "sha256": "e22f6b2cc3d446c62a9b318e22b1dd59ddce213d813da4102f02f65991ff67d0",
+      "bytes": 2623,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/PREPARATION.json"
+    },
+    {
+      "path": "linux185/PRESERVED-184.json",
+      "sha256": "7927f125c9c1e0a13f11e2e8029170d676c14a32960cc85789f9f4ba32328f13",
+      "bytes": 239,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/PRESERVED-184.json"
+    },
+    {
+      "path": "linux185/QUALIFICATION-SUMMARY.json",
+      "sha256": "d55234dc507e648176b67530e6d8ecc00c1195c4dd84fdf55c738c77000f57e5",
+      "bytes": 2572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/QUALIFICATION-SUMMARY.json"
+    },
+    {
+      "path": "linux185/RUNTIME-LAUNCHED.json",
+      "sha256": "ee3fbb2523a10485841348a9bafeef428db9d67b3cf6ee7872c17440b686b3d3",
+      "bytes": 284,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/RUNTIME-LAUNCHED.json"
+    },
+    {
+      "path": "linux185/STATUS.json",
+      "sha256": "552bda257d2fbde624939a7b077813a63328608136b77b1275281d2f98def1af",
+      "bytes": 973,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/STATUS.json"
+    },
+    {
+      "path": "linux185/build-COMMAND.json",
+      "sha256": "f9e0d2d994d00f573e6f6d65819c86b8614c7015f34d7907afa411d5972baaa2",
+      "bytes": 641,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/build-COMMAND.json"
+    },
+    {
+      "path": "linux185/build-qualify.py",
+      "sha256": "b316014547e74d80d32f7b67292b4212cf13143fea67f2873b669d5773e6ddb6",
+      "bytes": 5224,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/build-qualify.py"
+    },
+    {
+      "path": "linux185/build.log",
+      "sha256": "08d8db1623f4b1439fdac1f0d48e9c7b539c8479bccb61cd1aa48d348a9ec12c",
+      "bytes": 2468039,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/build.log"
+    },
+    {
+      "path": "linux185/compare-platforms.py",
+      "sha256": "4bf0dc136fc7c0ef79f98d0749793aad745c1d2721fb8d062caa3b8e7e4c1fa9",
+      "bytes": 1913,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/compare-platforms.py"
+    },
+    {
+      "path": "linux185/focused-COMMAND.json",
+      "sha256": "85c750a0cbed36e3f4705664a4d538bb062604897a16d2bc4183abe9586b4b7b",
+      "bytes": 1619,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-COMMAND.json"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/generic-families-probe.csv",
+      "sha256": "ff893a5dccf7429e4a00bc021bcf92b42fe8060ea236ff18cb75ad0b3364ce6e",
+      "bytes": 522,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/generic-families-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-contradictions.csv",
+      "sha256": "5b3e9bf7a96efc456f7737c226b9a95ac32c28f46f919aefe304bbd97f1d7d70",
+      "bytes": 88,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-episodes.csv",
+      "sha256": "5e82eee4255f1b1f481150b5def1a944d8596113a337d714e741c0bbdcf8ff67",
+      "bytes": 2200,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/all_five_generic_family_oracles_are_private_and_use_stable_identities_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-contradictions.csv",
+      "sha256": "5b3e9bf7a96efc456f7737c226b9a95ac32c28f46f919aefe304bbd97f1d7d70",
+      "bytes": 88,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-episodes.csv",
+      "sha256": "58916ea428233aeed6d67fecc4a2de81c594f88ad46b6d16e0a3f7bf04be375c",
+      "bytes": 1141,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-planning-quality.csv",
+      "sha256": "8d37b77fb520dcb449c88ab832f971cf1c1b2db6f49d2e6abebf6e795224b3d2",
+      "bytes": 294,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/h128-boundary-probe.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/capture_anchored_H128_outcome_windows_include_offsets8_through127_only_artifacts/h128-boundary-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-0.txt",
+      "sha256": "0e43d190e44b947e798bbceff5a2d59f0c846f0ee0a568f50d910a787fc5e80b",
+      "bytes": 6186482,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-0.txt"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-2.txt",
+      "sha256": "8a137e922238e0ff1fb34431104d7d3cb2973e010f18fbdb8659b4612ddec0e2",
+      "bytes": 6352610,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-2.txt"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-7.txt",
+      "sha256": "ef7459347df0da9a442c5257d905cfff1ceabb489394144e1d9beffb51e1d2d6",
+      "bytes": 6402542,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/cold_queued_and_privately_completed_fields_continue_through_binary_and_text_saves_artifacts/text-checkpoint-7.txt"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-contradictions.csv",
+      "sha256": "5b3e9bf7a96efc456f7737c226b9a95ac32c28f46f919aefe304bbd97f1d7d70",
+      "bytes": 88,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-episodes.csv",
+      "sha256": "370ea97a1832cc6796ad42612907ca167f56170eb6f0abb8652459babe88fad6",
+      "bytes": 1140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/movement-reachability-probe.csv",
+      "sha256": "1dc0580a12b3673a59ea2c999786496447d98e5927b8e691e8d17aa63098c180",
+      "bytes": 243,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/episode_movement_reachability_alternatives_are_separate_from_planning_artifacts/movement-reachability-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/generic-capture-probe.csv",
+      "sha256": "69550652b80ad817586a67b4b27045402767596ae735666676c8802f7600c8f1",
+      "bytes": 213,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/generic-capture-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-contradictions.csv",
+      "sha256": "e10c6045b7332c1f032bb6e3d75434172ecda5c92b2808e32aaf0671324efc73",
+      "bytes": 106,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-episodes.csv",
+      "sha256": "b0add24af6c0d0c8cdf07e253eac9cb6c8d117e4fb039483919b555056d8db6c",
+      "bytes": 1143,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_capture_metadata_publishes_its_original_movement_baseline_and_freezes_episode_inputs_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/generic-movement-probe.csv",
+      "sha256": "e19cc5bd06fd82eddc3f0990186b1e2392e595c169e6aba78d08697a241fb33e",
+      "bytes": 240,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/generic-movement-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-contradictions.csv",
+      "sha256": "7ea28f05d374e2efba18117b6a1bf487788be24bf99d5a26f25bfcaf7e06323c",
+      "bytes": 106,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_movement_evidence_excludes_delegated_escape_from_material_labels_and_leaves_RNG_unchanged_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/generic-planning-probe.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/generic-planning-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-contradictions.csv",
+      "sha256": "5b3e9bf7a96efc456f7737c226b9a95ac32c28f46f919aefe304bbd97f1d7d70",
+      "bytes": 88,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-episodes.csv",
+      "sha256": "6d230db23c2441def9cc4394b9bc3d6aaa0a237df191d53629b60e9da1e5b9f2",
+      "bytes": 1143,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-planning-quality.csv",
+      "sha256": "0a4c45a15014747a25e06b298746c0a8de753510f9dc85978aefb57cc30aa620",
+      "bytes": 225,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/generic_planning_oracle_preserves_movement_state_and_follows_fresh_route_changes_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv",
+      "sha256": "4c2a7bdc0cbd55de2f30e795d52665daece5f5aeaf5ed67b61ab05763a906c3c",
+      "bytes": 994,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv.intervals.csv",
+      "sha256": "09f72386da0baa57f4cd3a61775fbbb49badd3fe4d615139cc81b18917953ade",
+      "bytes": 29,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv.intervals.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv.summary.csv",
+      "sha256": "6162dbfbeddc53247014b489d1c7eef0c8206e936176cdc4253c2b7e8b271e87",
+      "bytes": 2092,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/optional_total-work_observation_preserves_state_and_records_actual_family_admissions_artifacts/all-family-work.csv.summary.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-contradictions.csv",
+      "sha256": "700acd95517966ba334c2fc7a8d499b62ac6fcfef394aea96c7b4cc59bfac8fe",
+      "bytes": 115,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/stale-zero-demand-probe.csv",
+      "sha256": "dab732b5a1a4ab4b0f19426a5387dda46c67b3aca3d79078c2f8b6540761335d",
+      "bytes": 190,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/DelayedGradientPublication/stale_forbidden_natural_reads_demand_recovery_without_material_escape_evidence_artifacts/stale-zero-demand-probe.csv"
+    },
+    {
+      "path": "linux185/focused-artifacts/build-provenance.json",
+      "sha256": "c2c23de70f98bad3c8e6b00e935b3327860f9678931e7f7971b20ebf72d0d8c0",
+      "bytes": 713,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-artifacts/build-provenance.json"
+    },
+    {
+      "path": "linux185/focused-cases.txt",
+      "sha256": "b570cbca1e71c7685874808d68f815ac125c22eac2b5cc4d01d5136632eb07ce",
+      "bytes": 9729,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-cases.txt"
+    },
+    {
+      "path": "linux185/focused-inventory.json",
+      "sha256": "9db9b8e3c53901ea6ad5a4dabb27ae2f42e389791b45b08f5a4b4b7c9231078b",
+      "bytes": 303499,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused-inventory.json"
+    },
+    {
+      "path": "linux185/focused.log",
+      "sha256": "ac90f91bc96489c5349d5152b1a806e0b038f9364b6c4e836ef922f6dae56ed4",
+      "bytes": 8530,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused.log"
+    },
+    {
+      "path": "linux185/focused.xml",
+      "sha256": "eccb15f93099aaf104bd603c333123cd64b9534afe79665c55b47d23ded59930",
+      "bytes": 16520,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/focused.xml"
+    },
+    {
+      "path": "linux185/goldens-verify-COMMAND.json",
+      "sha256": "fbec9d8308342b465725eda75fdcbd36d1b5b551527f5dfff662d8058d9e503b",
+      "bytes": 694,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/goldens-verify-COMMAND.json"
+    },
+    {
+      "path": "linux185/goldens-verify.log",
+      "sha256": "39ff210b1b0ba40858af88237688ed99b9193e50dc47398ff3c5031ecf440692",
+      "bytes": 2045,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/goldens-verify.log"
+    },
+    {
+      "path": "linux185/goldens-verify.xml",
+      "sha256": "742db79f824bdf08d10ebb6557d1c5690c6316b07679b5f7ede12a1fdd498508",
+      "bytes": 3513,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/goldens-verify.xml"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/artifacts.json",
+      "sha256": "cd975eef69f2aa0a6b18ba84df89980a9f95ee96c22dab821299e4f171b681b6",
+      "bytes": 380,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/artifacts.json"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/command.json",
+      "sha256": "a859bbf87e98350a36fcd63ede0084ecacf84aeb8b962400a167638509291633",
+      "bytes": 741,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/command.json"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/final.game.gz",
+      "sha256": "00df2945417d2efd8473087032bf863c7fa80b1988a4fac959148a943a72ebd5",
+      "bytes": 506140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/final.game.gz"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/game.replay.checksums",
+      "sha256": "4179c3c1adf4d647481bb236b39d59f7bf50079bb86ba8277f1a4b59c53cff22",
+      "bytes": 46084,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/game.replay.checksums"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/result.json",
+      "sha256": "4488cfa2dafeafb9aef7f7b05857a865f50e84ef3fe3e97e67e0bbd7f43b1aba",
+      "bytes": 17960,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/result.json"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/snapshot.checksums",
+      "sha256": "3e588b01e8e99bbb0ee3640ddb5f2bdca1629dce7a334f6585c4695dbc67a4e8",
+      "bytes": 46,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/snapshot.checksums"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/stderr.log"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/stdout.log",
+      "sha256": "ffdbf3d2e032f5c844dd2c597acf61f1e477e7c7495cafddaa65a1494f0f2d38",
+      "bytes": 390,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/stdout.log"
+    },
+    {
+      "path": "linux185/legacy179-normalize185/world.checksums",
+      "sha256": "e247f9ad6f2500cd68055156204079e2bbd75b1b480487f63f63d0fe58c4180f",
+      "bytes": 17,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/legacy179-normalize185/world.checksums"
+    },
+    {
+      "path": "linux185/linked-libraries.txt",
+      "sha256": "2fc9499caa066d52940d560a93ab71bbe51118b718c93ab0196f35621b4902c7",
+      "bytes": 2736,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/linked-libraries.txt"
+    },
+    {
+      "path": "linux185/mature-off/artifacts.json",
+      "sha256": "d200e01b395be3d800198379ccf8e8aa3967effa38b58d49c1fec91053b04979",
+      "bytes": 529,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/artifacts.json"
+    },
+    {
+      "path": "linux185/mature-off/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "linux185/mature-off/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "linux185/mature-off/command.json",
+      "sha256": "bb93c442e51d25ec0f1fffee9bd58b7d83825c21937ae6b2ebcf5116bdee0ddd",
+      "bytes": 698,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/command.json"
+    },
+    {
+      "path": "linux185/mature-off/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/final.game.gz"
+    },
+    {
+      "path": "linux185/mature-off/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/game.replay.checksums"
+    },
+    {
+      "path": "linux185/mature-off/result.json",
+      "sha256": "18d7c228950d5d1cd989282aa9f43d9ede3359b64b30e129618ea011c0c0510f",
+      "bytes": 18219,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/result.json"
+    },
+    {
+      "path": "linux185/mature-off/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/snapshot.checksums"
+    },
+    {
+      "path": "linux185/mature-off/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/stderr.log"
+    },
+    {
+      "path": "linux185/mature-off/stdout.log",
+      "sha256": "ed66d81871465ad41ec45401190de367363e4f16417189736b84053fd5ceafda",
+      "bytes": 647,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/stdout.log"
+    },
+    {
+      "path": "linux185/mature-off/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-off/world.checksums"
+    },
+    {
+      "path": "linux185/mature-on/artifacts.json",
+      "sha256": "b62d8694dec7ef35a8545d69f7d40262ca5d25e51d501698aa643bb942dc825e",
+      "bytes": 723,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/artifacts.json"
+    },
+    {
+      "path": "linux185/mature-on/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "linux185/mature-on/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "linux185/mature-on/command.json",
+      "sha256": "532e47dc36f1c45454d8ab3f3684b5b3991e38e58f57a8c28bd72db120e6cb92",
+      "bytes": 727,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/command.json"
+    },
+    {
+      "path": "linux185/mature-on/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/final.game.gz"
+    },
+    {
+      "path": "linux185/mature-on/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/game.replay.checksums"
+    },
+    {
+      "path": "linux185/mature-on/gradient-contradictions.csv",
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d",
+      "bytes": 873,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/mature-on/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/mature-on/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/mature-on/gradient-quality.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/gradient-quality.csv"
+    },
+    {
+      "path": "linux185/mature-on/result.json",
+      "sha256": "c09284c2b362cb32c71a2cc87c7c3def9ce2d14728aec1b4929af5a20e833266",
+      "bytes": 18218,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/result.json"
+    },
+    {
+      "path": "linux185/mature-on/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/snapshot.checksums"
+    },
+    {
+      "path": "linux185/mature-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/stderr.log"
+    },
+    {
+      "path": "linux185/mature-on/stdout.log",
+      "sha256": "6aef22dbaaf7243c49e74508e7495dc4fb1f06cf1d8cc6e2df24176af5856ab1",
+      "bytes": 644,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/stdout.log"
+    },
+    {
+      "path": "linux185/mature-on/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-on/world.checksums"
+    },
+    {
+      "path": "linux185/mature-resumed/artifacts.json",
+      "sha256": "06abcb1b5faed9e96ea25a7a90123dddab1e4d4f82dc82ff98e0f558e6cd8f47",
+      "bytes": 476,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/artifacts.json"
+    },
+    {
+      "path": "linux185/mature-resumed/checkpoint-18432.game.gz",
+      "sha256": "a7692c9005f905f44b339064faea9c16e791d08b7c0216675ce93f5f228d470a",
+      "bytes": 590029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "linux185/mature-resumed/command.json",
+      "sha256": "650662ac2147642395e25b792bf055262162528af9381bb9a174e363c0adfdda",
+      "bytes": 705,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/command.json"
+    },
+    {
+      "path": "linux185/mature-resumed/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/final.game.gz"
+    },
+    {
+      "path": "linux185/mature-resumed/game.replay.checksums",
+      "sha256": "e44642d9712e35aaa2ae9b8da0293c8eb8dcc3b53dd0c91f8ecd96d8f56464c1",
+      "bytes": 25002602,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/game.replay.checksums"
+    },
+    {
+      "path": "linux185/mature-resumed/result.json",
+      "sha256": "6a40bb35ad46ce9467f1053e4c821b62daf142abf971ef04b3f010766d6e05df",
+      "bytes": 18203,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/result.json"
+    },
+    {
+      "path": "linux185/mature-resumed/snapshot.checksums",
+      "sha256": "1ec49eec9d58822c1ae3c1f24efea786992ac86645cfd4822e7dbb40a8bf642d",
+      "bytes": 11674,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/snapshot.checksums"
+    },
+    {
+      "path": "linux185/mature-resumed/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/stderr.log"
+    },
+    {
+      "path": "linux185/mature-resumed/stdout.log",
+      "sha256": "c83251decd8e6edbbeccb75aa59168fa22e677ab3adc5b72ed034dfce67dfb04",
+      "bytes": 522,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/stdout.log"
+    },
+    {
+      "path": "linux185/mature-resumed/world.checksums",
+      "sha256": "addd3b12b7bf230e408f997c37888e037200270b07e216e29d9d8cdb8c90117a",
+      "bytes": 8575,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-resumed/world.checksums"
+    },
+    {
+      "path": "linux185/mature-t4-on/artifacts.json",
+      "sha256": "66c9219a8a6aca884de1febeacee481ccf44a47eee4e88e67314d54f1e6cf47d",
+      "bytes": 723,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/artifacts.json"
+    },
+    {
+      "path": "linux185/mature-t4-on/checkpoint-17920.game.gz",
+      "sha256": "9787107659ca2d688fd1d240eae20827ac9501df8a56bcdece0030f50d60a187",
+      "bytes": 626558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/checkpoint-17920.game.gz"
+    },
+    {
+      "path": "linux185/mature-t4-on/checkpoint-18432.game.gz",
+      "sha256": "c554951f57c6bbf709a643db6c5461117cc896695b9f36b54f70e89deecbf9af",
+      "bytes": 590027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/checkpoint-18432.game.gz"
+    },
+    {
+      "path": "linux185/mature-t4-on/command.json",
+      "sha256": "6927ba4876b3cdfcacd76795f7b13b1f65bd615297dd586908b57bdaa4a6d648",
+      "bytes": 733,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/command.json"
+    },
+    {
+      "path": "linux185/mature-t4-on/final.game.gz",
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336",
+      "bytes": 590030,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/final.game.gz"
+    },
+    {
+      "path": "linux185/mature-t4-on/game.replay.checksums",
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015",
+      "bytes": 48737780,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/game.replay.checksums"
+    },
+    {
+      "path": "linux185/mature-t4-on/gradient-contradictions.csv",
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d",
+      "bytes": 873,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/mature-t4-on/gradient-episodes.csv",
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5",
+      "bytes": 1029,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/mature-t4-on/gradient-planning-quality.csv",
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac",
+      "bytes": 102,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/mature-t4-on/gradient-quality.csv",
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347",
+      "bytes": 150,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/gradient-quality.csv"
+    },
+    {
+      "path": "linux185/mature-t4-on/result.json",
+      "sha256": "1fc968279aff4f6c9a935364876172f1c197aab2c2bd3f0827995284ce53bfd4",
+      "bytes": 18221,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/result.json"
+    },
+    {
+      "path": "linux185/mature-t4-on/snapshot.checksums",
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12",
+      "bytes": 23315,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/snapshot.checksums"
+    },
+    {
+      "path": "linux185/mature-t4-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/stderr.log"
+    },
+    {
+      "path": "linux185/mature-t4-on/stdout.log",
+      "sha256": "c7b7c4f7e6079470e933a82c1dd7e69cda8ca906f6061c1f7c026c217cd5b416",
+      "bytes": 653,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/stdout.log"
+    },
+    {
+      "path": "linux185/mature-t4-on/world.checksums",
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe",
+      "bytes": 17135,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/mature-t4-on/world.checksums"
+    },
+    {
+      "path": "linux185/ordinary-command.json",
+      "sha256": "f9e0d2d994d00f573e6f6d65819c86b8614c7015f34d7907afa411d5972baaa2",
+      "bytes": 641,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/ordinary-command.json"
+    },
+    {
+      "path": "linux185/prior-overlay.patch",
+      "sha256": "f53ad1a23120fd9a0ddb2c186fd24c8dd510d9786dd2aa129d8287adb617e4c5",
+      "bytes": 121858,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/prior-overlay.patch"
+    },
+    {
+      "path": "linux185/qualify-runtime.py",
+      "sha256": "2560c01c4f4d593732f4bd5f0131fc3f42635932904eebdbdb2a2d1fd6500d19",
+      "bytes": 3501,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/qualify-runtime.py"
+    },
+    {
+      "path": "linux185/runtime-status.json",
+      "sha256": "dacd74050f65efc985cdb36b74b91b0fe15cf7201c0198b52919d53f4944bebe",
+      "bytes": 4312,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/runtime-status.json"
+    },
+    {
+      "path": "linux185/runtime-supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/runtime-supervisor.log"
+    },
+    {
+      "path": "linux185/supervisor.log",
+      "sha256": "cb82872ca11e050aef8c51d990b21575a7826b8f9bcedb8f075d25d1877f6adb",
+      "bytes": 335,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/supervisor.log"
+    },
+    {
+      "path": "linux185/t1-off/artifacts.json",
+      "sha256": "fe5d2957b2ee5a9582b10029d1b65d60ce35b51b0c98972519b74a1c6880fba8",
+      "bytes": 522,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/artifacts.json"
+    },
+    {
+      "path": "linux185/t1-off/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "linux185/t1-off/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/checkpoint-512.game.gz"
+    },
+    {
+      "path": "linux185/t1-off/command.json",
+      "sha256": "374214d2dd62d0b20ae3274fd96f63acc339df8e6b9bea2383cebd621ac6329a",
+      "bytes": 793,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/command.json"
+    },
+    {
+      "path": "linux185/t1-off/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/final.game.gz"
+    },
+    {
+      "path": "linux185/t1-off/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/game.replay.checksums"
+    },
+    {
+      "path": "linux185/t1-off/result.json",
+      "sha256": "23ea0dd55f7cc9d11261d541e79694c0f433acd60b96d29c2932d55244d200c4",
+      "bytes": 13301,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/result.json"
+    },
+    {
+      "path": "linux185/t1-off/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/snapshot.checksums"
+    },
+    {
+      "path": "linux185/t1-off/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/stderr.log"
+    },
+    {
+      "path": "linux185/t1-off/stdout.log",
+      "sha256": "a42c66a31fbac800dd0f7857870219cf2ace45fbc8f453e69b518d1e01a045fb",
+      "bytes": 613,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/stdout.log"
+    },
+    {
+      "path": "linux185/t1-off/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-off/world.checksums"
+    },
+    {
+      "path": "linux185/t1-on/artifacts.json",
+      "sha256": "4f434c14ce375d9fa60ff551937e0a295527ffdb7daa5cb0efc96e091d69bd58",
+      "bytes": 720,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/artifacts.json"
+    },
+    {
+      "path": "linux185/t1-on/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "linux185/t1-on/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/checkpoint-512.game.gz"
+    },
+    {
+      "path": "linux185/t1-on/command.json",
+      "sha256": "514988e2591633e52b03f380e35aa0885c605cec9dc88e4cc584717997553b74",
+      "bytes": 822,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/command.json"
+    },
+    {
+      "path": "linux185/t1-on/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/final.game.gz"
+    },
+    {
+      "path": "linux185/t1-on/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/game.replay.checksums"
+    },
+    {
+      "path": "linux185/t1-on/gradient-contradictions.csv",
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8",
+      "bytes": 357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/t1-on/gradient-episodes.csv",
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6",
+      "bytes": 2941,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/t1-on/gradient-planning-quality.csv",
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf",
+      "bytes": 264142,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/t1-on/gradient-quality.csv",
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b",
+      "bytes": 8370,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/gradient-quality.csv"
+    },
+    {
+      "path": "linux185/t1-on/result.json",
+      "sha256": "988c7189a182c29d808018a4cfc3efaa093dca103a51ef0ba04762d3ab8d3ab0",
+      "bytes": 13301,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/result.json"
+    },
+    {
+      "path": "linux185/t1-on/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/snapshot.checksums"
+    },
+    {
+      "path": "linux185/t1-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/stderr.log"
+    },
+    {
+      "path": "linux185/t1-on/stdout.log",
+      "sha256": "7a5f51541a9b4381baf129512c6fcedd10a8b0bc5177bc569bf544a2499317b0",
+      "bytes": 610,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/stdout.log"
+    },
+    {
+      "path": "linux185/t1-on/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t1-on/world.checksums"
+    },
+    {
+      "path": "linux185/t4-on/artifacts.json",
+      "sha256": "7c2a4880ab0b08c732912a614bade5460982ed80a3b12e9857ae411ed127558a",
+      "bytes": 720,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/artifacts.json"
+    },
+    {
+      "path": "linux185/t4-on/checkpoint-1024.game.gz",
+      "sha256": "1817d782c867bdb87ad3394ad636e6af202474079f78a020eae0d5958fa9d15e",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/checkpoint-1024.game.gz"
+    },
+    {
+      "path": "linux185/t4-on/checkpoint-512.game.gz",
+      "sha256": "9dbcf890e81f9a83dc15141882b791c96f5d6732276b282b8a9cb58001404714",
+      "bytes": 77718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/checkpoint-512.game.gz"
+    },
+    {
+      "path": "linux185/t4-on/command.json",
+      "sha256": "830a925d3fbc397d13f3eb09f40fdd83d7e55048be5defdde9269cd582141f78",
+      "bytes": 822,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/command.json"
+    },
+    {
+      "path": "linux185/t4-on/final.game.gz",
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956",
+      "bytes": 97140,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/final.game.gz"
+    },
+    {
+      "path": "linux185/t4-on/game.replay.checksums",
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df",
+      "bytes": 5793548,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/game.replay.checksums"
+    },
+    {
+      "path": "linux185/t4-on/gradient-contradictions.csv",
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8",
+      "bytes": 357,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/gradient-contradictions.csv"
+    },
+    {
+      "path": "linux185/t4-on/gradient-episodes.csv",
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6",
+      "bytes": 2941,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/gradient-episodes.csv"
+    },
+    {
+      "path": "linux185/t4-on/gradient-planning-quality.csv",
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf",
+      "bytes": 264142,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/gradient-planning-quality.csv"
+    },
+    {
+      "path": "linux185/t4-on/gradient-quality.csv",
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b",
+      "bytes": 8370,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/gradient-quality.csv"
+    },
+    {
+      "path": "linux185/t4-on/result.json",
+      "sha256": "3e5c9c1ad4fa98c4755b7cc266455c4fcf9d56a7dd1278c9fc57a6569f7c2a6e",
+      "bytes": 13304,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/result.json"
+    },
+    {
+      "path": "linux185/t4-on/snapshot.checksums",
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e",
+      "bytes": 19052,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/snapshot.checksums"
+    },
+    {
+      "path": "linux185/t4-on/stderr.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/stderr.log"
+    },
+    {
+      "path": "linux185/t4-on/stdout.log",
+      "sha256": "08182aafd805d82be3ffd71b25a9d7f77c04a2ee007b47855920501b5f821b26",
+      "bytes": 610,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/stdout.log"
+    },
+    {
+      "path": "linux185/t4-on/world.checksums",
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0",
+      "bytes": 15018,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/linux185/t4-on/world.checksums"
+    },
+    {
+      "path": "CROSS-PLATFORM-FINAL185.json",
+      "sha256": "1c50c4c4de2cf81c41eb4751ea6418a04b5cd5513425442c23eb1b6aa8adf629",
+      "bytes": 9352,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/CROSS-PLATFORM-FINAL185.json"
+    },
+    {
+      "path": "inputs/input-job.json",
+      "sha256": "635faac3032302fc16b8cd8f953fde6dd1e63d89ddf1cef825f57cd7413b7f1e",
+      "bytes": 4268,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/input-job.json"
+    },
+    {
+      "path": "inputs/map.map.gz",
+      "sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+      "bytes": 23226,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/runtime-macos/map.map.gz"
+    },
+    {
+      "path": "inputs/legacy179-warm.game.gz",
+      "sha256": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be",
+      "bytes": 505875,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/runtime-macos/mature-t1-probeoff/final.game.gz"
+    },
+    {
+      "path": "fixtures/test/fixtures/building-catalog/composition/seed-713.trace",
+      "sha256": "2293349a91788acf20d5072333ff672ebf55c63f89b75d791b4e16eb50c2eb51",
+      "bytes": 55086,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/building-catalog/composition/seed-713.trace"
+    },
+    {
+      "path": "fixtures/test/fixtures/building-catalog/composition/seed-714.trace",
+      "sha256": "1594ede71f82e07e9476cd520db5b7c316f8158eb6cee3e6598c41bb39cf21e6",
+      "bytes": 62114,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/building-catalog/composition/seed-714.trace"
+    },
+    {
+      "path": "fixtures/test/fixtures/building-catalog/composition/seed-715.trace",
+      "sha256": "a6f2efd5ce4b2c97a9e323536c2d98d70a868a08fb926ec67b66d0dbd7199dc7",
+      "bytes": 24282,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/building-catalog/composition/seed-715.trace"
+    },
+    {
+      "path": "fixtures/test/fixtures/generators/shared-generator-trace.sha256",
+      "sha256": "db772d27ea604551c7aca250cfa4d43778783438be9212f9642fd146bf148f2a",
+      "bytes": 65,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/generators/shared-generator-trace.sha256"
+    },
+    {
+      "path": "fixtures/test/fixtures/map-tiling/checksums.txt",
+      "sha256": "9973d82e8491876b6389eb09d312e1724399db304ce8e6adb69e6916fc4812fd",
+      "bytes": 1783,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/map-tiling/checksums.txt"
+    },
+    {
+      "path": "fixtures/test/fixtures/markets-v2/disabled-checksums.txt",
+      "sha256": "532977aeba74b546a2c5b6d5903f9d00a656955cba9bfef627bceb7ebae08b7d",
+      "bytes": 45592,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/markets-v2/disabled-checksums.txt"
+    },
+    {
+      "path": "fixtures/test/fixtures/markets-v2/enabled-checksums.txt",
+      "sha256": "ac60b21fa603cee611237894c80fa45d550678364bb87d8694c3addbc2035ca3",
+      "bytes": 45574,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/markets-v2/enabled-checksums.txt"
+    },
+    {
+      "path": "fixtures/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "sha256": "dd1f7632f4ed80149127206d7213c639177b4c6bd6e995ae0c87ff041060a4cb",
+      "bytes": 3774,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/multiplayer/FourSquares1.g2mr"
+    },
+    {
+      "path": "fixtures/test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+      "sha256": "2aa88be7ff71747ac84a86353f04cfeaa613b5fc6b30de292d48c20a49df5ab0",
+      "bytes": 10914,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/multiplayer/FourSquares1.verify-trace.txt"
+    },
+    {
+      "path": "fixtures/test/fixtures/resources/seeded-compositions-units.trace",
+      "sha256": "dfbc609f59c5e1f851388a9fc3674d3c6af16f82dc617255c3dcde55a05e1bfe",
+      "bytes": 13383,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/resources/seeded-compositions-units.trace"
+    },
+    {
+      "path": "fixtures/test/fixtures/unit-catalog/ablation-checksums.txt",
+      "sha256": "b0e8ecfaacc376119f5c301056b238a9de09ebbf0987c5f3fb3273c3ff83ccf1",
+      "bytes": 1340,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/unit-catalog/ablation-checksums.txt"
+    },
+    {
+      "path": "fixtures/test/fixtures/win-probability/rule-trace.txt",
+      "sha256": "cb8d138efba7057b8810883a5bc8f94ae238355c2d33e4894657f4958f339b7d",
+      "bytes": 1283,
+      "original_path": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/test/fixtures/win-probability/rule-trace.txt"
+    }
+  ]
+}

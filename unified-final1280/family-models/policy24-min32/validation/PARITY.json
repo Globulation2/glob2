@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "vectors": 530,
+  "cases": 4240,
+  "families": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    255,
+    4294967295
+  ],
+  "ubsan": true,
+  "exact_original_combined_and_expert_heads": true,
+  "model_sha256": "0a7f1197fa5deb5c0995c05190bbc48f3899213617b2bec658a799c432458a68",
+  "header_sha256": "61a7e3555a67e31d791f15c6d9c8ea0f86e71f805932390999837650e117b5ed",
+  "command": [
+    "g++",
+    "-std=c++20",
+    "-O2",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=undefined",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/final184-policy-validation/parity.cpp",
+    "-o",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/final184-policy-validation/parity"
+  ],
+  "original_combined_sha256": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+  "original_experts_sha256": "7fa728ebf2b3a72e89ac2d8131513299726dd8cea39c8877951c0991cf44b09e"
+}

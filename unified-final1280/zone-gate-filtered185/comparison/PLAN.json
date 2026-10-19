@@ -1,0 +1,460 @@
+{
+  "schema": 1,
+  "status": "FROZEN-BEFORE-FINAL185-COMPARISON",
+  "prior_plan_sha256": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+  "maps": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/66294c58700ef1b4/map.map.gz",
+      "map_sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz",
+      "warm_sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          2,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "generator": "polder",
+        "generator_params": {
+          "algae-amount": 75,
+          "crop-crossings": 1,
+          "dyke-spacing": 32,
+          "fruit-amount": 125,
+          "ground": 1,
+          "hamlets": 1,
+          "row-angle": 2,
+          "stone-amount": 100,
+          "village-size": 16,
+          "water-crossings": 1,
+          "wheat-amount": 75,
+          "wood-amount": 75,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 330329066,
+        "players": 4,
+        "width": 128
+      }
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/1d043310cbecdceb/map.map.gz",
+      "map_sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz",
+      "warm_sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "maxima",
+          "warrush",
+          "castor",
+          "castor",
+          "warrush"
+        ],
+        "alliances": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          2,
+          3,
+          1
+        ],
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "generator": "fjord-continent",
+        "generator_params": {
+          "algae-amount": 150,
+          "bank-deposits": 1,
+          "coast-roughness": 23,
+          "continent-size": 34,
+          "fjord-width": 4,
+          "fruit-amount": 150,
+          "lake-connected": 0,
+          "lake-size": 30,
+          "resource-islands": 3,
+          "sandy-lake-shore": 1,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3680668015,
+        "players": 8,
+        "width": 128
+      }
+    }
+  ],
+  "arms": [
+    {
+      "id": "master_reference",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos-strict-assets/bin/glob2-master-84edb385c",
+      "binary_sha256": "da5eeacf577e3b29dbfe570dfbc0dd71a529fb8af765995ab8ab3f378de79713",
+      "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+      "env": {},
+      "research": false
+    },
+    {
+      "id": "184_unfiltered_no_zone_gate",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/final184-policy/combined-configuration-study/glob2-final184",
+      "binary_sha256": "33de9a22197adfc48551ff791a86e4cf0a4f0105259421b2ff5c28fd5feddf1b",
+      "source": "fe0754bcc82977e2b16c0b713978ce019b0f2506",
+      "actual_threshold_milli": 24000,
+      "actual_minimum_interval_ticks": 32,
+      "env": {},
+      "research": false,
+      "model_sha256": "0a7f1197fa5deb5c0995c05190bbc48f3899213617b2bec658a799c432458a68",
+      "header_sha256": "61a7e3555a67e31d791f15c6d9c8ea0f86e71f805932390999837650e117b5ed",
+      "golden_only_head": "23b25d6a0"
+    },
+    {
+      "id": "185_unfiltered_zone_gate",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/zone-gate185/glob2-unfiltered-control",
+      "binary_sha256": "a10c65e5baa5117aaa46ec1ca22346ec20e27828e9885a5e48ca6bee598a094c",
+      "source": "aa186b0f3374b075319501961c225daa93dea2c7",
+      "model_sha256": "0a7f1197fa5deb5c0995c05190bbc48f3899213617b2bec658a799c432458a68",
+      "header_sha256": "61a7e3555a67e31d791f15c6d9c8ea0f86e71f805932390999837650e117b5ed",
+      "actual_threshold_milli": 24000,
+      "actual_minimum_interval_ticks": 32,
+      "env": {},
+      "research": false
+    },
+    {
+      "id": "185_filtered_zone_gate",
+      "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/glob2-filtered185",
+      "binary_sha256": "3f953154f7ddfc8fadeb04d2b95636a7735ad0abd914c6a8cf26e6e4c7c1e271",
+      "source": "4285",
+      "model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+      "header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+      "actual_threshold_milli": 24000,
+      "actual_minimum_interval_ticks": 32,
+      "env": {},
+      "research": false,
+      "fixture_only_head": "5f0f3abdf"
+    }
+  ],
+  "cpu_schedule": [
+    {
+      "index": 0,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 1,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 2,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 3,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 4,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 5,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 6,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 7,
+      "phase": "cpu",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 8,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 9,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 10,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 11,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "1d043310cbecdceb",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 12,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 13,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 14,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 15,
+      "phase": "cpu",
+      "repeat": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 16,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 17,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 18,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 19,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 20,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 21,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 22,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 23,
+      "phase": "cpu",
+      "repeat": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 24,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 25,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "master_reference"
+    },
+    {
+      "index": 26,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 27,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 28,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 29,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "master_reference"
+    },
+    {
+      "index": 30,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 31,
+      "phase": "cpu",
+      "repeat": 3,
+      "group": "66294c58700ef1b4",
+      "arm": "184_unfiltered_no_zone_gate"
+    }
+  ],
+  "quality_schedule": [
+    {
+      "index": 0,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 1,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 2,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "185_filtered_zone_gate"
+    },
+    {
+      "index": 3,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "184_unfiltered_no_zone_gate"
+    },
+    {
+      "index": 4,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "185_unfiltered_zone_gate"
+    },
+    {
+      "index": 5,
+      "phase": "quality",
+      "repeat": 0,
+      "group": "1d043310cbecdceb",
+      "arm": "185_filtered_zone_gate"
+    }
+  ],
+  "master_data_dir": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/data",
+  "common_cwd": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2",
+  "benchmark_warmup": 256,
+  "cpu_measured_ticks": 8192,
+  "wall_cap_seconds": 1800,
+  "compute_threads": 1,
+  "gpu": "off",
+  "compute_telemetry": "off",
+  "cpu_metric": "result.benchmark_run_cpu_ns / benchmark_measured_ticks (excludes256settling); process user+system/wall include load+settle",
+  "quality_definition": "Separate6observerON whole8192windows after256settle: movementcost/stalls/freshcorrectablemisses/reachability/planning andperfamilywork. No model/target refits.",
+  "limitations": [
+    "Two previously examined initialstates;notpopulationgeneralization.",
+    "FourbalancedWilliams-orderrepeatsandstateorderalternation, pairedspreadnotCI.",
+    "MasterversusfinalcomparescompletePR;184to185zonegatecontrastalsocarriesCLItext/versionmetadatachanges.",
+    "Unfilteredversusfiltered185isolatesrefitwithsamezonegateandpolicy;querytrajectoriesmaydiverge.",
+    "Quality/planningfuturequerydenominatorsseparate;no individualcounterorfeaturecausality.",
+    "Marketsunmeasured;combinedfallbackstructuralnotvalidatedasexpert.",
+    "Backgroundload/thermal/powerobserved,noisolatedphysicalcoreclaim."
+  ],
+  "launch_requires": "Root finalfiltered185binary/qualification+explicitidleSTART; noautomaticlauncher.",
+  "utc": "2026-10-19T20:24:22.026147+00:00",
+  "actual_demanded_age_cap": 1024,
+  "quality_cpu_no_timing_claim": true,
+  "comparison": "Directmaster plus184unfiltered(nozonegate),185unfiltered(zonegate),185filtered(zonegate+AIfilteredrefit). ModernthreeallA24/min32/cap1024/pub8/H128; exactsameinitial175worlds.",
+  "background_load": "Docker~20%CPUobservedbyroot;notaltered;process/load/thermal/power sampled, notuncontendedclaim",
+  "uncapped_context": "Skippedadditionaluncappedarm;priorseparatestudycontextonly, notpooled",
+  "final_native_qualification": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos183/status.json",
+  "baseline_threshold_milli": 16000,
+  "build_receipt_sha256": "301f70d424f3d8acb17acaef7ef5555aeac1d364ab539d44fbc89cdf6ab10c08",
+  "latest_trained_model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "latest_header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "qualification": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/filtered185"
+}

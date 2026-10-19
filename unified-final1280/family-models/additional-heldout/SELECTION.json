@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "status": "FROZEN-SELECTION-NO-GAMES-LAUNCHED",
+  "selection_rule": "Among preserved round1\u20135 heldout(-1) accepted maps with players<=8,maxdimension<=128 and rostercontainingMaximaorWarrush,excludealreadyexamined66294/1d043+ended008354; sortstablegroupascending;choosefirstpairwithdistinctgeneratorsandatleastoneMaximaandoneWarrushacrosspair; no result/quality values consulted",
+  "registry": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/map-splits.json",
+  "registry_sha256": "f6ef2a80d892e670d26fe2f3b1ba792a6f35e243738b2d458449dba2d0a0c624",
+  "maps": [
+    {
+      "group": "00c17a21624f0590",
+      "source_round": 5,
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/maps/00c17a21624f0590/map.map.gz",
+      "map_sha256": "e34b5d68a9647feb779964c160e611617c58f14316022991f9b5717f44051908",
+      "map_version_major": 0,
+      "map_version_minor": 179,
+      "spec": {
+        "ais": [
+          "cortex",
+          "maxima",
+          "econo"
+        ],
+        "alliances": [
+          2,
+          3,
+          1
+        ],
+        "format": "3ffa",
+        "game_seed": 3783716307,
+        "generator": "orchard-commons",
+        "generator_params": {
+          "algae-amount": 125,
+          "fruit-amount": 75,
+          "orchard-spacing": 0,
+          "stone-amount": 100,
+          "wheat-amount": 75,
+          "wood-amount": 100,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3373521973,
+        "players": 3,
+        "width": 128
+      },
+      "heldout_group": "db5a4d57e4d630d1",
+      "heldout_fold": -1,
+      "accepted_manifest": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/accepted-maps.json",
+      "accepted_manifest_sha256": "4ce3becf3ca21da9069919444eae748050b2aed2bb7bb7c162533eba04d190a5"
+    },
+    {
+      "group": "170bc677a854ceb2",
+      "source_round": 1,
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/170bc677a854ceb2/map.map.gz",
+      "map_sha256": "8b67ce15f7023898c2d0c9f1d20f9bc535be51bd99596390ed5fd5018e508f79",
+      "map_version_major": 0,
+      "map_version_minor": 178,
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "warrush"
+        ],
+        "alliances": [
+          2,
+          1,
+          3
+        ],
+        "format": "3ffa",
+        "game_seed": 1826729182,
+        "generator": "shattered-coast",
+        "generator_params": {
+          "algae-amount": 150,
+          "colony-meadows": 1,
+          "grass": 56,
+          "sand": 3,
+          "smoothing": 5,
+          "stone-amount": 100,
+          "water": 47,
+          "wheat-amount": 75,
+          "wood-amount": 125,
+          "workers": 4
+        },
+        "height": 128,
+        "map_seed": 2962319084,
+        "players": 3,
+        "width": 128
+      },
+      "heldout_group": "26082b76d417c669",
+      "heldout_fold": -1,
+      "accepted_manifest": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/accepted-maps.json",
+      "accepted_manifest_sha256": "f7764516c080bf991dec3777d8a56bc512c3ffa2a0b91893081e6c6b7d3f7e5a"
+    }
+  ],
+  "warm_policy": "frozen shared12cap",
+  "warm_tick_limit": 8192,
+  "shared_initial_state": "same warmup182savedbytes for both prototypearms permap",
+  "comparison_arms": [
+    "shared12cap",
+    "expertscap"
+  ],
+  "settling_ticks": 256,
+  "scored_additional_ticks": 8192,
+  "total_additional_ticks": 8448,
+  "wall_cap_per_process": 1800,
+  "attempts": 1,
+  "baseline_conditioned": true,
+  "no_training_ingestion": true,
+  "no_common175_requirement": true,
+  "early_ending_policy": "retainunusableaccounting;skipallpairedarms;nooutcome-basedreplacement",
+  "guard_usage_status": "Maxima/Warrushrostersconfirmed;actualpaintedGuardandlivequerysupportmustbereportedfromnewruns,notassumed",
+  "launch_gate": "explicitCPUexperimentownerconfirmsalltimingendedandidle;frozenruntimehashesmustmatchbeforeanywarmup",
+  "utc": "2026-10-19T18:59:54.140682+00:00"
+}

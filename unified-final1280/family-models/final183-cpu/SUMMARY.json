@@ -1,0 +1,70 @@
+{
+  "status": "COMPLETE",
+  "cells": 24,
+  "arms": {
+    "master_reference": {
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.14846910095214844,
+      "total_simulation_cpu_seconds": 9.730071,
+      "total_process_cpu_seconds": 12.243967999999999,
+      "wall_seconds": 12.76064566487912,
+      "advanced_ticks_per_wall_second": 5296.283728495819,
+      "measured_ticks_per_wall_second": 5135.790282177764
+    },
+    "shared12_cap_reference": {
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.12461773681640624,
+      "total_simulation_cpu_seconds": 8.166948,
+      "total_process_cpu_seconds": 10.644274,
+      "wall_seconds": 11.22144766477868,
+      "advanced_ticks_per_wall_second": 6022.75232384938,
+      "measured_ticks_per_wall_second": 5840.244677672127
+    },
+    "final183_experts": {
+      "measured_ticks": 65536,
+      "advanced_ticks": 67584,
+      "cpu_ms_per_measured_tick": 0.1255341033935547,
+      "total_simulation_cpu_seconds": 8.227003,
+      "total_process_cpu_seconds": 10.723254,
+      "wall_seconds": 11.926449915976264,
+      "advanced_ticks_per_wall_second": 5666.732386933248,
+      "measured_ticks_per_wall_second": 5495.013223692846,
+      "vs_master_reference": {
+        "pooled_cpu_fraction": -0.15447657062317421,
+        "paired_repeat_values": [
+          -0.16426352217631202,
+          -0.1230472908363075,
+          -0.16455834687802018,
+          -0.16580369530829298
+        ],
+        "paired_repeat_min": -0.16580369530829298,
+        "paired_repeat_max": -0.1230472908363075
+      },
+      "vs_shared12_cap_reference": {
+        "pooled_cpu_fraction": 0.007353420151567258,
+        "paired_repeat_values": [
+          0.023326263406006298,
+          0.0014649624694840213,
+          0.00482992237961688,
+          0.0002650646728297179
+        ],
+        "paired_repeat_min": 0.0002650646728297179,
+        "paired_repeat_max": 0.023326263406006298
+      }
+    }
+  },
+  "source_plan_sha256": "0c969ea716a8eb95975f66beb668a5bb43dc810b7d5aeb0aaafdb21763aea8a7",
+  "measured_ticks_per_cell": 8192,
+  "settling_ticks_per_cell": 256,
+  "limitations": [
+    "Two previously examined states, not independent generalization.",
+    "Four paired repeat spreads, not population confidence intervals.",
+    "All process CPU/wall include loading and256settling; benchmarkCPU excludes settling.",
+    "Load, thermal and power sampled; no uncontended physical core claim.",
+    "Master versus final includes complete PR; shared12cap versus final includes model, evaluator and cleanup changes.",
+    "Raw per-arm checksum repeated identically; cross-version checksum equality is not expected."
+  ],
+  "raw_status_sha256": "0d5eb4af7bbbd792f296f531fafd74c2d3215835e42844d06870c9b13a3d3ad3"
+}

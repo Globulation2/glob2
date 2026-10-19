@@ -1,0 +1,15 @@
+{
+  "pr": 1224,
+  "head": "5f0f3abdfd60f5956d67186ec37d2d542f105e6e",
+  "compiled_production": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "base": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "version": 185,
+  "sim_revision": 95,
+  "replay_floor": 185,
+  "save_floor": 58,
+  "adaptive_layout": 178,
+  "model_sha256": "e828b0a1d0d39881825be5f08b8b8145aed90f3d52709913a244a28d50d11f03",
+  "header_sha256": "d22e1eb738d69131984c36f5329cd5673c7e5fc26bc27b6c9040c06582d43985",
+  "macos_binary_sha256": "3f953154f7ddfc8fadeb04d2b95636a7735ad0abd914c6a8cf26e6e4c7c1e271",
+  "note": "Only fixture bytes changed after compiled production; exact final fixture revision verified on both platforms before merge."
+}

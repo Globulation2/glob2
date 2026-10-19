@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "pid": 81042,
+  "command": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "--build=build/candidate-release",
+    "-j6",
+    "build/candidate-release/src/glob2"
+  ],
+  "cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/candidate12-research/glob2",
+  "binary_sha256": "1a6634b840db6be73f25122d4443af853d9da8e34f1fcc0573298cd76b994750"
+}

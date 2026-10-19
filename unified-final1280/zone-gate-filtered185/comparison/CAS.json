@@ -1,0 +1,1982 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "path": "study/ASSETS-BEFORE.json",
+      "sha256": "f57d8b9ff3d0c189fb43ed6b04f981348e11dac158e4fcdb165ac1757724c838",
+      "bytes": 987480,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/ASSETS-BEFORE.json"
+    },
+    {
+      "path": "study/DEPENDENCIES.json",
+      "sha256": "42c460753edd3a313f4082bbdfbde1d1f35c6e9e31c2483d9d3eda092f60bfb2",
+      "bytes": 64584,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/DEPENDENCIES.json"
+    },
+    {
+      "path": "study/LAUNCH.json",
+      "sha256": "38b2bbe78d5c54aab310fe72394f155a594915cc830ccaff3d0683f31538c1fc",
+      "bytes": 141,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/LAUNCH.json"
+    },
+    {
+      "path": "study/PLAN-DRAFT.json",
+      "sha256": "5b9fd5b3e9e1868db1e5f0f86f957a929741aecf8a5608d7f19cc94ab3da6f90",
+      "bytes": 13730,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/PLAN-DRAFT.json"
+    },
+    {
+      "path": "study/PLAN.json",
+      "sha256": "d5dbb95106d5a1f0ccf92ed16945208a78a9ca944603fcadb24cbffd9b54a7a0",
+      "bytes": 13859,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/PLAN.json"
+    },
+    {
+      "path": "study/PLAN.sha256",
+      "sha256": "8d9121af9bb9249ce46441538a28ad59ff59df41d29178853b45117fd919c723",
+      "bytes": 76,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/PLAN.sha256"
+    },
+    {
+      "path": "study/READOUT.md",
+      "sha256": "a4989a1cd3fd238b13c99152b3632dd708cb214ccc0b13347fb90f869c2519f6",
+      "bytes": 4508,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/READOUT.md"
+    },
+    {
+      "path": "study/SOURCE-QUALIFICATION.json",
+      "sha256": "d289ec93be31a35f29a18d1a1f9f13fd9c8b080e02f9967d10e07b901e474dd0",
+      "bytes": 617,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/SOURCE-QUALIFICATION.json"
+    },
+    {
+      "path": "study/START.json",
+      "sha256": "3cf2ac5de0c8e74fac0b8fad2687a0699e306f670ac6fbfd3cd2c010c2e8efe9",
+      "bytes": 216,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/START.json"
+    },
+    {
+      "path": "study/STATUS.json",
+      "sha256": "82857219c84c16a728670ba75fc63c273360f7571d5eab1f446e30f359dee459",
+      "bytes": 9682420,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/STATUS.json"
+    },
+    {
+      "path": "study/SUMMARY.json",
+      "sha256": "3720f9d92c29054133b7fbe5b29eb87791ddf8c325f94c50d402ae9ce134c2f0",
+      "bytes": 51284,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/SUMMARY.json"
+    },
+    {
+      "path": "study/SUPERVISOR.json",
+      "sha256": "fd9b4b63c4790480d7ed688d63d121b3a8916d3a9fde1a7186ceb7b14cb480eb",
+      "bytes": 276,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/SUPERVISOR.json"
+    },
+    {
+      "path": "study/mac-observation-helpers.py",
+      "sha256": "8ef73f487910e304af8050360737c0bf510493b9642a1a006432c49bf36dc085",
+      "bytes": 2567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/mac-observation-helpers.py"
+    },
+    {
+      "path": "study/run.py",
+      "sha256": "b1b597edfb672250411b4485d7867ca9cb25324675bb4d7e32eaa6c1ee33949f",
+      "bytes": 6760,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/run.py"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/COMMAND.json",
+      "sha256": "d53a86b2abb5f2870d487c1b646d1f305199c189d6b9e982ce15338f4c6837da",
+      "bytes": 82904,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/MEASUREMENT.json",
+      "sha256": "5029f9e88643a64fce14d91969c76357729a2ee16b4949defae841254bd84ba6",
+      "bytes": 164854,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/artifacts.json",
+      "sha256": "ed506ca87d335f23a3df37b50f34be230441f8a1ee5e05215922fc5360ff17c1",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/result.json",
+      "sha256": "219951237e87bd078c03ae44059cb63215fae7aadc1ca679eff28be7ad93cc38",
+      "bytes": 19080,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-00-66294c58700ef1b4-master_reference-r0/stdout.log",
+      "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-00-66294c58700ef1b4-master_reference-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/COMMAND.json",
+      "sha256": "ceed31617bfe0ab53acb02e1449d51f8e607203cc26f2f46f0b99c4f89b42016",
+      "bytes": 83342,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "70245e6bedbb4cfec84ee7e7935e114592b4ce2f66a1fd481e472b7f467c9c87",
+      "bytes": 165283,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/artifacts.json",
+      "sha256": "74a360399de3c0c33d785287c1b31b47afbd5516f1bca4cc1e29a9603bccd78c",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/result.json",
+      "sha256": "0b30b467d7ebc558f6fd4462760970fcdd3789b505f6c85e9aac07424ef41004",
+      "bytes": 19390,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stdout.log",
+      "sha256": "ce0f788b018641be3408d3009c5c8448f6a29260eef9c2bc17f2f42ec3e544d0",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-01-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/COMMAND.json",
+      "sha256": "0fedc616bd8d64a6615aa10e17ecb36a8949f9ab4bbff8d09e7b4fb6a8c733c5",
+      "bytes": 83203,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "a2551b84ca06baf7f78d4a305ff23ee54070f74fbad836ea7f3bb653a9cd9584",
+      "bytes": 165460,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/artifacts.json",
+      "sha256": "d33fc02269c7ee16e0f0bd2beb98a6d8bfe762c0a093f4230a367c5512f69de2",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/result.json",
+      "sha256": "3b877a02155a534b99bfe9cbf3c9a0b30d878ab4fc9b5273a02403215074e2a1",
+      "bytes": 19364,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stdout.log",
+      "sha256": "bb00e1127aa3ffe39286f625b9240c032609b040f6b8c2fd86e221a8b35cead9",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/COMMAND.json",
+      "sha256": "2ff1e1e5d63f402d9a99e3d6f1f419acb76ef57dc37290dfeffb0eebd7952f03",
+      "bytes": 83535,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "8b59bd402954ba938435fe40c595f7403998ae42f09bc4db7ba1fad30f4074a0",
+      "bytes": 165485,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/artifacts.json",
+      "sha256": "abaf633024d8cb51b9d468b72afab9ac0273abc024f0dedcfcada7235a829e11",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/result.json",
+      "sha256": "d53a05933dd472757df6543e1f9b4b4ce36aa4fc9fbe0642c05790f5bd0d9814",
+      "bytes": 19388,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stdout.log",
+      "sha256": "c9e70d8bac14ec1500f485fc5ee92fb46d26572d18b9a47cec0dde7dfe3f56ba",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-03-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/COMMAND.json",
+      "sha256": "c37dc1f3be1aadb233a7533e7e82d83f162dea9a4a8f59c83c5dec89dc352121",
+      "bytes": 83549,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/MEASUREMENT.json",
+      "sha256": "1c5b1448a2b5ca17c1bfd7a53f65cb227a1551c49242a194a9acea10099a72df",
+      "bytes": 258912,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/artifacts.json",
+      "sha256": "c89e59e2664964244713cc85ecd4930bed596ff62e3856ee6a48621c1c60b804",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/result.json",
+      "sha256": "291d75391071fbccc4c5aebbc9bda163835caea66157f8078dd16815af84b27c",
+      "bytes": 53251,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-04-1d043310cbecdceb-master_reference-r0/stdout.log",
+      "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-04-1d043310cbecdceb-master_reference-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/COMMAND.json",
+      "sha256": "e0f423265b8e8a84d923c48d4ec2946a85193f4b997c4abbeb03169eac2d9616",
+      "bytes": 83666,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "efecdba7e3f254bdb96d945a064ad8572a3dc5def319186a711890a7db639f83",
+      "bytes": 259484,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/artifacts.json",
+      "sha256": "5f3f2c416562bdb68b44e5a9f0e9d0aefe595f521b593cd6c2731d27d818b0ed",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/result.json",
+      "sha256": "b27c6a602fed5247d407178b02a2421ce2dd43c94433c87ef0a813d9fe0a1f3b",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-05-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/COMMAND.json",
+      "sha256": "4ef2dda69ce3778614987ef5bb891c5b4c932eff0c801a8a5d57df87f8c81919",
+      "bytes": 83742,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "6b2169fe8b707d54b3901287f110dd6e7f890e5b2a5a8aea42f8c21210ad5ffd",
+      "bytes": 259577,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/artifacts.json",
+      "sha256": "ce294b68101239d6fb716d413c65d6cb77569078c3476e0f0fe78da4e27b2894",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/result.json",
+      "sha256": "bbd18cb429f1bd01863d951e1402323b8ccd17c7fee4d71a494a81890e426303",
+      "bytes": 53593,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-06-1d043310cbecdceb-185_filtered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/COMMAND.json",
+      "sha256": "c10c931fa9095d550f4086f8df55e6ad5337881c3e4470a349c3f4a800291584",
+      "bytes": 83856,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "7d522c44a1fb81b51f6ee906eb459d8451077bb319383c60a604b92823cd72ae",
+      "bytes": 259498,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/artifacts.json",
+      "sha256": "ff2b3c086ea3ee7eadd44b9f23cf266a4db1ac4e33a30bd53c8a2e1895781251",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/result.json",
+      "sha256": "fc9040280b5e4c617660accb13eb149a2549e6fb0e6a0d424719883055655e35",
+      "bytes": 53595,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-07-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/COMMAND.json",
+      "sha256": "6ba64a0017b2fbabecfeaa5175f4634e6e23a3fdb0a4db73670a4f7db41a48a4",
+      "bytes": 83775,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "336b47fc28f3de1ab3159ee6c3ecd051e94150faa284b97e8b9f32e14664767b",
+      "bytes": 259603,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/artifacts.json",
+      "sha256": "2d251b1160b1a14495c9d746e18e88eea0a4d47dfdf1ebc0d5c111641c9464a3",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/result.json",
+      "sha256": "b1f524dfcd712892b34033b17eeb857ed1a39997c8fe621e2d3ea6e89aa70322",
+      "bytes": 53593,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-08-1d043310cbecdceb-184_unfiltered_no_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/COMMAND.json",
+      "sha256": "a050b54db9247f4f26c94c131cdd95529d5bb60ddff1b356b3ae774f07d4df03",
+      "bytes": 83856,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "7d87f46f5d7801ac94a299931fc488695ea8bcf48cfad370f7125b7598b37f68",
+      "bytes": 259480,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/artifacts.json",
+      "sha256": "325e2b239dccc41eacce1c4cf3cba0fd5aa4e939fdac2807c0c93fb8cb37d73a",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/result.json",
+      "sha256": "5b9e5327f712b6fee6f51fdc38a6e26e81dc43b73b1d6aa40cab7d7b01ee00d1",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-09-1d043310cbecdceb-185_unfiltered_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/COMMAND.json",
+      "sha256": "f6b0b7e98d153731768ab29a53e8cc61457b38e8d9978bddfa80a91a6a57ac5f",
+      "bytes": 83763,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/MEASUREMENT.json",
+      "sha256": "82876e1e6f52e7d0d82ce6188b6f1e655195beb5d8826d0748dd83f1c9c43c79",
+      "bytes": 259031,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/artifacts.json",
+      "sha256": "3d1c89ba0de5d5a85aedf4f903e97cae56a3bd34126a7c9e7ba68560099e83f6",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/result.json",
+      "sha256": "c99fe25f519344ccf11ce6976120a02411a6ba00158bc718bcda3218b2594006",
+      "bytes": 53248,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-10-1d043310cbecdceb-master_reference-r1/stdout.log",
+      "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-10-1d043310cbecdceb-master_reference-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/COMMAND.json",
+      "sha256": "43300dfa855aa8bbbe4f648a4dc8ffacd9a643d530840be64c0418442ff5ee14",
+      "bytes": 83738,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "d6389146a739eeec1cba3c907cf95639b86ed1d9a3dd8082d1a5371f80ceb811",
+      "bytes": 259465,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/artifacts.json",
+      "sha256": "5edcdc6a17d164f0a79bcdd7d6c0072a6c944c3483317892b98596b629cde432",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/result.json",
+      "sha256": "5ea1f79a44b9868f11e74ea52e7d0d2d41da469ede4beef74f35f1d8e1313d94",
+      "bytes": 53595,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-11-1d043310cbecdceb-185_filtered_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/COMMAND.json",
+      "sha256": "1127248c8ff08b174844bb31d575e1ffd0ad4790a804c1e36e0a04d16d8cb076",
+      "bytes": 83773,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "cd04911e55fb3ba4fe909139cbeaac8953e586c3b007ee9dde463faba1126176",
+      "bytes": 165710,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/artifacts.json",
+      "sha256": "e8108784869f278e58089bf63a19324b0b0e3730cf11cda75dcb0bd89de5ed0a",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/result.json",
+      "sha256": "2ea63d3aea3057032f3db9509cb1121c2943c49cca35b06b38fa3d990c65151c",
+      "bytes": 19391,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/stdout.log",
+      "sha256": "ce0f788b018641be3408d3009c5c8448f6a29260eef9c2bc17f2f42ec3e544d0",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-12-66294c58700ef1b4-184_unfiltered_no_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/COMMAND.json",
+      "sha256": "6f2a984c8945e7425a5b976176bd767bcc478ca7f45c11480dc4c72c578751d1",
+      "bytes": 83745,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "3de1b90331e0c639dfe9e7e8944b741717b07e83b172a0ace3c54a1c113a58a9",
+      "bytes": 165701,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/artifacts.json",
+      "sha256": "5553a9c7ca63d46f86f2a2a0c9585a5ade1af8c3e3042a85d638c671238313eb",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/result.json",
+      "sha256": "eded084d1e659105471f4cc4114db2ac6327f3b227a56f961c8cba4ae28c1379",
+      "bytes": 19386,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/stdout.log",
+      "sha256": "c9e70d8bac14ec1500f485fc5ee92fb46d26572d18b9a47cec0dde7dfe3f56ba",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-13-66294c58700ef1b4-185_unfiltered_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/COMMAND.json",
+      "sha256": "d60955b4c7abb008136450259d3c3e5855ce787dcbbb30166eba9ec6092bf845",
+      "bytes": 83762,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/MEASUREMENT.json",
+      "sha256": "51f1a88d15ad229aabf64ace90368c4472135243b259013858a9ef2c3ac22dd6",
+      "bytes": 165295,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/artifacts.json",
+      "sha256": "8973676139bf677ba0471b3e3b64deff188ca3a87efa8b8f4419d9f5df32eaab",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/result.json",
+      "sha256": "97446575f1f0e47607f2bfc6795076e12f466792e090fd6737bd023c9c63deda",
+      "bytes": 19079,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-14-66294c58700ef1b4-master_reference-r1/stdout.log",
+      "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-14-66294c58700ef1b4-master_reference-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/COMMAND.json",
+      "sha256": "19609182b7acefe461ce20e728ac34b02801c586d3143eeaffe08703b4f1d4b8",
+      "bytes": 83738,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/MEASUREMENT.json",
+      "sha256": "4f70513f059b93bb3d3a5ac9e62ee5495f29b563b8c7a1358b242d69b43ce0a6",
+      "bytes": 165789,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/artifacts.json",
+      "sha256": "816c615045ab804dadfc2cc746cc0facfd0172cd294ed4eddc0d9efb4f92ae66",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/result.json",
+      "sha256": "12b83e76454afa768e6a4f85393a5a9cd2bf03c26692c9f2640c45b3fd4822ce",
+      "bytes": 19360,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/result.json"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/stdout.log",
+      "sha256": "bb00e1127aa3ffe39286f625b9240c032609b040f6b8c2fd86e221a8b35cead9",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-15-66294c58700ef1b4-185_filtered_zone_gate-r1/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/COMMAND.json",
+      "sha256": "66acd4c6ac1ca4c40a159f41e549dc77cd2620dac27ba4344000c0876d0b9fa3",
+      "bytes": 83856,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "506b661fe982e9e31b667cee2a694f8bb2f8aa91897f4c3ac0c49b5e54befa92",
+      "bytes": 165718,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/artifacts.json",
+      "sha256": "d57fc1caa5390fd79e0a4c981b5c7317b8eb1c173fbe142521c7f45100ad41cd",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/result.json",
+      "sha256": "052696de20495a4a4a422821250d86e0ac3b58f31351cf74011449e7469b5d38",
+      "bytes": 19385,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/stdout.log",
+      "sha256": "c9e70d8bac14ec1500f485fc5ee92fb46d26572d18b9a47cec0dde7dfe3f56ba",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-16-66294c58700ef1b4-185_unfiltered_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/COMMAND.json",
+      "sha256": "91fd20245af0057f305e7d5a24e9a05a900e4371b40b194a5a4a5c90c9e9d9ae",
+      "bytes": 83739,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "ef64c0511a4901d58a9bbae266075874c5290087d826dcc5a486b768cb0c8b21",
+      "bytes": 165679,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/artifacts.json",
+      "sha256": "844b76c554a54a9a7779007b58ffc4c669ba228df9a8ddb4fe3e2b3f243610d2",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/result.json",
+      "sha256": "833856581f8992c1fca9426b77725e1372e263b5686fcf7153b627c64503de30",
+      "bytes": 19363,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/stdout.log",
+      "sha256": "bb00e1127aa3ffe39286f625b9240c032609b040f6b8c2fd86e221a8b35cead9",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-17-66294c58700ef1b4-185_filtered_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/COMMAND.json",
+      "sha256": "e95f01e55ab4a97077a08aaac68254602533ae82738a10442ce7111ab3f09278",
+      "bytes": 83771,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "a86a12396eaeed0fa9f4c3e2bebc5dc6ca28edd74d9db1e6c0ee3824ef950066",
+      "bytes": 164993,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/artifacts.json",
+      "sha256": "1a566ec804f33af9eaf08f3d8fc8d3831f9e0bf606781442a1b4ecdb52faa544",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/result.json",
+      "sha256": "e075a9593a8ce0ac702f671b88e3242db283120a39609c02f530886ec171952e",
+      "bytes": 19386,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/stdout.log",
+      "sha256": "ce0f788b018641be3408d3009c5c8448f6a29260eef9c2bc17f2f42ec3e544d0",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-18-66294c58700ef1b4-184_unfiltered_no_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/COMMAND.json",
+      "sha256": "53f0e642350a77c594c8f6a7f2e8d0268672d3ddc895c673f0a314cff8b442bb",
+      "bytes": 83035,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/MEASUREMENT.json",
+      "sha256": "33f2bd3e58f5d584343f7cd370409af957de2d369bdc763ae9e8593fc6b96b73",
+      "bytes": 164686,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/artifacts.json",
+      "sha256": "6845304220efea600f74888037dad29622a55720012229aa1b04fe9532982b49",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/result.json",
+      "sha256": "e854b6bc2ba7e2192911646e6a763c0e9d17bc632726d5a1abffaa4fa9eb3066",
+      "bytes": 19078,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-19-66294c58700ef1b4-master_reference-r2/stdout.log",
+      "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-19-66294c58700ef1b4-master_reference-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/COMMAND.json",
+      "sha256": "eb2631b5051faf4244229f6240086d5040a238f17be7797e48fe60963e4bc963",
+      "bytes": 83127,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "948449fbe3cc21448ec643568c5850368991dd760db8e463770f9dfef3b1e63e",
+      "bytes": 258872,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/artifacts.json",
+      "sha256": "0f4792a87abdac3cfb620e2fcf9d7608e4d70be61c7a10c8900d5131e5046c32",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/result.json",
+      "sha256": "6772275068b05791e8683c888f55536658dd56f483e805a262132457f43c009c",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-20-1d043310cbecdceb-185_unfiltered_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/COMMAND.json",
+      "sha256": "8cc197fd3ebf6d595a87a771c7f623316df9134166104f731b87de04582c85d4",
+      "bytes": 83125,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "19fb1b381b7e809b2477f879a825bbfcec28f685ccc66a7127bd319852d43174",
+      "bytes": 258861,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/artifacts.json",
+      "sha256": "e9cc3fc4f14dd938684a713bc069890e89db7e76b5d4aeda1784eb86658245d8",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/result.json",
+      "sha256": "e572491ce6e957c605e4f02453fb664ffbdcf745bbe4634ab696f46595724e4a",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-21-1d043310cbecdceb-185_filtered_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/COMMAND.json",
+      "sha256": "35e0b96a7bce3ea3d3b78df7c29ccec7c22daf4d75597b957086b4cf3e92dec2",
+      "bytes": 83159,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/MEASUREMENT.json",
+      "sha256": "0891dcac3535654fe0d3df1ec19aa910fddc9eb1489e0377688a792a0259d6ef",
+      "bytes": 258160,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/artifacts.json",
+      "sha256": "e7c469c4a2bd5a106e1447c42b09a397c21a7e505e763251b7069f8ba51da612",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/result.json",
+      "sha256": "cfe6066118901f12f92e64cfac22b2b11492482e3fc967bd13a10cce69f5a106",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-22-1d043310cbecdceb-184_unfiltered_no_zone_gate-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/COMMAND.json",
+      "sha256": "2c13b58fee733515b9318d013606d136bf7586f7fd8b935749b4353946b792aa",
+      "bytes": 82424,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/MEASUREMENT.json",
+      "sha256": "03e8857cb98852f0dff5e6b9e584f8ff415b2b3dee092d1b94e7e2baf8ee4cda",
+      "bytes": 257693,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/artifacts.json",
+      "sha256": "1034ca95340fe2158bc9434c1cefa93150e8fb8e218a8775e9946607891137d7",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/result.json",
+      "sha256": "d8fff11e1eddcec546e3430eae64378f51cdee9d4cb6013006a26d52a71e7728",
+      "bytes": 53248,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/result.json"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-23-1d043310cbecdceb-master_reference-r2/stdout.log",
+      "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-23-1d043310cbecdceb-master_reference-r2/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/COMMAND.json",
+      "sha256": "8cb12d83fdc2fe06a5f8565d711be53cdce43c66b9764a78cf7d189363047eb0",
+      "bytes": 82401,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "cc0b84fbc9e09588588b214228277aa7ba6a0ea039a0d3ede5542ffe0dff269c",
+      "bytes": 258139,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/artifacts.json",
+      "sha256": "470775637cf558f1f3d620665361d863e7f8f157bfe43892f8bd947eba16c7dc",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/result.json",
+      "sha256": "29103b84482a6702adfb71a4c42e2a412f532d990e62bee9f409ace662e77927",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-24-1d043310cbecdceb-185_filtered_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/COMMAND.json",
+      "sha256": "c24e8760a3beacfd82a81afe2a85f31f3164ee8d6cdfa0d0bdc5b63f6866d54e",
+      "bytes": 82423,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/MEASUREMENT.json",
+      "sha256": "237ae0f4f4208ba10c2c9d60278292958891e026eddcb3c29c0b11f9b489d0d0",
+      "bytes": 257685,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/artifacts.json",
+      "sha256": "77e3d1ebbc3f2906029b47d4128117c61126b2cd2b75001dafab4c0f6d7c8e4a",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/result.json",
+      "sha256": "7c757209f8edce7f752a66e9ea4bf899b483e4decbf6fc9e382b07117ef44455",
+      "bytes": 53248,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-25-1d043310cbecdceb-master_reference-r3/stdout.log",
+      "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-25-1d043310cbecdceb-master_reference-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/COMMAND.json",
+      "sha256": "b2b899359e2e5e5708ef61d52c92096e93980de4bdb3ca56462b0511655bcd50",
+      "bytes": 82408,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "91939cea9a2d0ddbe68e5a3d2363ba710e707458750f2f921b3d19a5da3431ba",
+      "bytes": 258123,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/artifacts.json",
+      "sha256": "2c2a6c27a835272e24c077a797482f34574b2325207034cda24b1504c91eb696",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/result.json",
+      "sha256": "045a1fd30e31e39d764a81995b69b40bbe88a05e6d36c34f6f6a9706a40b1c24",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-26-1d043310cbecdceb-185_unfiltered_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/COMMAND.json",
+      "sha256": "4f3f88a23a8653d7e897afb72372030c69220a5d554f5413139deb0dbff604cd",
+      "bytes": 82424,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "e8c6d90b0110401c5183d15c11d419b5c86ef25aeeb083e25f31b2c915844ff3",
+      "bytes": 258142,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/artifacts.json",
+      "sha256": "7a686482321c3acfb0f0b3fbee627228b5b8a51c0454318b332bfd295a5560a4",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/result.json",
+      "sha256": "94bb0712018d8c445795d70ad13a1ce35a12536625878fef9c71842b899c2557",
+      "bytes": 53592,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-27-1d043310cbecdceb-184_unfiltered_no_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/COMMAND.json",
+      "sha256": "5cce9fe716a76f6a8ed789d3b94c4f68b6d888b4c5295ce315cf66b33d3db719",
+      "bytes": 82391,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "d5521e613a1847a82bb69d28df0a7b5769a3162b253901b5692a11ec8a618b1f",
+      "bytes": 164555,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/artifacts.json",
+      "sha256": "83b815dbd99d852aa3f640729ab196b358182e81a3e84044cbd252b3b0a5de91",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/result.json",
+      "sha256": "7cda3409ae03fc2577bf1032c3a8a386cc90616a9cc8d6396465f875be877974",
+      "bytes": 19363,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/stdout.log",
+      "sha256": "bb00e1127aa3ffe39286f625b9240c032609b040f6b8c2fd86e221a8b35cead9",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-28-66294c58700ef1b4-185_filtered_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/COMMAND.json",
+      "sha256": "6b8050e7bab1c39f2e8cdabe511b28e72e14ed891c9143c3a8204e4246d0769e",
+      "bytes": 82627,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/MEASUREMENT.json",
+      "sha256": "210a90aa584ef8670105e5e32f99dac9ed495ea437c81f0327c6fb372fe8bce0",
+      "bytes": 163960,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/artifacts.json",
+      "sha256": "e0f01d3a9ae31dd2021d69ab5e55172d27c39be3c4b769fe2ebd986ed0726330",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/result.json",
+      "sha256": "f32416b81605ea4390e371840ad68e1bfdf4970da7c2e1581bedab451b79a165",
+      "bytes": 19078,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-29-66294c58700ef1b4-master_reference-r3/stdout.log",
+      "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-29-66294c58700ef1b4-master_reference-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/COMMAND.json",
+      "sha256": "d29ab371cbd24e797ed8a3d8963a1b32a49cfae1f172b630e87676f68b4ef22d",
+      "bytes": 82402,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "79ed5bd0996d344e290c65be01c7aae13b3e7e6ba5a23082078c7bf7e2e7c3d1",
+      "bytes": 164060,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/artifacts.json",
+      "sha256": "063873ac5c1a9531098bb7eda14945acb6f9c259654a76387fe6e4ffea5daf1a",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/result.json",
+      "sha256": "dd84d96570eb838e4e3b877c60ef7ab195b8436a40986d839dd3de5effdd87ff",
+      "bytes": 19389,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/stdout.log",
+      "sha256": "c9e70d8bac14ec1500f485fc5ee92fb46d26572d18b9a47cec0dde7dfe3f56ba",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-30-66294c58700ef1b4-185_unfiltered_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/COMMAND.json",
+      "sha256": "0a06f8ad1a8d9958bef4289506eb724cf3b318011533fd3d44bd99708b369bd0",
+      "bytes": 82110,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/COMMAND.json"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/MEASUREMENT.json",
+      "sha256": "677ab20ad617c4078d5f8239c3cbf51ac03eea921c50efe68a878338d46b298b",
+      "bytes": 163951,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/artifacts.json",
+      "sha256": "9333323cc7bc2c80c2a25c4755bd33086f78a55f08ffb17c7d71b3aca6192d8d",
+      "bytes": 217,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/artifacts.json"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/progress.jsonl"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/result.json",
+      "sha256": "ca521367e52ada3d8178808f1f71a9c14b3f905087510769bca2f747f71644f6",
+      "bytes": 19387,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/result.json"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/stderr.log"
+    },
+    {
+      "path": "study/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/stdout.log",
+      "sha256": "ce0f788b018641be3408d3009c5c8448f6a29260eef9c2bc17f2f42ec3e544d0",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/cpu-31-66294c58700ef1b4-184_unfiltered_no_zone_gate-r3/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/COMMAND.json",
+      "sha256": "e91b2adcc076e949af46b25b3b05ddd6f87cbcae51e6636574c4379c0c39009e",
+      "bytes": 82260,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "a4246d1b821ef4ce108fcb0403c2f00df4a290c459250d18f8213883e2119ae7",
+      "bytes": 164177,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/artifacts.json",
+      "sha256": "ee70c5a39fd123f4361bfcfc222a5793dd1f357efdc9c3a3a749b2ebd9a34e4b",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "838d9ea3b7b200f7b17b15c9859668b7b7876bf25a51c5865fdb4afa60006b93",
+      "bytes": 1213,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "abbc09b2eebaf08f65e46986b020941cf468b742ef208fa64b6166d400f94b05",
+      "bytes": 6997,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "46fcc91b60d9c65a9cc5fcf23430375e51900705ab5849791141221d4022a025",
+      "bytes": 1772313,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-quality.csv",
+      "sha256": "e6a8fb5e6bee0125419ccb6f31ec19c8f9770be629468c72bc28b0edb4c6989e",
+      "bytes": 66839,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv",
+      "sha256": "ba5a939e47d77cb4b9da14f8026a9188d8561b2889063c03f789be39410e1783",
+      "bytes": 8147652,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "7ac9afc6bfe964a164727df980694c1c485e9607a9984609f1ab54ae7a2f7bac",
+      "bytes": 27118,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "9beb822bc51e002143b3149d285c464b3f0aa0dd649a7bb6c5f793904a06f9e9",
+      "bytes": 2235,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/result.json",
+      "sha256": "807287b1810b814be20f0373ae862e4c15cb08fcb391e536efdc3efdaf071d7f",
+      "bytes": 19599,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stdout.log",
+      "sha256": "ce0f788b018641be3408d3009c5c8448f6a29260eef9c2bc17f2f42ec3e544d0",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-00-66294c58700ef1b4-184_unfiltered_no_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/COMMAND.json",
+      "sha256": "117c839f88f459218ebf89632ea69f9cf01043df6ff40e242a0a56b714b961fb",
+      "bytes": 82230,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "e799e7274c0065f1b97a6ccb87d14062f25cad9fdfd232e3c7337dd618960845",
+      "bytes": 164157,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/artifacts.json",
+      "sha256": "d054731b304aa434f3c3776527d12dfced8deb733250117af6a07e038cefe523",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "ecf0bd8765e4bbc0020a6a1a2ddffe19dc4bc40ef71f195b6769ee01de9fc9f5",
+      "bytes": 1101,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "ad3c06bae55732fee47c69e51a02b4f185dcbabd184fdd7c584a2678c84a43cd",
+      "bytes": 6003,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "46fcc91b60d9c65a9cc5fcf23430375e51900705ab5849791141221d4022a025",
+      "bytes": 1772313,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-quality.csv",
+      "sha256": "d019253e06f3be7413b7e3c779fbef10da969ecfc7aa8ef599adec3138dc548e",
+      "bytes": 62147,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv",
+      "sha256": "c81285423bace085f8cf0bcab526b9aed6d861eb0e540a6d72eeec08a12fde9e",
+      "bytes": 8146444,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "bcc6e51d7a93637a05ca15f37beeeeab17814e7ecb8b6ce48bb424d30e787e4d",
+      "bytes": 26995,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "a9bd5b60c4365536e5d2c493c37121ff6ef00775afcf213fff2fbbf4bc41e16b",
+      "bytes": 2228,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/result.json",
+      "sha256": "c32bb70e3f3e4e19dd1a1a991effdb5bde8fc91ea49efcefa0ec775d85e8105c",
+      "bytes": 19594,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stdout.log",
+      "sha256": "c9e70d8bac14ec1500f485fc5ee92fb46d26572d18b9a47cec0dde7dfe3f56ba",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-01-66294c58700ef1b4-185_unfiltered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/COMMAND.json",
+      "sha256": "21eb12d79fcdadaf0dd7a07f9dc6850328bdfb7cd4155f1a822e20dff5ade674",
+      "bytes": 82216,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "75c4ee84fa2d16cdea583f5fb52b9def78f9314123fc31158a1855893f9804c3",
+      "bytes": 164221,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/artifacts.json",
+      "sha256": "a96c57cd6dbcec33e8b2a5ef7f2373f93b74beeb225cbb4bf31d34b871ed0d66",
+      "bytes": 574,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "4f96a07e2a038bb50568259aed87fbf6cc0fe9f6f8d5fedf618b74ada0b38c34",
+      "bytes": 1182,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "865f204346f61cb0b7f898f19eb68a1508dd10db74e751ec82d06bb9b91d7ed1",
+      "bytes": 6443,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "c7a8845ef3c99558be0daf3c6360cda7579f481ad52151909d5df70a0468d4b1",
+      "bytes": 3009765,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-quality.csv",
+      "sha256": "4882f568aff7fff82de8c8ceb36878190f382e96dab4f1a2038a22ca390db39a",
+      "bytes": 69002,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv",
+      "sha256": "fbd14d8688435b8d44fbf433793dec7205898b21c6007aa5d4df8ecc447cda6e",
+      "bytes": 7724426,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "de08fdda78710202cc9d9d151cfd4993e388941a1028d77cab9ffd45550ab747",
+      "bytes": 26750,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "67ae0b4f6502ac7cf713eb9629bfa6983eb72b675b58f108395e38cf37fdd3e9",
+      "bytes": 2225,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/result.json",
+      "sha256": "d9318ab2ebaebfb67e8a42416379c2f353a77cc7e9bc1166db3db9e0b08d915e",
+      "bytes": 19567,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stdout.log",
+      "sha256": "bb00e1127aa3ffe39286f625b9240c032609b040f6b8c2fd86e221a8b35cead9",
+      "bytes": 262,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-02-66294c58700ef1b4-185_filtered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/COMMAND.json",
+      "sha256": "fd5475ea193f6a3e127653eece4707b2357d12252d2823708174701262dd96d0",
+      "bytes": 82573,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "81c3e57b2cfbf175a36ab520552bd181007fc135f7be33ad393bc36969d30b98",
+      "bytes": 258041,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/artifacts.json",
+      "sha256": "bb2baa51433b0030a5895e7fcc194db86bae152925e29a3a42d0ee3fd96fe928",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "5fbf4652a1b141a4bd7a9f020dd4aee6c8ce88e4fa067ba5f694cc7870ec7407",
+      "bytes": 738,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "0deab60e79d36d05fbef945f55d788fad86ad51c69f7804496ed4c65009fd2d9",
+      "bytes": 8950,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "b688f27ae06c34947fe68d178e62a7c31b0d35207d83e6677cd430ae8958d1a9",
+      "bytes": 127643,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-quality.csv",
+      "sha256": "22acd4fa1ea7c7a540fc3b737051b2776909ed2070b779b93414234705d9ee19",
+      "bytes": 74274,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv",
+      "sha256": "753482f7ccbf95d3b2e07c64f0e148cf665ad5e8a557ca906f9f904c03d228ea",
+      "bytes": 1287292,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "eda32e314a07be2985fad193742b45aaf53eb252be6ccc8257da47fa66a3681f",
+      "bytes": 17244,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "55f5a1c4671574ed2aa1312e7ebf7034fb8cac89a93b6c1ede2b96bed43b4bf3",
+      "bytes": 2215,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/result.json",
+      "sha256": "7052354ba12a54fbd08b0063d57d0e330cac9b306e19b7ccb855e01d72c86acb",
+      "bytes": 53796,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-03-1d043310cbecdceb-184_unfiltered_no_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/COMMAND.json",
+      "sha256": "2fa07ec32698bf53e0efccc8508faf2f0075b46c781026e31c105f95671434cf",
+      "bytes": 82341,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "70694422eae79fbaef05a4e220c537fa97af14b8ff1ad0e74c7de5722329f93c",
+      "bytes": 258041,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/artifacts.json",
+      "sha256": "81eeee3955440ed630a6f9972ad6cb154dd2c39e138b922ff9c632daf72583ab",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "c75ce1eb803dfb8d55775eb375794bfad535008e1864740c9a01e570e587b47e",
+      "bytes": 595,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "33396ceb8ffbf92d9aa1a90fe8393ce44bc732fb12be12a0c511f252603b4fb3",
+      "bytes": 7558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "b688f27ae06c34947fe68d178e62a7c31b0d35207d83e6677cd430ae8958d1a9",
+      "bytes": 127643,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-quality.csv",
+      "sha256": "f72bed89821a17a5e22d9b1893eb2a1b4e78195bc0df187f2b147fbe19404d56",
+      "bytes": 64338,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv",
+      "sha256": "263d17000c6a68c770f8f96b5791ada5d5a378f0d731c7d869f249fa05974906",
+      "bytes": 1285306,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "98760146a01e845b8ff8db55b6f2d9b0ab4f8af93e393c04d5f30119dba8a222",
+      "bytes": 17120,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "f369da53eba57e94519106d9e51b49ce21947f47331d2a29c7f3961d1567c456",
+      "bytes": 2202,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/result.json",
+      "sha256": "c402b3754d01ba84629d3fc23c89f415a80bc51df25b133b13bc3cd01d5c5054",
+      "bytes": 53790,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-04-1d043310cbecdceb-185_unfiltered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/COMMAND.json",
+      "sha256": "14385d634e3e9729cd2329d39f93ca542618c08d28ef2df1296f3b8f27e7a7a1",
+      "bytes": 82332,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/COMMAND.json"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/MEASUREMENT.json",
+      "sha256": "792064cbc9c7fabb777494ec5bf7baa3b3d5e936baf30638ccb2796778e4a8ab",
+      "bytes": 258028,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/MEASUREMENT.json"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/artifacts.json",
+      "sha256": "d951bd8103a5a23820348248c1150c9f1c0001c8457c037dec3b36a0d20cfdb1",
+      "bytes": 572,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/artifacts.json"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-contradictions.csv",
+      "sha256": "c75ce1eb803dfb8d55775eb375794bfad535008e1864740c9a01e570e587b47e",
+      "bytes": 595,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-contradictions.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-episodes.csv",
+      "sha256": "33396ceb8ffbf92d9aa1a90fe8393ce44bc732fb12be12a0c511f252603b4fb3",
+      "bytes": 7558,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-episodes.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-planning-quality.csv",
+      "sha256": "b688f27ae06c34947fe68d178e62a7c31b0d35207d83e6677cd430ae8958d1a9",
+      "bytes": 127643,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-planning-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-quality.csv",
+      "sha256": "f72bed89821a17a5e22d9b1893eb2a1b4e78195bc0df187f2b147fbe19404d56",
+      "bytes": 64338,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-quality.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv",
+      "sha256": "c88009f32108163e2500511db869dec1f2dbf9140cb0c769dcb17978bb359dab",
+      "bytes": 1285306,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv.intervals.csv",
+      "sha256": "788f65d9c43849a821329a6d6246e991cea89e198b77475a58d4a9a2fdfedbc9",
+      "bytes": 17120,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv.intervals.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv.summary.csv",
+      "sha256": "f369da53eba57e94519106d9e51b49ce21947f47331d2a29c7f3961d1567c456",
+      "bytes": 2202,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/gradient-work.csv.summary.csv"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/progress.jsonl",
+      "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+      "bytes": 1122,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/progress.jsonl"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/result.json",
+      "sha256": "aaf0ac3ad4cdccf13592a8128c1a00009ce097aab3e1e2e133f64eb01d63f48e",
+      "bytes": 53788,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/result.json"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/stderr.log",
+      "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+      "bytes": 205,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/stderr.log"
+    },
+    {
+      "path": "study/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/stdout.log",
+      "sha256": "40dc2dfc430afd263c505f630f19a26dbc371cd7a73ffaadab5e73f0bb7f3ff4",
+      "bytes": 310,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/runs/quality-05-1d043310cbecdceb-185_filtered_zone_gate-r0/stdout.log"
+    },
+    {
+      "path": "study/summarize.py",
+      "sha256": "5b1124b4d9cd5f097555b60c0a7869567a1a85097f5e56ef24678a5a3a78e8c0",
+      "bytes": 7920,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/summarize.py"
+    },
+    {
+      "path": "study/summary.log",
+      "sha256": "aed58daa601fc07bb3287ce9c2457a3543d528c929b37710bb45ad2d519222cf",
+      "bytes": 43853,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/summary.log"
+    },
+    {
+      "path": "study/supervisor.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/zone-filter-comparison/supervisor.log"
+    },
+    {
+      "path": "inputs/66294c58700ef1b4/initial.map.gz",
+      "sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+      "bytes": 22379,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/66294c58700ef1b4/map.map.gz"
+    },
+    {
+      "path": "inputs/66294c58700ef1b4/warm.game.gz",
+      "sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+      "bytes": 474027,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz"
+    },
+    {
+      "path": "inputs/1d043310cbecdceb/initial.map.gz",
+      "sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+      "bytes": 35207,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/1d043310cbecdceb/map.map.gz"
+    },
+    {
+      "path": "inputs/1d043310cbecdceb/warm.game.gz",
+      "sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+      "bytes": 731751,
+      "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz"
+    }
+  ],
+  "logical_files": 329,
+  "unique_objects": 216,
+  "scope": "Final185 filtered experts versus master,184 and185unfiltered controls; all32OFF+6ON raw cells, commands, results, CPU/wall measurements, load observations and exact175initialstates. No ELF/object/dependency payloads."
+}

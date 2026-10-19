@@ -1,0 +1,8 @@
+{
+  "status": "PASS-RESULTS-VERIFIED",
+  "report_sha256": "c4243b0600ddd56bedb551783b962736e63f0e9f3716efac78457654e8022fef",
+  "models_sha256": "7fa728ebf2b3a72e89ac2d8131513299726dd8cea39c8877951c0991cf44b09e",
+  "all16fit_models_preserved": true,
+  "recovery": "Reportserializationfailedonnumpyintafterallfits;scoring-onlyrecoverywrotevalidJSON/statusCOMPLETE;finalstdoutpretty-printstillfailedaftercommittedJSONbutresultsparsed/verified;no fits rerun",
+  "native_changes": false
+}

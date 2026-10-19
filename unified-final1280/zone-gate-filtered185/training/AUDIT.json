@@ -1,0 +1,38 @@
+{
+  "status": "USER-ACCEPTED-CONSERVATIVE-APPROXIMATION",
+  "dataset_slots": 1280,
+  "normal_games": 500,
+  "censored_games": 780,
+  "original_eligible_rows": 287045,
+  "exclude_eligible_guard_rows": 49925,
+  "retained_eligible_rows": 237120,
+  "retained_guard_rows": 19791,
+  "filter": {
+    "id": "eligible-guard-exact-nonpainting-ai-v1",
+    "nonpainting_ais": [
+      "cabino",
+      "castor",
+      "cortex",
+      "econo",
+      "nicowar",
+      "numbi"
+    ],
+    "criterion": "family Guard, complete known movement-label episode, exact owning-seat AI in declared list; do not filter on captured goals"
+  },
+  "source_facts": [
+    "All1280 frozen map bytes SHA-match accepted pure map-generate provenance.",
+    "All1280 actual receipts use only that map input and the exact builtin AI roster, with no replay/order input.",
+    "Pure generation has no players/simulation ticks; Map::create initializes area masks to zero.",
+    "Only Maxima/Warrush AI implementations emit Guard paint orders; team-local masks do not copy allied paint.",
+    "Generator and AI/order source unchanged across map-generation revisions used here."
+  ],
+  "limitations": [
+    "Raw painted tile counts/history were not recorded.",
+    "captured_goal_count0 is not paint absence; blocked/ineligible painted cells can have zero goals.",
+    "Maxima/Warrush zero-goal rows remain unknown and are retained.",
+    "The provenance+AI criterion is accepted approximation rather than replay reconstruction of actual paint.",
+    "All source datasets/wholemap split assignments remain immutable; hierarchy weighting policy is recomputed on retained rows."
+  ],
+  "map_provenance_sha256": "9a3daf4b02a65202b596775650d084d314267193b832c452c56cc8eabb5e4f21",
+  "game_provenance_sha256": "1516d504b7ae522936937d7b9dcb08292a4c9298bbb0d3640401fdfa8ea7ade1"
+}

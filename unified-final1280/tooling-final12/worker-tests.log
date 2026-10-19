@@ -1,0 +1,12 @@
+test_collection_requires_frozen_inputs_full_provenance_and_artifact_retention (__main__.GradientCollectionJobs.test_collection_requires_frozen_inputs_full_provenance_and_artifact_retention) ... ok
+test_completed_collection_rejects_missing_or_old_binary_outputs_but_allows_quiet_streams (__main__.GradientCollectionJobs.test_completed_collection_rejects_missing_or_old_binary_outputs_but_allows_quiet_streams) ... ok
+test_current_and_historical_collector_headers_are_explicit (__main__.GradientCollectionJobs.test_current_and_historical_collector_headers_are_explicit) ... ok
+test_default_jobs_do_not_enable_or_require_probe (__main__.GradientCollectionJobs.test_default_jobs_do_not_enable_or_require_probe) ... ok
+test_incomplete_engine_request_keeps_original_failure_diagnostic (__main__.GradientCollectionJobs.test_incomplete_engine_request_keeps_original_failure_diagnostic) ... ok
+test_probe_is_explicit_and_seeded_exploration_preserves_exact_assignment (__main__.GradientCollectionJobs.test_probe_is_explicit_and_seeded_exploration_preserves_exact_assignment) ... ok
+test_strict_collection_schema_rejects_silent_typos_and_nonportable_seeds (__main__.GradientCollectionJobs.test_strict_collection_schema_rejects_silent_typos_and_nonportable_seeds) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.006s
+
+OK

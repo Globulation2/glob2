@@ -1,0 +1,35 @@
+{
+  "status": "PASS-FROZEN-TOOLING",
+  "selected_strategy": "family-experts-with-combined-fallback",
+  "threshold_milli": 16000,
+  "demanded_age_cap_ticks": 1024,
+  "trained_expert_ids": [
+    0,
+    2,
+    3,
+    4
+  ],
+  "unmeasured_markets_and_unknown_ids": "explicit-combined-fallback",
+  "source_files": {
+    "tools/adaptive_gradient_model.py": "2f50915e4c9f596d2788e683c5606198361bb636b6eb6b851c1d134679e71dd6",
+    "tools/adaptive_gradient_codegen.py": "d682d8b4f87a3c53b4c8be762b6f5b96db3cfd17fc51da54bbc3b6b79e692100",
+    "tools/adaptive_gradient_dataset.py": "f1b6cbbfc76acb2a8c299954fc7877223a9f17eb7cae4c4d2bddf102b7f545b8",
+    "tools/test_adaptive_gradient_model.py": "57c4ec9453c8029fd761997283da257c5c5e7cf4fd13fc08ecfef1a257ed930f",
+    "tools/resource_gradient_model.py": "d3bd2afd2e369e70ae9f685f966659f7ef6a650a9bac81484f980471dbfba999",
+    "tools/models/adaptive-gradient.json": "31e81be7d41ad545b1757eb75668e78d5d31bc07373754824195c1f8a24ddd57",
+    "src/map/gradient/AdaptiveGradientModel.h": "7cfbb952eb6bd30a0f34285d6a86b394c9b77e7f25f01e76a97aed940f613e8e"
+  },
+  "tests": {
+    "relevant_unittest": 100,
+    "standalone_worker": 7,
+    "python311_syntax": true,
+    "ubsan_cases": 4240,
+    "exact_original_coefficients": true
+  },
+  "receipts": {
+    "tests.log": "af99848d4a5b30cd44d5991c499ab2bef820d9f24ba40e930e27fb11fe5bc730",
+    "worker-tests.log": "ded50f496622bc1c550ffe7707c05bab517d4daa1c26eb99eba07f9d49cdd26b",
+    "PARITY.json": "d921190df36c6d12427633459d3fd163614a9a92c3f859c192a6e3aeb05de93d"
+  },
+  "limits": "Tooling and integer arithmetic qualified; final ordinary release/native/platform proofs are pending parent build."
+}

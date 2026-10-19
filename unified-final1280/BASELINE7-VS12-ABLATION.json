@@ -1,0 +1,826 @@
+{
+  "status": "PASS-RESEARCH-ABLATION",
+  "input_sha256": "a044f373dcedcec9f3f63d2b54768124e2a75193cc5f604a57f040a5bf486a25",
+  "existing12_sha256": "3ba00451aebd7b991fcc8e700f23d342c3a30ec66c4b2398df886734c8518b87",
+  "same_rows_weights_splits_model_class_threshold": true,
+  "rows": 287045,
+  "heldout_rows": 67018,
+  "heldout_maps": 315,
+  "baseline_features": [
+    "age",
+    "q32",
+    "q128",
+    "target_added",
+    "target_removed",
+    "target_added_frac_q12",
+    "target_removed_frac_q12"
+  ],
+  "baseline_transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12"
+  ],
+  "removed_features": [
+    "since_capture_invalid_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_invalid_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
+  ],
+  "description": "Remove all3 since-capture contradiction counters and2 derived event fractions together; preserve7capture-age/demand/target-turnover inputs. Same integer4-head model class, transforms for retained inputs, fitting routine and regularization.",
+  "threshold_milli": 16000,
+  "cross_validation": [
+    {
+      "fold": 0,
+      "baseline7": {
+        "episodes": 68135,
+        "states": 307,
+        "mae": 6.516699483670745,
+        "mse": 1109.9958328021767,
+        "selected_pct": 5.31849967967444,
+        "selected_actual_benefit": 23.184314909939168,
+        "positive_benefit_captured_fraction": 0.41384242251957276,
+        "missed_positive_benefit": 2.0057683836798703,
+        "negative_benefit_selected": 0.18306668441589988,
+        "threshold": 16.0,
+        "decision_regret": 2.191359852635579,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 40.0,
+        "false_refresh_pct": 4.289465821500171,
+        "missed_threshold_decision_pct": 2.462763565841474,
+        "absolute_error_p95": 24.926,
+        "absolute_error_p99": 97.31
+      },
+      "existing12": {
+        "episodes": 68135,
+        "states": 307,
+        "mae": 6.506543884193175,
+        "mse": 1110.671437200458,
+        "selected_pct": 5.398135897037575,
+        "selected_actual_benefit": 22.740058647001938,
+        "positive_benefit_captured_fraction": 0.4161894913539333,
+        "missed_positive_benefit": 1.9977369657759745,
+        "negative_benefit_selected": 0.1966165477084158,
+        "threshold": 16.0,
+        "decision_regret": 2.2096200928023,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 40.0,
+        "false_refresh_pct": 4.356652363320633,
+        "missed_threshold_decision_pct": 2.450313890298801,
+        "absolute_error_p95": 25.086,
+        "absolute_error_p99": 97.914
+      },
+      "delta_regret_12_minus7": 0.018260240166721342
+    },
+    {
+      "fold": 1,
+      "baseline7": {
+        "episodes": 75597,
+        "states": 325,
+        "mae": 7.227131167514994,
+        "mse": 1722.8441741529884,
+        "selected_pct": 5.6013064805015125,
+        "selected_actual_benefit": 27.517389549241724,
+        "positive_benefit_captured_fraction": 0.44507126898966753,
+        "missed_positive_benefit": 2.2238028454404373,
+        "negative_benefit_selected": 0.242230400575952,
+        "threshold": 16.0,
+        "decision_regret": 2.469144542584207,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 48.0,
+        "false_refresh_pct": 4.537719664679828,
+        "missed_threshold_decision_pct": 2.7303529751896294,
+        "absolute_error_p95": 27.445999999999998,
+        "absolute_error_p99": 100.797
+      },
+      "existing12": {
+        "episodes": 75597,
+        "states": 325,
+        "mae": 7.24542336300184,
+        "mse": 1719.3054889595578,
+        "selected_pct": 5.677328310594533,
+        "selected_actual_benefit": 26.732964089789075,
+        "positive_benefit_captured_fraction": 0.4365370787162024,
+        "missed_positive_benefit": 2.2580024742452185,
+        "negative_benefit_selected": 0.2316459573270275,
+        "threshold": 16.0,
+        "decision_regret": 2.504923220954947,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 48.0,
+        "false_refresh_pct": 4.601163277081547,
+        "missed_threshold_decision_pct": 2.717774757498329,
+        "absolute_error_p95": 27.954,
+        "absolute_error_p99": 100.489
+      },
+      "delta_regret_12_minus7": 0.035778678370740113
+    },
+    {
+      "fold": 2,
+      "baseline7": {
+        "episodes": 76295,
+        "states": 333,
+        "mae": 7.134110306701091,
+        "mse": 1516.8086761788607,
+        "selected_pct": 5.450227761180977,
+        "selected_actual_benefit": 25.72927445970206,
+        "positive_benefit_captured_fraction": 0.4027019750582265,
+        "missed_positive_benefit": 2.4527593283936535,
+        "negative_benefit_selected": 0.2513612545124256,
+        "threshold": 16.0,
+        "decision_regret": 2.657497259998642,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 56.0,
+        "false_refresh_pct": 4.371027427922884,
+        "missed_threshold_decision_pct": 2.9221757773621415,
+        "absolute_error_p95": 27.468,
+        "absolute_error_p99": 110.003
+      },
+      "existing12": {
+        "episodes": 76295,
+        "states": 333,
+        "mae": 7.150041673574607,
+        "mse": 1516.4428817004239,
+        "selected_pct": 5.457726689167517,
+        "selected_actual_benefit": 26.579731253980007,
+        "positive_benefit_captured_fraction": 0.4128856238052029,
+        "missed_positive_benefit": 2.410940942230958,
+        "negative_benefit_selected": 0.2448346134707832,
+        "threshold": 16.0,
+        "decision_regret": 2.6103520612721502,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 56.0,
+        "false_refresh_pct": 4.357106350420444,
+        "missed_threshold_decision_pct": 2.900755771873161,
+        "absolute_error_p95": 28.251,
+        "absolute_error_p99": 110.06
+      },
+      "delta_regret_12_minus7": -0.0471451987264917
+    }
+  ],
+  "heldout": {
+    "baseline7": {
+      "episodes": 67018,
+      "states": 315,
+      "mae": 7.8109676724913095,
+      "mse": 2142.780549764732,
+      "selected_pct": 5.336285226644147,
+      "selected_actual_benefit": 34.47722404372808,
+      "positive_benefit_captured_fraction": 0.45610941750535344,
+      "missed_positive_benefit": 2.59642186378615,
+      "negative_benefit_selected": 0.33756960916928075,
+      "threshold": 16.0,
+      "decision_regret": 2.8419315478902205,
+      "decision_regret_p95": 16.0,
+      "decision_regret_p99": 60.0,
+      "false_refresh_pct": 4.140640748745052,
+      "missed_threshold_decision_pct": 2.9849141085662523,
+      "absolute_error_p95": 27.15,
+      "absolute_error_p99": 124.012
+    },
+    "existing12": {
+      "episodes": 67018,
+      "states": 315,
+      "mae": 7.818299519889156,
+      "mse": 2136.174905990189,
+      "selected_pct": 5.552406355101867,
+      "selected_actual_benefit": 33.0922446022808,
+      "positive_benefit_captured_fraction": 0.4559014337018465,
+      "missed_positive_benefit": 2.5974147357205415,
+      "negative_benefit_selected": 0.3389638580944607,
+      "threshold": 16.0,
+      "decision_regret": 2.8788980493030274,
+      "decision_regret_p95": 16.0,
+      "decision_regret_p99": 60.0,
+      "false_refresh_pct": 4.340776071405136,
+      "missed_threshold_decision_pct": 2.968928302768617,
+      "absolute_error_p95": 27.742,
+      "absolute_error_p99": 123.798
+    },
+    "delta_regret_12_minus7": 0.036966501412806885,
+    "relative_regret_12_vs7_pct": 1.3007527025149512
+  },
+  "subgroups": {
+    "family": {
+      "materials": {
+        "episodes": 26047,
+        "baseline7_regret": 7.965379450756008,
+        "existing12_regret": 8.05472993097951,
+        "delta_regret_12_minus7": 0.08935048022350382
+      },
+      "clear": {
+        "episodes": 20591,
+        "baseline7_regret": 1.7019753574907215,
+        "existing12_regret": 1.7183662429633724,
+        "delta_regret_12_minus7": 0.016390885472650753
+      },
+      "guard": {
+        "episodes": 15943,
+        "baseline7_regret": 1.0318039999686959,
+        "existing12_regret": 1.0687504877913159,
+        "delta_regret_12_minus7": 0.03694648782262002
+      },
+      "forbidden": {
+        "episodes": 4437,
+        "baseline7_regret": 0.0,
+        "existing12_regret": 0.0,
+        "delta_regret_12_minus7": 0.0
+      }
+    },
+    "format": {
+      "3ffa": {
+        "episodes": 10209,
+        "baseline7_regret": 2.9775290483956245,
+        "existing12_regret": 2.977712931518327,
+        "delta_regret_12_minus7": 0.00018388312270202722
+      },
+      "4ffa": {
+        "episodes": 8083,
+        "baseline7_regret": 3.124496862229786,
+        "existing12_regret": 2.955519278014118,
+        "delta_regret_12_minus7": -0.16897758421566803
+      },
+      "1v1": {
+        "episodes": 7787,
+        "baseline7_regret": 2.854287511219227,
+        "existing12_regret": 3.1004868869241378,
+        "delta_regret_12_minus7": 0.2461993757049109
+      },
+      "2v2": {
+        "episodes": 8074,
+        "baseline7_regret": 2.6498220552321268,
+        "existing12_regret": 2.72687255990855,
+        "delta_regret_12_minus7": 0.07705050467642303
+      },
+      "8ffa": {
+        "episodes": 9783,
+        "baseline7_regret": 2.6951942863993468,
+        "existing12_regret": 2.7320146857225764,
+        "delta_regret_12_minus7": 0.03682039932323004
+      },
+      "4v4": {
+        "episodes": 5663,
+        "baseline7_regret": 2.5201586511315135,
+        "existing12_regret": 2.4754329252581324,
+        "delta_regret_12_minus7": -0.044725725873381514
+      },
+      "8v8": {
+        "episodes": 8063,
+        "baseline7_regret": 3.025086969839386,
+        "existing12_regret": 3.1873113124171453,
+        "delta_regret_12_minus7": 0.1622243425777585
+      },
+      "16ffa": {
+        "episodes": 9356,
+        "baseline7_regret": 2.888876998674753,
+        "existing12_regret": 2.8758338146612323,
+        "delta_regret_12_minus7": -0.013043184013520715
+      }
+    },
+    "generator": {
+      "shattered-coast": {
+        "episodes": 512,
+        "baseline7_regret": 0.4527173829601022,
+        "existing12_regret": 2.0142293618000924,
+        "delta_regret_12_minus7": 1.56151197883999
+      },
+      "forts": {
+        "episodes": 891,
+        "baseline7_regret": 2.0731427731461864,
+        "existing12_regret": 2.0611573316178324,
+        "delta_regret_12_minus7": -0.01198544152835421
+      },
+      "old-town": {
+        "episodes": 1042,
+        "baseline7_regret": 1.729140800045047,
+        "existing12_regret": 1.5777558087682815,
+        "delta_regret_12_minus7": -0.15138499127676522
+      },
+      "everglades": {
+        "episodes": 1901,
+        "baseline7_regret": 4.796683326241925,
+        "existing12_regret": 4.417115239684415,
+        "delta_regret_12_minus7": -0.37956808655751006
+      },
+      "islands": {
+        "episodes": 4532,
+        "baseline7_regret": 6.6757062980096595,
+        "existing12_regret": 6.686470735931608,
+        "delta_regret_12_minus7": 0.010764437921948736
+      },
+      "river": {
+        "episodes": 1819,
+        "baseline7_regret": 2.57870438724333,
+        "existing12_regret": 2.5634193285476,
+        "delta_regret_12_minus7": -0.015285058695729783
+      },
+      "even-ground": {
+        "episodes": 2191,
+        "baseline7_regret": 1.5935103126068033,
+        "existing12_regret": 1.7684068445541508,
+        "delta_regret_12_minus7": 0.17489653194734714
+      },
+      "rugged-archipelago": {
+        "episodes": 1265,
+        "baseline7_regret": 5.112665764855365,
+        "existing12_regret": 6.113840698566197,
+        "delta_regret_12_minus7": 1.0011749337108309
+      },
+      "stone-highlands": {
+        "episodes": 2311,
+        "baseline7_regret": 2.333929513104327,
+        "existing12_regret": 2.359091447956315,
+        "delta_regret_12_minus7": 0.025161934851987512
+      },
+      "honeycomb-isle": {
+        "episodes": 2359,
+        "baseline7_regret": 1.98521132336644,
+        "existing12_regret": 2.038095892666403,
+        "delta_regret_12_minus7": 0.05288456929996309
+      },
+      "canals": {
+        "episodes": 434,
+        "baseline7_regret": 4.474009756215929,
+        "existing12_regret": 4.326173202794526,
+        "delta_regret_12_minus7": -0.14783655342140248
+      },
+      "rain-shadow": {
+        "episodes": 1289,
+        "baseline7_regret": 4.182999246025354,
+        "existing12_regret": 4.260168862672667,
+        "delta_regret_12_minus7": 0.07716961664731435
+      },
+      "anthill": {
+        "episodes": 2781,
+        "baseline7_regret": 1.8266683104039885,
+        "existing12_regret": 1.8496027675846927,
+        "delta_regret_12_minus7": 0.02293445718070408
+      },
+      "hidden-oasis": {
+        "episodes": 653,
+        "baseline7_regret": 3.753388807028495,
+        "existing12_regret": 3.6728569080295412,
+        "delta_regret_12_minus7": -0.08053189899895413
+      },
+      "swamp": {
+        "episodes": 679,
+        "baseline7_regret": 2.8525480089975526,
+        "existing12_regret": 2.917050218620466,
+        "delta_regret_12_minus7": 0.0645022096229131
+      },
+      "braided-river": {
+        "episodes": 745,
+        "baseline7_regret": 1.9468078461421285,
+        "existing12_regret": 1.965428829330041,
+        "delta_regret_12_minus7": 0.018620983187912325
+      },
+      "crater-lakes": {
+        "episodes": 1729,
+        "baseline7_regret": 3.3176979336652224,
+        "existing12_regret": 3.4958069723768346,
+        "delta_regret_12_minus7": 0.17810903871161166
+      },
+      "glacis": {
+        "episodes": 563,
+        "baseline7_regret": 0.8740157817260621,
+        "existing12_regret": 0.8584394577385231,
+        "delta_regret_12_minus7": -0.01557632398753894
+      },
+      "drumlin-field": {
+        "episodes": 775,
+        "baseline7_regret": 3.4424661556351035,
+        "existing12_regret": 3.237161445556725,
+        "delta_regret_12_minus7": -0.2053047100783788
+      },
+      "continents": {
+        "episodes": 755,
+        "baseline7_regret": 1.135919974864274,
+        "existing12_regret": 1.1304361486807395,
+        "delta_regret_12_minus7": -0.005483826183534636
+      },
+      "city-states": {
+        "episodes": 674,
+        "baseline7_regret": 4.457556001440822,
+        "existing12_regret": 4.674935501415083,
+        "delta_regret_12_minus7": 0.21737949997426204
+      },
+      "marchland": {
+        "episodes": 1256,
+        "baseline7_regret": 3.229535645010389,
+        "existing12_regret": 3.6083974251886466,
+        "delta_regret_12_minus7": 0.37886178017825767
+      },
+      "bajada": {
+        "episodes": 1649,
+        "baseline7_regret": 2.409906885853716,
+        "existing12_regret": 2.295063569424653,
+        "delta_regret_12_minus7": -0.11484331642906354
+      },
+      "concrete-islands": {
+        "episodes": 651,
+        "baseline7_regret": 1.5979899086248883,
+        "existing12_regret": 1.783272686503989,
+        "delta_regret_12_minus7": 0.1852827778791006
+      },
+      "faulted-city": {
+        "episodes": 667,
+        "baseline7_regret": 5.358541386833821,
+        "existing12_regret": 5.461407941212005,
+        "delta_regret_12_minus7": 0.10286655437818477
+      },
+      "allotments": {
+        "episodes": 743,
+        "baseline7_regret": 0.805632289048245,
+        "existing12_regret": 0.8218749782113649,
+        "delta_regret_12_minus7": 0.0162426891631197
+      },
+      "hungry-marches": {
+        "episodes": 876,
+        "baseline7_regret": 3.8029680362693106,
+        "existing12_regret": 3.665991049333601,
+        "delta_regret_12_minus7": -0.13697698693571006
+      },
+      "contested-commons": {
+        "episodes": 1194,
+        "baseline7_regret": 5.650628183671894,
+        "existing12_regret": 5.221420040798681,
+        "delta_regret_12_minus7": -0.42920814287321174
+      },
+      "spider-web": {
+        "episodes": 1655,
+        "baseline7_regret": 2.4220853263126085,
+        "existing12_regret": 2.401101203599941,
+        "delta_regret_12_minus7": -0.020984122712668012
+      },
+      "rice-terraces": {
+        "episodes": 236,
+        "baseline7_regret": 1.347241647241647,
+        "existing12_regret": 1.2255633255633256,
+        "delta_regret_12_minus7": -0.12167832167832165
+      },
+      "central-quarry": {
+        "episodes": 1374,
+        "baseline7_regret": 2.0213731472702183,
+        "existing12_regret": 2.021630367281884,
+        "delta_regret_12_minus7": 0.0002572200116652391
+      },
+      "coral": {
+        "episodes": 1079,
+        "baseline7_regret": 2.4948618389699817,
+        "existing12_regret": 2.471216790528461,
+        "delta_regret_12_minus7": -0.02364504844152063
+      },
+      "tidal-flats": {
+        "episodes": 685,
+        "baseline7_regret": 0.6824287450585531,
+        "existing12_regret": 0.6946673173316361,
+        "delta_regret_12_minus7": 0.012238572273083129
+      },
+      "portage-lakes": {
+        "episodes": 1105,
+        "baseline7_regret": 1.5733487903936076,
+        "existing12_regret": 1.6159724046295718,
+        "delta_regret_12_minus7": 0.04262361423596415
+      },
+      "amphitheatre": {
+        "episodes": 1134,
+        "baseline7_regret": 4.893700793617997,
+        "existing12_regret": 5.019741515337773,
+        "delta_regret_12_minus7": 0.1260407217197765
+      },
+      "fjord-continent": {
+        "episodes": 1680,
+        "baseline7_regret": 3.204687148098847,
+        "existing12_regret": 3.195670432661281,
+        "delta_regret_12_minus7": -0.009016715437565888
+      },
+      "plantations": {
+        "episodes": 1591,
+        "baseline7_regret": 2.4617937921694923,
+        "existing12_regret": 2.437732391610859,
+        "delta_regret_12_minus7": -0.024061400558633757
+      },
+      "savannah": {
+        "episodes": 1464,
+        "baseline7_regret": 3.40850392380411,
+        "existing12_regret": 2.97181836404948,
+        "delta_regret_12_minus7": -0.4366855597546296
+      },
+      "comb": {
+        "episodes": 694,
+        "baseline7_regret": 1.562623755923496,
+        "existing12_regret": 1.3163822121054864,
+        "delta_regret_12_minus7": -0.24624154381800933
+      },
+      "watershed": {
+        "episodes": 2352,
+        "baseline7_regret": 4.044527290908855,
+        "existing12_regret": 4.031916424100337,
+        "delta_regret_12_minus7": -0.012610866808518471
+      },
+      "emoji": {
+        "episodes": 369,
+        "baseline7_regret": 1.6400667550902293,
+        "existing12_regret": 1.652412434102575,
+        "delta_regret_12_minus7": 0.01234567901234568
+      },
+      "who-ate-the-map": {
+        "episodes": 917,
+        "baseline7_regret": 2.6690869759333666,
+        "existing12_regret": 2.8565233953491913,
+        "delta_regret_12_minus7": 0.18743641941582442
+      },
+      "isles": {
+        "episodes": 944,
+        "baseline7_regret": 2.0401258270762836,
+        "existing12_regret": 2.0853566265550922,
+        "delta_regret_12_minus7": 0.04523079947880885
+      },
+      "bastion-keys": {
+        "episodes": 787,
+        "baseline7_regret": 1.808243100317393,
+        "existing12_regret": 1.914815287708546,
+        "delta_regret_12_minus7": 0.1065721873911529
+      },
+      "locust": {
+        "episodes": 1023,
+        "baseline7_regret": 4.036117417698797,
+        "existing12_regret": 3.8728699601582792,
+        "delta_regret_12_minus7": -0.16324745754051706
+      },
+      "hills": {
+        "episodes": 548,
+        "baseline7_regret": 2.3907031448447102,
+        "existing12_regret": 2.5258863162613987,
+        "delta_regret_12_minus7": 0.13518317141668856
+      },
+      "drowned-forest": {
+        "episodes": 136,
+        "baseline7_regret": 1.9795918367346936,
+        "existing12_regret": 1.8775510204081636,
+        "delta_regret_12_minus7": -0.1020408163265306
+      },
+      "braided-delta": {
+        "episodes": 241,
+        "baseline7_regret": 2.443073593073593,
+        "existing12_regret": 2.2993506493506497,
+        "delta_regret_12_minus7": -0.14372294372294378
+      },
+      "caravanserai": {
+        "episodes": 680,
+        "baseline7_regret": 4.098445242700562,
+        "existing12_regret": 3.8979294464400844,
+        "delta_regret_12_minus7": -0.20051579626047714
+      },
+      "polder": {
+        "episodes": 1457,
+        "baseline7_regret": 1.5375527796751025,
+        "existing12_regret": 1.575872418808765,
+        "delta_regret_12_minus7": 0.038319639133662195
+      },
+      "old-growth": {
+        "episodes": 1401,
+        "baseline7_regret": 6.272725188995372,
+        "existing12_regret": 6.3068685388770644,
+        "delta_regret_12_minus7": 0.03414334988169513
+      },
+      "fingerprint": {
+        "episodes": 879,
+        "baseline7_regret": 2.188284287297788,
+        "existing12_regret": 2.2075276042744894,
+        "delta_regret_12_minus7": 0.019243316976701536
+      },
+      "encircled-kingdom": {
+        "episodes": 648,
+        "baseline7_regret": 2.456899292350081,
+        "existing12_regret": 2.489514771161794,
+        "delta_regret_12_minus7": 0.03261547881171332
+      },
+      "maze": {
+        "episodes": 1994,
+        "baseline7_regret": 6.150020543975658,
+        "existing12_regret": 6.038905505863206,
+        "delta_regret_12_minus7": -0.11111503811245224
+      },
+      "karst-towers": {
+        "episodes": 342,
+        "baseline7_regret": 3.032660637577231,
+        "existing12_regret": 3.136912107500343,
+        "delta_regret_12_minus7": 0.10425146992311173
+      },
+      "hilbert-river": {
+        "episodes": 293,
+        "baseline7_regret": 1.4739583333333333,
+        "existing12_regret": 1.5572916666666665,
+        "delta_regret_12_minus7": 0.08333333333333333
+      },
+      "hedgerow-country": {
+        "episodes": 525,
+        "baseline7_regret": 0.8826781789356986,
+        "existing12_regret": 1.049106239064546,
+        "delta_regret_12_minus7": 0.1664280601288475
+      },
+      "lava-shield": {
+        "episodes": 115,
+        "baseline7_regret": 1.3715486194477786,
+        "existing12_regret": 1.3715486194477786,
+        "delta_regret_12_minus7": 0.0
+      },
+      "gauntlet": {
+        "episodes": 351,
+        "baseline7_regret": 0.36862379621000313,
+        "existing12_regret": 0.39745262503883194,
+        "delta_regret_12_minus7": 0.028828828828828826
+      },
+      "sierpinski-gardens": {
+        "episodes": 182,
+        "baseline7_regret": 1.9606044949625419,
+        "existing12_regret": 1.9606044949625419,
+        "delta_regret_12_minus7": 0.0
+      },
+      "orchard-commons": {
+        "episodes": 310,
+        "baseline7_regret": 1.1796275848907427,
+        "existing12_regret": 1.1581305633937216,
+        "delta_regret_12_minus7": -0.021497021497021502
+      },
+      "ring-world": {
+        "episodes": 46,
+        "baseline7_regret": 0.0,
+        "existing12_regret": 0.0,
+        "delta_regret_12_minus7": 0.0
+      },
+      "switchbacks": {
+        "episodes": 52,
+        "baseline7_regret": 0.23148148148148145,
+        "existing12_regret": 0.23148148148148145,
+        "delta_regret_12_minus7": 0.0
+      },
+      "breachable-highlands": {
+        "episodes": 42,
+        "baseline7_regret": 0.7727272727272726,
+        "existing12_regret": 0.7727272727272726,
+        "delta_regret_12_minus7": 0.0
+      },
+      "carousel": {
+        "episodes": 171,
+        "baseline7_regret": 1.0769230769230769,
+        "existing12_regret": 1.0512820512820513,
+        "delta_regret_12_minus7": -0.025641025641025644
+      },
+      "last-treeline": {
+        "episodes": 580,
+        "baseline7_regret": 1.5235014996564662,
+        "existing12_regret": 1.7203282578039787,
+        "delta_regret_12_minus7": 0.19682675814751283
+      }
+    },
+    "dimensions": {
+      "128x128": {
+        "episodes": 10608,
+        "baseline7_regret": 2.9293032551079783,
+        "existing12_regret": 3.163608442552446,
+        "delta_regret_12_minus7": 0.2343051874444683
+      },
+      "128x256": {
+        "episodes": 8435,
+        "baseline7_regret": 2.9263034597152897,
+        "existing12_regret": 3.021162408398153,
+        "delta_regret_12_minus7": 0.09485894868286278
+      },
+      "256x128": {
+        "episodes": 6900,
+        "baseline7_regret": 2.6337210769757955,
+        "existing12_regret": 2.6299629966638656,
+        "delta_regret_12_minus7": -0.003758080311929807
+      },
+      "128x64": {
+        "episodes": 2725,
+        "baseline7_regret": 2.4198711058104796,
+        "existing12_regret": 2.460885796075723,
+        "delta_regret_12_minus7": 0.04101469026524295
+      },
+      "256x256": {
+        "episodes": 10761,
+        "baseline7_regret": 3.6251862600747855,
+        "existing12_regret": 3.502567450351599,
+        "delta_regret_12_minus7": -0.12261880972318716
+      },
+      "64x128": {
+        "episodes": 2834,
+        "baseline7_regret": 3.564821234860254,
+        "existing12_regret": 4.430605578286181,
+        "delta_regret_12_minus7": 0.8657843434259265
+      },
+      "512x512": {
+        "episodes": 10929,
+        "baseline7_regret": 2.4013815810778114,
+        "existing12_regret": 2.4227067305654426,
+        "delta_regret_12_minus7": 0.02132514948763063
+      },
+      "256x512": {
+        "episodes": 6735,
+        "baseline7_regret": 3.1912699079885165,
+        "existing12_regret": 3.0673430064085068,
+        "delta_regret_12_minus7": -0.12392690158001046
+      },
+      "512x256": {
+        "episodes": 5939,
+        "baseline7_regret": 1.8660466292729687,
+        "existing12_regret": 1.8885885687464317,
+        "delta_regret_12_minus7": 0.022541939473462492
+      },
+      "64x64": {
+        "episodes": 1152,
+        "baseline7_regret": 3.0021846590354264,
+        "existing12_regret": 3.031552488401266,
+        "delta_regret_12_minus7": 0.029367829365839336
+      }
+    }
+  },
+  "baseline7_model": {
+    "schema": 2,
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "target_added",
+      "target_removed",
+      "target_added_frac_q12",
+      "target_removed_frac_q12"
+    ],
+    "threshold": 16000,
+    "research_only": true,
+    "transforms": [
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12"
+    ],
+    "positive_probability": {
+      "coef": [
+        -4833734,
+        -35766283,
+        61305892,
+        10093447,
+        3828732,
+        2585141,
+        12942703
+      ],
+      "bias": -1450258979591,
+      "shift": 28,
+      "accumulator_bound": 12174025912139
+    },
+    "positive_mean": {
+      "coef": [
+        9807517,
+        1432956749,
+        499715755,
+        -72581150,
+        -309456434,
+        298047328,
+        207899075
+      ],
+      "bias": -11863076767870,
+      "shift": 28,
+      "accumulator_bound": 242939327916982
+    },
+    "negative_probability": {
+      "coef": [
+        -11689393,
+        -39678540,
+        59929872,
+        -7437980,
+        17830428,
+        10570837,
+        1752887
+      ],
+      "bias": -1387203976604,
+      "shift": 28,
+      "accumulator_bound": 13542429543347
+    },
+    "negative_mean": {
+      "coef": [
+        -84592177,
+        505123029,
+        89055809,
+        -50482679,
+        -47344535,
+        153243964,
+        37361121
+      ],
+      "bias": 949767171577,
+      "shift": 28,
+      "accumulator_bound": 79911278523223
+    }
+  },
+  "production_features_changed": false,
+  "existing12_refit": false,
+  "utc": "2026-10-19T17:55:05.102886+00:00"
+}

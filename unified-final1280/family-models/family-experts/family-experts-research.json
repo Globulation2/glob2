@@ -1,0 +1,2281 @@
+{
+  "schema": "family-experts-research-v1",
+  "experts": {
+    "clear": {
+      "schema": 2,
+      "features": [
+        "age",
+        "q32",
+        "q128",
+        "target_added",
+        "target_removed",
+        "target_added_frac_q12",
+        "target_removed_frac_q12",
+        "since_capture_invalid_goal",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries",
+        "since_capture_invalid_goal_frac_q12",
+        "since_capture_reachable_no_move_frac_q12"
+      ],
+      "threshold": 16000,
+      "research_only": true,
+      "transforms": [
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "identity_q12",
+        "identity_q12"
+      ],
+      "positive_probability": {
+        "coef": [
+          -17040123,
+          -22107336,
+          36150085,
+          14781826,
+          47090336,
+          3640937,
+          12003322,
+          196384723,
+          191443501,
+          -8299532,
+          -263745453,
+          -445900507
+        ],
+        "bias": -1015587367658,
+        "shift": 28,
+        "accumulator_bound": 755476600528377
+      },
+      "positive_mean": {
+        "coef": [
+          -20021185,
+          -118282198,
+          481348697,
+          527519954,
+          -180667073,
+          20169657,
+          159304419,
+          311219146,
+          -914156387,
+          167437153,
+          11280661,
+          -1186617830
+        ],
+        "bias": -288987502926,
+        "shift": 28,
+        "accumulator_bound": 1434950854322217
+      },
+      "negative_probability": {
+        "coef": [
+          -25354829,
+          -23129915,
+          30188224,
+          -27838249,
+          58982403,
+          20707455,
+          -2775891,
+          -503352907,
+          7181710,
+          6429969,
+          490960451,
+          94723775
+        ],
+        "bias": -1006150417441,
+        "shift": 28,
+        "accumulator_bound": 644322738781169
+      },
+      "negative_mean": {
+        "coef": [
+          -31155362,
+          584234569,
+          196463964,
+          623997580,
+          -142181348,
+          12408864,
+          -18174244,
+          269031656,
+          -2327201685,
+          144142702,
+          898077516,
+          1926066558
+        ],
+        "bias": -2436137002955,
+        "shift": 28,
+        "accumulator_bound": 3181627566768341
+      }
+    },
+    "forbidden": {
+      "schema": 2,
+      "features": [
+        "age",
+        "q32",
+        "q128",
+        "target_added",
+        "target_removed",
+        "target_added_frac_q12",
+        "target_removed_frac_q12",
+        "since_capture_invalid_goal",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries",
+        "since_capture_invalid_goal_frac_q12",
+        "since_capture_reachable_no_move_frac_q12"
+      ],
+      "threshold": 16000,
+      "research_only": true,
+      "transforms": [
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "identity_q12",
+        "identity_q12"
+      ],
+      "positive_probability": {
+        "coef": [
+          -6432175,
+          9400411,
+          91881403,
+          19632802,
+          -12125342,
+          14819654,
+          -364489,
+          -71385401,
+          0,
+          -15600747,
+          140939632,
+          0
+        ],
+        "bias": -2222471853334,
+        "shift": 28,
+        "accumulator_bound": 162889549706270
+      },
+      "positive_mean": {
+        "coef": [
+          -237548,
+          -3294170,
+          -576347,
+          -50313,
+          45283,
+          -65369,
+          35763,
+          2183853,
+          0,
+          -1515884,
+          3498730,
+          0
+        ],
+        "bias": 1122269385052,
+        "shift": 28,
+        "accumulator_bound": 5274481209722
+      },
+      "negative_probability": {
+        "coef": [
+          -18753370,
+          -55034320,
+          94355167,
+          5684671,
+          15794028,
+          1672853,
+          12569402,
+          66872124,
+          0,
+          -5383391,
+          -116360687,
+          0
+        ],
+        "bias": -1993540211352,
+        "shift": 28,
+        "accumulator_bound": 140896332866666
+      },
+      "negative_mean": {
+        "coef": [
+          178256,
+          -20821513,
+          21080122,
+          966002,
+          1385502,
+          -110478,
+          477202,
+          -3072213,
+          0,
+          -13299883,
+          -1607119,
+          0
+        ],
+        "bias": 1122095852252,
+        "shift": 28,
+        "accumulator_bound": 7741128661521
+      }
+    },
+    "guard": {
+      "schema": 2,
+      "features": [
+        "age",
+        "q32",
+        "q128",
+        "target_added",
+        "target_removed",
+        "target_added_frac_q12",
+        "target_removed_frac_q12",
+        "since_capture_invalid_goal",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries",
+        "since_capture_invalid_goal_frac_q12",
+        "since_capture_reachable_no_move_frac_q12"
+      ],
+      "threshold": 16000,
+      "research_only": true,
+      "transforms": [
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "identity_q12",
+        "identity_q12"
+      ],
+      "positive_probability": {
+        "coef": [
+          -23906212,
+          16433986,
+          -7981214,
+          55173022,
+          -27335030,
+          -9675539,
+          21574611,
+          112883846,
+          -1308102,
+          8777292,
+          -33902095,
+          94160538
+        ],
+        "bias": -1163688478125,
+        "shift": 28,
+        "accumulator_bound": 152497424869831
+      },
+      "positive_mean": {
+        "coef": [
+          -167919168,
+          646276369,
+          568648628,
+          116501871,
+          225618983,
+          -55017191,
+          -76340241,
+          -2171098282,
+          13228566592,
+          -9417346,
+          -343191117,
+          -26453838231
+        ],
+        "bias": -1656725324015,
+        "shift": 28,
+        "accumulator_bound": 28208216445259784
+      },
+      "negative_probability": {
+        "coef": [
+          -10890504,
+          16776176,
+          4133689,
+          2376087,
+          16813475,
+          6547292,
+          8673945,
+          -66319984,
+          243287610,
+          -7506519,
+          200427517,
+          -1159734425
+        ],
+        "bias": -1547567812663,
+        "shift": 28,
+        "accumulator_bound": 1393003802428222
+      },
+      "negative_mean": {
+        "coef": [
+          -16348357,
+          255460520,
+          254839386,
+          121089293,
+          368643030,
+          -167621498,
+          -129206171,
+          360328396,
+          1889701474,
+          24046924,
+          749969288,
+          8126402629
+        ],
+        "bias": 2004127627109,
+        "shift": 28,
+        "accumulator_bound": 9171238408742420
+      }
+    },
+    "materials": {
+      "schema": 2,
+      "features": [
+        "age",
+        "q32",
+        "q128",
+        "target_added",
+        "target_removed",
+        "target_added_frac_q12",
+        "target_removed_frac_q12",
+        "since_capture_invalid_goal",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries",
+        "since_capture_invalid_goal_frac_q12",
+        "since_capture_reachable_no_move_frac_q12"
+      ],
+      "threshold": 16000,
+      "research_only": true,
+      "transforms": [
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "log1p_q12",
+        "identity_q12",
+        "identity_q12"
+      ],
+      "positive_probability": {
+        "coef": [
+          -1763103,
+          11524344,
+          19967975,
+          7399,
+          17553644,
+          911129,
+          708176,
+          72309695,
+          -8805285,
+          5761609,
+          -210086049,
+          -73298489
+        ],
+        "bias": -961301020016,
+        "shift": 28,
+        "accumulator_bound": 295719160696417
+      },
+      "positive_mean": {
+        "coef": [
+          -641610839,
+          1378766554,
+          92217882,
+          -108117065,
+          -382880924,
+          380941950,
+          240428099,
+          532926088,
+          1636446846,
+          674247393,
+          -6845903909,
+          -9774439722
+        ],
+        "bias": 2860686566933,
+        "shift": 28,
+        "accumulator_bound": 17118637417352893
+      },
+      "negative_probability": {
+        "coef": [
+          -124869,
+          -7938947,
+          36716179,
+          -4389223,
+          11891838,
+          1260022,
+          -136291,
+          -11642813,
+          -11616188,
+          -4866071,
+          -20706624,
+          -14424366
+        ],
+        "bias": -1138644453026,
+        "shift": 28,
+        "accumulator_bound": 43664694353825
+      },
+      "negative_mean": {
+        "coef": [
+          -302841619,
+          353987817,
+          -57513862,
+          689409,
+          -97940293,
+          113864978,
+          94946686,
+          -722871807,
+          1106093758,
+          205149281,
+          -1073053150,
+          -1957784089
+        ],
+        "bias": 7235206394524,
+        "shift": 28,
+        "accumulator_bound": 3287553025491414
+      }
+    }
+  },
+  "markets": {
+    "measured": false,
+    "expert": null,
+    "rows": 0
+  },
+  "covariates": [
+    "age",
+    "q32",
+    "q128",
+    "target_added",
+    "target_removed",
+    "target_added_frac_q12",
+    "target_removed_frac_q12",
+    "since_capture_invalid_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_invalid_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
+  ],
+  "transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "identity_q12",
+    "identity_q12"
+  ],
+  "input_sha256": "a044f373dcedcec9f3f63d2b54768124e2a75193cc5f604a57f040a5bf486a25",
+  "split_sha256": "f6ef2a80d892e670d26fe2f3b1ba792a6f35e243738b2d458449dba2d0a0c624",
+  "class_support": {
+    "clear": {
+      "rows": 67618,
+      "maps": 964,
+      "positive": 2400,
+      "negative": 1216,
+      "zero": 64002
+    },
+    "forbidden": {
+      "rows": 12688,
+      "maps": 885,
+      "positive": 58,
+      "negative": 135,
+      "zero": 12495
+    },
+    "guard": {
+      "rows": 53773,
+      "maps": 879,
+      "positive": 395,
+      "negative": 261,
+      "zero": 53117
+    },
+    "materials": {
+      "rows": 85948,
+      "maps": 965,
+      "positive": 21267,
+      "negative": 7455,
+      "zero": 57226
+    }
+  },
+  "weight_normalization": {
+    "clear": {
+      "original_global_weight": 58267.17724880011,
+      "normalization_scalar": 1.1604818217170878
+    },
+    "forbidden": {
+      "original_global_weight": 51954.28032650366,
+      "normalization_scalar": 0.24421471956233445
+    },
+    "guard": {
+      "original_global_weight": 51309.170384229496,
+      "normalization_scalar": 1.048019283830163
+    },
+    "materials": {
+      "original_global_weight": 58496.37204046678,
+      "normalization_scalar": 1.4692877011337158
+    }
+  },
+  "cross_validation": [
+    {
+      "fold": 0,
+      "baseline12": {
+        "episodes": 68135,
+        "states": 307,
+        "mae": 6.506543884193175,
+        "mse": 1110.671437200458,
+        "selected_pct": 5.398135897037575,
+        "selected_actual_benefit": 22.740058647001938,
+        "positive_benefit_captured_fraction": 0.4161894913539333,
+        "missed_positive_benefit": 1.9977369657759745,
+        "negative_benefit_selected": 0.1966165477084158,
+        "threshold": 16.0,
+        "decision_regret": 2.2096200928023,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 40.0,
+        "false_refresh_pct": 4.356652363320633,
+        "missed_threshold_decision_pct": 2.450313890298801,
+        "absolute_error_p95": 25.086,
+        "absolute_error_p99": 97.914
+      },
+      "onehot17": {
+        "episodes": 68135,
+        "states": 307,
+        "mae": 5.9575859614813735,
+        "mse": 1068.9661738214086,
+        "selected_pct": 7.186610740509799,
+        "selected_actual_benefit": 25.330419574686715,
+        "positive_benefit_captured_fraction": 0.6312820453693031,
+        "missed_positive_benefit": 1.261713307660952,
+        "negative_benefit_selected": 0.33978082088401446,
+        "threshold": 16.0,
+        "decision_regret": 1.9029166828184325,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 36.0,
+        "false_refresh_pct": 5.453984403002604,
+        "missed_threshold_decision_pct": 1.759171086508548,
+        "absolute_error_p95": 26.256,
+        "absolute_error_p99": 92.715
+      },
+      "experts12": {
+        "episodes": 68135,
+        "maps": 307,
+        "mae": 5.855962907581545,
+        "mse": 1056.0213885076623,
+        "decision_regret": 1.8304856206235625,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 36.0,
+        "selected_pct": 7.502395843199207,
+        "positive_benefit_captured_fraction": 0.6721687189128771,
+        "selected_actual_benefit": 25.90312978696566,
+        "false_refresh_pct": 5.655426441606803,
+        "missed_threshold_decision_pct": 1.6448280224233378
+      },
+      "experts12_cap1024": {
+        "episodes": 68135,
+        "maps": 307,
+        "mae": 5.855962907581545,
+        "mse": 1056.0213885076623,
+        "decision_regret": 3.9047230629833143,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 34.0,
+        "selected_pct": 21.003881794599604,
+        "positive_benefit_captured_fraction": 0.6992978196221286,
+        "selected_actual_benefit": 9.661812335955416,
+        "false_refresh_pct": 19.015436801050605,
+        "missed_threshold_decision_pct": 1.503352430466746
+      },
+      "training_support": {
+        "clear": {
+          "rows": 46414,
+          "maps": 658,
+          "positive": 1741,
+          "negative": 871,
+          "zero": 43802
+        },
+        "forbidden": {
+          "rows": 9023,
+          "maps": 597,
+          "positive": 39,
+          "negative": 105,
+          "zero": 8879
+        },
+        "guard": {
+          "rows": 37493,
+          "maps": 603,
+          "positive": 271,
+          "negative": 189,
+          "zero": 37033
+        },
+        "materials": {
+          "rows": 58962,
+          "maps": 658,
+          "positive": 14932,
+          "negative": 5204,
+          "zero": 38826
+        }
+      },
+      "validation_support": {
+        "clear": {
+          "rows": 21204,
+          "maps": 306,
+          "positive": 659,
+          "negative": 345,
+          "zero": 20200
+        },
+        "forbidden": {
+          "rows": 3665,
+          "maps": 288,
+          "positive": 19,
+          "negative": 30,
+          "zero": 3616
+        },
+        "guard": {
+          "rows": 16280,
+          "maps": 276,
+          "positive": 124,
+          "negative": 72,
+          "zero": 16084
+        },
+        "materials": {
+          "rows": 26986,
+          "maps": 307,
+          "positive": 6335,
+          "negative": 2251,
+          "zero": 18400
+        }
+      },
+      "weight_normalization": {
+        "clear": {
+          "original_global_weight": 40206.20039141414,
+          "normalization_scalar": 1.1543990615415505
+        },
+        "forbidden": {
+          "original_global_weight": 35578.542213804714,
+          "normalization_scalar": 0.25360791754134926
+        },
+        "guard": {
+          "original_global_weight": 35901.057003367,
+          "normalization_scalar": 1.0443425104860755
+        },
+        "materials": {
+          "original_global_weight": 40206.20039141414,
+          "normalization_scalar": 1.4664902285218446
+        }
+      },
+      "models": {
+        "clear": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -17100148,
+              -19274532,
+              36027329,
+              16154392,
+              47946632,
+              3928112,
+              11161197,
+              145236432,
+              152390135,
+              -10314669,
+              -185034939,
+              -408650850
+            ],
+            "bias": -997552935273,
+            "shift": 28,
+            "accumulator_bound": 632199203709615
+          },
+          "positive_mean": {
+            "coef": [
+              850089,
+              -78834063,
+              502390505,
+              435138095,
+              -188355370,
+              51039619,
+              160880687,
+              -657324247,
+              -1526855828,
+              181982176,
+              137208424,
+              -1067745855
+            ],
+            "bias": -1237925577684,
+            "shift": 28,
+            "accumulator_bound": 1515085662360565
+          },
+          "negative_probability": {
+            "coef": [
+              -16679587,
+              -13543607,
+              31661642,
+              -29435419,
+              59114460,
+              20807238,
+              -2933023,
+              -262879315,
+              -58239953,
+              -3221108,
+              -344583989,
+              43291859
+            ],
+            "bias": -1200188604461,
+            "shift": 28,
+            "accumulator_bound": 429774331426389
+          },
+          "negative_mean": {
+            "coef": [
+              15470676,
+              655288018,
+              305177018,
+              711322285,
+              -177490599,
+              11475876,
+              -15454158,
+              0,
+              -1863940684,
+              155203732,
+              0,
+              2402420466
+            ],
+            "bias": -6342526662280,
+            "shift": 28,
+            "accumulator_bound": 2728038675314674
+          }
+        },
+        "forbidden": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -9982277,
+              2116441,
+              85569665,
+              12988120,
+              -349435,
+              16807519,
+              2228180,
+              -8031565,
+              0,
+              -16190378,
+              85034553,
+              0
+            ],
+            "bias": -2296944662074,
+            "shift": 28,
+            "accumulator_bound": 99925422069694
+          },
+          "positive_mean": {
+            "coef": [
+              -14211,
+              633951,
+              2029146,
+              -18874,
+              14709,
+              -2821,
+              36772,
+              1953731,
+              0,
+              -30610,
+              3141464,
+              0
+            ],
+            "bias": 1062428840044,
+            "shift": 28,
+            "accumulator_bound": 4590439218219
+          },
+          "negative_probability": {
+            "coef": [
+              -16434621,
+              -52417013,
+              92036436,
+              5115263,
+              20755964,
+              -2310445,
+              12112804,
+              86832961,
+              0,
+              -13306802,
+              -106801786,
+              0
+            ],
+            "bias": -2042428013714,
+            "shift": 28,
+            "accumulator_bound": 133443865998165
+          },
+          "negative_mean": {
+            "coef": [
+              434468,
+              -18987259,
+              18856398,
+              802956,
+              1223636,
+              -660362,
+              -117988,
+              -3589741,
+              0,
+              -12168236,
+              -2536042,
+              0
+            ],
+            "bias": 1149745952148,
+            "shift": 28,
+            "accumulator_bound": 8326233943264
+          }
+        },
+        "guard": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -25989600,
+              22150427,
+              -13714036,
+              39309710,
+              -10717692,
+              610890,
+              11896585,
+              74681682,
+              -5145782,
+              9506830,
+              -2045477,
+              103198523
+            ],
+            "bias": -1101176026153,
+            "shift": 28,
+            "accumulator_bound": 123793327126679
+          },
+          "positive_mean": {
+            "coef": [
+              -90988103,
+              565938607,
+              508464650,
+              -4673277,
+              -66004479,
+              88690676,
+              19937413,
+              -593965631,
+              -2989004414,
+              56208702,
+              -951212450,
+              1905468255
+            ],
+            "bias": -2830007437409,
+            "shift": 28,
+            "accumulator_bound": 3266389361282737
+          },
+          "negative_probability": {
+            "coef": [
+              -10805626,
+              47250334,
+              -18480215,
+              7066223,
+              7402508,
+              -3131606,
+              21667715,
+              -272016554,
+              188617959,
+              -6788398,
+              -249400622,
+              -913961527
+            ],
+            "bias": -1494447312926,
+            "shift": 28,
+            "accumulator_bound": 1212470676632108
+          },
+          "negative_mean": {
+            "coef": [
+              46956523,
+              222592840,
+              204000950,
+              -160710300,
+              173778793,
+              -107363681,
+              5495235,
+              0,
+              -1215791178,
+              69635323,
+              0,
+              -367131374
+            ],
+            "bias": 507482073108,
+            "shift": 28,
+            "accumulator_bound": 547761008298005
+          }
+        },
+        "materials": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -1747661,
+              9390562,
+              20904638,
+              -138300,
+              17479863,
+              704571,
+              944070,
+              46723375,
+              -4405887,
+              6106871,
+              -76961845,
+              -91349132
+            ],
+            "bias": -956451006719,
+            "shift": 28,
+            "accumulator_bound": 178128998409641
+          },
+          "positive_mean": {
+            "coef": [
+              -664718731,
+              1348294378,
+              173757935,
+              -106302760,
+              -371297803,
+              378957369,
+              267082208,
+              135726874,
+              2291839394,
+              689462450,
+              -4938378405,
+              -13693581201
+            ],
+            "bias": 1859534629026,
+            "shift": 28,
+            "accumulator_bound": 19158548906788404
+          },
+          "negative_probability": {
+            "coef": [
+              2343085,
+              -9703405,
+              40377948,
+              -3378700,
+              9489023,
+              627611,
+              1065507,
+              -14764722,
+              -14827609,
+              -7299515,
+              -3052126,
+              -367181
+            ],
+            "bias": -1205789915055,
+            "shift": 28,
+            "accumulator_bound": 13105521522930
+          },
+          "negative_mean": {
+            "coef": [
+              -296989822,
+              319999551,
+              -2394171,
+              -11057201,
+              -85512374,
+              142239392,
+              93158008,
+              -809408952,
+              862001944,
+              183078489,
+              -785880420,
+              -2218222007
+            ],
+            "bias": 6460640172805,
+            "shift": 28,
+            "accumulator_bound": 3239629031095461
+          }
+        }
+      }
+    },
+    {
+      "fold": 1,
+      "baseline12": {
+        "episodes": 75597,
+        "states": 325,
+        "mae": 7.24542336300184,
+        "mse": 1719.3054889595578,
+        "selected_pct": 5.677328310594533,
+        "selected_actual_benefit": 26.732964089789075,
+        "positive_benefit_captured_fraction": 0.4365370787162024,
+        "missed_positive_benefit": 2.2580024742452185,
+        "negative_benefit_selected": 0.2316459573270275,
+        "threshold": 16.0,
+        "decision_regret": 2.504923220954947,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 48.0,
+        "false_refresh_pct": 4.601163277081547,
+        "missed_threshold_decision_pct": 2.717774757498329,
+        "absolute_error_p95": 27.954,
+        "absolute_error_p99": 100.489
+      },
+      "onehot17": {
+        "episodes": 75597,
+        "states": 325,
+        "mae": 6.434883158285034,
+        "mse": 1660.2758510772294,
+        "selected_pct": 6.4631525551453715,
+        "selected_actual_benefit": 33.26136808615851,
+        "positive_benefit_captured_fraction": 0.6239494657079836,
+        "missed_positive_benefit": 1.5069723397911654,
+        "negative_benefit_selected": 0.35066126897488564,
+        "threshold": 16.0,
+        "decision_regret": 1.998640277276886,
+        "decision_regret_p95": 14.0,
+        "decision_regret_p99": 44.0,
+        "false_refresh_pct": 4.781418981382344,
+        "missed_threshold_decision_pct": 2.1122062172482874,
+        "absolute_error_p95": 26.12,
+        "absolute_error_p99": 95.385
+      },
+      "experts12": {
+        "episodes": 75597,
+        "maps": 325,
+        "mae": 6.29996447451789,
+        "mse": 1633.4683578073216,
+        "decision_regret": 1.9844708474053407,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 40.0,
+        "selected_pct": 6.905738507836723,
+        "positive_benefit_captured_fraction": 0.6476109820262811,
+        "selected_actual_benefit": 32.3602774866589,
+        "false_refresh_pct": 5.1253084145506795,
+        "missed_threshold_decision_pct": 2.01350969772527
+      },
+      "experts12_cap1024": {
+        "episodes": 75597,
+        "maps": 325,
+        "mae": 6.29996447451789,
+        "mse": 1633.4683578073216,
+        "decision_regret": 4.3449759914839445,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 38.0,
+        "selected_pct": 22.418520943571423,
+        "positive_benefit_captured_fraction": 0.6799519224310642,
+        "selected_actual_benefit": 10.510310627577928,
+        "false_refresh_pct": 20.43473110192343,
+        "missed_threshold_decision_pct": 1.810149949363318
+      },
+      "training_support": {
+        "clear": {
+          "rows": 44374,
+          "maps": 639,
+          "positive": 1510,
+          "negative": 761,
+          "zero": 42103
+        },
+        "forbidden": {
+          "rows": 8083,
+          "maps": 590,
+          "positive": 36,
+          "negative": 76,
+          "zero": 7971
+        },
+        "guard": {
+          "rows": 35121,
+          "maps": 584,
+          "positive": 242,
+          "negative": 146,
+          "zero": 34733
+        },
+        "materials": {
+          "rows": 56852,
+          "maps": 640,
+          "positive": 13706,
+          "negative": 4816,
+          "zero": 38330
+        }
+      },
+      "validation_support": {
+        "clear": {
+          "rows": 23244,
+          "maps": 325,
+          "positive": 890,
+          "negative": 455,
+          "zero": 21899
+        },
+        "forbidden": {
+          "rows": 4605,
+          "maps": 295,
+          "positive": 22,
+          "negative": 59,
+          "zero": 4524
+        },
+        "guard": {
+          "rows": 18652,
+          "maps": 295,
+          "positive": 153,
+          "negative": 115,
+          "zero": 18384
+        },
+        "materials": {
+          "rows": 29096,
+          "maps": 325,
+          "positive": 7561,
+          "negative": 2639,
+          "zero": 18896
+        }
+      },
+      "weight_normalization": {
+        "clear": {
+          "original_global_weight": 38058.42738921958,
+          "normalization_scalar": 1.1659441296980486
+        },
+        "forbidden": {
+          "original_global_weight": 34329.359763558205,
+          "normalization_scalar": 0.2354544347949181
+        },
+        "guard": {
+          "original_global_weight": 33783.18823578042,
+          "normalization_scalar": 1.0395999262971478
+        },
+        "materials": {
+          "original_global_weight": 38259.0246114418,
+          "normalization_scalar": 1.4859761997956886
+        }
+      },
+      "models": {
+        "clear": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -16880410,
+              -23121875,
+              36334160,
+              8980096,
+              48527653,
+              3659276,
+              12135809,
+              213112201,
+              180958010,
+              -8485961,
+              -250152392,
+              -290293126
+            ],
+            "bias": -1014989023802,
+            "shift": 28,
+            "accumulator_bound": 586541191447991
+          },
+          "positive_mean": {
+            "coef": [
+              2070398,
+              -90675936,
+              437380391,
+              451702725,
+              -159383603,
+              30500517,
+              164733482,
+              1181175463,
+              671417634,
+              165212482,
+              -1449987492,
+              -5469102548
+            ],
+            "bias": -311807094774,
+            "shift": 28,
+            "accumulator_bound": 7193239677636983
+          },
+          "negative_probability": {
+            "coef": [
+              -26487220,
+              -24398211,
+              30041795,
+              -29710975,
+              57116148,
+              20062377,
+              -1670053,
+              -542818987,
+              47056394,
+              7131777,
+              571025511,
+              91921229
+            ],
+            "bias": -973249108043,
+            "shift": 28,
+            "accumulator_bound": 728128567630786
+          },
+          "negative_mean": {
+            "coef": [
+              -10348068,
+              505731082,
+              137768363,
+              584879255,
+              -178255041,
+              -14246064,
+              -22773977,
+              281995832,
+              -3015886066,
+              128539672,
+              759642286,
+              2581237620
+            ],
+            "bias": -199282306387,
+            "shift": 28,
+            "accumulator_bound": 3739512075891767
+          }
+        },
+        "forbidden": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -8614895,
+              -8948080,
+              104649925,
+              15037093,
+              -14252272,
+              11648391,
+              1968646,
+              -103316722,
+              0,
+              7188686,
+              133816477,
+              0
+            ],
+            "bias": -2097008429093,
+            "shift": 28,
+            "accumulator_bound": 158415211128783
+          },
+          "positive_mean": {
+            "coef": [
+              -251280,
+              -4495207,
+              -5693136,
+              2310,
+              50734,
+              -29139,
+              17860,
+              -1321508,
+              0,
+              -1952113,
+              -1540020,
+              0
+            ],
+            "bias": 1176805984320,
+            "shift": 28,
+            "accumulator_bound": 3844528921713
+          },
+          "negative_probability": {
+            "coef": [
+              -18013993,
+              -36290879,
+              91352981,
+              7436236,
+              14695122,
+              578531,
+              10681197,
+              -94380247,
+              0,
+              -4560588,
+              -90868604,
+              0
+            ],
+            "bias": -2020267170066,
+            "shift": 28,
+            "accumulator_bound": 115583678329652
+          },
+          "negative_mean": {
+            "coef": [
+              -454295,
+              -3218726,
+              -1573282,
+              367357,
+              312812,
+              200230,
+              153585,
+              0,
+              0,
+              -2686847,
+              0,
+              0
+            ],
+            "bias": 1152972161171,
+            "shift": 28,
+            "accumulator_bound": 1885040013797
+          }
+        },
+        "guard": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -24664340,
+              16017926,
+              -6215337,
+              68887791,
+              -43699631,
+              -10663858,
+              23877874,
+              66000294,
+              -861173,
+              8563363,
+              -21594851,
+              122202010
+            ],
+            "bias": -1166777666807,
+            "shift": 28,
+            "accumulator_bound": 166961396777900
+          },
+          "positive_mean": {
+            "coef": [
+              -145456148,
+              726555505,
+              578416022,
+              258778402,
+              523951952,
+              -242784553,
+              -158744029,
+              -1945260189,
+              15280180600,
+              9073280,
+              -2091795142,
+              -30011501778
+            ],
+            "bias": -1943269227714,
+            "shift": 28,
+            "accumulator_bound": 33727341863542234
+          },
+          "negative_probability": {
+            "coef": [
+              -1102545,
+              4434490,
+              24927971,
+              -35949055,
+              45183011,
+              21363572,
+              -1700496,
+              -31085176,
+              127985356,
+              -19514699,
+              214609054,
+              -377225894
+            ],
+            "bias": -1872808602178,
+            "shift": 28,
+            "accumulator_bound": 619280877084247
+          },
+          "negative_mean": {
+            "coef": [
+              -54823690,
+              263839348,
+              242408649,
+              391193134,
+              468069256,
+              -197702414,
+              -193733642,
+              205743322,
+              5209903078,
+              -7394778,
+              558352708,
+              1011573077
+            ],
+            "bias": 2980887285085,
+            "shift": 28,
+            "accumulator_bound": 2163549432903814
+          }
+        },
+        "materials": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -1573806,
+              12230116,
+              20025335,
+              1226529,
+              16428918,
+              388686,
+              830247,
+              86481501,
+              -4266638,
+              6109685,
+              -229362162,
+              -64365608
+            ],
+            "bias": -977727896582,
+            "shift": 28,
+            "accumulator_bound": 306915546011161
+          },
+          "positive_mean": {
+            "coef": [
+              -583057076,
+              1328585580,
+              5090141,
+              -112822667,
+              -461254686,
+              361338810,
+              261394525,
+              217064000,
+              479648147,
+              623723557,
+              -10963481106,
+              -5709004879
+            ],
+            "bias": 4586356123530,
+            "shift": 28,
+            "accumulator_bound": 17039057968134301
+          },
+          "negative_probability": {
+            "coef": [
+              -404019,
+              -6102782,
+              35762262,
+              -4740779,
+              14124193,
+              2253161,
+              -1799816,
+              -6247651,
+              -6851341,
+              -4873330,
+              31412423,
+              -31537195
+            ],
+            "bias": -1150455285196,
+            "shift": 28,
+            "accumulator_bound": 70889118153622
+          },
+          "negative_mean": {
+            "coef": [
+              -256272543,
+              461756428,
+              -137876910,
+              -29670340,
+              -92909969,
+              118875886,
+              92045125,
+              -429562612,
+              1498517734,
+              178829006,
+              -1119370296,
+              -2109663477
+            ],
+            "bias": 6974076749164,
+            "shift": 28,
+            "accumulator_bound": 3505115836819531
+          }
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "baseline12": {
+        "episodes": 76295,
+        "states": 333,
+        "mae": 7.150041673574607,
+        "mse": 1516.4428817004239,
+        "selected_pct": 5.457726689167517,
+        "selected_actual_benefit": 26.579731253980007,
+        "positive_benefit_captured_fraction": 0.4128856238052029,
+        "missed_positive_benefit": 2.410940942230958,
+        "negative_benefit_selected": 0.2448346134707832,
+        "threshold": 16.0,
+        "decision_regret": 2.6103520612721502,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 56.0,
+        "false_refresh_pct": 4.357106350420444,
+        "missed_threshold_decision_pct": 2.900755771873161,
+        "absolute_error_p95": 28.251,
+        "absolute_error_p99": 110.06
+      },
+      "onehot17": {
+        "episodes": 76295,
+        "states": 333,
+        "mae": 6.504361424598778,
+        "mse": 1458.6391908280348,
+        "selected_pct": 7.183634336694247,
+        "selected_actual_benefit": 30.47103453387313,
+        "positive_benefit_captured_fraction": 0.6264906690429582,
+        "missed_positive_benefit": 1.5337879207557465,
+        "negative_benefit_selected": 0.38370902198218887,
+        "threshold": 16.0,
+        "decision_regret": 2.1482186719126215,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 44.0,
+        "false_refresh_pct": 5.227845234557579,
+        "missed_threshold_decision_pct": 2.0455870084835643,
+        "absolute_error_p95": 28.047,
+        "absolute_error_p99": 105.096
+      },
+      "experts12": {
+        "episodes": 76295,
+        "maps": 333,
+        "mae": 6.400306757288272,
+        "mse": 1440.1952889933075,
+        "decision_regret": 2.075520593315631,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 42.0,
+        "selected_pct": 7.528171974740329,
+        "positive_benefit_captured_fraction": 0.6574877626952009,
+        "selected_actual_benefit": 30.774427151493807,
+        "false_refresh_pct": 5.454743987787177,
+        "missed_threshold_decision_pct": 1.927948123667082
+      },
+      "experts12_cap1024": {
+        "episodes": 76295,
+        "maps": 333,
+        "mae": 6.400306757288272,
+        "mse": 1440.1952889933075,
+        "decision_regret": 4.212510957935873,
+        "decision_regret_p95": 16.0,
+        "decision_regret_p99": 40.0,
+        "selected_pct": 21.489057180074546,
+        "positive_benefit_captured_fraction": 0.68312250604597,
+        "selected_actual_benefit": 11.231312049729006,
+        "false_refresh_pct": 19.258186455176034,
+        "missed_threshold_decision_pct": 1.7705053857217288
+      },
+      "training_support": {
+        "clear": {
+          "rows": 44448,
+          "maps": 631,
+          "positive": 1549,
+          "negative": 800,
+          "zero": 42099
+        },
+        "forbidden": {
+          "rows": 8270,
+          "maps": 583,
+          "positive": 41,
+          "negative": 89,
+          "zero": 8140
+        },
+        "guard": {
+          "rows": 34932,
+          "maps": 571,
+          "positive": 277,
+          "negative": 187,
+          "zero": 34468
+        },
+        "materials": {
+          "rows": 56082,
+          "maps": 632,
+          "positive": 13896,
+          "negative": 4890,
+          "zero": 37296
+        }
+      },
+      "validation_support": {
+        "clear": {
+          "rows": 23170,
+          "maps": 333,
+          "positive": 851,
+          "negative": 416,
+          "zero": 21903
+        },
+        "forbidden": {
+          "rows": 4418,
+          "maps": 302,
+          "positive": 17,
+          "negative": 46,
+          "zero": 4355
+        },
+        "guard": {
+          "rows": 18841,
+          "maps": 308,
+          "positive": 118,
+          "negative": 74,
+          "zero": 18649
+        },
+        "materials": {
+          "rows": 29866,
+          "maps": 333,
+          "positive": 7371,
+          "negative": 2565,
+          "zero": 19930
+        }
+      },
+      "weight_normalization": {
+        "clear": {
+          "original_global_weight": 38274.81315265753,
+          "normalization_scalar": 1.1612858780713302
+        },
+        "forbidden": {
+          "original_global_weight": 33863.060868506494,
+          "normalization_scalar": 0.24421891547586916
+        },
+        "guard": {
+          "original_global_weight": 33094.73157617845,
+          "normalization_scalar": 1.0555154351257532
+        },
+        "materials": {
+          "original_global_weight": 38499.39440265753,
+          "normalization_scalar": 1.4566982382488798
+        }
+      },
+      "models": {
+        "clear": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -16819774,
+              -25450951,
+              37730536,
+              20333599,
+              45031843,
+              3653027,
+              12719511,
+              254432967,
+              220633705,
+              -5769392,
+              -445027864,
+              -554632536
+            ],
+            "bias": -1063866149130,
+            "shift": 28,
+            "accumulator_bound": 1053183471474025
+          },
+          "positive_mean": {
+            "coef": [
+              -39306930,
+              -9293342,
+              369784055,
+              620140437,
+              -180264937,
+              -9374346,
+              163472949,
+              -424687623,
+              -1747372679,
+              73903047,
+              5238517415,
+              2558530136
+            ],
+            "bias": 1182554723539,
+            "shift": 28,
+            "accumulator_bound": 8095200160288994
+          },
+          "negative_probability": {
+            "coef": [
+              -28663839,
+              -27343480,
+              29889702,
+              -23220941,
+              60638371,
+              21580219,
+              -4091081,
+              -481906929,
+              -5794448,
+              11792579,
+              500487963,
+              128062457
+            ],
+            "bias": -961335322421,
+            "shift": 28,
+            "accumulator_bound": 686244458926792
+          },
+          "negative_mean": {
+            "coef": [
+              -77534199,
+              434327342,
+              168693378,
+              402946039,
+              -45223120,
+              70517919,
+              1550431,
+              285395669,
+              -1196144145,
+              75481890,
+              956796762,
+              403428717
+            ],
+            "bias": 78605773390,
+            "shift": 28,
+            "accumulator_bound": 1585449272695738
+          }
+        },
+        "forbidden": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              6828147,
+              30036046,
+              91903761,
+              24035168,
+              -22610066,
+              12861249,
+              -2989706,
+              -48445852,
+              0,
+              -33786514,
+              153477494,
+              0
+            ],
+            "bias": -2338947230562,
+            "shift": 28,
+            "accumulator_bound": 178144422728813
+          },
+          "positive_mean": {
+            "coef": [
+              -206142,
+              -3071731,
+              1745237,
+              -16207,
+              114921,
+              14856,
+              129540,
+              2962868,
+              0,
+              -1296526,
+              5521322,
+              0
+            ],
+            "bias": 1106836967310,
+            "shift": 28,
+            "accumulator_bound": 7408466815202
+          },
+          "negative_probability": {
+            "coef": [
+              -16388532,
+              -70596117,
+              100190290,
+              7015472,
+              8513332,
+              10756073,
+              10738277,
+              92103683,
+              0,
+              -9985064,
+              -111828214,
+              0
+            ],
+            "bias": -2052364587133,
+            "shift": 28,
+            "accumulator_bound": 140518309917893
+          },
+          "negative_mean": {
+            "coef": [
+              128209,
+              -23254230,
+              25777374,
+              611485,
+              1157978,
+              -595377,
+              215393,
+              -6610554,
+              0,
+              -13890043,
+              -4093872,
+              0
+            ],
+            "bias": 1214010995074,
+            "shift": 28,
+            "accumulator_bound": 11205536848951
+          }
+        },
+        "guard": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -21519588,
+              8690174,
+              419299,
+              48564301,
+              -21476071,
+              -13229498,
+              25290608,
+              155515474,
+              106978876,
+              6669826,
+              -45391463,
+              -837596378
+            ],
+            "bias": -1273796384498,
+            "shift": 28,
+            "accumulator_bound": 917599226323383
+          },
+          "positive_mean": {
+            "coef": [
+              -142909773,
+              486494512,
+              516470382,
+              135763014,
+              -15395073,
+              19688217,
+              -33230883,
+              -2423190309,
+              26114467027,
+              -25084768,
+              2288013828,
+              26425833279
+            ],
+            "bias": -76906210488,
+            "shift": 28,
+            "accumulator_bound": 31155966435247650
+          },
+          "negative_probability": {
+            "coef": [
+              -10788349,
+              48093990,
+              -27328084,
+              -10209711,
+              35220029,
+              15330007,
+              -3745043,
+              -30119725,
+              201199093,
+              -5447367,
+              118819098,
+              -625130299
+            ],
+            "bias": -1351146445387,
+            "shift": 28,
+            "accumulator_bound": 776934137296709
+          },
+          "negative_mean": {
+            "coef": [
+              -25673047,
+              224182750,
+              227649183,
+              136004054,
+              272518430,
+              -126913096,
+              -120685418,
+              327710664,
+              6850615634,
+              22985598,
+              543173370,
+              12396089558
+            ],
+            "bias": 2693534273223,
+            "shift": 28,
+            "accumulator_bound": 13622412455368709
+          }
+        },
+        "materials": {
+          "schema": 2,
+          "features": [
+            "age",
+            "q32",
+            "q128",
+            "target_added",
+            "target_removed",
+            "target_added_frac_q12",
+            "target_removed_frac_q12",
+            "since_capture_invalid_goal",
+            "since_capture_reachable_no_move",
+            "since_capture_movement_queries",
+            "since_capture_invalid_goal_frac_q12",
+            "since_capture_reachable_no_move_frac_q12"
+          ],
+          "threshold": 16000,
+          "research_only": true,
+          "transforms": [
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "log1p_q12",
+            "identity_q12",
+            "identity_q12"
+          ],
+          "positive_probability": {
+            "coef": [
+              -1773435,
+              12470826,
+              19803144,
+              -297802,
+              18239023,
+              1285513,
+              528891,
+              98381639,
+              -14333019,
+              4831528,
+              -408419798,
+              -72470038
+            ],
+            "bias": -959686974110,
+            "shift": 28,
+            "accumulator_bound": 495886926134090
+          },
+          "positive_mean": {
+            "coef": [
+              -587715938,
+              1361080318,
+              191337590,
+              -98335726,
+              -294825679,
+              372935850,
+              186295660,
+              1595620821,
+              2251183738,
+              603427629,
+              2988102697,
+              -9882954087
+            ],
+            "bias": 720078064007,
+            "shift": 28,
+            "accumulator_bound": 13487560159901418
+          },
+          "negative_probability": {
+            "coef": [
+              -2591881,
+              -7375494,
+              32967429,
+              -4607794,
+              11682403,
+              595213,
+              536764,
+              -8788606,
+              -14045299,
+              -2216432,
+              -146444813,
+              -9073142
+            ],
+            "bias": -1041503391146,
+            "shift": 28,
+            "accumulator_bound": 163532026180431
+          },
+          "negative_mean": {
+            "coef": [
+              -189848183,
+              251842288,
+              102413081,
+              34948860,
+              -116476524,
+              68507399,
+              82554841,
+              -1433489430,
+              1169561923,
+              120356498,
+              -3620191933,
+              -1749212870
+            ],
+            "bias": 4183098381673,
+            "shift": 28,
+            "accumulator_bound": 5665039051946926
+          }
+        }
+      }
+    }
+  ]
+}

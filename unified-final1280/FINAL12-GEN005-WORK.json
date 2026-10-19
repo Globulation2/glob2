@@ -1,0 +1,305 @@
+{
+  "scope": "Observer-only8192tickmatchedwindows;actualqueryandgametrajectoriesdiffer;fieldcellsrepresentadmittedoutputsize,notCPUprediction;all-eventfieldcellsdoublecountsacrosslifecycle",
+  "runs": [
+    {
+      "arm": "gen005_reference",
+      "format": "4ffa",
+      "group": "66294c58700ef1b4",
+      "window": [
+        16640,
+        24832
+      ],
+      "families": {
+        "clear": {
+          "events": {
+            "request": 858,
+            "admission": 858,
+            "publication": 858,
+            "duplicate": 333
+          },
+          "admissions": 858,
+          "admission_field_cells": 7028736,
+          "all_event_field_cells_sum": 14057472,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "forbidden": {
+          "events": {
+            "request": 148,
+            "admission": 146,
+            "publication": 146,
+            "duplicate": 22
+          },
+          "admissions": 146,
+          "admission_field_cells": 1196032,
+          "all_event_field_cells_sum": 2392064,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "guard": {
+          "events": {
+            "request": 84,
+            "admission": 84,
+            "publication": 84,
+            "duplicate": 3
+          },
+          "admissions": 84,
+          "admission_field_cells": 688128,
+          "all_event_field_cells_sum": 1376256,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "lazy_building": {
+          "events": {
+            "request": 2958,
+            "admission": 2943,
+            "publication": 2887,
+            "prepared_search": 2887,
+            "duplicate": 91856,
+            "search_resume": 704
+          },
+          "admissions": 2943,
+          "admission_field_cells": 24109056,
+          "all_event_field_cells_sum": 47759360,
+          "prepared_or_resumed_cost_advancement": 1737407
+        },
+        "materials": {
+          "events": {
+            "request": 866,
+            "admission": 866,
+            "publication": 865,
+            "duplicate": 322
+          },
+          "admissions": 866,
+          "admission_field_cells": 7094272,
+          "all_event_field_cells_sum": 14180352,
+          "prepared_or_resumed_cost_advancement": 0
+        }
+      },
+      "total_admissions": 4897,
+      "total_admission_field_cells": 40116224
+    },
+    {
+      "arm": "gen005_reference",
+      "format": "8ffa",
+      "group": "1d043310cbecdceb",
+      "window": [
+        16640,
+        24832
+      ],
+      "families": {
+        "clear": {
+          "events": {
+            "publication": 526,
+            "request": 525,
+            "admission": 525,
+            "duplicate": 46
+          },
+          "admissions": 525,
+          "admission_field_cells": 8601600,
+          "all_event_field_cells_sum": 17219584,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "forbidden": {
+          "events": {
+            "request": 134,
+            "admission": 134,
+            "publication": 134,
+            "duplicate": 1
+          },
+          "admissions": 134,
+          "admission_field_cells": 2195456,
+          "all_event_field_cells_sum": 4390912,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "guard": {
+          "events": {
+            "request": 665,
+            "admission": 665,
+            "publication": 665,
+            "duplicate": 38
+          },
+          "admissions": 665,
+          "admission_field_cells": 10895360,
+          "all_event_field_cells_sum": 21790720,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "lazy_building": {
+          "events": {
+            "request": 862,
+            "duplicate": 5214,
+            "admission": 862,
+            "search_resume": 117,
+            "publication": 847,
+            "prepared_search": 737
+          },
+          "admissions": 862,
+          "admission_field_cells": 14123008,
+          "all_event_field_cells_sum": 28000256,
+          "prepared_or_resumed_cost_advancement": 526513
+        },
+        "materials": {
+          "events": {
+            "publication": 287,
+            "request": 288,
+            "admission": 288,
+            "duplicate": 38
+          },
+          "admissions": 288,
+          "admission_field_cells": 4718592,
+          "all_event_field_cells_sum": 9420800,
+          "prepared_or_resumed_cost_advancement": 0
+        }
+      },
+      "total_admissions": 2474,
+      "total_admission_field_cells": 40534016
+    },
+    {
+      "arm": "final12",
+      "format": "4ffa",
+      "group": "66294c58700ef1b4",
+      "window": [
+        16640,
+        24832
+      ],
+      "families": {
+        "clear": {
+          "events": {
+            "request": 702,
+            "admission": 702,
+            "publication": 696,
+            "duplicate": 288
+          },
+          "admissions": 702,
+          "admission_field_cells": 5750784,
+          "all_event_field_cells_sum": 11452416,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "forbidden": {
+          "events": {
+            "request": 164,
+            "admission": 164,
+            "publication": 163,
+            "duplicate": 26
+          },
+          "admissions": 164,
+          "admission_field_cells": 1343488,
+          "all_event_field_cells_sum": 2678784,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "guard": {
+          "events": {
+            "request": 88,
+            "admission": 88,
+            "publication": 87,
+            "duplicate": 3
+          },
+          "admissions": 88,
+          "admission_field_cells": 720896,
+          "all_event_field_cells_sum": 1433600,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "lazy_building": {
+          "events": {
+            "request": 3434,
+            "admission": 3430,
+            "publication": 3376,
+            "prepared_search": 3376,
+            "search_resume": 686,
+            "duplicate": 115951
+          },
+          "admissions": 3430,
+          "admission_field_cells": 28098560,
+          "all_event_field_cells_sum": 55754752,
+          "prepared_or_resumed_cost_advancement": 2003616
+        },
+        "materials": {
+          "events": {
+            "request": 973,
+            "admission": 973,
+            "publication": 971,
+            "duplicate": 110
+          },
+          "admissions": 973,
+          "admission_field_cells": 7970816,
+          "all_event_field_cells_sum": 15925248,
+          "prepared_or_resumed_cost_advancement": 0
+        }
+      },
+      "total_admissions": 5357,
+      "total_admission_field_cells": 43884544
+    },
+    {
+      "arm": "final12",
+      "format": "8ffa",
+      "group": "1d043310cbecdceb",
+      "window": [
+        16640,
+        24832
+      ],
+      "families": {
+        "clear": {
+          "events": {
+            "publication": 635,
+            "request": 634,
+            "admission": 634,
+            "duplicate": 95
+          },
+          "admissions": 634,
+          "admission_field_cells": 10387456,
+          "all_event_field_cells_sum": 20791296,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "forbidden": {
+          "events": {
+            "request": 147,
+            "admission": 147,
+            "publication": 147,
+            "duplicate": 8
+          },
+          "admissions": 147,
+          "admission_field_cells": 2408448,
+          "all_event_field_cells_sum": 4816896,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "guard": {
+          "events": {
+            "request": 801,
+            "admission": 801,
+            "publication": 801,
+            "duplicate": 69
+          },
+          "admissions": 801,
+          "admission_field_cells": 13123584,
+          "all_event_field_cells_sum": 26247168,
+          "prepared_or_resumed_cost_advancement": 0
+        },
+        "lazy_building": {
+          "events": {
+            "request": 915,
+            "duplicate": 7065,
+            "admission": 915,
+            "search_resume": 110,
+            "publication": 901,
+            "prepared_search": 770
+          },
+          "admissions": 915,
+          "admission_field_cells": 14991360,
+          "all_event_field_cells_sum": 29753344,
+          "prepared_or_resumed_cost_advancement": 555468
+        },
+        "materials": {
+          "events": {
+            "publication": 306,
+            "request": 305,
+            "admission": 305,
+            "duplicate": 66
+          },
+          "admissions": 305,
+          "admission_field_cells": 4997120,
+          "all_event_field_cells_sum": 10010624,
+          "prepared_or_resumed_cost_advancement": 0
+        }
+      },
+      "total_admissions": 2802,
+      "total_admission_field_cells": 45907968
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "pid": 2455578,
+  "command": [
+    "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/final1280-family-main-effects/fit-family.py"
+  ],
+  "script_sha256": "dbd1ccd38373fb064f323d8b932a923365f52944705ad5531d5abf6d1d02092b",
+  "scope": "Userauthorizedfamilyonehotmain-effectexperiment;no canonicalchanges/no baselinefit"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "pid": 2421244,
+  "scope": "Audit only; recognize3explicit USER-COLLECTION-STOP receipts, no input mutation",
+  "script_sha256": "3e88d740c26b00af8edab6ab8b311e349e92ce539e7f5fb0489f32df5301ef26",
+  "returncode": 0,
+  "finished_utc": "2026-10-19T17:56:47.605801+00:00",
+  "output_sha256": "66125d6f94b6cb27a0960a72db654e684605107fbb2ca447699022480c825d62"
+}

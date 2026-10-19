@@ -1,0 +1,54 @@
+{
+  "status": "COMPLETE",
+  "runs": 24,
+  "arms": {
+    "shared12": {
+      "cpu_ms_tick": 0.12269523620605469,
+      "total_sim_cpu": 8.040955,
+      "process_cpu": 10.51362,
+      "wall": 11.182968917768449,
+      "ticks": 65536,
+      "tps": 6043.475618770326
+    },
+    "onehot17": {
+      "cpu_ms_tick": 0.11981645202636719,
+      "total_sim_cpu": 7.852291,
+      "process_cpu": 10.314903,
+      "wall": 10.883990919101052,
+      "ticks": 65536,
+      "tps": 6209.486988949271,
+      "vs_shared12": {
+        "pooled": -0.023462884694666175,
+        "paired_repeat_min": -0.04779593384539227,
+        "paired_repeat_max": 0.004780203256970816,
+        "paired_repeat_values": [
+          -0.017062847190098318,
+          -0.04779593384539227,
+          0.004780203256970816,
+          -0.03336372096177842
+        ]
+      }
+    },
+    "experts12": {
+      "cpu_ms_tick": 0.12302113342285155,
+      "total_sim_cpu": 8.062313,
+      "process_cpu": 10.52199,
+      "wall": 11.025720128323883,
+      "ticks": 65536,
+      "tps": 6129.66765103932,
+      "vs_shared12": {
+        "pooled": 0.002656152161030434,
+        "paired_repeat_min": -0.004942514085194305,
+        "paired_repeat_max": 0.01350496574860327,
+        "paired_repeat_values": [
+          0.01350496574860327,
+          -0.0017753798621198413,
+          -0.004942514085194305,
+          0.004012064619923317
+        ]
+      }
+    }
+  },
+  "quality_onoff_finalchecksums_exact": true,
+  "limitations": "Dockerbackgroundobserved;load/thermal/powercaptured;notuncontendedphysicalcore;twoalreadystudiedstates"
+}

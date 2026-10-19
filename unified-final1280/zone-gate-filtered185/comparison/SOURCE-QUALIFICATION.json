@@ -1,0 +1,12 @@
+{
+  "production_source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "fixture_source": "5f0f3abdfd60f5956d67186ec37d2d542f105e6e",
+  "qualification_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final-cleanup/macos185/status.json",
+  "qualification_sha256": "5d6fdee2f9abb3c307844957ef323c0355c26e168e55d26dfca4de7043635217",
+  "qualification": {
+    "status": "PASS",
+    "source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+    "utc": "2026-10-19T20:23:13.564633+00:00"
+  },
+  "note": "Actual qualification receipt location; PLAN contains the shorthand operator directory label filtered185."
+}

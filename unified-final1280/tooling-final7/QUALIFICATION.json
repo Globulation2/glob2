@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "suite_tests": 88,
+  "worker_tests": 7,
+  "actual_model_ubsan_vectors": 530,
+  "source_sha256": {
+    "tools/adaptive_gradient_collection.py": "9e98d05b864c3e3e90f134eb0d32b1869d8be1742ad1ac7a36f46d4463f7de81",
+    "tools/adaptive_gradient_codegen.py": "207ff7b5817cbc7dfbfa33afd67256a3929a110856cd6990371b1ecd809c9626",
+    "tools/adaptive_gradient_dataset.py": "4dcc4080d94d48e3346922a94e943c6e89211684a82618fdd040e7b20283310a",
+    "tools/adaptive_gradient_model.py": "47f7f51e9ef39fc5e01f6177a6182ef94f27dde46339786eb90c1c90cb8cbe1a",
+    "tools/resource_gradient_model.py": "3a87f2b31fe3d3f0c112362b78af380032c4f48aa1c0422b82bc75367a49b99b",
+    "tools/test_adaptive_gradient_model.py": "e8bd10494be1365775ded6b65ab54facd4d1cf73c31e87fc1bbfd0e010b85904",
+    "tools/models/adaptive-gradient.json": "4c63a4673af7856d9b4fa56b3e126a6e8e8768014ede19792397dd0730b39ee7",
+    "src/map/gradient/AdaptiveGradientModel.h": "5ac83aedcaf8dd4075c0b164de5d2a00cbdc1e353bd7b99fd505abf8fade6237"
+  },
+  "full_snapshot_sha256": "948c27cfa2b60caceeac5876b161b492c2a489629d2f9d33b8ecd630520872dc",
+  "platform": "Linux-x86_64 Rig pinnedPython3.14.4 numpy2.4.6 scipy1.17.1 sklearn1.9.1",
+  "logs": [
+    "tests-final.log",
+    "worker-tests-final.log",
+    "campaign-final.log"
+  ],
+  "updated_campaign_tests": 18,
+  "python311_syntax": true,
+  "source_snapshot_manifest": "source-sha256-final.json"
+}

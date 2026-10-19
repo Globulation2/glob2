@@ -1,0 +1,307 @@
+{
+  "status": "PASS",
+  "production_source": "4285ca7ea6db02cd114d10692074e9fa7796f06a",
+  "sim_revision": 95,
+  "save_format": 185,
+  "strategy": "family-experts-with-combined-fallback",
+  "threshold_milli": 24000,
+  "demanded_capture_age_cap_ticks": 1024,
+  "minimum_interval_ticks": 32,
+  "publication_delay_ticks": 8,
+  "linux_main_sha256": "59f6919ad46c156cbe36123c7dcb2eea8b0e7b5205ddbd882c5f367d6ee1dbbe",
+  "macos_main_sha256": "3f953154f7ddfc8fadeb04d2b95636a7735ad0abd914c6a8cf26e6e4c7c1e271",
+  "simulation_save_pairs": [
+    {
+      "run": "t1-off",
+      "file": "world.checksums",
+      "bytes": 15018,
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0"
+    },
+    {
+      "run": "t1-off",
+      "file": "snapshot.checksums",
+      "bytes": 19052,
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e"
+    },
+    {
+      "run": "t1-off",
+      "file": "game.replay.checksums",
+      "bytes": 5793548,
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df"
+    },
+    {
+      "run": "t1-off",
+      "file": "final.game.gz",
+      "bytes": 97140,
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956"
+    },
+    {
+      "run": "t1-on",
+      "file": "world.checksums",
+      "bytes": 15018,
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0"
+    },
+    {
+      "run": "t1-on",
+      "file": "snapshot.checksums",
+      "bytes": 19052,
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e"
+    },
+    {
+      "run": "t1-on",
+      "file": "game.replay.checksums",
+      "bytes": 5793548,
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df"
+    },
+    {
+      "run": "t1-on",
+      "file": "final.game.gz",
+      "bytes": 97140,
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956"
+    },
+    {
+      "run": "t4-on",
+      "file": "world.checksums",
+      "bytes": 15018,
+      "sha256": "9d68b39c1c33b8d6058d68afd3697b4f67ccd57a450cef985d77437b2748b6d0"
+    },
+    {
+      "run": "t4-on",
+      "file": "snapshot.checksums",
+      "bytes": 19052,
+      "sha256": "35a22ba6e16c7652e9d3eb156b73b733f51821492184b3566680c9694dc74e7e"
+    },
+    {
+      "run": "t4-on",
+      "file": "game.replay.checksums",
+      "bytes": 5793548,
+      "sha256": "3fbaf2d549fa432504bca7eadb0270e8e4968d907bfe3a04b4ab7c386eb403df"
+    },
+    {
+      "run": "t4-on",
+      "file": "final.game.gz",
+      "bytes": 97140,
+      "sha256": "fb944fa114a2a7f20bc0f6277c5e5658df94d70c8ce08ce63c889ac413aec956"
+    },
+    {
+      "run": "legacy179-normalize185",
+      "file": "world.checksums",
+      "bytes": 17,
+      "sha256": "e247f9ad6f2500cd68055156204079e2bbd75b1b480487f63f63d0fe58c4180f"
+    },
+    {
+      "run": "legacy179-normalize185",
+      "file": "snapshot.checksums",
+      "bytes": 46,
+      "sha256": "3e588b01e8e99bbb0ee3640ddb5f2bdca1629dce7a334f6585c4695dbc67a4e8"
+    },
+    {
+      "run": "legacy179-normalize185",
+      "file": "game.replay.checksums",
+      "bytes": 46084,
+      "sha256": "4179c3c1adf4d647481bb236b39d59f7bf50079bb86ba8277f1a4b59c53cff22"
+    },
+    {
+      "run": "legacy179-normalize185",
+      "file": "final.game.gz",
+      "bytes": 506140,
+      "sha256": "00df2945417d2efd8473087032bf863c7fa80b1988a4fac959148a943a72ebd5"
+    },
+    {
+      "run": "mature-off",
+      "file": "world.checksums",
+      "bytes": 17135,
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe"
+    },
+    {
+      "run": "mature-off",
+      "file": "snapshot.checksums",
+      "bytes": 23315,
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12"
+    },
+    {
+      "run": "mature-off",
+      "file": "game.replay.checksums",
+      "bytes": 48737780,
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015"
+    },
+    {
+      "run": "mature-off",
+      "file": "final.game.gz",
+      "bytes": 590030,
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336"
+    },
+    {
+      "run": "mature-on",
+      "file": "world.checksums",
+      "bytes": 17135,
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe"
+    },
+    {
+      "run": "mature-on",
+      "file": "snapshot.checksums",
+      "bytes": 23315,
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12"
+    },
+    {
+      "run": "mature-on",
+      "file": "game.replay.checksums",
+      "bytes": 48737780,
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015"
+    },
+    {
+      "run": "mature-on",
+      "file": "final.game.gz",
+      "bytes": 590030,
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "world.checksums",
+      "bytes": 17135,
+      "sha256": "dfb29e4b8a49554bcbdebba267ce58ba2a456401d4549a608c03532bbed17abe"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "snapshot.checksums",
+      "bytes": 23315,
+      "sha256": "cd1417bdc92815a66c41f53cabda07a2cf58f172ea45a7556fc6eeca4aa01f12"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "game.replay.checksums",
+      "bytes": 48737780,
+      "sha256": "71cd78a0599978e32ae0ec24d12a588d16814501fec297b955dec8c1a782e015"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "final.game.gz",
+      "bytes": 590030,
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336"
+    },
+    {
+      "run": "mature-resumed",
+      "file": "world.checksums",
+      "bytes": 8575,
+      "sha256": "addd3b12b7bf230e408f997c37888e037200270b07e216e29d9d8cdb8c90117a"
+    },
+    {
+      "run": "mature-resumed",
+      "file": "snapshot.checksums",
+      "bytes": 11674,
+      "sha256": "1ec49eec9d58822c1ae3c1f24efea786992ac86645cfd4822e7dbb40a8bf642d"
+    },
+    {
+      "run": "mature-resumed",
+      "file": "game.replay.checksums",
+      "bytes": 25002602,
+      "sha256": "e44642d9712e35aaa2ae9b8da0293c8eb8dcc3b53dd0c91f8ecd96d8f56464c1"
+    },
+    {
+      "run": "mature-resumed",
+      "file": "final.game.gz",
+      "bytes": 590030,
+      "sha256": "e3b442d8895649296604744eb5b0c5ff7ed5b47be6f603647476b4c37e08d336"
+    }
+  ],
+  "diagnostic_pairs": [
+    {
+      "run": "t1-on",
+      "file": "gradient-episodes.csv",
+      "bytes": 2941,
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6"
+    },
+    {
+      "run": "t1-on",
+      "file": "gradient-quality.csv",
+      "bytes": 8370,
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b"
+    },
+    {
+      "run": "t1-on",
+      "file": "gradient-planning-quality.csv",
+      "bytes": 264142,
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf"
+    },
+    {
+      "run": "t1-on",
+      "file": "gradient-contradictions.csv",
+      "bytes": 357,
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8"
+    },
+    {
+      "run": "t4-on",
+      "file": "gradient-episodes.csv",
+      "bytes": 2941,
+      "sha256": "18046091b5823bfaca4ed30f4d202c0592fa715179c34ec32092e0643ffdd6e6"
+    },
+    {
+      "run": "t4-on",
+      "file": "gradient-quality.csv",
+      "bytes": 8370,
+      "sha256": "86c983d48c15c08bf4da10eeb00717c9607ede778d6ff2063217d6f1194a290b"
+    },
+    {
+      "run": "t4-on",
+      "file": "gradient-planning-quality.csv",
+      "bytes": 264142,
+      "sha256": "fcdeae59b738eb969fb6babb3d58502c57307696aa54f4090490b549c22bc7bf"
+    },
+    {
+      "run": "t4-on",
+      "file": "gradient-contradictions.csv",
+      "bytes": 357,
+      "sha256": "c846f4dd8190ac53f5c1801cf3ae2d48fe21969604ef7e19eb635a8b71e34de8"
+    },
+    {
+      "run": "mature-on",
+      "file": "gradient-episodes.csv",
+      "bytes": 1029,
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5"
+    },
+    {
+      "run": "mature-on",
+      "file": "gradient-quality.csv",
+      "bytes": 150,
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347"
+    },
+    {
+      "run": "mature-on",
+      "file": "gradient-planning-quality.csv",
+      "bytes": 102,
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac"
+    },
+    {
+      "run": "mature-on",
+      "file": "gradient-contradictions.csv",
+      "bytes": 873,
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "gradient-episodes.csv",
+      "bytes": 1029,
+      "sha256": "c94db4d90c317f04cfc2af6462933f069e8b9dd024780b94f3d66abdbab680d5"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "gradient-quality.csv",
+      "bytes": 150,
+      "sha256": "e5a67fe5d9af086ec40ee0cc99d8e4b98556ce4690d7155acc3bdcc84eb7c347"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "gradient-planning-quality.csv",
+      "bytes": 102,
+      "sha256": "61c34800c70ab008f2c08e073a9d53817bab143ad53355a807e3487a66017dac"
+    },
+    {
+      "run": "mature-t4-on",
+      "file": "gradient-contradictions.csv",
+      "bytes": 873,
+      "sha256": "beeea12d8fe6d3d1cc6b4b9a555bcc6ac450e53796cb53f1fb0f24e54a223d1d"
+    }
+  ],
+  "differences": [],
+  "utc": "2026-10-19T20:36:53.887889+00:00"
+}

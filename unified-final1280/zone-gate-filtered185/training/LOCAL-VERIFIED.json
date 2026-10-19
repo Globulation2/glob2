@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "archive": "filtered-training-raw.tar.gz",
+  "bytes": 14194574,
+  "sha256": "9a2186a2d804ed0180b02a7166020dd8f2601f5c28fead0ecee53b31047525b7",
+  "files": 1321,
+  "index_sha256": "34a52cde501da1ea7cee5d6b47063ad4ccef9b6b700b074d47fb30c5252bee7c",
+  "local_readback_verified": true
+}

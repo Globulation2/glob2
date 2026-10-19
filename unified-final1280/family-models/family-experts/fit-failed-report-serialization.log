@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/bradley/glob2/artifacts/gradient-unified-20261019/final1280-family-experts/fit-experts.py", line 75, in <module>
+    write('REPORT.json',report);status('COMPLETE',report_sha256=sha(ROOT/'REPORT.json'),experts_sha256=sha(ROOT/'family-experts-research.json'));print(json.dumps(dict(heldout=heldout,cap=heldout_cap,cap1024=capreport)))
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/glob2/artifacts/gradient-unified-20261019/final1280-family-experts/fit-experts.py", line 9, in write
+    p=ROOT/name;t=p.with_suffix(p.suffix+'.tmp');t.write_text(json.dumps(value,indent=2)+'\n');t.replace(p)
+                                                              ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.14/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.14/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/lib/python3.14/json/encoder.py", line 182, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type int64 is not JSON serializable
+when serializing dict item 'rows'
+when serializing dict item 'materials'
+when serializing dict item 'by_family'
+when serializing dict item 'cap1024'

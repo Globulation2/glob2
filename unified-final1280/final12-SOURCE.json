@@ -1,0 +1,12 @@
+{
+  "status": "RESEARCH-CANDIDATE-ONLY",
+  "base_revision": "e01fe4d1aa5780b039c9db3b24b6ab49cbbc4ee6",
+  "model_sha256": "16837e1876f21a9f33090058319c596694a44dc2cc61f2e9508f26fc87916df7",
+  "header_sha256": "d38639258d8cc9f729882633cd6b12ed6dddd33209478df8a348636c541dd21f",
+  "reason": "Final7prospectivereachabilityregression; qualifyexistingfitted1280generic12,no refit",
+  "source_changes": [
+    "tools/models/adaptive-gradient.json",
+    "src/map/gradient/AdaptiveGradientModel.h",
+    "tools/adaptive_gradient_dataset.py"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_APPROVED_PENDING_FINAL_MODEL_AND_QUALIFICATION",
+  "source": "aa186b0f3374b075319501961c225daa93dea2c7",
+  "review": "Read-only independent review of actual PR triple-dot diff and final zone/exploration delta; no source edits/builds by reviewer.",
+  "findings": [],
+  "architecture": "Raw painted counts belong to Map; changed-bit O(popcount) deltas cover public setters/replacement, bulk load/bootstrap rebuild and clear/resize/tiling reset. Guard/Clear unit and path queries gate before demand/outcome/RNG, Farm only contributes when enabled. Paint count deliberately differs from effective gradient goal count. Already-captured jobs retain deadlines.",
+  "tests_reviewed": [
+    "Multiteam overlap/idempotence/erase/replacement/historical padding",
+    "Bootstrap reconstruction",
+    "Binary/text load and subsequent erases",
+    "Resize/tiling reset",
+    "Empty query no demand/RNG/jobs",
+    "Published Guard erase-last and repaint",
+    "Farm-only disabled/enabled gate"
+  ],
+  "resolved_previous_blocker": "Exploration defaults now follow attested bundle minimum; invalid requested strata fail before dispatch. Historical minimum8 bundle behavior preserved.",
+  "compatibility": "Version185/SIM95/current replay185; save layout178/floor58 unchanged, derived counters rebuild from existing masks.",
+  "pending": [
+    "Final refit/header review once installed",
+    "Ordinary final native tests/goldens and runtime cross-platform/save/replay proof",
+    "Generated CLI reference regeneration/check"
+  ],
+  "limitations": "Current184 baseline qualification cannot be relabelled as185 behavior or new refitted-model evidence. Historical filtering must remain declared conservative metadata-based exclusion, not exact inference from zero goal count.",
+  "utc": "2026-10-19T20:18:16.113059+00:00"
+}

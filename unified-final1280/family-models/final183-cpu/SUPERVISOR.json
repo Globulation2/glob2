@@ -1,0 +1,8 @@
+{
+  "pid": 18772,
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/bradley/glob2/artifacts/gradient-unified-20261019/final1280/final183-cpu/run.py"
+  ],
+  "plan_sha256": "0c969ea716a8eb95975f66beb668a5bb43dc810b7d5aeb0aaafdb21763aea8a7"
+}
