@@ -1,0 +1,4 @@
+tick,key,behavior_seed,behavior_interval,reason,admitted
+10,1,181101,0,reactive,1
+11,65537,181101,0,reactive,1
+12,131073,181101,0,reactive,1

@@ -1,0 +1,159 @@
+{
+  "status": "complete",
+  "generation": "gen002",
+  "finished_utc": "2026-10-19T06:44:30.408310+00:00",
+  "source_revision": "6f73d23fe9425a75e85beab9b0f13f8ee782b148",
+  "frozen_binary_sha256": "9a739465a1241025cefd901759f71754e9be7d117ed8b66c816e417116a20ce4",
+  "perf_binary_sha256": "f317c41fd146e43d4e57822a9bcecfc8c7b062593e4cf5167383be149c98695e",
+  "patch_sha256": "b8764169fd8b1b0733cfb38f59bf360143f66dce2745b9b1ddee759a674207c9",
+  "parent_plan_sha256": "307834a933a1daad5cab3a93e3b40cd1d359cc2465289309dae63c9ed89a98ac",
+  "plan_sha256": "3d2b577d18992372d81ec95c21bf8e53ad5fdbd8c0c85cb93bbff5854a171b03",
+  "timing": {
+    "adaptive": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 12.274575,
+      "all_attempt_wall_seconds": 12.568805086018983,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.4994537353515625,
+      "wall_tps": 1955.317138885169,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.30687602205403647,
+      "shared_gradient_jobs_complete": 208,
+      "lazy_building_jobs_complete": 534
+    },
+    "fixed32": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 12.068469,
+      "all_attempt_wall_seconds": 12.473162766022142,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.49106726074218754,
+      "wall_tps": 1970.3102140979768,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.3039576147460938,
+      "shared_gradient_jobs_complete": 3072,
+      "lazy_building_jobs_complete": 478
+    },
+    "fixed128": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 12.451855,
+      "all_attempt_wall_seconds": 12.862263350922149,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.5066672770182291,
+      "wall_tps": 1910.705707812929,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.3162048256835937,
+      "shared_gradient_jobs_complete": 1148,
+      "lazy_building_jobs_complete": 698
+    }
+  },
+  "quality_by_arm": {
+    "adaptive": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 530,
+      "native_extra_cost": 116,
+      "extra_cost_per_movement_observation": 0.2188679245283019,
+      "movement_totals": {
+        "extra_cost": 116,
+        "false_unreachable": 0,
+        "false_reachable": 30,
+        "invalid_goal": 2,
+        "missed_move": 2,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 13420,
+      "planning_false_unreachable": 75,
+      "planning_false_reachable": 247,
+      "gradient_jobs": 48,
+      "building_gradient_jobs": 62
+    },
+    "fixed32": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 492,
+      "native_extra_cost": 26,
+      "extra_cost_per_movement_observation": 0.052845528455284556,
+      "movement_totals": {
+        "extra_cost": 26,
+        "false_unreachable": 0,
+        "false_reachable": 22,
+        "invalid_goal": 0,
+        "missed_move": 1,
+        "escape_failure": 0,
+        "stall": 1,
+        "guard_balance": 0
+      },
+      "planning_observations": 12922,
+      "planning_false_unreachable": 15,
+      "planning_false_reachable": 180,
+      "gradient_jobs": 361,
+      "building_gradient_jobs": 60
+    },
+    "fixed128": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 514,
+      "native_extra_cost": 30,
+      "extra_cost_per_movement_observation": 0.058365758754863814,
+      "movement_totals": {
+        "extra_cost": 30,
+        "false_unreachable": 0,
+        "false_reachable": 29,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 12960,
+      "planning_false_unreachable": 49,
+      "planning_false_reachable": 198,
+      "gradient_jobs": 130,
+      "building_gradient_jobs": 64
+    }
+  },
+  "quality_attempts": 9,
+  "quality_caps": 0,
+  "timing_attempts": 18,
+  "timing_caps": 0,
+  "equivalence_runs": 6,
+  "generation_comparison": {
+    "adaptive": {
+      "gen001_run_cpu_ms_per_tick": 0.23293278845214846,
+      "gen002_run_cpu_ms_per_tick": 0.30687602205403647,
+      "percent_change": 31.74445044566072,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    },
+    "fixed32": {
+      "gen001_run_cpu_ms_per_tick": 0.24483614017740885,
+      "gen002_run_cpu_ms_per_tick": 0.3039576147460938,
+      "percent_change": 24.14736424363062,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    },
+    "fixed128": {
+      "gen001_run_cpu_ms_per_tick": 0.2424473295084635,
+      "gen002_run_cpu_ms_per_tick": 0.3162048256835937,
+      "percent_change": 30.422069950065357,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    }
+  },
+  "limits": [
+    "short early-game workload only",
+    "SMT siblingCPU3 may run tournament job; shared host load, no isolation claim",
+    "timing study performance-only patched binary must first prove equivalence",
+    "quality probeON results excluded from CPU timing analysis",
+    "not installed-master comparison; no stable-promotion evidence",
+    "whole-map holdouts stay heldout and study rows must not enter training",
+    "gen001/gen002 timings occur at different wall times under shared load; cross-generation speed differences are exploratory",
+    "same heldout maps reused across generations; repeated evaluation does not provide a new independent holdout"
+  ],
+  "interpretation": "Research only; no stable promotion. Interpret CPU jointly with sampled quality, rare decisions and shared-SMT variability. Reused heldout evaluations do not become training data."
+}

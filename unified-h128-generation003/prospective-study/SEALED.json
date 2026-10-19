@@ -1,0 +1,31 @@
+{
+  "status": "complete",
+  "sealed_utc": "2026-10-19T09:38:53.038116+00:00",
+  "files": {
+    "PLAN.json": "964d22da133a1ea1b20a62e24776c3a2bed56636edf53c6d0c365e04bdb2d8cf",
+    "STUDY-REQUEST.json": "1fef101d0dcd67cecf8b8fb001935bdbb0db3a183bffe570af48c603166d38a8",
+    "GEN002-BASELINE.json": "20df9ff4c76f954867507cafba6062bfd6f0de8f49569f06c80649e5b7036b23",
+    "run-quality.py": "607502246bd80d075e2bf680656b1b9450447147fc28fd996b3aa78f6c96e489",
+    "build-perf-only.py": "f83e573dbe8b79b6a1d4d4bef392903368e4ed9b7d5a281e842bf11c7c8a9a96",
+    "run-perf-study.py": "0166d8d041f2e02173cef4a5f706562a3a9cfea688492816527e288d20531d17",
+    "summarize-quality.py": "060d58d3ad9736d326fb3bb2b765877efe6acc22080e2d05e6d63d0e0cd37446",
+    "finalize-study.py": "c5ef09ca85c99dcf7dcfb4e8a99c502a4e046c035b0e59e158e437c41352d922",
+    "wait-and-run.py": "705f3a963b510d2d0ccbad873806442ed5ac71e7d78185a0905897abcd0d6d35",
+    "QUALITY-SUMMARY.json": "b334f50e1984359730900fa8b822cc47e10c0f0b508636211796675e83cf95cf",
+    "TIMING-SUMMARY.json": "2a01c51f211dafec968ec60f4a457a3bd5fc2b64b3cab75672292565354547ae",
+    "EQUIVALENCE-PASSED.json": "64d4e5e505ec1a5bf09bd8db05a8b01ec859165a7ab52092d190ee917ba826a4",
+    "STUDY-COMPLETE.json": "0e3c2cd86551484521a19e904ac2788dc5236e2dbe1e85711cbb20da6afe3d27",
+    "QUALIFICATION-ACCEPTED.json": "bcc79761ae9ce0033c3767ed4ea600af4029c83c9ea7af9921530cd6b6d10956",
+    "perf-build/STATUS.json": "63282099658b96c07e25641cbd0fd410e733b6d3d9e9d4b87e07f5e201e861cf",
+    "perf-build/validation-only.patch": "b8764169fd8b1b0733cfb38f59bf360143f66dce2745b9b1ddee759a674207c9",
+    "perf-build/commands.json": "c09e7e1261720512d152f012e250fcdea1b197bf374e7c4ecd5ea323f1794dc8",
+    "perf-build/link-command.json": "b78d8feee96add002b1247ca05b9c9d8bb3eb10045e2af37d4a67e8e55d494ca",
+    "perf-build/reused-link-inputs.json": "cb81ebbb316a1b0c14a4586acd50d53957ecb95424d45684a100b0ef40ffd4a6",
+    "quality/STATUS.json": "8d39a49aa2d6868da237ea83d980d21935cc491ec65562e16f1c2401db99d66b",
+    "timing/STATUS.json": "2090163e3560c609cd5124d216ec382d7d232ac49839aa172e7db06735b1a161",
+    "PERF-FLAGS-AGREE.json": "b61a000ed0fd31f1faf1eecc339123fd066c8e9ec3a1f595a858eefff4994dcf",
+    "CROSS-GENERATION-TERMINAL-CHECKS.json": "3503a5e7d6aa370d28e48cfc4fa413f8ced3b2167a1865a5d04158f56cc8d6b4",
+    "READOUT.md": "4e68a17c620327bf5d080098499c36dee4aa6b9bca33a838bb4a43d5e6161ccc"
+  },
+  "scope": "artifact-only repeated gen003 prospective study, no active/canonical source changes or stable promotion"
+}

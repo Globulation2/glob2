@@ -1,0 +1,16 @@
+{
+  "accepted_utc": "2026-10-19T09:36:25.790567+00:00",
+  "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "receipt_path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/LIGHT-QUALIFICATION.json",
+  "receipt_sha256": "e3e1f24674b30ebc6633ed5ab9ac47f75e0bee9bcf4fcf850c6d06f5e68abb3f",
+  "binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+  "plan_sha256": "964d22da133a1ea1b20a62e24776c3a2bed56636edf53c6d0c365e04bdb2d8cf",
+  "checks": {
+    "main_build": true,
+    "integer_bounds_parity_530_ubsan": true,
+    "adaptive_no_fixed_interval_override": true,
+    "probe_off_on_threads_1_4": true,
+    "mac_linux_world_and_finalsave": true,
+    "on_thread_diagnostic_csv_exact": true
+  }
+}

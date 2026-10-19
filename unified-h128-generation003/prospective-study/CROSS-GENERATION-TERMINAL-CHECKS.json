@@ -1,0 +1,91 @@
+{
+  "generation_pair": [
+    "gen002",
+    "gen003"
+  ],
+  "terminal_comparison_fields": [
+    "finalChecksum",
+    "gradient_jobs",
+    "building_gradient_jobs"
+  ],
+  "all18_terminal_checksums_and_work_counts_match": true,
+  "all_quality_aggregate_outcomes_match": true,
+  "adaptive_timing_admissions_by_reason": {
+    "reactive": 20
+  },
+  "checks": [
+    {
+      "name": "repeat0-543d0c799aa23abf-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-543d0c799aa23abf-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-543d0c799aa23abf-fixed128",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-be83d51f9ae3abdb-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-be83d51f9ae3abdb-fixed128",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-be83d51f9ae3abdb-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-a410b70d13f54ecf-fixed128",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-a410b70d13f54ecf-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat0-a410b70d13f54ecf-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-543d0c799aa23abf-fixed128",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-543d0c799aa23abf-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-543d0c799aa23abf-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-be83d51f9ae3abdb-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-be83d51f9ae3abdb-fixed128",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-be83d51f9ae3abdb-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-a410b70d13f54ecf-fixed32",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-a410b70d13f54ecf-adaptive",
+      "all_terminal_result_fields_match": true
+    },
+    {
+      "name": "repeat1-a410b70d13f54ecf-fixed128",
+      "all_terminal_result_fields_match": true
+    }
+  ],
+  "interpretation": "Short repeated-map behavior unchanged; time differences cannot be attributed to coefficients under different shared host load."
+}

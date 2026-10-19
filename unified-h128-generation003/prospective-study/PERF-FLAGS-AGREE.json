@@ -1,0 +1,20 @@
+[
+  {
+    "file": "src/app/cli/CommandLine.cpp",
+    "matches_current_native_flags": true,
+    "reference_translation_unit": "src/app/cli/CommandLine.cpp",
+    "native_log": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/build.log"
+  },
+  {
+    "file": "src/app/cli/Headless.cpp",
+    "matches_current_native_flags": true,
+    "reference_translation_unit": "src/app/cli/Headless.cpp",
+    "native_log": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/build.log"
+  },
+  {
+    "file": "src/map/MapStep.cpp",
+    "matches_current_native_flags": true,
+    "reference_translation_unit": "src/map/MapStep.cpp",
+    "native_log": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/build.log"
+  }
+]

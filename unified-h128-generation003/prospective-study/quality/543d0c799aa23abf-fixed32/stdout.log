@@ -1,0 +1,4 @@
+nox::game started
+nox::gui.game.checkSum() = 9d9912f6
+automaticEndingGame ended: 1024 ticks, 0 minutes, 34 seconds
+GLOB2_GAME_END ticks=1024 winner_team=-1 seed=2484677057 map="map.map" orders=0 players=team0:Numbi,team1:Numbi

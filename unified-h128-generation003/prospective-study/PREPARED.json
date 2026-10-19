@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-19T09:36:24.620110+00:00",
+  "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "fresh_study": true,
+  "qualification_receipts_verified": 6,
+  "persistent_study_maps_remain_heldout": true,
+  "files": {
+    "run-perf-study.py": "0166d8d041f2e02173cef4a5f706562a3a9cfea688492816527e288d20531d17",
+    "GEN002-BASELINE.json": "20df9ff4c76f954867507cafba6062bfd6f0de8f49569f06c80649e5b7036b23",
+    "mirror-status.py": "14cdb86417c83de576e3a9bedc52a2c3e6b48647a4f02fbb5be132f99e821626",
+    "STUDY-REQUEST.json": "1fef101d0dcd67cecf8b8fb001935bdbb0db3a183bffe570af48c603166d38a8",
+    "wait-and-run.py": "705f3a963b510d2d0ccbad873806442ed5ac71e7d78185a0905897abcd0d6d35",
+    "finalize-study.py": "c5ef09ca85c99dcf7dcfb4e8a99c502a4e046c035b0e59e158e437c41352d922",
+    "run-quality.py": "607502246bd80d075e2bf680656b1b9450447147fc28fd996b3aa78f6c96e489",
+    "PREFLIGHT.json": "98ca0eb94e3b40cb321bda3281aa1ed38402c62d9c11bac0261239e414b7a624",
+    "summarize-quality.py": "060d58d3ad9736d326fb3bb2b765877efe6acc22080e2d05e6d63d0e0cd37446",
+    "build-perf-only.py": "f83e573dbe8b79b6a1d4d4bef392903368e4ed9b7d5a281e842bf11c7c8a9a96"
+  }
+}

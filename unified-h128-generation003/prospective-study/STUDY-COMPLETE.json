@@ -1,0 +1,299 @@
+{
+  "status": "complete",
+  "generation": "gen003",
+  "finished_utc": "2026-10-19T09:38:53.038116+00:00",
+  "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "frozen_binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+  "perf_binary_sha256": "0d062280628643ccad8dc6413412b6724c91262a4fb203427f927b0966792d91",
+  "patch_sha256": "b8764169fd8b1b0733cfb38f59bf360143f66dce2745b9b1ddee759a674207c9",
+  "parent_plan_sha256": "3d2b577d18992372d81ec95c21bf8e53ad5fdbd8c0c85cb93bbff5854a171b03",
+  "plan_sha256": "964d22da133a1ea1b20a62e24776c3a2bed56636edf53c6d0c365e04bdb2d8cf",
+  "timing": {
+    "adaptive": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 8.520631999999999,
+      "all_attempt_wall_seconds": 8.722899558895733,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.3467054036458333,
+      "wall_tps": 2817.4117830964883,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.21021360083007812,
+      "shared_gradient_jobs_complete": 208,
+      "lazy_building_jobs_complete": 534
+    },
+    "fixed32": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 8.838911,
+      "all_attempt_wall_seconds": 9.120166855165735,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.35965620930989584,
+      "wall_tps": 2694.6875413885614,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.22017977018229165,
+      "shared_gradient_jobs_complete": 3072,
+      "lazy_building_jobs_complete": 478
+    },
+    "fixed128": {
+      "attempts": 6,
+      "complete": 6,
+      "capped": 0,
+      "failed": 0,
+      "all_attempt_process_cpu_seconds": 8.279428,
+      "all_attempt_wall_seconds": 8.534262967994437,
+      "ticks_in_results": 24576,
+      "process_cpu_ms_per_tick": 0.33689078776041664,
+      "wall_tps": 2879.6862824787545,
+      "complete_only_benchmark_run_cpu_ms_per_tick": 0.19874902429199218,
+      "shared_gradient_jobs_complete": 1148,
+      "lazy_building_jobs_complete": 698
+    }
+  },
+  "quality_by_arm": {
+    "adaptive": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 530,
+      "native_extra_cost": 116,
+      "extra_cost_per_movement_observation": 0.2188679245283019,
+      "movement_totals": {
+        "extra_cost": 116,
+        "false_unreachable": 0,
+        "false_reachable": 30,
+        "invalid_goal": 2,
+        "missed_move": 2,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 13420,
+      "planning_false_unreachable": 75,
+      "planning_false_reachable": 247,
+      "gradient_jobs": 48,
+      "building_gradient_jobs": 62
+    },
+    "fixed32": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 492,
+      "native_extra_cost": 26,
+      "extra_cost_per_movement_observation": 0.052845528455284556,
+      "movement_totals": {
+        "extra_cost": 26,
+        "false_unreachable": 0,
+        "false_reachable": 22,
+        "invalid_goal": 0,
+        "missed_move": 1,
+        "escape_failure": 0,
+        "stall": 1,
+        "guard_balance": 0
+      },
+      "planning_observations": 12922,
+      "planning_false_unreachable": 15,
+      "planning_false_reachable": 180,
+      "gradient_jobs": 361,
+      "building_gradient_jobs": 60
+    },
+    "fixed128": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 514,
+      "native_extra_cost": 30,
+      "extra_cost_per_movement_observation": 0.058365758754863814,
+      "movement_totals": {
+        "extra_cost": 30,
+        "false_unreachable": 0,
+        "false_reachable": 29,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 12960,
+      "planning_false_unreachable": 49,
+      "planning_false_reachable": 198,
+      "gradient_jobs": 130,
+      "building_gradient_jobs": 64
+    }
+  },
+  "quality_attempts": 9,
+  "quality_caps": 0,
+  "timing_attempts": 18,
+  "timing_caps": 0,
+  "equivalence_runs": 6,
+  "generation_comparison": {
+    "adaptive": {
+      "gen002_run_cpu_ms_per_tick": 0.30687602205403647,
+      "gen003_run_cpu_ms_per_tick": 0.21021360083007812,
+      "percent_change": -31.498851092034,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    },
+    "fixed32": {
+      "gen002_run_cpu_ms_per_tick": 0.3039576147460938,
+      "gen003_run_cpu_ms_per_tick": 0.22017977018229165,
+      "percent_change": -27.562344386004156,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    },
+    "fixed128": {
+      "gen002_run_cpu_ms_per_tick": 0.3162048256835937,
+      "gen003_run_cpu_ms_per_tick": 0.19874902429199218,
+      "percent_change": -37.14548035049033,
+      "qualification": "different walltime sharedhost workloads; exploratory repeated-map comparison, not isolated hardware speedup"
+    }
+  },
+  "quality_generation_comparison": {
+    "adaptive": {
+      "gen002": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 530,
+        "native_extra_cost": 116,
+        "extra_cost_per_movement_observation": 0.2188679245283019,
+        "movement_totals": {
+          "extra_cost": 116,
+          "false_unreachable": 0,
+          "false_reachable": 30,
+          "invalid_goal": 2,
+          "missed_move": 2,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "planning_observations": 13420,
+        "planning_false_unreachable": 75,
+        "planning_false_reachable": 247,
+        "gradient_jobs": 48,
+        "building_gradient_jobs": 62
+      },
+      "gen003": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 530,
+        "native_extra_cost": 116,
+        "extra_cost_per_movement_observation": 0.2188679245283019,
+        "movement_totals": {
+          "extra_cost": 116,
+          "false_unreachable": 0,
+          "false_reachable": 30,
+          "invalid_goal": 2,
+          "missed_move": 2,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "planning_observations": 13420,
+        "planning_false_unreachable": 75,
+        "planning_false_reachable": 247,
+        "gradient_jobs": 48,
+        "building_gradient_jobs": 62
+      }
+    },
+    "fixed32": {
+      "gen002": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 492,
+        "native_extra_cost": 26,
+        "extra_cost_per_movement_observation": 0.052845528455284556,
+        "movement_totals": {
+          "extra_cost": 26,
+          "false_unreachable": 0,
+          "false_reachable": 22,
+          "invalid_goal": 0,
+          "missed_move": 1,
+          "escape_failure": 0,
+          "stall": 1,
+          "guard_balance": 0
+        },
+        "planning_observations": 12922,
+        "planning_false_unreachable": 15,
+        "planning_false_reachable": 180,
+        "gradient_jobs": 361,
+        "building_gradient_jobs": 60
+      },
+      "gen003": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 492,
+        "native_extra_cost": 26,
+        "extra_cost_per_movement_observation": 0.052845528455284556,
+        "movement_totals": {
+          "extra_cost": 26,
+          "false_unreachable": 0,
+          "false_reachable": 22,
+          "invalid_goal": 0,
+          "missed_move": 1,
+          "escape_failure": 0,
+          "stall": 1,
+          "guard_balance": 0
+        },
+        "planning_observations": 12922,
+        "planning_false_unreachable": 15,
+        "planning_false_reachable": 180,
+        "gradient_jobs": 361,
+        "building_gradient_jobs": 60
+      }
+    },
+    "fixed128": {
+      "gen002": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 514,
+        "native_extra_cost": 30,
+        "extra_cost_per_movement_observation": 0.058365758754863814,
+        "movement_totals": {
+          "extra_cost": 30,
+          "false_unreachable": 0,
+          "false_reachable": 29,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "planning_observations": 12960,
+        "planning_false_unreachable": 49,
+        "planning_false_reachable": 198,
+        "gradient_jobs": 130,
+        "building_gradient_jobs": 64
+      },
+      "gen003": {
+        "runs": 3,
+        "ticks": 3072,
+        "movement_observations": 514,
+        "native_extra_cost": 30,
+        "extra_cost_per_movement_observation": 0.058365758754863814,
+        "movement_totals": {
+          "extra_cost": 30,
+          "false_unreachable": 0,
+          "false_reachable": 29,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "planning_observations": 12960,
+        "planning_false_unreachable": 49,
+        "planning_false_reachable": 198,
+        "gradient_jobs": 130,
+        "building_gradient_jobs": 64
+      }
+    }
+  },
+  "limits": [
+    "short early-game workload only",
+    "SMT siblingCPU3 may run tournament job; shared host load, no isolation claim",
+    "timing study performance-only patched binary must first prove equivalence",
+    "quality probeON results excluded from CPU timing analysis",
+    "not installed-master comparison; no stable-promotion evidence",
+    "whole-map holdouts stay heldout and study rows must not enter training",
+    "gen002/gen003 timings occur at different wall times under shared load; cross-generation speed differences are exploratory",
+    "same heldout maps reused across generations; repeated evaluation does not provide a new independent holdout"
+  ],
+  "interpretation": "Research only; no stable promotion. Interpret CPU jointly with sampled quality, rare decisions and shared-SMT variability. Reused heldout evaluations do not become training data."
+}
