@@ -201,6 +201,22 @@ TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
     world.game.map.ensureGradientMarketTargets(0,CHERRY);
     REQUIRE(targets.initialized(0,CHERRY));
     REQUIRE_FALSE(targets.inverse.empty());
+    // A live-world reset cancels jobs, not the target history of serving fields.
+    // The very next stock transition must still see the previous membership.
+    auto& policy=world.game.map.gradientRuntime->adaptive;
+    const GradientFieldKey key{GradientFieldFamily::Markets,0,0,CHERRY};
+    policy.enroll(key);
+    const auto beforeReset=policy.currentTargets(key);
+    const auto beforeFootprint=targets.ledgers.at(GradientMarketTargets::key(0,CHERRY)).cells;
+    world.game.map.resetGradientPipeline();
+    REQUIRE(targets.initialized(0,CHERRY));
+    CHECK(targets.ledgers.at(GradientMarketTargets::key(0,CHERRY)).cells==beforeFootprint);
+    CHECK(policy.currentTargets(key)==beforeReset);
+    market->setMaterial(CHERRY,0);
+    CHECK(policy.currentTargets(key).removed>beforeReset.removed);
+    const auto beforeRestock=policy.currentTargets(key);
+    market->setMaterial(CHERRY,20);
+    CHECK(policy.currentTargets(key).added>beforeRestock.added);
     const auto previousWorld=targets;
     world.game.clearGame();
     CHECK(targets.ledgers.empty());
