@@ -7,7 +7,6 @@
 #include "LegacyPopulationOutput.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
-#include "gradient/GradientSeedOverlap.h"
 #include "gradient/DirectFlightDirection.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
@@ -1402,11 +1401,6 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
             if constexpr(GAGCore::ThreadSupport::available)
                 REQUIRE(executionSlot != 0);
             CHECK(output==expected);
-            // The successful device path and its CPU recovery must preserve the
-            // exact 0/1/65535 classes used by both validated spatial adapters.
-            std::vector<Uint16> recovered(map.size);
-            std::transform(output.begin(),output.end(),recovered.begin(),gradient_seed_overlap::recoveredSeed);
-            CHECK(recovered==seeds);
             if (deviceReady) {
                 if (after.error.empty()) {
                     CHECK(after.committedFields == completed + 1);
@@ -2425,52 +2419,6 @@ TEST_CASE("released ground and air draft routing layouts remain independent" * d
     }
     auto* air=&map.materialGradients[1][WHEAT][AIR_MOVEMENT_CLASS];
     CHECK(map.gradientDestination(map.gradientDestination(air))==air);
-}
-
-TEST_CASE("published natural and clear seed classes survive scalar SIMD and terrain propagation" * doctest::test_suite("GradientPreparation"))
-{
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
-    auto& map=world.game.map;
-    map.game=nullptr;
-    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:overlap-slow","name":"Slow ground","base":"grass","appearance":"grass","properties":{"groundSpeedQ8":192}}]})");
-    map.setGame(&world.game);
-    const auto slow=*map.terrainRegistry().find("test:overlap-slow");
-    const auto previous=gradient_kernel::backend();
-    struct Restore {gradient_kernel::Backend value;~Restore(){gradient_kernel::setBackend(value);}} restore{previous};
-    for(bool terrainAware:{false,true}) {
-        for(size_t i=0;i<map.size;++i) {
-            map.paintCell(i,terrainAware&&i%11==0?slow:static_cast<TerrainType>(i%TERRAIN_COUNT));
-            map.resourceCells[i].resource=Resource{Uint16(i%17==0?WHEAT:NO_RES_TYPE),0,1,0};
-            map.areaCells[i].forbidden=i%23==0?1:0;
-            map.areaCells[i].clear=i%17==0?1:0;
-            map.occupancyCells[i].immobileUnit=i%31==0?0:IMMOBILE_UNIT_NONE;
-            map.fogOfWar[i]=i%5==0?0:1;
-        }
-        const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
-        for(auto kind:{gradient_preparation::Kind::Materials,gradient_preparation::Kind::Clear})
-        for(int swim=0;swim<AIR_MOVEMENT_CLASS;++swim) {
-            CAPTURE(terrainAware);CAPTURE(kind);CAPTURE(swim);
-            gradient_preparation::Request request{kind,0,WHEAT,swim,1,false,map.terrainQueueBuckets()};
-            gradient_preparation::CrowdingScratch direct,cached;
-            direct.materials.disabled=true;
-            std::vector<Uint16> seeds(map.size),warm(map.size);
-            gradient_preparation::seed(request,snapshot,seeds.data(),direct);
-            // First visit builds the snapshot template; the second reads it warm.
-            for(unsigned repeat=0;repeat<2;++repeat)gradient_preparation::seed(request,snapshot,warm.data(),cached);
-            if(kind==gradient_preparation::Kind::Materials && swim!=WATER_ONLY_CLASS)CHECK(cached.materials.world==snapshot.worldIdentity);
-            REQUIRE(warm==seeds);
-            for(auto backend:{gradient_kernel::Backend::Scalar,gradient_kernel::Backend::CPU}) {
-                gradient_kernel::setBackend(backend);
-                auto output=seeds;GradientWorkspace scratch;
-                gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch);
-                REQUIRE(std::all_of(seeds.begin(),seeds.end(),[](Uint16 value){return value==0||value==1||value==65535;}));
-                std::vector<Uint16> recovered(map.size);
-                std::transform(output.begin(),output.end(),recovered.begin(),gradient_seed_overlap::recoveredSeed);
-                requireSameField(map,"recovered seed classes",recovered,seeds);
-            }
-        }
-    }
 }
 
 TEST_CASE("weighted AIR market oracle follows live pickup and uses AIR cost buckets" * doctest::test_suite("GradientPreparation"))

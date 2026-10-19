@@ -589,7 +589,6 @@ void Unit::handleMovementRandom()
         if(g<=GRADIENT_UNREACHABLE && medical==MED_FREE && foodStepsLeft(trigHungry)>0) {
             const GradientFieldKey key{GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(movementClass())};
             map->gradientMovementDemand(key);
-            map->gradientMovementRead(key,posX,posY,clearAreasGradient);
             map->gradientMovementOutcome({key,posX,posY,entityRandom},clearAreasGradient,{});
         }
 		if(g > GRADIENT_UNREACHABLE && distance < foodStepsLeft(trigHungry) && medical == MED_FREE)

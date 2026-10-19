@@ -6,7 +6,7 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
-#include "ResourceGradientPolicy.h" // Read-only compatibility parser for formats <=177.
+#include "LegacyResourceGradientState.h" // Read-only compatibility parser for formats <=177.
 #include "Version.h"
 #include "MapInternal.h"
 #include "MapSaveLayout.h"
@@ -1086,7 +1086,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	const unsigned savedAccessVariants=hasUnifiedMovement(versionMinor)?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
-    std::vector<std::pair<GradientFieldKey,ResourceGradientPolicy::Capture>> legacyPendingCaptures;
+    std::vector<std::pair<GradientFieldKey,LegacyResourceGradientState::Capture>> legacyPendingCaptures;
 	gradientRuntime->preparations.clear();
     gradientRuntime->fieldRequests.clear();
     gradientRuntime->adaptive={};
@@ -1328,7 +1328,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 }
                 if(adaptiveKey!=gradientFieldKey(slot))throw std::runtime_error("Missing adaptive gradient pending identity");
             } else if (hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174)) {
-                const auto capture=ResourceGradientPolicy::Capture::load(stream,versionMinor);
+                const auto capture=LegacyResourceGradientState::Capture::load(stream,versionMinor);
                 if (capture.sources.count>size) throw std::runtime_error("Invalid saved gradient source count");
                 const auto key=gradientFieldKey(slot);
                 if(!superseded && capture.contradictionKnown && key && key->family==GradientFieldFamily::Materials && key->swim<SWIM_CLASS_COUNT)
@@ -1411,9 +1411,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         gradientRuntime->adaptive.load(stream,game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount);
     } else {
     if (hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174)) {
-        ResourceGradientPolicy policy;
-        policy.load(stream,game->teamsCount(),versionMinor);
-        if (policy.initialized) {
+        LegacyResourceGradientState legacyState;
+        legacyState.load(stream,game->teamsCount(),versionMinor);
+        if (legacyState.initialized) {
             // A corrupted positive-stock count would underflow on the next
             // harvest. Verify once at load, preserving the saved epochs rather
             // than silently replacing simulation state with a fresh estimate.
@@ -1422,14 +1422,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 for (unsigned bits=materialMaskAt(i);bits;bits&=bits-1)
                     ++actual[std::countr_zero(bits)];
             for (unsigned m=0;m<MaterialCount;++m)
-                if (actual[m]!=policy.sources[m].count) throw std::runtime_error("Invalid saved adaptive source count");
-            for (const auto& [key,field]:policy.fields)
+                if (actual[m]!=legacyState.sources[m].count) throw std::runtime_error("Invalid saved adaptive source count");
+            for (const auto& [key,field]:legacyState.fields)
                 if (field.serving.sources.count>size) throw std::runtime_error("Invalid saved adaptive capture count");
         }
         for(const auto& [key,capture]:legacyPendingCaptures) {
             const int legacyKey=(key.team*MaterialCount+key.material)*SWIM_CLASS_COUNT+key.swim;
-            const auto field=policy.fields.find(legacyKey);
-            if(field==policy.fields.end() || !field->second.validMovementCapture(capture))throw std::runtime_error("Invalid legacy pending contradiction baseline");
+            const auto field=legacyState.fields.find(legacyKey);
+            if(field==legacyState.fields.end() || !field->second.validMovementCapture(capture))throw std::runtime_error("Invalid legacy pending contradiction baseline");
         }
     }
 

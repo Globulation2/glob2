@@ -52,8 +52,8 @@ class UnifiedDatasetTests(unittest.TestCase):
    model['threshold']=value
    with self.assertRaises(ValueError):validate(model)
  def test_threshold_only_legacy_contract_compatibility_preserves_provenance(self):
-  from tools import adaptive_gradient_spatial as spatial
-  for expected in (d.CONTRACT,spatial.CONTRACT):
+  from tools import adaptive_gradient_collection as collection
+  for expected in (d.CONTRACT,collection.CONTRACT,collection.LEGACY_CONTRACT):
    for threshold in (16000,128000):
     legacy=dict(expected,refresh_threshold_milli=threshold)
     self.assertTrue(d.compatible_contract(legacy,expected));self.assertNotEqual(d.canonical_hash(legacy),d.canonical_hash(expected))
@@ -87,7 +87,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text())
   model['trained']=False
   for name in ('positive_probability','negative_probability','positive_mean','negative_mean'):
-   model[name]=dict(coef=[0]*len(d.FEATURES),bias=0,shift=28)
+   model[name]=dict(coef=[0]*len(model['features']),bias=0,shift=28)
   validate(model)
   with self.assertRaisesRegex(ValueError,'No unified model'):predict(model,[0]*7,[0]*3)
   model['positive_mean']['bias']=1
@@ -97,7 +97,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   if not compiler:self.skipTest('C++20 compiler unavailable')
   from tools.adaptive_gradient_codegen import render
   from tools.resource_gradient_model import predict as integer_predict
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['trained']=True
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['trained']=True;model.update(features=list(d.FEATURES),transforms=list(d.TRANSFORMS))
   for index,name in enumerate(('positive_probability','negative_probability','positive_mean','negative_mean')):model[name]=dict(coef=[((-1)**(i+index))*(i+1)*5000 for i in range(12)],bias=(index+1)*123456789,shift=28)
   with tempfile.TemporaryDirectory() as tmp:
    p=pathlib.Path(tmp);(p/'model.h').write_text(render(model));(p/'main.cpp').write_text('#include "model.h"\n#include <iostream>\nint main(){std::uint64_t a,b,q;while(std::cin>>a>>b>>q){AdaptiveGradientModel::BaseFeatures x={32,17,99,3,7,123,456};std::cout<<AdaptiveGradientModel::predict(x,{a,b,q})<<" "<<AdaptiveGradientModel::fraction(a,q)<<"\\n";}}')
@@ -109,23 +109,23 @@ class UnifiedWorkerContractTests(unittest.TestCase):
  def test_old_and_new_output_contracts_are_distinct(self):
   from tools.tournaments.jobs import resource_gradient_collection_outputs,_validate_resource_gradient_collection
   old=resource_gradient_collection_outputs({})
-  new=resource_gradient_collection_outputs(dict(contract='unified-gradient-spatial-h128-v3',exploration='32,128'))
+  new=resource_gradient_collection_outputs(dict(contract='unified-gradient-h128-v4',exploration='32,128'))
   self.assertIn('source_added',old['gradient-episodes.csv']);self.assertNotIn('source_added',new['gradient-episodes.csv'])
   self.assertTrue({'family','movement','capture_known',*d.BASE_FEATURES,*d.COUNTERS,*d.CAPTURE_COLUMNS}<=new['gradient-episodes.csv'])
   self.assertIn('gradient-decisions.csv',new);self.assertIn('gradient-contradictions.csv',new)
-  _validate_resource_gradient_collection(dict(contract='unified-gradient-spatial-h128-v3',exploration='32,128',seed=181101))
+  _validate_resource_gradient_collection(dict(contract='unified-gradient-h128-v4',exploration='32,128',seed=181101))
   with self.assertRaises(ValueError):_validate_resource_gradient_collection(dict(contract='resource-rows-mapped-as-generic'))
   with self.assertRaises(ValueError):_validate_resource_gradient_collection(dict(contract='unified-gradient-h128-v2'))
 
- def test_spatial_completed_worker_result_attests_collector_separately_from_model(self):
+ def test_current_completed_worker_result_attests_collector_separately_from_model(self):
   from tools.tournaments.jobs import EngineJob,resource_gradient_collection_outputs
-  collection=dict(contract='unified-gradient-spatial-h128-v3');job=dict(config=dict(resource_gradient_collection=collection))
+  collection=dict(contract='unified-gradient-h128-v4');job=dict(config=dict(resource_gradient_collection=collection))
   with tempfile.TemporaryDirectory() as tmp:
    output=pathlib.Path(tmp)/'output';output.mkdir();result=output/'result.json';value=dict(schema_version=1,status='completed',adaptive_gradient_policy=dict(contract='unified-gradient-h128-v2'))
    result.write_text(json.dumps(value))
    with self.assertRaisesRegex(ValueError,'attest'):EngineJob('game').collect(job,tmp)
    for name,columns in resource_gradient_collection_outputs(collection).items():(output/name).write_text(','.join(sorted(columns))+'\n')
-   value['adaptive_gradient_policy']['collector_contract']='unified-gradient-spatial-h128-v3';result.write_text(json.dumps(value))
+   value['adaptive_gradient_policy']['collector_contract']='unified-gradient-h128-v4';result.write_text(json.dumps(value))
    self.assertEqual(EngineJob('game').collect(job,tmp),value)
 
 class UnifiedTournamentTests(unittest.TestCase):
@@ -199,51 +199,71 @@ class UnifiedCensoredRecoveryTests(unittest.TestCase):
   for raw in [b'complete,value\n1,42,extra\n',b'complete,value\n2,42\n',b'complete,value\n1,nan\n']:
    with self.assertRaises(ValueError):recover_complete_records(io.BytesIO(raw),csv.writer(io.StringIO()))
 
-class SpatialContractTests(unittest.TestCase):
- def test_censored_spatial_recovery_preserves_categorical_support(self):
-  from tools.adaptive_gradient_export import recover_complete_records
-  import io
-  out=io.StringIO();raw=b'complete,overlap_support_reason\n1,clear_ground\n1,natural_ground'
-  result=recover_complete_records(io.BytesIO(raw),csv.writer(out,lineterminator='\n'));self.assertEqual(result['count'],1);self.assertIn('clear_ground',out.getvalue());self.assertNotIn('natural_ground',out.getvalue())
-
- def fixture(self,root,**updates):
-  from tools import adaptive_gradient_spatial as spatial
-  raw=dict(overlap_support_reason='natural_ground',overlap_supported=1,overlap_history_known=1,overlap_generation=7,overlap_publication_tick=280,queries_near_goal_change=1,queries_near_passability_change=1,overlap_movement_queries=2,queries_near_goal_added=1,queries_near_goal_removed=0,queries_near_blocked=0,queries_near_opened=1);raw.update(updates)
-  child=root/('spatial-'+str(len(list(root.iterdir()))));child.mkdir();path=UnifiedDatasetTests().fixture(child,**raw);doc=json.loads(path.read_text());doc['cohort']['contract']=spatial.CONTRACT;doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));path.write_text(json.dumps(doc));return path
- def test_old_contract_rejected_and_known_zero_remains_measured(self):
-  from tools import adaptive_gradient_spatial as spatial
+class CollectionContractTests(unittest.TestCase):
+ def fixture(self,root,legacy=False,**updates):
+  from tools import adaptive_gradient_collection as c
+  raw={}
+  if legacy:raw=dict(overlap_support_reason='natural_ground',overlap_supported=1,overlap_history_known=1,overlap_generation=7,overlap_publication_tick=280,queries_near_goal_change=1,queries_near_passability_change=1,overlap_movement_queries=2,queries_near_goal_added=1,queries_near_goal_removed=0,queries_near_blocked=0,queries_near_opened=1)
+  raw.update(updates);child=root/('rows-'+str(len(list(root.iterdir()))));child.mkdir();p=UnifiedDatasetTests().fixture(child,**raw);doc=json.loads(p.read_text());doc['cohort'].update(id=child.name,contract=copy.deepcopy(c.LEGACY_CONTRACT if legacy else c.CONTRACT));doc['cohort']['policy']['threshold_milli']=16000
+  if legacy:doc['cohort']['contract']['refresh_threshold_milli']=128000
+  doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc));return p
+ def test_current_has_no_spatial_observations_or_fabricated_zeros(self):
+  from tools import adaptive_gradient_collection as c
   with tempfile.TemporaryDirectory() as tmp:
-   root=pathlib.Path(tmp)
-   with self.assertRaises(ValueError):spatial.load([UnifiedDatasetTests().fixture(root)])
-   p=self.fixture(root,queries_near_goal_change=0,queries_near_passability_change=0,overlap_movement_queries=0,queries_near_goal_added=0,queries_near_opened=0)
-   rows=spatial.load([p]);self.assertEqual(len(spatial.eligible(rows)),1);self.assertEqual(rows[0][spatial.RATES[0]],0)
- def test_unknown_history_not_imputed_and_clear_supported(self):
-  from tools import adaptive_gradient_spatial as spatial
+   rows=c.load([self.fixture(pathlib.Path(tmp))]);self.assertEqual(rows[0]['collector_contract_id'],c.CONTRACT_ID);self.assertFalse(any(k in rows[0] for k in c.LEGACY_COLUMNS));self.assertEqual(len(d.eligible(rows)),1)
+ def test_legacy_read_preserves_raw_declaration_actual_policy_and_unknown(self):
+  from tools import adaptive_gradient_collection as c
   with tempfile.TemporaryDirectory() as tmp:
-   root=pathlib.Path(tmp);self.assertEqual(spatial.eligible(spatial.load([self.fixture(root,overlap_history_known=0)])),[])
-   rows=spatial.load([self.fixture(root,family=3,material=255,key=(3<<24)|255,overlap_support_reason='clear_ground')]);self.assertEqual(rows[0]['family'],'clear');self.assertEqual(len(spatial.eligible(rows)),1)
- def test_missing_flag_wrong_window_unsupported_known_and_wrong_denominator_rejected(self):
-  from tools import adaptive_gradient_spatial as spatial
+   root=pathlib.Path(tmp);p=self.fixture(root,True,overlap_history_known=0);before=p.read_bytes();rows=c.load([p,self.fixture(root)]);self.assertEqual(len(rows),2);old=rows[0];self.assertEqual(old['collector_contract_id'],c.LEGACY_CONTRACT_ID);self.assertEqual(old['overlap_history_known'],0);self.assertEqual(old['collection_threshold_milli'],16000);self.assertEqual(p.read_bytes(),before);self.assertNotIn('queries_near_goal_change_frac_q12',old)
+ def test_historical_validation_rejects_unknown_corruption(self):
+  from tools import adaptive_gradient_collection as c
   for changes in [dict(overlap_history_known=2),dict(overlap_publication_tick=301),dict(overlap_supported=0),dict(overlap_movement_queries=0),dict(overlap_generation=0),dict(family=2,material=255,key=(2<<24)|255)]:
    with tempfile.TemporaryDirectory() as tmp:
-    with self.assertRaises(ValueError):spatial.load([self.fixture(pathlib.Path(tmp),**changes)])
+    with self.assertRaises(ValueError):c.load([self.fixture(pathlib.Path(tmp),True,**changes)])
+ def test_current_cannot_relabel_historical_spatial_rows(self):
+  from tools import adaptive_gradient_collection as c
   with tempfile.TemporaryDirectory() as tmp:
-   root=pathlib.Path(tmp);p=self.fixture(root);doc=json.loads(p.read_text());csvpath=p.parent/doc['records'][0]['episodes'];
-   with csvpath.open() as source:lines=list(csv.DictReader(source))
-   fields=[k for k in lines[0] if k!='overlap_history_known']
-   with csvpath.open('w') as f:
-    w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerow({k:lines[0][k] for k in fields})
+   p=self.fixture(pathlib.Path(tmp),True);doc=json.loads(p.read_text());doc['cohort']['contract']=c.CONTRACT;doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc))
+   with self.assertRaisesRegex(ValueError,'removed spatial'):c.load([p])
+ def test_missing_legacy_measurement_is_not_zero(self):
+  from tools import adaptive_gradient_collection as c
+  with tempfile.TemporaryDirectory() as tmp:
+   p=self.fixture(pathlib.Path(tmp),True);doc=json.loads(p.read_text());csvpath=p.parent/doc['records'][0]['episodes']
+   with csvpath.open() as f:rows=list(csv.DictReader(f))
+   fields=[k for k in rows[0] if k!='overlap_history_known']
+   with csvpath.open('w') as f:w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerow({k:rows[0][k] for k in fields})
    doc['records'][0]['episode_sha256']=file_hash(csvpath);doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));p.write_text(json.dumps(doc))
-   with self.assertRaisesRegex(ValueError,'Missing explicit spatial'):spatial.load([p])
- def test_explicit_disabled_benchmark_history_is_unknown_not_measured_zero(self):
-  from tools import adaptive_gradient_spatial as spatial
+   with self.assertRaisesRegex(ValueError,'Missing historical'):c.load([p])
+ def test_changed_cohort_or_label_semantics_rejected(self):
+  from tools import adaptive_gradient_collection as c
+  self.assertEqual(c.contract_id(c.CONTRACT),c.CONTRACT_ID);self.assertEqual(c.contract_id(c.LEGACY_CONTRACT),c.LEGACY_CONTRACT_ID)
+  for contract in [dict(c.CONTRACT,future_offsets=[8,31]),dict(c.LEGACY_CONTRACT,label='planning'),dict(c.CONTRACT,refresh_threshold_milli=True)]:self.assertFalse(c.compatible_contract(contract))
   with tempfile.TemporaryDirectory() as tmp:
-   p=self.fixture(pathlib.Path(tmp),overlap_support_reason='disabled',overlap_history_known=0,queries_near_goal_change=0,queries_near_passability_change=0,overlap_movement_queries=0,queries_near_goal_added=0,queries_near_opened=0)
-   self.assertEqual(spatial.eligible(spatial.load([p])),[])
- def test_research_variants_leave_baseline_twelve_inputs_unchanged(self):
-  from tools import adaptive_gradient_spatial as spatial
-  self.assertEqual(spatial.variants()['baseline12'],(d.FEATURES,d.TRANSFORMS))
-  for features,transforms in spatial.variants().values():self.assertEqual(len(features),len(transforms))
+   root=pathlib.Path(tmp);old=self.fixture(root,True);new=self.fixture(root);doc=json.loads(new.read_text());doc['cohort']['id']=json.loads(old.read_text())['cohort']['id'];doc['content_sha256']=d.canonical_hash(dict(cohort=doc['cohort'],records=doc['records']));new.write_text(json.dumps(doc))
+   with self.assertRaisesRegex(ValueError,'Cohort identity changed'):c.load([old,new])
+ def test_hash_only_receipts_are_narrow(self):
+  from tools import adaptive_gradient_collection as c
+  for contract in [c.CONTRACT,c.LEGACY_CONTRACT,dict(c.LEGACY_CONTRACT,refresh_threshold_milli=128000)]:self.assertTrue(c.compatible_contract_hash(d.canonical_hash(contract)))
+  self.assertFalse(c.compatible_contract_hash('0'*64));self.assertFalse(c.compatible_contract_hash(d.canonical_hash(dict(c.CONTRACT,refresh_threshold_milli=128000))))
+ def test_censored_legacy_recovery_preserves_support_text(self):
+  from tools.adaptive_gradient_export import recover_complete_records
+  import io
+  out=io.StringIO();raw=b'complete,overlap_support_reason\n1,clear_ground\n1,natural_ground';r=recover_complete_records(io.BytesIO(raw),csv.writer(out,lineterminator='\n'));self.assertEqual(r['count'],1);self.assertIn('clear_ground',out.getvalue());self.assertNotIn('natural_ground',out.getvalue())
+
+class CompactDeploymentTests(unittest.TestCase):
+ def test_compaction_keeps_exact_codegen_and_predictions(self):
+  from tools.adaptive_gradient_model import compact_deployment
+  from tools.adaptive_gradient_codegen import render
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());before=copy.deepcopy(model);small=compact_deployment(model,evidence_url='https://example.com/evidence');self.assertEqual(render(small),render(model));self.assertLess(len(json.dumps(small)),12000);self.assertNotIn('candidate_contract',small);self.assertNotIn('holdout',small['provenance']);self.assertEqual(model,before);self.assertEqual(predict(small,[32,1,2,3,4,5,6],[1,1,2]),predict(model,[32,1,2,3,4,5,6],[1,1,2]))
+ def test_training_receipt_must_match_fit_manifests_and_splits(self):
+  from tools.adaptive_gradient_model import compact_deployment
+  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['provenance']=dict(manifests=[dict(sha256='a'*64)],split=dict(registry=dict(sha256='b'*64)),coverage={})
+  inputs=dict(expected_slots=4,slot_counts={'completed':3,'user-censored':1},manifests=['sealed.json'],files={'sealed.json':'a'*64,'map-splits.json':'b'*64})
+  with tempfile.TemporaryDirectory() as tmp:
+   p=pathlib.Path(tmp)/'inputs.json';p.write_text(json.dumps(inputs));small=compact_deployment(model,p);self.assertEqual(small['provenance']['training_game_slots'],4);self.assertEqual(small['provenance']['training_input_sha256'],file_hash(p));inputs['files']['sealed.json']='c'*64;p.write_text(json.dumps(inputs))
+   with self.assertRaisesRegex(ValueError,'manifests differ'):compact_deployment(model,p)
+   inputs['files']['sealed.json']='a'*64;inputs['files']['map-splits.json']='d'*64;p.write_text(json.dumps(inputs))
+   with self.assertRaisesRegex(ValueError,'splits differ'):compact_deployment(model,p)
 
 class CampaignFamilyScopeTests(unittest.TestCase):
  def test_scope_is_explicit_unique_and_known(self):
@@ -262,3 +282,27 @@ class CampaignFamilyScopeTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'materials'):require_family_support(rows,2,('materials',))
 
 if __name__=='__main__':unittest.main()
+
+class SelectedBase7Tests(unittest.TestCase):
+ def test_changed_tooling_is_python311_syntax(self):
+  import ast
+  for name in ['adaptive_gradient_collection','adaptive_gradient_codegen','adaptive_gradient_dataset','adaptive_gradient_model']:
+   ast.parse((ROOT/'tools'/f'{name}.py').read_text(),feature_version=(3,11))
+ def model(self):
+  value=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());value.update(features=list(d.BASE_FEATURES),transforms=list(d.TRANSFORMS[:7]),trained=True)
+  for index,name in enumerate(('positive_probability','negative_probability','positive_mean','negative_mean')):value[name]=dict(coef=[((-1)**(i+index))*(i+1)*5000 for i in range(7)],bias=(index+1)*123456789,shift=28)
+  return value
+ def test_strict_selection_and_counter_independence(self):
+  model=self.model();validate(model);self.assertEqual(predict(model,[32,17,99,3,7,123,456],[0,0,0]),predict(model,[32,17,99,3,7,123,456],[2**63,1,2**64-1]))
+  for features in [list(d.BASE_FEATURES[:-1]),list(reversed(d.BASE_FEATURES))]:
+   with self.assertRaises(ValueError):validate(dict(model,features=features))
+ def test_base7_cpp_parity_and_preserved_counter_abi(self):
+  compiler=shutil.which('clang++') or shutil.which('g++')
+  if not compiler:self.skipTest('C++20 compiler unavailable')
+  from tools.adaptive_gradient_codegen import render
+  model=self.model();header=render(model);self.assertIn('SelectedFeatureCount=7',header);self.assertIn('CounterCount=3',header);self.assertNotIn('inline I fraction(',header);self.assertNotIn('auto bounded=',header)
+  with tempfile.TemporaryDirectory() as tmp:
+   p=pathlib.Path(tmp);(p/'model.h').write_text(header);(p/'main.cpp').write_text('#include "model.h"\n#include <iostream>\nint main(){AdaptiveGradientModel::BaseFeatures b;while(std::cin>>b[0]>>b[1]>>b[2]>>b[3]>>b[4]>>b[5]>>b[6])std::cout<<AdaptiveGradientModel::predict(b,{0,0,0})<<" "<<AdaptiveGradientModel::predict(b,{UINT64_MAX,UINT64_MAX,UINT64_MAX})<<"\\n";}')
+   subprocess.run([compiler,'-std=c++20','-O2','-fsanitize=undefined',str(p/'main.cpp'),'-o',str(p/'run')],check=True,capture_output=True)
+   vectors=[[0]*7,[1]*7,[1000000]*7,[2**63-1]*7,[32,17,99,3,7,123,456]];result=subprocess.check_output([str(p/'run')],input=''.join(' '.join(map(str,v))+'\n' for v in vectors),text=True).splitlines()
+   for vector,line in zip(vectors,result):self.assertEqual(list(map(int,line.split())),[predict(model,vector,[0,0,0])]*2)

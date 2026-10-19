@@ -286,11 +286,9 @@ public:
 	void resetGradientPipeline(bool replacingWorld=false) noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
-    // Explicit headless-only experiment; deliberately absent from save state.
-    void setGradientSpatialOverlap(bool enabled);
     void configureGradientWorkStats(const std::string& csvPath);
     void configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
-        int forkField, unsigned forkWait, const std::string& decisionPath);
+        const std::string& decisionPath);
     void applyGradientBackendRequest();
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
@@ -1145,7 +1143,6 @@ public:
     GradientQueryResult selectGradientQuery(const GradientQueryContext&,const Uint16*) const;
     std::optional<GradientFieldKey> materialGradientFieldKey(int team,int material,int swim,const Uint16*) const;
     void directGradientMovement(GradientFieldKey,int x,int y,const EntityRandom&,const Uint16*,bool moved,bool destinationValid,bool recordDemand=true);
-    void gradientMovementRead(GradientFieldKey,int x,int y,const Uint16* cells);
     void gradientMovementDemand(GradientFieldKey);
     void gradientMovementOutcome(const GradientQueryContext&,const Uint16*,const GradientQueryResult&);
     bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
@@ -1367,7 +1364,7 @@ protected:
 	//! The plane key of a material gradient slot; nullopt for any other field slot.
 	std::optional<Uint16> planeKeyForSlot(Uint16* const* slot) const;
 	//! Register a publication into slot; other field slots (areas, buildings) are ignored.
-	void publishPlane(Uint16* const* slot, bool diagnosticPublication=true);
+	void publishPlane(Uint16* const* slot);
 	void clearPlaneRegistry() { publishedPlanes.clear(); publishedPlaneIndex.fill(0); planeGenerations.fill(0); }
 	//! Re-register every non-null slot with a fresh generation after bulk slot
 	//! changes (load, team removal) that bypass publishPlane.

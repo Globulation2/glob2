@@ -264,18 +264,14 @@ automatic matches too.
 ## Unified gradient diagnostics
 
 `game run --resource-gradient-probe` retains its historical name but collects the
-`unified-gradient-spatial-h128-v3` contract for material, shared-market, guard, clearing and
+`unified-gradient-h128-v4` contract for material, shared-market, guard, clearing and
 forbidden-escape fields, including applicable air movement classes. Explicit
 family/team/movement/material identities accompany all streams. It produces
 `gradient-quality.csv`, `gradient-episodes.csv`, separate planning outcomes and
 non-overlapping movement totals. Episodes freeze serving-capture metadata and
 compare deferred versus delayed-refresh alternatives over capture-anchored
 offsets 8 through 127 under the normal eight-tick publication delay. An episode
-is complete at age 128 ticks. Spatial overlap is initially supported only for
-ground material and clearing fields; explicit support reasons and independent
-publication-generation known flags distinguish unsupported or late-attached
-history from measured zero.
-Incomplete horizons and unknown historical counters are not fitted as complete
+is complete at age 128 ticks. Incomplete horizons and unknown historical counters are not fitted as complete
 known examples. Equal-quality alternative directions score zero; stalls,
 reachability, invalid destinations, forbidden failures and planning outcomes are
 separate from direction cost. Guard balancing uses its real RNG/context and
@@ -285,10 +281,6 @@ The oracle uses private current-world snapshots, selectors and RNG copies. It
 must not request/publish a live field or change simulation execution. These
 reference calculations and streams exist only when collection is enabled, and
 make diagnostic CPU unsuitable for production performance comparisons.
-`--gradient-spatial-overlap on|off` requires the probe and isolates spatial patch
-collection while retaining the other diagnostic work. An explicit off run emits
-unknown spatial histories with reason `disabled`, not measured zero; result
-metadata records `spatial_overlap_collection`.
 
 For work counts without quality collection, `--gradient-work-stats PATH` enables
 raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`

@@ -18,6 +18,15 @@ CONTRACT=dict(id=CONTRACT_ID,features=list(BASE_FEATURES),counters=list(COUNTERS
  invalid_goal='cached-arrival-rejected-by-real-family-destination-predicate',stall='reachable-required-travel-selector-no-move',
  selector='real-family-selector;pre-decision-RNG-copy;forbidden-lexicographic-base-option',
  separate_outcomes=['stalls','invalid_goals','false_unreachable','false_reachable','missed_moves','escape_failures','planning'])
+# Capture/collector counters remain available even when inference selects only base7.
+SELECTED_FEATURES=BASE_FEATURES
+SELECTED_TRANSFORMS=TRANSFORMS[:7]
+
+def selected_transforms(features):
+ if tuple(features)==BASE_FEATURES:return TRANSFORMS[:7]
+ if tuple(features)==FEATURES:return TRANSFORMS
+ raise ValueError('Only selected base7 or historical generic12 features are supported')
+
 COUNTER_IDS=(0,4,5)
 UINT64_MAX=(1<<64)-1
 DEFAULT_THRESHOLD_MILLI=16000

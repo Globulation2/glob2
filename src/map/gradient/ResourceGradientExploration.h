@@ -6,21 +6,15 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
-#include <string_view>
 #include <vector>
 
 // Headless collection only. Kept outside serialized/checksummed policy state:
 // resuming interval exploration requires the same explicit command-line options.
-// One-shot checkpoint branches reject save output: their consumed/wait state
-// cannot be reconstructed by simply passing the original options again.
 // No game RNG is consumed, so assignment is stable across platforms and workers.
 struct ResourceGradientExploration
 {
     std::vector<unsigned> intervals;
-    std::uint32_t seed=0, forkStart=0;
-    int forkField=-1;
-    unsigned forkWait=0;
-    bool forkComplete=false;
+    std::uint32_t seed=0;
     std::ofstream decisions;
 
     static std::vector<unsigned> parseIntervals(const std::string& text) {
@@ -49,6 +43,5 @@ struct ResourceGradientExploration
     }
     void record(unsigned tick,int key,const char* reason,bool admitted) {
         decisions<<tick<<','<<key<<','<<seed<<','<<intervalFor(key)<<','<<reason<<','<<admitted<<'\n';
-        if (admitted && key==forkField && std::string_view(reason)=="checkpoint_fork") forkComplete=true;
     }
 };

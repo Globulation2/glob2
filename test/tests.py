@@ -146,7 +146,6 @@ ENGINE_TESTS = [
     '#src/unit/EnteringUnitSaveHarness.cpp',
     ('#src/map/gradient/MapGradientInvalidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/map/gradient/ResourceGradientPolicyTest.cpp',
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/nicowar/NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
@@ -226,6 +225,8 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/map/gradient/LegacyResourceGradientStateTest.cpp',
+    '#src/map/gradient/ResourceGradientExplorationTest.cpp',
     '#src/map/gradient/GradientMarketTargetsTest.cpp',
     '#src/map/gradient/GradientTargetCellTest.cpp',
     '#src/map/gradient/AdaptiveGradientStateTest.cpp',
@@ -441,7 +442,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
-    '#src/map/gradient/ResourceGradientPolicy.cpp',
+    '#src/map/gradient/LegacyResourceGradientState.cpp',
     '#src/map/gradient/AdaptiveGradientState.cpp',
     '#src/map/gradient/MapGradientTargets.cpp',
     '#src/map/gradient/MapGradientMarketTargets.cpp',

@@ -11,7 +11,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from tools import adaptive_gradient_dataset as d
-from tools import adaptive_gradient_spatial as collector
+from tools import adaptive_gradient_collection as collector
 from tools.resource_gradient_dataset import seal
 from tools.resource_gradient_distributed import export as completed_export
 from tools.resource_gradient_tournament import map_identity
@@ -37,7 +37,7 @@ def recover_complete_records(stream,writer):
 
 def export(directory,output):
  reader=Results(directory);output=Path(output);output.mkdir(parents=True,exist_ok=True)
- if any(j['labels']['resource_gradient']['cohort']['contract']!=collector.CONTRACT for j in reader.manifest['jobs']):raise ValueError('Only the new all-family contract may be exported here')
+ if any(not collector.compatible_contract(j['labels']['resource_gradient']['cohort']['contract']) for j in reader.manifest['jobs']):raise ValueError('Only supported all-family collection contracts may be exported here')
  completed=completed_export(directory,output/'completed',allow_partial=True);success={r['job']['id'] for r in reader if r.get('category')=='success' and r.get('result',{}).get('status')=='completed' and not any(a['path']=='runtime-cap-override.json' for a in r.get('artifacts',[]))};expected={j['id']:j for j in reader.manifest['jobs']};attempts=collections.defaultdict(list)
  for r in reader.attempts():
   if r['job']['id'] not in expected or r['job']!=expected[r['job']['id']]:raise ValueError('Attempt changed frozen job')

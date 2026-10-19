@@ -560,25 +560,17 @@ struct HeadlessRunner
 			}
 			engine.gui.game.map.setGradientWorkerCount(1);
 		}
-        if (options.count("--gradient-spatial-overlap"))
-            engine.gui.game.map.setGradientSpatialOverlap(one(options,"--gradient-spatial-overlap")=="on");
         if (options.count("--gradient-work-stats")) {
             const auto path=fs::absolute(one(options,"--gradient-work-stats"));
             fs::create_directories(path.parent_path());
             engine.gui.game.map.configureGradientWorkStats(path.string());
         }
-        if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+        if (options.count("--resource-gradient-exploration")) {
             if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
                 throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
-            if (options.count("--resource-gradient-fork-field") && saved.empty())
-                throw std::invalid_argument("Gradient checkpoint forks require --load-game");
-            if (options.count("--resource-gradient-fork-field") && options.count("--save"))
-                throw std::invalid_argument("Gradient checkpoint forks cannot write resumable saves");
             engine.gui.game.map.configureResourceGradientExploration(
                 one(options,"--resource-gradient-exploration"),
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
-                options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,std::numeric_limits<int>::max()) : -1,
-                integer(one(options,"--resource-gradient-fork-wait","0"),0,65536),
                 (output/"gradient-decisions.csv").string());
         }
 		globals.headlessReplay=recordReplay;
@@ -735,7 +727,6 @@ struct HeadlessRunner
             << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
             << ",\"demanded_age_cap\":null"
             << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"shared-adaptive-model":"untrained-cold-reactive-and-history-init-only")
-            << ",\"spatial_overlap_collection\":" << (one(options,"--resource-gradient-probe","false")=="true" && one(options,"--gradient-spatial-overlap","on")=="on"?"true":"false")
             << ",\"quality_collection\":" << (one(options,"--resource-gradient-probe","false")=="true"?"true":"false") << '}';
         if (options.count("--gradient-work-stats")) result << ",\"gradient_work_stats\":" << quote(fs::absolute(one(options,"--gradient-work-stats")).string());
 		result << ",\"compute_telemetry\":";
@@ -811,14 +802,11 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
-        if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+        if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
                 << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
-                << ",\"fork_field\":" << (options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,std::numeric_limits<int>::max()) : -1)
-                << ",\"fork_wait\":" << integer(one(options,"--resource-gradient-fork-wait","0"),0,65536)
-                << ",\"save_continuation_supported\":" << (options.count("--resource-gradient-fork-field")?"false":"true")
-                << ",\"continuation_policy\":" << quote(options.count("--resource-gradient-fork-field")
-                    ? "unsupported-single-shot-checkpoint-fork" : "requires-identical-explicit-exploration-options") << '}';
+                << ",\"save_continuation_supported\":true"
+                << ",\"continuation_policy\":" << quote("requires-identical-explicit-exploration-options") << '}';
         }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);

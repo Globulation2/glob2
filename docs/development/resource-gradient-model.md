@@ -21,12 +21,13 @@ can recover. Team aliveness is not a substitute for actual demand.
 
 `AdaptiveGradientFeatures.h` defines seven base inputs: serving-capture age,
 movement queries over 32 and 128 ticks, effective target tiles added/removed, and
-their Q12 fractions relative to the captured target count. Three cumulative
-since-capture counters add invalid-goal events, reachable required-travel queries
-that produced no move, and their movement-query denominator. Two Q12 event rates
-complete the 12 inputs. Rates use uncapped 64-bit counts before bounded count/log
-transforms. Family, material, map-generator and AI identities are diagnostic
-metadata, never model inputs.
+their Q12 fractions relative to the captured target count. The selected model uses
+only these seven inputs. Same-row grouped ablations did not establish a benefit
+from adding contradiction counts or event rates, so those inputs are excluded.
+Three cumulative movement counters remain in capture/save bookkeeping for causal
+collector histories and backward compatibility; they do not enter inference.
+Family, material, map-generator and AI identities are diagnostic metadata,
+never model inputs.
 
 The target semantics and deployment threshold are separate from feature
 names. Models trained on the earlier 32-tick target are incompatible and their
@@ -38,7 +39,7 @@ heads. Integer Q12 log/Q16 sigmoid interpolation, bounded accumulators and porta
 `AdaptiveGradientModel.h`; `tools/models/adaptive-gradient.json` declares the
 matching contract and whether the model is trained.
 
-`fit`, `emit` and the spatial research comparison accept `--threshold-milli`
+`fit` and `emit` accept `--threshold-milli`
 (default `16000`), a positive signed 64-bit integer. The generated
 `AdaptiveGradientModel::ThresholdMilli` is the engine's threshold authority.
 Changing it does not rescale predictions or refit the four heads. Emitting an
@@ -48,9 +49,11 @@ requires separate prospective validation. Re-evaluate metrics at the selected
 threshold rather than presenting the old fit report as a new threshold result.
 
 H128 label semantics remain offsets 8 through 127 regardless of collection
-policy. Historical H128v2/spatial-v3 cohort declarations included
+policy. Historical H128v2 and spatial-v3 cohort declarations included
 `refresh_threshold_milli`; loaders validate and remove only that behavior field
-when comparing label contracts. All other fields must match exactly. Original
+when comparing label contracts. All other label fields must match exactly. The current collector omits the
+unpromoted spatial experiment; its explicit read-only v3 decoder preserves old
+cohort bytes and reads only the unchanged H128 target and production inputs. Original
 sealed contracts and hashes remain untouched; rows retain their source contract
 hash and actual collection threshold. Explicit `policy.threshold_milli` is
 authoritative, with the old declaration used only when policy metadata lacks it.
@@ -78,13 +81,13 @@ forbidden destinations are eligible free outside tiles, with border seeds derive
 by the existing builder. Painted-tile counts are not interchangeable with these
 sets. Route-change epochs describe persistent changes, excluding ordinary moving
 unit congestion. Seed-cost changes, including weighted guard crowding, are
-separate diagnostic metadata; the initial 12 features do not claim to fully
+separate diagnostic metadata; the seven selected features do not claim to fully
 observe those changes.
 
 ## Collection
 
 `game run --resource-gradient-probe` is the historical CLI spelling for the
-**unified-gradient-spatial-h128-v3** all-family observer. It writes:
+**unified-gradient-h128-v4** all-family observer. It writes:
 
 - `gradient-episodes.csv`: frozen causal inputs, complete future direction labels
   and separate outcomes, with explicit family/team/movement/material/key columns.
@@ -111,7 +114,7 @@ columns are rejected, never filled with zeros. Planning, reachability and escape
 failures are not silently added to direction cost. Episodes apply the real publication delay and retain only complete initial
 future horizons. The 128-tick window starts at capture, includes offsets 8 through
 127 under the normal delay, and completes at age 128; it is not 128 additional
-ticks after publication. The training contract requires the capture-anchored offsets 8..127 (complete at age 128 ticks).
+ticks after publication.
 
 Reference arrays, snapshots, oracle selectors, sampling state and streams exist
 only when collection is enabled. This is an expensive diagnostic mode; its CPU
@@ -186,12 +189,12 @@ preserves raw receipt/transport hashes, excludes unterminated final CSV bytes an
 incomplete horizons, validates derived rows with the same loader, and records
 censoring and unknown whole-game totals. It never calls a capped game completed.
 
-Fit the unchanged generic 12-input model and explicitly emit a research candidate:
+Fit the generic seven-input model and explicitly emit a research candidate:
 
 ```sh
 python3 tools/adaptive_gradient_model.py fit \
   --manifest artifacts/exploration.cohort.json \
-  --collector-contract unified-gradient-spatial-h128-v3 \
+  --collector-contract unified-gradient-h128-v4 \
   --split-registry artifacts/map-splits.json --threshold-milli 16000 \
   --output artifacts/research.json
 python3 tools/adaptive_gradient_model.py emit \
@@ -311,8 +314,7 @@ copies without modifying the supplied historical registry.
 Optional `prior_manifests` supplies compatible sealed cumulative data; old
 resource-only contracts remain forbidden. `intervals` changes the explicitly
 fixed exploration mixture; candidate games never get that override.
-`spatial_analysis: true` adds the separate research comparison after cumulative
-fitting. Missing-family requirements never silently relax: the declared family
+Missing-family requirements never silently relax: the declared family
 scope goes into every fit and its provenance.
 
 The sequence is exploration collection/export, cumulative generic fit and
@@ -382,58 +384,3 @@ Adapter implementation is an explicit environment-specific boundary: a config
 with missing adapters is not a self-contained build recipe. The driver and its
 focused mocked orchestration tests can be verified without starting games;
 adopting a live campaign or replacing its frozen tools is deliberately excluded.
-
-## Spatial seed-overlap research
-
-The spatial-h128-v3 collector extends the dataset, independently of the 12-input
-`unified-gradient-h128-v2` inference contract. It initially validates natural ground
-resource and clearing fields. Markets, air, weighted guard seeds and derived
-forbidden borders report explicit unsupported reasons. Supported fields attached
-after publication have unknown history until a real replacement publishes.
-Neither case is silently treated as measured zero.
-
-For each eligible query the observer compares its aligned 4×4 patch against the
-field actually read. Old seed classes come from the published gradient; current
-classes use the authoritative family seed predicate. Goal differences and
-passability differences excluding goal cells count once per query/category.
-Directional additions/removals and blocked/opened categories are diagnostic.
-No previous full seed buffer, world heatmap or per-query allocation is required.
-These comparisons exist only with diagnostic collection enabled. To isolate
-patch bookkeeping overhead using the same binary and other oracle diagnostics,
-compare `--resource-gradient-probe --gradient-spatial-overlap on` with
-`--resource-gradient-probe --gradient-spatial-overlap off` in repeated interleaved
-ordinary release runs. The isolation flag requires the probe and result metadata
-records `spatial_overlap_collection`; it is not a production scheduling toggle.
-
-Overlap counters and their denominator reset at actual publication. They do not
-use the capture-time movement-counter baseline. Episodes freeze the generation,
-publication tick, known/support flags, support reason and raw counters at their
-start, independently of the subsequent label horizon. The loader requires the
-exact spatial-h128-v3 contract and all columns; it never fills older data with zeros.
-Raw partial recovery also preserves the explicit categorical support reason.
-An explicit spatial-disabled isolation run retains the supported-family flag but
-reports reason `disabled` and unknown history; its zeros are never training data.
-
-Compare research variants without changing generated inference:
-
-```sh
-python3 tools/adaptive_gradient_spatial.py \
-  --manifest artifacts/exploration.cohort.json \
-  --split-registry artifacts/map-splits.json \
-  --output artifacts/spatial-research.json
-```
-
-Every variant uses the same eligible known resource/clear rows, family-balanced
-weights and persistent map splits. Variants compare the baseline 12 inputs with
-overlap counts, fractions, their combination and directional diagnostics.
-Development-fold regret selects a research variant; held-out comparisons remain
-exploratory. Reports include separate family/scenario slices, calibration around
-the configured deployment threshold and benefit captured at equal weighted episode-selection
-shares. Those shares are offline ranking diagnostics, not measured simulation
-refresh rates or CPU savings. Stalls, planning and escape outcomes remain separate
-from direction-cost labels. Missing resource/clear fold coverage blocks the fit;
-unsupported guard/forbidden/market/air support remains a reported gap.
-
-There is no augmentation emitter or automatic promotion. Retaining any overlap
-inputs requires real collection data, prospective quality/compute validation,
-measured enabled/disabled overhead and scheduling-state compatibility work.

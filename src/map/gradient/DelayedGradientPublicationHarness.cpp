@@ -311,60 +311,6 @@ TEST_CASE("direct warm recovery retains demand but cannot bypass minimum8")
     advanceFields(game);CHECK(game.stepCounter==9);CHECK(field.submitted==9);CHECK(map.gradientPipelineStatus().pending==1);
 }
 
-TEST_CASE("spatial overlap uses actual publication generations and bounded aligned queries [artifacts]")
-{
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
-    auto& game=world.game;auto& map=game.map;map.configureGradientPipeline(0,3);
-    map.setResourceByIndex(20,20,WHEAT,1);
-    const GradientFieldKey key{GradientFieldFamily::Materials,0,0,WHEAT};const int packed=int(key.packed());
-    REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
-    for(unsigned tick=0;tick<4;++tick)advanceFields(game);
-    const auto path=(glob2test::artifactDir()/"spatial-generation-probe.csv").string();
-    map.gradientRuntime->qualityProbe=std::make_unique<ResourceGradientProbe>(path.c_str());auto& probe=*map.gradientRuntime->qualityProbe;
-    auto* live=map.materialGradients[0][WHEAT][0];REQUIRE(live);
-    probe.observeOverlap(map,key,20,20,live);CHECK(probe.movementHistory.empty()); // late attach is unknown
-    game.stepCounter=16;map.updateMaterialGradient(0,WHEAT,0,false);
-    CHECK(probe.movementHistory.empty());advanceFields(game); // capture, not publication
-    CHECK(probe.movementHistory.empty());
-    for(unsigned tick=0;tick<3;++tick)advanceFields(game);
-    auto& history=probe.movementHistory.at(packed).overlap;
-    REQUIRE(history.known);CHECK(history.generation==1);CHECK(history.publicationTick==20);CHECK(history.queries==0);
-    live=map.materialGradients[0][WHEAT][0];
-    probe.observeOverlap(map,key,20,20,live);CHECK(history.queries==1);CHECK(history.goalQueries==0);
-    map.replaceResource(20,20,Resource{});
-    probe.observeOverlap(map,key,8,8,live);CHECK(history.goalQueries==0); // far edit is outside the patch
-    const auto before=normalizedChecksums(game);
-    probe.observeOverlap(map,key,23,23,live);CHECK(normalizedChecksums(game)==before);
-    CHECK(history.goalQueries==1);CHECK(history.goalRemovedQueries==1);CHECK(history.passabilityQueries==0);
-    map.setResourceByIndex(20,20,WHEAT,1);
-    probe.observeOverlap(map,key,20,20,live);CHECK(history.goalQueries==1); // cancellation matches baseline
-    map.addForbidden(21,21,0);probe.observeOverlap(map,key,20,20,live);
-    CHECK(history.passabilityQueries==1);CHECK(history.blockedQueries==1);
-    const auto queries=history.queries;map.updateMaterialGradient(0,WHEAT,0,false);
-    CHECK(history.queries==queries); // a request must not reset the generation
-    for(unsigned tick=0;tick<8 && history.generation==1;++tick)advanceFields(game);
-    CHECK(history.generation==2);CHECK(history.queries==0);
-    // Registry repair is not publication; it cannot make late/old history fresh.
-    map.rebuildPlaneRegistry();CHECK(history.generation==2);
-    map.setGradientSpatialOverlap(false);CHECK_FALSE(history.known);
-    probe.observeOverlap(map,key,20,20,map.materialGradients[0][WHEAT][0]);CHECK(history.queries==0);
-    map.setGradientSpatialOverlap(true);CHECK_FALSE(history.known);
-    for(auto family:{GradientFieldFamily::Markets,GradientFieldFamily::Guard,GradientFieldFamily::Forbidden})
-        CHECK_FALSE(gradient_seed_overlap::supported({family,0,0,WHEAT}));
-    CHECK_FALSE(gradient_seed_overlap::supported({GradientFieldFamily::Materials,0,AIR_MOVEMENT_CLASS,WHEAT}));
-}
-
-TEST_CASE("spatial masks separate goal changes from passability and handle tiny patches")
-{
-    using namespace gradient_seed_overlap;
-    const Patch old{1u,6u},now{2u,9u};const auto d=difference(old,now);
-    CHECK(d.goals==3);CHECK(d.goalAdded==2);CHECK(d.goalRemoved==1);
-    CHECK(d.passability==12);CHECK(d.blocked==4);CHECK(d.opened==8);
-    unsigned reads=0;const auto patch=read(1,1,2,2,[&](size_t i){++reads;return Uint16(i==3?65535:1);});
-    CHECK(reads==4);CHECK(patch.goals==(1u<<5));CHECK(patch.open==19);
-}
-
 TEST_CASE("capture anchored H128 outcome windows include offsets8 through127 only [artifacts]")
 {
     CHECK(ResourceGradientProbe::HorizonTicks==128);

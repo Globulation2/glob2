@@ -169,34 +169,18 @@ TEST_SUITE("CommandLine")
 }
 
 TEST_SUITE("GradientCollectionCommandLine") {
-TEST_CASE("gradient work stats is an independent game-run observer and packed family keys are accepted") {
+TEST_CASE("gradient work stats is an independent game-run observer") {
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--gradient-work-stats","artifacts/gradient-cli-test/work.csv"}));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe","--resource-gradient-fork-field","67109119","--resource-gradient-fork-wait","32"}));
     CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--gradient-work-stats","work.csv"}));
 }
-TEST_CASE("exploration and checkpoint overrides require explicit headless collection") {
+TEST_CASE("interval exploration requires explicit headless collection") {
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
         "--resource-gradient-exploration","8,32,512","--resource-gradient-exploration-seed","4294967295"}));
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
-        "--resource-gradient-fork-field","7","--resource-gradient-fork-wait","256"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-exploration","32"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
-        "--resource-gradient-exploration-seed","123"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
-        "--resource-gradient-fork-field","7"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
         "--resource-gradient-exploration","32","--write-replay"}));
-    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--output-dir","artifacts/gradient-cli-test","--resource-gradient-exploration","32"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
-        "--resource-gradient-fork-field","7","--resource-gradient-fork-wait","32","--save","final"}));
     for (const auto* invalid:{"32,","32,32","nope","7","65537"})
         CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
             "--resource-gradient-exploration",invalid}));
 }
-}
-
-TEST_CASE("spatial overlap diagnostic toggle requires quality collection" * doctest::test_suite("GradientCollectionCommandLine")) {
-    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe","--gradient-spatial-overlap","off"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--gradient-spatial-overlap","off"}));
-    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe","--gradient-spatial-overlap","maybe"}));
 }

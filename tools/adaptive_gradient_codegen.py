@@ -31,7 +31,7 @@ using BaseFeatures=std::array<I,BaseFeatureCount>;
     text += 'inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={' + ','.join(map(str, f.COUNTER_IDS)) + '};\n'
     text += f'inline constexpr unsigned RequiredMovementMask={sum(1 << i for i in f.COUNTER_IDS)};\n'
     text += 'using MovementCounts=std::array<std::uint64_t,CounterCount>;\n'
-    text += f'inline constexpr unsigned SelectedFeatureCount={len(f.FEATURES)};\n'
+    text += f"inline constexpr unsigned SelectedFeatureCount={len(model['features'])};\n"
     text += 'using SelectedFeatures=std::array<I,SelectedFeatureCount>;\n'
     text += 'inline I clamp(I x) { return std::clamp(x,I(0),I(1000000)); }\n'
     text += 'inline constexpr I LogLut[]={' + ','.join(map(str, m.LOG)) + '};\n'
@@ -48,7 +48,9 @@ inline I sigmoid(I z) {
     z=std::clamp(z,I(-12000),I(12000));const I n=z+12000,i=std::min(n/50,I(479)),r=n-i*50;
     return SigLut[i]+(SigLut[i+1]-SigLut[i])*r/50;
 }
-// Preserve uncapped rates even when log-count inputs saturate. Normal game
+'''
+    if len(model['features'])>len(f.BASE_FEATURES):
+        text += '''// Preserve uncapped rates even when log-count inputs saturate. Normal game
 // counts take one multiplication/division. The rare overflow path performs
 // exact fractional binary division without nonportable 128-bit integers.
 inline I fraction(std::uint64_t events,std::uint64_t queries) {
@@ -64,12 +66,15 @@ inline I fraction(std::uint64_t events,std::uint64_t queries) {
     }
     return result;
 }
-inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& counts) {
-    const auto bounded=[](std::uint64_t value) { return I(std::min<std::uint64_t>(value,1000000)); };
 '''
+    text += 'inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& counts) {\n'
     expressions = [f'base[{i}]' for i in range(len(f.BASE_FEATURES))]
-    expressions += [f'bounded(counts[{i}])' for i in range(len(f.COUNTERS))]
-    expressions += [f'fraction(counts[{i}],counts[{len(f.COUNTERS)-1}])' for i in range(len(f.FRACTIONS))]
+    if len(model['features'])==len(f.BASE_FEATURES):
+        text += '    (void)counts; // Retained capture/collector ABI; not a selected inference input.\n'
+    else:
+        text += '    const auto bounded=[](std::uint64_t value) { return I(std::min<std::uint64_t>(value,1000000)); };\n'
+        expressions += [f'bounded(counts[{i}])' for i in range(len(f.COUNTERS))]
+        expressions += [f'fraction(counts[{i}],counts[{len(f.COUNTERS)-1}])' for i in range(len(f.FRACTIONS))]
     text += '    return {' + ','.join(expressions) + '};\n}\n'
 
     def heads(value, dimension):
@@ -82,11 +87,11 @@ inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& c
             code += f'    return clip(z/(I(1)<<{head["shift"]}));\n}}\n'
         return code
 
-    text += heads(model, len(f.FEATURES))
+    text += heads(model, len(model['features']))
     text += '''inline int predict(const BaseFeatures& base,const MovementCounts& counts) {
     auto x=prepare(base,counts);
 '''
-    for index, transform in enumerate(f.TRANSFORMS):
+    for index, transform in enumerate(model["transforms"]):
         if transform == 'log1p_q12':
             text += f'    x[{index}]=log(x[{index}]);\n'
     text += '''    const I pp=sigmoid(positive_probability(x)),pn=sigmoid(negative_probability(x));

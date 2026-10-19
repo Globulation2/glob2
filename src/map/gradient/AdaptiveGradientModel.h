@@ -20,7 +20,7 @@ inline constexpr unsigned CounterCount=3;
 inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={0,4,5};
 inline constexpr unsigned RequiredMovementMask=49;
 using MovementCounts=std::array<std::uint64_t,CounterCount>;
-inline constexpr unsigned SelectedFeatureCount=12;
+inline constexpr unsigned SelectedFeatureCount=7;
 using SelectedFeatures=std::array<I,SelectedFeatureCount>;
 inline I clamp(I x) { return std::clamp(x,I(0),I(1000000)); }
 inline constexpr I LogLut[]={0,23,46,69,92,114,137,159,182,204,226,249,271,293,315,336,358,380,402,423,445,466,487,508,530,551,572,593,613,634,655,675,696,716,737,757,778,798,818,838,858,878,898,918,937,957,977,996,1016,1035,1054,1074,1093,1112,1131,1150,1169,1188,1207,1226,1244,1263,1282,1300,1319,1337,1355,1374,1392,1410,1428,1446,1465,1483,1500,1518,1536,1554,1572,1589,1607,1624,1642,1659,1677,1694,1712,1729,1746,1763,1780,1797,1814,1831,1848,1865,1882,1899,1915,1932,1949,1965,1982,1998,2015,2031,2047,2064,2080,2096,2112,2128,2145,2161,2177,2192,2208,2224,2240,2256,2272,2287,2303,2319,2334,2350,2365,2381,2396,2411,2427,2442,2457,2472,2488,2503,2518,2533,2548,2563,2578,2593,2608,2622,2637,2652,2667,2681,2696,2711,2725,2740,2754,2769,2783,2798,2812,2826,2841,2855,2869,2883,2897,2911,2926,2940,2954,2968,2982,2995,3009,3023,3037,3051,3065,3078,3092,3106,3119,3133,3146,3160,3174,3187,3200,3214,3227,3241,3254,3267,3280,3294,3307,3320,3333,3346,3359,3373,3386,3399,3412,3424,3437,3450,3463,3476,3489,3502,3514,3527,3540,3552,3565,3578,3590,3603,3615,3628,3640,3653,3665,3678,3690,3702,3715,3727,3739,3751,3764,3776,3788,3800,3812,3824,3836,3849,3861,3873,3885,3896,3908,3920,3932,3944,3956,3968,3979,3991,4003,4015,4026,4038,4050,4061,4073,4084,4096};
@@ -37,44 +37,28 @@ inline I sigmoid(I z) {
     z=std::clamp(z,I(-12000),I(12000));const I n=z+12000,i=std::min(n/50,I(479)),r=n-i*50;
     return SigLut[i]+(SigLut[i+1]-SigLut[i])*r/50;
 }
-// Preserve uncapped rates even when log-count inputs saturate. Normal game
-// counts take one multiplication/division. The rare overflow path performs
-// exact fractional binary division without nonportable 128-bit integers.
-inline I fraction(std::uint64_t events,std::uint64_t queries) {
-    if (!queries) return 0;
-    if (events>=queries) return 4096;
-    if (events<=std::numeric_limits<std::uint64_t>::max()/4096)
-        return I(events*4096/queries);
-    I result=0;
-    for (unsigned bit=0;bit<12;++bit) {
-        result<<=1;
-        if (events>=queries-events) { events-=queries-events; result|=1; }
-        else events+=events;
-    }
-    return result;
-}
 inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& counts) {
-    const auto bounded=[](std::uint64_t value) { return I(std::min<std::uint64_t>(value,1000000)); };
-    return {base[0],base[1],base[2],base[3],base[4],base[5],base[6],bounded(counts[0]),bounded(counts[1]),bounded(counts[2]),fraction(counts[0],counts[2]),fraction(counts[1],counts[2])};
+    (void)counts; // Retained capture/collector ABI; not a selected inference input.
+    return {base[0],base[1],base[2],base[3],base[4],base[5],base[6]};
 }
-inline I positive_probability(const std::array<I,12>& x) {
-    constexpr I c[]={-24077646,-41532994,47148766,12201171,4728211,865643,13742050,87728941,43272797,21238562,-193059841,-68592377};
-    I z=-983712862335LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+inline I positive_probability(const std::array<I,7>& x) {
+    constexpr I c[]={-4833734,-35766283,61305892,10093447,3828732,2585141,12942703};
+    I z=-1450258979591LL; for (unsigned i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
-inline I negative_probability(const std::array<I,12>& x) {
-    constexpr I c[]={-13143154,-40509088,58232107,-8473528,18811115,11284427,989388,28647020,24273965,1664349,-197634987,-6044966};
-    I z=-1336004537167LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+inline I negative_probability(const std::array<I,7>& x) {
+    constexpr I c[]={-11689393,-39678540,59929872,-7437980,17830428,10570837,1752887};
+    I z=-1387203976604LL; for (unsigned i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
-inline I positive_mean(const std::array<I,12>& x) {
-    constexpr I c[]={-446465855,1277726744,280856969,18279716,-354025654,229484850,282184497,-1133457549,2435791398,486662150,-317394300,-12526750607};
-    I z=-2691025172628LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+inline I positive_mean(const std::array<I,7>& x) {
+    constexpr I c[]={9807517,1432956749,499715755,-72581150,-309456434,298047328,207899075};
+    I z=-11863076767870LL; for (unsigned i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
-inline I negative_mean(const std::array<I,12>& x) {
-    constexpr I c[]={-210024199,463098703,7506766,-29066541,-61790314,143244402,45584295,-684613059,664913070,137867692,504371483,-493911485};
-    I z=4040599791450LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+inline I negative_mean(const std::array<I,7>& x) {
+    constexpr I c[]={-84592177,505123029,89055809,-50482679,-47344535,153243964,37361121};
+    I z=949767171577LL; for (unsigned i=0;i<7;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline int predict(const BaseFeatures& base,const MovementCounts& counts) {
@@ -86,9 +70,6 @@ inline int predict(const BaseFeatures& base,const MovementCounts& counts) {
     x[4]=log(x[4]);
     x[5]=log(x[5]);
     x[6]=log(x[6]);
-    x[7]=log(x[7]);
-    x[8]=log(x[8]);
-    x[9]=log(x[9]);
     const I pp=sigmoid(positive_probability(x)),pn=sigmoid(negative_probability(x));
     const I mp=std::max(I(0),positive_mean(x)),mn=std::max(I(0),negative_mean(x));
     return int(clip((pp*mp-pn*mn)/65536));

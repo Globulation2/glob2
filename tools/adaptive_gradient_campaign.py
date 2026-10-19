@@ -24,7 +24,7 @@ if str(ROOT) not in sys.path:
 from tools import adaptive_gradient_dataset as data
 from tools import adaptive_gradient_export as exporter
 from tools import adaptive_gradient_model as model
-from tools import adaptive_gradient_spatial as spatial
+from tools import adaptive_gradient_collection as collector
 from tools import adaptive_gradient_tournament as tournament
 from tools import resource_gradient_model as generator
 from tools.resource_gradient_tournament import digest, map_identity
@@ -54,7 +54,7 @@ def tool_identity():
     names = ['adaptive_gradient_campaign.py', 'adaptive_gradient_tournament.py',
              'adaptive_gradient_export.py', 'adaptive_gradient_dataset.py',
              'adaptive_gradient_model.py', 'adaptive_gradient_codegen.py',
-             'adaptive_gradient_spatial.py', 'resource_gradient_model.py',
+             'adaptive_gradient_collection.py', 'resource_gradient_model.py',
              'resource_gradient_dataset.py', 'resource_gradient_distributed.py',
              'resource_gradient_tournament.py', 'resource_gradient_experiments.py']
     return dict(worker=package_identity(), tools={n: file_hash(ROOT / 'tools' / n) for n in names})
@@ -90,9 +90,9 @@ def validate_bundle_set(bundles):
         options = bundle['build_options']
         hashes = [options.get('model_sha256'), options.get('header_sha256')]
         if (any(not isinstance(h, str) or len(h) != 64 or any(v not in '0123456789abcdef' for v in h) for h in hashes)
-                or not data.compatible_contract_hash(options.get('adaptive_gradient_contract_sha256'),spatial.CONTRACT)
+                or options.get('adaptive_gradient_contract_sha256') != data.canonical_hash(collector.CONTRACT)
                 or options.get('model_contract') != data.CONTRACT_ID
-                or options.get('collector_contract') != spatial.CONTRACT_ID
+                or options.get('collector_contract') != collector.CONTRACT_ID
                 or type(options.get('unified_model_trained')) is not bool
                 or options.get('release') != 1 or options.get('optimization') != 'O3'
                 or options.get('dev_fast') != 0 or options.get('pch') != 0 or options.get('unity') != 0):
@@ -109,7 +109,7 @@ def qualification(receipt, emitted, header):
     if (receipt.get('status') != 'qualified-research' or receipt.get('stable_promotion') is not False
             or receipt.get('model_sha256') != file_hash(emitted)
             or receipt.get('header_sha256') != file_hash(header)
-            or not data.compatible_contract_hash(receipt.get('collector_contract_sha256'),spatial.CONTRACT)):
+            or receipt.get('collector_contract_sha256') != data.canonical_hash(collector.CONTRACT)):
         raise ValueError('Build hook did not qualify these exact research coefficients/collector')
     for check in ('integer_parity', 'determinism_smoke', 'simulation_gates'):
         if receipt.get('checks', {}).get(check) is not True:
@@ -149,7 +149,7 @@ class Campaign:
         c = self.config
         required = {'schema', 'catalog', 'bootstrap_bundles', 'hosts', 'host_pools',
                     'split_registry', 'expected_families', 'routing', 'rounds', 'build_hook'}
-        optional = {'map_generator_bundle', 'prior_manifests', 'fit_hook', 'spatial_analysis', 'intervals'}
+        optional = {'map_generator_bundle', 'prior_manifests', 'fit_hook', 'intervals'}
         if set(c) - required - optional or required - set(c) or c.get('schema') != 1:
             raise ValueError('Explicit campaign schema1 configuration required; unknown keys rejected')
         if c['routing'] not in tournament.ROUTING or not c['rounds']:
@@ -359,15 +359,15 @@ class Campaign:
             raise ValueError('Collection stopped before terminal; resume existing coordinator, never replace slots')
         accounting = exporter.export(directory / 'collection', directory / 'export')
         manifests = terminal_accounting(accounting)
-        spatial.load(manifests)
+        collector.load(manifests)
         return manifests, [directory / 'hosts.json', directory / 'collection/experiment.json',
                            directory / 'export/terminal-accounting.json', *cohort_files(manifests)]
 
     def fit_emit(self, directory, manifests, registry):
         directory.mkdir(parents=True, exist_ok=True)
-        spatial.load(manifests)  # Strict contracts, episode hashes and identities.
+        collector.load(manifests)  # Strict contracts, episode hashes and identities.
         research = directory / 'research.json'
-        request = dict(action='fit-unified-generic12', contract=spatial.CONTRACT,
+        request = dict(action='fit-unified-generic12', contract=collector.CONTRACT,
                        manifests=checked_files(manifests), split_registry=str(registry),
                        split_registry_sha256=file_hash(registry), expected_families=self.config['expected_families'],
                        output=str(research),threshold_milli=data.DEFAULT_THRESHOLD_MILLI,research_only=True)
@@ -378,7 +378,7 @@ class Campaign:
         else:
             model.fit(SimpleNamespace(manifest=manifests, split_registry=str(registry), output=str(research),
                                       expected_families=','.join(self.config['expected_families']),
-                                      collector_contract=spatial.CONTRACT_ID))
+                                      collector_contract=collector.CONTRACT_ID))
         fitted = read(research)
         provenance = fitted.get('provenance', {})
         if (not data.compatible_contract(fitted.get('candidate_contract'))
@@ -393,15 +393,15 @@ class Campaign:
     def build(self, directory, fit):
         request = dict(action='ordinary-build-and-qualify-research', source_model=fit['model'],
                        source_header=fit['header'], model_sha256=file_hash(fit['model']),
-                       header_sha256=file_hash(fit['header']), collector_contract=spatial.CONTRACT,
-                       collector_contract_sha256=data.canonical_hash(spatial.CONTRACT), stable_promotion=False)
+                       header_sha256=file_hash(fit['header']), collector_contract=collector.CONTRACT,
+                       collector_contract_sha256=data.canonical_hash(collector.CONTRACT), stable_promotion=False)
         receipt = self.hook('build_hook', request, directory)
         bundles = qualification(receipt, fit['model'], fit['header'])
         return bundles, [directory / 'receipt.json', *[Path(p) / 'bundle.json' for p in bundles]]
 
     def run(self):
         manifests = [str(self.path(p)) for p in self.config.get('prior_manifests', [])]
-        if manifests: spatial.load(manifests)
+        if manifests: collector.load(manifests)
         previous_registry = self.path(self.config['split_registry'])
         bundles = self.bundle_paths
         for number, spec in enumerate(self.config['rounds'], 1):
@@ -417,12 +417,6 @@ class Campaign:
             candidate = self.stage(prefix + 'candidate', lambda: self.collect(out / 'candidate', design, bundles, 'candidate', spec['seed']))
             manifests += candidate
             final = self.stage(prefix + 'cumulative-fit', lambda: self.fit_emit(out / 'cumulative-fit', manifests, design['registry']))
-            if self.config.get('spatial_analysis'):
-                def compare():
-                    path = out / 'spatial-research.json'
-                    spatial.compare(SimpleNamespace(manifest=manifests, split_registry=design['registry'], output=str(path)))
-                    return str(path), [path]
-                self.stage(prefix + 'spatial-research', compare)
             previous_registry = Path(design['registry'])
         self.state['result'] = dict(status='complete-research-only', final=final, manifests=manifests,
                                     split_registry=str(previous_registry), stable_promotion=False)

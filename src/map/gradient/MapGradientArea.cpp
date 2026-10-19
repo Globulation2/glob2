@@ -246,9 +246,6 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 		PERF_SCOPE_TIME(PropagationArea);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Clear);
 	}
-    if(auto& probe=gradientRuntime->qualityProbe)
-        probe->publishedOverlap({GradientFieldFamily::Clear,Uint8(teamNumber),Uint8(swimClass)},game?game->stepCounter:0,clearAreasGradient[teamNumber][swimClass]);
-
 }
 
 void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)

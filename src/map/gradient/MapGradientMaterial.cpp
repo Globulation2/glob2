@@ -314,7 +314,7 @@ std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
 	return std::nullopt;
 }
 
-void Map::publishPlane(Uint16* const* slot, bool diagnosticPublication)
+void Map::publishPlane(Uint16* const* slot)
 {
 	const auto found = planeKeyForSlot(slot);
 	if (!found) return;
@@ -326,11 +326,7 @@ void Map::publishPlane(Uint16* const* slot, bool diagnosticPublication)
 		index = Uint16(publishedPlanes.size());
 	}
 	publishedPlanes[index - 1].generation = ++planeGenerations[key];
-    if(diagnosticPublication)if(auto& probe=gradientRuntime->qualityProbe) {
-        const auto field=MapState::decodePlaneKey(key);
-        if(!field.market && field.resource<MaterialCount && field.swim<AIR_MOVEMENT_CLASS)
-            probe->publishedOverlap({GradientFieldFamily::Materials,Uint8(field.team),Uint8(field.swim),Uint8(field.resource)},game?game->stepCounter:0,*slot);
-    }
+
 }
 
 void Map::rebuildPlaneRegistry()
@@ -341,8 +337,8 @@ void Map::rebuildPlaneRegistry()
 		for (int resource = 0; resource < MaterialSlotCount; ++resource)
 			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
-				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim],false);
-				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim],false);
+				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
+				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);
 			}
 }
 

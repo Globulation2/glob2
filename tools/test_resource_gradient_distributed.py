@@ -35,16 +35,16 @@ class DistributedTests(unittest.TestCase):
 
     def test_unified_legacy_label_declaration_keeps_actual_adaptive16_policy(self):
         import csv,copy
-        from tools import adaptive_gradient_dataset as data,adaptive_gradient_spatial as spatial
+        from tools import adaptive_gradient_dataset as data,adaptive_gradient_collection as collector
         from tools.tournaments.jobs import resource_gradient_collection_outputs
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);bundles=root/'builds';bundles.mkdir()
-            legacy=dict(spatial.CONTRACT,refresh_threshold_milli=128000)
-            linux=self.bundle(bundles,'linux',{'adaptive_gradient_contract_sha256':d.canonical_hash(legacy),'refresh_threshold_milli':16000})
+            legacy=dict(collector.CONTRACT,refresh_threshold_milli=128000)
+            linux=self.bundle(bundles,'linux',{'adaptive_gradient_contract_sha256':d.canonical_hash(collector.CONTRACT),'refresh_threshold_milli':16000})
             plan,maps=self.plan(root,1);cohort=self.cohort();cohort.update(role='candidate',contract=legacy);cohort['policy'].update(intervals=[],threshold_milli=16000)
             manifest=d.make_experiment(plan,maps,[linux],cohort);atomic_json(root/'experiment.json',manifest)
             job=manifest['jobs'][0];self.assertEqual(job['labels']['resource_gradient']['cohort']['contract'],legacy)
-            self.assertEqual(job['config']['resource_gradient_collection']['contract'],spatial.CONTRACT_ID)
+            self.assertEqual(job['config']['resource_gradient_collection']['contract'],collector.CONTRACT_ID)
             artifacts=[]
             for name,required in resource_gradient_collection_outputs(job['config']['resource_gradient_collection']).items():
                 path=root/name;columns=sorted(required)
@@ -56,10 +56,10 @@ class DistributedTests(unittest.TestCase):
                         if 'overlap_supported' in row:row['overlap_supported']=1
                         writer.writerow(row)
                 meta=store_artifact(path,root/'artifacts');meta['path']=name;artifacts.append(meta)
-            record=dict(id='accepted',host='test',package_id='test-package',accepted=True,category='success',job=job,result=dict(status='completed',ticks=900,adaptive_gradient_policy=dict(collector_contract=spatial.CONTRACT_ID,threshold_milli_direction_cost=16000)),artifacts=artifacts)
+            record=dict(id='accepted',host='test',package_id='test-package',accepted=True,category='success',job=job,result=dict(status='completed',ticks=900,adaptive_gradient_policy=dict(collector_contract=collector.CONTRACT_ID,threshold_milli_direction_cost=16000)),artifacts=artifacts)
             (root/'results').mkdir();(root/'attempts').mkdir();atomic_json(root/'results'/f"{job['id']}.json",record);atomic_json(root/'attempts/accepted.json',record)
             output=d.export(root,root/'export');sealed=json.loads(Path(output['manifests'][0]).read_text());self.assertEqual(sealed['cohort'],cohort)
-            row=data.load(output['manifests'],expected_contract=spatial.CONTRACT)[0];self.assertEqual(row['collection_threshold_milli'],16000);self.assertEqual(row['source_contract_sha256'],d.canonical_hash(legacy))
+            row=data.load(output['manifests'],expected_contract=collector.CONTRACT)[0];self.assertEqual(row['collection_threshold_milli'],16000);self.assertEqual(row['source_contract_sha256'],d.canonical_hash(legacy))
             bad_result=copy.deepcopy(record);bad_result['result']['adaptive_gradient_policy']['threshold_milli_direction_cost']=128000
             atomic_json(root/'results'/f"{job['id']}.json",bad_result)
             with self.assertRaisesRegex(ValueError,'Runtime threshold differs'):d.export(root,root/'wrong-runtime-export')
@@ -70,6 +70,37 @@ class DistributedTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'pin unified'):d.make_experiment(plan,maps,[wrong],cohort)
             altered=copy.deepcopy(cohort);altered['contract']['future_offsets']=[8,31]
             with self.assertRaises(ValueError):d.make_experiment(plan,maps,[linux],altered)
+
+    def test_historical_v3_is_read_only_and_exports_without_rewriting_contract(self):
+        import csv,copy
+        from tools import adaptive_gradient_collection as collector,adaptive_gradient_export as exporter
+        from tools.tournaments.jobs import resource_gradient_collection_outputs
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);builds=root/'builds';builds.mkdir()
+            legacy=dict(collector.LEGACY_CONTRACT,refresh_threshold_milli=128000)
+            bundle=self.bundle(builds,'linux',{'adaptive_gradient_contract_sha256':d.canonical_hash(legacy),'refresh_threshold_milli':16000})
+            plan,maps=self.plan(root,1);cohort=self.cohort();cohort.update(role='candidate',contract=legacy);cohort['policy'].update(intervals=[],threshold_milli=16000)
+            with self.assertRaisesRegex(ValueError,'read-only'):
+                d.make_experiment(plan,maps,[bundle],cohort)
+            # A historical receipt fixture, not a new job produced by prepare.
+            collection={'contract':collector.LEGACY_CONTRACT_ID};source=maps[0];group=source['group'];spec=source['spec']
+            labels=dict(resource_gradient=dict(logical_group=group,actual_spec=spec,cohort=cohort,map_sha256=source['sha256'],model_sha256='c'*64,header_sha256='d'*64,collection_seed=None))
+            job=d.job('game',bundle['id'],inputs={'map':{'sha256':source['sha256'],'path':'map.map.gz'}},seeds={'game':spec['game_seed']},config=dict(players=spec['ais'],alliances=spec['alliances'],ticks=900,resource_gradient_collection=collection),outputs={'required':list(resource_gradient_collection_outputs(collection)),'result':'full'},labels=labels,job_id=group)
+            manifest=d.validate_experiment(dict(schema_version=1,id='historical-receipt-fixture',jobs=[job],settings={}))
+            atomic_json(root/'experiment.json',manifest);artifacts=[]
+            for name,required in resource_gradient_collection_outputs(collection).items():
+                path=root/name;columns=sorted(required)
+                with path.open('w') as stream:
+                    writer=csv.DictWriter(stream,fieldnames=columns);writer.writeheader()
+                    if name=='gradient-episodes.csv':
+                        row=dict.fromkeys(columns,0);row.update(complete=1,capture_known=1,movement_observed=1,publication_delay=8,material=1,key=1,overlap_support_reason='natural_ground',overlap_supported=1);writer.writerow(row)
+                artifact=store_artifact(path,root/'artifacts');artifact['path']=name;artifacts.append(artifact)
+            record=dict(id='historical-accepted',host='test',package_id='historical-package',accepted=True,category='success',job=job,result=dict(status='completed',ticks=900,adaptive_gradient_policy=dict(collector_contract=collector.LEGACY_CONTRACT_ID,threshold_milli_direction_cost=16000)),artifacts=artifacts)
+            (root/'results').mkdir();(root/'attempts').mkdir();atomic_json(root/'results'/f'{group}.json',record);atomic_json(root/'attempts/historical-accepted.json',record)
+            result=exporter.export(root,root/'terminal-export');self.assertEqual(result['counts'],{'completed':1})
+            rows=collector.load(result['completed_manifests']);self.assertEqual(len(rows),1)
+            self.assertEqual(rows[0]['source_contract_sha256'],d.canonical_hash(legacy));self.assertEqual(rows[0]['collection_threshold_milli'],16000)
+            sealed=json.loads(Path(result['completed_manifests'][0]).read_text());self.assertEqual(sealed['cohort']['contract'],legacy)
 
     def test_fixed_stratified_partition_uses_exact_maps_and_mac_threads(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -226,11 +226,6 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 }
 
 
-void Map::setGradientSpatialOverlap(bool enabled)
-{
-    if(auto& probe=gradientRuntime->qualityProbe)probe->setSpatialEnabled(enabled);
-}
-
 void Map::configureGradientWorkStats(const std::string& path)
 {
     gradientRuntime->workStats.reset();
@@ -374,8 +369,6 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
                 }
         }
         publishPlane(slot);
-        if(job.adaptiveKey && job.adaptiveKey->family==GradientFieldFamily::Clear)
-            if(auto& probe=gradientRuntime->qualityProbe)probe->publishedOverlap(*job.adaptiveKey,game->stepCounter,*slot);
         for (auto& [key,entry] : gradientRuntime->materialFields)
             if (&entry.published==slot) {
                 // advance() has moved the old allocation into the retired job.
@@ -449,16 +442,7 @@ void Map::stagePeriodicGradientPreparation()
         auto** slot=gradientFieldDestination(key);
         if(!slot)continue;
         const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
-        AdaptiveGradientState::Evaluation evaluation;
-        auto* exploration=gradientRuntime->exploration.get();
-        const bool fork=exploration && exploration->forkField>=0 && std::uint32_t(exploration->forkField)==key.packed() && !exploration->forkComplete;
-        if(fork) {
-            if(field.demand && !field.queued && !field.inflight &&
-                Uint32(game->stepCounter-field.submitted)>=AdaptiveGradientState::MinimumInterval &&
-                Uint32(game->stepCounter-exploration->forkStart)>=exploration->forkWait)
-                evaluation.reason=AdaptiveGradientState::Reason::Bootstrap;
-            else field.demand=false;
-        } else evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
+        const auto evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
             AdaptiveGradientModel::predict,interval);
         if(!evaluation.requested())continue;
         if(!pipeline.canReserve()){field.defer(evaluation.reason);continue;}
@@ -466,7 +450,7 @@ void Map::stagePeriodicGradientPreparation()
         const auto request=gradientRuntime->fieldRequests.back();
         gradientRuntime->fieldRequests.pop_back();admit(request);
         if(auto& exploration=gradientRuntime->exploration)
-            exploration->record(game->stepCounter,key.packed(),fork?"checkpoint_fork":GradientWorkStats::reasonName(unsigned(evaluation.reason)),true);
+            exploration->record(game->stepCounter,key.packed(),GradientWorkStats::reasonName(unsigned(evaluation.reason)),true);
     }
 }
 
@@ -763,7 +747,7 @@ Uint16** Map::gradientDestination(unsigned id, unsigned savedClasses)
 }
 
 void Map::configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
-    int forkField,unsigned forkWait,const std::string& decisionPath)
+    const std::string& decisionPath)
 {
     if (!globalContainer || !globalContainer->structuredHeadless || !gradientRuntime->qualityProbe)
         throw std::invalid_argument("Gradient exploration requires structured headless collection with the probe enabled");
@@ -771,21 +755,9 @@ void Map::configureResourceGradientExploration(const std::string& intervals, Uin
     if (!intervals.empty()) config.intervals=ResourceGradientExploration::parseIntervals(intervals);
     if(!AdaptiveGradientModel::Trained && std::find(config.intervals.begin(),config.intervals.end(),0u)!=config.intervals.end())
         throw std::invalid_argument("Unified adaptive coefficients are untrained; bootstrap requires positive fixed intervals");
-    if(!AdaptiveGradientModel::Trained && config.intervals.empty() && forkField<0)
+    if(!AdaptiveGradientModel::Trained && config.intervals.empty())
         throw std::invalid_argument("Untrained unified collection requires explicit fixed intervals");
-    config.seed=seed;config.forkField=forkField;config.forkWait=forkWait;config.forkStart=game->stepCounter;
-    if (forkField>=0) {
-        const auto key=GradientFieldKey::unpack(std::uint32_t(forkField));
-        const auto found=gradientRuntime->adaptive.fields.find(key);
-        auto** slot=gradientFieldDestination(key);
-        if(!key.valid(game->mapHeader.getNumberOfTeams(),MOVEMENT_CLASS_COUNT,MaterialCount)
-            || found==gradientRuntime->adaptive.fields.end() || !slot || !*slot || !found->second.serving.known)
-            throw std::invalid_argument("Gradient fork requires a captured warm shared field");
-        bool pending=false;
-        gradientRuntime->pipeline.forEachDestination([&](Uint16** destination){pending|=destination==slot;});
-        for (const auto& request:gradientRuntime->fieldRequests) pending|=request.slot==slot;
-        if (pending) throw std::invalid_argument("Cannot fork a field with a pending or queued refresh");
-    }
+    config.seed=seed;
     config.decisions.open(decisionPath);
     if (!config.decisions) throw std::runtime_error("Cannot open gradient exploration decisions");
     config.decisions<<"tick,key,behavior_seed,behavior_interval,reason,admitted\n";

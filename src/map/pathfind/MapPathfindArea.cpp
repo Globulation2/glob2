@@ -8,10 +8,6 @@
 #include "Game.h"
 #include "Utilities.h"
 
-void Map::gradientMovementRead(GradientFieldKey key,int x,int y,const Uint16* cells)
-{
-    if(auto& probe=gradientRuntime->qualityProbe)probe->observeOverlap(*this,key,x,y,cells);
-}
 void Map::gradientMovementDemand(GradientFieldKey key)
 {
     if(game && !compute.insideJob())gradientRuntime->adaptive.queried(key,game->stepCounter);
@@ -140,7 +136,6 @@ bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int 
     gradientMovementDemand(key);
     const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
     if(!cells)return false;
-    if(auto& probe=gradientRuntime->qualityProbe)probe->observeOverlap(*this,key,x,y,cells);
     const GradientQueryContext before{key,x,y,random};
     auto context=before;
     const auto result=selectGradientQueryImpl(context,cells);

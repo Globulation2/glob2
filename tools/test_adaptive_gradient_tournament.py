@@ -40,13 +40,13 @@ class DirectExperimentThresholdTests(unittest.TestCase):
   import tempfile
   from pathlib import Path
   from tools.test_resource_gradient_distributed import DistributedTests
-  from tools import resource_gradient_distributed as distributed,adaptive_gradient_spatial as spatial
+  from tools import resource_gradient_distributed as distributed,adaptive_gradient_collection as collector
   temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
   root=Path(temporary.name);fixture=DistributedTests();options={}
   if option!='missing':options['refresh_threshold_milli']=option
-  if kind=='unified':options['adaptive_gradient_contract_sha256']=distributed.canonical_hash(spatial.CONTRACT)
+  if kind=='unified':options['adaptive_gradient_contract_sha256']=distributed.canonical_hash(collector.CONTRACT)
   bundle=fixture.bundle(root,'linux',options);plan,maps=fixture.plan(root,1);cohort=fixture.cohort();cohort['policy']['threshold_milli']=policy_threshold
-  if kind=='unified':cohort['contract']=copy.deepcopy(spatial.CONTRACT)
+  if kind=='unified':cohort['contract']=copy.deepcopy(collector.CONTRACT)
   return distributed,plan,maps,bundle,cohort
  def test_direct_constructor_rejects_explicit_bundle_cohort_mismatch(self):
   for kind in ['legacy','unified']:
@@ -70,5 +70,16 @@ class DirectExperimentThresholdTests(unittest.TestCase):
    with self.subTest(value=value):
     module,plan,maps,bundle,cohort=self.case('unified',value)
     with self.assertRaises(ValueError):module.make_experiment(plan,maps,[bundle],cohort)
+
+class CurrentCollectorPlanTests(unittest.TestCase):
+ def test_new_plans_emit_v4_and_do_not_reinterpret_historical_plans(self):
+  from tools import adaptive_gradient_tournament as tournament,adaptive_gradient_collection as collector
+  from tools.test_resource_gradient_tournament import catalog
+  document=tournament.plan(catalog(),181106,'remote-only')
+  self.assertEqual(document['unified']['contract'],collector.CONTRACT)
+  self.assertNotIn('spatial',document['unified']['contract'])
+  document['unified']['contract']=collector.LEGACY_CONTRACT
+  with self.assertRaisesRegex(ValueError,'Exact unified'):
+   tournament.validate_plan(document)
 
 if __name__=='__main__':unittest.main()

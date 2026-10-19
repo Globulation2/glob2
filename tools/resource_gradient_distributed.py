@@ -20,7 +20,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from tools.resource_gradient_dataset import FEATURES, canonical_hash, file_hash, seal
-from tools.adaptive_gradient_dataset import compatible_contract
+from tools import adaptive_gradient_collection as collector
 from tools.resource_gradient_tournament import digest, map_identity
 from tools.resource_gradient_experiments import exploration_seed_for_game
 from tools.tournaments.bundles import inspect_bundle
@@ -65,10 +65,10 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         metadata=accepted.get('cohort',cohort)
         if not metadata.get('id') or metadata.get('role') not in ('exploration','candidate'):raise ValueError('Explicit cohort id and role required')
         contract=metadata.get('contract',{})
-        from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
-        from tools.adaptive_gradient_dataset import compatible_contract,compatible_contract_hash,collection_threshold
-        unified=compatible_contract(contract,UNIFIED_CONTRACT)
-        if unified and any(not compatible_contract_hash(b.get('build_options',{}).get('adaptive_gradient_contract_sha256'),UNIFIED_CONTRACT) for b in bundles):raise ValueError('Supplied bundle does not pin unified collector contract')
+        from tools.adaptive_gradient_dataset import collection_threshold
+        unified=collector.compatible_contract(contract)
+        if unified and collector.contract_id(contract)!=collector.CONTRACT_ID:raise ValueError('Historical collector contracts are read-only; new jobs require current v4')
+        if unified and any(b.get('build_options',{}).get('adaptive_gradient_contract_sha256')!=canonical_hash(collector.CONTRACT) for b in bundles):raise ValueError('Supplied bundle does not pin unified collector contract')
         if not unified and (tuple(contract.get('features',()))!=FEATURES or contract.get('label')!='movement-direction-extra-cost'
             or contract.get('future_offsets')!=[8,31] or contract.get('benefit_unit')!='direction-cost'
             or contract.get('request_type')!='movement'):
@@ -102,7 +102,7 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
             options=supplied.get('build_options',{})
             if options.get('model_sha256')!=model_hash or options.get('header_sha256')!=header_hash:
                 raise ValueError('Supplied bundle model/header identity differs from cohort')
-        collection={'contract':'unified-gradient-spatial-h128-v3'} if unified else {}
+        collection={'contract':collector.CONTRACT_ID} if unified else {}
         if any(intervals):
             collection.update(exploration=','.join(map(str,intervals)),
                         seed=accepted.get('collection_seed',exploration_seed_for_game(policy.get('seed',0),group)))
@@ -166,7 +166,7 @@ def export(directory, output, allow_partial=False):
         if identity not in expected or record['job']!=expected[identity]:raise ValueError('Result does not match frozen job')
         if identity in accepted:raise ValueError('Duplicate logical result')
         if record.get('accepted') is not True:raise ValueError('Unaccepted result export')
-        externally_censored=expected[identity]['labels']['resource_gradient']['cohort']['contract'].get('id')=='unified-gradient-spatial-h128-v3' and any(a['path']=='runtime-cap-override.json' for a in record.get('artifacts',[]))
+        externally_censored=expected[identity]['labels']['resource_gradient']['cohort']['contract'].get('id') in collector.SUPPORTED_CONTRACT_IDS and any(a['path']=='runtime-cap-override.json' for a in record.get('artifacts',[]))
         if externally_censored or record.get('category')!='success' or record.get('result',{}).get('status')!='completed':
             failed.append(identity);continue
         accepted[identity]=record
@@ -213,10 +213,9 @@ def export(directory, output, allow_partial=False):
             else:raise ValueError('Unknown encoding')
             artifacts[name]=dict(path=str(target.resolve()),sha256=file_hash(target),decoded_sha256=decoded.hexdigest(),decoded_bytes=decoded_bytes,transport=info)
         episode=artifacts['gradient-episodes.csv']
-        from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
-        if compatible_contract(metadata['contract'],UNIFIED_CONTRACT):
+        if collector.compatible_contract(metadata['contract']):
             policy_result=record.get('result',{}).get('adaptive_gradient_policy',{})
-            if policy_result.get('collector_contract')!='unified-gradient-spatial-h128-v3':raise ValueError('Runtime did not attest the spatial collector contract')
+            if policy_result.get('collector_contract')!=collector.contract_id(metadata['contract']):raise ValueError('Runtime did not attest the declared collector contract')
             from tools.adaptive_gradient_dataset import collection_threshold,declared_threshold_milli
             if 'threshold_milli_direction_cost' in policy_result and declared_threshold_milli(policy_result['threshold_milli_direction_cost'])!=collection_threshold(metadata):raise ValueError('Runtime threshold differs from sealed collection behavior')
             from tools.tournaments.jobs import resource_gradient_collection_outputs
@@ -258,6 +257,7 @@ def export(directory, output, allow_partial=False):
         name=canonical_hash(dict(cohort=cohort_id,binary=binary,records=records))[:24]
         temporary=output/f'{name}.records.json';atomic_json(temporary,records)
         target=output/f'{name}.cohort.json';seal(temporary,target,metadata_by_id[cohort_id]);temporary.unlink()
+        if collector.compatible_contract(metadata_by_id[cohort_id]['contract']):collector.load([target])
         sealed.append(str(target.resolve()))
     status.update(manifests=sealed,by_format=dict(collections.Counter(r['job']['labels']['resource_gradient']['actual_spec']['format'] for r in accepted.values())),
                   hosts=dict(collections.Counter(r['host'] for r in accepted.values())))

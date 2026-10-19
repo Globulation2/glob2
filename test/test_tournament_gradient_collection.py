@@ -90,6 +90,26 @@ class GradientCollectionJobs(unittest.TestCase):
             (out/'gradient-episodes.csv').write_text('complete,age,q32,q128\n')
             with self.assertRaisesRegex(ValueError, 'schema mismatch'): adapter.collect(request, directory)
 
+    def test_current_and_historical_collector_headers_are_explicit(self):
+        current = {'contract': 'unified-gradient-h128-v4'}
+        historical = {'contract': 'unified-gradient-spatial-h128-v3'}
+        current_headers = resource_gradient_collection_outputs(current)
+        old_headers = resource_gradient_collection_outputs(historical)
+        self.assertNotIn('overlap_supported', current_headers['gradient-episodes.csv'])
+        self.assertIn('overlap_supported', old_headers['gradient-episodes.csv'])
+        self.assertIn('defer_false_unreachable', current_headers['gradient-episodes.csv'])
+        for collection in [current, historical]:
+            request = self.request(collection); validate_job(request)
+            with tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)/'output'; out.mkdir(); self.write_outputs(out, collection)
+                native = {'schema_version': 1, 'status': 'completed', 'adaptive_gradient_policy': {'collector_contract': collection['contract']}}
+                (out/'result.json').write_text(json.dumps(native))
+                self.assertEqual(EngineJob('game').collect(request, directory)['status'], 'completed')
+                native['adaptive_gradient_policy']['collector_contract'] = 'unified-gradient-h128-v4' if collection==historical else historical['contract']
+                (out/'result.json').write_text(json.dumps(native))
+                with self.assertRaisesRegex(ValueError, 'requested collector'):
+                    EngineJob('game').collect(request, directory)
+
     def test_incomplete_engine_request_keeps_original_failure_diagnostic(self):
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory)/'output'; out.mkdir()

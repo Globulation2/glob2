@@ -7,7 +7,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from tools.resource_gradient_tournament import sample_plan,digest,map_identity
-from tools import adaptive_gradient_spatial as collector
+from tools import adaptive_gradient_collection as collector
 from tools import adaptive_gradient_dataset as d
 from tools.resource_gradient_experiments import exploration_seed_for_game
 from tools.resource_gradient_distributed import make_experiment

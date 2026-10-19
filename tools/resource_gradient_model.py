@@ -1,43 +1,23 @@
-#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Collect tournaments, fit and export the deterministic resource refresh model.
+"""Shared integer regression, grouped splitting and deterministic map generation.
 
-run writes a resumable manifest, raw episode labels and exact commands. Diagnostic
-CPU is deliberately never reported as gameplay performance. fit splits whole
-starting states, balances formats/states/collection games, standardizes on each
-training fold, and evaluates the exported integer predictor. fit-candidate keeps
-the selected inputs separate from the fixed seven-column collection contract.
-Only explicit promote may make research coefficients eligible for C++ emission;
-prospective validation and simulation compatibility checks remain required.
+The historical module name is retained by immutable training packages. Production
+emission and label contracts belong to adaptive_gradient_model/codegen instead.
 """
 from __future__ import annotations
-import argparse
 import collections
-import concurrent.futures
-import csv
-import gzip
 import hashlib
 import json
 import math
-import os
-import shutil
 from pathlib import Path
 import subprocess
-import sys
-import traceback
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
-from tools.resource_gradient_tournament import sample_plan, coverage, map_identity, digest
-from tools.resource_gradient_dataset import FEATURES as BASE_FEATURES
-# Historical callers and baseline comparisons deliberately keep seven inputs.
-FEATURES = BASE_FEATURES
-HEADS = ('positive_probability', 'negative_probability', 'positive_mean', 'negative_mean')
-LIMIT = 1_000_000
-LOG = tuple(round(math.log2(1 + i / 256) * 4096) for i in range(257))
-SIG = tuple(round(65536 / (1 + math.exp(-x / 1000))) for x in range(-12000, 12001, 50))
-HEADER = ROOT / 'src/map/gradient/ResourceGradientModel.h'
-DEFAULT_MODEL = ROOT / 'tools/models/resource-gradient.json'
+from tools.resource_gradient_dataset import FEATURES
+from tools.resource_gradient_tournament import digest
+ROOT=Path(__file__).resolve().parents[1]
+HEADS=('positive_probability','negative_probability','positive_mean','negative_mean')
+LIMIT=1_000_000
+LOG=tuple(round(math.log2(1+i/256)*4096) for i in range(257))
+SIG=tuple(round(65536/(1+math.exp(-x/1000))) for x in range(-12000,12001,50))
 
 
 def save(path, value):
@@ -83,51 +63,22 @@ def predict(model, raw):
     return max(-10**9, min(10**9, value))
 
 
-def validate_heads(model, research=False, expected_threshold=32000):
+def validate_heads(model, research=False, expected_threshold=16000):
     features=tuple(model.get('features',()))
     if type(model.get('threshold')) is not int or model['threshold']!=expected_threshold:raise ValueError('Unexpected integer decision threshold')
     if research:
         if model.get('schema')!=2 or not model.get('research_only'):raise ValueError('Expected research-only model schema')
         if not features or len(set(features))!=len(features):raise ValueError('Invalid research features')
-    elif model.get('schema')!=1 or features!=FEATURES:raise ValueError('Expected the official adaptive-32 model feature schema')
+    elif model.get('schema')!=1 or features!=FEATURES:raise ValueError('Expected seven-feature baseline model schema')
     transforms=model.get('transforms',['log1p_q12']*len(features))
     if len(transforms)!=len(features) or any(t not in ('log1p_q12','identity_q12') for t in transforms):raise ValueError('Invalid feature transforms')
-    if not research and any(t!='log1p_q12' for t in transforms):raise ValueError('Official model requires log transforms')
+    if not research and any(t!='log1p_q12' for t in transforms):raise ValueError('Baseline model requires log transforms')
     bounds=[log_integer(LIMIT) if t=='log1p_q12' else LIMIT for t in transforms]
     for name in HEADS:
         h=model[name]
         if len(h['coef'])!=len(features) or type(h['shift']) is not int or h['shift'] not in (28,24,20,16,12,8):raise ValueError('Invalid linear head')
         if not all(type(v) is int for v in [h['bias'],*h['coef']]):raise ValueError('Noninteger coefficients')
         if abs(h['bias'])+sum(abs(c)*bound for c,bound in zip(h['coef'],bounds))>=1<<61:raise ValueError('Unsafe accumulator')
-
-
-def validate_model(model):
-    if model.get('schema') == 3:
-        from tools.resource_gradient_deployment import validate
-        validate(model)
-    else:
-        # Baseline7 fits remain useful research references, never emit directly.
-        validate_heads(model)
-
-
-def emit(model, path):
-    # Only an explicitly promoted, exact-contract deployment model may emit C++.
-    from tools.resource_gradient_codegen import emit as emit_deployment
-    emit_deployment(model, path)
-
-
-def make_plan(args):
-    binary = Path(args.binary).resolve()
-    catalog = json.loads(subprocess.check_output(
-        [str(binary), 'info', 'catalog', '--format', 'json'], cwd=ROOT, timeout=60))
-    return sample_plan(catalog, args.games, args.seed, generators=args.generators,
-                       sizes=args.sizes, formats=args.formats, ais=args.ais)
-
-
-def plan(args):
-    document = make_plan(args)
-    save(args.output, document)
-    print(json.dumps(document['coverage'], indent=2))
 
 
 def validate_specs(specs):
@@ -186,136 +137,6 @@ def generate_map(binary, spec, directory, env):
     raise RuntimeError(f'All map candidates rejected; inspect {directory}/generation-attempts.json')
 
 
-def run(args):
-    binary = Path(args.binary).resolve()
-    out = Path(args.output).resolve(); out.mkdir(parents=True,exist_ok=True)
-    document = json.loads(Path(args.plan).read_text()) if args.plan else make_plan(args)
-    exploration = getattr(args, 'exploration', None)
-    exploration_seed = getattr(args, 'exploration_seed', 5101)
-    if not 0 <= exploration_seed <= 2**32-1: raise ValueError('Exploration seed must be uint32')
-    from tools.resource_gradient_experiments import intervals, exploration_seed_for_game
-    from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
-    selected_intervals = intervals(exploration) if exploration else []
-    policy = dict(name='seeded-field-intervals' if exploration else 'adaptive32',
-                  intervals=selected_intervals, seed=exploration_seed,
-                  assignment='sha256(master-seed:planned-game-group) low32, then unsigned field hash',
-                  model_sha256=sha(DEFAULT_MODEL))
-    if isinstance(document, dict) and document.get('schema') != 1: raise ValueError('Unsupported tournament plan schema')
-    plan = document['games'] if isinstance(document, dict) else document
-    if isinstance(document, dict) and digest(document['catalog']) != document['catalog_sha256']:
-        raise ValueError('Plan catalog hash mismatch')
-    validate_specs(plan)
-    eligible=(document['design']['generators'] if isinstance(document,dict) else
-              sorted({s['generator'] for s in plan} | {c.get('generator',s['generator']) for s in plan for c in s.get('map_candidates', [])}))
-    print(json.dumps(coverage(plan,eligible), indent=2), flush=True)
-    binary_hash = sha(binary)
-    collector_files = ['resource_gradient_model.py', 'resource_gradient_tournament.py',
-                       'resource_gradient_dataset.py', 'resource_gradient_experiments.py']
-    frozen = dict(schema=2,binary_sha256=binary_hash,model_sha256=sha(DEFAULT_MODEL),header_sha256=sha(HEADER),
-                  collector_sha256={name:sha(ROOT/'tools'/name) for name in collector_files},
-                  source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                  tick_cap=args.ticks,threads=args.threads,plan=plan,
-                  sampling=document if isinstance(document, dict) else None, policy=policy)
-    cohort = dict(id=getattr(args, 'cohort', None) or digest(frozen),
-                  role='exploration' if any(selected_intervals) else 'candidate', policy=policy,
-                  contract=dict(features=list(FEATURES), contradictions=CONTRADICTION_CONTRACT, label='movement-direction-extra-cost',
-                                future_offsets=[8,31], benefit_unit='direction-cost', request_type='movement'))
-    frozen['cohort'] = cohort
-    frozen_path = out/'plan.json'
-    if frozen_path.exists() and json.loads(frozen_path.read_text()) != frozen:
-        raise ValueError('Output has a different frozen plan/build; choose a fresh directory')
-    save(frozen_path,frozen)
-    collector_snapshot=out/'collector-source';collector_snapshot.mkdir(exist_ok=True)
-    for name in collector_files: shutil.copyfile(ROOT/'tools'/name, collector_snapshot/name)
-    manifest_path=out/'manifest.json'
-    manifest=json.loads(manifest_path.read_text()) if manifest_path.exists() else []
-    done={r['group'] for r in manifest}
-    save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
-    def game(spec):
-        identity=json.dumps(spec,sort_keys=True,separators=(',',':'))
-        group=hashlib.sha256(identity.encode()).hexdigest()[:16]
-        if group in done:return None
-        directory=out/group; directory.mkdir(exist_ok=True)
-        map_path=directory/'map.map.gz'
-        command=[str(binary),'game','run','--map-file',str(map_path),'--game-seed',str(spec['game_seed']),
-                 '--ticks',str(args.ticks),'--compute-threads',str(args.threads),'--gpu','off',
-                 '--compute-telemetry','off','--output-dir',str(directory),'--resource-gradient-probe']
-        behavior_seed = exploration_seed_for_game(exploration_seed,group)
-        if exploration:
-            command += ['--resource-gradient-exploration', ','.join(map(str, selected_intervals)),
-                        '--resource-gradient-exploration-seed', str(behavior_seed)]
-        roster = spec.get('ais', [spec.get('ai', 'nicowar')]*spec['players'])
-        for ai, alliance in zip(roster, spec['alliances']): command+=['--player',ai,'--alliance',str(alliance)]
-        env={k:v for k,v in os.environ.items() if not k.startswith('GLOB2_RESOURCE_')}
-        episode=directory/'gradient-episodes.csv'
-        result=directory/'result.json'
-        # A process can finish before its result is appended to the manifest.
-        # Recover that completed game instead of asking the engine to overwrite
-        # its result directory. Incomplete attempts are safe to rerun in place.
-        recovered=False
-        if result.exists() and (episode.exists() or episode.with_suffix('.csv.gz').exists()):
-            try:recovered=json.loads(result.read_text()).get('status')=='completed'
-            except json.JSONDecodeError:pass
-        if not recovered:
-            result.unlink(missing_ok=True)
-            with (directory/'run.log').open('w') as log:
-                spec,attempts=generate_map(binary,spec,directory,env)
-                save(directory/'commands.json',dict(generation_attempts=attempts,run=command))
-                subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True,
-                               timeout=getattr(args,'timeout_seconds',7200))
-        if recovered:
-            selected=directory/'selected-map.json'
-            if selected.exists():spec=json.loads(selected.read_text())
-            elif spec.get('map_candidates'):raise ValueError('Completed game lacks selected-map provenance')
-        result_data=json.loads(result.read_text())
-        if result_data.get('status')!='completed':raise RuntimeError(f'Game did not complete: {result}')
-        if not episode.exists() and not episode.with_suffix('.csv.gz').exists():
-            raise RuntimeError('No episode data: binary lacks the collector')
-        # Reference-query CSVs can be large. Compression runs only after the
-        # game exits and uses a fixed header so retained evidence is reproducible.
-        for name in ['gradient-episodes.csv','gradient-quality.csv','gradient-planning-quality.csv','gradient-decisions.csv','gradient-contradictions.csv']:
-            raw=directory/name
-            if not raw.exists():continue
-            compressed=raw.with_suffix('.csv.gz');temp=compressed.with_suffix('.gz.tmp')
-            with raw.open('rb') as inp,temp.open('wb') as file:
-                with gzip.GzipFile(filename='',fileobj=file,mode='wb',mtime=0) as gz:
-                    shutil.copyfileobj(inp,gz)
-            temp.replace(compressed);raw.unlink()
-        episode=episode.with_suffix('.csv.gz')
-        diagnostics={p.name:sha(p) for p in directory.glob('gradient-*.csv.gz')}
-        diagnostic_artifacts={p.name.removesuffix('.gz'):dict(path=str(p.relative_to(out)),sha256=sha(p))
-                              for p in directory.glob('gradient-*.csv.gz')}
-        return dict(behavior_seed=behavior_seed if exploration else None,diagnostics=diagnostics,
-                    provenance=dict(artifacts=diagnostic_artifacts),cohort=cohort,group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
-                    binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
-                    ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
-    failure_path=out/'failures.json'
-    failures=json.loads(failure_path.read_text()) if failure_path.exists() else {}
-    for group in done:failures.pop(group,None)
-    save(failure_path,failures)
-    # A failed game must not abandon completed futures or leave their large raw
-    # CSVs uncompressed. Drain the whole cohort, retaining every failure for a
-    # deterministic retry with the original state/seed, then fail the command.
-    with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        futures={pool.submit(game,spec):spec for spec in plan}
-        for future in concurrent.futures.as_completed(futures):
-            spec=futures[future];group=digest(spec)[:16]
-            try:record=future.result()
-            except Exception as error:
-                failures[group]=dict(spec=spec,error=str(error),traceback=traceback.format_exc())
-                save(failure_path,failures)
-                print(f'FAILED {group}: {error}',file=sys.stderr,flush=True)
-                continue
-            failures.pop(group,None);save(failure_path,failures)
-            if record:
-                manifest.append(record);save(manifest_path,manifest)
-                save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
-                print(f'{len(manifest)}/{len(plan)} games collected',flush=True)
-    if failures:raise RuntimeError(f'{len(failures)} collection games failed; inspect {failure_path} and resume after repair')
-    from tools.resource_gradient_dataset import seal
-    seal(manifest_path, out/'cohort.json', cohort)
-
-
 def dataset(manifests):
     from tools.resource_gradient_dataset import load
     return load(manifests)
@@ -326,7 +147,7 @@ def weights(rows):
     return balanced_weights(rows)
 
 
-def fit_heads(rows, features=FEATURES, transforms=None, weighting=None, threshold=32000):
+def fit_heads(rows, features=FEATURES, transforms=None, weighting=None, threshold=16000):
     rows=[r for r in rows if r.get('movement_label_available',1)]
     if not rows:raise ValueError('No observed movement labels to fit')
     import numpy as np
@@ -392,15 +213,6 @@ def metrics(rows,model,weighting=None):
                 absolute_error_p95=quantile(abs(pred-y),.95),absolute_error_p99=quantile(abs(pred-y),.99))
 
 
-def metric_slices(rows, model):
-    report = {}
-    for key in ['format', 'generator', 'dimensions', 'cohort']:
-        groups = collections.defaultdict(list)
-        for row in rows: groups[row.get(key, 'unknown')].append(row)
-        report[key] = {name: metrics(group, model) for name, group in sorted(groups.items())}
-    return report
-
-
 def split_maps(rows):
     """Stratify map/format pairs, never episode counts or individual games.
 
@@ -432,75 +244,3 @@ def split_maps(rows):
         for g in groups[list(valid_indices)]:folds[g]=fold
         coverage.append(dict(training_maps=train_counts,validation_maps=valid_counts))
     return held,folds,dict(development_maps=dev_counts,holdout_maps=held_counts,folds=coverage)
-
-
-def fit(args):
-    if getattr(args, 'header', None):
-        raise ValueError('Baseline fit cannot emit C++; use fit-candidate and explicit promote')
-    rows=dataset(args.manifest)
-    from tools.resource_gradient_dataset import support_audit
-    all_rows=rows
-    rows=[r for r in rows if r.get('movement_label_available',1)]
-    if not rows:raise ValueError('No observed movement labels to fit')
-    # Include planned strata with zero usable episodes: otherwise they vanish
-    # before fitting and a biased collection can look deceptively complete.
-    from tools.resource_gradient_dataset import manifest_records, support_audit
-    expected={record['format'] for path in args.manifest for record in manifest_records(path)[0]}
-    by_format={fmt:set() for fmt in expected}
-    for r in rows:by_format.setdefault(r['format'],set()).add(r['group'])
-    missing={fmt:len(groups) for fmt,groups in by_format.items() if len(groups)<4}
-    if missing:raise ValueError(f'Need at least four independent maps with complete episodes per format: {missing}')
-    support=support_audit(all_rows)
-    if getattr(args,'split_registry',None):
-        from tools.resource_gradient_dataset import registered_split
-        held,folds,split_coverage=registered_split(rows,args.split_registry,split_maps)
-    else:held,folds,split_coverage=split_maps(rows)
-    dev=[r for r in rows if r['group'] not in held];test=[r for r in rows if r['group'] in held]
-    reports=[]
-    for fold in range(3):
-        train=[r for r in dev if folds[r['group']]!=fold];valid=[r for r in dev if folds[r['group']]==fold]
-        if train and valid:reports.append(metrics(valid,fit_heads(train)))
-    model=fit_heads(dev)
-    model['provenance']=dict(manifests=[dict(name=Path(p).name,sha256=sha(p)) for p in args.manifest],
-                             development_states=sorted({r['group'] for r in dev}),heldout_states=sorted(held),
-                             cross_validation=reports,holdout=metrics(test,model),holdout_slices=metric_slices(test,model),
-                             grouping='generated map identity from record/spec; old manifests without map metadata use starting-state group',
-                             split_coverage=split_coverage,support=support,
-                             weighting='equal format, then cohort role, then cohort, then state, then collection, then episode',
-                             regularization=dict(logistic_C=1,ridge_alpha=100),
-                             note='Holdout is excluded from coefficients; validation does not replace prospective gameplay measurements.')
-    save(args.output,model)
-    print(json.dumps(model['provenance'],indent=2))
-
-
-def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    sub=parser.add_subparsers(dest='command',required=True)
-    for command, action in [('plan', plan), ('run', run)]:
-        p=sub.add_parser(command);p.add_argument('--binary',required=True);p.add_argument('--output',required=True)
-        p.add_argument('--games',type=int,default=256);p.add_argument('--seed',type=int,default=5101)
-        p.add_argument('--generators',nargs='+');p.add_argument('--sizes',type=int,nargs='+')
-        p.add_argument('--formats',nargs='+');p.add_argument('--ais',nargs='+')
-        p.set_defaults(action=action)
-        if command=='run':
-            p.add_argument('--plan')
-            p.add_argument('--cohort', help='Immutable collection generation name; defaults to frozen-config hash')
-            p.add_argument('--exploration', help='Seeded per-field interval mixture; 0 uses adaptive32, e.g. 0,32,64,128,256,512')
-            p.add_argument('--exploration-seed',type=int,default=5101)
-            p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1)
-            p.add_argument('--timeout-seconds',type=int,default=7200)
-    p=sub.add_parser('fit',help='Fit the seven-input research baseline; no C++ output');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--split-registry',required=True,help='Preserve map holdout/fold assignments across collection generations');p.set_defaults(action=fit)
-    from tools.resource_gradient_deployment import add_commands as add_deployment_commands
-    add_deployment_commands(sub)
-    from tools.resource_gradient_contradictions import add_command
-    add_command(sub)
-    from tools.resource_gradient_dataset import audit_cli
-    p=sub.add_parser('audit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.set_defaults(action=audit_cli)
-    from tools.resource_gradient_experiments import add_commands
-    add_commands(sub)
-    p=sub.add_parser('emit');p.add_argument('--model',default=str(DEFAULT_MODEL));p.add_argument('--header',default=str(HEADER));p.set_defaults(action=lambda a:emit(json.loads(Path(a.model).read_text()),a.header))
-    args=parser.parse_args()
-    if args.command=='run' and min(args.jobs,args.threads,args.ticks,args.timeout_seconds)<1:parser.error('jobs, threads and ticks must be positive')
-    args.action(args)
-
-if __name__=='__main__':main()

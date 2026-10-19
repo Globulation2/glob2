@@ -16,6 +16,18 @@ from tools.tournaments.bundles import register_bundle
 from tools.tournaments.common import atomic_json, file_hash, lock
 
 
+class ToolIdentityTests(unittest.TestCase):
+    def test_actual_unpatched_identity_freezes_existing_sources(self):
+        identity = c.tool_identity()
+        self.assertIn('adaptive_gradient_collection.py', identity['tools'])
+        self.assertNotIn('adaptive_gradient_collector.py', identity['tools'])
+        self.assertTrue(identity['worker'])
+        for name, fingerprint in identity['tools'].items():
+            source = c.ROOT/'tools'/name
+            self.assertTrue(source.is_file(), name)
+            self.assertEqual(fingerprint, file_hash(source))
+
+
 class CampaignTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -34,8 +46,8 @@ class CampaignTests(unittest.TestCase):
         bundle = register_bundle(source, self.root / 'bundles', 'glob2', 'frozen-source',
                                  options=dict(release=1, optimization='O3', dev_fast=0, pch=0, unity=0,
                                               model_sha256='1'*64, header_sha256='2'*64,
-                                              model_contract=c.data.CONTRACT_ID, collector_contract=c.spatial.CONTRACT_ID,
-                                              adaptive_gradient_contract_sha256=c.data.canonical_hash(c.spatial.CONTRACT),
+                                              model_contract=c.data.CONTRACT_ID, collector_contract=c.collector.CONTRACT_ID,
+                                              adaptive_gradient_contract_sha256=c.data.canonical_hash(c.collector.CONTRACT),
                                               unified_model_trained=False),
                                  capabilities=dict(schema_version=1, commands=['game']),
                                  target_platform=dict(os='linux', arch='x86_64'))
@@ -58,14 +70,19 @@ class CampaignTests(unittest.TestCase):
     def campaign(self):
         return c.Campaign(self.root / 'config.json', self.root / 'campaign')
 
-    def test_only_historical_threshold_hash_is_compatible(self):
+    def test_new_campaign_requires_current_collector_while_history_remains_readable(self):
         bundle = c.inspect_bundle(self.bundle)
-        legacy = dict(c.spatial.CONTRACT, refresh_threshold_milli=128000)
-        bundle['build_options']['adaptive_gradient_contract_sha256'] = c.data.canonical_hash(legacy)
-        c.validate_bundle_set([bundle])
-        bundle['build_options']['adaptive_gradient_contract_sha256'] = c.data.canonical_hash(dict(legacy, refresh_threshold_milli=16000))
-        with self.assertRaisesRegex(ValueError, 'exact unified'):
-            c.validate_bundle_set([bundle])
+        for contract in [dict(c.collector.CONTRACT, refresh_threshold_milli=128000), c.collector.LEGACY_CONTRACT]:
+            bundle['build_options']['adaptive_gradient_contract_sha256'] = c.data.canonical_hash(contract)
+            with self.assertRaisesRegex(ValueError, 'exact unified'):
+                c.validate_bundle_set([bundle])
+        self.assertTrue(c.collector.compatible_contract_hash(c.data.canonical_hash(c.collector.LEGACY_CONTRACT)))
+
+    def test_removed_spatial_analysis_switch_is_rejected(self):
+        config = json.loads((self.root/'config.json').read_text());config['spatial_analysis']=True
+        atomic_json(self.root/'config.json', config)
+        with self.assertRaisesRegex(ValueError, 'unknown keys'):
+            self.campaign()
 
     def test_real_design_preserves_historical_splits_and_predeclares_fallbacks(self):
         plan = c.tournament.plan(catalog(), 181101, 'remote-only')
@@ -202,7 +219,7 @@ class CampaignTests(unittest.TestCase):
         episode = self.root / 'episodes.csv'
         episode.write_text('complete\n1\n')
         raw = self.write('raw.json', [dict(episodes=str(episode), episode_sha256=file_hash(episode))])
-        cohort = dict(id='cohort', policy={'name': 'test'}, contract=c.spatial.CONTRACT)
+        cohort = dict(id='cohort', policy={'name': 'test'}, contract=c.collector.CONTRACT)
         target = self.root / 'sealed.json'
         seal(raw, target, cohort)
         self.assertIn(episode, c.cohort_files([str(target)]))
@@ -276,11 +293,11 @@ class QualificationTests(unittest.TestCase):
             m.write_text('model'); h.write_text('header')
             receipt = dict(status='qualified-research', stable_promotion=False,
                            model_sha256=file_hash(m), header_sha256=file_hash(h),
-                           collector_contract_sha256=c.data.canonical_hash(c.spatial.CONTRACT),
+                           collector_contract_sha256=c.data.canonical_hash(c.collector.CONTRACT),
                            checks=dict(integer_parity=True, determinism_smoke=True, simulation_gates=True), bundles=['frozen'])
             options = dict(model_sha256=file_hash(m), header_sha256=file_hash(h),
                            adaptive_gradient_contract_sha256=receipt['collector_contract_sha256'],
-                           model_contract=c.data.CONTRACT_ID, collector_contract=c.spatial.CONTRACT_ID,
+                           model_contract=c.data.CONTRACT_ID, collector_contract=c.collector.CONTRACT_ID,
                            unified_model_trained=True, release=1, optimization='O3', dev_fast=0, pch=0, unity=0)
             bundle = dict(source_revision='source', platform={'os': 'linux', 'arch': 'x86_64'},
                           executable='glob2', files=[{'path': 'glob2', 'sha256': 'elf'}], build_options=options)

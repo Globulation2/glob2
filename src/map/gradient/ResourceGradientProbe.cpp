@@ -25,46 +25,18 @@ ResourceGradientProbe::ResourceGradientProbe(const char* path):output(path),stud
     seedScratch.materials.disabled=true; // Private captures are not owner-cache observations.
     if(!output||!study||!planning||!movement)throw std::runtime_error("Cannot open unified gradient diagnostics");
     output<<"query,tick,family,team,movement,material,key,extra_cost,false_unreachable,false_reachable,invalid_goal,missed_move,escape_failure,stall,guard_balance\n";
-    study<<"tick,family,team,movement,material,key,complete,publication_delay,queries,defer_extra,refresh_extra,age,q32,q128,target_added,target_removed,target_added_frac_q12,target_removed_frac_q12,since_capture_invalid_goal,since_capture_reachable_no_move,since_capture_movement_queries,capture_known,movement_observed,route_changes,seed_cost_changes,planning_queries,defer_planning_false_negative,defer_planning_false_positive,refresh_planning_false_negative,refresh_planning_false_positive,behavior_interval,behavior_seed,defer_stalls,refresh_stalls,defer_invalid_goals,refresh_invalid_goals,defer_missed_moves,refresh_missed_moves,defer_escape_failures,refresh_escape_failures,guard_balance_queries,serving_capture_tick,captured_goal_count,capture_target_added_epoch,capture_target_removed_epoch,capture_route_epoch,capture_seed_cost_epoch,current_target_added_epoch,current_target_removed_epoch,current_route_epoch,current_seed_cost_epoch,defer_false_unreachable,refresh_false_unreachable,defer_false_reachable,refresh_false_reachable,overlap_supported,overlap_support_reason,overlap_history_known,overlap_generation,overlap_publication_tick,queries_near_goal_change,queries_near_passability_change,overlap_movement_queries,queries_near_goal_added,queries_near_goal_removed,queries_near_blocked,queries_near_opened\n";
+    study<<"tick,family,team,movement,material,key,complete,publication_delay,queries,defer_extra,refresh_extra,age,q32,q128,target_added,target_removed,target_added_frac_q12,target_removed_frac_q12,since_capture_invalid_goal,since_capture_reachable_no_move,since_capture_movement_queries,capture_known,movement_observed,route_changes,seed_cost_changes,planning_queries,defer_planning_false_negative,defer_planning_false_positive,refresh_planning_false_negative,refresh_planning_false_positive,behavior_interval,behavior_seed,defer_stalls,refresh_stalls,defer_invalid_goals,refresh_invalid_goals,defer_missed_moves,refresh_missed_moves,defer_escape_failures,refresh_escape_failures,guard_balance_queries,serving_capture_tick,captured_goal_count,capture_target_added_epoch,capture_target_removed_epoch,capture_route_epoch,capture_seed_cost_epoch,current_target_added_epoch,current_target_removed_epoch,current_route_epoch,current_seed_cost_epoch,defer_false_unreachable,refresh_false_unreachable,defer_false_reachable,refresh_false_reachable\n";
     planning<<"query,tick,family,team,movement,material,key,false_unreachable,false_reachable,live_value,fresh_value\n";
     movement<<"epoch,family,team,movement,material,key,invalid_goal,reachable_no_move,movement_queries\n";
 }
 ResourceGradientProbe::~ResourceGradientProbe(){finishStudy(lastTick);writeMovementTotals();}
-GradientFieldKey ResourceGradientProbe::legacyKey(int key) {return {GradientFieldFamily::Materials,std::uint8_t(key/(MaterialCount*SWIM_CLASS_COUNT)),std::uint8_t(key%SWIM_CLASS_COUNT),std::uint8_t((key/SWIM_CLASS_COUNT)%MaterialCount)};}
-void ResourceGradientProbe::publishedOverlap(GradientFieldKey key,unsigned tick,const Uint16* cells) {
-    if(!spatialEnabled || !gradient_seed_overlap::supported(key))return;
-    movementHistory[int(key.packed())].overlap.published(tick,cells);
-}
-void ResourceGradientProbe::observeOverlap(Map& map,GradientFieldKey key,int x,int y,const Uint16* cells) {
-    if(!spatialEnabled || !gradient_seed_overlap::supported(key) || !cells || !map.game || map.compute.insideJob())return;
-    const auto found=movementHistory.find(int(key.packed()));
-    if(found==movementHistory.end())return;
-    auto& history=found->second.overlap;
-    // A newly attached probe has unknown history until a real publication.
-    // A stale borrowed pointer must not contribute to a replacement generation.
-    if(!history.known || history.publishedCells!=cells || serving(map,key)!=cells)return;
-    const auto view=map.cellView();
-    const auto old=gradient_seed_overlap::read(x,y,view.width,view.height,[&](size_t i){return gradient_seed_overlap::recoveredSeed(cells[i]);});
-    gradient_preparation::withOpenTerrain(view,key.swim,[&](auto terrain) {
-        if(key.family==GradientFieldFamily::Materials) {
-            const auto current=gradient_preparation::naturalMaterialSeed<false>(view,map.fogOfWar,key.team,key.material,terrain);
-            history.record(gradient_seed_overlap::difference(old,gradient_seed_overlap::read(x,y,view.width,view.height,current)));
-        } else {
-            const auto current=gradient_preparation::clearSeed<false>(view,map.farmAreasEnabled(),key.team,terrain);
-            history.record(gradient_seed_overlap::difference(old,gradient_seed_overlap::read(x,y,view.width,view.height,current)));
-        }
-    });
-}
 void ResourceGradientProbe::writeMovementTotals(){for(const auto& [key,h]:movementHistory){if(!h.total.values[5])continue;movement<<movementEpoch<<',';identity(movement,GradientFieldKey::unpack(key));for(unsigned index:{0u,4u,5u})movement<<','<<h.total.values[index];movement<<'\n';}movement.flush();}
 void ResourceGradientProbe::writeEpisode(int key,const Episode& e,bool complete){
     study<<e.tick<<',';identity(study,GradientFieldKey::unpack(key));study<<','<<complete<<','<<e.delay<<','<<e.queries<<','<<e.deferExtra<<','<<e.refreshExtra;
     for(auto n:e.inputs)study<<','<<n;
     study<<','<<e.contradictions.values[0]<<','<<e.contradictions.values[4]<<','<<e.contradictions.values[5]<<','<<e.contradictionCaptureKnown<<','<<e.movementObserved<<','<<e.routeChanges<<','<<e.seedCostChanges<<','<<e.planningQueries<<','<<e.deferFalseNegative<<','<<e.deferFalsePositive<<','<<e.refreshFalseNegative<<','<<e.refreshFalsePositive<<','<<e.behaviorInterval<<','<<e.behaviorSeed<<','<<e.deferStalls<<','<<e.refreshStalls<<','<<e.deferInvalidGoals<<','<<e.refreshInvalidGoals<<','<<e.deferMissedMoves<<','<<e.refreshMissedMoves<<','<<e.deferEscapeFailures<<','<<e.refreshEscapeFailures<<','<<e.guardBalanceQueries<<','<<e.servingCaptureTick<<','<<e.capturedGoalCount<<','<<e.capturedTargets.added<<','<<e.capturedTargets.removed<<','<<e.capturedTargets.routeEpoch<<','<<e.capturedTargets.seedCostEpoch<<','<<e.currentTargets.added<<','<<e.currentTargets.removed<<','<<e.currentTargets.routeEpoch<<','<<e.currentTargets.seedCostEpoch;
     study<<','<<e.deferFalseUnreachable<<','<<e.refreshFalseUnreachable<<','<<e.deferFalseReachable<<','<<e.refreshFalseReachable;
-    const auto field=GradientFieldKey::unpack(key);
-    const auto& o=e.overlap;
-    study<<','<<gradient_seed_overlap::supported(field)<<','<<(gradient_seed_overlap::supported(field)&&!e.overlapEnabled?"disabled":gradient_seed_overlap::supportReason(field))<<','<<o.known<<','<<o.generation<<','<<o.publicationTick
-        <<','<<o.goalQueries<<','<<o.passabilityQueries<<','<<o.queries<<','<<o.goalAddedQueries<<','<<o.goalRemovedQueries<<','<<o.blockedQueries<<','<<o.openedQueries<<'\n';
+    study<<'\n';
 }
 void ResourceGradientProbe::finishStudy(unsigned tick){for(auto& [key,f]:fields){for(const auto&e:f.episodes)writeEpisode(key,e,complete(unsigned(tick-e.tick)));f.episodes.clear();}study.flush();}
 ResourceGradientProbe::Field* ResourceGradientProbe::sampleField(unsigned tick,GradientFieldKey key){
@@ -95,8 +67,6 @@ void ResourceGradientProbe::stageEpisodes(Map& map){
         const auto it=map.gradientRuntime->adaptive.fields.find(key);if(it==map.gradientRuntime->adaptive.fields.end()||it->second.queued||it->second.inflight||unsigned(lastTick-it->second.submitted)<8)continue;
         const auto* old=serving(map,key);if(!old)continue;
         auto state=it->second;const auto targets=map.gradientRuntime->adaptive.currentTargets(key);Episode e;e.tick=lastTick;e.delay=map.gradientRuntime->pipeline.delayTicks();e.inputs=state.inputs(lastTick,targets);const auto counts=state.contradictions();e.contradictions.values[0]=counts[0];e.contradictions.values[4]=counts[1];e.contradictions.values[5]=counts[2];e.contradictionCaptureKnown=state.serving.known;e.servingCaptureTick=state.serving.tick;e.capturedGoalCount=state.serving.goalCount;e.capturedTargets=state.serving.targets;e.currentTargets=targets;e.movementObserved=f.movementObserved||state.count128>0;e.routeChanges=targets.routeEpoch-state.serving.targets.routeEpoch;e.seedCostChanges=targets.seedCostEpoch-state.serving.targets.seedCostEpoch;
-        e.overlapEnabled=spatialEnabled;
-        if(spatialEnabled)if(const auto history=movementHistory.find(packed);history!=movementHistory.end())e.overlap=history->second.overlap;
         if(const auto& behavior=map.gradientRuntime->exploration){e.behaviorInterval=behavior->intervalFor(packed);e.behaviorSeed=behavior->seed;}
         e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));f.lastEpisode=lastTick;f.episodeKnown=true;
     }
@@ -118,5 +88,3 @@ void ResourceGradientProbe::observe(Map& map,const GradientQueryContext& context
     const auto q=quality(live);output<<query<<','<<tick<<',';identity(output,context.key);output<<','<<q[0]<<','<<(live[here]<=GRADIENT_UNREACHABLE&&fresh[here]>GRADIENT_UNREACHABLE)<<','<<(live[here]>GRADIENT_UNREACHABLE&&fresh[here]<=GRADIENT_UNREACHABLE)<<','<<q[2]<<','<<q[3]<<','<<q[4]<<','<<q[1]<<','<<balancing<<'\n';
 }
 void ResourceGradientProbe::observePlanning(Map& map,GradientFieldKey key,int x,int y,const Uint16* live){const auto tick=map.game->stepCounter;auto*f=sampleField(tick,key);if(!f)return;std::vector<Uint16> fresh;rebuildFresh(map,key,fresh);const auto here=map.coordToIndex(x,y);const bool reachable=fresh[here]>GRADIENT_UNREACHABLE;for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){++e.planningQueries;e.deferFalseNegative+=e.deferred[here]<=GRADIENT_UNREACHABLE&&reachable;e.deferFalsePositive+=e.deferred[here]>GRADIENT_UNREACHABLE&&!reachable;e.refreshFalseNegative+=e.refreshed[here]<=GRADIENT_UNREACHABLE&&reachable;e.refreshFalsePositive+=e.refreshed[here]>GRADIENT_UNREACHABLE&&!reachable;}planning<<++planningQuery<<','<<tick<<',';identity(planning,key);planning<<','<<(live[here]<=GRADIENT_UNREACHABLE&&reachable)<<','<<(live[here]>GRADIENT_UNREACHABLE&&!reachable)<<','<<live[here]<<','<<fresh[here]<<'\n';}
-void ResourceGradientProbe::observe(Map&map,int team,int material,int swim,int x,int y,const Uint16*live,EntityRandom random){observe(map,GradientQueryContext{{GradientFieldFamily::Materials,std::uint8_t(team),std::uint8_t(swim),std::uint8_t(material)},x,y,random},live);}
-void ResourceGradientProbe::observePlanning(Map&map,int team,int material,int swim,int x,int y,const Uint16*live){observePlanning(map,{GradientFieldFamily::Materials,std::uint8_t(team),std::uint8_t(swim),std::uint8_t(material)},x,y,live);}

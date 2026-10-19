@@ -34,8 +34,6 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
         key=GradientFieldKey{GradientFieldFamily::Materials,Uint8(teamNumber),Uint8(swimClass),resourceType};
     else if(gradient==marketMaterialGradients[teamNumber][resourceType][swimClass])
         key=GradientFieldKey{GradientFieldFamily::Markets,Uint8(teamNumber),Uint8(swimClass),resourceType};
-    if(key && here!=GRADIENT_FORBIDDEN && gradientRuntime->qualityProbe)
-        gradientRuntime->qualityProbe->observeOverlap(*this,*key,x,y,gradient);
     // Reading stale zero still demands this field: a removed blocker may now
     // admit a route. Actual escape outcome/quality stays with Forbidden only.
     if(key)gradientMovementDemand(*key);
