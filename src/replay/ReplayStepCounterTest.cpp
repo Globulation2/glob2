@@ -176,7 +176,7 @@ void testVersionBounds()
 		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
 		      "current delayed-publication replay accepted");
 		ReplayReader previousModel;
-		check(!previousModel.loadReplay(writeReplayBody(178,1),false),
+		check(!previousModel.loadReplay(writeReplayBody(179,1),false),
 		      "Adaptive16 boundary: earlier model replay rejected");
 		ReplayReader observation;
 		check(!observation.loadReplay(writeReplayBody(168,1),false),

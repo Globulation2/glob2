@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 179
+#define VERSION_MINOR 180
+// version 180 refits Adaptive16 on cumulative unified training data. The
+// saved layout remains version 178; replay execution uses the new coefficients.
 // version 179 uses Adaptive16 with the refitted unified movement model. The
 // saved layout remains version 178; older replays use different movement decisions.
 // version 178 persists unified demand-driven gradient state and capture identities.
