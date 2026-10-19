@@ -25,7 +25,7 @@ SELECTED_TRANSFORMS=TRANSFORMS
 def selected_transforms(features):
  if tuple(features)==BASE_FEATURES:return TRANSFORMS[:7]
  if tuple(features)==FEATURES:return TRANSFORMS
- raise ValueError('Only selected base7 or historical generic12 features are supported')
+ raise ValueError('Only base7 or generic12 features are supported')
 
 COUNTER_IDS=(0,4,5)
 UINT64_MAX=(1<<64)-1
