@@ -55,7 +55,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    p=self.fixture(pathlib.Path(tmp));document=json.loads(p.read_text());document['cohort']['contract']['future_offsets']=[8,31];document['content_sha256']=d.canonical_hash(dict(cohort=document['cohort'],records=document['records']));p.write_text(json.dumps(document))
    with self.assertRaises(ValueError):d.load([p])
-  model=shared_model();model['threshold']=16000;validate(model)
+  model=shared_model();model['threshold']=16000;model['deployment']['threshold_milli']=16000;validate(model)
   for value in (0,-1,True,1.5,1<<63):
    model['threshold']=value
    with self.assertRaises(ValueError):validate(model)
@@ -100,12 +100,13 @@ class UnifiedDatasetTests(unittest.TestCase):
   from tools.adaptive_gradient_codegen import render
   header = render(model)
   self.assertIn('DemandedAgeCapTicks=1024', header)
+  self.assertIn('MinimumIntervalTicks=32', header)
   compiler = shutil.which('clang++') or shutil.which('g++')
   if compiler:
    with tempfile.TemporaryDirectory() as tmp:
     root = pathlib.Path(tmp)
     (root/'model.h').write_text(header)
-    (root/'main.cpp').write_text('#include "model.h"\nstatic_assert(AdaptiveGradientModel::DemandedAgeCapTicks == 1024);\nstatic_assert(!AdaptiveGradientModel::Trained);\nint main() {}\n')
+    (root/'main.cpp').write_text('#include "model.h"\nstatic_assert(AdaptiveGradientModel::DemandedAgeCapTicks == 1024);\nstatic_assert(AdaptiveGradientModel::MinimumIntervalTicks == 32);\nstatic_assert(!AdaptiveGradientModel::Trained);\nint main() {}\n')
     subprocess.run([compiler, '-std=c++20', str(root/'main.cpp'), '-o', str(root/'run')], check=True, capture_output=True)
   with self.assertRaisesRegex(ValueError,'No unified model'):predict(model,[0]*7,[0]*3)
   for invalid_cap in (None, True, 0, 7, 2**32):
@@ -155,7 +156,7 @@ class UnifiedTournamentTests(unittest.TestCase):
   from tools.adaptive_gradient_tournament import plan,ADAPTIVE_POLICY
   from tools.test_resource_gradient_tournament import catalog
   from collections import Counter
-  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8);self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
+  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],32);self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],24000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
   a=plan(catalog(),181101);self.assertEqual(a,plan(catalog(),181101));slots=a['unified']['slots']
   self.assertEqual(len(slots),256);self.assertEqual(Counter(r['role'] for r in slots),{'exploration':128,'candidate':128})
   for role in ['exploration','candidate']:self.assertEqual(set(Counter(r['spec']['format'] for r in slots if r['role']==role).values()),{16})
@@ -360,6 +361,31 @@ class FamilyExpertDeploymentTests(unittest.TestCase):
    families=[0,1,2,3,4,5,255,2**32-1]
    actual=subprocess.check_output([str(root/'run')],input=''.join(str(f)+'\n' for f in families),text=True).splitlines()
    self.assertEqual(list(map(int,actual)),[predict(model,[32,1,2,3,4,5,6],[1,1,2],f) for f in families])
+ def test_policy_change_preserves_historical_coefficients_and_fit_metrics(self):
+  from tools.adaptive_gradient_model import emit
+  from tools.adaptive_gradient_codegen import render
+  from types import SimpleNamespace
+  old=self.model();old['threshold']=16000
+  old['deployment'].update(threshold_milli=16000,minimum_interval_ticks=8)
+  validate(old)
+  self.assertIn('MinimumIntervalTicks=8',render(old))
+  research=copy.deepcopy(old)
+  research.update(schema=2,research_only=True,candidate_contract=d.CONTRACT)
+  research['provenance']=dict(adaptive_policy=dict(minimum_interval=8,forced_age_cap=None),threshold=16000,holdout=dict(threshold=16))
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);source=root/'research.json';source.write_text(json.dumps(research));before=file_hash(source)
+   emit(SimpleNamespace(model=str(source),contract=d.CONTRACT_ID,compact=False,output=str(root/'model.json'),header=str(root/'model.h')))
+   actual=json.loads((root/'model.json').read_text());validate(actual)
+   self.assertEqual(actual['threshold'],24000);self.assertEqual(actual['deployment']['minimum_interval_ticks'],32)
+   self.assertEqual(actual['deployment']['source_fit_threshold_milli'],16000);self.assertEqual(actual['deployment']['source_fit_minimum_interval_ticks'],8)
+   self.assertEqual(actual['provenance'],research['provenance']);self.assertEqual(file_hash(source),before)
+   self.assertEqual(actual['family_experts'],old['family_experts'])
+   for head in ('positive_probability','negative_probability','positive_mean','negative_mean'):self.assertEqual(actual[head],old[head])
+   for family in (0,1,2,3,4,255):self.assertEqual(predict(actual,[1024,32,128,3,4,5,6],[2,3,10],family),predict(old,[1024,32,128,3,4,5,6],[2,3,10],family))
+   self.assertIn('ThresholdMilli=24000',render(actual));self.assertIn('MinimumIntervalTicks=32',render(actual))
+  for minimum in (None,True,0,-1,2**32):
+   invalid=copy.deepcopy(old);invalid['deployment']['minimum_interval_ticks']=minimum
+   with self.assertRaisesRegex(ValueError,'minimum interval'):validate(invalid)
  def test_rejects_hidden_unmeasured_mismatched_or_unsafe_experts(self):
   changes=[]
   value=self.model();value['family_experts']['00']=value['family_experts'].pop('0');changes.append(value)

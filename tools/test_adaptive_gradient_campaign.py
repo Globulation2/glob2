@@ -46,7 +46,7 @@ class CampaignTests(unittest.TestCase):
         bundle = register_bundle(source, self.root / 'bundles', 'glob2', 'frozen-source',
                                  options=dict(release=1, optimization='O3', dev_fast=0, pch=0, unity=0,
                                               model_sha256='1'*64, header_sha256='2'*64,
-                                              refresh_threshold_milli=16000,refresh_age_cap_ticks=1024,
+                                              refresh_threshold_milli=24000,refresh_age_cap_ticks=1024,refresh_minimum_interval_ticks=32,
                                               model_contract=c.data.CONTRACT_ID, collector_contract=c.collector.CONTRACT_ID,
                                               adaptive_gradient_contract_sha256=c.data.canonical_hash(c.collector.CONTRACT),
                                               unified_model_trained=False),

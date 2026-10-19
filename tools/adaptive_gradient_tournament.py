@@ -16,32 +16,37 @@ from tools.tournaments.common import store_artifact
 from tools.tournaments.bundles import inspect_bundle
 from tools.tournaments.common import atomic_json
 
-ADAPTIVE_POLICY=dict(minimum_interval=8,forced_age_cap=1024,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=d.DEFAULT_THRESHOLD_MILLI,horizon_ticks=128)
+ADAPTIVE_POLICY=dict(minimum_interval=d.DEFAULT_MINIMUM_INTERVAL_TICKS,forced_age_cap=1024,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=d.DEFAULT_THRESHOLD_MILLI,horizon_ticks=128)
 
 def policy_from_bundles(bundles):
  """Use the actual compiled model's qualified behavior, not a stale tool default.
 
  The collector contract describes H128 labels independently of the admission
- threshold. Fresh bundles must explicitly attest their compiled threshold and
+ threshold. Fresh bundles must explicitly attest their compiled threshold, warm minimum interval and
  demanded-field age cap; historical missing/uncapped attestations are never
  silently upgraded by this launcher. Fixed exploration intervals above the
  attested cap are bounded by the same demanded-field safety admission.
  This leaves already-frozen campaigns and their original metadata untouched.
  """
- thresholds=[];caps=[]
+ thresholds=[];caps=[];minimums=[]
  for bundle in bundles:
   value=bundle.get('build_options',{}).get('refresh_threshold_milli')
   if type(value)is not int:
    raise ValueError('Every supplied bundle must attest integer refresh_threshold_milli')
   thresholds.append(d.threshold_milli(value))
+  minimum=bundle.get('build_options',{}).get('refresh_minimum_interval_ticks')
+  if type(minimum)is not int or not 8<=minimum<=2**32-1:
+   raise ValueError('Every supplied bundle must attest integer refresh_minimum_interval_ticks between8 and UINT32_MAX')
+  minimums.append(minimum)
   cap=bundle.get('build_options',{}).get('refresh_age_cap_ticks')
-  if type(cap)is not int or not ADAPTIVE_POLICY['minimum_interval']<=cap<=2**32-1:
-   raise ValueError('Every supplied bundle must attest integer refresh_age_cap_ticks between8 and UINT32_MAX')
+  if type(cap)is not int or not minimum<=cap<=2**32-1:
+   raise ValueError('Every supplied bundle must attest integer refresh_age_cap_ticks at least its minimum and at most UINT32_MAX')
   caps.append(cap)
  if not thresholds or len(set(thresholds))!=1:
   raise ValueError('Supplied bundle model refresh thresholds must agree')
+ if len(set(minimums))!=1:raise ValueError('Supplied bundle warm minimum intervals must agree')
  if len(set(caps))!=1:raise ValueError('Supplied bundle demanded age caps must agree')
- return dict(ADAPTIVE_POLICY,threshold_milli=thresholds[0],forced_age_cap=caps[0])
+ return dict(ADAPTIVE_POLICY,threshold_milli=thresholds[0],forced_age_cap=caps[0],minimum_interval=minimums[0])
 
 ROUTING = {
  'remote-only': dict(small=32,middle=224,large=0,description='Pharaoh small32; Rig/dev all remaining224; Mac paused'),

@@ -492,10 +492,11 @@ checksum adapter remains available for diagnostic fixtures.
 ## Scheduled gradient work
 
 - Periodic material, shared-market, guard, clearing and forbidden-escape fields
-  share Adaptive16: demand makes a field eligible, and the deterministic integer
-  model admits refreshes with predicted net benefit of at least 16 direction-cost
-  units over capture-relative offsets 8..127. The minimum admission interval and
-  normal publication delay are eight ticks. A demanded field whose serving
+  share Adaptive24: demand makes a field eligible, and the deterministic integer
+  model admits refreshes with predicted net benefit of at least 24 direction-cost
+  units over capture-relative offsets 8..127. Warm admissions for each exact
+  field are at least 32 ticks apart, including reactive recovery; publication
+  remains eight ticks after capture. Cold initialization remains immediate. A demanded field whose serving
   capture reaches 1,024 ticks is eligible for a safety refresh, subject to
   capacity and publication delay; idle fields remain idle. There is no
   round-robin filler or global one-field-per-tick quota. Cold initialization and

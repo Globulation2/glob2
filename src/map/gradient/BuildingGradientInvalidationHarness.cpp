@@ -403,9 +403,9 @@ static void delayedFields()
 		require(std::vector<Uint16>(field(),field()+cells)==original, "first publication uses its original capture");
 		const auto frozen=reference();
 		require(frozen!=original, "the changed world requires a different field");
-        // Warm periodic fields retain the shared eight-tick minimum since the
+        // Warm periodic fields retain the shared warm-admission minimum since the
         // captured generation. Reach eligibility before testing its new deadline.
-        while(world.game.stepCounter<9) publish();
+        while(world.game.stepCounter<1+AdaptiveGradientState::MinimumInterval) publish();
 		refresh(); capture();
 
 		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
@@ -413,7 +413,7 @@ static void delayedFields()
 		require(std::vector<Uint16>(field(),field()+cells)==original, "refresh cannot publish before its deadline");
 		publish();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
-        while(world.game.stepCounter<17) publish();
+        while(world.game.stepCounter<1+2*AdaptiveGradientState::MinimumInterval) publish();
 		refresh(); capture(); // Destruction must safely drain private work.
         require(map.gradientPipelineStatus().pending==1, "teardown retains an admitted private refresh");
 

@@ -62,14 +62,16 @@
     "coefficients_refit": false,
     "demanded_age_cap_ticks": 1024,
     "fit_metrics_recomputed": false,
+    "minimum_interval_ticks": 32,
     "source_candidate_contract_sha256": "e2bd6b6ffbf7694408cf41c2e91703e81d8c91d978847f4ab7aa06aa0f0a9840",
     "source_fit_age_cap_ticks": null,
-    "source_fit_metric_policy": "Uncapped model-only threshold decisions; historical metrics are not capped outcomes.",
+    "source_fit_metric_policy": "Model-only threshold decisions on all eligible rows; historical metrics apply neither minimum refresh spacing nor a demanded-age cap.",
     "source_fit_metrics_threshold_milli": 16000,
+    "source_fit_minimum_interval_ticks": 8,
     "source_fit_threshold_milli": 16000,
     "source_model_sha256": "59fe69bd71a830ca8f58e031f8564c1cea680677801d158055e1c59e6bdba15d",
     "strategy": "family-experts-with-combined-fallback",
-    "threshold_milli": 16000
+    "threshold_milli": 24000
   },
   "family_experts": {
     "0": {
@@ -542,7 +544,7 @@
     ]
   },
   "schema": 5,
-  "threshold": 16000,
+  "threshold": 24000,
   "trained": true,
   "transforms": [
     "log1p_q12",

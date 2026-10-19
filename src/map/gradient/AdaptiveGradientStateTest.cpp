@@ -24,23 +24,46 @@ TEST_CASE("idle fields submit nothing and demanded fields below the safety cap r
     AdaptiveGradientState::Field field;field.serving.known=true;
     unsigned predictions=0;const auto low=[&](const auto&,const auto&){++predictions;return 0;};
     CHECK_FALSE(field.evaluate(1000,{},true,low).requested());CHECK(predictions==0);
-    field.queried(10);CHECK_FALSE(field.evaluate(10,{},true,low).requested());CHECK(predictions==1);
+    field.queried(32);CHECK_FALSE(field.evaluate(32,{},true,low).requested());CHECK(predictions==1);
     CHECK_FALSE(field.evaluate(1000,{},true,low).requested());CHECK(predictions==1);
     field.queried(1000);CHECK(field.evaluate(1000,{},true,low).requested()==false);
 }
 TEST_CASE("cold history reactive model and deferred admissions obey one association and spacing") {
-    using Reason=AdaptiveGradientState::Reason;
-    AdaptiveGradientState::Field f;const auto high=[](const auto&,const auto&){return AdaptiveGradientState::Threshold;};
+    using State=AdaptiveGradientState;using Reason=State::Reason;
+    State::Field f;const auto high=[](const auto&,const auto&){return State::Threshold;};
     f.queried(0);CHECK(f.evaluate(0,{},false,high).reason==Reason::Cold);
     f.queued=true;CHECK_FALSE(f.evaluate(1,{},false,high).requested());f.queued=false;
-    f.admitted(1);CHECK(f.inflight);f.queried(2);CHECK_FALSE(f.evaluate(2,{},true,high).requested());
-    f.published({});f.queried(8);CHECK_FALSE(f.evaluate(8,{},true,high).requested());
-    f.queried(9);CHECK(f.evaluate(9,{},true,high).reason==Reason::HistoryInitialization);
-    f.admitted(9);f.published(f.capture(9,{},3));
-    f.queried(17);CHECK(f.evaluate(17,{},true,high).reason==Reason::Model);f.deferred=true;
-    CHECK(f.demand);const auto low=[](const auto&,const auto&){return 0;};CHECK(f.evaluate(18,{},true,low).reason==Reason::Model);f.admitted(18);CHECK_FALSE(f.deferred);
-    f.published(f.capture(18,{},3));f.reactive=true;CHECK_FALSE(f.evaluate(25,{},true,high).requested());
-    CHECK(f.evaluate(26,{},true,high).reason==Reason::Reactive);
+    f.admitted(1);f.queried(2);CHECK_FALSE(f.evaluate(2,{},true,high).requested());
+    f.published({});f.queried(State::MinimumInterval);CHECK_FALSE(f.evaluate(State::MinimumInterval,{},true,high).requested());
+    unsigned tick=1+State::MinimumInterval;f.queried(tick);CHECK(f.evaluate(tick,{},true,high).reason==Reason::HistoryInitialization);
+    f.admitted(tick);f.published(f.capture(tick,{},3));tick+=State::MinimumInterval;
+    f.queried(tick);CHECK(f.evaluate(tick,{},true,high).reason==Reason::Model);f.defer(Reason::Model);
+    const auto low=[](const auto&,const auto&){return 0;};CHECK(f.evaluate(tick+1,{},true,low).reason==Reason::Model);
+    f.admitted(++tick);f.published(f.capture(tick,{},3));CHECK_FALSE(f.deferred);
+    f.reactive=true;CHECK_FALSE(f.evaluate(tick+State::MinimumInterval-1,{},true,high).requested());
+    CHECK(f.evaluate(tick+State::MinimumInterval,{},true,high).reason==Reason::Reactive);
+}
+TEST_CASE("all warm reasons including retained old-save work wait32 admission ticks") {
+    using State=AdaptiveGradientState;using Reason=State::Reason;
+    for(unsigned admitted:{100u,UINT32_MAX-16})
+    for(auto reason:{Reason::Reactive,Reason::HistoryInitialization,Reason::Model,Reason::AgeCap,Reason::Bootstrap,Reason::Cold}) {
+        State::Field f;f.submitted=admitted;f.serving=f.capture(admitted,{},3);
+        if(reason==Reason::Reactive)f.reactive=true;
+        if(reason==Reason::HistoryInitialization)f.serving.known=false;
+        if(reason==Reason::AgeCap)f.serving.tick=admitted-State::MaximumAge;
+        // Cold is retained work that now has a serving field, rather than a new
+        // missing-field initialization. It obeys the same warm minimum.
+        if(reason==Reason::Cold)f.defer(reason);
+        const auto score=[&](const auto&,const auto&){return reason==Reason::Model?State::Threshold:0;};
+        const auto interval=reason==Reason::Bootstrap?8u:0u;
+        f.queried(admitted+31);CHECK_FALSE(f.evaluate(admitted+31,{},true,score,interval).requested());
+        f.queried(admitted+32);CHECK(f.evaluate(admitted+32,{},true,score,interval).reason==reason);
+        f.defer(reason);f.submitted=admitted+24; // Accepted by an older minimum8 save.
+        CHECK_FALSE(f.evaluate(admitted+32,{},true,score,interval).requested());CHECK(f.deferred);
+        CHECK(f.evaluate(admitted+56,{},true,score,interval).reason==reason);
+    }
+    State::Field cold;cold.submitted=100;cold.queried(101);
+    CHECK(cold.evaluate(101,{},false,{}).reason==Reason::Cold);
 }
 TEST_CASE("demanded capture age is bounded at1024 without aging idle fields into work") {
     using State=AdaptiveGradientState;using Reason=State::Reason;
@@ -69,11 +92,11 @@ TEST_CASE("age cap uses the serving capture and retains association minimum and 
     CHECK(f.serving.tick==100);CHECK(f.submitted==104);
     f.queued=true;CHECK_FALSE(f.evaluate(1125,{},true,low).requested());f.queued=false;
     f.inflight=true;f.queried(1125);CHECK_FALSE(f.evaluate(1125,{},true,low).requested());f.inflight=false;
-    f.submitted=1120;f.queried(1127);CHECK_FALSE(f.evaluate(1127,{},true,low).requested());
-    f.queried(1128);CHECK(f.evaluate(1128,{},true,low).reason==Reason::AgeCap);
-    f.reactive=true;CHECK(f.evaluate(1128,{},true,low).reason==Reason::Reactive);f.reactive=false;
-    f.serving.known=false;CHECK(f.evaluate(1128,{},true,low).reason==Reason::HistoryInitialization);
-    CHECK(f.evaluate(1128,{},false,low).reason==Reason::Cold);
+    f.submitted=1120;const auto boundary=1120+State::MinimumInterval;f.queried(boundary-1);CHECK_FALSE(f.evaluate(boundary-1,{},true,low).requested());
+    f.queried(boundary);CHECK(f.evaluate(boundary,{},true,low).reason==Reason::AgeCap);
+    f.reactive=true;CHECK(f.evaluate(boundary,{},true,low).reason==Reason::Reactive);f.reactive=false;
+    f.serving.known=false;CHECK(f.evaluate(boundary,{},true,low).reason==Reason::HistoryInitialization);
+    CHECK(f.evaluate(boundary,{},false,low).reason==Reason::Cold);
 }
 TEST_CASE("research intervals remain explicit below the shared demanded age cap") {
     using State=AdaptiveGradientState;using Reason=State::Reason;
@@ -83,12 +106,13 @@ TEST_CASE("research intervals remain explicit below the shared demanded age cap"
     f.queried(1023);CHECK_FALSE(f.evaluate(1023,{},true,low,4096).requested());
     f.queried(1024);CHECK(f.evaluate(1024,{},true,low,4096).reason==Reason::AgeCap);
 }
-TEST_CASE("benefit threshold is inclusive at16 units and the eight tick minimum remains") {
+TEST_CASE("benefit threshold is inclusive at24 units and the32 tick warm minimum remains") {
     AdaptiveGradientState::Field f;f.serving.known=true;f.submitted=0;
-    f.queried(7);CHECK_FALSE(f.evaluate(7,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).requested());
-    f.queried(8);CHECK_FALSE(f.evaluate(8,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold-1;}).requested());
-    f.queried(8);CHECK(f.evaluate(8,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).reason==AdaptiveGradientState::Reason::Model);
-    CHECK(AdaptiveGradientState::Threshold==16000);
+    f.queried(31);CHECK_FALSE(f.evaluate(31,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).requested());
+    f.queried(32);CHECK_FALSE(f.evaluate(32,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold-1;}).requested());
+    f.queried(32);CHECK(f.evaluate(32,{},true,[](const auto&,const auto&){return AdaptiveGradientState::Threshold;}).reason==AdaptiveGradientState::Reason::Model);
+    CHECK(AdaptiveGradientState::Threshold==24000);
+    CHECK(AdaptiveGradientState::MinimumInterval==32);
 }
 TEST_CASE("mutations never allocate unseen scopes and equivalent ground classes share turnover") {
     AdaptiveGradientState state;const GradientFieldKey first{GradientFieldFamily::Markets,0,0,0},second{GradientFieldFamily::Markets,0,1,0};
@@ -162,6 +186,11 @@ TEST_CASE("binary and text state continuation preserve common captures and deman
         std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(memory.get())):new GAGCore::BinaryInputStream(memory.release()));
         AdaptiveGradientState restored;restored.load(in.get(),1,7,4);CHECK(restored.checksum()==state.checksum());
         CHECK(restored.fields.at(key).contradictions()==field.contradictions());CHECK(restored.fields.at(key).reactive);CHECK(restored.fields.at(key).deferred);
+        const auto low=[](const auto&,const auto&){return 0;};
+        CHECK_FALSE(field.evaluate(31,{},true,low).requested());CHECK_FALSE(restored.fields.at(key).evaluate(31,{},true,low).requested());
+        CHECK(field.deferred);CHECK(restored.fields.at(key).deferred);
+        CHECK(field.evaluate(32,{},true,low).reason==AdaptiveGradientState::Reason::Reactive);
+        CHECK(restored.fields.at(key).evaluate(32,{},true,low).reason==AdaptiveGradientState::Reason::Reactive);
         for(unsigned tick=12;tick<200;++tick){if(tick%3==0){state.queried(key,tick);restored.queried(key,tick);}CHECK(state.fields.at(key).inputs(tick,state.currentTargets(key))==restored.fields.at(key).inputs(tick,restored.currentTargets(key)));}
     }
 }

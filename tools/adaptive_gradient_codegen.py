@@ -17,7 +17,7 @@ def _heads(name, model):
 
 def render(model):
     from tools import resource_gradient_model as math
-    from tools.adaptive_gradient_model import DEPLOYMENT_AGE_CAP_TICKS, validate
+    from tools.adaptive_gradient_model import DEPLOYMENT_AGE_CAP_TICKS, DEPLOYMENT_MINIMUM_INTERVAL_TICKS, validate
     validate(model)
     dimension = len(model['features'])
     experts = model.get('family_experts', {})
@@ -42,6 +42,8 @@ using BaseFeatures=std::array<I,BaseFeatureCount>;
     age_cap = model.get('deployment', {}).get('demanded_age_cap_ticks', DEPLOYMENT_AGE_CAP_TICKS)
     text += '// Current engine deployment cap; historical fit metrics remain unchanged.\n'
     text += f'inline constexpr unsigned DemandedAgeCapTicks={age_cap};\n'
+    minimum = model.get('deployment', {}).get('minimum_interval_ticks', DEPLOYMENT_MINIMUM_INTERVAL_TICKS)
+    text += f'inline constexpr unsigned MinimumIntervalTicks={minimum};\n'
     text += f'inline constexpr unsigned CounterCount={len(f.COUNTER_IDS)};\n'
     text += 'inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={' + ','.join(map(str, f.COUNTER_IDS)) + '};\n'
     text += f'inline constexpr unsigned RequiredMovementMask={sum(1 << i for i in f.COUNTER_IDS)};\n'

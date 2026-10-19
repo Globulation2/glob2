@@ -12,6 +12,7 @@ from tools.resource_gradient_dataset import registered_split
 HEADS=integer.HEADS
 
 DEPLOYMENT_AGE_CAP_TICKS = 1024
+DEPLOYMENT_MINIMUM_INTERVAL_TICKS = d.DEFAULT_MINIMUM_INTERVAL_TICKS
 
 
 def validate_family_experts(model):
@@ -55,6 +56,10 @@ def validate(model):
         raise ValueError('Deployment metadata must be an object')
     if deployment and deployment.get('threshold_milli') != threshold:
         raise ValueError('Deployment threshold metadata disagrees with model')
+    if 'minimum_interval_ticks' in deployment:
+        minimum = deployment['minimum_interval_ticks']
+        if type(minimum) is not int or not 1 <= minimum <= (1 << 32)-1:
+            raise ValueError('Deployment minimum interval must be a positive bounded tick count')
     if 'demanded_age_cap_ticks' in deployment:
         cap = deployment['demanded_age_cap_ticks']
         if type(cap) is not int or not 8 <= cap <= (1 << 32)-1:
@@ -239,8 +244,8 @@ def fit(a):
                                           if row['collection_threshold_milli'] is not None}),
         manifests=[dict(path=str(path), sha256=d.file_hash(path)) for path in a.manifest],
         split=split, coverage=coverage, age_demand_support=age_demand_support(rows),
-        adaptive_policy=dict(minimum_interval=8, forced_age_cap=None, publication_delay=8, threshold=threshold),
-        metric_policy='Uncapped model-only threshold decisions; deployed demanded cap is separately declared.',
+        adaptive_policy=dict(minimum_interval=DEPLOYMENT_MINIMUM_INTERVAL_TICKS, forced_age_cap=None, publication_delay=8, threshold=threshold),
+        metric_policy='Model-only threshold decisions on all eligible rows; minimum refresh spacing and demanded-age cap are not applied.',
         unknown_or_planning_rows_excluded=len(allrows)-len(rows),
         development_maps=sorted({row['group'] for row in development}),
         heldout_maps=sorted(held), cross_validation=cross_validation,
@@ -321,7 +326,9 @@ def emit(a):
     model = copy.deepcopy(model)
     threshold = d.threshold_milli(getattr(a, 'threshold_milli', d.DEFAULT_THRESHOLD_MILLI))
     deployment = dict(
-        threshold_milli=threshold, source_fit_threshold_milli=source_threshold,
+        threshold_milli=threshold, minimum_interval_ticks=DEPLOYMENT_MINIMUM_INTERVAL_TICKS,
+        source_fit_minimum_interval_ticks=model.get('provenance', {}).get('adaptive_policy', {}).get('minimum_interval'),
+        source_fit_threshold_milli=source_threshold,
         source_model_sha256=d.file_hash(a.model),
         source_candidate_contract_sha256=d.canonical_hash(model['candidate_contract']),
         source_fit_metrics_threshold_milli=source_threshold,
@@ -331,7 +338,7 @@ def emit(a):
             strategy='family-experts-with-combined-fallback',
             demanded_age_cap_ticks=DEPLOYMENT_AGE_CAP_TICKS,
             source_fit_age_cap_ticks=model.get('provenance', {}).get('adaptive_policy', {}).get('forced_age_cap'),
-            source_fit_metric_policy='Uncapped model-only threshold decisions; historical metrics are not capped outcomes.')
+            source_fit_metric_policy='Model-only threshold decisions on all eligible rows; historical metrics apply neither minimum refresh spacing nor a demanded-age cap.')
     model.update(schema=5 if has_experts else 4, contract=d.CONTRACT, threshold=threshold,
                  trained=True, prospective_validation_required=True, deployment=deployment)
     model.pop('research_only', None)

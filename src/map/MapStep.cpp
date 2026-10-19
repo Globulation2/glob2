@@ -434,9 +434,19 @@ void Map::stagePeriodicGradientPreparation()
                 job->workReason=stats->admitted(*key,game->stepCounter,size);
         gradientRuntime->preparations.push_back({job,request.request.kind,request.request.team,request.request.material,request.request.swim});
     };
-    while(!gradientRuntime->fieldRequests.empty() && pipeline.canReserve()) {
-        const auto request=gradientRuntime->fieldRequests.front();
-        gradientRuntime->fieldRequests.pop_front();admit(request);
+    // Restored tickets may have been queued under an earlier, shorter minimum.
+    // Keep them pending without preventing a missing field behind them from
+    // initializing. Eligible requests retain their original FIFO order.
+    for(auto it=gradientRuntime->fieldRequests.begin();
+        it!=gradientRuntime->fieldRequests.end() && pipeline.canReserve();) {
+        const auto key=gradientFieldKey(it->slot);
+        if(*it->slot && key && !policy.enroll(*key).minimumIntervalElapsed(game->stepCounter)) {
+            ++it;
+            continue;
+        }
+        const auto request=*it;
+        it=gradientRuntime->fieldRequests.erase(it);
+        admit(request);
     }
     for(auto& [key,field]:policy.fields) {
         auto** slot=gradientFieldDestination(key);
@@ -663,7 +673,7 @@ bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, 
         field.reactive=true;
         // Direct recovery uses the same minimum as model evaluation. Retain the
         // signal for a later boundary instead of bypassing it through the FIFO.
-        if(game && Uint32(game->stepCounter-field.submitted)<AdaptiveGradientState::MinimumInterval) {
+        if(game && !field.minimumIntervalElapsed(game->stepCounter)) {
             field.demand=true;observedRequest(false);return false;
         }
     }

@@ -6,12 +6,12 @@ from tools import adaptive_gradient_dataset as data
 from tools.adaptive_gradient_tournament import ADAPTIVE_POLICY,policy_from_bundles
 
 class ModelThresholdPolicyTests(unittest.TestCase):
- def bundle(self,value,cap=1024):
-  return {'build_options':{'refresh_threshold_milli':value,'refresh_age_cap_ticks':cap}}
- def test_default_matches_selected_a16_with_demanded_age_cap(self):
-  self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000)
+ def bundle(self,value,cap=1024,minimum=32):
+  return {'build_options':{'refresh_threshold_milli':value,'refresh_age_cap_ticks':cap,'refresh_minimum_interval_ticks':minimum}}
+ def test_default_matches_selected_a24_with_demanded_age_cap(self):
+  self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],24000)
   self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],data.DEFAULT_THRESHOLD_MILLI)
-  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8)
+  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],32)
   self.assertEqual(ADAPTIVE_POLICY['publication_delay'],8)
   self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
   self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024)
@@ -37,14 +37,14 @@ class ModelThresholdPolicyTests(unittest.TestCase):
 
  def test_fresh_bundles_must_attest_an_actual_common_cap(self):
   before=copy.deepcopy(ADAPTIVE_POLICY)
-  for cap in [8,512,1024,4096,(1<<32)-1]:
+  for cap in [32,512,1024,4096,(1<<32)-1]:
    with self.subTest(cap=cap):
     self.assertEqual(policy_from_bundles([self.bundle(16000,cap),self.bundle(16000,cap)])['forced_age_cap'],cap)
   self.assertEqual(ADAPTIVE_POLICY,before)
   with self.assertRaisesRegex(ValueError,'caps must agree'):
    policy_from_bundles([self.bundle(16000,512),self.bundle(16000,1024)])
  def test_old_missing_or_uncapped_bundle_is_not_silently_relabelled(self):
-  historical={'build_options':{'refresh_threshold_milli':128000}}
+  historical={'build_options':{'refresh_threshold_milli':128000,'refresh_minimum_interval_ticks':32}}
   before=copy.deepcopy(historical)
   with self.assertRaisesRegex(ValueError,'refresh_age_cap_ticks'):
    policy_from_bundles([historical])
@@ -52,6 +52,17 @@ class ModelThresholdPolicyTests(unittest.TestCase):
   for cap in [None,True,False,1024.0,'1024',0,-1,7,1<<32]:
    with self.subTest(cap=cap),self.assertRaisesRegex(ValueError,'refresh_age_cap_ticks'):
     policy_from_bundles([self.bundle(16000,cap)])
+
+ def test_fresh_bundles_must_attest_an_actual_common_minimum(self):
+  for minimum in [8,32,64]:
+   self.assertEqual(policy_from_bundles([self.bundle(24000,minimum=minimum)])['minimum_interval'],minimum)
+  with self.assertRaisesRegex(ValueError,'minimum intervals must agree'):
+   policy_from_bundles([self.bundle(24000,minimum=8),self.bundle(24000,minimum=32)])
+  for minimum in [None,True,32.0,'32',0,7,1<<32]:
+   with self.subTest(minimum=minimum),self.assertRaisesRegex(ValueError,'refresh_minimum_interval_ticks'):
+    policy_from_bundles([self.bundle(24000,minimum=minimum)])
+  missing=self.bundle(24000);del missing['build_options']['refresh_minimum_interval_ticks']
+  with self.assertRaisesRegex(ValueError,'refresh_minimum_interval_ticks'):policy_from_bundles([missing])
 
 class DirectExperimentThresholdTests(unittest.TestCase):
  def case(self,kind,option='missing',policy_threshold=16000):
@@ -114,6 +125,25 @@ class DirectExperimentThresholdTests(unittest.TestCase):
     cohort['policy']['forced_age_cap']=cap;bundle['build_options']['refresh_age_cap_ticks']=1024
     with self.assertRaisesRegex(ValueError,'collection age cap'):
      module.make_experiment(plan,maps,[bundle],cohort)
+
+ def test_new_minimum32_direct_constructor_requires_exact_attestation(self):
+  module,plan,maps,bundle,cohort=self.case('unified',24000,policy_threshold=24000)
+  cohort['policy']['minimum_interval']=32
+  for minimum in ['missing',None,True,8,16,32.0,'32',0,1<<32]:
+   supplied=copy.deepcopy(bundle)
+   if minimum!='missing':supplied['build_options']['refresh_minimum_interval_ticks']=minimum
+   with self.subTest(minimum=minimum),self.assertRaisesRegex(ValueError,'minimum'):
+    module.make_experiment(plan,maps,[supplied],cohort)
+  bundle['build_options']['refresh_minimum_interval_ticks']=32
+  actual=module.make_experiment(plan,maps,[bundle],cohort)
+  self.assertEqual(actual['jobs'][0]['labels']['resource_gradient']['cohort']['policy']['minimum_interval'],32)
+ def test_historical_minimum8_metadata_is_not_relabelled32(self):
+  module,plan,maps,bundle,cohort=self.case('unified',16000)
+  cohort['policy']['minimum_interval']=8;before=copy.deepcopy(cohort)
+  actual=module.make_experiment(plan,maps,[bundle],cohort)
+  self.assertEqual(actual['jobs'][0]['labels']['resource_gradient']['cohort'],before)
+  bundle['build_options']['refresh_minimum_interval_ticks']=32
+  with self.assertRaisesRegex(ValueError,'minimum interval differs'):module.make_experiment(plan,maps,[bundle],cohort)
 
 class CurrentCollectorPlanTests(unittest.TestCase):
  def test_new_plans_emit_v4_and_do_not_reinterpret_historical_plans(self):

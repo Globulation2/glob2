@@ -5,6 +5,8 @@
 #include <stdexcept>
 
 const std::int64_t AdaptiveGradientState::Threshold=AdaptiveGradientModel::ThresholdMilli;
+static_assert(AdaptiveGradientState::MinimumInterval==AdaptiveGradientModel::MinimumIntervalTicks,
+    "Compiled warm scheduling minimum must match the deployed model policy");
 static_assert(AdaptiveGradientState::MaximumAge==AdaptiveGradientModel::DemandedAgeCapTicks,
     "Compiled scheduling cap must match the deployed model policy");
 
@@ -64,11 +66,13 @@ AdaptiveGradientState::Evaluation AdaptiveGradientState::Field::evaluate(std::ui
     if(inflight){demand=false;return {};}
     const auto accept=[&](Reason reason){acceptedReason=reason;return Evaluation{reason};};
     if(!hasServing)return accept(Reason::Cold);
-    if(deferred && acceptedReason!=Reason::None)return {acceptedReason};
     // Keep the minimum between admissions, including a late publication whose
     // immutable capture has already aged beyond the safety bound.
     const auto age=std::uint32_t(tick-submitted);
-    if(age<MinimumInterval){demand=false;return {};}
+    if(!minimumIntervalElapsed(tick)){demand=false;return {};}
+    // Older saves may retain work accepted under a shorter minimum. Keep that
+    // request, but do not let its retained reason bypass the current spacing.
+    if(deferred && acceptedReason!=Reason::None)return {acceptedReason};
     if(reactive)return accept(Reason::Reactive);
     // Legacy fields get one demanded capture to establish honest new semantics.
     if(!serving.known)return accept(Reason::HistoryInitialization);

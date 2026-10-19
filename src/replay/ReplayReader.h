@@ -22,10 +22,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 183 uses family Adaptive16 models and a demanded age cap;
+//! the reader still accepts. Version 184 uses Adaptive24 and a 32-tick minimum refresh interval;
 //! older recorded orders cannot reproduce its gradient and movement decisions.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 183;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 184;
 
 
 /// This class is used for reading replays.

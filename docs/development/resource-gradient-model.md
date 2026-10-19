@@ -11,13 +11,19 @@ material identity. Its publication carries the immutable capture tick, effective
 seed count and change epochs, movement-counter baseline and history-known flag.
 Requests made while a replacement is pending do not move its deadline. Published
 cells remain available until replacement publication, normally eight ticks after
-capture. Adaptive admissions retain an eight-tick minimum interval. A demanded
+capture. Replacements of an existing shared field have a 32-tick minimum
+between admissions, including reactive, history and safety refreshes. First-use
+initialization of a missing field remains available immediately. A demanded
 field is eligible for a safety refresh when its serving capture reaches 1,024
 ticks, even if its predicted benefit is below threshold. Admission remains
 subject to executor capacity and normal publication delay, so serving age can
 exceed 1,024 while a replacement is pending. Idle fields do not refresh solely
 because they aged. Demand is registered before cached-unreachable returns, so a
 new source or opened route can recover. Team aliveness is not a substitute for actual demand.
+The minimum applies separately to each family/team/movement/material identity.
+Restored queued or deferred requests wait for the current minimum; jobs already
+captured before a save retain their committed publication deadline. Lazy
+building and consumer fields retain their separate upkeep policy.
 
 ## Generic inference contract
 
@@ -54,12 +60,12 @@ coefficients are not reused or rescaled. Each family model and the combined fall
 `P(help)*E(amount|help) - P(hurt)*E(amount|hurt)` using two logistic and two linear
 heads. Integer Q12 log/Q16 sigmoid interpolation, bounded accumulators and portable
 64-bit fraction division make inference deterministic. The default deployment threshold is
-16,000 milli direction-cost units. Generated coefficients live in
+24,000 milli direction-cost units. Generated coefficients live in
 `AdaptiveGradientModel.h`; `tools/models/adaptive-gradient.json` declares the
 matching contract and whether the model is trained.
 
 `fit` and `emit` accept `--threshold-milli`
-(default `16000`), a positive signed 64-bit integer. The generated
+(default `24000`), a positive signed 64-bit integer. The generated
 `AdaptiveGradientModel::ThresholdMilli` is the engine's threshold authority.
 Changing it does not rescale predictions or refit the four heads. Emitting an
 existing research fit at a different threshold preserves its original metrics
@@ -81,8 +87,9 @@ the threshold; old 128000 deployment models remain valid for comparisons.
 New supplied bundles must explicitly attest `build_options.refresh_threshold_milli`
 as a positive signed 64-bit integer. Every pool must agree, and preparation
 records that attested value as actual collection policy. Fresh bundles must also
-attest the same positive `build_options.refresh_age_cap_ticks` in every pool;
-the current cap is `1024`. Missing or contradictory attestations fail rather
+attest matching `build_options.refresh_age_cap_ticks` and
+`build_options.refresh_minimum_interval_ticks` in every pool. The current cap
+is `1024` and the current minimum is `32`; the correctness floor is eight ticks. Missing or contradictory attestations fail rather
 than assuming a default. Frozen historical exports remain
 readable and their bytes are not amended.
 Hash-only qualification receipts accept only the canonical declaration or the
@@ -217,12 +224,12 @@ research candidate. This AI campaign excludes market coverage:
 python3 tools/adaptive_gradient_model.py fit \
   --manifest artifacts/exploration.cohort.json \
   --collector-contract unified-gradient-h128-v4 \
-  --split-registry artifacts/map-splits.json --threshold-milli 16000 \
+  --split-registry artifacts/map-splits.json --threshold-milli 24000 \
   --expected-families materials,guard,clear,forbidden \
   --output artifacts/research.json
 python3 tools/adaptive_gradient_model.py emit \
   --model artifacts/research.json --contract unified-gradient-h128-v2 \
-  --threshold-milli 16000 --output artifacts/candidate.json \
+  --threshold-milli 24000 --output artifacts/candidate.json \
   --header artifacts/AdaptiveGradientModel.h
 ```
 

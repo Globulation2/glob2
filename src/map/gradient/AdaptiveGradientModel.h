@@ -14,9 +14,10 @@ inline constexpr unsigned BaseFeatureCount=7;
 using BaseFeatures=std::array<I,BaseFeatureCount>;
 inline constexpr char ContractId[]="unified-gradient-h128-v2";
 inline constexpr bool Trained=true;
-inline constexpr I ThresholdMilli=16000;
+inline constexpr I ThresholdMilli=24000;
 // Current engine deployment cap; historical fit metrics remain unchanged.
 inline constexpr unsigned DemandedAgeCapTicks=1024;
+inline constexpr unsigned MinimumIntervalTicks=32;
 inline constexpr unsigned CounterCount=3;
 inline constexpr std::array<unsigned,CounterCount> RequiredMovementCounters={0,4,5};
 inline constexpr unsigned RequiredMovementMask=49;

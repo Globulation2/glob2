@@ -85,10 +85,22 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         from tools.adaptive_gradient_dataset import declared_threshold_milli
         actual_threshold=collection_threshold(metadata)
         if unified and actual_threshold is None:raise ValueError('Explicit unified collection threshold required')
+        minimum=metadata.get('policy',{}).get('minimum_interval')
+        if minimum is not None and (type(minimum)is not int or not 8<=minimum<=2**32-1):
+            raise ValueError('Explicit collection minimum interval must be an integer between8 and UINT32_MAX')
+        for supplied in bundles:
+            options=supplied.get('build_options',{})
+            # Retain missing attestations for historical min8 cohorts. New min32+
+            # behavior requires an actual bundle declaration, never a tool default.
+            if 'refresh_minimum_interval_ticks' not in options and (minimum is None or minimum<32):continue
+            attested=options.get('refresh_minimum_interval_ticks')
+            if type(attested)is not int or not 8<=attested<=2**32-1:
+                raise ValueError('Collection requires explicit bundle refresh_minimum_interval_ticks')
+            if minimum is None or attested!=minimum:raise ValueError('Bundle refresh minimum interval differs from collection behavior')
         age_cap=metadata.get('policy',{}).get('forced_age_cap')
         if age_cap is not None:
-            if type(age_cap)is not int or not 8<=age_cap<=2**32-1:
-                raise ValueError('Explicit collection age cap must be an integer between8 and UINT32_MAX')
+            if type(age_cap)is not int or not (minimum or 8)<=age_cap<=2**32-1:
+                raise ValueError('Explicit collection age cap must be an integer at least its minimum and at most UINT32_MAX')
             for supplied in bundles:
                 attested=supplied.get('build_options',{}).get('refresh_age_cap_ticks')
                 if type(attested)is not int or not 8<=attested<=2**32-1:

@@ -265,10 +265,10 @@ TEST_CASE("stale forbidden natural reads demand recovery without material escape
     map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false);
     CHECK(field.demand);CHECK(field.count128==1);CHECK(field.total==before);
     CHECK_FALSE(probe.movementHistory.contains(int(key.packed())));
-    while(game.stepCounter<8) {advanceFields(game);CHECK(field.submitted==1);}
+    while(game.stepCounter<AdaptiveGradientState::MinimumInterval) {advanceFields(game);CHECK(field.submitted==1);}
     // Repeated movement reads are demand, while escape remains its own evidence.
     map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false);
-    advanceFields(game);CHECK(field.submitted==9);
+    advanceFields(game);CHECK(field.submitted==1+AdaptiveGradientState::MinimumInterval);
     for(unsigned tick=0;tick<3;++tick)advanceFields(game);
     CHECK(map.materialGradients[0][WHEAT][0][map.coordToIndex(8,8)]>GRADIENT_UNREACHABLE);
 }
@@ -295,7 +295,7 @@ TEST_CASE("episode movement reachability alternatives are separate from planning
     CHECK(e.deferFalseNegative==0);CHECK(e.refreshFalsePositive==0);
 }
 
-TEST_CASE("direct warm recovery retains demand but cannot bypass minimum8")
+TEST_CASE("direct warm recovery retains demand but cannot bypass minimum32")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
@@ -307,8 +307,52 @@ TEST_CASE("direct warm recovery retains demand but cannot bypass minimum8")
     auto& field=map.gradientRuntime->adaptive.fields.at(key);REQUIRE(field.submitted==1);
     map.updateMaterialGradient(0,WHEAT,0,false);
     CHECK(field.reactive);CHECK(field.demand);CHECK_FALSE(field.queued);CHECK(map.gradientPipelineStatus().pending==0);
-    while(game.stepCounter<8) {advanceFields(game);CHECK(map.gradientPipelineStatus().pending==0);}
-    advanceFields(game);CHECK(game.stepCounter==9);CHECK(field.submitted==9);CHECK(map.gradientPipelineStatus().pending==1);
+    while(game.stepCounter<AdaptiveGradientState::MinimumInterval) {advanceFields(game);CHECK(map.gradientPipelineStatus().pending==0);}
+    advanceFields(game);CHECK(game.stepCounter==1+AdaptiveGradientState::MinimumInterval);CHECK(field.submitted==1+AdaptiveGradientState::MinimumInterval);CHECK(map.gradientPipelineStatus().pending==1);
+}
+
+TEST_CASE("restored warm FIFO work waits32 while cold work behind it can initialize [save-format]")
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool text:{false,true}) {
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true});
+        auto& game=world.game;auto& map=game.map;map.configureGradientPipeline(0,3);
+        map.setResourceByIndex(20,20,WHEAT,1);map.setResourceByIndex(21,21,WOOD,1);
+        REQUIRE_FALSE(map.getMaterialGradientSlot(0,WHEAT,0));
+        for(unsigned i=0;i<4;++i)advanceFields(game);
+        REQUIRE(map.lookupMaterialGradientSlot(0,WHEAT,0));
+        const GradientFieldKey warmKey{GradientFieldFamily::Materials,0,0,WHEAT};
+        auto& warm=map.gradientRuntime->adaptive.fields.at(warmKey);
+        REQUIRE(warm.submitted==1);
+        game.stepCounter=9; // A prior min8 scheduler could already accept this.
+        REQUIRE_FALSE(map.getMaterialGradientSlot(0,WOOD,0));
+        REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+        auto oldWarm=map.gradientRuntime->fieldRequests.front();
+        oldWarm.slot=&map.materialGradients[0][WHEAT][0];oldWarm.request.material=WHEAT;
+        map.gradientRuntime->fieldRequests.push_front(oldWarm);
+        warm.queued=warm.demand=true;warm.acceptedReason=AdaptiveGradientState::Reason::Reactive;
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text?static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)):new GAGCore::BinaryOutputStream(memory));
+        game.save(out.get(),false,"retained warm admission under shorter minimum");out->flush();
+        const auto bytes=memory->takeContents();
+        auto backend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());backend->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend.get())):new GAGCore::BinaryInputStream(backend.release()));
+        GameGUI resumed;REQUIRE(resumed.game.load(in.get()));auto& loaded=resumed.game.map;
+        auto& field=loaded.gradientRuntime->adaptive.fields.at(warmKey);
+        advanceFields(resumed.game);
+        CHECK(field.submitted==1);CHECK(field.queued);
+        CHECK(loaded.gradientRuntime->fieldRequests.size()==1); // Warm entry retained in place.
+        const GradientFieldKey coldKey{GradientFieldFamily::Materials,0,0,WOOD};
+        CHECK(loaded.gradientRuntime->adaptive.fields.at(coldKey).submitted==10);
+        while(resumed.game.stepCounter<AdaptiveGradientState::MinimumInterval) {
+            advanceFields(resumed.game);CHECK(field.submitted==1);
+        }
+        advanceFields(resumed.game);
+        CHECK(field.submitted==1+AdaptiveGradientState::MinimumInterval);
+        CHECK_FALSE(field.queued);CHECK(field.inflight);
+        for(unsigned i=0;i<3;++i)advanceFields(resumed.game);
+        CHECK_FALSE(field.inflight);CHECK(field.serving.tick==1+AdaptiveGradientState::MinimumInterval);
+    }
 }
 
 TEST_CASE("capture anchored H128 outcome windows include offsets8 through127 only [artifacts]")
