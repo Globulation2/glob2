@@ -84,6 +84,16 @@ bounded arithmetic queries while solving the common production fraction. Other
 materials use the existing prepared distance fields and unreachable penalty. Profile, requested staffing, output ratios and colony demand state
 are included in planner signatures and continuation.
 
+Within one synchronous upgrade/repair scan of the captured world, hypothetical
+upgrades share the unexcluded baseline claims, keyed by the excluded pending
+order. Reuse ends with that scan, so later world or order changes rebuild it.
+Upgrade appraisals prepare claim and service-query results
+without the full-map best-site search used by the director's complete ledger.
+When a viable maintenance candidate suppresses fortification, final selection
+reuses those candidates in the same call, preserving their order and diagnostics.
+Fixed-position upgrades evaluate only their own colony's candidate ledger;
+construction searches retain the complete set for scanning different locations.
+
 Claimants rank by supply-weighted route-distance quality band, then level,
 completion status and building ID. Quality is evaluated independently of other
 claimants to avoid circular ranking. The established rank is retained within two phases: independent services

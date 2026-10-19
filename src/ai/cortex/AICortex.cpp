@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "AIProfile.h"
 #include "Material.h"
 #include "AITelemetryFields.h"
 #include "AIStateSerialization.h"
@@ -453,6 +454,7 @@ shared_ptr<Order> AICortex::runObservation(const AIEngine::DecisionContext& cont
 }
 shared_ptr<Order> AICortex::decide()
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::CortexDecision);
 	Cortex::TuningScope tuningScope(runtimeTuning);
 	policy.telemetry = telemetry;
 	// Drain any Orders queued by a prior decision cycle, one per tick.

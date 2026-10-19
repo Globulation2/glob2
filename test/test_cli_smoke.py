@@ -134,6 +134,104 @@ class CliSmoke(unittest.TestCase):
         self.assertTrue(records)
         return records
 
+    def test_benchmark_tick_profile_preserves_execution_and_tick_identity(self):
+        import csv
+
+        source = self.generated()
+        baseline = self.game(self.root / "baseline", source, workers=3,
+                             extra=("--gradient-backend", "cpu"))
+        output = self.root / "profiled"
+        profiled = self.game(output, source, workers=3, extra=(
+            "--gradient-backend", "cpu", "--benchmark-warmup", "0",
+            "--benchmark-tick-profile", "--compute-telemetry", "trace"))
+        self.assertEqual(baseline, profiled)
+        with (output / "tick-timings.csv").open() as file:
+            ticks = list(csv.DictReader(file))
+        self.assertEqual([int(row["tick_before_step"]) for row in ticks], list(range(64)))
+        durations = {int(row["tick_before_step"]): int(row["elapsed_ns"]) for row in ticks}
+        slow = json.loads((output / "slow-ticks.json").read_text())
+        self.assertEqual(slow["measured_ticks"], 64)
+        self.assertEqual(len(slow["ticks"]), 64)
+        self.assertEqual([row["elapsed_ns"] for row in slow["ticks"]],
+                         sorted(durations.values(), reverse=True))
+        for row in slow["ticks"]:
+            self.assertEqual(row["elapsed_ns"], durations[row["tick"]])
+            self.assertNotIn("simulation.deadline_lateness", row["phases"])
+            self.assertTrue(all(v["observed_ns"] <= row["elapsed_ns"] for name, v in row["phases"].items()
+                                if name == "simulation.tick"))
+        result = json.loads((output / "result.json").read_text())
+        callbacks = result["compute_telemetry"]["deferred_callback_execution"]
+        for value in callbacks.values():
+            self.assertEqual(sum(value["histogram"]), value["samples"])
+        self.assertGreater(callbacks["ai"]["samples"], 0)
+
+    def test_owner_tick_profile_preserves_execution(self):
+        source = self.generated()
+        baseline = self.game(self.root / "baseline", source, workers=3,
+                             extra=("--gradient-backend", "cpu", "--benchmark-warmup", "0"))
+        output = self.root / "profiled"
+        profiled = self.game(output, source, workers=3, extra=(
+            "--gradient-backend", "cpu", "--benchmark-warmup", "0",
+            "--owner-tick-profile", "--owner-profile-min-ms", "0", "--owner-profile-from-tick", "16"))
+        self.assertEqual(baseline, profiled)
+        rows = [json.loads(line) for line in (output / "owner-ticks.jsonl").read_text().splitlines()]
+        self.assertEqual([r["tick_before_step"] for r in rows], list(range(16, 64)))
+        for row in rows:
+            if row["tick_before_step"] < 63:  # The terminal tick skips the next observation.
+                self.assertIn("capture_world", row["phases"])
+            self.assertIn("step", row["phases"])
+            self.assertLessEqual(sum(p["self_wall_ns"] for p in row["phases"].values()), row["wall_ns"])
+            if row["thread_cpu_ns"] is not None:
+                self.assertLessEqual(sum(p["self_cpu_ns"] for p in row["phases"].values()), row["thread_cpu_ns"])
+            for phase in row["phases"].values():
+                self.assertLessEqual(phase["self_wall_ns"], phase["wall_ns"])
+
+    def test_ai_decision_profile_gate_preserves_execution(self):
+        import threading
+        import time
+
+        source = self.generated()
+        baseline = self.game(self.root / "baseline", source, workers=3,
+                             extra=("--gradient-backend", "cpu"))
+        output = self.root / "profiled"
+        errors = []
+
+        def release_gate():
+            try:
+                for marker in ("ai-profile-ready.json", "ai-profile-done.json"):
+                    deadline = time.monotonic() + 30
+                    while not (output / marker).exists():
+                        if time.monotonic() > deadline:
+                            raise AssertionError("AI profile gate marker missing: " + marker)
+                        time.sleep(0.005)
+                    if marker == "ai-profile-ready.json":
+                        time.sleep(0.05)
+                        (output / "ai-profile-release").touch()
+                    else:
+                        (output / "ai-profile-finish").touch()
+            except BaseException as error:
+                errors.append(error)
+                if output.exists():
+                    (output / "ai-profile-release").touch()
+                    (output / "ai-profile-finish").touch()
+
+        thread = threading.Thread(target=release_gate, daemon=True)
+        thread.start()
+        profiled = self.game(output, source, workers=3, extra=(
+            "--gradient-backend", "cpu", "--ai-decision-profile", "--ai-profile-min-ms", "0",
+            "--ai-profile-gate", "1:16"))
+        thread.join(35)
+        self.assertFalse(thread.is_alive())
+        self.assertFalse(errors, errors)
+        self.assertEqual(baseline, profiled)
+        rows = [json.loads(line) for line in (output / "ai-decisions.jsonl").read_text().splitlines()]
+        gated = [row for row in rows if row["gate_pause_ns"]]
+        self.assertEqual(len(gated), 1)
+        self.assertEqual((gated[0]["player"], gated[0]["observed_tick"], gated[0]["scheduled_tick"]), (1, 16, 24))
+        self.assertGreaterEqual(gated[0]["gate_pause_ns"], 40000000)
+        for row in rows:
+            self.assertEqual(sum(p["self_ns"] for p in row["phases"].values()) + row["unattributed_wall_ns"], row["wall_ns"])
+
     def test_every_static_help_is_asset_free_and_complete(self):
         empty = Path(self.temporary.name) / "empty"
         empty.mkdir()

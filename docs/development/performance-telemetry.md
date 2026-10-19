@@ -237,6 +237,63 @@ Frequency denominators are `required_batches_joined` and `advancing_ticks`; thei
 are `required_batches_incomplete` and `background_wait_ticks`. A zero denominator has no
 measured rate. Loading/restarting clears session summaries and streams after producers drain.
 
+In `trace` mode, `deferred_callback_execution` contains full-interval duration
+histograms by producer, and `ai_lane_callback_execution` splits AI callbacks by
+controller lane (player index). These aggregates continue collecting after event
+storage fills. They measure elapsed callback time, including descheduling, rather
+than CPU time, queue delay or an external operation's completion. Each continuation
+invocation is a separate sample. Blocking fork/join and presentation callbacks are
+outside this deferred-callback population. The fields are `null` in other modes.
+Hiring and team statistics have distinct `hiring` and `team_statistics` producers.
+
+For slow-tick investigation, add `--benchmark-warmup 0 --benchmark-tick-profile`
+and `--compute-telemetry waits` or `trace` to `game run`. `tick-timings.csv` retains
+every measured tick's elapsed time; `slow-ticks.json` retains the 1024 slowest with
+per-producer required-wait durations and owner performance-scope deltas. Tick IDs
+refer to the counter before the step. Phase durations are inclusive and overlap;
+sampled phases export observed time and their sampling stride. Collection and file
+export happen outside timed steps, but can still perturb scheduling; `collection_ns`
+reports collection cost. No detailed per-tick data is collected without the flag.
+For long runs, 1024 retained ticks may cover less than the slowest one percent.
+Use initial saves and the exported tick IDs to repeat a problematic interval; a
+bounded full-session event trace may have already overflowed by a late stall.
+
+For owner-thread stalls outside executor joins, `--owner-tick-profile` with
+`--benchmark-warmup` exports `owner-ticks.jsonl`. Each row contains tick wall time,
+owner-thread CPU time where supported, and inclusive/exclusive times for orders,
+the simulation step, statistics, world capture, checksum collection/submission
+and AI admission. `--owner-profile-min-ms` defaults to 20; zero exports every tick.
+`--owner-profile-from-tick` skips earlier ticks. Export is outside the timed step.
+Nested phase times overlap; exclusive times are additive. Owner CPU time excludes
+workers and time blocked or unscheduled, so a wall/CPU gap alone does not identify
+which condition caused it. These extra clocks perturb timing and are intended
+for attribution rather than throughput comparisons.
+
+`game run --ai-decision-profile` additionally exports slow callbacks to
+`ai-decisions.jsonl`, keyed by AI, player, observation tick, publication tick and
+poll sequence. `--ai-profile-min-ms N` selects the elapsed threshold (default 20,
+0 records every callback); `--ai-profile-from-tick N` skips earlier observations.
+Each record contains callback wall time and, where `CLOCK_THREAD_CPUTIME_ID` is
+available, that worker's CPU time. CPU time excludes time spent blocked or
+unscheduled. Selected Maxima and Cortex functions also export call counts,
+inclusive/exclusive wall times and workload counters. Maxima scopes distinguish
+strategy, farming, clearing, defense, offense, reconnaissance and building
+management from placement and food-ledger work. Residual-bound queries
+are counted without individual clocks because they are very small. Function
+timing adds overhead: use these runs for attribution, not throughput comparisons.
+No profile data influences orders, RNG, saves or simulation state.
+
+For an exact callback stack sample, `--ai-profile-gate P:T` holds player P's
+observation-T callback before its body and writes `ai-profile-ready.json` in the
+output directory. Attach a sampler, then create `ai-profile-release` there. The
+worker is named `aipPtT` on macOS/Linux where supported. On body completion it
+writes `ai-profile-done.json` and waits for `ai-profile-finish`, so that thread
+executes no subsequent callbacks during collection. The body record excludes
+both artificial pauses and is exported regardless of threshold. Gate runs change
+wall-clock scheduling and must not be mixed into natural latency statistics.
+The initial wait times out with an error after 60 seconds; the completion wait
+ends after 120 seconds. The sink outlives all decision jobs during teardown.
+
 Trace event arrays share a default 16 MiB budget per executor, split among simulation owner, graphics owner, workers
 and an external completion stream. The budget covers event storage; bounded summary and
 stream metadata are additional. Configuration allocates all arrays. Full arrays drop new

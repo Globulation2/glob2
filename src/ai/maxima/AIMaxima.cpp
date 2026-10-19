@@ -16,6 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include "AIProfile.h"
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
@@ -237,6 +238,7 @@ namespace
 	ResourceAccessObservation observe_resource_access(const AIEngine::AIWorldView& world,unsigned observedTeam,
 		const std::vector<Uint8>& localTiles, MaterialMask requestedMaterials=0)
 	{
+    AIProfile::Scope profileScope(AIProfile::Phase::ResourceAccess);
 		ResourceAccessObservation result;
 		const AIEngine::AIWorldView* map=&world;
 		const int width=(*map).width;
@@ -640,6 +642,7 @@ void Maxima::emit_ablation_opportunities(Context& runtime) const
 
 Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Snapshot);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	StrategicSnapshot state;
     collect_building_profiles();
@@ -1014,6 +1017,7 @@ void Maxima::initialize_topology_profile(Context& runtime)
 
 void Maxima::update_environment_model(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Environment);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_update_environment_model_calls);
 	initialize_topology_profile(runtime);
@@ -1404,6 +1408,7 @@ void Maxima::prune_cleared_enemy_sites()
 
 void Maxima::sample_reconnaissance_forces(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ReconForces);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	std::vector<int> living;
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
@@ -1480,6 +1485,7 @@ void Maxima::apply_force_beliefs()
 
 void Maxima::update_reconnaissance(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ReconUpdate);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_calls);
 	std::vector<int> living;
@@ -1751,6 +1757,7 @@ void Maxima::remove_reconnaissance_missions(Context& runtime,
 
 void Maxima::update_reconnaissance_missions(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ReconMissions);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_missions_calls);
 	Recon::ReconReport& report=reconnaissance.mutableReport();
@@ -3494,6 +3501,7 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 
 void Maxima::evaluate_strategy(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Strategy);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_evaluate_strategy_calls);
 	if(strategy.reconnaissance.enabled)
@@ -3780,16 +3788,22 @@ Maxima::Maxima(GAGCore::InputStream *stream, Player *player,
 
 void Maxima::tick(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::MaximaTick);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	ensure_strategy();
 	timer++;
 	const int team=runtime.teamNumber();
-	// A new game and every loaded save start with no executable plan. Likewise,
-	// completion events invalidate director assumptions. Replan before any
-	// scheduled executor observes the plan.
-	if(!director.initialized || director.dirty)
+	// Strategy is the first job in the deterministic map-scale queue. Run its
+	// slot before the small executors so initialization, loaded saves and dirty
+	// plans publish a coherent budget before those executors consume it. A due
+	// periodic review shares this slot rather than evaluating a second time.
+	const bool strategyReviewDue=!director.initialized || director.dirty
+		||timer%strategy.scheduling.strategy_interval_ticks
+			==staggered_phase(strategy.scheduling.strategy_phase_offset_ticks,
+				strategy.scheduling.strategy_interval_ticks,team);
+	if(strategyReviewDue)
 	{
-		director.evaluate(*this, runtime);
+		check_phases(runtime);
 		update_reconnaissance_missions(runtime);
 	}
 	if(timer==1)
@@ -3804,13 +3818,6 @@ void Maxima::tick(Context& runtime)
 			strategy.reconnaissance.force_sample_phase_offset_ticks,
 			strategy.reconnaissance.force_sample_interval_ticks,team))
 		sample_reconnaissance_forces(runtime);
-	if(timer%strategy.scheduling.strategy_interval_ticks
-		==staggered_phase(strategy.scheduling.strategy_phase_offset_ticks,
-			strategy.scheduling.strategy_interval_ticks,team))
-	{
-		check_phases(runtime);
-		update_reconnaissance_missions(runtime);
-	}
 	if(timer%strategy.scheduling.building_interval_ticks
 		==staggered_phase(strategy.scheduling.building_phase_offset_ticks,
 			strategy.scheduling.building_interval_ticks,team))
@@ -3862,11 +3869,14 @@ void Maxima::tick(Context& runtime)
 				strategy.scheduling.placement_interval_ticks,team))
 		development_cycle_pending=true;
 
-	// Execute at most one map-scale maintenance/planning job per logical update.
-	// This is deliberately a deterministic priority queue rather than a wall-time
-	// budget: replay results do not depend on machine speed, and a due job remains
-	// pending until it receives its turn.
-	if(land_clearing_pending)
+	// Complete the same one-job queue whose strategy slot runs above. Preserve
+	// every pending flag when strategy consumed the slot; no work is dropped.
+	// Selection uses logical state, never elapsed time, so all machines agree.
+	if(strategyReviewDue)
+	{
+		// The strategy job already consumed this update's map-scale work slot.
+	}
+	else if(land_clearing_pending)
 	{
 		land_clearing_pending=false;
 		manage_land_clearing(runtime);
@@ -4046,6 +4056,7 @@ void Maxima::initialize(Context& runtime)
 
 void Maxima::check_phases(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::CheckPhases);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	director.evaluate(*this, runtime);
 }
@@ -4364,6 +4375,7 @@ void Maxima::configure_development_planner()
 AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	Context& runtime, uint32_t* signature) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::CollectWorld);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	using namespace AIMaximaPlacement;
 	const AIEngine::AIWorldView* map=&runtime.observation();WorldState world;
@@ -4956,6 +4968,7 @@ void Maxima::emit_placement_diagnostics(Context& runtime,const char* outcome,
 
 void Maxima::development_cycle(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Development);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	using namespace AIMaximaPlacement;
 	const bool profile=telemetry_enabled();
@@ -5682,6 +5695,7 @@ bool Maxima::labour_swimming_matters() const
 
 Labour::Observation Maxima::observe_labour(Context& runtime) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Labour);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	Labour::Observation result;
 	const AIEngine::TeamView* team=&runtime.observedTeam();
@@ -5776,6 +5790,7 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 
 void Maxima::manage_buildings(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ManageBuildings);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	labour_observation=observe_labour(runtime);
 	labour_plan=Labour::plan(labour_observation, labour_policy(), budget.swarm_workers);
@@ -5935,6 +5950,7 @@ void Maxima::manage_inn(Context& runtime, int id)
 long long Maxima::nearby_farm_capacity(Context& runtime, int id,
 	std::set<int>* shared_tiles)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::NearbyFarm);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	const AIEngine::BuildingView* building=runtime.get_building_register().get_building(id);
 	if(!building) return 0;
@@ -6032,6 +6048,7 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 
 void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FruitFlags);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	// Reconcile per resource against the serialized runtime, rather than trusting
 	// a one-shot Boolean. Pending searches count too, including after a load.

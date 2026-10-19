@@ -692,11 +692,28 @@ private:
 	/// no incremental bookkeeping.
 	void prepareFoodLedger(const WorldState& world, int excludeAction=-1,
 		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
+	// A synchronous maintenance scan shares one immutable world and action set.
+	// Only its baseline claims are cached; nothing survives the scan or a save.
+	struct FoodBaselineBatch
+	{
+		const WorldState* world;
+		int excludeAction=-1;
+		bool ready=false;
+		FoodBaselineBatch*& active;
+		FoodBaselineBatch* previous;
+		FoodBaselineBatch(const WorldState& snapshot,FoodBaselineBatch*& slot)
+			:world(&snapshot),active(slot),previous(slot) { active=this; }
+		~FoodBaselineBatch() { active=previous; }
+		FoodBaselineBatch(const FoodBaselineBatch&)=delete;
+		FoodBaselineBatch& operator=(const FoodBaselineBatch&)=delete;
+	};
+	mutable FoodBaselineBatch* foodBaselineBatch=nullptr;
     int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
-    void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
+    void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding,int onlyColony=-1) const;
     struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0,feeding=0; std::array<int,MaterialCount> independent{},production{}; };
     mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
     mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
+    mutable int candidateSetColony=-1; // -1 prepares every colony for a spatial scan.
     mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
     mutable const CandidateFoodLedger* activeFoodCandidate=nullptr;
     const AIMaximaFoodLedger::Result& selectedFoodResult() const { return activeFoodCandidate?activeFoodCandidate->result:foodResult; }

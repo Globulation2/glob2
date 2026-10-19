@@ -151,6 +151,8 @@ static void fortificationIsLastResort()
 		REQUIRE(next.selectAction(developed,{tower},limits,selected));
 		REQUIRE(selected.type==(damaged?RepairBuilding:UpgradeBuilding));
 		int ordinaryPasses=0;
+		DevelopmentAction ordinarySelection;
+		PlacementDiagnostics ordinaryDiagnostics;
 		for(bool fallback:{false,true})
 		{
 			Planner incremental=next;SelectionProgress progress;int passes=0;
@@ -161,7 +163,23 @@ static void fortificationIsLastResort()
 			}while(progress==SelectionPending);
 			REQUIRE(progress==SelectionFound);
 			REQUIRE(selected.type==(damaged?RepairBuilding:UpgradeBuilding));
-			if(fallback)REQUIRE(passes==ordinaryPasses);else ordinaryPasses=passes;
+			if(fallback)
+			{
+				REQUIRE(passes==ordinaryPasses);
+				REQUIRE(selected.buildingId==ordinarySelection.buildingId);
+				REQUIRE(selected.targetLevel==ordinarySelection.targetLevel);
+				REQUIRE(selected.utility.total==ordinarySelection.utility.total);
+				REQUIRE(selected.id==ordinarySelection.id);
+				REQUIRE(incremental.diagnostics().candidateCount==ordinaryDiagnostics.candidateCount);
+				for(int reason=0;reason<RejectionReasonCount;++reason)
+					REQUIRE(incremental.diagnostics().rejected[reason]==ordinaryDiagnostics.rejected[reason]);
+			}
+			else
+			{
+				ordinaryPasses=passes;
+				ordinarySelection=selected;
+				ordinaryDiagnostics=incremental.diagnostics();
+			}
 		}
 	}
 }

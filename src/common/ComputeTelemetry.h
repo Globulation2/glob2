@@ -12,7 +12,7 @@
 #include <vector>
 
 enum class ComputeTelemetryMode { Off, Waits, Trace };
-enum class ComputeProducer { AI, PeriodicGradient, BuildingGradient, ResourceGrowth, Hiring, Presentation, Other, Mixed, Checksum, Count };
+enum class ComputeProducer { AI, PeriodicGradient, BuildingGradient, ResourceGrowth, Hiring, Presentation, Other, Mixed, Checksum, TeamStatistics, Count };
 enum class JoinReason { TickDeadline, ImmediateRequired, Save, Reconfigure, Teardown, Verification, Count };
 struct BatchDiagnostics {
     ComputeProducer producer = ComputeProducer::Other;
@@ -26,7 +26,7 @@ namespace ComputeTelemetry {
 inline constexpr std::uint64_t NoTick = std::numeric_limits<std::uint64_t>::max();
 inline constexpr std::size_t DefaultTraceBytes = 16 * 1024 * 1024;
 inline constexpr std::array<std::string_view, 3> ModeNames{"off", "waits", "trace"};
-inline constexpr std::array<std::string_view, 9> ProducerNames{"ai", "periodic_gradient", "building_gradient", "resource_growth", "hiring", "presentation", "other", "mixed", "checksum"};
+inline constexpr std::array<std::string_view, 10> ProducerNames{"ai", "periodic_gradient", "building_gradient", "resource_growth", "hiring", "presentation", "other", "mixed", "checksum", "team_statistics"};
 inline constexpr std::array<std::string_view, 6> ReasonNames{"tick_deadline", "immediate_required", "save", "reconfigure", "teardown", "verification"};
 inline ComputeTelemetryMode parseMode(std::string_view value) {
     for (unsigned i = 0; i < ModeNames.size(); ++i) if (value == ModeNames[i]) return ComputeTelemetryMode(i);
@@ -47,6 +47,10 @@ struct JoinSummary {
     Duration lock, background, owner, total;
 };
 struct Summary {
+    // Full-interval deferred callback timings, independent of bounded event storage.
+    // Continuations contribute one sample per invocation; external suspension is excluded.
+    std::array<Duration, unsigned(ComputeProducer::Count)> deferredCallbacks{};
+    std::array<Duration, 32> aiLaneCallbacks{};
     std::array<std::array<JoinSummary, unsigned(JoinReason::Count)>, unsigned(ComputeProducer::Count)> joins{};
     std::array<std::uint64_t, unsigned(ComputeProducer::Count)> affectedTicks{};
     std::uint64_t advancingTicks = 0, backgroundTicks = 0;
@@ -115,10 +119,31 @@ inline void writeJson(std::ostream& out, const Snapshot& snapshot) {
         }
         out << "}}";
     }
+    out << "},\"deferred_callback_execution\":";
+    if (snapshot.mode != ComputeTelemetryMode::Trace) out << "null";
+    else {
+        out << '{';
+        for (unsigned p = 0; p < ProducerNames.size(); ++p) {
+            if (p) out << ',';
+            out << '\"' << ProducerNames[p] << "\":";
+            durationJson(out, snapshot.summary.deferredCallbacks[p]);
+        }
+        out << '}';
+    }
+    out << ",\"ai_lane_callback_execution\":";
+    if (snapshot.mode != ComputeTelemetryMode::Trace) out << "null";
+    else {
+        out << '[';
+        for (unsigned lane = 0; lane < snapshot.summary.aiLaneCallbacks.size(); ++lane) {
+            if (lane) out << ',';
+            durationJson(out, snapshot.summary.aiLaneCallbacks[lane]);
+        }
+        out << ']';
+    }
     std::uint64_t lost = 0;
     for (const auto& stream : snapshot.streams) lost += stream.lost;
     const bool tracing = snapshot.mode == ComputeTelemetryMode::Trace;
-    out << "},\"trace_available\":" << (tracing ? "true" : "false")
+    out << ",\"trace_available\":" << (tracing ? "true" : "false")
         << ",\"trace_included\":" << (snapshot.traceIncluded ? "true" : "false")
         << ",\"trace_incomplete\":";
     if (tracing) out << (lost || snapshot.traceOpenWork || snapshot.traceCoverageGap ? "true" : "false"); else out << "null";

@@ -865,6 +865,12 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
 			auto& slot = slots[claim.slot];
 			event<Mode>(ComputeTelemetry::EventKind::CallbackEnd, claim.slot, claim.index, unsigned(thread), {JoinReason::Teardown, ComputeTelemetry::NoTick}, 0, callbackEnd);
             if constexpr (Mode == ComputeTelemetryMode::Trace) { workerMetrics[thread].activeNs += elapsed; ++workerMetrics[thread].jobs; }
+			if constexpr (Mode == ComputeTelemetryMode::Trace) {
+				const auto producer = diagnostics->batches[claim.slot].tags.producer;
+				diagnostics->summary.deferredCallbacks[unsigned(producer)].add(elapsed);
+				if (producer == ComputeProducer::AI && group.lane < diagnostics->summary.aiLaneCallbacks.size())
+					diagnostics->summary.aiLaneCallbacks[group.lane].add(elapsed);
+			}
 			if constexpr (Mode == ComputeTelemetryMode::Trace) { if (thread) ++totals.workerJobs; else ++totals.ownerJobs; }
 			if (auto ticket = slot.completions[claim.index]) {
 				ticket->running = false;

@@ -287,7 +287,10 @@ remain standing spatial invariants.
 ## Scheduling and telemetry
 
 The complete policy normally runs every 512 ticks, and every 64 ticks while an
-urgent farming condition holds. Derived masks are reused and only real
+urgent farming condition holds. Strategy reviews, land clearing, maintenance
+clearing, defense, farming and placement share one deterministic map-scale job
+slot per AI update. A due strategy review takes priority and publishes its budget
+before the smaller executors run; other due jobs stay pending for later updates. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports
 `microseconds`, `wood_reserve_seeds`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
 `protected_wheat_bootstraps`, `protected_wood_edges`, `protected_wood_bootstraps`,

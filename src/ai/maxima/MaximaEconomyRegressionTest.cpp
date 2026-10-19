@@ -1569,6 +1569,114 @@ TEST_CASE("feeding farm claims follow one cohort while hybrid operating demand s
     CHECK(restored.computeSignature()==world.computeSignature());
 }
 
+TEST_CASE("upgrade batches reuse baseline claims without changing food appraisals" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(32,32);
+    for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.foodTraversable=tile.buildable=true;
+    BuildingProfile profile;profile.buildingType=0;
+    for(int level:{1,2}) {
+        BuildingLevelProfile shape;shape.level=level;shape.footprint=Footprint(0,0,1,1);
+        shape.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+        shape.feedingRate=600*level;shape.feedingMask=7;
+        shape.operatingMaterials[1]=shape.feedingMaterials[1]=600*level;
+        profile.levels.push_back(shape);
+    }
+    world.profiles.push_back(profile);
+    for(int i=0;i<3;++i) {
+        const int x=4+10*i;
+        world.feedingColonies.push_back({x,8,{600,0,400}});
+        world.tile(x+1,8).protectedYield=5000;
+        WorldBuilding building;building.id=i;building.buildingType=0;building.level=1;
+        building.centerX=x;building.centerY=8;world.buildings.push_back(building);
+    }
+    Planner reference;reference.mutablePolicy().foodLedgerEnabled=true;
+    reference.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+        AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,
+        AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    DevelopmentAction pending;pending.id=17;pending.type=BuildStandalone;
+    pending.state=ParcelReserved;pending.buildingType=0;pending.targetLevel=1;
+    pending.centerX=6;pending.centerY=8;pending.initialFootprint=Footprint(0,0,1,1);
+    reference.actionMap.emplace(pending.id,pending);
+    Planner cached=reference;
+    {
+        Planner::FoodBaselineBatch batch(world,cached.foodBaselineBatch);
+        for(int excludedAction:{-1,17})for(int building=0;building<3;++building)for(int colony=0;colony<3;++colony) {
+            reference.prepareFoodLedger(world,excludedAction,building,0,2,colony);
+            cached.prepareFoodLedger(world,excludedAction,building,0,2,colony);
+            const auto& a=reference.foodResult;const auto& b=cached.foodResult;
+            CHECK(a.residual==b.residual);CHECK(a.serviceResidual==b.serviceResidual);
+            CHECK(a.serviceResidualSums==b.serviceResidualSums);
+            CHECK(a.totalSupply==b.totalSupply);CHECK(a.totalDemand==b.totalDemand);
+            CHECK(a.totalClaimed==b.totalClaimed);CHECK(a.independentClaimed==b.independentClaimed);
+            REQUIRE(a.consumers.size()==b.consumers.size());
+            for(size_t i=0;i<a.consumers.size();++i) {
+                const auto& x=a.consumers[i];const auto& y=b.consumers[i];
+                CHECK(x.key==y.key);CHECK(x.demand==y.demand);CHECK(x.claimed==y.claimed);
+                CHECK(x.claimedProduction==y.claimedProduction);CHECK(x.available==y.available);
+                CHECK(x.quality==y.quality);CHECK(x.qualityBand==y.qualityBand);
+                CHECK(x.coveragePercent==y.coveragePercent);CHECK(x.availablePercent==y.availablePercent);
+                CHECK(x.uncontestedCoveragePercent==y.uncontestedCoveragePercent);CHECK(x.order==y.order);
+            }
+            CHECK(reference.foodCandidateDemand==cached.foodCandidateDemand);
+            CHECK(reference.foodServiceBaseline.serviceResidual==cached.foodServiceBaseline.serviceResidual);
+            CHECK(reference.foodServiceBaseline.independentClaimed==cached.foodServiceBaseline.independentClaimed);
+        }
+        CHECK(cached.foodLedgerEpoch==2); // One baseline for each excluded action, rather than 18.
+        CHECK(reference.foodLedgerEpoch==18);
+    }
+    CHECK(cached.foodBaselineBatch==nullptr);
+    // The same world object can change between captured scans; no baseline survives.
+    for(auto& tile:world.tiles)tile.protectedYield=0;
+    {
+        Planner::FoodBaselineBatch batch(world,cached.foodBaselineBatch);
+        cached.prepareFoodLedger(world,-1,0,0,2,0);
+        CHECK(cached.foodServiceBaseline.independentClaimed==0);
+        CHECK(cached.foodLedgerEpoch==3);
+    }
+    const auto& complete=cached.evaluateFoodLedger(world);
+    CHECK(complete.residualSums.size()==33*33);
+    // Fixed-position upgrades need just their own colony's ledger. Switching to
+    // a construction scan must still prepare every colony, including empty slots.
+    for(int i=0;i<3;++i)world.tile(5+10*i,8).protectedYield=5000;
+    cached.evaluateFoodLedger(world);reference.evaluateFoodLedger(world);
+    {
+        Planner::FoodBaselineBatch cachedBatch(world,cached.foodBaselineBatch);
+        Planner::FoodBaselineBatch referenceBatch(world,reference.foodBaselineBatch);
+        reference.prepareFeedingCandidateSet(world,0,2,-1,0);
+        for(int colony:{0,2,1}) {
+            cached.prepareFeedingCandidateSet(world,0,2,-1,0,colony);
+            const auto& one=cached.candidateFoodLedgers[colony];
+            const auto& all=reference.candidateFoodLedgers[colony];
+            CHECK(one.demand==all.demand);CHECK(one.feeding==all.feeding);
+            CHECK(one.independent==all.independent);CHECK(one.production==all.production);
+            CHECK(one.result.residual==all.result.residual);
+            CHECK(one.result.serviceResidual==all.result.serviceResidual);
+            CHECK(one.result.serviceResidualSums==all.result.serviceResidualSums);
+            for(int other=0;other<3;++other)if(other!=colony)
+                CHECK(cached.candidateFoodLedgers[other].result.residual.empty());
+        }
+        cached.prepareFeedingCandidateSet(world,0,2,-1,0);
+        CHECK(cached.candidateSetColony==-1);
+        for(int colony=0;colony<3;++colony)
+            CHECK(cached.candidateFoodLedgers[colony].result.residual==reference.candidateFoodLedgers[colony].result.residual);
+        const auto* all=cached.candidateFoodLedgers.data();
+        cached.prepareFeedingCandidateSet(world,0,2,-1,0,2);
+        CHECK(cached.candidateSetColony==-1);
+        CHECK(cached.candidateFoodLedgers.data()==all);
+        DevelopmentAction upgrade;upgrade.type=UpgradeBuilding;upgrade.buildingType=0;
+        upgrade.buildingId=1;upgrade.targetLevel=2;upgrade.centerX=14;upgrade.centerY=8;
+        upgrade.initialFootprint=Footprint(0,0,1,1);
+        auto replacement=upgrade;replacement.type=BuildStandalone;replacement.replacesBuildingId=1;
+        CHECK(cached.prepareFeedingCandidate(world,upgrade)==reference.prepareFeedingCandidate(world,replacement));
+        CHECK(cached.candidateSetColony==1);CHECK(reference.candidateSetColony==-1);
+        CHECK(cached.foodQuery.feasible==reference.foodQuery.feasible);
+        CHECK(cached.foodQuery.residual==reference.foodQuery.residual);
+        CHECK(cached.foodQuery.quality==reference.foodQuery.quality);
+        CHECK(cached.foodQuery.transferred==reference.foodQuery.transferred);
+    }
+}
+
 TEST_CASE("feeding packet denominations preserve large stock rates and profile continuation" * doctest::test_suite("Maxima.Economy"))
 {
     glob2test::HeadlessGlobals globals;
