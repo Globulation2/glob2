@@ -1,0 +1,77 @@
+{
+  "status": "COMPLETE",
+  "pid": 375335,
+  "updated_utc": "2026-10-19T06:32:48.420923+00:00",
+  "input_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+  "stages": {
+    "generic12": {
+      "started_utc": "2026-10-19T06:31:39.954495+00:00",
+      "input_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+      "command": [
+        "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/analysis-tool-source/tools/adaptive_gradient_model.py",
+        "fit",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/0592ad89853481cd95fe045e.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/61ac95f187bf495d82ea1308.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/97e12890d0d46ffec0dc9e98.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/8f64703519515785f94a7c08.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/f105e763c4278d70ff60f3ab.cohort.json",
+        "--split-registry",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/map-splits.json",
+        "--expected-families",
+        "materials,guard,clear,forbidden",
+        "--collector-contract",
+        "unified-gradient-spatial-h128-v3",
+        "--output",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/generic-research.json"
+      ],
+      "returncode": 0,
+      "finished_utc": "2026-10-19T06:32:11.440975+00:00",
+      "output_sha256": "d106157d9858e305c0b52f689a08a502a137da0776fe98edb53bf3e379a30801"
+    },
+    "spatial": {
+      "started_utc": "2026-10-19T06:32:11.441948+00:00",
+      "input_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+      "command": [
+        "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/analysis-tool-source/tools/adaptive_gradient_spatial.py",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/0592ad89853481cd95fe045e.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/61ac95f187bf495d82ea1308.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/97e12890d0d46ffec0dc9e98.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/8f64703519515785f94a7c08.cohort.json",
+        "--manifest",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/f105e763c4278d70ff60f3ab.cohort.json",
+        "--split-registry",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/map-splits.json",
+        "--output",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/spatial-research.json"
+      ],
+      "returncode": 0,
+      "finished_utc": "2026-10-19T06:32:48.420151+00:00",
+      "output_sha256": "01085fe31b7feac5104efb970edae30bee7ab256d6df7ab4f204f209d1a34aa2"
+    }
+  },
+  "prospective_or_production_promotion": false,
+  "affinity": [
+    0
+  ],
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "dependencies": {
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1",
+    "scipy": "1.17.1"
+  }
+}

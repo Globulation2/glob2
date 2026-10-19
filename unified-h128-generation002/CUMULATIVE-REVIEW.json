@@ -1,0 +1,931 @@
+{
+  "status": "READONLY-CUMULATIVE256-REVIEW",
+  "fit_or_emit_performed_by_review": false,
+  "accounting": {
+    "exploration": {
+      "counts": {
+        "completed": 53,
+        "user-censored": 75
+      },
+      "by_format": {
+        "16ffa": {
+          "user-censored": 14,
+          "completed": 2
+        },
+        "8v8": {
+          "user-censored": 13,
+          "completed": 3
+        },
+        "4v4": {
+          "user-censored": 11,
+          "completed": 5
+        },
+        "8ffa": {
+          "user-censored": 13,
+          "completed": 3
+        },
+        "4ffa": {
+          "user-censored": 6,
+          "completed": 10
+        },
+        "2v2": {
+          "user-censored": 8,
+          "completed": 8
+        },
+        "3ffa": {
+          "completed": 9,
+          "user-censored": 7
+        },
+        "1v1": {
+          "user-censored": 3,
+          "completed": 13
+        }
+      },
+      "by_dimensions": {
+        "512x512": {
+          "user-censored": 19,
+          "completed": 1
+        },
+        "256x512": {
+          "user-censored": 17,
+          "completed": 1
+        },
+        "512x256": {
+          "user-censored": 13,
+          "completed": 2
+        },
+        "256x256": {
+          "user-censored": 16,
+          "completed": 5
+        },
+        "128x256": {
+          "completed": 12,
+          "user-censored": 3
+        },
+        "256x128": {
+          "completed": 9,
+          "user-censored": 7
+        },
+        "128x128": {
+          "completed": 10
+        },
+        "128x64": {
+          "completed": 8
+        },
+        "64x128": {
+          "completed": 3
+        },
+        "64x64": {
+          "completed": 2
+        }
+      },
+      "censored_recovered_rows": 16773,
+      "discarded_unterminated_bytes": 612
+    },
+    "candidate": {
+      "counts": {
+        "completed": 46,
+        "user-censored": 82
+      },
+      "by_format": {
+        "16ffa": {
+          "user-censored": 14,
+          "completed": 2
+        },
+        "8v8": {
+          "user-censored": 14,
+          "completed": 2
+        },
+        "4v4": {
+          "user-censored": 16
+        },
+        "8ffa": {
+          "user-censored": 13,
+          "completed": 3
+        },
+        "4ffa": {
+          "user-censored": 11,
+          "completed": 5
+        },
+        "2v2": {
+          "user-censored": 7,
+          "completed": 9
+        },
+        "3ffa": {
+          "user-censored": 4,
+          "completed": 12
+        },
+        "1v1": {
+          "completed": 13,
+          "user-censored": 3
+        }
+      },
+      "by_dimensions": {
+        "512x512": {
+          "user-censored": 16,
+          "completed": 2
+        },
+        "512x256": {
+          "user-censored": 16,
+          "completed": 2
+        },
+        "256x512": {
+          "user-censored": 18,
+          "completed": 1
+        },
+        "256x256": {
+          "user-censored": 18,
+          "completed": 2
+        },
+        "128x256": {
+          "user-censored": 7,
+          "completed": 6
+        },
+        "256x128": {
+          "completed": 9,
+          "user-censored": 6
+        },
+        "128x128": {
+          "user-censored": 1,
+          "completed": 8
+        },
+        "64x128": {
+          "completed": 5
+        },
+        "128x64": {
+          "completed": 9
+        },
+        "64x64": {
+          "completed": 2
+        }
+      },
+      "censored_recovered_rows": 17296,
+      "discarded_unterminated_bytes": 366
+    }
+  },
+  "generic": {
+    "development_maps": 193,
+    "heldout_maps": 63,
+    "eligible_rows": 60568,
+    "heldout_rows": 13915,
+    "incumbent_same_rows": {
+      "absolute_error_p95": 24.341,
+      "absolute_error_p99": 118.82,
+      "decision_regret": 2.08310728151432,
+      "decision_regret_p95": 0.0,
+      "decision_regret_p99": 0.0,
+      "episodes": 13915,
+      "false_refresh_pct": 0.011748120300751877,
+      "mae": 7.767074806680218,
+      "missed_positive_benefit": 4.93775805118822,
+      "missed_threshold_decision_pct": 0.9308422340546855,
+      "mse": 3206.181239524944,
+      "negative_benefit_selected": 0.0024279448621553883,
+      "positive_benefit_captured_fraction": 0.0006974241848982263,
+      "selected_actual_benefit": 8.666666666666664,
+      "selected_pct": 0.011748120300751877,
+      "states": 63,
+      "threshold": 128.0
+    },
+    "refit": {
+      "absolute_error_p95": 28.096,
+      "absolute_error_p99": 116.986,
+      "decision_regret": 2.249757901424048,
+      "decision_regret_p95": 0.0,
+      "decision_regret_p99": 0.0,
+      "episodes": 13915,
+      "false_refresh_pct": 0.03779216222009335,
+      "mae": 8.16334376410747,
+      "missed_positive_benefit": 4.938353289283458,
+      "missed_threshold_decision_pct": 0.9308422340546855,
+      "mse": 3221.0936772321365,
+      "negative_benefit_selected": 0.13514695301988844,
+      "positive_benefit_captured_fraction": 0.0005769600075067145,
+      "selected_actual_benefit": -350.0622035236893,
+      "selected_pct": 0.03779216222009335,
+      "states": 63,
+      "threshold": 128.0
+    },
+    "relative_regret_change": 0.08000097805264317,
+    "float_head_vs_integer_max_absolute_units": 0.05200368795333077,
+    "cv": [
+      {
+        "episodes": 13317,
+        "states": 55,
+        "mae": 5.747289077820957,
+        "mse": 1044.5770863889866,
+        "selected_pct": 0.004761904761904762,
+        "selected_actual_benefit": 0.0,
+        "positive_benefit_captured_fraction": 0.0,
+        "missed_positive_benefit": 2.875898260644337,
+        "negative_benefit_selected": 0.0,
+        "threshold": 128.0,
+        "decision_regret": 0.9479777483177966,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 0.0,
+        "false_refresh_pct": 0.004761904761904762,
+        "missed_threshold_decision_pct": 0.4890941085561265,
+        "absolute_error_p95": 21.6,
+        "absolute_error_p99": 88.399
+      },
+      {
+        "episodes": 18571,
+        "states": 75,
+        "mae": 7.557206211543024,
+        "mse": 1493.4579012383183,
+        "selected_pct": 0.0,
+        "selected_actual_benefit": null,
+        "positive_benefit_captured_fraction": 0.0,
+        "missed_positive_benefit": 4.6474789838864465,
+        "negative_benefit_selected": 0.0,
+        "threshold": 128.0,
+        "decision_regret": 1.6462565240425646,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 0.0,
+        "false_refresh_pct": 0.0,
+        "missed_threshold_decision_pct": 0.9874601609861172,
+        "absolute_error_p95": 29.807,
+        "absolute_error_p99": 127.06
+      },
+      {
+        "episodes": 14765,
+        "states": 63,
+        "mae": 6.643812846720918,
+        "mse": 992.9468800540651,
+        "selected_pct": 0.03981200330337491,
+        "selected_actual_benefit": -43.6856608723204,
+        "positive_benefit_captured_fraction": 0.00022632422645940269,
+        "missed_positive_benefit": 3.9497853478437532,
+        "negative_benefit_selected": 0.01828627122741482,
+        "threshold": 128.0,
+        "decision_regret": 1.0967670049897469,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 0.0,
+        "false_refresh_pct": 0.03981200330337491,
+        "missed_threshold_decision_pct": 0.7932953194531772,
+        "absolute_error_p95": 29.489,
+        "absolute_error_p99": 103.181
+      }
+    ],
+    "age_demand": {
+      "materials": {
+        "episodes": 23416,
+        "maps": 256,
+        "maximum_age": 48926,
+        "high_demand_age128plus": 1456,
+        "high_demand_age512plus": 591,
+        "high_demand_age4096plus": 38
+      },
+      "markets": {
+        "episodes": 0,
+        "maps": 0,
+        "maximum_age": null,
+        "high_demand_age128plus": 0,
+        "high_demand_age512plus": 0,
+        "high_demand_age4096plus": 0
+      },
+      "guard": {
+        "episodes": 15397,
+        "maps": 233,
+        "maximum_age": 85887,
+        "high_demand_age128plus": 3300,
+        "high_demand_age512plus": 2068,
+        "high_demand_age4096plus": 1148
+      },
+      "clear": {
+        "episodes": 18495,
+        "maps": 256,
+        "maximum_age": 86904,
+        "high_demand_age128plus": 2933,
+        "high_demand_age512plus": 1922,
+        "high_demand_age4096plus": 1116
+      },
+      "forbidden": {
+        "episodes": 3260,
+        "maps": 236,
+        "maximum_age": 41420,
+        "high_demand_age128plus": 0,
+        "high_demand_age512plus": 0,
+        "high_demand_age4096plus": 0
+      }
+    }
+  },
+  "spatial": {
+    "common_eligible_rows": 41911,
+    "development_cv_selected": "overlap_fractions",
+    "identical_rows_weights_splits": true,
+    "variants": {
+      "baseline12": {
+        "cv": [
+          {
+            "episodes": 9385,
+            "states": 55,
+            "mae": 10.087003936374453,
+            "mse": 1950.6875759248114,
+            "selected_pct": 0.007142857142857144,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 5.520173161642435,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 1.8204685417003623,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 0.0,
+            "false_refresh_pct": 0.007142857142857144,
+            "missed_threshold_decision_pct": 0.9565001317567826,
+            "absolute_error_p95": 39.589,
+            "absolute_error_p99": 127.755
+          },
+          {
+            "episodes": 12788,
+            "states": 75,
+            "mae": 13.179578759606912,
+            "mse": 2716.5586836687235,
+            "selected_pct": 0.0,
+            "selected_actual_benefit": null,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 8.761251055129701,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 3.1036983003795946,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 82.0,
+            "false_refresh_pct": 0.0,
+            "missed_threshold_decision_pct": 1.8576670138521787,
+            "absolute_error_p95": 49.903,
+            "absolute_error_p99": 204.703
+          },
+          {
+            "episodes": 10215,
+            "states": 63,
+            "mae": 11.473783817179642,
+            "mse": 1814.76538403818,
+            "selected_pct": 0.04390623187565248,
+            "selected_actual_benefit": -27.759545923632608,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 7.478574144611695,
+            "negative_benefit_selected": 0.012188170600858368,
+            "threshold": 128.0,
+            "decision_regret": 2.048976190292682,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 48.0,
+            "false_refresh_pct": 0.04390623187565248,
+            "missed_threshold_decision_pct": 1.5133320258597434,
+            "absolute_error_p95": 46.586,
+            "absolute_error_p99": 155.383
+          }
+        ],
+        "holdout": {
+          "episodes": 9523,
+          "states": 63,
+          "mae": 14.995863759741718,
+          "mse": 6301.463125136397,
+          "selected_pct": 0.07808976186057176,
+          "selected_actual_benefit": -166.65351497288188,
+          "positive_benefit_captured_fraction": 0.000792110844285542,
+          "missed_positive_benefit": 9.744343639577943,
+          "negative_benefit_selected": 0.13786405207571933,
+          "threshold": 128.0,
+          "decision_regret": 4.360226970780097,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 76.0,
+          "false_refresh_pct": 0.07808976186057176,
+          "missed_threshold_decision_pct": 1.84516419129946,
+          "absolute_error_p95": 51.668,
+          "absolute_error_p99": 195.474
+        },
+        "comparable_selection_rates": [
+          {
+            "refresh_fraction": 0.01,
+            "positive_benefit_captured_fraction": 0.1376152930128043,
+            "net_benefit": 1.0088016975260246,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.05,
+            "positive_benefit_captured_fraction": 0.4117513240483693,
+            "net_benefit": 3.3253802391024694,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.1,
+            "positive_benefit_captured_fraction": 0.5850799866105661,
+            "net_benefit": 4.347247080457268,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.2,
+            "positive_benefit_captured_fraction": 0.8095066254339448,
+            "net_benefit": 6.194495612381929,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.3,
+            "positive_benefit_captured_fraction": 0.8830715770177598,
+            "net_benefit": 6.7456013483100445,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.5,
+            "positive_benefit_captured_fraction": 0.9456405977869795,
+            "net_benefit": 7.128107982687862,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          }
+        ]
+      },
+      "overlap_counts": {
+        "cv": [
+          {
+            "episodes": 9385,
+            "states": 55,
+            "mae": 10.109258466093607,
+            "mse": 1950.319286965245,
+            "selected_pct": 0.007142857142857144,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 5.520173161642435,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 1.8204685417003623,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 0.0,
+            "false_refresh_pct": 0.007142857142857144,
+            "missed_threshold_decision_pct": 0.9565001317567826,
+            "absolute_error_p95": 41.267,
+            "absolute_error_p99": 126.667
+          },
+          {
+            "episodes": 12788,
+            "states": 75,
+            "mae": 13.097601393528846,
+            "mse": 2721.2096828241215,
+            "selected_pct": 0.0,
+            "selected_actual_benefit": null,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 8.761251055129701,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 3.1036983003795946,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 82.0,
+            "false_refresh_pct": 0.0,
+            "missed_threshold_decision_pct": 1.8576670138521787,
+            "absolute_error_p95": 50.174,
+            "absolute_error_p99": 197.316
+          },
+          {
+            "episodes": 10215,
+            "states": 63,
+            "mae": 11.411557760926623,
+            "mse": 1809.4195573021793,
+            "selected_pct": 0.0473911830956493,
+            "selected_actual_benefit": -6.650982440453794,
+            "positive_benefit_captured_fraction": 8.966961420744434e-06,
+            "missed_positive_benefit": 7.478507084525858,
+            "negative_benefit_selected": 0.003219039351851852,
+            "threshold": 128.0,
+            "decision_regret": 2.0444007365194343,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 48.0,
+            "false_refresh_pct": 0.0473911830956493,
+            "missed_threshold_decision_pct": 1.5133320258597434,
+            "absolute_error_p95": 47.113,
+            "absolute_error_p99": 155.347
+          }
+        ],
+        "holdout": {
+          "episodes": 9523,
+          "states": 63,
+          "mae": 14.918710685280638,
+          "mse": 6295.070901941189,
+          "selected_pct": 0.0505660508617609,
+          "selected_actual_benefit": -529.9732089911445,
+          "positive_benefit_captured_fraction": 0.0002366045379034736,
+          "missed_positive_benefit": 9.749760975051457,
+          "negative_benefit_selected": 0.2702939060397768,
+          "threshold": 128.0,
+          "decision_regret": 4.462843810139192,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 72.0,
+          "false_refresh_pct": 0.0505660508617609,
+          "missed_threshold_decision_pct": 1.84516419129946,
+          "absolute_error_p95": 51.521,
+          "absolute_error_p99": 196.071
+        },
+        "comparable_selection_rates": [
+          {
+            "refresh_fraction": 0.01,
+            "positive_benefit_captured_fraction": 0.14175481067660706,
+            "net_benefit": 0.9727076756790518,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.05,
+            "positive_benefit_captured_fraction": 0.40974445009989263,
+            "net_benefit": 3.1506716360453995,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.1,
+            "positive_benefit_captured_fraction": 0.5970666137919339,
+            "net_benefit": 4.572902419252256,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.2,
+            "positive_benefit_captured_fraction": 0.80767671001584,
+            "net_benefit": 6.168633283871112,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.3,
+            "positive_benefit_captured_fraction": 0.8907377031684225,
+            "net_benefit": 6.783863912060592,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.5,
+            "positive_benefit_captured_fraction": 0.9449998780472241,
+            "net_benefit": 7.085175585938347,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          }
+        ]
+      },
+      "overlap_fractions": {
+        "cv": [
+          {
+            "episodes": 9385,
+            "states": 55,
+            "mae": 10.029824000871091,
+            "mse": 1950.5777796736218,
+            "selected_pct": 0.007142857142857144,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 5.520173161642435,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 1.8204685417003623,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 0.0,
+            "false_refresh_pct": 0.007142857142857144,
+            "missed_threshold_decision_pct": 0.9565001317567826,
+            "absolute_error_p95": 39.588,
+            "absolute_error_p99": 127.899
+          },
+          {
+            "episodes": 12788,
+            "states": 75,
+            "mae": 13.201725204481896,
+            "mse": 2718.035007383506,
+            "selected_pct": 0.0,
+            "selected_actual_benefit": null,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 8.761251055129701,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 3.1036983003795946,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 82.0,
+            "false_refresh_pct": 0.0,
+            "missed_threshold_decision_pct": 1.8576670138521787,
+            "absolute_error_p95": 50.168,
+            "absolute_error_p99": 203.84199999999998
+          },
+          {
+            "episodes": 10215,
+            "states": 63,
+            "mae": 11.476381016628888,
+            "mse": 1809.4091981079791,
+            "selected_pct": 0.04222972972972973,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 7.478574144611695,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 2.0346420969450425,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 48.0,
+            "false_refresh_pct": 0.04222972972972973,
+            "missed_threshold_decision_pct": 1.5133320258597434,
+            "absolute_error_p95": 46.238,
+            "absolute_error_p99": 153.635
+          }
+        ],
+        "holdout": {
+          "episodes": 9523,
+          "states": 63,
+          "mae": 14.953176002259163,
+          "mse": 6298.277118840457,
+          "selected_pct": 0.07808976186057176,
+          "selected_actual_benefit": -166.65351497288188,
+          "positive_benefit_captured_fraction": 0.000792110844285542,
+          "missed_positive_benefit": 9.744343639577943,
+          "negative_benefit_selected": 0.13786405207571933,
+          "threshold": 128.0,
+          "decision_regret": 4.360226970780097,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 76.0,
+          "false_refresh_pct": 0.07808976186057176,
+          "missed_threshold_decision_pct": 1.84516419129946,
+          "absolute_error_p95": 51.507,
+          "absolute_error_p99": 193.474
+        },
+        "comparable_selection_rates": [
+          {
+            "refresh_fraction": 0.01,
+            "positive_benefit_captured_fraction": 0.13745799228685024,
+            "net_benefit": 1.0075953440910292,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.05,
+            "positive_benefit_captured_fraction": 0.4134311881820584,
+            "net_benefit": 3.0949809576318636,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.1,
+            "positive_benefit_captured_fraction": 0.5970791514825529,
+            "net_benefit": 4.466508731695492,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.2,
+            "positive_benefit_captured_fraction": 0.8065381236222195,
+            "net_benefit": 6.1661629455148805,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.3,
+            "positive_benefit_captured_fraction": 0.8814302884432954,
+            "net_benefit": 6.74458064387596,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.5,
+            "positive_benefit_captured_fraction": 0.9404103528594481,
+            "net_benefit": 7.096132626258354,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          }
+        ]
+      },
+      "overlap_counts_fractions": {
+        "cv": [
+          {
+            "episodes": 9385,
+            "states": 55,
+            "mae": 10.070492735900709,
+            "mse": 1948.5317245165686,
+            "selected_pct": 0.007142857142857144,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 5.520173161642435,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 1.8204685417003623,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 0.0,
+            "false_refresh_pct": 0.007142857142857144,
+            "missed_threshold_decision_pct": 0.9565001317567826,
+            "absolute_error_p95": 40.371,
+            "absolute_error_p99": 127.384
+          },
+          {
+            "episodes": 12788,
+            "states": 75,
+            "mae": 13.137224092714058,
+            "mse": 2721.1540789656633,
+            "selected_pct": 0.0,
+            "selected_actual_benefit": null,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 8.761251055129701,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 3.1036983003795946,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 82.0,
+            "false_refresh_pct": 0.0,
+            "missed_threshold_decision_pct": 1.8576670138521787,
+            "absolute_error_p95": 50.683,
+            "absolute_error_p99": 197.466
+          },
+          {
+            "episodes": 10215,
+            "states": 63,
+            "mae": 11.400356547776925,
+            "mse": 1809.2171756711373,
+            "selected_pct": 0.050744187387494796,
+            "selected_actual_benefit": -27.71944721187593,
+            "positive_benefit_captured_fraction": 0.00017933922841488869,
+            "missed_positive_benefit": 7.477232942894957,
+            "negative_benefit_selected": 0.015407209952710221,
+            "threshold": 128.0,
+            "decision_regret": 2.0596066109829536,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 50.0,
+            "false_refresh_pct": 0.050744187387494796,
+            "missed_threshold_decision_pct": 1.5133320258597434,
+            "absolute_error_p95": 46.784,
+            "absolute_error_p99": 155.555
+          }
+        ],
+        "holdout": {
+          "episodes": 9523,
+          "states": 63,
+          "mae": 14.924933947848213,
+          "mse": 6291.37886785531,
+          "selected_pct": 0.060598153590492844,
+          "selected_actual_benefit": -445.5464844398721,
+          "positive_benefit_captured_fraction": 0.0002366045379034736,
+          "missed_positive_benefit": 9.749760975051457,
+          "negative_benefit_selected": 0.2723003265855233,
+          "threshold": 128.0,
+          "decision_regret": 4.477691322177715,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 74.0,
+          "false_refresh_pct": 0.060598153590492844,
+          "missed_threshold_decision_pct": 1.84516419129946,
+          "absolute_error_p95": 51.376,
+          "absolute_error_p99": 197.301
+        },
+        "comparable_selection_rates": [
+          {
+            "refresh_fraction": 0.01,
+            "positive_benefit_captured_fraction": 0.17539357303820696,
+            "net_benefit": 1.2967301865398893,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.05,
+            "positive_benefit_captured_fraction": 0.41750982370423384,
+            "net_benefit": 3.2371257925409243,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.1,
+            "positive_benefit_captured_fraction": 0.601398678546884,
+            "net_benefit": 4.610341864813175,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.2,
+            "positive_benefit_captured_fraction": 0.8093054518290574,
+            "net_benefit": 6.180970617343704,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.3,
+            "positive_benefit_captured_fraction": 0.8871825580651612,
+            "net_benefit": 6.816010576464767,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.5,
+            "positive_benefit_captured_fraction": 0.9450384412170034,
+            "net_benefit": 7.1091110273626485,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          }
+        ]
+      },
+      "directional_counts_fractions": {
+        "cv": [
+          {
+            "episodes": 9385,
+            "states": 55,
+            "mae": 10.112405699052404,
+            "mse": 1941.484487791285,
+            "selected_pct": 0.007142857142857144,
+            "selected_actual_benefit": 0.0,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 5.520173161642435,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 1.8204685417003623,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 0.0,
+            "false_refresh_pct": 0.007142857142857144,
+            "missed_threshold_decision_pct": 0.9565001317567826,
+            "absolute_error_p95": 40.905,
+            "absolute_error_p99": 127.059
+          },
+          {
+            "episodes": 12788,
+            "states": 75,
+            "mae": 13.08087203762919,
+            "mse": 2713.4124489218884,
+            "selected_pct": 0.0,
+            "selected_actual_benefit": null,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 8.761251055129701,
+            "negative_benefit_selected": 0.0,
+            "threshold": 128.0,
+            "decision_regret": 3.1036983003795946,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 82.0,
+            "false_refresh_pct": 0.0,
+            "missed_threshold_decision_pct": 1.8576670138521787,
+            "absolute_error_p95": 50.216,
+            "absolute_error_p99": 196.27
+          },
+          {
+            "episodes": 10215,
+            "states": 63,
+            "mae": 11.410130804548688,
+            "mse": 1801.7362057723305,
+            "selected_pct": 0.04591546607928179,
+            "selected_actual_benefit": -33.55559960146488,
+            "positive_benefit_captured_fraction": 0.0,
+            "missed_positive_benefit": 7.478574144611695,
+            "negative_benefit_selected": 0.015407209952710221,
+            "threshold": 128.0,
+            "decision_regret": 2.0547670494251795,
+            "decision_regret_p95": 0.0,
+            "decision_regret_p99": 48.0,
+            "false_refresh_pct": 0.04591546607928179,
+            "missed_threshold_decision_pct": 1.5133320258597434,
+            "absolute_error_p95": 46.059,
+            "absolute_error_p99": 148.363
+          }
+        ],
+        "holdout": {
+          "episodes": 9523,
+          "states": 63,
+          "mae": 14.970182004541536,
+          "mse": 6269.342174380138,
+          "selected_pct": 0.038078488265357376,
+          "selected_actual_benefit": -187.3382060634057,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 9.752068358679066,
+          "negative_benefit_selected": 0.07133555681238495,
+          "threshold": 128.0,
+          "decision_regret": 4.250208764416013,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 72.0,
+          "false_refresh_pct": 0.038078488265357376,
+          "missed_threshold_decision_pct": 1.84516419129946,
+          "absolute_error_p95": 52.971,
+          "absolute_error_p99": 198.61
+        },
+        "comparable_selection_rates": [
+          {
+            "refresh_fraction": 0.01,
+            "positive_benefit_captured_fraction": 0.1701475299647872,
+            "net_benefit": 1.3273433937068082,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.05,
+            "positive_benefit_captured_fraction": 0.4214070813642683,
+            "net_benefit": 3.419917598338732,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.1,
+            "positive_benefit_captured_fraction": 0.597560521875316,
+            "net_benefit": 4.718236559672,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.2,
+            "positive_benefit_captured_fraction": 0.8149518530535587,
+            "net_benefit": 6.234682038943274,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.3,
+            "positive_benefit_captured_fraction": 0.8856530462558757,
+            "net_benefit": 6.749420628133209,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          },
+          {
+            "refresh_fraction": 0.5,
+            "positive_benefit_captured_fraction": 0.945311576836708,
+            "net_benefit": 7.112736110877125,
+            "scope": "offline-ranked-episode-decisions;not-simulation-refresh-rate"
+          }
+        ]
+      }
+    }
+  },
+  "integrity": {
+    "collector_contract": "unified-gradient-spatial-h128-v3",
+    "model_contract": "unified-gradient-h128-v2",
+    "horizon_offsets": [
+      8,
+      127
+    ],
+    "threshold_milli": 128000,
+    "minimum_interval": 8,
+    "forced_age_cap": null,
+    "split_registry_sha256": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+    "original_export_preserved": true,
+    "scope": [
+      "materials",
+      "guard",
+      "clear",
+      "forbidden"
+    ],
+    "markets": "unmeasured/outside-current-campaign-scope"
+  },
+  "decision": "No technical blocker to generic12 research-only iteration; offline result worsened, no stable promotion and no spatial promotion"
+}

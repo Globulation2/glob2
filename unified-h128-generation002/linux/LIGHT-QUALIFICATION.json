@@ -1,0 +1,50 @@
+{
+  "source_revision": "6f73d23fe9425a75e85beab9b0f13f8ee782b148",
+  "scope": "coefficient-only main build, actual integer bounds/parity, bounded3runadaptiveobserver/thread/platform smoke; research candidate only",
+  "ordinary_release": true,
+  "model_trained": true,
+  "stable_promotion": false,
+  "binary_sha256": "9a739465a1241025cefd901759f71754e9be7d117ed8b66c816e417116a20ce4",
+  "model_sha256": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+  "header_sha256": "e6f2b934c005173390b12ca415fc61e4257edbc75b9bdbe4965f9dbb71ea8dc5",
+  "checks": {
+    "main_build": true,
+    "integer_bounds_parity_530_ubsan": true,
+    "adaptive_no_fixed_interval_override": true,
+    "probe_off_on_threads_1_4": true,
+    "mac_linux_world_and_finalsave": true,
+    "on_thread_diagnostic_csv_exact": true
+  },
+  "bundles": {
+    "middle-linux": "9429f89340431ef1d9e84ab4480aeb3418d1c7772380e7e7af611ed1c7d407ea",
+    "small-pharaoh": "c7b9c372255ba7770d1f5a447bb9387cefc32e9727f4828cc7d436e2d2c4b93f"
+  },
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/linux/PARITY.json",
+      "sha256": "605d5c0034228cc79287a9c3b7b500836f81bb13d32dc338e72205ea57bbfe0a"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/linux/FROZEN.json",
+      "sha256": "e7745e0ea0a4ddc254a2ebde13c50ab589dde9e9a599b858bc1d90fde407ffc5"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/linux/build-status.json",
+      "sha256": "90647491695118ad08e680560086fb633f4cbc71bcc8f493938213c3728cf2df"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/linux/CROSS-PLATFORM.json",
+      "sha256": "89237bae526cb5de426bb9f132f9251a659c0fb02f0e9d209f64a5c092a7d8ca"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/runtime-linux/status.json",
+      "sha256": "c8d17d9e0524bf23064f17538d13c6050500829266b177006362cdac188f3dc1"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/candidate-gen002/linux-bundles.json",
+      "sha256": "9cd5aaf8ac0b2e285e3356dc27bea6e4684956fb284291b0c1dc159b9ccfc3bb"
+    }
+  ],
+  "updated_utc": "2026-10-19T06:40:49.669206+00:00",
+  "research_candidate_only": true
+}

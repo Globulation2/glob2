@@ -1,0 +1,13 @@
+# Cumulative256 research review
+
+All256 planned slots are terminal and represented: exploration53complete/75capped, candidate46complete/82capped (99complete/157capped total). Original exploration export bytes and split assignments are preserved. Complete H128 episodes from capped trajectories remain eligible; truncated final bytes/incomplete horizons are excluded, and incomplete whole-game totals remain unknown.
+
+Generic12:60568 eligible episodes,193development maps/63heldout maps. On EXACTsame13915heldout episodes and hierarchicalweights, the incumbent has regret2.083107; the new refit has2.249758 (+8.00%). MAE7.7671→8.1633. Incumbent admits6rawrows (0.011748weighted%); refit14 (0.037792%). Their mean observed admitted benefits are+8.667 and−350.062 units respectively. Both miss all threshold-beneficial decisions (0.930842weighted%); the few positive admitted outcomes are below128units. These are rare offline decisions; no engine CPU/pathfinding improvement or stable promotion is established.
+
+No unit/plumbing/split defect found: exact collector/modeltarget contracts,128tick capture-anchored labels [8,127],128000milli threshold=128direction-cost units; independent floating head evaluation differs from integer by≤0.052004units. Registry remains immutable and train/heldout wholemaps disjoint. Markets are explicitly unmeasured outside current required scope, never imputed.
+
+Spatial comparison uses the SAME41911eligible Materials/Clear rows/weights/splits for allfive variants. DevelopmentCV chooses overlap_fractions: first two foldregrets tiebaseline, third improves2.048976→2.034642. Heldout regret4.360227 tiesbaseline exactly. Directional variant has4.250209heldout but was not the developmentCV choice; this is exploratory inspection, not a reason to promote it. Count-only and combined count/fraction heldout regrets worsen to4.462844 and4.477691. Spatial inference stays unchanged.
+
+Guard/Forbidden thresholdregret is zero in this sample; the missed high-benefit tail and false admissions are concentrated in Materials/Clear. Missing late trajectories remain important, particularly large maps/formats; see CUMULATIVE-REVIEW.json accounting byrole/format/actualdimensions. Guard/Forbidden spatial support remains explicitly unknown, not measured zero. Markets absent.
+
+The generic refit is technically suitable only for the next explicitly authorized RESEARCH candidate iteration. It is a worse offline raredecision result than incumbent, so no stable qualification follows. No threshold/features changed, no spatial promotion, no automatic coefficient emission by this review. Round002 fixed exploration can collect under qualified incumbent while a new research coefficient build is validated.

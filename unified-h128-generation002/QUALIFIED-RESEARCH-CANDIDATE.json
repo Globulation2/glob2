@@ -1,0 +1,43 @@
+{
+  "status": "QUALIFIED-FOR-RESEARCH-CANDIDATE-ONLY",
+  "source_revision": "6f73d23fe9425a75e85beab9b0f13f8ee782b148",
+  "integration_head": "5b8f22fc1bc369be66b67487f8911030ec64b78f",
+  "sim_revision": 86,
+  "save_version": 178,
+  "save_floor": 58,
+  "replay_floor": 178,
+  "model_sha256": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+  "contract": "unified-gradient-h128-v2",
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "trained": true,
+  "threshold_milli": 128000,
+  "minimum_interval": 8,
+  "maximum_age": null,
+  "spatial_inference": false,
+  "integer_validation": "Actual fitted530C++/Python boundary vectors UBSanPASS andcheckedint64bounds; generatedheaderexact",
+  "python_model_checks": "24 tests PASS; 1 optional dependency skip",
+  "goldens": "3 regenerated then verifiedPASS; SIM85recordgatePASS",
+  "mac_linux_smoke": "1024ticks samefrozenmap/seed, probeOFF/ON, participants1/4; allworld/snapshot/replay/finalsavesidentical",
+  "mac_binary_sha256": "313c0e9b9111790fa9bf3c475023d520065c04bc49dbfc98b0a845aa9e4b06aa",
+  "linux_binary_sha256": "9a739465a1241025cefd901759f71754e9be7d117ed8b66c816e417116a20ce4",
+  "initial_architecture_evidence": "Prior broad Mac/Linux state/save/observer/platform proof unchanged exceptfittedcoefficients/SIM revision",
+  "stable_incumbent_promotion": false,
+  "prospective_performance_pending": true,
+  "training_accounting": {
+    "completed": 99,
+    "user_censored": 157,
+    "eligible": 60568,
+    "holdout_maps": 63,
+    "holdout_episodes": 13915
+  },
+  "observed_model_selection": "0.037792weightedpercentheldout,14rawadmissions; mostlyharmful; SAME-rowregret2.249758vsincumbent2.083107(+8percent); NOTstablepromotion",
+  "coverage_limitations": [
+    "Marketsunmeasured peruser",
+    "GuardbalancingOFF",
+    "75censoredtrajectoriesmissinglategame",
+    "veryoldhighdemandrare",
+    "SpatialonlyMaterials/Cleardiagnostic"
+  ],
+  "qualified_utc": "2026-10-19T06:41:21.782878+00:00",
+  "header_sha256": "e6f2b934c005173390b12ca415fc61e4257edbc75b9bdbe4965f9dbb71ea8dc5"
+}
