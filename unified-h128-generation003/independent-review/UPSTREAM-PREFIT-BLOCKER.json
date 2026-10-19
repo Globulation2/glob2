@@ -1,0 +1,30 @@
+{
+  "status": {
+    "automatic_emit": false,
+    "error": "Traceback (most recent call last):\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/cumulative-512/terminal-watcher.py\", line 37, in <module>\n    a=json.loads((copy/'terminal-accounting.json').read_text());paths.extend(copy/pathlib.Path(p).relative_to(source) for p in a['completed_manifests']+a['censored_manifests']);cohorts.append(dict(round=1,role=original['role'],expected=128,counts=a['counts']))\n                                                                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-002/cumulative-512/terminal-watcher.py\", line 37, in <genexpr>\n    a=json.loads((copy/'terminal-accounting.json').read_text());paths.extend(copy/pathlib.Path(p).relative_to(source) for p in a['completed_manifests']+a['censored_manifests']);cohorts.append(dict(round=1,role=original['role'],expected=128,counts=a['counts']))\n                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py\", line 490, in relative_to\n    raise ValueError(f\"{str(self)!r} is not in the subpath of {str(other)!r}\")\nValueError: '/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/terminal-export/completed/0592ad89853481cd95fe045e.cohort.json' is not in the subpath of '/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256/exploration-export'\n",
+    "fit_performed": false,
+    "jobs_by_role": {
+      "candidate": {
+        "failures": 3,
+        "jobs": {
+          "completed": 52,
+          "failed": 76
+        }
+      },
+      "exploration": {
+        "failures": 4,
+        "jobs": {
+          "completed": 51,
+          "failed": 77
+        }
+      }
+    },
+    "pid": 94711,
+    "remote": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-002/cumulative-512-research",
+    "status": "FAILED-REQUIRES-REVIEW",
+    "updated_utc": "2026-10-19T09:22:13.653368+00:00"
+  },
+  "status_sha256": "a8ea55a911e02eecb61e5c6416ff477edf08aa00cbe1a9a036c2712175702c2d",
+  "independent_fit_performed": false,
+  "analysis": "Sealed prior exploration accounting references original terminal-export root, while watcher line37 assumes cumulative-256/exploration-export. Resolve copied cohort manifest identity against immutable inventory and verify hashes; do not rewrite sealed accounting."
+}

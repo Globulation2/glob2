@@ -1,0 +1,23 @@
+{
+  "status": "COEFFICIENT-ONLY-RESEARCH-BUILD-RUNNING",
+  "native_source": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "previous_native_source": "6f73d23fe9425a75e85beab9b0f13f8ee782b148",
+  "fit_sha256": "7ea3871b3a575745edb822fb319c62ac0ad81fdd21282e20b91d8e75fa70c85f",
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "sim_revision": 87,
+  "version_minor": 178,
+  "minimum_version_minor": 58,
+  "replay_floor": 178,
+  "threshold_milli": 128000,
+  "minimum_interval": 8,
+  "maximum_age": null,
+  "spatial_inference": false,
+  "stable_promotion": false,
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "model_contract": "unified-gradient-h128-v2",
+  "training_planned_trajectories": 512,
+  "normal_completions": 202,
+  "capped_trajectories": 310,
+  "created_utc": "2026-10-19T09:29:57.624483+00:00"
+}

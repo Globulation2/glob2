@@ -1,0 +1,11 @@
+{
+  "files": {
+    "PLAN.json": "312d2ef1ae6caebbec52e399f24e1cd0962db9209f5da6f448f1f05467857945",
+    "gen002.json": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+    "review.py": "ecdc23dd5634032aba815b6b07d2d5e19ef0f0d0ebb0cc8c4eaf475037217074",
+    "prior-map-splits.json": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+    "supervise.py": "ad0488576f39d903bfa30463200318460722cff9f5b5c4ec8333b5c03ef7dda0"
+  },
+  "remote_pid": 1049940,
+  "fit_performed": false
+}

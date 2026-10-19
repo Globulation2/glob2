@@ -1,0 +1,43 @@
+{
+  "status": "QUALIFIED-FOR-RESEARCH-CANDIDATE-ONLY",
+  "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "integration_head": "dea71831a",
+  "sim_revision": 87,
+  "save_version": 178,
+  "save_floor": 58,
+  "replay_floor": 178,
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "contract": "unified-gradient-h128-v2",
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "trained": true,
+  "threshold_milli": 128000,
+  "minimum_interval": 8,
+  "maximum_age": null,
+  "spatial_inference": false,
+  "integer_validation": "Actual fitted530C++/Python boundary vectors UBSanPASS, checkedint64bounds, exactgeneratedheader",
+  "goldens": "3 regenerated then verifiedPASS; SIM87matchrecordgatePASS",
+  "mac_linux_smoke": "1024ticks samefrozenmap/seed probeOFF/ON participants1/4; allworld/snapshot/replay/finalsaves and8CSVpairs exact",
+  "mac_binary_sha256": "995f3decd7c42ec002110424294b0f4a681f04cb8c173dbfb00dd75b3c3fa1f0",
+  "linux_binary_sha256": "5f6616edf50ac7ccfd3878edd70cd4b85719731a8a73453d716ab7d53303b848",
+  "initial_architecture_evidence": "Prior broadMac/Linux state/save/observer/platform proof unchanged exceptcoefficients/SIM; broadsuite intentionallynotrepeated",
+  "stable_incumbent_promotion": false,
+  "prospective_performance_pending": true,
+  "training_accounting": {
+    "completed": 202,
+    "user_censored": 310,
+    "eligible": 122901,
+    "holdout_maps": 120,
+    "holdout_episodes": 27669
+  },
+  "observed_model_selection": "Same27669rows:refit regret2.652598 vsgen0022.653688(~0.041percentlower);23vs25rawadmissions,weighted0.045375percent,selectedactualmean-73.321units. Bothworse thanneverrefresh2.561250. NOefficacyorstablepromotionclaim.",
+  "coverage_limitations": [
+    "Marketsunmeasured peruser",
+    "GuardbalancingOFF",
+    "310cappedtrajectoriesmissinglatecoverage",
+    "Veryoldhighdemandrare",
+    "SpatialonlyMaterials/Cleardiagnostic",
+    "Windows/mobile/browserexecutionnotverifiedinthiscoefficient-onlyround"
+  ],
+  "qualified_utc": "2026-10-19T09:35:59.553051+00:00"
+}

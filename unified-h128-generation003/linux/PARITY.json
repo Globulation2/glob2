@@ -1,0 +1,23 @@
+{
+  "source_revision": "4a2cf3dac9eb4eab0aab932307ca5096be953491",
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "header_sha256": "c82bc56e60923008ed81876ed1a9667715e691062f8d8364d7f67e9715766ad9",
+  "generated_header_exact": true,
+  "integer_accumulator_bounds": true,
+  "ubsan": true,
+  "vectors": 530,
+  "prediction_min": -157679,
+  "prediction_max": 784175,
+  "cpp_python_predictions_equal": true,
+  "compiler_argv": [
+    "g++",
+    "-std=c++20",
+    "-O2",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=undefined",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/parity.cpp",
+    "-o",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/linux/parity"
+  ],
+  "vectors_sha256": "c125483ad9490b137a9ea3cdab8303a1ef163b5cbf4a19317e9fe948d741220d"
+}

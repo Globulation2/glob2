@@ -1,0 +1,19 @@
+{
+  "files": {
+    "TECHNICAL-MODEL-CHECKS.json": "f25510c468aed6783fefa214c08c5b49442b7725b35c5c13ea2b83ede23e4e0b",
+    "PLAN.json": "312d2ef1ae6caebbec52e399f24e1cd0962db9209f5da6f448f1f05467857945",
+    "REVIEW-PREPARED.json": "124ed4cfa06fb8a3b07f5d90301f2d123738309ceb03778dc7fb2e7543b9920e",
+    "UPSTREAM-PREFIT-BLOCKER.json": "c68769f4d0c86c469cf58c76d31466995deb06f03a4b366438f8371bdb8331fe",
+    "REBASING-VERIFIED.json": "aad35833a7a579f0687a3b45b1c20aa727788d53b7d8441659b99f4a1fed19ee",
+    "gen002.json": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+    "review.py": "ecdc23dd5634032aba815b6b07d2d5e19ef0f0d0ebb0cc8c4eaf475037217074",
+    "review.log": "34a2a09d9fe51f31f819395e8a4ec0c4fff37e4355229b27577e15ce9a49209c",
+    "prior-map-splits.json": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+    "REVIEW.md": "15177c3c0b39db402e0b5c3bf099a18a7b4cec9d2f7391ebb2a7d0baa1e02bb9",
+    "REVIEW.json": "19e22d7716b4bca38b3e36c6e54c52df2f1492dfd72cc4f9dd40a6d40fc7f337",
+    "STATUS.json": "9ae81d7ec05cf285e1c75b1b9ae6dc0c527dfce55358951901856f5755f21b3c",
+    "supervise.py": "ad0488576f39d903bfa30463200318460722cff9f5b5c4ec8333b5c03ef7dda0"
+  },
+  "technical_integrity": "PASS",
+  "research_iteration_only": true
+}

@@ -1,0 +1,21 @@
+{
+  "scope": "Read-only identical eligible row inference audit; no fit/emission/promotion",
+  "incumbent_sha256": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+  "threshold_milli": 128000,
+  "horizon_offsets": [
+    8,
+    127
+  ],
+  "weighting": "equal format/role/cohort/map/family/collection/episode",
+  "splits": "existing persistent registry only",
+  "checks": [
+    "sealed input files and stage output SHA",
+    "contracts eligibility censor accounting",
+    "unchanged persistent prior splits",
+    "same rows weights and split for both models",
+    "integer accumulator bounds and milli units",
+    "near128 decisions and raw support",
+    "family format age demand coverage and outcomes"
+  ],
+  "selection": "No new model or hyperparameter selection; heldout comparison once for descriptive review"
+}

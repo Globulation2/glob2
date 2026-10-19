@@ -1,0 +1,13 @@
+{
+  "status": "TECHNICAL-MODEL-CHECKS-PASS",
+  "model_sha256": "7ea3871b3a575745edb822fb319c62ac0ad81fdd21282e20b91d8e75fa70c85f",
+  "schema": 2,
+  "threshold": 128000,
+  "development_maps": 392,
+  "heldout_maps": 120,
+  "prior_split_assignments_verified": 17137,
+  "contract": true,
+  "bounds": true,
+  "weighting_provenance": true,
+  "manifest_rows_and_metrics": "Running independent sealed-input row audit on Rig PID1072274"
+}

@@ -1,0 +1,6 @@
+PASS UnitCustomization/all locked capability ablations match fixed tick and RNG traces [golden][artifacts] (0.4s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (1.1s)
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (1.2s)
+
+3 passed, 0 failed, 0 skipped (2.7s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/goldens-verify.xml (3 cases)

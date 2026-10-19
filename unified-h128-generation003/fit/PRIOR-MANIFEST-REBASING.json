@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "prior_input_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+  "mapping": [
+    {
+      "role": "exploration",
+      "copy": "round001-exploration-export",
+      "manifests": [
+        "round001-exploration-export/completed/0592ad89853481cd95fe045e.cohort.json",
+        "round001-exploration-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json",
+        "round001-exploration-export/61ac95f187bf495d82ea1308.cohort.json"
+      ]
+    },
+    {
+      "role": "candidate",
+      "copy": "round001-candidate-export",
+      "manifests": [
+        "round001-candidate-export/completed/97e12890d0d46ffec0dc9e98.cohort.json",
+        "round001-candidate-export/completed/8f64703519515785f94a7c08.cohort.json",
+        "round001-candidate-export/f105e763c4278d70ff60f3ab.cohort.json"
+      ]
+    }
+  ],
+  "rule": "exact manifest relativepaths from immutable priorinputproof; original/copiedmanifest hashes verified; accounting unchanged"
+}

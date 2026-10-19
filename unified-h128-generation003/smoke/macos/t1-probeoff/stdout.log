@@ -1,0 +1,7 @@
+nox::game started
+checkpoint: wrote /Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/macos-smoke/t1-probeoff/checkpoint-512.game.gz
+nox::gui.game.checkSum() = 36737c86
+checkpoint: wrote /Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/macos-smoke/t1-probeoff/checkpoint-1024.game.gz
+automaticEndingGame ended: 1024 ticks, 0 minutes, 34 seconds
+GLOB2_GAME_END ticks=1024 winner_team=-1 seed=859231393 map="map.map" orders=50 players=team0:Warrush,team1:Warrush,team2:Warrush
+final: wrote /Users/bradley/glob2/artifacts/gradient-unified-20261019/round-003/candidate-gen003/macos-smoke/t1-probeoff/final.game.gz
