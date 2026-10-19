@@ -196,7 +196,7 @@ TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
     glob2test::HeadlessGame world(options);
     auto* market=world.addBuilding("market",8,8);
     REQUIRE(market);
-    market->setMaterial(CHERRY,20);
+    market->setMaterial(CHERRY,1);
     auto& targets=world.game.map.gradientRuntime->marketTargets;
     world.game.map.ensureGradientMarketTargets(0,CHERRY);
     REQUIRE(targets.initialized(0,CHERRY));
@@ -212,10 +212,14 @@ TEST_CASE("world teardown and map reuse discard derived supplier ledgers")
     REQUIRE(targets.initialized(0,CHERRY));
     CHECK(targets.ledgers.at(GradientMarketTargets::key(0,CHERRY)).cells==beforeFootprint);
     CHECK(policy.currentTargets(key)==beforeReset);
-    market->setMaterial(CHERRY,0);
+    // Use the delivery/withdrawal APIs: raw stock setters deliberately do not
+    // send the source-membership notifications this regression exercises.
+    market->removeMaterialFromBuilding(CHERRY);
+    REQUIRE(market->availableMaterial(CHERRY)==0);
     CHECK(policy.currentTargets(key).removed>beforeReset.removed);
     const auto beforeRestock=policy.currentTargets(key);
-    market->setMaterial(CHERRY,20);
+    market->addMaterialIntoBuilding(CHERRY);
+    REQUIRE(market->availableMaterial(CHERRY)>0);
     CHECK(policy.currentTargets(key).added>beforeRestock.added);
     const auto previousWorld=targets;
     world.game.clearGame();
