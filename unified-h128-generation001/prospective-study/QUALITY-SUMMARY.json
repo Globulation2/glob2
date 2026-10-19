@@ -1,0 +1,657 @@
+{
+  "scope": "short1024tick3frozen heldout maps, one repeat per arm; exact frozen6d9binary, full quality probeON/spatialON, no timing claims",
+  "limits": [
+    "diagnostic-only observations; not CPU timings",
+    "short early game, rare events/families and Markets may be absent",
+    "worlds may diverge by policy; observation counts differ; raw totals alone are not policy quality scores",
+    "no installed-master comparison, no stable promotion, no training ingestion"
+  ],
+  "plan_sha256": "307834a933a1daad5cab3a93e3b40cd1d359cc2465289309dae63c9ed89a98ac",
+  "finished": "2026-10-19T05:07:09.090130+00:00",
+  "attempts": 9,
+  "capped": 0,
+  "failed": 0,
+  "by_arm": {
+    "adaptive": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 530,
+      "native_extra_cost": 116,
+      "extra_cost_per_movement_observation": 0.2188679245283019,
+      "movement_totals": {
+        "extra_cost": 116,
+        "false_unreachable": 0,
+        "false_reachable": 30,
+        "invalid_goal": 2,
+        "missed_move": 2,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 13420,
+      "planning_false_unreachable": 75,
+      "planning_false_reachable": 247,
+      "gradient_jobs": 48,
+      "building_gradient_jobs": 62
+    },
+    "fixed32": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 492,
+      "native_extra_cost": 26,
+      "extra_cost_per_movement_observation": 0.052845528455284556,
+      "movement_totals": {
+        "extra_cost": 26,
+        "false_unreachable": 0,
+        "false_reachable": 22,
+        "invalid_goal": 0,
+        "missed_move": 1,
+        "escape_failure": 0,
+        "stall": 1,
+        "guard_balance": 0
+      },
+      "planning_observations": 12922,
+      "planning_false_unreachable": 15,
+      "planning_false_reachable": 180,
+      "gradient_jobs": 361,
+      "building_gradient_jobs": 60
+    },
+    "fixed128": {
+      "runs": 3,
+      "ticks": 3072,
+      "movement_observations": 514,
+      "native_extra_cost": 30,
+      "extra_cost_per_movement_observation": 0.058365758754863814,
+      "movement_totals": {
+        "extra_cost": 30,
+        "false_unreachable": 0,
+        "false_reachable": 29,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 12960,
+      "planning_false_unreachable": 49,
+      "planning_false_reachable": 198,
+      "gradient_jobs": 130,
+      "building_gradient_jobs": 64
+    }
+  },
+  "runs": [
+    {
+      "map_group": "25f03eb61d51f816",
+      "arm": "adaptive",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 189,
+      "movement_totals": {
+        "extra_cost": 0,
+        "false_unreachable": 0,
+        "false_reachable": 0,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 243,
+      "planning_false_unreachable": 0,
+      "planning_false_reachable": 14,
+      "complete_episodes": 6,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 2
+      },
+      "gradient_jobs": 8,
+      "building_gradient_jobs": 1,
+      "by_family": {
+        "0": {
+          "movement_observations": 7,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 181,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 1,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "25f03eb61d51f816",
+      "arm": "fixed32",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 166,
+      "movement_totals": {
+        "extra_cost": 0,
+        "false_unreachable": 0,
+        "false_reachable": 4,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 512,
+      "planning_false_unreachable": 0,
+      "planning_false_reachable": 26,
+      "complete_episodes": 8,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 2,
+        "fixed_interval": 70
+      },
+      "gradient_jobs": 78,
+      "building_gradient_jobs": 2,
+      "by_family": {
+        "0": {
+          "movement_observations": 20,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 4,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 145,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 1,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "25f03eb61d51f816",
+      "arm": "fixed128",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 190,
+      "movement_totals": {
+        "extra_cost": 0,
+        "false_unreachable": 0,
+        "false_reachable": 1,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 243,
+      "planning_false_unreachable": 0,
+      "planning_false_reachable": 17,
+      "complete_episodes": 6,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 2,
+        "fixed_interval": 17
+      },
+      "gradient_jobs": 25,
+      "building_gradient_jobs": 2,
+      "by_family": {
+        "0": {
+          "movement_observations": 8,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 1,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 181,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 1,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "a0c529a73241f24c",
+      "arm": "fixed32",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 123,
+      "movement_totals": {
+        "extra_cost": 12,
+        "false_unreachable": 0,
+        "false_reachable": 5,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 5065,
+      "planning_false_unreachable": 10,
+      "planning_false_reachable": 71,
+      "complete_episodes": 12,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 5,
+        "fixed_interval": 127
+      },
+      "gradient_jobs": 150,
+      "building_gradient_jobs": 28,
+      "by_family": {
+        "0": {
+          "movement_observations": 113,
+          "extra_cost": 12,
+          "false_unreachable": 0,
+          "false_reachable": 5,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 7,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 3,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "a0c529a73241f24c",
+      "arm": "fixed128",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 132,
+      "movement_totals": {
+        "extra_cost": 4,
+        "false_unreachable": 0,
+        "false_reachable": 8,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 4724,
+      "planning_false_unreachable": 8,
+      "planning_false_reachable": 80,
+      "complete_episodes": 11,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 4,
+        "fixed_interval": 30
+      },
+      "gradient_jobs": 51,
+      "building_gradient_jobs": 27,
+      "by_family": {
+        "0": {
+          "movement_observations": 123,
+          "extra_cost": 4,
+          "false_unreachable": 0,
+          "false_reachable": 8,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 6,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 3,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "a0c529a73241f24c",
+      "arm": "adaptive",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 131,
+      "movement_totals": {
+        "extra_cost": 16,
+        "false_unreachable": 0,
+        "false_reachable": 8,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 4765,
+      "planning_false_unreachable": 8,
+      "planning_false_reachable": 80,
+      "complete_episodes": 10,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 4
+      },
+      "gradient_jobs": 21,
+      "building_gradient_jobs": 27,
+      "by_family": {
+        "0": {
+          "movement_observations": 123,
+          "extra_cost": 16,
+          "false_unreachable": 0,
+          "false_reachable": 8,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 5,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 3,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "375d32382baf210a",
+      "arm": "fixed128",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 192,
+      "movement_totals": {
+        "extra_cost": 26,
+        "false_unreachable": 0,
+        "false_reachable": 20,
+        "invalid_goal": 0,
+        "missed_move": 0,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 7993,
+      "planning_false_unreachable": 41,
+      "planning_false_reachable": 101,
+      "complete_episodes": 15,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 3,
+        "fixed_interval": 37
+      },
+      "gradient_jobs": 54,
+      "building_gradient_jobs": 35,
+      "by_family": {
+        "0": {
+          "movement_observations": 166,
+          "extra_cost": 26,
+          "false_unreachable": 0,
+          "false_reachable": 20,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 25,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 1,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "375d32382baf210a",
+      "arm": "adaptive",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 210,
+      "movement_totals": {
+        "extra_cost": 100,
+        "false_unreachable": 0,
+        "false_reachable": 22,
+        "invalid_goal": 2,
+        "missed_move": 2,
+        "escape_failure": 0,
+        "stall": 0,
+        "guard_balance": 0
+      },
+      "planning_observations": 8412,
+      "planning_false_unreachable": 67,
+      "planning_false_reachable": 153,
+      "complete_episodes": 16,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 3
+      },
+      "gradient_jobs": 19,
+      "building_gradient_jobs": 34,
+      "by_family": {
+        "0": {
+          "movement_observations": 186,
+          "extra_cost": 100,
+          "false_unreachable": 0,
+          "false_reachable": 22,
+          "invalid_goal": 2,
+          "missed_move": 2,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 22,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 2,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    },
+    {
+      "map_group": "375d32382baf210a",
+      "arm": "fixed32",
+      "returncode": 0,
+      "capped": false,
+      "ticks": 1024,
+      "movement_observations": 203,
+      "movement_totals": {
+        "extra_cost": 14,
+        "false_unreachable": 0,
+        "false_reachable": 13,
+        "invalid_goal": 0,
+        "missed_move": 1,
+        "escape_failure": 0,
+        "stall": 1,
+        "guard_balance": 0
+      },
+      "planning_observations": 7345,
+      "planning_false_unreachable": 5,
+      "planning_false_reachable": 83,
+      "complete_episodes": 15,
+      "incomplete_episodes": 0,
+      "admitted_shared_by_reason": {
+        "reactive": 3,
+        "fixed_interval": 114
+      },
+      "gradient_jobs": 133,
+      "building_gradient_jobs": 30,
+      "by_family": {
+        "0": {
+          "movement_observations": 174,
+          "extra_cost": 14,
+          "false_unreachable": 0,
+          "false_reachable": 13,
+          "invalid_goal": 0,
+          "missed_move": 1,
+          "escape_failure": 0,
+          "stall": 1,
+          "guard_balance": 0
+        },
+        "3": {
+          "movement_observations": 28,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        },
+        "4": {
+          "movement_observations": 1,
+          "extra_cost": 0,
+          "false_unreachable": 0,
+          "false_reachable": 0,
+          "invalid_goal": 0,
+          "missed_move": 0,
+          "escape_failure": 0,
+          "stall": 0,
+          "guard_balance": 0
+        }
+      }
+    }
+  ]
+}

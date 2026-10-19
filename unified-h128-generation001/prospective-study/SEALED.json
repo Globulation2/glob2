@@ -1,0 +1,33 @@
+{
+  "sealed_utc": "2026-10-19T05:12:46.419315+00:00",
+  "status": "complete",
+  "scope": "artifact-only prospective study; no collector package/model/engine source changes, no stable promotion",
+  "files": {
+    "PLAN.json": "307834a933a1daad5cab3a93e3b40cd1d359cc2465289309dae63c9ed89a98ac",
+    "PLAN.sha256": "fae5743255726fc439812011f79dc1f5bd0b6d5b7c0acd5f00c25f119df3f5e9",
+    "run-quality.py": "607502246bd80d075e2bf680656b1b9450447147fc28fd996b3aa78f6c96e489",
+    "build-perf-only.py": "f83e573dbe8b79b6a1d4d4bef392903368e4ed9b7d5a281e842bf11c7c8a9a96",
+    "run-perf-study.py": "0166d8d041f2e02173cef4a5f706562a3a9cfea688492816527e288d20531d17",
+    "summarize-quality.py": "6c46a7c5951f545722e7c5acb7a3d6af64721cb651cff06553c4eb164090a402",
+    "QUALITY-LAUNCHED.json": "b1a1ce2cd1357262432a84428cda88af32dee760b6492a316843c2644aa578d1",
+    "QUALITY-SUMMARY.json": "2df96bd1f75685813fb189c7938bcd4e9ea9ffd4e1452485af083c307cdb6b2c",
+    "TIMING-SUMMARY.json": "0df6be1524e1fa1674d49eb9d63cb0926525419c3efbe45909f46b118fa58316",
+    "STUDY-COMPLETE.json": "1310c8e1c4fe82c6b3a749f957d24496ec4c16999d988c14d5720f740d84d31b",
+    "EQUIVALENCE-PASSED.json": "dfc4f291592ff07125cf021ab4b64047755eed6d41c9128b9984860640f9bbae",
+    "HOST-LOAD-SNAPSHOT.json": "51ffadd5705372528fd8f5e4beb9d810933730ed6c40963b27f6b545a564b998",
+    "perf-build/STATUS.json": "47832371f70d93f320690b3029d8185dd092aa65e304247c2587f017cbc9b049",
+    "perf-build/validation-only.patch": "b8764169fd8b1b0733cfb38f59bf360143f66dce2745b9b1ddee759a674207c9",
+    "perf-build/commands.json": "538458e19ae19f3fcc39220e1bbbefc1b2dfcba4e45aad111f0eec93ad5e8387",
+    "perf-build/link-command.json": "5bf36c09c19f81ade4e82c79a41ccd7535d4a9e3967dc0d7c50a2e2ceaaeb58d",
+    "perf-build/reused-link-inputs.json": "68610c2763ea7e012923456aebeaa63d5444eaf72fe261db4f0ee4e142d1cec3",
+    "timing/STATUS.json": "84b15597c3f6601aab02d17bba6f837e5bb53300eb98ae66bb714be42c658354",
+    "quality/STATUS.json": "268d83a4822304ecc5fde4063c357a2032bf5101a274f54c67fc3bfb41a52b1d"
+  },
+  "remote_perf_binary_sha256": "6f1018391088afacc25f664ee1a0b51f51e016c8e7261607b2613e48909b1c42",
+  "all_caps": 0,
+  "timing_attempts": 18,
+  "quality_attempts": 9,
+  "equivalence_runs": 6,
+  "study_engines_remaining": 0,
+  "preserved_failed_build_attempt": "perf-build-attempt1 mixed-header compiler failure; no games started; subsequent isolated cwd repair and equivalence gate passed"
+}

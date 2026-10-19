@@ -1,0 +1,39 @@
+diff --git a/src/app/cli/CommandLine.cpp b/src/app/cli/CommandLine.cpp
+index 727e406ea..e1c1d2040 100644
+--- a/src/app/cli/CommandLine.cpp
++++ b/src/app/cli/CommandLine.cpp
+@@ -317,7 +317,7 @@ void constraints(const Request &r)
+ 		requireParent("--diagnostic-interval", "--diagnostic-fields");
+ 		requireParent("--diagnostic-png", "--diagnostic-fields");
+ 		requireParent("--fork-rule", "--load-game");
+-        requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
++        // PERFORMANCE-ONLY: permit fixed research behavior without quality observation.
+         requireParent("--gradient-spatial-overlap", "--resource-gradient-probe");
+         if (r.has("--resource-gradient-exploration")) {
+             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1e79240c3..2be034ff8 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -568,7 +568,7 @@ struct HeadlessRunner
+             engine.gui.game.map.configureGradientWorkStats(path.string());
+         }
+         if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
+-            if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
++            if ((options.count("--resource-gradient-fork-field") && one(options,"--resource-gradient-probe","false")!="true") || recordReplay)
+                 throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
+             if (options.count("--resource-gradient-fork-field") && saved.empty())
+                 throw std::invalid_argument("Gradient checkpoint forks require --load-game");
+diff --git a/src/map/MapStep.cpp b/src/map/MapStep.cpp
+index c48a020d2..883add89a 100644
+--- a/src/map/MapStep.cpp
++++ b/src/map/MapStep.cpp
+@@ -761,7 +761,7 @@ Uint16** Map::gradientDestination(unsigned id, unsigned savedClasses)
+ void Map::configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
+     int forkField,unsigned forkWait,const std::string& decisionPath)
+ {
+-    if (!globalContainer || !globalContainer->structuredHeadless || !gradientRuntime->qualityProbe)
++    if (!globalContainer || !globalContainer->structuredHeadless || (forkField>=0 && !gradientRuntime->qualityProbe))
+         throw std::invalid_argument("Gradient exploration requires structured headless collection with the probe enabled");
+     ResourceGradientExploration config;
+     if (!intervals.empty()) config.intervals=ResourceGradientExploration::parseIntervals(intervals);

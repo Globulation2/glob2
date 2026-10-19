@@ -1,0 +1,521 @@
+{
+  "study": "gen001-prospective-short-v1",
+  "source_revision": "6d9fcfc34f4bf154d462869c578c72424db8a49a",
+  "frozen_binary_sha256": "46cbeb1d4250189fac9174247eb72aec23af62d3a558e051cb307154047a53dd",
+  "model_sha256": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070",
+  "maps": [
+    {
+      "generation_attempts": [
+        {
+          "command": [
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/mapgen-runtime/bin/glob2",
+            "map",
+            "generate",
+            "crater-lakes",
+            "--seed",
+            "3610512774",
+            "--width",
+            "128",
+            "--height",
+            "64",
+            "--teams",
+            "2",
+            "--output",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/543d0c799aa23abf/map.map.gz",
+            "--report-file",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/543d0c799aa23abf/generation-0.json",
+            "--set",
+            "algae-amount=75",
+            "--set",
+            "desert=2",
+            "--set",
+            "fruit=8",
+            "--set",
+            "grass=78",
+            "--set",
+            "hilltop-stone=0",
+            "--set",
+            "lake-density=30",
+            "--set",
+            "lake-size=30",
+            "--set",
+            "repeat=2",
+            "--set",
+            "sand=5",
+            "--set",
+            "smoothing=7",
+            "--set",
+            "stone-amount=75",
+            "--set",
+            "water=15",
+            "--set",
+            "wheat-amount=75",
+            "--set",
+            "wood-amount=150",
+            "--set",
+            "workers=4"
+          ],
+          "returncode": 0,
+          "spec": {
+            "ais": [
+              "numbi",
+              "numbi"
+            ],
+            "alliances": [
+              1,
+              2
+            ],
+            "format": "1v1",
+            "game_seed": 2484677057,
+            "generator": "crater-lakes",
+            "generator_params": {
+              "algae-amount": 75,
+              "desert": 2,
+              "fruit": 8,
+              "grass": 78,
+              "hilltop-stone": 0,
+              "lake-density": 30,
+              "lake-size": 30,
+              "repeat": 2,
+              "sand": 5,
+              "smoothing": 7,
+              "stone-amount": 75,
+              "water": 15,
+              "wheat-amount": 75,
+              "wood-amount": 150,
+              "workers": 4
+            },
+            "height": 64,
+            "map_seed": 3610512774,
+            "players": 2,
+            "width": 128
+          }
+        }
+      ],
+      "group": "543d0c799aa23abf",
+      "map_format": 178,
+      "map_group": "25f03eb61d51f816",
+      "mapgen_binary_sha256": "a927031b2ca67045434a327e8b98df8c7c77f1a1d3f0abac1ea42d06fa4adbcc",
+      "mapgen_source": "0a548c954",
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/543d0c799aa23abf/map.map.gz",
+      "planned_pool": "small-pharaoh",
+      "planned_role": "candidate",
+      "planned_spec_sha256": "543d0c799aa23abf6116a35200d118c4772d4e563a41bdffd5053f629e6838e4",
+      "sha256": "afb83ddc5684b7706dc6a8d5ac3c4944dd3af997871cae1ec423b83118be6d11",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi"
+        ],
+        "alliances": [
+          1,
+          2
+        ],
+        "format": "1v1",
+        "game_seed": 2484677057,
+        "generator": "crater-lakes",
+        "generator_params": {
+          "algae-amount": 75,
+          "desert": 2,
+          "fruit": 8,
+          "grass": 78,
+          "hilltop-stone": 0,
+          "lake-density": 30,
+          "lake-size": 30,
+          "repeat": 2,
+          "sand": 5,
+          "smoothing": 7,
+          "stone-amount": 75,
+          "water": 15,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 4
+        },
+        "height": 64,
+        "map_seed": 3610512774,
+        "players": 2,
+        "width": 128
+      }
+    },
+    {
+      "generation_attempts": [
+        {
+          "command": [
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/mapgen-runtime/bin/glob2",
+            "map",
+            "generate",
+            "crater-lakes",
+            "--seed",
+            "109663497",
+            "--width",
+            "64",
+            "--height",
+            "64",
+            "--teams",
+            "4",
+            "--output",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/be83d51f9ae3abdb/map.map.gz",
+            "--report-file",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/be83d51f9ae3abdb/generation-0.json",
+            "--set",
+            "algae-amount=100",
+            "--set",
+            "desert=4",
+            "--set",
+            "fruit=8",
+            "--set",
+            "grass=72",
+            "--set",
+            "hilltop-stone=0",
+            "--set",
+            "lake-density=35",
+            "--set",
+            "lake-size=30",
+            "--set",
+            "repeat=2",
+            "--set",
+            "sand=3",
+            "--set",
+            "smoothing=4",
+            "--set",
+            "stone-amount=100",
+            "--set",
+            "water=28",
+            "--set",
+            "wheat-amount=150",
+            "--set",
+            "wood-amount=100",
+            "--set",
+            "workers=3"
+          ],
+          "returncode": 0,
+          "spec": {
+            "ais": [
+              "econo",
+              "cabino",
+              "castor",
+              "cortex"
+            ],
+            "alliances": [
+              1,
+              2,
+              1,
+              2
+            ],
+            "format": "2v2",
+            "game_seed": 527286244,
+            "generator": "crater-lakes",
+            "generator_params": {
+              "algae-amount": 100,
+              "desert": 4,
+              "fruit": 8,
+              "grass": 72,
+              "hilltop-stone": 0,
+              "lake-density": 35,
+              "lake-size": 30,
+              "repeat": 2,
+              "sand": 3,
+              "smoothing": 4,
+              "stone-amount": 100,
+              "water": 28,
+              "wheat-amount": 150,
+              "wood-amount": 100,
+              "workers": 3
+            },
+            "height": 64,
+            "map_seed": 109663497,
+            "players": 4,
+            "width": 64
+          }
+        }
+      ],
+      "group": "be83d51f9ae3abdb",
+      "map_format": 178,
+      "map_group": "a0c529a73241f24c",
+      "mapgen_binary_sha256": "a927031b2ca67045434a327e8b98df8c7c77f1a1d3f0abac1ea42d06fa4adbcc",
+      "mapgen_source": "0a548c954",
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/be83d51f9ae3abdb/map.map.gz",
+      "planned_pool": "middle-linux",
+      "planned_role": "candidate",
+      "planned_spec_sha256": "be83d51f9ae3abdbcc6c4de61502881fbd2fbf40018cd136f752e8fec65fa92b",
+      "sha256": "4c036e8fab90065e6c34692929c1f9b086fabb289b7b15d6cbd709fec654b713",
+      "spec": {
+        "ais": [
+          "econo",
+          "cabino",
+          "castor",
+          "cortex"
+        ],
+        "alliances": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "format": "2v2",
+        "game_seed": 527286244,
+        "generator": "crater-lakes",
+        "generator_params": {
+          "algae-amount": 100,
+          "desert": 4,
+          "fruit": 8,
+          "grass": 72,
+          "hilltop-stone": 0,
+          "lake-density": 35,
+          "lake-size": 30,
+          "repeat": 2,
+          "sand": 3,
+          "smoothing": 4,
+          "stone-amount": 100,
+          "water": 28,
+          "wheat-amount": 150,
+          "wood-amount": 100,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 109663497,
+        "players": 4,
+        "width": 64
+      }
+    },
+    {
+      "generation_attempts": [
+        {
+          "command": [
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/mapgen-runtime/bin/glob2",
+            "map",
+            "generate",
+            "hidden-oasis",
+            "--seed",
+            "202241995",
+            "--width",
+            "64",
+            "--height",
+            "64",
+            "--teams",
+            "3",
+            "--output",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/a410b70d13f54ecf/map.map.gz",
+            "--report-file",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/a410b70d13f54ecf/generation-0.json",
+            "--set",
+            "buttes=4",
+            "--set",
+            "desert=60",
+            "--set",
+            "fruit-amount=150",
+            "--set",
+            "pond-algae=28",
+            "--set",
+            "pond-size=11",
+            "--set",
+            "springs=5",
+            "--set",
+            "starting-school=1",
+            "--set",
+            "starting-towers=0",
+            "--set",
+            "stone-amount=125",
+            "--set",
+            "wheat-amount=125",
+            "--set",
+            "wood-amount=125",
+            "--set",
+            "workers=3"
+          ],
+          "returncode": 2,
+          "spec": {
+            "ais": [
+              "numbi",
+              "numbi",
+              "cortex"
+            ],
+            "alliances": [
+              1,
+              2,
+              3
+            ],
+            "format": "3ffa",
+            "game_seed": 3434929752,
+            "generator": "hidden-oasis",
+            "generator_params": {
+              "buttes": 4,
+              "desert": 60,
+              "fruit-amount": 150,
+              "pond-algae": 28,
+              "pond-size": 11,
+              "springs": 5,
+              "starting-school": 1,
+              "starting-towers": 0,
+              "stone-amount": 125,
+              "wheat-amount": 125,
+              "wood-amount": 125,
+              "workers": 3
+            },
+            "height": 64,
+            "map_seed": 202241995,
+            "players": 3,
+            "width": 64
+          }
+        },
+        {
+          "command": [
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/mapgen-runtime/bin/glob2",
+            "map",
+            "generate",
+            "even-ground",
+            "--seed",
+            "3305309806",
+            "--width",
+            "128",
+            "--height",
+            "64",
+            "--teams",
+            "3",
+            "--output",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/a410b70d13f54ecf/map.map.gz",
+            "--report-file",
+            "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/a410b70d13f54ecf/generation-1.json",
+            "--set",
+            "algae-amount=125",
+            "--set",
+            "balance=80",
+            "--set",
+            "effort=2",
+            "--set",
+            "passes=60",
+            "--set",
+            "stone-amount=150",
+            "--set",
+            "water-share=25",
+            "--set",
+            "wheat-amount=75",
+            "--set",
+            "wood-amount=150",
+            "--set",
+            "workers=5"
+          ],
+          "returncode": 0,
+          "spec": {
+            "ais": [
+              "numbi",
+              "numbi",
+              "cortex"
+            ],
+            "alliances": [
+              1,
+              2,
+              3
+            ],
+            "format": "3ffa",
+            "game_seed": 3434929752,
+            "generator": "even-ground",
+            "generator_params": {
+              "algae-amount": 125,
+              "balance": 80,
+              "effort": 2,
+              "passes": 60,
+              "stone-amount": 150,
+              "water-share": 25,
+              "wheat-amount": 75,
+              "wood-amount": 150,
+              "workers": 5
+            },
+            "height": 64,
+            "map_seed": 3305309806,
+            "players": 3,
+            "width": 128
+          }
+        }
+      ],
+      "group": "a410b70d13f54ecf",
+      "map_format": 178,
+      "map_group": "375d32382baf210a",
+      "mapgen_binary_sha256": "a927031b2ca67045434a327e8b98df8c7c77f1a1d3f0abac1ea42d06fa4adbcc",
+      "mapgen_source": "0a548c954",
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/maps/a410b70d13f54ecf/map.map.gz",
+      "planned_pool": "small-pharaoh",
+      "planned_role": "exploration",
+      "planned_spec_sha256": "a410b70d13f54ecfa9906d09d5f2cebe5544336e5413c5dbfd69a4417dfdd4e8",
+      "sha256": "c5d505e7313359e9411e4b2370c51b3b119d18a8314791854aefa678faafb3b5",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cortex"
+        ],
+        "alliances": [
+          1,
+          2,
+          3
+        ],
+        "format": "3ffa",
+        "game_seed": 3434929752,
+        "generator": "even-ground",
+        "generator_params": {
+          "algae-amount": 125,
+          "balance": 80,
+          "effort": 2,
+          "passes": 60,
+          "stone-amount": 150,
+          "water-share": 25,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 64,
+        "map_seed": 3305309806,
+        "players": 3,
+        "width": 128
+      }
+    }
+  ],
+  "selection": "minimum area*players then group hash per format1v1/2v2/3ffa among frozen persistent holdout assignment=-1; independent of outcomes",
+  "split_registry_sha256": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+  "accepted_maps_sha256": "f7764516c080bf991dec3777d8a56bc512c3ffa2a0b91893081e6c6b7d3f7e5a",
+  "arms": [
+    "adaptive",
+    "fixed32",
+    "fixed128"
+  ],
+  "timing_repeats": 2,
+  "timing_ticks": 4096,
+  "quality_repeats": 1,
+  "quality_ticks": 1024,
+  "timeout_seconds_per_process": 1800,
+  "max_attempts": 1,
+  "host": "devlaptop.local",
+  "cpu_ids": [
+    2
+  ],
+  "nice": 19,
+  "compute_threads": 1,
+  "orders": [
+    [
+      "adaptive",
+      "fixed32",
+      "fixed128"
+    ],
+    [
+      "fixed32",
+      "fixed128",
+      "adaptive"
+    ],
+    [
+      "fixed128",
+      "adaptive",
+      "fixed32"
+    ]
+  ],
+  "repeat1_order": "reverse respective repeat0 order",
+  "limits": [
+    "short early-game workload only",
+    "SMT siblingCPU3 may run tournament job; shared host load, no isolation claim",
+    "timing study performance-only patched binary must first prove equivalence",
+    "quality probeON results excluded from CPU timing analysis",
+    "not installed-master comparison; no stable-promotion evidence",
+    "whole-map holdouts stay heldout and study rows must not enter training"
+  ],
+  "remote_root": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/prospective-study",
+  "frozen_runtime": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/runtime-linux-frozen"
+}

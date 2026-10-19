@@ -1,0 +1,9 @@
+# Short prospective study: qualified research candidate versus fixed policies
+
+Three predeclared small held-out maps, two counterbalanced4096tick timing repeats per arm; eighteen probe-disabled attempts total. Separate nine1024tick diagnostic attempts. All attempts succeeded with no caps. The sealed plan, per-attempt results, raw timing totals, commands, source patch and equivalence hashes are attached.
+
+Adaptive simulation CPU0.23293ms/tick; fixed320.24484; fixed1280.24245. Total process CPU including startup/setup0.38980/0.40195/0.39965ms/tick. Wall throughput2493/2419/2443ticks/sec. Relative simulation CPU savings4.86%/3.92% are small and subject to noise: short early-game runs on DevCPU2, with its SMT siblingCPU3 potentially occupied by tournament work. No uncontended measurement or installed-master comparison claimed.
+
+Separate diagnostic movement extra cost per observation was0.2189adaptive,0.05285fixed32,0.05837fixed128 (530/492/514observations). Worlds and query counts diverge. Rare invalid goals/missed moves and planning errors are recorded separately; no combined target penalty. No Guard/Market quality coverage. This slice favors fixed policies on quality and does not support stable adaptive promotion.
+
+The frozen CLI requires the quality observer for fixed research intervals. Timings therefore use an isolated performance-only binary with three validation guards relaxed, allowing explicit fixed intervals without the observer; scheduling, models and inference are unchanged. Six required per-tick checksum/final-save equivalence runs passed against the original frozen binary before timings began. This binary is not deployed to the tournament and the canonical/frozen collector sources remain unchanged. Initial failed build and prebuild attempt are preserved in local sealed provenance; no failed or capped measurements are omitted from the reported timing attempts.
