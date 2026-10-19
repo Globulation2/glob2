@@ -57,23 +57,23 @@ inline SelectedFeatures prepare(const BaseFeatures& base,const MovementCounts& c
     return {base[0],base[1],base[2],base[3],base[4],base[5],base[6],bounded(counts[0]),bounded(counts[1]),bounded(counts[2]),fraction(counts[0],counts[2]),fraction(counts[1],counts[2])};
 }
 inline I positive_probability(const std::array<I,12>& x) {
-    constexpr I c[]={6844663,36386694,22011031,3861702,7620005,3050402,7490915,22306308,6674182,-5412855,-74635590,-56601238};
-    I z=-1623778899167LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={3399218,31433817,22476532,4581915,9562188,2551506,6569139,30460691,7477102,-1775509,-78454535,37245320};
+    I z=-1555069908101LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_probability(const std::array<I,12>& x) {
-    constexpr I c[]={-3634040,8905598,28376371,3522056,4932470,-6754105,6780328,-10321621,-5333312,8009904,73063124,48686587};
-    I z=-1640177425864LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={-8237112,7855660,26796127,846523,8422541,-2539573,6543340,-12684902,418231,7750572,75478718,38643817};
+    I z=-1493987045200LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I positive_mean(const std::array<I,12>& x) {
-    constexpr I c[]={-58171137,977952577,-87505368,193036701,-503413645,32230101,181052138,62737141,970575833,83982823,-977212399,-7739608759};
-    I z=-1123661484381LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={70951633,840164462,-58233723,204594900,-614411489,92165023,201926490,207053602,723269404,163607081,-2230603304,-3940174757};
+    I z=-5041628857054LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline I negative_mean(const std::array<I,12>& x) {
-    constexpr I c[]={298636,97506508,23862009,-9286167,-114746528,82412116,-10961192,-49471749,485543647,18992547,269032873,-1310600809};
-    I z=2222389705557LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
+    constexpr I c[]={9513781,66314133,22985552,4066551,-64000514,55730804,11234493,173029385,429292453,-272151,-492167730,-1127513614};
+    I z=1822727155223LL; for (unsigned i=0;i<12;++i) z+=x[i]*c[i];
     return clip(z/(I(1)<<28));
 }
 inline int predict(const BaseFeatures& base,const MovementCounts& counts) {
