@@ -42,5 +42,6 @@
   "old178-warm.game.gz": "fa4506373ba0ea0bc24294a45582f0350c5f8f4ede2834fa84c1d1629dc5ce35",
   "runtime-files.json": "4b09d7ef1ff446642727432e291a99c37a00bd86aaf91319c764cb4eec644c3a",
   "runtime-objects.tar.gz": "d78ebe72e14bddb030caba40f59738b4d8245f8a68a0a3728b2df7ecc6c2c894",
-  "sim-revision-check.log": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe"
+  "sim-revision-check.log": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
+  "QUALIFIED-RESEARCH-CANDIDATE.json": "fb3a96e1b893cc92dd027f161155850c58183ed2292dab08498c74ec562225a1"
 }

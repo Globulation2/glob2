@@ -1,0 +1,98 @@
+{
+  "status": "QUALIFIED-FOR-RESEARCH-CANDIDATE-ONLY",
+  "utc": "2026-10-19T13:25:59.564558+00:00",
+  "source_revision": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+  "actual_native_build_revision": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+  "integration_golden_revision": "98ef41c0f",
+  "sim_revision": 89,
+  "save_version": 179,
+  "replay_floor": 179,
+  "save_floor": 58,
+  "model_sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1",
+  "header_sha256": "89a3936a8e4cc560a1b3b299aa9c804824430bcbab1ce90314d6e2faed429b9a",
+  "threshold_milli": 16000,
+  "prediction_horizon_ticks": 128,
+  "minimum_interval": 8,
+  "publication_delay": 8,
+  "maximum_interval": null,
+  "collector_contract": "unified-gradient-spatial-h128-v3",
+  "model_contract": "unified-gradient-h128-v2",
+  "linux_binary_sha256": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc",
+  "macos_binary_sha256": "64807701b9096e38be0ddd4f97aea3673b6e3d3e3618bc0222135c53712979c1",
+  "research_only": true,
+  "approved_for_candidate_collection": true,
+  "stable_promotion": false,
+  "bundles": [
+    {
+      "execution_pool": "small-pharaoh",
+      "id": "54ef04eba11fd60db5ac5a6f7119a5aef7b162fe5350226cb30715f3b77eaa31",
+      "directory": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/bundles/54ef04eba11fd60db5ac5a6f7119a5aef7b162fe5350226cb30715f3b77eaa31"
+    },
+    {
+      "execution_pool": "middle-linux",
+      "id": "da0b1b75d6c157e2877af6a185dc1312ced9eabb203aaf68f20605b995cfe3a7",
+      "directory": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/bundles/da0b1b75d6c157e2877af6a185dc1312ced9eabb203aaf68f20605b995cfe3a7"
+    }
+  ],
+  "qualified_linux_bundle_metadata": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-bundles-e1.json",
+  "runtime_archives": {
+    "linux": {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-runtime-e1.tar.gz",
+      "sha256": "e80d208b5fe59a68496a9a35032111fb3cfe2e67f00c903eec4878423466ef0f"
+    }
+  },
+  "checks": {
+    "ordinary_release": true,
+    "integer_bounds_parity_530_vectors": true,
+    "generated_header_exact": true,
+    "macos_17_goldens_update_verify": true,
+    "state_replay_21_cases": true,
+    "sim_revision_gate": true,
+    "markets_inplace_reload_and_world_teardown": true,
+    "fresh_mature_observer_threads_cross_platform": true,
+    "save178_read_and179_continuity": true
+  },
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/CROSS-PLATFORM.json",
+      "sha256": "417b041884bde0bb514c7ccbed1fbf072205e0cda13cc96b2371f05a7eb00cfe"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/MARKET-REGRESSION.json",
+      "sha256": "072ff9c75f472a1afaf27f17251e6d83dc083290c96eeb7182e677f850426887"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/FINAL-SOURCE-EQUIVALENCE.json",
+      "sha256": "8a95543f6ba8ba6bb95acae306b01d32531927ea07f80f632a2f73b5f886ce40"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/FROZEN.json",
+      "sha256": "67a9dcc3c3963db06b71c3d8c8563f7e397ebbd8715780fbdb73cafeff334074"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/PARITY.json",
+      "sha256": "6d266943605ca35da4a9bb66f2b261c67ee480c785f449b8e7c2907369fe7767"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/MACOS-FINAL-QUALIFICATION.json",
+      "sha256": "f53b68671fee2df33d16efbfe5ba5927d287470c579832533a0c8b0ed68f1656"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/runtime-macos/status.json",
+      "sha256": "8b2ee1a21cfb5e67953a2e77181fe89b78c1591614f53fb898447a4715c2fa66"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-bundles-e1.json",
+      "sha256": "462b28b7fc07bc1cc7b3614fc93bc77f5b1ac69728358426012a1028d551855a"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-runtime-e1.tar.gz",
+      "sha256": "e80d208b5fe59a68496a9a35032111fb3cfe2e67f00c903eec4878423466ef0f"
+    }
+  ],
+  "limitations": [
+    "Research collection authorization only; stable incumbent promotion remains separate.",
+    "Linux native85df plus test-only ca0c/e1 source equivalence; golden-only98ef does not change native runtime.",
+    "Legacy collector declaration128000 preserved unchanged for frozen worker compatibility; actual model, runtime and cohort behavior16000 are separately attested."
+  ]
+}
