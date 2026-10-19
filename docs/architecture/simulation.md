@@ -581,8 +581,10 @@ checksum adapter remains available for diagnostic fixtures.
 - Stale building walking fields are refreshed by `BuildingGradientPipeline`
   (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
   refresh and keeps serving the old field. At each observation up to four requests
-  are admitted globally from the FIFO. Missing-field initialization and warm
-  refreshes use separate batches, ordered by publication deadline. Initialization
+  per team are admitted, preserving FIFO order within each team. Teams cannot
+  borrow unused quotas; a saturated team does not block other teams. Missing-field
+  initialization and warm refreshes use separate batches, ordered by publication
+  deadline. Initialization
   publishes one tick after admission; refreshes publish `buildingGradientDelay`
   ticks after capture (the match rule, 1–8, default 8), before team stepping.
   Publication swaps the field and its search on the owner; it is discarded if a synchronous rebuild or a reset superseded it.
@@ -609,7 +611,9 @@ checksum adapter remains available for diagnostic fixtures.
   pruned and each live building/route/swim slot has at most one request.
   Saving retains the existing complete-field representation and remaining
   deadlines; format 170 adds cold destinations and a wider queue count. Historical
-  save loading remains supported. Maps without an active pipeline retain the
+  save loading remains supported. Format 186 widens pending building-job counts
+  to 16 bits for the larger per-team horizon; older byte counts remain readable.
+  Maps without an active pipeline retain the
   synchronous fallback.
   `Map::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past

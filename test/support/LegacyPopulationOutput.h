@@ -40,7 +40,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -354,6 +354,13 @@ public:
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
         if(suppressed()) return;
+        if (formatVersion < FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA
+            && sections.size() >= 2 && sections.back() == "pending"
+            && sections[sections.size()-2] == "buildingGradientPipeline" && name == "count") {
+            if (value > 255) throw std::logic_error("Historical building pending count exceeds byte encoding");
+            BinaryOutputStream::writeUint8(Uint8(value),name);
+            return;
+        }
         if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="count"
             && !sections.empty() && sections.back()=="gradientPipeline") {
             if(value>255) throw std::logic_error("Historical periodic job count exceeds its encoding");

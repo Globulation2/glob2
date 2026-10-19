@@ -132,7 +132,7 @@ void Map::ensureBuildingGradientPipeline()
 		// scheduled one stamped with it was requested earlier in this tick, so
 		// the later one wins as the later synchronous build would. (Values of
 		// one boundary are equal; a boundary repeated within one tick, as in
-		// direct map stepping, can differ.) At most MaxJobsPerTick entries.
+		// direct map stepping, can differ.) At most four entries per team.
 		if (!sameTick.empty() && (sameTick.front().captureTick != p.captureTick || sameTick.front().publishTick != game->stepCounter))
 			sameTick.clear();
 		const auto publishedEarlier = [&](int other) {
@@ -226,20 +226,24 @@ void Map::stageBuildingGradientPreparation()
 	if (!buildingGradientPipelineActive()) return;
 	auto& rt = *gradientRuntime;
 	auto& pipeline = rt.buildings;
-	while (!rt.buildingRequests.empty())
+	// Scan this boundary's queue once. A full team quota must not block another
+	// team behind it; deferred requests retain their order within each team.
+	const auto requests = rt.buildingRequests.size();
+	std::array<bool, TEAM_MAX_COUNT> blocked{};
+	for (std::size_t i = 0; i < requests; ++i)
 	{
 		const auto request = rt.buildingRequests.front();
+		rt.buildingRequests.pop_front();
 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) {
-			rt.buildingRequests.pop_front();
-			continue;
-		}
+		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
 		const bool initial = !b->globalGradient[request.slot];
 		const unsigned ticks = initial ? 1u : pipeline.delayTicks();
-		if (!pipeline.canReserve(ticks)) break;
-		rt.buildingRequests.pop_front();
-		auto* job = pipeline.reserve(ticks);
-
+		if (blocked[request.team] || !pipeline.canReserve(request.team, ticks)) {
+			blocked[request.team] = true;
+			rt.buildingRequests.push_back(request);
+			continue;
+		}
+		auto* job = pipeline.reserve(request.team, ticks);
 		job->payload = {};
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;

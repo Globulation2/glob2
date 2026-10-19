@@ -710,6 +710,188 @@ void scheduledFixedDeadlines()
 	std::puts("PASS scheduled building fields publish at fixed deadlines across workers 0/1/2/4/8 and delays 1/4/8");
 }
 
+void scheduledPerTeamQuotas()
+{
+    for (unsigned workers : {0u,2u,4u}) {
+        World world;
+        Scheduler scheduler(world,workers,4);
+        std::vector<Building*> first,second;
+        for (int i=0;i<6;++i) first.push_back(world.place(4+i*8,8,0));
+        for (int i=0;i<2;++i) second.push_back(world.place(12+i*16,40,1));
+        for (auto* list : {&first,&second})
+            for (auto* b : *list) world.warm(b);
+        scheduler.game.stepCounter=600;
+        scheduler.tick([&] {
+            // Team 0's excess requests precede every request from team 1.
+            for (auto* list : {&first,&second})
+                for (auto* b : *list) REQUIRE(scheduler.map.requestBuildingRefresh(b,0));
+        });
+        const auto firstCapture=scheduler.game.stepCounter;
+        CHECK(scheduler.status().pending==6);
+        CHECK(scheduler.status().queued==2);
+        CHECK(scheduler.status().jobs==6);
+        scheduler.tick();
+        CHECK(scheduler.status().pending==8);
+        CHECK(scheduler.status().queued==0);
+        scheduler.tick(); scheduler.tick();
+        CHECK(scheduler.status().published==0);
+        scheduler.tick();
+        CHECK(scheduler.status().published==6);
+        for (unsigned i=0;i<first.size();++i)
+            CHECK(first[i]->lastGlobalGradientUpdateStepCounter[0]==(i<4 ? firstCapture : 0));
+        for (auto* b : second) CHECK(b->lastGlobalGradientUpdateStepCounter[0]==firstCapture);
+        scheduler.tick();
+        CHECK(scheduler.status().published==8);
+        for (unsigned i=4;i<first.size();++i)
+            CHECK(first[i]->lastGlobalGradientUpdateStepCounter[0]==firstCapture+1);
+    }
+}
+
+void scheduledColdTeamQuotas()
+{
+    for (unsigned workers : {0u, 2u, 4u}) {
+        World world;
+        Scheduler scheduler(world, workers, 8);
+        std::vector<Building*> buildings;
+        for (int i=0; i<6; ++i) buildings.push_back(world.place(4+i*8,8));
+        for (int i=0; i<2; ++i) buildings.push_back(world.place(12+i*16,40,1));
+        scheduler.tick([&] {
+            for (auto* b : buildings) REQUIRE(scheduler.map.requestBuildingRefresh(b,0));
+        });
+        CHECK(scheduler.status().pending==6);
+        CHECK(scheduler.status().queued==2);
+        for (auto* b : buildings) CHECK(b->globalGradient[0]==nullptr);
+        scheduler.tick();
+        CHECK(scheduler.status().published==6);
+        CHECK(scheduler.status().pending==2);
+        CHECK(scheduler.status().queued==0);
+        for (unsigned i=0; i<buildings.size(); ++i)
+            CHECK((buildings[i]->globalGradient[0]!=nullptr)==(i<4 || i>=6));
+        scheduler.tick();
+        CHECK(scheduler.status().published==8);
+        CHECK(scheduler.status().pending==0);
+        for (auto* b : buildings) CHECK(b->globalGradient[0]!=nullptr);
+    }
+}
+
+void scheduledMixedTeamDeadlines()
+{
+    for (unsigned workers : {0u, 2u, 4u}) {
+        World world;
+        Scheduler scheduler(world, workers, 8);
+        std::vector<Building*> warm;
+        for (int i=0; i<5; ++i) {
+            warm.push_back(world.place(4+i*8,8));
+            world.warm(warm.back());
+        }
+        auto* cold=world.place(12,32);
+        auto* other=world.place(32,32,1);
+        scheduler.game.stepCounter=600;
+        scheduler.tick([&] {
+            for (unsigned i=0; i<4; ++i) REQUIRE(scheduler.map.requestBuildingRefresh(warm[i],0));
+        });
+        for (unsigned i=0; i<6; ++i) scheduler.tick();
+        scheduler.tick([&] {
+            // Cold team-0 work collides with its four warm deadlines. The later
+            // warm request could fit, but must not pass it; team 1 can proceed.
+            REQUIRE(scheduler.map.requestBuildingRefresh(cold,0));
+            REQUIRE(scheduler.map.requestBuildingRefresh(warm[4],0));
+            REQUIRE(scheduler.map.requestBuildingRefresh(other,0));
+        });
+        CHECK(scheduler.status().jobs==5);
+        CHECK(scheduler.status().queued==2);
+        CHECK(scheduler.status().pending==5);
+        scheduler.tick();
+        CHECK(other->globalGradient[0]!=nullptr);
+        CHECK(cold->globalGradient[0]==nullptr);
+        CHECK(scheduler.status().published==5);
+        CHECK(scheduler.status().queued==0);
+        CHECK(scheduler.status().pending==2);
+        scheduler.tick();
+        CHECK(cold->globalGradient[0]!=nullptr);
+        CHECK(scheduler.status().published==6);
+        for (unsigned i=0; i<7; ++i) scheduler.tick();
+        CHECK(scheduler.status().published==7);
+        CHECK(scheduler.status().pending==0);
+    }
+}
+
+void scheduledWidePendingSave(bool text)
+{
+    World source,restored;
+    std::vector<Building*> buildings;
+    for (World* world : {&source,&restored}) {
+        for (int team=2;team<9;++team) {
+            world->game.addTeam(team);
+            world->game.players[team]=new Player(team,"wide-save",world->game.teams[team],BasePlayer::P_LOCAL);
+        }
+        world->game.gameHeader.setNumberOfPlayers(9);
+        world->game.map.setMapDiscovered();
+        for (int team=0;team<9;++team) for (int i=0;i<32;++i) {
+            const int index=team*32+i;
+            auto* b=world->place(2+(index%20)*(world->siteW+1),
+                2+(index/20)*(world->siteH+1),team);
+            world->warm(b);
+            if (world==&source) buildings.push_back(b);
+        }
+    }
+    Scheduler scheduler(source,0,8),resume(restored,0,8);
+    scheduler.game.stepCounter=600;
+    for (unsigned tick=0;tick<8;++tick)
+        scheduler.tick([&] {
+            for (unsigned team=0;team<9;++team) for (unsigned i=0;i<4;++i)
+                REQUIRE(scheduler.map.requestBuildingRefresh(buildings[team*32+tick*4+i],0));
+        });
+    REQUIRE(scheduler.status().pending==288);
+    REQUIRE(scheduler.status().queued==0);
+    resume.game.stepCounter=scheduler.game.stepCounter;
+    const auto bytes=saveRuntime(scheduler.map,text);
+    loadRuntime(resume.map,bytes,text);
+    REQUIRE(resume.status().pending==288);
+    CHECK(saveRuntime(resume.map,text)==bytes);
+    for (unsigned tick=0;tick<8;++tick) {
+        scheduler.tick(); resume.tick();
+        CHECK(scheduler.status().pending==resume.status().pending);
+        CHECK(scheduler.status().published==36*(tick+1));
+        CHECK(resume.status().published==scheduler.status().published);
+        for (auto* b : buildings) {
+            auto* copy=restored.game.teams[b->owner->teamNumber]->myBuildings[Building::GIDtoID(b->gid)];
+            CHECK(b->lastGlobalGradientUpdateStepCounter[0]==copy->lastGlobalGradientUpdateStepCounter[0]);
+            CHECK(b->refreshRequested==copy->refreshRequested);
+        }
+    }
+    CHECK(scheduler.status().pending==0);
+    CHECK(resume.status().pending==0);
+    CHECK(saveRuntime(scheduler.map,text)==saveRuntime(resume.map,text));
+}
+
+void scheduledLegacyPendingSave(int version)
+{
+    World source,restored;
+    Scheduler scheduler(source,0,4),resume(restored,0,4);
+    for (World* world : {&source,&restored}) {
+        auto* b=world->place(24,24);
+        world->warm(b);
+    }
+    auto* b=source.game.teams[0]->myBuildings[0];
+    REQUIRE(b);
+    scheduler.game.stepCounter=600;
+    scheduler.tick([&] { REQUIRE(scheduler.map.requestBuildingRefresh(b,0)); });
+    REQUIRE(scheduler.status().pending==1);
+    const auto bytes=saveLegacyRuntime(scheduler.map,version);
+    resume.game.stepCounter=scheduler.game.stepCounter;
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    resume.map.loadRuntimeState(&input,version);
+    CHECK(input.readUint32("followingSection")==RuntimeSentinel);
+    CHECK(resume.status().pending==1);
+    CHECK(saveRuntime(scheduler.map)==saveRuntime(resume.map));
+    for (unsigned i=0;i<4;++i) { scheduler.tick(); resume.tick(); }
+    CHECK(scheduler.status().published==1);
+    CHECK(resume.status().published==1);
+    CHECK(saveRuntime(scheduler.map)==saveRuntime(resume.map));
+}
+
 // 2. A request made during team stepping is captured at the boundary.
 void scheduledCaptureAtBoundary()
 {
@@ -1470,6 +1652,29 @@ TEST_SUITE("BuildingGradientInvalidation")
 			scheduledKernelsMatchSynchronous(config);
 		}
 	}
+    TEST_CASE("a saturated team cannot block another team or borrow its unused quota")
+    {
+        glob2test::HeadlessGlobals globals;
+        scheduledPerTeamQuotas();
+        scheduledColdTeamQuotas();
+    }
+    TEST_CASE("mixed cold and warm deadlines preserve team FIFO without blocking other teams")
+    {
+        glob2test::HeadlessGlobals globals;
+        scheduledMixedTeamDeadlines();
+    }
+    TEST_CASE("more than 255 pending building gradients survive binary and text saves [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        scheduledWidePendingSave(false);
+        scheduledWidePendingSave(true);
+    }
+    TEST_CASE("historical byte-sized pending building jobs retain their deadlines [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        scheduledLegacyPendingSave(167);
+        scheduledLegacyPendingSave(185);
+    }
 	TEST_CASE("scheduled building fields publish at fixed deadlines across worker counts and delays")
 	{
 		glob2test::HeadlessGlobals globals;

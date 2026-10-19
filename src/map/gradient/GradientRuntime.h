@@ -82,7 +82,7 @@ struct GradientRuntime
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;
 	// Initialization or refresh asked for during team stepping, admitted FIFO
-	// after the tick. Superseded metadata is pruned before adding further demand.
+	// after the tick, up to four per team. Superseded metadata is pruned before adding further demand.
 	struct BuildingRequest
 	{
 		int team = 0;
