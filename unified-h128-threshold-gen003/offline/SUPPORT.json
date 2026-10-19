@@ -1,0 +1,94 @@
+{
+  "all_eligible_family_coverage": {
+    "materials": {
+      "maps": 512,
+      "episodes": 47324
+    },
+    "markets": {
+      "maps": 0,
+      "episodes": 0
+    },
+    "guard": {
+      "maps": 469,
+      "episodes": 30701
+    },
+    "clear": {
+      "maps": 510,
+      "episodes": 37401
+    },
+    "forbidden": {
+      "maps": 472,
+      "episodes": 7475
+    }
+  },
+  "heldout_family": {
+    "clear": {
+      "rows": 8248,
+      "maps": 118
+    },
+    "forbidden": {
+      "rows": 1946,
+      "maps": 112
+    },
+    "guard": {
+      "rows": 6931,
+      "maps": 112
+    },
+    "materials": {
+      "rows": 10544,
+      "maps": 120
+    }
+  },
+  "heldout_formats": {
+    "16ffa": {
+      "rows": 4324,
+      "maps": 16
+    },
+    "1v1": {
+      "rows": 3014,
+      "maps": 14
+    },
+    "2v2": {
+      "rows": 3281,
+      "maps": 17
+    },
+    "3ffa": {
+      "rows": 3804,
+      "maps": 14
+    },
+    "4ffa": {
+      "rows": 2878,
+      "maps": 12
+    },
+    "4v4": {
+      "rows": 2758,
+      "maps": 12
+    },
+    "8ffa": {
+      "rows": 3033,
+      "maps": 17
+    },
+    "8v8": {
+      "rows": 4577,
+      "maps": 18
+    }
+  },
+  "heldout_trajectory_status": {
+    "completed": {
+      "rows": 12808,
+      "maps": 50
+    },
+    "user-censored": {
+      "rows": 14861,
+      "maps": 70
+    }
+  },
+  "slots": {
+    "completed": 202,
+    "user-censored": 310
+  },
+  "all_rows": 122901,
+  "development_rows": 95232,
+  "heldout_rows": 27669,
+  "missing_family": "Markets unmeasured; no zero-imputation"
+}

@@ -1,0 +1,822 @@
+{
+  "plan_sha256": "7052db0cccbb3d52548726b6f7e83b3b7b267242bd3bd451861050485499ca30",
+  "rule": "Best development mean net direction benefit (ties highest threshold). Second: highest threshold with >=90% of positive best benefit; if same as best or no positive best, next-best net benefit threshold distinct from best. Include128 as reference. Never-discretionary retained baseline. Freeze shortlist before opening heldout metrics.",
+  "shortlist_units": [
+    1,
+    4,
+    128
+  ],
+  "best_units": 1,
+  "development": {
+    "rows": 95232,
+    "maps": 392,
+    "thresholds": {
+      "1": {
+        "weighted_net_direction_benefit": 3.290809497093663,
+        "weighted_harm_selected": 0.6282859516932753,
+        "positive_benefit_captured_fraction": 0.9290514109165295,
+        "weighted_selection_pct": 36.766757020014055,
+        "raw_selected": 48042,
+        "selected_actual_mean": 8.950502475108983,
+        "fixed128_cost_regret": 45.224429279053815,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.4831652038256697,
+            "weighted_policy_events": 3.4250710143240046,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.013507951278725876,
+            "event_delta_per_query": 0.0019055289672996554
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.9053467704661365,
+            "weighted_policy_events": 2.1343557934300814,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.0084175697229478,
+            "event_delta_per_query": -0.003570547884894604
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.004447068183544828,
+            "weighted_policy_events": 0.1536143218166922,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006608799886075503,
+            "event_delta_per_query": -0.00019132189861731675
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.020383542418966557,
+            "weighted_policy_events": 0.1050054975271035,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.004517549613131289,
+            "event_delta_per_query": -0.0008769413634298471
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.04605006969257399,
+            "weighted_policy_events": 0.21183495116497802,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.009113569519881778,
+            "event_delta_per_query": -0.001981167457167278
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.026605141761816716,
+            "weighted_policy_events": 0.13992807211293448,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006019989647464233,
+            "event_delta_per_query": -0.0011446071939459678
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.069117910669326,
+            "weighted_policy_events": 0.46737568265941704,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.020107450410775295,
+            "event_delta_per_query": -0.002973592792358913
+          }
+        }
+      },
+      "2": {
+        "weighted_net_direction_benefit": 3.1955265674975784,
+        "weighted_harm_selected": 0.5883915279588613,
+        "positive_benefit_captured_fraction": 0.8970065902489096,
+        "weighted_selection_pct": 29.343433614953064,
+        "raw_selected": 39414,
+        "selected_actual_mean": 10.890090810194673,
+        "fixed128_cost_regret": 35.81785825017184,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.4631685404028046,
+            "weighted_policy_events": 3.405074350901139,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.013429087525500469,
+            "event_delta_per_query": 0.0018266652140742487
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.8870212191871136,
+            "weighted_policy_events": 2.152681344709104,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.008489842867883362,
+            "event_delta_per_query": -0.0034982747399590415
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.0039059627800992433,
+            "weighted_policy_events": 0.15415542722013778,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00663207933870957,
+            "event_delta_per_query": -0.00016804244598324968
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.018972719237059527,
+            "weighted_policy_events": 0.10641632070901054,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.004578246089694106,
+            "event_delta_per_query": -0.0008162448868670303
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.042230277268066205,
+            "weighted_policy_events": 0.2156547435894858,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.009277904742284042,
+            "event_delta_per_query": -0.0018168322347650134
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.02389563122732218,
+            "weighted_policy_events": 0.142637582647429,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.0061365582896319585,
+            "event_delta_per_query": -0.001028038551778242
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.06365367320215067,
+            "weighted_policy_events": 0.4728399201265924,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.020342532996327767,
+            "event_delta_per_query": -0.0027385102068064387
+          }
+        }
+      },
+      "4": {
+        "weighted_net_direction_benefit": 2.9779135138490296,
+        "weighted_harm_selected": 0.5226448590088615,
+        "positive_benefit_captured_fraction": 0.8298340108827749,
+        "weighted_selection_pct": 21.158322958056957,
+        "raw_selected": 29143,
+        "selected_actual_mean": 14.074430755935964,
+        "fixed128_cost_regret": 25.558529662993372,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.43089435863955855,
+            "weighted_policy_events": 3.3728001691378933,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.013301803135484774,
+            "event_delta_per_query": 0.001699380824058553
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.8568641350987733,
+            "weighted_policy_events": 2.1828384287974445,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.008608777751531063,
+            "event_delta_per_query": -0.00337933985631134
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.003560788063208177,
+            "weighted_policy_events": 0.15450060193702883,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006646929455565131,
+            "event_delta_per_query": -0.00015319232912768744
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.016981330132135725,
+            "weighted_policy_events": 0.10840770981393433,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.004663919690528389,
+            "event_delta_per_query": -0.000730571286032747
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.035811667386563786,
+            "weighted_policy_events": 0.2220733534709882,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00955404636600748,
+            "event_delta_per_query": -0.0015406906110415743
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.019245076640351397,
+            "weighted_policy_events": 0.14728813723439982,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00633663458630198,
+            "event_delta_per_query": -0.0008279622551082221
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.05966958814826635,
+            "weighted_policy_events": 0.47682400518047674,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.020513936421079047,
+            "event_delta_per_query": -0.0025671067820551624
+          }
+        }
+      },
+      "8": {
+        "weighted_net_direction_benefit": 2.5827392202124573,
+        "weighted_harm_selected": 0.42304728993785623,
+        "positive_benefit_captured_fraction": 0.7125445742928715,
+        "weighted_selection_pct": 12.992254236394155,
+        "raw_selected": 18648,
+        "selected_actual_mean": 19.87906927635112,
+        "fixed128_cost_regret": 15.50113599290155,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.3838666346468983,
+            "weighted_policy_events": 3.3257724451452333,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.013116333052737425,
+            "event_delta_per_query": 0.0015139107413112032
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.8106685612844935,
+            "weighted_policy_events": 2.229034002611724,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.008790965962451774,
+            "event_delta_per_query": -0.0031971516453906286
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.0033384496967116353,
+            "weighted_policy_events": 0.15472294030352537,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006656494903329344,
+            "event_delta_per_query": -0.00014362688136347455
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.013417818689442664,
+            "weighted_policy_events": 0.11197122125662738,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.004817229184968636,
+            "event_delta_per_query": -0.0005772617915924989
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.02533702204638105,
+            "weighted_policy_events": 0.23254799881117094,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010004686866920454,
+            "event_delta_per_query": -0.0010900501101286002
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.011683661303842456,
+            "weighted_policy_events": 0.15484955257090877,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006661942020032809,
+            "event_delta_per_query": -0.000502654821377393
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.04894770572310037,
+            "weighted_policy_events": 0.4875458876056427,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.020975213563157683,
+            "event_delta_per_query": -0.002105829639976525
+          }
+        }
+      },
+      "16": {
+        "weighted_net_direction_benefit": 1.867993998180362,
+        "weighted_harm_selected": 0.28866533864114047,
+        "positive_benefit_captured_fraction": 0.5112525137300505,
+        "weighted_selection_pct": 6.5384228491335215,
+        "raw_selected": 9907,
+        "selected_actual_mean": 28.56948902330339,
+        "fixed128_cost_regret": 7.9549770392400365,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.31880327719447565,
+            "weighted_policy_events": 3.2607090876928106,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.012859733216172835,
+            "event_delta_per_query": 0.001257310904746614
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.7540039599668831,
+            "weighted_policy_events": 2.2856986039293345,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.009014442401517017,
+            "event_delta_per_query": -0.002973675206325386
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.0019254736585081708,
+            "weighted_policy_events": 0.15613591634172885,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006717284000139274,
+            "event_delta_per_query": -8.283778455354569e-05
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.00805292998933647,
+            "weighted_policy_events": 0.11733610995673359,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005048037584932662,
+            "event_delta_per_query": -0.0003464533916284738
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.01925890252168044,
+            "weighted_policy_events": 0.23862611833587152,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010266179904466316,
+            "event_delta_per_query": -0.0008285570725827366
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.011229264241954069,
+            "weighted_policy_events": 0.15530394963279712,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006681491103837796,
+            "event_delta_per_query": -0.00048310573757240436
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.03861864810470125,
+            "weighted_policy_events": 0.4978749452240418,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.021419590584808055,
+            "event_delta_per_query": -0.0016614526183261532
+          }
+        }
+      },
+      "32": {
+        "weighted_net_direction_benefit": 1.051811634606698,
+        "weighted_harm_selected": 0.14813878654424195,
+        "positive_benefit_captured_fraction": 0.28445738216078115,
+        "weighted_selection_pct": 2.450708340387832,
+        "raw_selected": 3850,
+        "selected_actual_mean": 42.91867854174135,
+        "fixed128_cost_regret": 3.5388848316192183,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.18297477340160626,
+            "weighted_policy_events": 3.1248805838999405,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.012324046567976888,
+            "event_delta_per_query": 0.0007216242565506688
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.6032818771737718,
+            "weighted_policy_events": 2.436420686722446,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.009608867025848278,
+            "event_delta_per_query": -0.0023792505819941255
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.00022882315402412246,
+            "weighted_policy_events": 0.1578325668462129,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006790277348208242,
+            "event_delta_per_query": -9.844436484578696e-06
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.002933498104729339,
+            "weighted_policy_events": 0.12245554184134072,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.0052682859345373045,
+            "event_delta_per_query": -0.00012620504202383114
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.013339196616749809,
+            "weighted_policy_events": 0.24454582424080218,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010520857666587941,
+            "event_delta_per_query": -0.0005738793104611133
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.0105705930580815,
+            "weighted_policy_events": 0.1559626208166697,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006709828474946545,
+            "event_delta_per_query": -0.00045476836646365633
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.02496009955382427,
+            "weighted_policy_events": 0.5115334937749187,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.02200720906360268,
+            "event_delta_per_query": -0.001073834139531529
+          }
+        }
+      },
+      "64": {
+        "weighted_net_direction_benefit": 0.2773341299735387,
+        "weighted_harm_selected": 0.0628726036163531,
+        "positive_benefit_captured_fraction": 0.0806485960791857,
+        "weighted_selection_pct": 0.5352904450263479,
+        "raw_selected": 879,
+        "selected_actual_mean": 51.81002809790259,
+        "fixed128_cost_regret": 1.8616274301896785,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.08403860352475584,
+            "weighted_policy_events": 3.025944414023091,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.01193385758888385,
+            "event_delta_per_query": 0.00033143527745762994
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.3178515900219503,
+            "weighted_policy_events": 2.7218509738742678,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.010734560010371843,
+            "event_delta_per_query": -0.0012535575974705609
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": 5.382129185444481e-06,
+            "weighted_policy_events": 0.1580667721294225,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006800353334813453,
+            "event_delta_per_query": 2.3155012063298414e-07
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -0.0003549364973653708,
+            "weighted_policy_events": 0.1250341034487047,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005379220888097956,
+            "event_delta_per_query": -1.527008846318006e-05
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.011031351654603208,
+            "weighted_policy_events": 0.2468536692029488,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010620145840649698,
+            "event_delta_per_query": -0.00047459113639935704
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.010935825145545882,
+            "weighted_policy_events": 0.1555973887292053,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006694115449302321,
+            "event_delta_per_query": -0.00047048139210788015
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.011411233045941957,
+            "weighted_policy_events": 0.5250823602828011,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.022590108798307067,
+            "event_delta_per_query": -0.0004909344048271379
+          }
+        }
+      },
+      "96": {
+        "weighted_net_direction_benefit": 0.049109505129777326,
+        "weighted_harm_selected": 0.03905139238930124,
+        "positive_benefit_captured_fraction": 0.020899211896745085,
+        "weighted_selection_pct": 0.13709833866731239,
+        "raw_selected": 225,
+        "selected_actual_mean": 35.82064203487408,
+        "fixed128_cost_regret": 1.580166158893874,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.022452296150788115,
+            "weighted_policy_events": 2.9643581066491227,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011690970701001793,
+            "event_delta_per_query": 8.854838957557459e-05
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.19083018180439007,
+            "weighted_policy_events": 2.848872382091827,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011235512833359248,
+            "event_delta_per_query": -0.0007526047744831532
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -0.0001968446500414995,
+            "weighted_policy_events": 0.15786454535019556,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00679165312835021,
+            "event_delta_per_query": -8.468656342611107e-06
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -9.824502081643257e-05,
+            "weighted_policy_events": 0.12529079492525363,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00539026427637654,
+            "event_delta_per_query": -4.226700184595497e-06
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.009029673190878568,
+            "weighted_policy_events": 0.24885534766667344,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010706262110581932,
+            "event_delta_per_query": -0.00038847486646712394
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.008859330697625902,
+            "weighted_policy_events": 0.15767388317712527,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006783450454714288,
+            "event_delta_per_query": -0.0003811463866959122
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.007314715629571934,
+            "weighted_policy_events": 0.5291788776991712,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.02276634929147488,
+            "event_delta_per_query": -0.0003146939116593279
+          }
+        }
+      },
+      "128": {
+        "weighted_net_direction_benefit": -0.011097624329724118,
+        "weighted_harm_selected": 0.020064127597697975,
+        "positive_benefit_captured_fraction": 0.0021255778587064623,
+        "weighted_selection_pct": 0.022992753635942394,
+        "raw_selected": 37,
+        "selected_actual_mean": -48.26574713685557,
+        "fixed128_cost_regret": 1.494318139513222,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": -0.0035830999066293187,
+            "weighted_policy_events": 2.938322710591706,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011588291118594557,
+            "event_delta_per_query": -1.4131192831664162e-05
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": -0.10044541170634923,
+            "weighted_policy_events": 2.9392571521898683,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011591976411987894,
+            "event_delta_per_query": -0.00039614119585450896
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -3.0430290380737947e-05,
+            "weighted_policy_events": 0.1580309597098563,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006798812611842118,
+            "event_delta_per_query": -1.3091728507023388e-06
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": -4.9001086754843144e-05,
+            "weighted_policy_events": 0.12534003885931522,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005392382850360837,
+            "event_delta_per_query": -2.1081262002993393e-06
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -0.004598568418505449,
+            "weighted_policy_events": 0.25328645243904657,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.010896897230852768,
+            "event_delta_per_query": -0.00019783974619628751
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": -0.004527981725076684,
+            "weighted_policy_events": 0.1620052321496745,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006969793878021489,
+            "event_delta_per_query": -0.00019480296338871092
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": -0.004281972252039524,
+            "weighted_policy_events": 0.5322116210767035,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.02289682406655379,
+            "event_delta_per_query": -0.00018421913658041647
+          }
+        }
+      },
+      "192": {
+        "weighted_net_direction_benefit": 0.005444677871148459,
+        "weighted_harm_selected": 0.0,
+        "positive_benefit_captured_fraction": 0.001290702337893348,
+        "weighted_selection_pct": 0.0008753501400560223,
+        "raw_selected": 2,
+        "selected_actual_mean": 622.0,
+        "fixed128_cost_regret": 1.4494655608376148,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": -0.0002144607843137255,
+            "weighted_policy_events": 2.941691349714021,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011601576511203804,
+            "event_delta_per_query": -8.458002224163809e-07
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 3.0397025638962174,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011988117607842401,
+            "event_delta_per_query": 0.0
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": -3.0637254901960784e-05,
+            "weighted_policy_events": 0.1580307527453351,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.00679880370780838,
+            "event_delta_per_query": -1.3180768844415324e-06
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.12538903994607006,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005394490976561136,
+            "event_delta_per_query": 0.0
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": -4.3767507002801114e-05,
+            "weighted_policy_events": 0.2578412533505492,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.011092854010071282,
+            "event_delta_per_query": -1.8829669777736174e-06
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": 4.376750700280112e-06,
+            "weighted_policy_events": 0.16653759062545148,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.007164785138107979,
+            "event_delta_per_query": 1.8829669777736176e-07
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.536493593328743,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.023081043203134206,
+            "event_delta_per_query": 0.0
+          }
+        }
+      },
+      "256": {
+        "weighted_net_direction_benefit": 0.0,
+        "weighted_harm_selected": 0.0,
+        "positive_benefit_captured_fraction": 0.0,
+        "weighted_selection_pct": 0.0,
+        "raw_selected": 0,
+        "selected_actual_mean": null,
+        "fixed128_cost_regret": 1.4537897905294919,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 2.941905810498335,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011602422311426221,
+            "event_delta_per_query": 0.0
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 3.0397025638962174,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011988117607842401,
+            "event_delta_per_query": 0.0
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.15806139000023706,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006800121784692821,
+            "event_delta_per_query": 0.0
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.12538903994607006,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005394490976561136,
+            "event_delta_per_query": 0.0
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.257885020857552,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.011094736977049055,
+            "event_delta_per_query": 0.0
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.16653321387475117,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.0071645968414102,
+            "event_delta_per_query": 0.0
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.536493593328743,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.023081043203134206,
+            "event_delta_per_query": 0.0
+          }
+        }
+      },
+      "never": {
+        "weighted_net_direction_benefit": 0.0,
+        "weighted_harm_selected": 0.0,
+        "positive_benefit_captured_fraction": 0.0,
+        "weighted_selection_pct": 0.0,
+        "raw_selected": 0,
+        "selected_actual_mean": null,
+        "fixed128_cost_regret": 1.4537897905294919,
+        "outcomes": {
+          "planning_false_negative": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 2.941905810498335,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011602422311426221,
+            "event_delta_per_query": 0.0
+          },
+          "planning_false_positive": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 3.0397025638962174,
+            "weighted_query_denominator": 253.55962156291335,
+            "policy_events_per_query": 0.011988117607842401,
+            "event_delta_per_query": 0.0
+          },
+          "stalls": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.15806139000023706,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.006800121784692821,
+            "event_delta_per_query": 0.0
+          },
+          "invalid_goals": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.12538903994607006,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.005394490976561136,
+            "event_delta_per_query": 0.0
+          },
+          "missed_moves": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.257885020857552,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.011094736977049055,
+            "event_delta_per_query": 0.0
+          },
+          "escape_failures": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.0011028161533455324,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 4.744538909131981e-05,
+            "event_delta_per_query": 0.0
+          },
+          "false_unreachable": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.16653321387475117,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.0071645968414102,
+            "event_delta_per_query": 0.0
+          },
+          "false_reachable": {
+            "weighted_event_delta_vs_defer": 0.0,
+            "weighted_policy_events": 0.536493593328743,
+            "weighted_query_denominator": 23.243905771810688,
+            "policy_events_per_query": 0.023081043203134206,
+            "event_delta_per_query": 0.0
+          }
+        }
+      }
+    }
+  },
+  "holdout_opened": false,
+  "limitation": "Gen003 fit uses these DEV maps, so shortlist is optimistic/in-sample. No existing matching gen003 OOF predictions; no new fits authorized in this sweep."
+}

@@ -1,0 +1,32 @@
+{
+  "status": "COMPLETE",
+  "sealed_utc": "2026-10-19T11:20:26.020412+00:00",
+  "fit_performed": false,
+  "predictions_generated_once": true,
+  "selection": "DEV-only1/4plus128reference; allheldoutthresholdsdescriptive",
+  "files": {
+    "CHECKS.json": "ee010e41449e3234d5bc27a6022b660a22ac2d49254a93ee6cb152a6925a6e56",
+    "DEV-SHORTLIST.json": "e9595c5d97fd7f53d0205e9ec9fbba1204c8d46686ec19a89f7c6be05a79fdce",
+    "OUTCOME-DENOMINATORS.json": "4e9b896077a3d3c9456208fb93f84972982a9fafc9a0d8ce33d3805bc4a9529f",
+    "PLAN.json": "7052db0cccbb3d52548726b6f7e83b3b7b267242bd3bd451861050485499ca30",
+    "PLAN.sha256": "bcf3c80c29aa865b20fae1beed120283557ca946c455c2ba3f06bfa3e3ee1284",
+    "PREDICTIONS.json": "fd98273d7cc7b7a0aeb2446d32c18971c6107dff3116d7efb8a77be4b502cc5f",
+    "PUBLIC-READY-FILES.json": "d2ae47f2f727424eb6854cc87d6c85444d9da35b5965c74837f5931370880874",
+    "REPORT.md": "48a7fc19b5a08409e209bf8bb97b65212afffce90a6a904e8d5cfc0b1f0e7f4c",
+    "REQUEST.json": "36bdaef7c3b651f963d3ca20d83cd0eabc9c26fe66acfd5a5267cfdeca8783b6",
+    "RESULTS.json": "05bfb8f9642e44120a2d8fcd8a5936b2e0aaddfe7eb89b36f746cd069c228ca0",
+    "STATUS.json": "3a2f739e9a484901dfe009a47fcc35f2795e747b5e8fedad208525a7d27e1bb9",
+    "SUPPORT.json": "3d7ec5b4a2f44ad522bf32f3a626690ef3384c6b737daf3c7699158c9dd77cad",
+    "gen003.json": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+    "outcome-changes.pdf": "063d2f719aa378876fe1f5d62d36fee6a344a175e1a408a44aa539a09e233c92",
+    "outcome-changes.png": "6f6d867432250ad80530ff07a3414d7c5873d3c5f677ecc473148cfbfee285ea",
+    "plot.py": "af2ea9a672b7880252053bcf977e2e0e27232fcb4b65190aea085311cc847a5e",
+    "predictions.npz": "41f833dd01a2fc042066d6fb0f1d92b051559fcba2a994c69ce26c9b42655569",
+    "public-review.zip": "157c8908e27babc35c75f0aae7b56c95eb2232290a125f5f182e7ea8bd100a17",
+    "sweep.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sweep.py": "7a38636be200bce7c1ab62991b600518c1de8d787e57fb7cf24da447b4471a82",
+    "threshold-frontier.pdf": "c91c9d36e5d3420d90a2ffea9414fd5414d3e1435f01e2448474d0a93c5b0916",
+    "threshold-frontier.png": "a4204fe380de339b1c7b3d86b6f92ceafced96a1b03d6ea010ea61ea2d2b5bfb",
+    "thresholds.csv": "25e51298063750304d81557891a4b0e8f1c6f33e2672fff7dc4d884a780c86f0"
+  }
+}

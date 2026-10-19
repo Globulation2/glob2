@@ -1,0 +1,10 @@
+{
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "input_sha256": "f78be1b7fdabd8eecce00fb74b853afe6c909a390086edff82d7dce4d0d3fa67",
+  "row_count": 122901,
+  "predictions_sha256": "41f833dd01a2fc042066d6fb0f1d92b051559fcba2a994c69ce26c9b42655569",
+  "generation_count": 1,
+  "minimum_age": 8,
+  "score_units": "milli direction-cost units",
+  "cpu_seconds": 36.309515938000004
+}

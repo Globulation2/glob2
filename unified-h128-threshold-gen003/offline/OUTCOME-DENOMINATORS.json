@@ -1,0 +1,19 @@
+{
+  "semantics": "Each counterfactual event change is blended at the episode choice, divided by matching weighted episode-query denominator. No event penalty enters raw direction benefit target.",
+  "movement_denominator": "queries",
+  "planning_denominator": "planning_queries",
+  "direction_target": "defer_extra - refresh_extra",
+  "production_features_unchanged": true,
+  "threshold_selection_denominator": "weighted episodes, not queries, jobs or CPU",
+  "verification": "All movement metrics share the movement denominator; both planning metrics share the distinct planning denominator; reported per-query rates equal weighted events divided by denominator.",
+  "examples": {
+    "development": {
+      "weighted_movement_queries_per_episode": 23.243905771810688,
+      "weighted_planning_queries_per_episode": 253.55962156291335
+    },
+    "holdout": {
+      "weighted_movement_queries_per_episode": 22.936340534946567,
+      "weighted_planning_queries_per_episode": 303.6834059154003
+    }
+  }
+}

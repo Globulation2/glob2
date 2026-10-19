@@ -1,0 +1,7 @@
+{
+  "threshold128_matches_independent_audit": true,
+  "heldout_raw_selected128": 23,
+  "metric_bounds_pass": true,
+  "never_baseline_zero": true,
+  "prediction_cache_sha256": "41f833dd01a2fc042066d6fb0f1d92b051559fcba2a994c69ce26c9b42655569"
+}

@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-19T11:14:08.094597+00:00",
+  "source": "sealed cumulative512 f78be1b7fdabd8eecce00fb74b853afe6c909a390086edff82d7dce4d0d3fa67",
+  "model_sha256": "9981398a2ddac2cdfb51be3c70c7f03129d5cda318aca977d171135734039aab",
+  "thresholds_direction_units": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    96,
+    128,
+    192,
+    256
+  ],
+  "baseline": "never-discretionary",
+  "horizon_capture_offsets": [
+    8,
+    127
+  ],
+  "features": "fixed generic12, no refit",
+  "rows": 122901,
+  "development_maps": 392,
+  "heldout_maps": 120,
+  "weights": "equal format/role/cohort/map/family/collection/episode",
+  "prediction": "Generate exact integer model predictions once for all eligible rows, persist immutable score cache; every threshold reuses scores",
+  "primary": "Weighted mean actual signed direction benefit of selected refresh versus all-defer counterfactual; no invented per-refresh CPU cost",
+  "secondary": [
+    "negative actual benefit selected",
+    "positive benefit captured fraction",
+    "weighted selection proxy percent",
+    "actual benefit among selected",
+    "common fixed128-cost decision regret"
+  ],
+  "outcomes": "Counterfactual movement/planning event counts and per-query rates separately; no conversion to direction-cost penalties",
+  "subgroups": [
+    "family",
+    "format",
+    "generator",
+    "dimensions",
+    "age",
+    "demand"
+  ],
+  "dev_shortlist_rule": "Best development mean net direction benefit (ties highest threshold). Second: highest threshold with >=90% of positive best benefit; if same as best or no positive best, next-best net benefit threshold distinct from best. Include128 as reference. Never-discretionary retained baseline. Freeze shortlist before opening heldout metrics.",
+  "selection_limit": "Gen003 fit uses these DEV maps, so shortlist is optimistic/in-sample. No existing matching gen003 OOF predictions; no new fits authorized in this sweep.",
+  "uncertainty": {
+    "method": "paired whole-map multinomial cluster bootstrap; fixed evaluation hierarchy weights, same map multiplicities for all thresholds; 2000 draws",
+    "seed": 2026101903,
+    "threshold_scope": "DEV-shortlisted thresholds and128 versus never and128; report95% percentile intervals, no reselection inside bootstrap"
+  },
+  "budget": {
+    "cpu": 0,
+    "nice": 19,
+    "blas_threads": 1,
+    "cpu_seconds_limit": 300
+  },
+  "no_changes": [
+    "source",
+    "data",
+    "production",
+    "collector",
+    "model",
+    "horizon",
+    "contract",
+    "threshold runtime"
+  ]
+}
