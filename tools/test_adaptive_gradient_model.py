@@ -215,4 +215,20 @@ class SpatialContractTests(unittest.TestCase):
   self.assertEqual(spatial.variants()['baseline12'],(d.FEATURES,d.TRANSFORMS))
   for features,transforms in spatial.variants().values():self.assertEqual(len(features),len(transforms))
 
+class CampaignFamilyScopeTests(unittest.TestCase):
+ def test_scope_is_explicit_unique_and_known(self):
+  from tools.adaptive_gradient_model import expected_family_scope
+  self.assertEqual(expected_family_scope(','.join(d.FAMILIES)),tuple(d.FAMILIES))
+  self.assertEqual(expected_family_scope('materials,guard,clear,forbidden'),('materials','guard','clear','forbidden'))
+  for value in ['',',materials','materials,','materials,materials','unknown','materials, guard']:
+   with self.assertRaises(ValueError):expected_family_scope(value)
+ def test_gate_requires_declared_family_without_imputing_other_families(self):
+  from tools.adaptive_gradient_model import require_family_support
+  rows=[dict(family='materials',group='map-a')]
+  coverage=require_family_support(rows,1,('materials',))
+  self.assertEqual(coverage['markets']['episodes'],0)
+  self.assertEqual(rows,[dict(family='materials',group='map-a')])
+  with self.assertRaisesRegex(ValueError,'markets'):require_family_support(rows,1,tuple(d.FAMILIES))
+  with self.assertRaisesRegex(ValueError,'materials'):require_family_support(rows,2,('materials',))
+
 if __name__=='__main__':unittest.main()

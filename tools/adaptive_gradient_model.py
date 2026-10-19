@@ -59,8 +59,22 @@ def outcome_metrics(rows):
   result[family]=entry
  return result
 
+def expected_family_scope(value):
+ """Coverage requirements are declared before fitting; they never filter rows."""
+ names=tuple(value.split(','))
+ if not names or len(set(names))!=len(names) or set(names)-set(d.FAMILIES):raise ValueError('Expected-family scope must name unique known families')
+ return names
+
+def require_family_support(rows,minimum,expected):
+ """Missing families outside the campaign scope remain explicitly unmeasured."""
+ cov=d.coverage(rows)
+ missing={family:cov[family] for family in expected if cov[family]['maps']<minimum}
+ if missing:raise ValueError('Incomplete required family support; collect more compatible examples: '+str(missing))
+ return cov
+
 def fit(a):
  from tools import adaptive_gradient_spatial as spatial
+ expected=expected_family_scope(a.expected_families)
  allrows=spatial.load(a.manifest) if a.collector_contract==spatial.CONTRACT_ID else d.load(a.manifest);rows=d.eligible(allrows)
  registry=Path(a.split_registry)
  if not registry.exists():raise ValueError('Persistent map splits must be frozen from map metadata before collection')
@@ -73,13 +87,12 @@ def fit(a):
  split['registry'].update(name=registry.name,sha256=d.file_hash(registry),read_only_during_fit=True)
  dev=[r for r in rows if r['group'] not in held];test=[r for r in rows if r['group'] in held]
  def require(population,minimum):
-  cov=d.coverage(population)
-  if any(c['maps']<minimum for c in cov.values()):raise ValueError('Incomplete family support; collect more compatible examples: '+str(cov))
+  require_family_support(population,minimum,expected)
  require(dev,3);require(test,1);cv=[]
  for fold in range(3):
   training=[r for r in dev if folds[r['group']]!=fold];validation=[r for r in dev if folds[r['group']]==fold];require(training,2);require(validation,1)
   model=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=128000);prior=integer.fit_heads(training,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=128000);cv.append(dict(overall=integer.metrics(validation,model,weighting=d.balanced_weights),slices=slices(validation,model),prior_weight_fit_same_features=integer.metrics(validation,prior,weighting=d.balanced_weights)))
- model=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=128000);prior=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=128000);model['candidate_contract']=d.CONTRACT;model['provenance']=dict(collector_contract=a.collector_contract,manifests=[dict(path=str(p),sha256=d.file_hash(p)) for p in a.manifest],split=split,coverage=d.coverage(rows),age_demand_support=age_demand_support(rows),adaptive_policy=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,threshold=128000),unknown_or_planning_rows_excluded=len(allrows)-len(rows),development_maps=sorted({r['group'] for r in dev}),heldout_maps=sorted(held),cross_validation=cv,holdout=integer.metrics(test,model,weighting=d.balanced_weights),holdout_slices=slices(test,model),holdout_separate_outcomes=outcome_metrics(test),weighting_comparison=dict(same_features_and_rows_and_splits=True,new_weight_fit_new_score=integer.metrics(test,model,weighting=d.balanced_weights),new_weight_fit_prior_score=integer.metrics(test,model,weighting=prior_weights),prior_weight_fit_new_score=integer.metrics(test,prior,weighting=d.balanced_weights),prior_weight_fit_prior_score=integer.metrics(test,prior,weighting=prior_weights),prior_weight_model=prior),weighting='equal format/role/cohort/map/family/collection/episode',threshold=128000,note='Research only. Explicit emission and prospective per-family/total-compute validation required.')
+ model=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=d.balanced_weights,threshold=128000);prior=integer.fit_heads(dev,d.FEATURES,d.TRANSFORMS,weighting=prior_weights,threshold=128000);model['candidate_contract']=d.CONTRACT;model['provenance']=dict(expected_families=list(expected),not_required_families=[family for family in d.FAMILIES if family not in expected],unmeasured_families=[family for family,value in d.coverage(rows).items() if not value['episodes']],campaign_scope='Declared family coverage requirements; all observed eligible rows retained. Missing families remain unmeasured, never imputed.',collector_contract=a.collector_contract,manifests=[dict(path=str(p),sha256=d.file_hash(p)) for p in a.manifest],split=split,coverage=d.coverage(rows),age_demand_support=age_demand_support(rows),adaptive_policy=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,threshold=128000),unknown_or_planning_rows_excluded=len(allrows)-len(rows),development_maps=sorted({r['group'] for r in dev}),heldout_maps=sorted(held),cross_validation=cv,holdout=integer.metrics(test,model,weighting=d.balanced_weights),holdout_slices=slices(test,model),holdout_separate_outcomes=outcome_metrics(test),weighting_comparison=dict(same_features_and_rows_and_splits=True,new_weight_fit_new_score=integer.metrics(test,model,weighting=d.balanced_weights),new_weight_fit_prior_score=integer.metrics(test,model,weighting=prior_weights),prior_weight_fit_new_score=integer.metrics(test,prior,weighting=d.balanced_weights),prior_weight_fit_prior_score=integer.metrics(test,prior,weighting=prior_weights),prior_weight_model=prior),weighting='equal format/role/cohort/map/family/collection/episode',threshold=128000,note='Research only. Explicit emission and prospective per-family/total-compute validation required.')
  integer.save(a.output,model)
 
 def emit(a):
@@ -90,6 +103,6 @@ def emit(a):
  header=render(model);integer.save(a.output,model);Path(a.header).write_text(header)
 
 def main():
- p=argparse.ArgumentParser();s=p.add_subparsers(dest='action',required=True);f=s.add_parser('fit');f.add_argument('--manifest',action='append',required=True);f.add_argument('--split-registry',required=True);f.add_argument('--output',required=True);f.add_argument('--collector-contract',choices=['unified-gradient-h128-v2','unified-gradient-spatial-h128-v3'],default='unified-gradient-spatial-h128-v3');f.set_defaults(run=fit)
+ p=argparse.ArgumentParser();s=p.add_subparsers(dest='action',required=True);f=s.add_parser('fit');f.add_argument('--manifest',action='append',required=True);f.add_argument('--split-registry',required=True);f.add_argument('--output',required=True);f.add_argument('--expected-families',default=','.join(d.FAMILIES),help='Comma-separated required campaign families (default: all); does not filter observed rows');f.add_argument('--collector-contract',choices=['unified-gradient-h128-v2','unified-gradient-spatial-h128-v3'],default='unified-gradient-spatial-h128-v3');f.set_defaults(run=fit)
  e=s.add_parser('emit');e.add_argument('--model',required=True);e.add_argument('--contract',choices=[d.CONTRACT_ID],required=True);e.add_argument('--output',required=True);e.add_argument('--header',required=True);e.set_defaults(run=emit);a=p.parse_args();a.run(a)
 if __name__=='__main__':main()

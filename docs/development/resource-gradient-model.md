@@ -177,8 +177,14 @@ for reproduction; reuse would require an explicit validated semantic mapping.
 Whole-map splits persist across roles, models, families and platforms, including
 historical held-out exclusions. Weights balance format, role, cohort, map, family,
 collection and episode. OS is not a separate cohort. Missing-family support is
-reported rather than fabricated. Fit gates require each family in grouped
-cross-validation and held-out maps. Reports also score the same unified rows with
+reported rather than fabricated. Fit gates require each declared campaign family
+in grouped cross-validation and held-out maps. By default all five families are
+required. If a campaign deliberately cannot exercise some families, declare its
+coverage with `--expected-families materials,guard,clear,forbidden` before fitting.
+This changes coverage gates only: all observed eligible rows and their weights
+remain, and the report records required, not-required and unmeasured families.
+An unmeasured family receives neither synthetic zero labels nor a validation
+claim. Reports also score the same unified rows with
 the previous weighting, so a weighting change is not mistaken for a feature gain.
 
 Review pooled and per-family results, format/generator/size, age/demand,
