@@ -1,0 +1,58 @@
+{
+  "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+  "production_source": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "updated_utc": "2026-10-19T03:19:45.891596+00:00",
+  "ordinary_release": true,
+  "fleet_bounded_runtime_smoke": true,
+  "training_launched": false,
+  "approved_for_training": false,
+  "awaiting_root_gate": [
+    "observer_overhead",
+    "goldens_replay_evidence",
+    "campaign_admission"
+  ],
+  "bundles": {
+    "middle-linux": "7cc86f09543f6cba7d893065a02ad5ad869c22ceb078a75aaba6821a713c7d4e",
+    "small-pharaoh": "6747542c0ccd614e7fb746ae704be2c631e87946b2694757c0897cfd2f35072a"
+  },
+  "archive_sha256": "0ac23cdb7c1b1c6340f2bee04c49a7eb09e4eea99573cd9a23a2d7b99b883d32",
+  "hosts": [
+    {
+      "host": "therig.local",
+      "receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/fleet-linux-934/therig.local/receipt.json",
+      "receipt_sha256": "99c196c2ef19c9cc8f4da12a89ffb0e69146c76c8a589ebe0ad5d121def98ba5",
+      "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+      "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+      "libc": "ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43",
+      "all_eight_artifacts_match_mac": true
+    },
+    {
+      "host": "devlaptop.local",
+      "receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/fleet-linux-934/devlaptop.local/receipt.json",
+      "receipt_sha256": "1738f349cc8e63a96f2a8b4f990e65eb2eb5127cd66c19905aa44140e1bf7b77",
+      "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+      "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+      "libc": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+      "all_eight_artifacts_match_mac": true
+    },
+    {
+      "host": "pharaoh-dev-1.local",
+      "receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/fleet-linux-934/pharaoh-dev-1.local/receipt.json",
+      "receipt_sha256": "cc6a4f7a67926880cd8fe49563fd4b0c15018096edfba501f183abb3367d02e3",
+      "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+      "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+      "libc": "ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43",
+      "all_eight_artifacts_match_mac": true
+    },
+    {
+      "host": "pharaoh-dev-2.local",
+      "receipt": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/fleet-linux-934/pharaoh-dev-2.local/receipt.json",
+      "receipt_sha256": "b442b2abaffc9cdfc27856ea291e415064e17385fb7f1a85ea2108956b63191a",
+      "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+      "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+      "libc": "ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43",
+      "all_eight_artifacts_match_mac": true
+    }
+  ],
+  "qualification_scope": "One1024ticksharedmap,3FFA,threads1,probeON,GPUoff; pairedMac/Linux threads+observer+continuation also passed; no accelerator-hardware coverage claim"
+}

@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "source": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+  "production_source": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+  "map_sha256": "622c154cf30cc2c00189702ba0d24e65e2e244e42dab581a592bb3028c0faa8c",
+  "runs": [
+    {
+      "name": "t1-probeoff",
+      "threads": 1,
+      "probe": false,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "t1-probeon",
+      "threads": 1,
+      "probe": true,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "t4-probeon",
+      "threads": 4,
+      "probe": true,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+        "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+        "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+        "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221"
+      }
+    },
+    {
+      "name": "continuation-t1",
+      "threads": 1,
+      "probe": true,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "916e36228fe7cec2dbaf44f4475d1eec6d4d6a5fef2f9f42fd7098259dde8876",
+        "snapshot.checksums": "c844ed51186fabe1154c0f8a050b0d5f38850c23858a117ceafc85abde738cba",
+        "game.replay.checksums": "63781b27694b3d80b59b8ffabcf70929e6d8c9f8a8149f85476be4cfaceaf205",
+        "final.game.gz": "f9c94e6c6b73c4b7eba5e0bf876af346535a2671929414ffc7f34977c3986f3d"
+      }
+    },
+    {
+      "name": "continuation-t4",
+      "threads": 4,
+      "probe": true,
+      "returncode": 0,
+      "hashes": {
+        "world.checksums": "916e36228fe7cec2dbaf44f4475d1eec6d4d6a5fef2f9f42fd7098259dde8876",
+        "snapshot.checksums": "c844ed51186fabe1154c0f8a050b0d5f38850c23858a117ceafc85abde738cba",
+        "game.replay.checksums": "63781b27694b3d80b59b8ffabcf70929e6d8c9f8a8149f85476be4cfaceaf205",
+        "final.game.gz": "f9c94e6c6b73c4b7eba5e0bf876af346535a2671929414ffc7f34977c3986f3d"
+      }
+    }
+  ],
+  "updated_utc": "2026-10-19T03:14:06.680361+00:00"
+}

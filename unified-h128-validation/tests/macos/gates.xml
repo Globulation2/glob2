@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="19" failures="0" errors="0" skipped="0"><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.018356" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.021079" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.002888" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.000331" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.02373" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000125" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.018803" status="run" />
+  <testcase classname="MatchSetup" name="current files bind embedded migration catalogs as explicit authority [save-format]" time="0.303379" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.073824" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.023724" status="run" />
+  <testcase classname="MatchSetup" name="legacy resolved setup catalogs retain zero health privately and reject authoring escapes" time="0.021613" status="run" />
+  <testcase classname="MatchSetup" name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" time="0.480396" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.018762" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.02225" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.006526" status="run" />
+  <testcase classname="MatchSetup" name="unit catalogs survive setup conversion and reject tampered identity" time="0.02149" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.02009" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.020953" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,22 @@
+[
+  "python3",
+  "test/run_tests.py",
+  "--build-dir",
+  "build/unified-release",
+  "--binary",
+  "engine",
+  "-j3",
+  "--no-display",
+  "--junit",
+  "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-final-three/junit.xml",
+  "--artifacts",
+  "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-final-three/artifacts",
+  "--write-inventory",
+  "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-final-three/inventory.json",
+  "--filter",
+  "GradientPreparation/blocked live guidance and removed material goals deduplicate delayed refresh demand",
+  "--filter",
+  "GradientPreparation/forbidden paint is ground-only for air material service guard and clearing queries",
+  "--filter",
+  "MapGradientInvalidation/explicit research demanded escape refresh publishes complete fields after every seed transition"
+]

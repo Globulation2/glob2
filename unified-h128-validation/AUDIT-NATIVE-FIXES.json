@@ -1,0 +1,19 @@
+{
+  "scope": "post-f64 audit fixes; syntax pass, engine runtime rerun pending",
+  "files": {
+    "src/map/gradient/ResourceGradientProbe.h": "f22362bc61582561e7708526834ae8e6af96b5da3261fe3817d8498e69cb241d",
+    "src/map/gradient/ResourceGradientProbe.cpp": "916e254dad6e30c61eb50b794a68f0a61e6a0eae0fd2e121ee1e88ed81fbc3cc",
+    "src/map/pathfind/MapPathfindArea.cpp": "a62ded617d1d548055ffb64f929c3316bf9a88c0a7e2d884e6ea001c58a52585",
+    "src/map/pathfind/MapPathfindMaterial.cpp": "1a79ef6fda348ee494ac3433fd6043d5931f8b437bae2f8574f53f014ccfeaa4",
+    "src/map/gradient/GradientPreparationTest.cpp": "d727758183f926f0ea4e60e0a18c26ff2699f167d1e7ce7f2c623b36173d1e2e",
+    "src/map/gradient/DelayedGradientPublicationHarness.cpp": "c91f8cacd33b41fbfc5106f21c868324b242eb7a72f78cedf9ac0add7a8ea92e",
+    "src/map/gradient/MapGradientInvalidationTest.cpp": "b6075f2852477b9199d40ce638f9e7c3757b85f8be2e4117457819f218342c84"
+  },
+  "changes": [
+    "stale-zero material read demands original field while escape evidence stays Forbidden",
+    "AIR material/market destination ascent accepts weighted peaks",
+    "fresh oracle uses movement-specific bucket ring",
+    "movement-only counterfactual reachability arms exported independently of planning",
+    "obsolete periodic escape fixtures replaced by explicit research demand and idle no-work assertions"
+  ]
+}

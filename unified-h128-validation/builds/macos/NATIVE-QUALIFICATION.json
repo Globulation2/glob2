@@ -1,0 +1,23 @@
+{
+  "checked_utc": "2026-10-19T03:13:33.291120+00:00",
+  "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+  "native_source_revision": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "subsequent_commits": "test fixture only; production files identical",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/macos/bin/glob2",
+  "binary_sha256": "a927031b2ca67045434a327e8b98df8c7c77f1a1d3f0abac1ea42d06fa4adbcc",
+  "ordinary_release": true,
+  "flags": "release=1 dev_fast=0 pch=0 unity=0 CXXFLAGS=; emitted O3",
+  "unit_cases_passed": 46,
+  "engine_cases_passed": 86,
+  "engine_evidence": [
+    "tests/macos/reviewed-engine.xml",
+    "tests/macos/fixture-rerun.xml",
+    "tests/macos/last-fixture.xml"
+  ],
+  "unit_evidence": "tests/macos/reviewed-unit.xml",
+  "runtime_evidence": "runtime-macos/status.json",
+  "runtime_observer_thread_save_passed": true,
+  "cross_platform": "pending Linux",
+  "collector_qualified": false,
+  "model_trained": false
+}

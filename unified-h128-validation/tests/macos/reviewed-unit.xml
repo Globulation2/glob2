@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="46" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU fields keep their original worker" time="0.001782" status="run" />
+  </testsuite><testsuite name="AdaptiveGradientState"><testcase classname="AdaptiveGradientState" name="logical keys distinguish all families teams classes and materials" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="idle fields submit nothing and even demanded old fields require model benefit" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="cold history reactive model and deferred admissions obey one association and spacing" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="research intervals are explicit and ordinary demanded age never forces a refresh" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="benefit threshold is inclusive at128 units and the eight tick minimum remains" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="mutations never allocate unseen scopes and equivalent ground classes share turnover" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="capture baselines remain aligned while a delayed job is pending" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="query windows are exact including unsigned tick wrap" time="0" status="run" />
+    <testcase classname="AdaptiveGradientState" name="missing canonical target scope cannot silently disable turnover after loading" time="0.000175" status="run" />
+    <testcase classname="AdaptiveGradientState" name="binary and text state continuation preserve common captures and demand" time="0.000265" status="run" />
+  </testsuite><testsuite name="GradientMarketTargets"><testcase classname="GradientMarketTargets" name="overlapping providers change membership only when last source disappears" time="0" status="run" />
+    <testcase classname="GradientMarketTargets" name="inverse supplier masks preserve independent materials teams and overlap kinds" time="0" status="run" />
+    <testcase classname="GradientMarketTargets" name="supplier changes count destination union rather than provider count or stock amount" time="0" status="run" />
+    <testcase classname="GradientMarketTargets" name="no-op derived cache rebuild retains union and reports no changes" time="0" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="kernel audit can retire safely before observation workers drain" time="0.000999" status="run" />
+    <testcase classname="GradientPipeline" name="kernel audit distinguishes owner preparation from deferred worker work" time="0.005552" status="run" />
+    <testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.463267" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.001692" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.002216" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.004589" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.50249" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.000562" status="run" />
+    <testcase classname="GradientPipeline" name="serial preparation computes at join and errors surface at the deadline" time="0.000852" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection survives worker scratch resizing" time="0.00339" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.000976" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.00196" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="explicit CPU jobs bypass device ownership and retain publication deadlines" time="0.00246" status="run" />
+    <testcase classname="GradientPipeline" name="availability changes during seeding do not reinterpret captured CPU execution" time="0.00083" status="run" />
+    <testcase classname="GradientPipeline" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.001808" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow background initializer" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="application shutdown joins background initialization and later registrations restart" time="0.110104" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.003402" status="run" />
+    <testcase classname="GradientPipeline" name="device adapters retain committed fields when another ready field declines" time="0.000148" status="run" />
+    <testcase classname="GradientPipeline" name="bounded required device queue recovers excess fields exactly once" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="malformed captured configurations decline and recover once" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="building initialization deadlines overtake refreshes and survive pending saves" time="0.00023" status="run" />
+    <testcase classname="GradientPipeline" name="mixed building deadlines retain bounded admission across the full executor horizon" time="0.00032" status="run" />
+    <testcase classname="GradientPipeline" name="an unfinished refresh batch cannot hold up an initial building field" time="0" status="run" />
+  </testsuite><testsuite name="GradientTargetCell"><testcase classname="GradientTargetCell" name="natural and clearing goals precede route obstacles but respect forbidden paint" time="0" status="run" />
+    <testcase classname="GradientTargetCell" name="market destinations are the natural and supplier tile union" time="0" status="run" />
+    <testcase classname="GradientTargetCell" name="guard membership uses real movement eligibility and ally building restrictions" time="0" status="run" />
+    <testcase classname="GradientTargetCell" name="escape targets are eligible outside tiles rather than painted or neighbor counts" time="0" status="run" />
+  </testsuite></testsuites>

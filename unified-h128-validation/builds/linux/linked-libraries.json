@@ -1,0 +1,138 @@
+{
+  "\tlibz.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libz.so.1",
+    "sha256": "86200da370f20476a2507e9097a789b5ef97269b4ca8d5e164ad82dab9d99892"
+  },
+  "\tlibssl.so.3": {
+    "path": "/lib/x86_64-linux-gnu/libssl.so.3",
+    "sha256": "a40e7b67489bbd257e432c700ff8f6a1ad796425b5eccecdc2930127fdd86624"
+  },
+  "\tlibcrypto.so.3": {
+    "path": "/lib/x86_64-linux-gnu/libcrypto.so.3",
+    "sha256": "6866ed711dab8927e1bf82bf1cd30e828bdfc34f3cc1e83b1c9eb01ce6c37d9a"
+  },
+  "\tlibepoxy.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libepoxy.so.0",
+    "sha256": "5fc7dd1ea433bfe5f1fd9854e66246bdb44e0cbf148707121c5f4c99fe11be29"
+  },
+  "\tlibfribidi.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+    "sha256": "550020af7ff4f77e3f05500e71051b676ee76f530479c2a836dfe899fcaf8395"
+  },
+  "\tlibva.so.2": {
+    "path": "/lib/x86_64-linux-gnu/libva.so.2",
+    "sha256": "e4ef5c69a85067b917ef0d114cbdaaff46dd42eded2e0839cbcc533d86b63c08"
+  },
+  "\tlibva-drm.so.2": {
+    "path": "/lib/x86_64-linux-gnu/libva-drm.so.2",
+    "sha256": "d0cc621e11792f1c0d93a5ac5ec66a5ff2a1e6e101de9ac35471861dd2cccc35"
+  },
+  "\tlibSDL3_net.so.0": {
+    "path": "/home/bradley/glob2/build/sdl3/prefix/lib/libSDL3_net.so.0",
+    "sha256": "230fa540cecbf9271323385d6fd497b5f9c5794039ac4f2e0f5082954fe4f326"
+  },
+  "\tlibopusfile.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libopusfile.so.0",
+    "sha256": "2ab3b008ff2535686878c2fd47fcf52345d078e6645e0172bd7be2acff968b79"
+  },
+  "\tlibSDL3_ttf.so.0": {
+    "path": "/home/bradley/glob2/build/sdl3/prefix/lib/libSDL3_ttf.so.0",
+    "sha256": "fddaedd0e8d4a7439bb6fa49e4401fb3100b79b79cc4b0d2b331ccc2655d9516"
+  },
+  "\tlibSDL3_image.so.0": {
+    "path": "/home/bradley/glob2/build/sdl3/prefix/lib/libSDL3_image.so.0",
+    "sha256": "8a322f5d23bf4ef4336bc9d874efd7c6ec35c36b9577d94f60f1a0580a460eff"
+  },
+  "\tlibspeex.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libspeex.so.1",
+    "sha256": "3115c70bb3a24d8a8b7e79d3e55e243604f9ed534f4c606f63574731a4d04bb7"
+  },
+  "\tlibSDL3.so.0": {
+    "path": "/home/bradley/glob2/build/sdl3/prefix/lib/libSDL3.so.0",
+    "sha256": "219b3a951d2a28a8448ebb045d75af33f621a5dfb4d0d361a22a3d923f62391c"
+  },
+  "\tlibstdc++.so.6": {
+    "path": "/lib/x86_64-linux-gnu/libstdc++.so.6",
+    "sha256": "1fd75fe70354a416d75aef22bcae68c47bd25d20e2d0568c30b1a9838cf62f11"
+  },
+  "\tlibm.so.6": {
+    "path": "/lib/x86_64-linux-gnu/libm.so.6",
+    "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+  },
+  "\tlibgcc_s.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+  },
+  "\tlibc.so.6": {
+    "path": "/lib/x86_64-linux-gnu/libc.so.6",
+    "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+  },
+  "\tlibdrm.so.2": {
+    "path": "/lib/x86_64-linux-gnu/libdrm.so.2",
+    "sha256": "ff39219aa058421e46afd36851342370cd1932d2557eb22f54e129755642bf67"
+  },
+  "\tlibogg.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libogg.so.0",
+    "sha256": "1017f00b886f340acede53689da1267398e1297a20e8208db69ead7ab0fc3b6d"
+  },
+  "\tlibopus.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libopus.so.0",
+    "sha256": "63ddaf057d71c53090607e0467eb308640c3b39b0f189e5b937e9c397be2f676"
+  },
+  "\tlibfreetype.so.6": {
+    "path": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+    "sha256": "992dac80abe3a3854f3eb2668da4207c029664ceca5f122ddb46e2a8169e9499"
+  },
+  "\tlibpng16.so.16": {
+    "path": "/lib/x86_64-linux-gnu/libpng16.so.16",
+    "sha256": "89c0c6569a8c00480d451401ad4c0a74942e62dc57f229a970592fdc5adb29e8"
+  },
+  "\tlibtiff.so.6": {
+    "path": "/lib/x86_64-linux-gnu/libtiff.so.6",
+    "sha256": "aad9b47982a23560b6f6657adcd70a1141d0971bd4f2eb5b3753745f3e8feee4"
+  },
+  "\tlibbz2.so.1.0": {
+    "path": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+    "sha256": "cc08c9f50a8009ffd6391e0116a100369b11ca9238fa52392c019e6645b122a1"
+  },
+  "\tlibbrotlidec.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+    "sha256": "64d8a5019d4c294b89fde1193343ea324bbd8603652554e5545f0a01595fa2c5"
+  },
+  "\tlibwebp.so.7": {
+    "path": "/lib/x86_64-linux-gnu/libwebp.so.7",
+    "sha256": "9664db51ec65209078abbb8bc7b699888a43ecc2f3c74ce8dd4e497175aa5bf0"
+  },
+  "\tlibzstd.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libzstd.so.1",
+    "sha256": "0a2128bc10841fb29e76d08d945864dfb0b6a66da5df6df5d8299197439e54bb"
+  },
+  "\tliblzma.so.5": {
+    "path": "/lib/x86_64-linux-gnu/liblzma.so.5",
+    "sha256": "696e868dd0700a19a6d65fc01608ec2d70d3cb91f65710e89180cd2e688f30cb"
+  },
+  "\tlibLerc.so.4": {
+    "path": "/lib/x86_64-linux-gnu/libLerc.so.4",
+    "sha256": "a0ee52df526738293bdd232ddaefbb0d1d9c2da775a82fc6730e7cd394da560c"
+  },
+  "\tlibjbig.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libjbig.so.0",
+    "sha256": "6fea8a26ef5e0d2a36d296d7d0ec0c1f0894bf796b5824317bea88c090833a62"
+  },
+  "\tlibjpeg.so.8": {
+    "path": "/lib/x86_64-linux-gnu/libjpeg.so.8",
+    "sha256": "ac09f2cd6f8a3b8e3cb123999ce275f9bcbe31c6cf9e20212c8f297772591d15"
+  },
+  "\tlibdeflate.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libdeflate.so.0",
+    "sha256": "608c8d7e4345a9ff4b57aa853ce0c355cf2e1d5ec11b8bee86fb4760bba8a15f"
+  },
+  "\tlibbrotlicommon.so.1": {
+    "path": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1",
+    "sha256": "a91ead095d2c80520c55a89057bbe10b031a075340442e63f44b310f93883a1b"
+  },
+  "\tlibsharpyuv.so.0": {
+    "path": "/lib/x86_64-linux-gnu/libsharpyuv.so.0",
+    "sha256": "b2e62799e5dbd783a0671d53be99f7c6489567a5332a1e8f471e6bb250f294dc"
+  }
+}

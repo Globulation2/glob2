@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="blocked live guidance and removed material goals deduplicate delayed refresh demand" time="0.137867" status="run" />
+  <testcase classname="GradientPreparation" name="forbidden paint is ground-only for air material service guard and clearing queries" time="0.092968" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="explicit research demanded escape refresh publishes complete fields after every seed transition" time="1.14106" status="run" />
+  </testsuite></testsuites>

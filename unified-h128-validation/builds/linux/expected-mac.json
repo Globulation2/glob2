@@ -1,0 +1,10 @@
+{
+  "world.checksums": "305c93002663971349fff040c7e65ab54199faba888364ee966c3c309a563154",
+  "snapshot.checksums": "61b40eb0f7368ed97fea35be441e569a05867ee796f85ed20288fa63cb1ad053",
+  "game.replay.checksums": "8042a47526ba26d2ec00761e1c2f0fbcfaea883d1790d73df4a2fcf45e7807d1",
+  "final.game.gz": "1da3af63aef566264395179bdb8de68c7eeefd17704bfbc37efb9814b0d45221",
+  "gradient-episodes.csv": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8",
+  "gradient-quality.csv": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad",
+  "gradient-planning-quality.csv": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484",
+  "gradient-contradictions.csv": "45ad37afca6271faaa0db7514acf5070a87df7cad356bf6557f4b3211a3d1109"
+}

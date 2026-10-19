@@ -1,0 +1,62 @@
+{
+  "source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+  "production_source": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "host": "devlaptop.local",
+  "platform": {
+    "os": "linux",
+    "arch": "x86_64"
+  },
+  "compiler": "GCC13.3.0",
+  "libc": "glibc2.39",
+  "binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+  "binary_path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/frozen-934/glob2",
+  "ordinary_release": true,
+  "native_cases": {
+    "unit_pass": 46,
+    "engine_pass": 94,
+    "initial_fixture_failures_preserved": 3,
+    "fixture_rerun_pass": 3
+  },
+  "checks": {
+    "five_run_observer_threads_continuation": true,
+    "mac_linux_world_snapshot_replay_save": true,
+    "mac_linux_diagnostic_csv": true
+  },
+  "model_status": "generic model untrained; explicit research-only scheduling",
+  "tournament_launched": false,
+  "updated_utc": "2026-10-19T03:14:42.824211+00:00",
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/build-command-final.json",
+      "sha256": "26952a11ebddf1d99f642d946998ce6c629424103f5f4bf0a92c497c7f2edc26"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/build-status-final.json",
+      "sha256": "d921968f0cbc526fea1cf35f429ea5f3c43cec024c4277a9652a3cfc28a05a49"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/dependency-sha256.json",
+      "sha256": "153a08f0299aa5bdd95f193a7497dcb648fc051540eb3a66439d775b5400b11d"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-unit/junit.xml",
+      "sha256": "3358f805a3acf33cffcaa87d1d300d5ad12415045c5570bfd69ead1f2c9534dc"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-engine/junit.xml",
+      "sha256": "18f62b18b684404e032f8ac28787475ab84ad4efa92f1a723782326fbf2dac9b"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-final-three/junit.xml",
+      "sha256": "219195bb1777ed141dee6e2ccb4dfe4e8be5e57224d680292cb5f9309df4842b"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/runtime-linux/status.json",
+      "sha256": "8d69549f0b9dc8c1a2f985fa78487a2ccec5086be201e27e79811c4932efabe1"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/runtime-linux/CROSS_PLATFORM.json",
+      "sha256": "36ec3903013c2df31749862451b713aab2b7d9ffcd20ebb8ee2f33d8eb8bb4b0"
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="94" failures="34" errors="1" skipped="0"><testsuite name="CommandLine"><testcase classname="CommandLine" name="completion scripts contain all command options without running jobs" time="0.000747" status="run" />
+  <testcase classname="CommandLine" name="default launch groups URLs and help paths" time="0.000451" status="run" />
+  <testcase classname="CommandLine" name="every leaf accepts a minimal request and rejects missing required inputs" time="0.003675" status="run" />
+  <testcase classname="CommandLine" name="malformed input fails before handlers" time="0.000691" status="run" />
+  <testcase classname="CommandLine" name="private save migration requires an explicit profile and input" time="0.000578" status="run" />
+  <testcase classname="CommandLine" name="registry describes every executable command and help is asset independent" time="0.006129" status="run" />
+  <testcase classname="CommandLine" name="saved games can use the normal presentation loop with explicit display" time="0.000498" status="run" />
+  <testcase classname="CommandLine" name="typed options equals ordered repeats and literal filenames" time="0.000461" status="run" />
+  </testsuite><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="all five generic family oracles are private and use stable identities [artifacts]" time="0.060485" status="run" />
+  <testcase classname="DelayedGradientPublication" name="all shared families initialize without stats and remain idle without replacement work" time="0.057396" status="run" />
+  <testcase classname="DelayedGradientPublication" name="capture anchored H128 outcome windows include offsets8 through127 only [artifacts]" time="0.057855" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold material and area fields publish identical generations with one two four and eight participants [artifacts]" time="0.158189" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold queued and privately completed fields continue through binary and text saves [artifacts]" time="1.0835" status="run" />
+  <testcase classname="DelayedGradientPublication" name="direct flight alternatives use the live angular bearing wrap ties and traffic avoidance" time="0.055296" status="run" />
+  <testcase classname="DelayedGradientPublication" name="direct warm recovery retains demand but cannot bypass minimum8" time="0.055369" status="run" />
+  <testcase classname="DelayedGradientPublication" name="episode movement reachability alternatives are separate from planning [artifacts]" time="0.059447" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic capture metadata publishes its original movement baseline and freezes episode inputs [artifacts]" time="0.056716" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic movement evidence excludes delegated escape from material labels and leaves RNG unchanged [artifacts]" time="0.058707" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic planning oracle preserves movement state and follows fresh route changes [artifacts]" time="0.059046" status="run" />
+  <testcase classname="DelayedGradientPublication" name="known-zero movement statistics retain first-use demand including air" time="0.065244" status="run" />
+  <testcase classname="DelayedGradientPublication" name="map conversion preserves encoded construction until ordinary gameplay initializes it" time="0.147341" status="run" />
+  <testcase classname="DelayedGradientPublication" name="optional total-work observation preserves state and records actual family admissions [artifacts]" time="0.086132" status="run" />
+  <testcase classname="DelayedGradientPublication" name="ordinary terrain edits with markets disabled round-trip binary and text saves" time="0.391821" status="run" />
+  <testcase classname="DelayedGradientPublication" name="pending shared air fields continue through binary and text saves" time="0.400891" status="run" />
+  <testcase classname="DelayedGradientPublication" name="private174 migration profile is explicit and does not replace published layouts" time="0.000114" status="run" />
+  <testcase classname="DelayedGradientPublication" name="production movement evidence needs no probe and excludes cold and absent observations but enrolls air" time="0.061414" status="run" />
+  <testcase classname="DelayedGradientPublication" name="recruitment-only demand recovers a published unreachable natural field after terrain opens with explicit fixed research intervals" time="0.060924" status="run" />
+  <testcase classname="DelayedGradientPublication" name="simultaneous demanded families refresh together and skipped families stay idle with explicit fixed research intervals" time="0.057263" status="run" />
+  <testcase classname="DelayedGradientPublication" name="spatial masks separate goal changes from passability and handle tiny patches" time="0" status="run" />
+  <testcase classname="DelayedGradientPublication" name="spatial overlap uses actual publication generations and bounded aligned queries [artifacts]" time="0.056589" status="run" />
+  <testcase classname="DelayedGradientPublication" name="stale forbidden natural reads demand recovery without material escape evidence [artifacts]" time="0.058822" status="run" />
+  <testcase classname="DelayedGradientPublication" name="successful planning reads leave warm natural fields idle beyond query history" time="0.058068" status="run" />
+  <testcase classname="DelayedGradientPublication" name="two demanded warm resources batch alongside one cold FIFO ticket at a shared deadline with explicit fixed research intervals" time="0.088543" status="run" />
+  <testcase classname="DelayedGradientPublication" name="unreachable shared areas recover from actual target edits without periodic maintenance with explicit fixed research intervals" time="0.11925" status="run" />
+  <testcase classname="DelayedGradientPublication" name="valid guard clearing and escaped forbidden arrivals never count as movement stalls" time="0.056739" status="run" />
+  </testsuite><testsuite name="GradientCollectionCommandLine"><testcase classname="GradientCollectionCommandLine" name="exploration and checkpoint overrides require explicit headless collection" time="0.000673" status="run" />
+  <testcase classname="GradientCollectionCommandLine" name="gradient work stats is an independent game-run observer and packed family keys are accepted" time="0.000574" status="run" />
+  <testcase classname="GradientCollectionCommandLine" name="spatial overlap diagnostic toggle requires quality collection" time="0.000524" status="run" />
+  </testsuite><testsuite name="GradientLegacyQueue"><testcase classname="GradientLegacyQueue" name="grandfathered repeated legacy field survives first publication and a second checkpoint" time="0.195469" status="run" />
+  </testsuite><testsuite name="GradientMarketTurnover"><testcase classname="GradientMarketTurnover" name="overlapping overlay sources count union rather than supplier transitions" time="0.053212" status="run" />
+  <testcase classname="GradientMarketTurnover" name="real delivery updates zero to positive membership after stock mutation" time="0.05258" status="run" />
+  <testcase classname="GradientMarketTurnover" name="shared pool transition updates every eligible footprint and stock registration is observable" time="0.05155" status="run" />
+  </testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="0.057953" status="run" />
+  <testcase classname="GradientPreparation" name="a locally blocked consumer field refreshes its stable supplier-cache destination" time="0.065778" status="run" />
+  <testcase classname="GradientPreparation" name="absent natural sources return shared negative guidance without enrolling rebuilds" time="0.10914" status="run" />
+  <testcase classname="GradientPreparation" name="air material planes and cache keys occupy an independent namespace" time="0.002317" status="run" />
+  <testcase classname="GradientPreparation" name="air shares preparation and lazy building fields while ignoring ground blockers" time="0.060606" status="run" />
+  <testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="0.067633" status="run" />
+  <testcase classname="GradientPreparation" name="authored air blockers constrain the common point router while forbidden paint only blocks ground" time="0.059554" status="run" />
+  <testcase classname="GradientPreparation" name="blocked live guidance and removed material goals deduplicate delayed refresh demand" time="0.05724" status="run">
+      <failure message="0 == 1" type="REQUIRE">
+src/map/gradient/GradientPreparationTest.cpp:2230:
+REQUIRE( map.gradientRuntime-&gt;fieldRequests.size()==1 ) is NOT correct!
+  values: REQUIRE( 0 == 1 )
+  logged: scenario := 0
+
+      </failure>
+    </testcase>
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="0.099446" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="0.089401" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="0.065564" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="0.064916" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="0.063239" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="0.06137" status="run" />
+  <testcase classname="GradientPreparation" name="consumer pool changes hard-supersede ground supplier fields at a stable identity" time="0.103027" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="0.067164" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="0.059502" status="run" />
+  <testcase classname="GradientPreparation" name="forbidden paint is ground-only for air material service guard and clearing queries" time="1.216"><error message="error" type="error">GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2-gradient-unified-h128/build/unified-release/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "0a548c954f9c16d4f8788c970b45760b79c31887", "sourceStatus": [], "sourceTreeSha256": "4d4c988848f9e75dae48545e5ef2624a8fe4472261dd42196b435ea26dc80b38"}
+
+[run_tests] exit status -11
+
+[failure] forbidden paint is ground-only for air material service guard and clearing queries: false
+src/map/gradient/GradientPreparationTest.cpp:1851:
+CHECK( map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8) ) is NOT correct!
+  values: CHECK( false )
+  logged: constrained := false
+[error] forbidden paint is ground-only for air material service guard and clearing queries: exception
+SIGSEGV - Segmentation violation signal
+</error></testcase><testcase classname="GradientPreparation" name="ground refreshes preserve warm air material seeds across edits" time="0.08734" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="0.058223" status="run" />
+  <testcase classname="GradientPreparation" name="material LRU retains a published result until its waiting reader observes it" time="0.081215" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.00356" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.028672" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="0.065793" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="0.338687" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air explorer recruitment does not create a combat field" time="0.056296" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary air service choices keep geometric ranking without allocating fields" time="0.119339" status="run" />
+  <testcase classname="GradientPreparation" name="ordinary flying building jobs and warrior recruitment avoid route fields" time="0.083049" status="run" />
+  <testcase classname="GradientPreparation" name="pending escape guidance preserves a material assignment without consuming RNG" time="0.056247" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="0.070965" status="run" />
+  <testcase classname="GradientPreparation" name="published natural and clear seed classes survive scalar SIMD and terrain propagation" time="0.137732" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="0.06165" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.028601" status="run" />
+  <testcase classname="GradientPreparation" name="released ground and air draft routing layouts remain independent" time="0.054216" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="0.211445" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="1.43192" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="0.133505" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="0.075986" status="run" />
+  <testcase classname="GradientPreparation" name="stock changes during shared market work retain dirty demand through its fixed deadline" time="0.066099" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.059562" status="run" />
+  <testcase classname="GradientPreparation" name="the version-152 checksum adapter excludes newly introduced publication state" time="0.055141" status="run" />
+  <testcase classname="GradientPreparation" name="unreleased routing draft formats are rejected before reading runtime state" time="0" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="0.070846" status="run" />
+  <testcase classname="GradientPreparation" name="weighted AIR market oracle follows live pickup and uses AIR cost buckets" time="0.067686" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="0.882997" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="0.061815" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="0.366426" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads" time="0.150913" status="run" />
+  <testcase classname="MapGradientInvalidation" name="explicit research demanded escape refresh publishes complete fields after every seed transition" time="1.18455" status="run">
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 0
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 0
+          mutation := 7
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:238:
+CHECK( std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 1
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 1
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 2
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 2
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 3
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 3
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 4
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 4
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 5
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 5
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 6
+          mutation := 7
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 6
+          mutation := 7
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 0
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 0
+          mutation := 8
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:238:
+CHECK( std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 1
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 1
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 2
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 2
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 3
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 3
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 4
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 4
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 5
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 5
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 6
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 6
+          mutation := 8
+
+      </failure>
+      <failure message="2 == 1" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:234:
+CHECK( map.gradientPipelineStatus().jobs==jobs ) is NOT correct!
+  values: CHECK( 2 == 1 )
+  logged: swim := 7
+          mutation := 8
+
+      </failure>
+      <failure message="3 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:237:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 3 == 2 )
+  logged: swim := 7
+          mutation := 8
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:238:
+CHECK( std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 8
+
+      </failure>
+    </testcase>
+  <testcase classname="MapGradientInvalidation" name="forbidden edits preserve published generations until delayed refresh" time="2.71368" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting delays complete routes across passable resources" time="0.227666" status="run" />
+  <testcase classname="MapGradientInvalidation" name="idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together" time="0.14581" status="run" />
+  </testsuite></testsuites>

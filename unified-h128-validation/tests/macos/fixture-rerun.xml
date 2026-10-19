@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="1" errors="0" skipped="0"><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="blocked live guidance and removed material goals deduplicate delayed refresh demand" time="0.073446" status="run">
+      <failure message="0 == 1" type="REQUIRE">
+src/map/gradient/GradientPreparationTest.cpp:2259:
+REQUIRE( map.gradientRuntime-&gt;fieldRequests.size()==1 ) is NOT correct!
+  values: REQUIRE( 0 == 1 )
+  logged: scenario := 2
+
+      </failure>
+    </testcase>
+  <testcase classname="GradientPreparation" name="forbidden paint is ground-only for air material service guard and clearing queries" time="0.059187" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="explicit research demanded escape refresh publishes complete fields after every seed transition" time="0.824014" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,72 @@
+{
+  "source_revision": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "started": "2026-10-19T03:11:43.074553+00:00",
+  "supervisor_pid": 3917693,
+  "runs": [
+    {
+      "binary": "unit",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unified-release",
+        "--binary",
+        "unit",
+        "-j4",
+        "--no-display",
+        "--junit",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-unit/junit.xml",
+        "--artifacts",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-unit/artifacts",
+        "--write-inventory",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-unit/inventory.json",
+        "--filter",
+        "AdaptiveGradientState/*",
+        "--filter",
+        "GradientMarketTargets/*",
+        "--filter",
+        "GradientTargetCell/*",
+        "--filter",
+        "GradientPipeline/*"
+      ],
+      "pid": 3919781,
+      "exit_code": 0
+    },
+    {
+      "binary": "engine",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unified-release",
+        "--binary",
+        "engine",
+        "-j4",
+        "--no-display",
+        "--junit",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-engine/junit.xml",
+        "--artifacts",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-engine/artifacts",
+        "--write-inventory",
+        "/home/bradley/glob2/artifacts/gradient-unified-20261019/builds/linux/focused-engine/inventory.json",
+        "--filter",
+        "DelayedGradientPublication/*",
+        "--filter",
+        "GradientLegacyQueue/*",
+        "--filter",
+        "GradientMarketTurnover/*",
+        "--filter",
+        "MapGradientInvalidation/*",
+        "--filter",
+        "GradientPreparation/*",
+        "--filter",
+        "CommandLine/*",
+        "--filter",
+        "GradientCollectionCommandLine/*"
+      ],
+      "pid": 3920169,
+      "exit_code": 1
+    }
+  ],
+  "finished": "2026-10-19T03:11:52.290196+00:00"
+}

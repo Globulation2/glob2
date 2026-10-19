@@ -1,0 +1,60 @@
+{
+  "status": "qualified-for-explicit-fixed-interval-bootstrap-research-only",
+  "issued_utc": "2026-10-19T03:21:31.471071+00:00",
+  "native_source_revision": "9340d988567bd3d21259b9cfd97aaf15c6082cbb",
+  "native_production_revision": "0a548c954f9c16d4f8788c970b45760b79c31887",
+  "tool_revision": "d80e7342c23bf5c7cad0ae3de8fb5fe86f719623",
+  "mac_binary_sha256": "a927031b2ca67045434a327e8b98df8c7c77f1a1d3f0abac1ea42d06fa4adbcc",
+  "linux_binary_sha256": "0a09ca95a1f9e60861e267982f7eb9b016478cf98a5b1ff28bb34a5cba737abd",
+  "header_sha256": "852fbb740fe0705f971832ae98c22ab870a787788169d4a0bbfcb99e67cdd5e9",
+  "model_sha256": "f0879a62f78671c7ef9cf576de43a5a62f15a9659b5e0abcc888a8bd9f0eeb0e",
+  "collector": "unified-gradient-spatial-h128-v3",
+  "model_contract": "unified-gradient-h128-v2",
+  "model_trained": false,
+  "permitted_roles": [
+    "exploration"
+  ],
+  "forbidden_roles_until_fitted_candidate_qualified": [
+    "candidate"
+  ],
+  "intervals": [
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    4096
+  ],
+  "minimum_interval": 8,
+  "forced_age_cap": null,
+  "prediction_horizon_ticks": 128,
+  "threshold_milli_direction_cost": 128000,
+  "planned_games": 256,
+  "bootstrap_exploration_games": 128,
+  "candidate_reserved_games": 128,
+  "hosts": [
+    "localhost",
+    "therig.local",
+    "devlaptop.local",
+    "pharaoh-dev-1.local",
+    "pharaoh-dev-2.local"
+  ],
+  "wall_cap_seconds": 1800,
+  "process_attempts": 1,
+  "evidence": {
+    "FLEET-LINUX-QUALIFICATION.json": "925e01dc7a075c35104ba4bf2a6b72f1e3436c87fe06f50847b79b67dd99ce6f",
+    "runtime-linux/CROSS_PLATFORM.json": "36ec3903013c2df31749862451b713aab2b7d9ffcd20ebb8ee2f33d8eb8bb4b0",
+    "builds/macos/NATIVE-QUALIFICATION.json": "e80a9d459226048e0344fcc7248ba34ba8312a1966f30d0b05d335485979fc5b",
+    "overhead/COMPLETE.json": "aef5c0f168c5cb8d70706b249272e70a2efdb40093376c6db9f96c2338491afd"
+  },
+  "stable_promotion": false,
+  "limitations": [
+    "Spatial adapters unknown for weightedGuard/Forbidden borders/Markets/AIR",
+    "CPU overhead study covers initial3FFA128map only; larger and later workloads pending",
+    "Model placeholder must not run adaptive candidate treatment; first new model requires qualified fit",
+    "Final master integration and publication evidence refresh remain before stable production promotion"
+  ]
+}

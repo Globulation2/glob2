@@ -1,0 +1,18 @@
+# Spatial/H128 native handoff
+
+This supersedes older policy statements in the scheduler handoff: minimum8 remains, forced maximum age refresh is removed, benefit threshold is128000 milli direction cost. Cold/reactive/unknown-history recovery remains. Explicit research intervals remain separate. No implicit bootstrap interval or old resource coefficients are used.
+
+Model target: unified-gradient-h128-v2. Collector: unified-gradient-spatial-h128-v3. The outcome window is capture anchored: age >= publication delay and age <128 (default offsets8..127), complete at128. q32 remains a32-tick feature.
+
+Shared bounded aligned4x4 machinery is implemented in GradientSeedOverlap.h. Natural Materials and Clear ground classes0..7 are supported. Published values recover seed class as65535 goal,0 blocked, other values open. Production seed loops and current16-cell adapters share SeedPoint.h, resolving tables/masks/terrain context before per-cell work. Goal transitions are excluded from passability transitions. Per-query counters increment once per category, rather than once per changed tile. Query denominator includes unchanged patches. No new baseline buffer, cache, random use or per-query allocation is introduced by overlap itself; the existing enabled quality oracle still has its own prior allocations/work.
+
+Generation counters reset only on real publication. A late-attached probe remains unknown until publication. Registry reconstruction explicitly suppresses diagnostic publication. Query-time pointer identity must match the actual serving field; overlap is observed before possible reactive refresh. Episode-start counters are frozen separately from immutable capture-time movement baselines. Diagnostic fields are absent from serialized simulation state/checksums/model inputs/admission.
+
+Guard weighted seeds, Forbidden derived border seeds, Markets and AIR are explicit unsupported with semantic reason strings. Disabled overlap retains quality probe work, emits eligible supported1/reason disabled/known0/counters0; unknown/disabled rows must never be imputed as valid zero observations. Toggling back on requires a real publication before history becomes known. Whole Map clear ends the diagnostic epoch normally.
+
+Focused test inventory added to existing registered suites:
+- GradientPreparation: exact production natural/Clear seed class recovery for all ground classes, ordinary/modified terrain, scalar/CPU selected kernels, snapshot template cold/warm/disabled. Existing OpenCL terrain test now checks class recovery after successful device or exact fallback; device availability remains explicit in its assertions.
+- DelayedGradientPublication: late attach, capture/request vs actual publication reset, spatial local/far/cancelled changes, goal/pass separation, disabled history, aligned tiny patches, registry rebuild, checksum nonmutation; direct warm reactive request minimum8; H128 label boundaries and actual planning/finalization.
+- AdaptiveGradientState: threshold inclusive128000 and minimum8; ordinary low-prediction demand remains rejected even after one million ticks; explicit4096 research interval remains intentional.
+
+All17 production translation-unit syntax checks and3 affected engine harness syntax checks passed. Source receipt records the pre-native-build files. No engine runtime, hardware accelerator or cross-platform behavior pass is claimed here. Parent owns ordinary release/engine execution and final immutable qualification. New minimum8 direct reactive gate may require old tests that assumed immediate warm recovery to advance to the actual next eligible capture.

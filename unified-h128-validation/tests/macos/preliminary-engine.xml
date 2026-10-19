@@ -1,0 +1,1052 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="34" failures="127" errors="0" skipped="0"><testsuite name="DelayedGradientPublication"><testcase classname="DelayedGradientPublication" name="all five generic family oracles are private and use stable identities [artifacts]" time="0.062156" status="run" />
+  <testcase classname="DelayedGradientPublication" name="all shared families initialize without stats and remain idle without replacement work" time="0.061685" status="run" />
+  <testcase classname="DelayedGradientPublication" name="capture anchored H128 outcome windows include offsets8 through127 only [artifacts]" time="0.064458" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold material and area fields publish identical generations with one two four and eight participants [artifacts]" time="0.180985" status="run" />
+  <testcase classname="DelayedGradientPublication" name="cold queued and privately completed fields continue through binary and text saves [artifacts]" time="1.60549" status="run" />
+  <testcase classname="DelayedGradientPublication" name="direct flight alternatives use the live angular bearing wrap ties and traffic avoidance" time="0.064926" status="run" />
+  <testcase classname="DelayedGradientPublication" name="direct warm recovery retains demand but cannot bypass minimum8" time="0.051062" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic capture metadata publishes its original movement baseline and freezes episode inputs [artifacts]" time="0.061095" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic movement evidence excludes delegated escape from material labels and leaves RNG unchanged [artifacts]" time="0.066781" status="run" />
+  <testcase classname="DelayedGradientPublication" name="generic planning oracle preserves movement state and follows fresh route changes [artifacts]" time="0.058649" status="run" />
+  <testcase classname="DelayedGradientPublication" name="known-zero movement statistics retain first-use demand including air" time="0.067268" status="run" />
+  <testcase classname="DelayedGradientPublication" name="map conversion preserves encoded construction until ordinary gameplay initializes it" time="0.269919" status="run" />
+  <testcase classname="DelayedGradientPublication" name="optional total-work observation preserves state and records actual family admissions [artifacts]" time="0.091468" status="run" />
+  <testcase classname="DelayedGradientPublication" name="ordinary terrain edits with markets disabled round-trip binary and text saves" time="0.523991" status="run" />
+  <testcase classname="DelayedGradientPublication" name="pending shared air fields continue through binary and text saves" time="0.518648" status="run" />
+  <testcase classname="DelayedGradientPublication" name="private174 migration profile is explicit and does not replace published layouts" time="0.000403" status="run" />
+  <testcase classname="DelayedGradientPublication" name="production movement evidence needs no probe and excludes cold and absent observations but enrolls air" time="0.060492" status="run" />
+  <testcase classname="DelayedGradientPublication" name="recruitment-only demand recovers a published unreachable natural field after terrain opens with explicit fixed research intervals" time="0.05062" status="run" />
+  <testcase classname="DelayedGradientPublication" name="simultaneous demanded families refresh together and skipped families stay idle with explicit fixed research intervals" time="0.073222" status="run" />
+  <testcase classname="DelayedGradientPublication" name="spatial masks separate goal changes from passability and handle tiny patches" time="0" status="run" />
+  <testcase classname="DelayedGradientPublication" name="spatial overlap uses actual publication generations and bounded aligned queries [artifacts]" time="0.056372" status="run" />
+  <testcase classname="DelayedGradientPublication" name="successful planning reads leave warm natural fields idle beyond query history" time="0.051341" status="run" />
+  <testcase classname="DelayedGradientPublication" name="two demanded warm resources batch alongside one cold FIFO ticket at a shared deadline with explicit fixed research intervals" time="0.100604" status="run" />
+  <testcase classname="DelayedGradientPublication" name="unreachable shared areas recover from actual target edits without periodic maintenance with explicit fixed research intervals" time="0.108682" status="run" />
+  <testcase classname="DelayedGradientPublication" name="valid guard clearing and escaped forbidden arrivals never count as movement stalls" time="0.053924" status="run" />
+  </testsuite><testsuite name="GradientLegacyQueue"><testcase classname="GradientLegacyQueue" name="grandfathered repeated legacy field survives first publication and a second checkpoint" time="0.309277" status="run" />
+  </testsuite><testsuite name="GradientMarketTurnover"><testcase classname="GradientMarketTurnover" name="overlapping overlay sources count union rather than supplier transitions" time="0.049073" status="run" />
+  <testcase classname="GradientMarketTurnover" name="real delivery updates zero to positive membership after stock mutation" time="0.055878" status="run" />
+  <testcase classname="GradientMarketTurnover" name="shared pool transition updates every eligible footprint and stock registration is observable" time="0.0567" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads" time="0.200253" status="run">
+      <failure message="false" type="REQUIRE">
+src/map/gradient/MapGradientInvalidationTest.cpp:64:
+REQUIRE( ready() ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  <testcase classname="MapGradientInvalidation" name="forbidden edits preserve published generations until delayed refresh" time="2.55106" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting delays complete routes across passable resources" time="0.324208" status="run" />
+  <testcase classname="MapGradientInvalidation" name="idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together" time="0.193235" status="run" />
+  <testcase classname="MapGradientInvalidation" name="scheduled escape maintenance publishes complete fields after every seed transition" time="1.31523" status="run">
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 0
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 0
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 1
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 1
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 2
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 3
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 3
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 4
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 4
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 5
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 5
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 0
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 1
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 2
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 3
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 4
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 5
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 6
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 6
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:236:
+CHECK( std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)) ) is NOT correct!
+  values: CHECK( false )
+  logged: swim := 7
+          mutation := 6
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 7
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 9
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 10
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 0
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 1
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 2
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 3
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 4
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 5
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 6
+          mutation := 11
+
+      </failure>
+      <failure message="1 == 2" type="CHECK">
+src/map/gradient/MapGradientInvalidationTest.cpp:233:
+CHECK( map.gradientPipelineStatus().jobs==jobs+1 ) is NOT correct!
+  values: CHECK( 1 == 2 )
+  logged: swim := 7
+          mutation := 11
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

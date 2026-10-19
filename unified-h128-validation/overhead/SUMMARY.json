@@ -1,0 +1,33 @@
+{
+  "scope": "initial 3FFA128 qualification map1024ticks; late/large overhead remains separate",
+  "repeats": 6,
+  "arms": {
+    "off": {
+      "cpu_ms_per_tick_median": 0.08061826855468751,
+      "minimum": 0.074621724609375,
+      "maximum": 0.0899984052734375
+    },
+    "probe-no-spatial": {
+      "cpu_ms_per_tick_median": 2.3283238017578123,
+      "minimum": 2.2196962841796877,
+      "maximum": 2.448991345703125
+    },
+    "probe-spatial": {
+      "cpu_ms_per_tick_median": 2.4017614384765626,
+      "minimum": 2.2366470595703123,
+      "maximum": 2.5855894873046874
+    }
+  },
+  "all_final_checksums_equal": true,
+  "CPU_affinity": [
+    0
+  ],
+  "SMT_sibling": 16,
+  "load_before": "0.42,0.53,0.70; no other game processes; sibling not OS-isolated",
+  "limitations": [
+    "Initial3player128map1024ticks only; larger late-game overhead still requires separate measurement",
+    "Quality observer is diagnostic and expensive; no claim that its total enabled cost is production bookkeeping",
+    "Process CPU measurements under a shared host, not physically isolated frequency control"
+  ],
+  "spatial_increment_median_ratio": 0.03154098955794171
+}
