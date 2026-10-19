@@ -403,6 +403,9 @@ static void delayedFields()
 		require(std::vector<Uint16>(field(),field()+cells)==original, "first publication uses its original capture");
 		const auto frozen=reference();
 		require(frozen!=original, "the changed world requires a different field");
+        // Warm periodic fields retain the shared warm-admission minimum since the
+        // captured generation. Reach eligibility before testing its new deadline.
+        while(world.game.stepCounter<1+AdaptiveGradientState::MinimumInterval) publish();
 		refresh(); capture();
 
 		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
@@ -410,7 +413,9 @@ static void delayedFields()
 		require(std::vector<Uint16>(field(),field()+cells)==original, "refresh cannot publish before its deadline");
 		publish();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
+        while(world.game.stepCounter<1+2*AdaptiveGradientState::MinimumInterval) publish();
 		refresh(); capture(); // Destruction must safely drain private work.
+        require(map.gradientPipelineStatus().pending==1, "teardown retains an admitted private refresh");
 
 	}
 	std::puts("PASS cold and soft-stale resource/guard/clear deadlines, captured terrain, teardown");
@@ -1204,6 +1209,18 @@ TEST_SUITE("BuildingGradientInvalidation")
         }
     }
 
+    TEST_CASE("synthetic runtime rejects resource-only adaptive layouts instead of dropping their state [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int version : {174,176,177}) {
+            World world;
+            world.game.mapHeader.privateAdaptive174=(version==174);
+            // No current unified state can truthfully supply the historical
+            // resource-policy record; real fixtures exercise those loader paths.
+            CHECK_THROWS_AS(glob2test::LegacyPopulationOutput(new GAGCore::MemoryStreamBackend,&world.game,version),std::logic_error);
+        }
+    }
+
     TEST_CASE("released and building-draft format lineages select independent layouts [save-format]")
     {
         struct Layout { unsigned version; bool movement, snapshot, delayed, initial; };
@@ -1343,6 +1360,9 @@ TEST_SUITE("BuildingGradientInvalidation")
                 world->game.map.configureGradientPipeline(0, 2);
             }
             auto& map = original.game.map;
+            // Request explicitly: warm natural fields now require demand rather
+            // than participating in the legacy periodic round automatically.
+            map.updateMaterialGradient(0,WHEAT,0);
             map.publishWorldResultsDue();
             auto observation = original.game.snapshotStore().captureBoundary(original.game);
             map.submitWorldWork(observation);
@@ -1395,6 +1415,9 @@ TEST_SUITE("BuildingGradientInvalidation")
             const auto* a = map.getMaterialGradientSlot(0,WHEAT,0);
             const auto* b = restored.game.map.getMaterialGradientSlot(0,WHEAT,0);
             CHECK(std::equal(a, a + map.getW() * map.getH(), b));
+            const auto* historical = legacy.game.map.getMaterialGradientSlot(0,WHEAT,0);
+            REQUIRE(historical != nullptr);
+            CHECK(std::equal(a, a + map.getW() * map.getH(), historical));
         }
     }
 

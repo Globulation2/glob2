@@ -261,6 +261,42 @@ The rendering thread polls pending artwork with the application's 2 ms budget,
 including when simulation runs on a separate thread, so HD reloads finish during
 automatic matches too.
 
+## Unified gradient diagnostics
+
+`game run --resource-gradient-probe` retains its historical name but collects the
+`unified-gradient-h128-v4` contract for material, shared-market, guard, clearing and
+forbidden-escape fields, including applicable air movement classes. Explicit
+family/team/movement/material identities accompany all streams. It produces
+`gradient-quality.csv`, `gradient-episodes.csv`, separate planning outcomes and
+non-overlapping movement totals. Episodes freeze serving-capture metadata and
+compare deferred versus delayed-refresh alternatives over capture-anchored
+offsets 8 through 127 under the normal eight-tick publication delay. An episode
+is complete at age 128 ticks. Incomplete horizons and unknown historical counters are not fitted as complete
+known examples. Equal-quality alternative directions score zero; stalls,
+reachability, invalid destinations, forbidden failures and planning outcomes are
+separate from direction cost. Guard balancing uses its real RNG/context and
+weighted goals without treating intentional stays as failures.
+
+The oracle uses private current-world snapshots, selectors and RNG copies. It
+must not request/publish a live field or change simulation execution. These
+reference calculations and streams exist only when collection is enabled, and
+make diagnostic CPU unsuitable for production performance comparisons.
+
+For work counts without quality collection, `--gradient-work-stats PATH` enables
+raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`
+outputs. It is independently opt-in and defaults off. Result metadata records
+the separate model and collector contracts, whether a generic model is trained,
+the 24,000 milli-unit threshold, 32-tick warm admission minimum, 1,024-tick
+demanded-field safety cap and explicit fixed-interval research overrides.
+The cap permits admission at that age; it does not bypass capacity or the
+eight-tick publication delay. An untrained
+placeholder cannot be mistaken for a qualified adaptive model.
+
+See [the model workflow](resource-gradient-model.md) for the new dataset contract,
+fixed-interval bootstrap tournament, whole-map splits and family-balanced fitting.
+Resource-only datasets remain separate unless an explicit validated compatibility
+mapping is introduced.
+
 ## Verifying a match record
 
 ```sh
@@ -568,8 +604,9 @@ publishes due results, captures once, then admits work before applying orders an
 advancing. Newly admitted AI/statistics work configured with delay zero is due at
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
-old pending results keep their original deadlines. The current replay floor 169
-also requires delayed gradient publication; the sim revision gates these rules. Runtime world publication and
+old pending results keep their original deadlines. The current replay floor 174
+also requires adaptive ground-resource scheduling and the integrated delayed-ground
+and air-routing state; the sim revision gates these rules. Runtime world publication and
 AI-order delivery remain separate: world results publish before capture, while
 due AI orders enter the command schedule and undergo live order validation. See the
 [owner timing contract](../architecture/simulation.md#completed-world-observations).

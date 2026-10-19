@@ -87,7 +87,7 @@ public:
 
 	//! Building lists indexed by what the building offers (canUpgrade, canFeedUnit, ...).
 	void removeFromAbilitiesLists(Building *building);
-	void addToStaticAbilitiesLists(Building *building);
+	void addToStaticAbilitiesLists(Building *building,bool notifyMarketTargets=true);
 
 	//! Step every unit, building and bullet of the team.
 	void syncStep(void);

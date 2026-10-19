@@ -33,9 +33,9 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 {
     return loadFromHeadersTask(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName).run();
 }
-bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
+bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData,SaveLoadProfile profile,MapLoadInitialization initialization)
 {
-    return loadTask(stream, ignoreGUIData).run();
+    return loadTask(stream, ignoreGUIData,profile,initialization).run();
 }
 
 GAGCore::CooperativeTask GameGUI::loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
@@ -83,13 +83,13 @@ GAGCore::CooperativeTask GameGUI::loadFromStreamTask(MapHeader mapHeader, GameHe
 	co_return true;
 }
 
-GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ignoreGUIData)
+GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ignoreGUIData,SaveLoadProfile profile,MapLoadInitialization initialization)
 {
 	co_await globalContainer->gameGraphicsTask();
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	init();
 
-	bool result = co_await game.loadTask(stream);
+	bool result = co_await game.loadTask(stream,profile,initialization);
 
 	if (result == false)
 	{

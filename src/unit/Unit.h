@@ -5,6 +5,7 @@
 
 #include "UnitState.h"
 #include "gradient/FieldReadiness.h"
+#include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
 #include "UnitCargo.h"
 #include <vector>
@@ -91,6 +92,8 @@ private:
 	// Per-decision control only: reset before each movement decision, never
 	// persisted or included in snapshots/checksums.
 	bool gradientDecisionPending = false;
+    // One decision only; never serialized or checksummed, and no heap storage.
+    std::optional<GradientFieldKey> directGradientDecision;
 public:
 	// Wide pathfinding outputs can change even on failure. Preserve both writes
 	// before storing the audited one-cell displacement in its compact fields.

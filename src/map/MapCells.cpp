@@ -1,6 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientTargetCell.h"
+#include <bit>
+
+void Map::paintedAreaMaskChanged(AreaType kind, Uint32 before, Uint32 after)
+{
+    for (auto changed=before^after; changed; changed&=changed-1) {
+        const auto team=std::countr_zero(changed);
+        if (team>=Team::MAX_COUNT) continue; // Old masks retain 32 on-disk bits.
+        auto& count=paintedAreaCounts[kind][team];
+        if (after&(Uint32(1)<<team)) ++count;
+        else { assert(count); --count; }
+    }
+}
+
+void Map::rebuildPaintedAreaCounts()
+{
+    paintedAreaCounts={};
+    for (const auto& area:areaCells) {
+        paintedAreaMaskChanged(ClearingArea,0,area.clear);
+        paintedAreaMaskChanged(ForbiddenArea,0,area.forbidden);
+        paintedAreaMaskChanged(GuardArea,0,area.guard);
+        paintedAreaMaskChanged(FarmArea,0,area.farm);
+    }
+}
 
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
@@ -23,17 +47,21 @@ void Map::invalidateResourceSeeds()
 
 void Map::replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks)
 {
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	const bool blockedGround = resourceBlocksGround(index);
 	const bool blockedAir = resourceBlocksAir(index);
 	const auto before = resourceMaterialMaskAt(index);
+    const auto beforeAvailable=materialMaskAt(index);
 	releaseResourceStock(index);
 	resourceCells[index].resource = resource;
 	markResource(index);
 	initializeResourceStock(index, stocks);
-	materialStockChanged(index, before);
+	materialStockChanged(index, before, beforeAvailable, false);
     if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::replaceTile(size_t index, const Tile &tile)
@@ -43,6 +71,9 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	// Explicit replaceResource retains its reset-to-definition semantics.
 	if (old.resource.type!=tile.resource.type || old.resource.amount!=tile.resource.amount)
 		replaceResource(index,tile.resource);
+	// Resource replacement above already accounts for its own membership delta.
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	Resource resolved = resourceCells[index].resource;
 	if (resolved.type!=NO_RES_TYPE)
 	{
@@ -56,10 +87,15 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	occupancyCells[index].building = tile.building;
 	occupancyCells[index].groundUnit = tile.groundUnit;
 	occupancyCells[index].airUnit = tile.airUnit;
+	paintedAreaMaskChanged(ForbiddenArea,old.forbidden,tile.forbidden);
+	paintedAreaMaskChanged(GuardArea,old.guardArea,tile.guardArea);
+	paintedAreaMaskChanged(ClearingArea,old.clearArea,tile.clearArea);
+	paintedAreaMaskChanged(FarmArea,old.farmArea,tile.farmArea);
 	areaCells[index] = {tile.forbidden, tile.guardArea, tile.clearArea, tile.farmArea};
 	scriptAreaCells[index] = tile.scriptAreas;
 	markTerrain(index); markResource(index); markOccupancy(index); markArea(index);
 	if (changes) resourceSeedChanged(index, changes);
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
@@ -71,9 +107,15 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 	else { assert(field == &Tile::farmArea); storedField = &MapState::AreaCell::farm; }
 	auto &stored = areaCells[index].*storedField;
 	if (stored == value) return;
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
+	const auto kind=field==&Tile::forbidden ? ForbiddenArea : field==&Tile::guardArea ? GuardArea
+		: field==&Tile::clearArea ? ClearingArea : FarmArea;
+	paintedAreaMaskChanged(kind,stored,value);
 	stored = value;
 	markArea(index);
 	if (field == &Tile::forbidden) resourceSeedChanged(index, ResourceSeedCache::Forbidden);
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::addForbidden(int x, int y, Uint32 team)
@@ -102,9 +144,12 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 			const size_t index = coordToIndex(xi, yi);
 			if (occupancyCells[index].building != building)
 			{
+				const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+					: std::optional{captureGradientTargetCell(index)};
 				occupancyCells[index].building = building;
 				markOccupancy(index);
 				resourceSeedChanged(index, ResourceSeedCache::Building);
+				if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 			}
 		}
 	// Preserve the previous unconditional generation bump, including empty edits.

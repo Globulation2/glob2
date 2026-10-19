@@ -60,7 +60,7 @@ struct MaterialSeedCache
     std::array<std::vector<Uint64>, 4> stamps;
     bool disabled = false;
     bool trySeed(const SimulationSnapshot::Handle&, int team, int material, int swim,
-        Uint16* output, const Uint16* suppliers);
+        Uint16* output, const Uint16* suppliers, std::uint64_t* goalCount=nullptr);
 };
 struct CrowdingScratch
 {
@@ -70,7 +70,7 @@ struct CrowdingScratch
     std::vector<size_t> positions, seeds;
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
+std::uint64_t seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch);
 

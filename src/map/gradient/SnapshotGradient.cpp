@@ -34,7 +34,7 @@ namespace {
 // Keep the ground kernel independent of air state, including optimizer aliasing.
 template<bool Air>
 bool seedCachedMaterials(MaterialSeedCache& cache, const SimulationSnapshot::Handle& snapshot, int team, int material,
-    int swim, Uint16* output, const Uint16* suppliers, bool rebuild)
+    int swim, Uint16* output, const Uint16* suppliers, bool rebuild, std::uint64_t* goalCount)
 {
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
@@ -149,21 +149,26 @@ bool seedCachedMaterials(MaterialSeedCache& cache, const SimulationSnapshot::Han
     std::memcpy(output,cache.base[(Air && swim==AIR_MOVEMENT_CLASS)?2:swim>0].data(),cells*sizeof(*output));
     if (suppliers) visitSeedBits((Air && swim==AIR_MOVEMENT_CLASS)?cache.airBuildings:cache.buildings,[&](size_t i) {
         const unsigned id=unsigned(view.occupancy[i].building)-unsigned(team)*Building::MAX_COUNT;
-        if (id<Building::MAX_COUNT && ((!Air || swim!=AIR_MOVEMENT_CLASS) || suppliers[id]!=GRADIENT_FORBIDDEN)) output[i]=suppliers[id];
+        if (id<Building::MAX_COUNT && ((!Air || swim!=AIR_MOVEMENT_CLASS) || suppliers[id]!=GRADIENT_FORBIDDEN)) {
+            if(goalCount)*goalCount+=suppliers[id]>GRADIENT_UNREACHABLE;
+            output[i]=suppliers[id];
+        }
     });
     const Uint32 mask=Uint32(1)<<team;
     visitSeedBits((Air && swim==AIR_MOVEMENT_CLASS)?cache.airGoals[material]:cache.goals[material],[&](size_t i) {
-        if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask))
+        if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask)) {
+            if(goalCount)*goalCount+=output[i]<=GRADIENT_UNREACHABLE;
             output[i]=GRADIENT_AT_GOAL;
+        }
     });
     if (!Air || swim!=AIR_MOVEMENT_CLASS)
-        visitSeedBits(cache.forbidden[team],[&](size_t i) { output[i]=GRADIENT_FORBIDDEN; });
+        visitSeedBits(cache.forbidden[team],[&](size_t i) { if(goalCount)*goalCount-=output[i]>GRADIENT_UNREACHABLE;output[i]=GRADIENT_FORBIDDEN; });
     return true;
 }
 } // namespace
 
 bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
-    int swim, Uint16* output, const Uint16* suppliers)
+    int swim, Uint16* output, const Uint16* suppliers, std::uint64_t* goalCount)
 {
     if (swim==WATER_ONLY_CLASS) return false;
     const bool rebuild=world!=snapshot.worldIdentity || width!=snapshot.width || height!=snapshot.height
@@ -171,8 +176,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
     // A warm air template remains coherent on ground requests. A new world
     // starts ground-only again until its first actual air consumer.
     if (swim==AIR_MOVEMENT_CLASS || (!rebuild && !airSignatures.empty()))
-        return seedCachedMaterials<true>(*this,snapshot,team,material,swim,output,suppliers,rebuild);
-    return seedCachedMaterials<false>(*this,snapshot,team,material,swim,output,suppliers,rebuild);
+        return seedCachedMaterials<true>(*this,snapshot,team,material,swim,output,suppliers,rebuild,goalCount);
+    return seedCachedMaterials<false>(*this,snapshot,team,material,swim,output,suppliers,rebuild,goalCount);
 }
 
 void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
@@ -219,12 +224,14 @@ void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
 	}
 }
 
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch)
+std::uint64_t seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch)
 {
     GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
     const auto view = snapshot.view();
     const auto size = size_t(view.width) * view.height;
     const Uint32 mask = Uint32(1) << request.team;
+    std::uint64_t goalCount=0;
+    std::atomic<std::uint64_t> counted{0};
     std::array<Uint16, Building::MAX_COUNT> suppliers;
     if (request.kind == Kind::Markets)
     {
@@ -245,16 +252,19 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     switch (request.kind) {
     case Kind::Materials: case Kind::Markets:
         if (!scratch.materials.trySeed(snapshot,request.team,request.material,request.swim,out,
-            request.kind==Kind::Markets ? suppliers.data() : nullptr))
+            request.kind==Kind::Markets ? suppliers.data() : nullptr,&goalCount))
             materialCells(view, snapshot.visibility->visible.data(), request.team, request.material, request.swim,
-                out, request.kind==Kind::Markets ? suppliers.data() : nullptr, run);
+                out, request.kind==Kind::Markets ? suppliers.data() : nullptr, run,&counted);
+        goalCount+=counted.load(std::memory_order_relaxed);
         break;
     case Kind::Forbidden:
         for (size_t i=0; i<size; ++i) {
-            const bool blocked=MapState::resourceBlocksGround(view,i) || view.occupancy[i].building!=NOGBID
-                || view.occupancy[i].immobileUnit!=IMMOBILE_UNIT_NONE
-                || !gradient_kernel::terrainAllowsGround(view.terrainProperties(i),request.swim);
-            out[i]=blocked ? GRADIENT_FORBIDDEN : (view.areas[i].forbidden & mask) ? GRADIENT_UNREACHABLE : GRADIENT_AT_GOAL;
+            const bool air=request.swim==AIR_MOVEMENT_CLASS;
+            const bool blocked=(air?MapState::resourceBlocksAir(view,i):MapState::resourceBlocksGround(view,i))
+                || (!air&&(view.occupancy[i].building!=NOGBID || view.occupancy[i].immobileUnit!=IMMOBILE_UNIT_NONE))
+                || !gradient_kernel::terrainAllowsMovement(view.terrainProperties(i),request.swim);
+            out[i]=blocked?GRADIENT_FORBIDDEN:(!air&&(view.areas[i].forbidden&mask))?GRADIENT_UNREACHABLE:GRADIENT_AT_GOAL;
+            goalCount+=out[i]==GRADIENT_AT_GOAL;
         }
         for (size_t i=0; i<size; ++i) if (out[i]==GRADIENT_UNREACHABLE)
             for (int d=0;d<8;++d) if (out[view.index((i & view.wMask)+tabClose[d][0],(i >> view.wDec)+tabClose[d][1])]==GRADIENT_AT_GOAL) {
@@ -262,10 +272,12 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
             }
         break;
     case Kind::Clear:
-        clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
+        clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run,&counted);
+        goalCount+=counted.exchange(0,std::memory_order_relaxed);
         break;
     case Kind::Guard:
-        guardCells(view, request.allies, request.team, request.swim, out, run);
+        guardCells(view, request.allies, request.team, request.swim, out, run,&counted);
+        goalCount+=counted.exchange(0,std::memory_order_relaxed);
         break;
     }
     if (request.kind == Kind::Markets)
@@ -279,18 +291,21 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
             {
                 const auto i = view.index(b.posX+x, b.posY+y);
                 if (request.swim==AIR_MOVEMENT_CLASS || (!(view.areas[i].forbidden & mask) && view.occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
+                {
+                    goalCount+=out[i]<=GRADIENT_UNREACHABLE;
                     out[i] = std::max(out[i], value);
+                }
             }
         }
-    if (request.kind != Kind::Guard || !request.crowding) return;
+    if (request.kind != Kind::Guard || !request.crowding) return goalCount;
     scratch.seeds.clear();
     for (size_t i=0; i<size; ++i) if (out[i] == GRADIENT_AT_GOAL) scratch.seeds.push_back(i);
-    if (scratch.seeds.empty()) return;
+    if (scratch.seeds.empty()) return goalCount;
     scratch.positions.clear();
     for (const auto& u : snapshot.entities->units)
         if (u.team == request.team && !u.isDead && (u.capabilityFlags & UnitRuntimeTraits::GuardIdle) && u.displacement != Unit::DIS_INSIDE)
             scratch.positions.push_back(view.index(u.posX, u.posY));
-    if (scratch.positions.empty()) return;
+    if (scratch.positions.empty()) return goalCount;
     scratch.warriors.assign(size, 0);
     for (auto i : scratch.positions) ++scratch.warriors[i];
     boxSum(scratch.warriors.data(), view.width, view.height, scratch);
@@ -302,6 +317,7 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
         const int cost = GUARD_CROWD_COST_PER_WARRIOR * scratch.warriors[i] * GUARD_CROWD_REFERENCE_AREA / std::max<int>(1, scratch.paint[i]);
         out[i] = Uint16(GRADIENT_AT_GOAL - std::min(GUARD_CROWD_COST_MAX, cost));
     }
+    return goalCount;
 }
 
 namespace

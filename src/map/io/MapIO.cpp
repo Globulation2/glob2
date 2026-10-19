@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
+#include "LegacyResourceGradientState.h" // Read-only compatibility parser for formats <=177.
 #include "Version.h"
 #include "MapInternal.h"
 #include "MapSaveLayout.h"
@@ -357,6 +358,7 @@ try
 	}
 	stream->readLeaveSection();
 	if (!legacyCellTerrain.empty()) convertLegacyCellTerrain(legacyCellTerrain);
+	rebuildPaintedAreaCounts();
 
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
@@ -379,6 +381,7 @@ try
             if (i>=size || seen[i] || resourceStockIndices.empty() || !resourceStockIndices[i]) throw std::ios_base::failure("Invalid material stock tile");
             seen[i]=true;
             const auto before=resourceMaterialMaskAt(i);
+            const auto beforeAvailable=materialMaskAt(i);
             auto& stocks=resourceStocks[resourceStockIndices[i]-1];
             const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(resourceCells[i].resource.type));
             for (unsigned m=0;m<MaterialCount;++m)
@@ -388,7 +391,7 @@ try
             }
             refreshResourceTotal(i);
             if (resourceCells[i].resource.amount!=savedMultiTotals[resourceStockIndices[i]-1]) throw std::ios_base::failure("Inconsistent resource total stock");
-            materialStockChanged(i,before);
+            materialStockChanged(i,before,beforeAvailable);
             if (!resourceCells[i].resource.amount && !resourcePropertiesByIndex(resourceCells[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
             stream->readLeaveSection();
         }
@@ -655,13 +658,19 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 
 void Map::removeTeam(void)
 {
-	gradientRuntime->preparation={};
+	gradientRuntime->preparations.clear();
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
 	int t=numberOfTeam;
+    gradientRuntime->adaptive.clearAssociations();
+    gradientRuntime->adaptive.eraseTeam(t);
+    gradientRuntime->marketTargets.eraseTeam(t);
+    if (auto& probe=gradientRuntime->qualityProbe) {
+        auto& fields=probe->fields;std::erase_if(fields,[&](const auto& item){return GradientFieldKey::unpack(std::uint32_t(item.first)).team==t;});
+    }
 	for (auto it=gradientRuntime->materialFields.begin(); it!=gradientRuntime->materialFields.end();) {
 		if (it->second.team==t) { gradientRuntime->materialLru.erase(it->second.lru); it=gradientRuntime->materialFields.erase(it); }
 		else ++it;
@@ -672,17 +681,20 @@ void Map::removeTeam(void)
 		for (int r=0; r<MaterialCount; r++)
 		{
 			delete[] materialGradients[t][r][s];
+			materialGradientStale[t][r][s]=false;
 			materialGradients[t][r][s]=NULL;
 			delete[] marketMaterialGradients[t][r][s];
+			marketMaterialGradientStale[t][r][s]=false;
 			marketMaterialGradients[t][r][s]=NULL;
-			marketGradientDirty[t][r][s]=false;
-			marketGradientUpdated[t][r][s]=false;
 		}
 		delete[] forbiddenGradient[t][s];
+		forbiddenGradientStale[t][s]=false;
 		forbiddenGradient[t][s]=NULL;
 		delete[] guardAreasGradient[t][s];
+		guardGradientStale[t][s]=false;
 		guardAreasGradient[t][s]=NULL;
 		delete[] clearAreasGradient[t][s];
+		clearGradientStale[t][s]=false;
 		clearAreasGradient[t][s]=NULL;
 	}
 	rebuildPlaneRegistry();
@@ -928,29 +940,32 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			{
 				stream->writeEnterSection(r);
 				saveGradient(stream, materialGradients[t][r][sw], size);
-				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
+				stream->writeUint8(materialGradientStale[t][r][sw], "suspendedStale");
+				// Format178 has no round-visitation state for any family.
 				// The "with markets" twin is runtime state like its plain gradient:
 				// a resumed game must walk the same field it left. Its own section:
 				// the text format keys tiles by section name, and the plain
 				// gradient's tiles live in this one.
 				stream->writeEnterSection("markets");
 				saveGradient(stream, marketMaterialGradients[t][r][sw], size);
-				stream->writeUint8(marketGradientDirty[t][r][sw], "dirty");
-				stream->writeUint8(marketGradientUpdated[t][r][sw], "updated");
+				stream->writeUint8(marketMaterialGradientStale[t][r][sw], "suspendedStale");
 				stream->writeLeaveSection();
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
 			stream->writeEnterSection("forbidden");
 			saveGradient(stream, forbiddenGradient[t][sw], size);
+			stream->writeUint8(forbiddenGradientStale[t][sw], "suspendedStale");
 			stream->writeLeaveSection();
 			stream->writeEnterSection("guard");
 			saveGradient(stream, guardAreasGradient[t][sw], size);
-			stream->writeUint8(guardGradientUpdated[t][sw], "updated");
+			stream->writeUint8(guardGradientStale[t][sw], "suspendedStale");
+
 			stream->writeLeaveSection();
 			stream->writeEnterSection("clear");
 			saveGradient(stream, clearAreasGradient[t][sw], size);
-			stream->writeUint8(clearGradientUpdated[t][sw], "updated");
+			stream->writeUint8(clearGradientStale[t][sw], "suspendedStale");
+
 			stream->writeLeaveSection();
 			stream->writeLeaveSection();
 		}
@@ -1018,7 +1033,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	saveMaterialRoutingCache(stream);
 	stream->writeEnterSection("gradientPipeline");
 	stream->writeUint8(gradientRuntime->pipeline.enabled() ? gradientRuntime->pipeline.delayTicks() : 8, "delay");
-	stream->writeUint8(gradientRuntime->pipeline.pendingCount(), "count");
+	stream->writeUint32(gradientRuntime->pipeline.pendingCount(), "count");
 	unsigned index=0;
 	gradientRuntime->pipeline.visitPendingSnapshots([&](const GradientPipeline::PendingSnapshot &snapshot) {
 		const unsigned destination=gradientDestination(snapshot.slot);
@@ -1027,8 +1042,15 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeUint32(destination, "destination");
 		stream->writeUint8(snapshot.remaining, "remaining");
 		stream->writeUint8(snapshot.superseded, "superseded");
-        saveGradient(stream,snapshot.data,size);
-        stream->writeLeaveSection();
+        stream->writeUint8(snapshot.adaptiveKey.has_value(),"hasAdaptiveKey");
+        if(snapshot.adaptiveKey) {
+            stream->writeUint32(snapshot.adaptiveKey->packed(),"adaptiveKey");
+            snapshot.adaptiveCapture.save(stream);
+            stream->writeUint32(snapshot.preparedGoalCount,"preparedGoalCount");
+            stream->writeUint8(snapshot.legacyAssociation,"legacyAssociation");
+        }
+		saveGradient(stream, snapshot.data, size);
+		stream->writeLeaveSection();
 	});
     stream->writeUint32(gradientRuntime->fieldRequests.size(),"requests");
     // Pending jobs above also use numeric sections. Keep demand entries in a
@@ -1055,6 +1077,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
     stream->writeUint32(gradientRuntime->worldResultsPublishedTick.value_or(0), "worldResultsPublishedTick");
     stream->writeUint8(gradientRuntime->worldWorkSubmittedTick.has_value(), "worldWorkSubmitted");
     stream->writeUint32(gradientRuntime->worldWorkSubmittedTick.value_or(0), "worldWorkSubmittedTick");
+    gradientRuntime->adaptive.save(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1064,8 +1087,11 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	const unsigned savedAccessVariants=hasUnifiedMovement(versionMinor)?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
-	gradientRuntime->preparation={};
+    std::vector<std::pair<GradientFieldKey,LegacyResourceGradientState::Capture>> legacyPendingCaptures;
+	gradientRuntime->preparations.clear();
     gradientRuntime->fieldRequests.clear();
+    gradientRuntime->adaptive={};
+    gradientRuntime->marketTargets={};
     gradientRuntime->pipeline.reset();
     resetBuildingGradientPipeline();
 	for (int t=0; t<game->teamsCount(); ++t)
@@ -1115,15 +1141,21 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			{
 				stream->readEnterSection(r);
 				loadGradient(stream, materialGradients[t][r][sw], size, packed);
-				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+				materialGradientStale[t][r][sw]=hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) && loadFlag(stream,"suspendedStale");
+                if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) (void)loadFlag(stream,"updated");
 				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
 				{
 					stream->readEnterSection("markets");
 					loadGradient(stream, marketMaterialGradients[t][r][sw], size, packed);
-					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
-					marketGradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+					marketMaterialGradientStale[t][r][sw]=hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) && loadFlag(stream,"suspendedStale");
+                    bool legacyDirty=false;
+                    if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) {legacyDirty=loadFlag(stream,"dirty");(void)loadFlag(stream,"updated");}
+                    if(legacyDirty) {
+                        const GradientFieldKey key{GradientFieldFamily::Markets,Uint8(t),Uint8(sw),Uint8(r)};
+                        if(r<MaterialCount) gradientRuntime->adaptive.enroll(key).reactive=true;
+                    }
 					stream->readLeaveSection();
-					if (!marketsV2Enabled() && (marketMaterialGradients[t][r][sw] || marketGradientDirty[t][r][sw] || marketGradientUpdated[t][r][sw]))
+					if (!marketsV2Enabled() && (marketMaterialGradients[t][r][sw] || legacyDirty))
 						throw std::runtime_error("Market routing state requires Markets V2");
 				}
 				stream->readLeaveSection();
@@ -1131,14 +1163,17 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			stream->readLeaveSection();
 			stream->readEnterSection("forbidden");
 			loadGradient(stream, forbiddenGradient[t][sw], size, packed);
+			forbiddenGradientStale[t][sw]=hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) && loadFlag(stream,"suspendedStale");
 			stream->readLeaveSection();
 			stream->readEnterSection("guard");
 			loadGradient(stream, guardAreasGradient[t][sw], size, packed);
-			guardGradientUpdated[t][sw]=loadFlag(stream,"updated");
+			guardGradientStale[t][sw]=hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) && loadFlag(stream,"suspendedStale");
+            if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) (void)loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readEnterSection("clear");
 			loadGradient(stream, clearAreasGradient[t][sw], size, packed);
-			clearGradientUpdated[t][sw]=loadFlag(stream,"updated");
+			clearGradientStale[t][sw]=hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) && loadFlag(stream,"suspendedStale");
+            if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) (void)loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readLeaveSection();
 		}
@@ -1245,8 +1280,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
     }
 	if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
 		stream->readEnterSection("gradientPipeline");
-		const unsigned delay=stream->readUint8("delay"), count=stream->readUint8("count");
-		if (delay<1 || delay>16 || count>delay) throw std::runtime_error("Invalid saved gradient queue size");
+		const unsigned delay=stream->readUint8("delay"), count=versionMinor>=FILE_FORMAT_VERSION_UNIFIED_GRADIENTS ? stream->readUint32("count") : hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) ? stream->readUint16("count") : stream->readUint8("count");
+		if (delay<1 || delay>16 || count>delay*(hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174) ? GradientPipeline::MaxJobsPerTick : 1)) throw std::runtime_error("Invalid saved gradient queue size");
 		configureGradientPipeline(2, delay);
 		for (unsigned index=0; index<count; ++index) {
 			stream->readEnterSection(index);
@@ -1278,10 +1313,32 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
             }
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
+            std::optional<GradientFieldKey> adaptiveKey;
+            AdaptiveGradientState::Capture adaptiveCapture;
+            Uint32 preparedGoalCount=0;bool legacyAssociation=false;
+            if(versionMinor>=FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) {
+                if(loadFlag(stream,"hasAdaptiveKey")) {
+                    adaptiveKey=GradientFieldKey::unpack(stream->readUint32("adaptiveKey"));
+                    if(!adaptiveKey->valid(game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount) || gradientFieldDestination(*adaptiveKey)!=slot)
+                        throw std::runtime_error("Invalid adaptive gradient pending identity");
+                    adaptiveCapture=AdaptiveGradientState::Capture::load(stream);
+                    preparedGoalCount=stream->readUint32("preparedGoalCount");
+                    legacyAssociation=loadFlag(stream,"legacyAssociation");
+                    if(legacyAssociation && adaptiveCapture.known)throw std::runtime_error("Invalid known legacy gradient association");
+                    if(preparedGoalCount>size || adaptiveCapture.goalCount>size)throw std::runtime_error("Invalid adaptive goal count");
+                }
+                if(adaptiveKey!=gradientFieldKey(slot))throw std::runtime_error("Missing adaptive gradient pending identity");
+            } else if (hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174)) {
+                const auto capture=LegacyResourceGradientState::Capture::load(stream,versionMinor);
+                if (capture.sources.count>size) throw std::runtime_error("Invalid saved gradient source count");
+                const auto key=gradientFieldKey(slot);
+                if(!superseded && capture.contradictionKnown && key && key->family==GradientFieldFamily::Materials && key->swim<SWIM_CLASS_COUNT)
+                    legacyPendingCaptures.emplace_back(*key,capture);
+            }
 			Uint16 *field=nullptr;
 			loadGradient(stream, field, size, packed);
-            GradientPipeline::RestoredSnapshot restored{slot,static_cast<int>(sw),remaining,superseded,std::unique_ptr<Uint16[]>(field)};
-            gradientRuntime->pipeline.restoreCompleted(std::move(restored));
+			gradientRuntime->pipeline.restoreCompleted({slot, static_cast<int>(sw), remaining,
+				superseded, std::unique_ptr<Uint16[]>(field),adaptiveKey,adaptiveCapture,preparedGoalCount,legacyAssociation});
 			stream->readLeaveSection();
 		}
         if (hasDelayedGradientState(versionMinor)) {
@@ -1351,28 +1408,101 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         // Initial legacy saves without admitted work still bootstrap normally.
         gradientRuntime->worldWorkSubmittedTick = game->stepCounter;
     }
+    if(versionMinor>=FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) {
+        gradientRuntime->adaptive.load(stream,game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount);
+    } else {
+    if (hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174)) {
+        LegacyResourceGradientState legacyState;
+        legacyState.load(stream,game->teamsCount(),versionMinor);
+        if (legacyState.initialized) {
+            // A corrupted positive-stock count would underflow on the next
+            // harvest. Verify once at load, preserving the saved epochs rather
+            // than silently replacing simulation state with a fresh estimate.
+            std::array<Uint64,MaterialCount> actual{};
+            for (size_t i=0;i<size;++i)
+                for (unsigned bits=materialMaskAt(i);bits;bits&=bits-1)
+                    ++actual[std::countr_zero(bits)];
+            for (unsigned m=0;m<MaterialCount;++m)
+                if (actual[m]!=legacyState.sources[m].count) throw std::runtime_error("Invalid saved adaptive source count");
+            for (const auto& [key,field]:legacyState.fields)
+                if (field.serving.sources.count>size) throw std::runtime_error("Invalid saved adaptive capture count");
+        }
+        for(const auto& [key,capture]:legacyPendingCaptures) {
+            const int legacyKey=(key.team*MaterialCount+key.material)*SWIM_CLASS_COUNT+key.swim;
+            const auto field=legacyState.fields.find(legacyKey);
+            if(field==legacyState.fields.end() || !field->second.validMovementCapture(capture))throw std::runtime_error("Invalid legacy pending contradiction baseline");
+        }
+    }
+
+        // Legacy resource-only epochs measured a different seed population.
+        // Preserve field cells/deadlines, explicitly mark new histories unknown.
+        for(unsigned team=0;team<unsigned(game->teamsCount());++team)
+            for(unsigned swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
+                for(unsigned material=0;material<MaterialCount;++material) {
+                    if(materialGradients[team][material][swim]) gradientRuntime->adaptive.enroll({GradientFieldFamily::Materials,Uint8(team),Uint8(swim),Uint8(material)});
+                    if(marketMaterialGradients[team][material][swim]) gradientRuntime->adaptive.enroll({GradientFieldFamily::Markets,Uint8(team),Uint8(swim),Uint8(material)});
+                }
+                for(auto family:{GradientFieldFamily::Guard,GradientFieldFamily::Clear,GradientFieldFamily::Forbidden}) {
+                    const GradientFieldKey key{family,Uint8(team),Uint8(swim),GradientFieldKey::NoMaterial};
+                    if(*gradientFieldDestination(key)) gradientRuntime->adaptive.enroll(key);
+                }
+            }
+        gradientRuntime->pipeline.associateLegacy([&](auto* slot){return gradientFieldKey(slot);});
+    }
+    for(const auto& [key,field]:gradientRuntime->adaptive.fields)
+        if(key.family==GradientFieldFamily::Markets)ensureGradientMarketTargets(key.team,key.material);
+    // Queue associations are checked against stable identities after both field
+    // state and restored outputs have been read; no pointer enters the wire.
+    std::map<GradientFieldKey,unsigned> pendingKeys,queuedKeys;
+    std::map<GradientFieldKey,bool> legacyOnly;
+    gradientRuntime->pipeline.visitAdaptiveCaptures([&](auto key,bool superseded,const auto& capture,bool legacy) {
+        if(superseded)return;
+        auto found=gradientRuntime->adaptive.fields.find(key);
+        if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) {gradientRuntime->adaptive.enroll(key);found=gradientRuntime->adaptive.fields.find(key);}
+        const auto now=gradientRuntime->adaptive.currentTargets(key);
+        if(capture.known && (capture.targets.added>now.added || capture.targets.removed>now.removed || capture.targets.routeEpoch>now.routeEpoch || capture.targets.seedCostEpoch>now.seedCostEpoch))
+            throw std::runtime_error("Invalid pending adaptive target epoch");
+        if(found==gradientRuntime->adaptive.fields.end() || !found->second.validCapture(capture)
+            || (pendingKeys.contains(key) && (!legacy || !legacyOnly.at(key))))
+            throw std::runtime_error("Invalid adaptive pending association");
+        ++pendingKeys[key];legacyOnly[key]=legacy;
+        if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) found->second.inflight=true;
+    });
+    for(const auto& request:gradientRuntime->fieldRequests) if(const auto key=gradientFieldKey(request.slot)) {
+        if(++queuedKeys[*key]!=1 || pendingKeys.contains(*key))throw std::runtime_error("Duplicate adaptive queued association");
+        if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) gradientRuntime->adaptive.enroll(*key).queued=true;
+    }
+    for(auto& [key,field]:gradientRuntime->adaptive.fields) {
+        // Old families did not share admission clocks. Do not invent an age:
+        // start one conservative minimum interval at load; cold still bypasses.
+        if(versionMinor<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS)field.submitted=game->stepCounter;
+        if(field.inflight!=pendingKeys.contains(key) || field.queued!=queuedKeys.contains(key) || field.serving.goalCount>size)
+            throw std::runtime_error("Invalid adaptive field association");
+    }
+
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.
         // Unit health, claims, fog and scheduling unrelated to routing survive.
-        gradientRuntime->preparation={};
+    gradientRuntime->preparations.clear();
         const unsigned delay = gradientRuntime->pipeline.delayTicks();
         gradientRuntime->pipeline.reset();
+        gradientRuntime->fieldRequests.clear();
+        gradientRuntime->adaptive={};
+        gradientRuntime->marketTargets={};
         if (delay) configureGradientPipeline(2,delay);
         gradientRuntime->materialFields.clear();
         gradientRuntime->materialLru.clear();
         for (int t=0; t<game->teamsCount(); ++t) {
             for (int sw=0; sw<savedSwimClasses; ++sw) {
                 for (int r=0; r<MaterialSlotCount; ++r) {
-                    delete[] materialGradients[t][r][sw]; materialGradients[t][r][sw]=nullptr;
-                    gradientUpdated[t][r][sw]=false;
-                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradients[t][r][sw]=nullptr;
-                    marketGradientDirty[t][r][sw]=marketGradientUpdated[t][r][sw]=false;
+                    delete[] materialGradients[t][r][sw]; materialGradientStale[t][r][sw]=false; materialGradients[t][r][sw]=nullptr;
+                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradientStale[t][r][sw]=false; marketMaterialGradients[t][r][sw]=nullptr;
+
                 }
-                delete[] forbiddenGradient[t][sw]; forbiddenGradient[t][sw]=nullptr;
-                delete[] guardAreasGradient[t][sw]; guardAreasGradient[t][sw]=nullptr;
-                delete[] clearAreasGradient[t][sw]; clearAreasGradient[t][sw]=nullptr;
-                guardGradientUpdated[t][sw]=clearGradientUpdated[t][sw]=false;
+                delete[] forbiddenGradient[t][sw]; forbiddenGradientStale[t][sw]=false; forbiddenGradient[t][sw]=nullptr;
+                delete[] guardAreasGradient[t][sw]; guardGradientStale[t][sw]=false; guardAreasGradient[t][sw]=nullptr;
+                delete[] clearAreasGradient[t][sw]; clearGradientStale[t][sw]=false; clearAreasGradient[t][sw]=nullptr;
             }
             for (auto* building : game->teams[t]->liveBuildings.entries()) building->freeGradients();
         }

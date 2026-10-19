@@ -22,10 +22,6 @@
 
 // Resource grid mutations + resource availability + points/area names
 
-bool Map::farmAreasEnabled() const
-{
-	return game && game->gameHeader.hasExperiment(ExperimentId::FarmAreas);
-}
 
 bool Map::canResourceEverGrowHereByIndex(int x, int y, int resourceType) const
 {
@@ -302,7 +298,16 @@ RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, 
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
 	if (!field) return RouteResult::Pending;
 	const auto value=field[coordToIndex(x,y)];
-	if (value<=GRADIENT_UNREACHABLE) return RouteResult::Unreachable;
+    const auto key=materialGradientFieldKey(team,material,swim,field);
+    if(key && gradientRuntime->qualityProbe && game && !compute.insideJob())
+        gradientRuntime->qualityProbe->observePlanning(*this,*key,x,y,field);
+    if(value<=GRADIENT_UNREACHABLE) {
+        // Failed recruitment needs a recovery path even without a moving unit.
+        // Successful planning reads and both outcomes' movement counters stay idle.
+        if(key && game && !compute.insideJob())gradientRuntime->adaptive.enroll(*key).demand=true;
+        return RouteResult::Unreachable;
+    }
+
 	if (distance) *distance=gradientTiles(value);
 	return RouteResult::Reachable;
 }

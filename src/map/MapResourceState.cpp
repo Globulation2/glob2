@@ -5,6 +5,7 @@
 #include "MapAssetBundle.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientTargetCell.h"
 #include "Utilities.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
@@ -70,6 +71,9 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     }
     finishGradientPipeline();
     gradientRuntime->growth.reset();
+    auto priorAdaptiveFields=std::move(gradientRuntime->adaptive.fields);
+    gradientRuntime->adaptive={};
+    gradientRuntime->marketTargets={};
     terrainRegistryValue = std::move(terrain);
     assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
@@ -107,6 +111,13 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     }
     terrainEditChanged = terrainRoutesChanged = true;
     finishTerrainEdit();
+    // Catalog meanings changed. Keep logical enrollment and queued scalar
+    // requests, but never reinterpret old capture evidence under new semantics.
+    // In-flight old-catalog jobs above are superseded at their original dues.
+    for(const auto& [key,oldField]:priorAdaptiveFields) {
+        auto& field=gradientRuntime->adaptive.enroll(key);
+        field.submitted=oldField.submitted;field.queued=oldField.queued;
+    }
 }
 
 ExperimentSet Map::requiredResourceExperiments() const
@@ -197,8 +208,15 @@ void Map::refreshResourceTotal(size_t index)
     markResource(index);
 }
 
-void Map::materialStockChanged(size_t index, MaterialMask before)
+void Map::materialStockChanged(size_t index, MaterialMask before, MaterialMask beforeAvailable, bool notifyTargets)
 {
+    if(notifyTargets && beforeAvailable!=materialMaskAt(index) && !gradientRuntime->adaptive.fields.empty()) {
+        auto prior=captureGradientTargetCell(index);
+        // This entry point changes stocks without changing the resource type.
+        // Whole-resource replacement supplies its complete before-image instead.
+        prior.materials=beforeAvailable;
+        gradientTargetCellChanged(index,prior);
+    }
     const auto after=resourceMaterialMaskAt(index);
     // Renewable membership may include empty stocks, but all such yields are
     // intrinsically mutable. For the static subset these masks are exactly the
@@ -217,6 +235,8 @@ void Map::materialStockChanged(size_t index, MaterialMask before)
 void Map::rebuildResourceState()
 {
     resourceChanges.markAll();
+    gradientRuntime->adaptive={};
+    gradientRuntime->marketTargets={};
     bumpStaticMaterialSourceGeneration();
     resourceStockIndices.clear(); resourceStocks.clear(); freeResourceStocks.clear(); materialSourceCounts.fill(0);
     for (size_t i=0;i<cellCount();++i)
@@ -242,10 +262,11 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     // Only availability transitions affect counters; capture renewable membership
     // before mutation, including an empty persistent stock that can regrow.
     const auto before=crossesZero ? resourceMaterialMaskAt(index) : MaterialMask(0);
+    const auto beforeAvailable=crossesZero ? materialMaskAt(index) : MaterialMask(0);
     markResource(index);
     if (std::has_single_bit(p.materialMask)) r.amount=amount;
     else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
-    if (crossesZero) materialStockChanged(index,before);
+    if (crossesZero) materialStockChanged(index,before,beforeAvailable);
     if (!r.amount && !p.persistsWhenEmpty) replaceResource(index,Resource{});
 }
 

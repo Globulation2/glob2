@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "FileFormatVersions.h"
+#include "SaveLoadProfile.h"
 #include "gradient/GradientRuntime.h"
 #include <BinaryStream.h>
 #include <algorithm>
@@ -39,7 +40,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -139,7 +140,13 @@ public:
     LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version,
         GradientLayout gradients=GradientLayout::Empty)
         : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION),
-          formatVersion(version), preservePending(gradients==GradientLayout::PreservePending) {}
+          formatVersion(version), preservePending(gradients==GradientLayout::PreservePending) {
+        // New unified state cannot be re-labelled as the private174/176–177
+        // resource-only policy. Those migrations require genuine saved fixtures.
+        if(version<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
+            && hasAdaptiveGradientState(version,game && game->mapHeader.privateAdaptive174))
+            throw std::logic_error("Synthetic historical adaptive state requires a genuine saved fixture");
+    }
     // Runtime-only historical migration fixtures still retain the owning Game.
     LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Map& map, int version)
         : LegacyPopulationOutput(backend,map.game,version,GradientLayout::PreservePending) {}
@@ -150,6 +157,17 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
+            && (name=="adaptiveGradients" || name=="adaptiveCapture")) {
+            suppressedAt=sections.size();
+            return;
+        }
+        if (formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND
+            && (name=="adaptiveResources" || name=="groundUnitsByMovementClass"
+                || (name=="capture" && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end()))) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (!hasDelayedGradientState(formatVersion)) {
             if (name=="mapRuntime") requireGradientRuntime();
             if (preservePending && name=="queuedRequests") {
@@ -236,6 +254,15 @@ public:
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
+            && (name=="adaptiveKey" || name=="preparedGoalCount")) return;
+        if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="count"
+            && !sections.empty() && sections.back()=="gradientPipeline") {
+            if(value>255) throw std::logic_error("Historical periodic job count exceeds its encoding");
+            BinaryOutputStream::writeUint8(Uint8(value),name);
+            return;
+        }
+        if (formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="movementClassesKnown") return;
         const bool hiring=std::find(sections.begin(),sections.end(),"HiringPipeline")!=sections.end();
         if (!injecting && hiring
             && ((name=="gradients" && formatVersion<FILE_FORMAT_VERSION_HIRING_GRADIENTS)
@@ -297,6 +324,24 @@ public:
     void writeUint8(Uint8 value,std::string_view name) override
     {
         if(suppressed()) return;
+        if(formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
+            && (name=="hasAdaptiveKey" || name=="legacyAssociation")) return;
+        if(formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS && name=="suspendedStale") {
+            // Current writers removed the old visitation/dirty flags. Emit the
+            // historical bytes explicitly; a header override cannot restore them.
+            // Public historical fixtures predate adaptive stale-state storage.
+            if(formatVersion>=FILE_FORMAT_VERSION_GRADIENT_DEMAND)
+                BinaryOutputStream::writeUint8(value,name);
+            const auto& section=sections.back();
+            if(section=="markets") {
+                BinaryOutputStream::writeUint8(0,"dirty");
+                BinaryOutputStream::writeUint8(0,"updated");
+            } else if(section=="guard" || section=="clear"
+                || (sections.size()>1 && sections[sections.size()-2]=="resources"))
+                BinaryOutputStream::writeUint8(0,"updated");
+            return;
+        }
+        if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="movementClassesKnown") return;
         if(name=="slot" && !hasUnifiedMovement(formatVersion)
             && std::find(sections.begin(),sections.end(),"buildingGradientPipeline")!=sections.end()) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
@@ -309,6 +354,12 @@ public:
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
         if(suppressed()) return;
+        if(formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND && name=="count"
+            && !sections.empty() && sections.back()=="gradientPipeline") {
+            if(value>255) throw std::logic_error("Historical periodic job count exceeds its encoding");
+            BinaryOutputStream::writeUint8(Uint8(value),name);
+            return;
+        }
         if(name=="destination" && !hasUnifiedMovement(formatVersion)) {
             const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
             if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");

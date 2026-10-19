@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
+#include <nlohmann/json.hpp>
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
+#include <algorithm>
+#include <iostream>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Map.h"
@@ -19,6 +25,8 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include "gradient/ResourceGradientProbe.h"
+#include <fstream>
 
 namespace
 {
@@ -184,7 +192,7 @@ TEST_CASE("forbidden edits preserve published generations until delayed refresh"
     }
 }
 
-TEST_CASE("scheduled escape maintenance publishes complete fields after every seed transition") {
+TEST_CASE("explicit research demanded escape refresh publishes complete fields after every seed transition") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
     for (int mutation=0;mutation<12;++mutation) for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
         CAPTURE(swim); CAPTURE(mutation);
@@ -209,18 +217,32 @@ TEST_CASE("scheduled escape maintenance publishes complete fields after every se
         case 6:map.setBuilding(21,20,1,1,NOGBID); break;
         case 7:map.paintCell(21,20,WATER); break;
         case 8:map.paintCell(21,20,GRASS); break;
-        case 9:edit(f,20,20,true); break;
-        case 10:edit(f,20,20,false); break;
+        // Direct point edits exercise target metadata; explicit brush recovery
+        // is covered separately by the forbidden-edit continuity test.
+        case 9:map.addForbidden(25,20,0); break;
+        case 10:map.removeForbidden(20,20,0); break;
         case 11:{auto r=map.getResource(20,20); r.type=WOOD; map.replaceResource(20,20,r); break;}
         }
         const auto expected=referenceArea(f,gradient_preparation::Kind::Forbidden,0,swim);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
         const auto jobs=map.gradientPipelineStatus().jobs;
-        const int classes=f.game.hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-        const unsigned cycle=8*f.game.teamsCount()*classes;
-        // Select the next scheduled visit for team 0's class without running
-        // unrelated ticks. Work is still captured/admitted at its normal phase.
-        f.game.stepCounter=((f.game.stepCounter+cycle-1)/cycle)*cycle+8*swim;
+        if((mutation==7 && swim!=WATER_ONLY_CLASS) || mutation==8) {
+            // A real terrain paint explicitly invalidates warm route fields
+            // (WATER over the water-only fixture is a no-op). That
+            // recovery is retained; it is not arbitrary periodic maintenance.
+            await(f,[&]{return map.gradientPipelineStatus().jobs==jobs+1 && map.gradientPipelineStatus().pending==0;});
+            CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)));
+            for(unsigned idle=0;idle<16;++idle)boundary(f,true);
+            CHECK(map.gradientPipelineStatus().jobs==jobs+1);
+            continue;
+        }
+        // Other point edits alone do not revive the removed periodic round. This
+        // untrained fixture declares research behavior before demanding work.
+        map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
+        map.gradientRuntime->exploration->intervals={8};
+        for(unsigned idle=0;idle<8;++idle)boundary(f,true);
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+        int dx=0,dy=0;map.queryForbiddenStep(nullptr,0,swim,20,20,&dx,&dy);
         boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs+1);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
@@ -232,6 +254,10 @@ TEST_CASE("scheduled escape maintenance publishes complete fields after every se
 TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
     Fixture f(1); player(f); auto& map=f.game.map;
+    // This is a reachability/recovery fixture, not a trained-model acceptance
+    // test. Only explicit research demand supplies the warm policy here.
+    map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
+    map.gradientRuntime->exploration->intervals={8};
     map.addForbidden(20,20,0);
     for (int y=19;y<=21;++y) for (int x=19;x<=21;++x)
         if (x!=20 || y!=20) map.setResourceByIndex(x,y,WHEAT,1);
@@ -245,39 +271,92 @@ TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repe
     map.replaceResource(21,20,Resource{}); map.setResourcesGrow(21,20,false);
     int dx=0,dy=0;
     CHECK(map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Blocked);
-    const unsigned bound=8*f.game.teamsCount()*LEGACY_SWIM_CLASS_COUNT+16;
+    const unsigned bound=AdaptiveGradientState::MinimumInterval+map.gradientPipelineStatus().delay+2;
     await(f,[&]{return map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Step;},true,bound);
     CHECK(dx==1); CHECK(dy==0);
 }
 
-TEST_CASE("scheduled escape publication covers all teams across tick wrap without mutating fields") {
+TEST_CASE("idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-    Fixture f(3); player(f); auto& map=f.game.map;
-    const int slots=4*LEGACY_SWIM_CLASS_COUNT,cycle=8*slots;
-    for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) map.getForbiddenGradient(team,swim);
+    Fixture f(3);player(f);auto& map=f.game.map;
+    map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();map.gradientRuntime->exploration->intervals={8};
+    f.game.stepCounter=Uint32((1ULL<<32)-16);
+    std::vector<GradientFieldKey> keys;
+    for(int team=0;team<4;++team)for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) {
+        keys.push_back({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
+        map.getForbiddenGradient(team,swim);
+    }
     await(f,[&]{
-        for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim)
-            if (!map.lookupForbiddenGradient(team,swim)) return false;
+        for(auto key:keys)if(!map.lookupForbiddenGradient(key.team,key.swim))return false;
         return true;
     });
+    const auto jobs=map.gradientPipelineStatus().jobs;
     std::vector<const Uint16*> fields;
-    for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) fields.push_back(map.lookupForbiddenGradient(team,swim));
-    f.game.stepCounter=Uint32((1ULL<<32)-2*cycle);
-    std::vector<int> visits(slots),last(slots,-1);
-    for (int offset=0;offset<4*cycle;++offset) {
+    for(auto key:keys)fields.push_back(map.lookupForbiddenGradient(key.team,key.swim));
+    for(unsigned elapsed=0;elapsed<AdaptiveGradientState::QueryHistoryTicks+16;++elapsed) {
         boundary(f,true);
-        unsigned changed=0;
-        for (int slot=0;slot<slots;++slot) {
-            const auto* field=map.lookupForbiddenGradient(slot/LEGACY_SWIM_CLASS_COUNT,slot%LEGACY_SWIM_CLASS_COUNT);
-            if (field!=fields[slot]) {
-                ++changed; ++visits[slot]; fields[slot]=field;
-                if (last[slot]>=0) CHECK(offset-last[slot]<2*cycle);
-                last[slot]=offset;
-                CHECK(field[map.coordToIndex(10,10)]==GRADIENT_AT_GOAL);
-            }
-        }
-        CHECK(changed<=1);
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
     }
-    for (const auto count:visits) CHECK(count>=3);
+    for(auto key:keys)map.gradientMovementDemand(key);
+    boundary(f,true);
+    CHECK(map.gradientPipelineStatus().jobs==jobs+keys.size());
+    for(unsigned elapsed=1;elapsed<8;++elapsed) {
+        boundary(f,true);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
+    }
+    boundary(f,true);
+    for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)!=fields[i]);
+}
+
+}
+
+TEST_SUITE("ZoneGradientDemand") {
+TEST_CASE("empty painted areas produce no demand or cold jobs and first paint becomes eligible") {
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    Fixture f(0);auto& map=f.game.map;
+    EntityRandom random;random.seed(123,456);const auto before=random;
+    int dx=7,dy=9;
+    for(auto kind:{Map::AreaKind::Guard,Map::AreaKind::Clear}) {
+        CHECK_FALSE(map.pathfindArea(random,kind,0,0,10,10,&dx,&dy));
+        CHECK(map.queryAreaStep(random,kind,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    }
+    CHECK(random==before);CHECK(dx==7);CHECK(dy==9);
+    CHECK(map.gradientRuntime->adaptive.fields.empty());
+    CHECK(map.gradientPipelineStatus().jobs==0);
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    CHECK_FALSE(map.gradientRuntime->adaptive.fields.empty());
+    await(f,[&]{return map.lookupGuardAreasGradient(0,0)!=nullptr;});
+    const GradientFieldKey key{GradientFieldFamily::Guard,0,0};
+    const auto& field=map.gradientRuntime->adaptive.fields.at(key);
+    const auto queries=field.queries;const auto outcomes=field.total;
+    const auto savedRandom=random;
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,0);
+    const auto fields=map.gradientRuntime->adaptive.fields.size();
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.gradientRuntime->adaptive.fields.size()==fields);
+    CHECK(field.queries==queries);CHECK(field.total==outcomes);CHECK(random==savedRandom);
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
+    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy));
+}
+}
+
+TEST_SUITE("ZoneGradientFarmDemand") {
+TEST_CASE("farm-only paint enables clearing requests only under the farming rules") {
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    Fixture f(0);auto& map=f.game.map;
+    map.setAreaMask(0,&Tile::farmArea,1);
+    CHECK_FALSE(map.hasClearingArea(0));
+    EntityRandom random;int dx=0,dy=0;
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.gradientRuntime->adaptive.fields.empty());
+    f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+    CHECK(map.hasClearingArea(0));
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    map.setAreaMask(0,&Tile::farmArea,0);
+    CHECK_FALSE(map.hasClearingArea(0));
+    map.setAreaMask(0,&Tile::clearArea,1);
+    CHECK(map.hasClearingArea(0));
 }
 }

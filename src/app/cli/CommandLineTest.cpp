@@ -28,6 +28,14 @@ TEST_SUITE("CommandLine")
 				CHECK_FALSE(o.description.empty());
 		}
 	}
+    TEST_CASE("private save migration requires an explicit profile and input") {
+        const auto request=Cli::parse({"game","migrate","--input","private.game","--legacy-adaptive-174","--output-dir","artifacts/migration"});
+        CHECK(request.command=="game migrate");CHECK(request.has("--legacy-adaptive-174"));
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--input","private.game","--output-dir","artifacts/migration"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--legacy-adaptive-174","--output-dir","artifacts/migration"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","run","--legacy-adaptive-174"}),std::invalid_argument);
+        CHECK_THROWS_AS(Cli::parse({"game","migrate","--input","private.txt","--input-format","text","--legacy-adaptive-174","--output-dir","artifacts/migration"}),std::invalid_argument);
+    }
 	TEST_CASE("default launch groups URLs and help paths")
 	{
 		CHECK_EQ(Cli::parse(std::vector<std::string>{}).command, "play");
@@ -108,7 +116,7 @@ TEST_SUITE("CommandLine")
 				if (o.required)
 				{
 					args.push_back(o.name);
-					args.push_back("fixture");
+                    if (o.type!="flag") args.push_back("fixture");
 				}
 			if (c.path == "map generate" || c.path == "map preview")
 				args.insert(args.end(), {"--output", "fixture"});
@@ -158,4 +166,21 @@ TEST_SUITE("CommandLine")
 			CHECK(script.find("game run") != std::string::npos);
 		}
 	}
+}
+
+TEST_SUITE("GradientCollectionCommandLine") {
+TEST_CASE("gradient work stats is an independent game-run observer") {
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--gradient-work-stats","artifacts/gradient-cli-test/work.csv"}));
+    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--gradient-work-stats","work.csv"}));
+}
+TEST_CASE("interval exploration requires explicit headless collection") {
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-exploration","32,128,512","--resource-gradient-exploration-seed","4294967295"}));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-exploration","32"}));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+        "--resource-gradient-exploration","32","--write-replay"}));
+    for (const auto* invalid:{"32,","32,32","nope","7","8","16","31","65537"})
+        CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
+            "--resource-gradient-exploration",invalid}));
+}
 }

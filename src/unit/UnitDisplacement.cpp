@@ -16,8 +16,24 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
+namespace {
+// Crowding eligibility changes independently of tile movement when a warrior
+// enters/leaves a building or finishes a capability upgrade. Stack-only and
+// owner-thread; this records a conservative event, not a weighted seed change.
+struct GuardCostEligibility {
+    Unit& unit;
+    bool before;
+    static bool eligible(const Unit& unit) {
+        return !unit.isDead && unit.displacement!=Unit::DIS_INSIDE && unit.hasCapability(UnitRuntimeTraits::GuardIdle);
+    }
+    explicit GuardCostEligibility(Unit& value):unit(value),before(eligible(value)) {}
+    ~GuardCostEligibility() {if(before!=eligible(unit))unit.owner->map->gradientGuardCostsChanged(unit.owner->teamNumber);}
+};
+}
+
 void Unit::handleDisplacement(void)
 {
+    const GuardCostEligibility guardCostEligibility(*this);
 	switch (activity)
 	{
 		case ACT_RANDOM:
@@ -573,6 +589,7 @@ void Unit::applyPartialInsideBenefit()
 
 void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 {
+    const GuardCostEligibility guardCostEligibility(*this);
 	applyPartialInsideBenefit();
 	standardRandomActivity();
 	insideTimeout=0;

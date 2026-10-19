@@ -36,8 +36,9 @@ bool retainedMaterialField(const GradientRuntime& runtime, const GradientRuntime
 }
 }
 
-const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
+const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer, std::optional<GradientFieldKey>* selectedKey)
 {
+    if(selectedKey)selectedKey->reset();
 	if (consumer)
 	{
 		const unsigned modes=materialSupplyModesSlot(consumer,resourceType);
@@ -62,16 +63,22 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
         if (empty.size()!=size) empty.assign(size,GRADIENT_UNREACHABLE);
         return empty.data();
     }
+    if(selectedKey)*selectedKey=GradientFieldKey{withMarkets?GradientFieldFamily::Markets:GradientFieldFamily::Materials,Uint8(teamNumber),Uint8(swimClass),Uint8(resourceType)};
     Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-    if (!gradient && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
-    if (!gradient && !compute.insideJob())
+    if (!gradient && !compute.insideJob() && !game) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
+    // Preserve deferred cold allocation. Suspended ground fields also re-enroll
+    // on explicit demand; the serving snapshot stays usable until publication.
+    const bool stale=(withMarkets
+        ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+        : materialGradientStale[teamNumber][resourceType][swimClass]);
+    if ((!gradient || stale) && !compute.insideJob())
         requestGradientField(&gradient, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass);
 	return gradient;
 }
 
 void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
-    if (game && swimClass!=AIR_MOVEMENT_CLASS) {
+    if (game) {
         auto& field=withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
         requestGradientField(&field, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass); return;
     }
@@ -81,14 +88,17 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	auto &slot = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
 	gradientRuntime->pipeline.invalidate(&slot);
 	Uint16 *gradient = slot;
+
+	if(withMarkets && game)ensureGradientMarketTargets(teamNumber,resourceType);
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	{
 		PERF_SCOPE_TIME(PropagationResource);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
             withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
 	}
+    (withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
+                 : materialGradientStale[teamNumber][resourceType][swimClass])=false;
 	publishPlane(&slot);
-	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
 
 void Map::seedMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, bool withMarkets, const Building* consumer, unsigned modes)
@@ -151,10 +161,12 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 
 void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 {
-	if (resourceType<MaterialCount) ++gradientRuntime->stockRevision[teamNumber][resourceType];
-	if (!marketsV2Enabled()) return;
-	for (int s=0; s<MOVEMENT_CLASS_COUNT; ++s)
-		marketGradientDirty[teamNumber][resourceType][s]=true;
+    if(resourceType<0 || resourceType>=MaterialCount)return;
+    ++gradientRuntime->stockRevision[teamNumber][resourceType];
+    if(!marketsV2Enabled())return;
+    gradientSupplierTargetsChanged(teamNumber,resourceType);
+    // Shared supplier edits change policy metadata. They do not submit work
+    // for every allocated field; actual demand/reactive selector failures decide.
 
 }
 
@@ -221,10 +233,17 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
         for (const auto& queued:runtime.fieldRequests) if (queued.slot==&entry.published) pending=true;
         runtime.pipeline.forEachDestination([&](auto* slot) { if (slot==&entry.published) pending=true; });
         if (swim==AIR_MOVEMENT_CLASS) {
+            unsigned workReason=GradientWorkStats::Unknown;
+            const auto workKey=GradientWorkStats::consumerKey(team,swim,resource,excluded<0?65535:excluded,privateField?consumer->scriptIdentity:0,modes);
+            if(auto& stats=runtime.workStats) {
+                stats->request(workKey,game->stepCounter,unsigned(entry.published?AdaptiveGradientState::Reason::Reactive:AdaptiveGradientState::Reason::Cold),false);
+                workReason=stats->admitted(workKey,game->stepCounter,size);
+            }
             if (!entry.cells) entry.cells=std::make_unique<Uint16[]>(size);
             seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
             propagateGradient(entry.cells.get(),swim,GRADIENT_COST_LIMIT,gradient_kernel::Family::Markets);
             entry.published=entry.cells.get();
+            if(auto& stats=runtime.workStats)stats->published(workKey,game->stepCounter,workReason,size);
         } else if (!compute.insideJob()) requestGradientField(&entry.published, int(gradient_preparation::Kind::Markets),team,resource,swim,excluded,modes);
         // Keep the revision of the admitted request. Changes observed while its
         // ticket is pending must remain dirty after that result publishes.
@@ -307,6 +326,7 @@ void Map::publishPlane(Uint16* const* slot)
 		index = Uint16(publishedPlanes.size());
 	}
 	publishedPlanes[index - 1].generation = ++planeGenerations[key];
+
 }
 
 void Map::rebuildPlaneRegistry()

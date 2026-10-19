@@ -2,6 +2,9 @@
 #include <Environment.h>
 #include "Headless.h"
 #include "ResourceGrowth.h"
+#include "gradient/AdaptiveGradientModel.h"
+#include "gradient/AdaptiveGradientState.h"
+#include "gradient/ResourceGradientProbe.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -34,6 +37,8 @@
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
 #include <BinaryStream.h>
+#include <StreamBackend.h>
+#include "GameGUI.h"
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -115,7 +120,7 @@ void isolateEnvironment()
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
-		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
+		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL", "GLOB2_RESOURCE_GRADIENT_PROBE",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
@@ -276,6 +281,73 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 
 struct HeadlessRunner
 {
+    static int migrate(const Options& options,const fs::path& output)
+    {
+        if (one(options,"--legacy-adaptive-174","false")!="true")
+            throw std::invalid_argument("Migration requires explicit --legacy-adaptive-174");
+        auto inputPath=fs::absolute(one(options,"--input"));
+        if (one(options,"--input").empty()) throw std::invalid_argument("Migration requires --input");
+        GlobalContainer globals(one(options,"--profile","glob2-save-migration").c_str(),one(options,"--building-catalog"));
+        globalContainer=&globals;globals.runNoX=true;globals.structuredHeadless=true;
+        for (const auto& directory:many(options,"--data-dir")) globals.fileManager->addDir(directory);
+        globals.load();
+        inputPath=glob2PreferGzipReadPath(*globals.fileManager,inputPath.string());
+        Online::Sha256 inputHash;
+        {
+            std::ifstream file(inputPath,std::ios::binary);if (!file) throw std::invalid_argument("Cannot read migration input");
+            std::array<char,65536> block;
+            while (file) {file.read(block.data(),block.size());inputHash.update(block.data(),file.gcount());}
+            if (!file.eof()) throw std::runtime_error("Failed reading migration input");
+        }
+        std::unique_ptr<GAGCore::StreamBackend> backend(glob2OpenMapOrSaveInputStreamBackend(*globals.fileManager,inputPath.string()));
+        if (!backend || !backend->isValid()) throw std::invalid_argument("Cannot open migration input");
+        auto input=std::make_unique<GAGCore::BinaryInputStream>(backend.release());
+        GameGUI loaded(false);
+        if (!loaded.load(input.get(),false,SaveLoadProfile::PrivateAdaptive174,MapLoadInitialization::PreserveEncoded))
+            throw std::runtime_error("Cannot decode private adaptive174 input");
+        // FILE-backed EOF is set only after a failed read, whereas inflated
+        // memory streams report position==size immediately. Compare extents.
+        const auto consumed=input->getPosition();
+        if (consumed>std::size_t(std::numeric_limits<int>::max())) throw std::invalid_argument("Migration input is too large");
+        input->seekFromEnd(0);const auto end=input->getPosition();input->seekFromStart(int(consumed));
+        if (consumed!=end) throw std::invalid_argument("Migration input has trailing binary data");
+        const bool saved=loaded.game.mapHeader.getIsSavedGame();
+        const auto tick=loaded.game.stepCounter;
+        const auto mapName=loaded.game.mapHeader.getMapName();
+        const auto state=[](Game& game) {
+            std::vector<Uint32> world,buildings,units;
+            game.checkSum(&world,&buildings,&units,true);
+            if (!world.empty()) world.erase(world.begin()); // Saved-format identity only.
+            return std::array{world,buildings,units};
+        };
+        const auto original=state(loaded.game);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream encoded(memory);
+        if (saved) loaded.save(&encoded,mapName);
+        else loaded.game.save(&encoded,true,mapName);
+        encoded.flush();const auto bytes=memory->takeContents();
+        if (state(loaded.game)!=original) throw std::runtime_error("Serialization changed decoded simulation state");
+        GameGUI verified(false);
+        auto* copy=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());copy->seekFromStart(0);
+        GAGCore::BinaryInputStream reload(copy);
+        if (!verified.load(&reload,false,SaveLoadProfile::Published,MapLoadInitialization::PreserveEncoded) || verified.game.stepCounter!=tick
+            || verified.game.mapHeader.getIsSavedGame()!=saved || state(verified.game)!=original)
+            throw std::runtime_error("Migrated file did not preserve decoded simulation state");
+        const auto destination=output/(saved ? "migrated.game" : "migrated.map");
+        if (fs::exists(destination)) throw std::invalid_argument("Migration destination already exists");
+        const auto temporary=destination.string()+".tmp";
+        {std::ofstream file(temporary,std::ios::binary);file.write(bytes.data(),bytes.size());file.close();
+            if (!file) throw std::runtime_error("Cannot write migrated file");}
+        fs::rename(temporary,destination);
+        nlohmann::json result={{"schema_version",1},{"status","completed"},{"profile","private-adaptive-174"},
+            {"input",inputPath.string()},{"input_sha256",Online::Sha256::toHex(inputHash.finish())},
+            {"output",destination.filename().string()},{"output_sha256",Online::Sha256::hex(bytes)},
+            {"input_format","binary"},{"source_version",174},{"save_version",VERSION_MINOR},
+            {"tick",tick},{"ticks_advanced",0},{"map_initialization_deferred",!saved},{"is_saved_game",saved},{"map_name",mapName},
+            {"normalized_state",original},{"reload_state_equal",true}};
+        Headless::writeJson((output/"result.json").string(),result.dump(2));
+        return 0;
+    }
 	static int game(const Options &options, const fs::path &output)
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
@@ -295,6 +367,8 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", std::to_string(Cli::DefaultGradientDelay)), 1, 16);
+		if (one(options,"--resource-gradient-probe","false")=="true")
+			setHeadlessEnvironment("GLOB2_RESOURCE_GRADIENT_PROBE",(output/"gradient-quality.csv").string().c_str());
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
@@ -486,6 +560,19 @@ struct HeadlessRunner
 			}
 			engine.gui.game.map.setGradientWorkerCount(1);
 		}
+        if (options.count("--gradient-work-stats")) {
+            const auto path=fs::absolute(one(options,"--gradient-work-stats"));
+            fs::create_directories(path.parent_path());
+            engine.gui.game.map.configureGradientWorkStats(path.string());
+        }
+        if (options.count("--resource-gradient-exploration")) {
+            if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
+                throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
+            engine.gui.game.map.configureResourceGradientExploration(
+                one(options,"--resource-gradient-exploration"),
+                integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
+                (output/"gradient-decisions.csv").string());
+        }
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
 			globals.replayWriter=std::make_unique<ReplayWriter>();
@@ -631,6 +718,17 @@ struct HeadlessRunner
 		result << '}';
 
 
+        // Dataset observation semantics version independently of inference.
+        result << ",\"adaptive_gradient_policy\":{\"contract\":" << quote(AdaptiveGradientModel::ContractId)
+            << ",\"collector_contract\":" << quote(ResourceGradientProbe::CollectorContract)
+            << ",\"model_trained\":" << (AdaptiveGradientModel::Trained?"true":"false")
+            << ",\"threshold_milli_direction_cost\":" << AdaptiveGradientState::Threshold
+            << ",\"prediction_horizon_ticks\":" << ResourceGradientProbe::HorizonTicks
+            << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
+            << ",\"demanded_age_cap\":" << AdaptiveGradientState::MaximumAge
+            << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"adaptive-model":"untrained-cold-reactive-and-history-init-only")
+            << ",\"quality_collection\":" << (one(options,"--resource-gradient-probe","false")=="true"?"true":"false") << '}';
+        if (options.count("--gradient-work-stats")) result << ",\"gradient_work_stats\":" << quote(fs::absolute(one(options,"--gradient-work-stats")).string());
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
         result << ",\"resource_plan\":";
@@ -704,6 +802,12 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
+        if (options.count("--resource-gradient-exploration")) {
+            result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
+                << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
+                << ",\"save_continuation_supported\":true"
+                << ",\"continuation_policy\":" << quote("requires-identical-explicit-exploration-options") << '}';
+        }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		result << ",\"javascriptControllers\":[";
@@ -734,7 +838,7 @@ struct HeadlessRunner
 int runHeadlessCommand(const Cli::Request &request)
 {
     const auto &command = request.command;
-    if(command!="info catalog" && command!="game run" && command!="map study"
+    if(command!="info catalog" && command!="game migrate" && command!="game run" && command!="map study"
         && command!="match verify" && command!="info sim-version" && command!="online turn-client" && command!="assets compose-buildings") return -1;
 	fs::path output;
 	try
@@ -878,7 +982,8 @@ int runHeadlessCommand(const Cli::Request &request)
 		if (fs::exists(output / "result.json"))
 			throw std::invalid_argument("output directory already contains a result");
 		int code;
-		if (command == "game run")
+        if (command=="game migrate") code=HeadlessRunner::migrate(options,output);
+        else if (command == "game run")
 		{
 			if (options.count("--generator"))
 			{

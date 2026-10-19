@@ -55,8 +55,9 @@ void Map::tile(int rx, int ry)
             if (!oldStockIndices[src]) continue;
             const size_t dst=coordToIndex(x,y);
             const auto before=resourceMaterialMaskAt(dst);
+            const auto beforeAvailable=materialMaskAt(dst);
             resourceStocks[resourceStockIndices[dst]-1]=oldStocks[oldStockIndices[src]-1];
-            refreshResourceTotal(dst); materialStockChanged(dst,before);
+            refreshResourceTotal(dst); materialStockChanged(dst,before,beforeAvailable);
         }
 	rebuildTerrainCounts();
 	finishTerrainEdit();

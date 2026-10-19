@@ -2,6 +2,8 @@
 #include "CommandLine.h"
 #include "RecordingDefaults.h"
 #include "MapRender.h"
+#include "gradient/ResourceGradientExploration.h"
+#include "gradient/AdaptiveGradientModel.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -300,6 +302,10 @@ void constraints(const Request &r)
 		if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos)
 			throw std::invalid_argument("--videoshot requires a bare recording name");
 	}
+    if (r.command=="game migrate") {
+        if (!r.has("--input") || !r.has("--legacy-adaptive-174"))
+            throw std::invalid_argument("game migrate requires --input and --legacy-adaptive-174");
+    }
 	if (r.command == "game run")
 	{
 		const unsigned sources = r.has("--generator") + r.has("--map-file") + r.has("--load-game");
@@ -311,6 +317,15 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-interval", "--diagnostic-fields");
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
+        requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        if (r.has("--resource-gradient-exploration")) {
+            const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+            if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
+                throw std::invalid_argument("Unified model is untrained; collection bootstrap requires explicit positive intervals");
+        }
+        requireParent("--resource-gradient-exploration-seed", "--resource-gradient-exploration");
+        if (r.has("--resource-gradient-exploration") && r.has("--write-replay"))
+            throw std::invalid_argument("Gradient collection overrides cannot record a replay: the override is not serialized");
 		if (r.has("--load-game"))
 			for (const auto &key :
 				 {"--player", "--ai-param", "--ai-script", "--map-script", "--alliance",
@@ -441,6 +456,13 @@ const std::vector<Command> &commands()
 			 integer("--phase", "Gallery phase", 0, 3, "0"),
 			 integer("--variation", "Gallery variation", 0, 3, "0")},
 			"Validation JSON and optional PNG");
+        auto migrate=profile();append(migrate,assets());
+        append(migrate,{value("--input","file","Private format174 map or saved game","",false,true),
+            flag("--legacy-adaptive-174","Explicitly select the private adaptive174 binary layout; never inferred")});
+        migrate.back().required=true;
+        add("game migrate","Convert a private adaptive174 file without advancing simulation",{},0,migrate,
+            "migrated.map or migrated.game, result.json with provenance and verified state",
+            {"glob2 game migrate --input private174.game.gz --legacy-adaptive-174 --output-dir artifacts/migration"});
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());
@@ -478,6 +500,10 @@ const std::vector<Command> &commands()
 					{"checksums", "team-timeline", "maxima"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
+			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             flag("--resource-gradient-probe", "Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias)"),
+             value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training"),
+             integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,
 					 std::to_string(DefaultDiagnosticInterval)),

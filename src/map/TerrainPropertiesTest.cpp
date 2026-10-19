@@ -1201,11 +1201,11 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
                 for(int material=0;material<MaterialSlotCount;++material) {
                     historical.writeEnterSection(material);
                     gradient(map.materialGradients[team][material][swim]);
-                    historical.writeUint8(map.gradientUpdated[team][material][swim],"updated");
+                    historical.writeUint8(0,"updated");
                     historical.writeEnterSection("markets");
                     gradient(map.marketMaterialGradients[team][material][swim]);
-                    historical.writeUint8(map.marketGradientDirty[team][material][swim],"dirty");
-                    historical.writeUint8(map.marketGradientUpdated[team][material][swim],"updated");
+                    historical.writeUint8(0 /* legacy visitation byte */,"dirty");
+                    historical.writeUint8(0 /* legacy visitation byte */,"updated");
                     historical.writeLeaveSection(2);
                 }
                 historical.writeLeaveSection();
@@ -1214,11 +1214,11 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
                 historical.writeLeaveSection();
                 historical.writeEnterSection("guard");
                 gradient(map.guardAreasGradient[team][swim]);
-                historical.writeUint8(map.guardGradientUpdated[team][swim],"updated");
+                historical.writeUint8(0 /* legacy visitation byte */,"updated");
                 historical.writeLeaveSection();
                 historical.writeEnterSection("clear");
                 gradient(map.clearAreasGradient[team][swim]);
-                historical.writeUint8(map.clearGradientUpdated[team][swim],"updated");
+                historical.writeUint8(0 /* legacy visitation byte */,"updated");
                 historical.writeLeaveSection(2);
             }
             historical.writeLeaveSection();

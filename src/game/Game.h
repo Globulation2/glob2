@@ -204,8 +204,8 @@ public:
 	virtual ~Game();
 
 	///Loads data from a stream
-	bool load(GAGCore::InputStream *stream);
-    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream,SaveLoadProfile profile=SaveLoadProfile::Published,MapLoadInitialization initialization=MapLoadInitialization::Normal);
 
 	//! Check some available integrity constraints
 	bool integrity(void);

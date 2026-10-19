@@ -254,7 +254,7 @@ void Game::clearGame()
 {
     unitCargo.clear();
     turretTargetingPipeline.reset();
-	map.resetGradientPipeline(); // Discard reservations and drain callbacks before team destruction.
+	map.resetGradientPipeline(true); // Drain callbacks and discard old-world caches before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
     map.computeExecutor().resetTelemetry();

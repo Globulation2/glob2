@@ -13,14 +13,35 @@
 
 // Material pathfinding and idle ground movement.
 
+std::optional<GradientFieldKey> Map::materialGradientFieldKey(int team,int material,int swim,const Uint16* cells) const
+{
+    if(!cells)return std::nullopt;
+    if(cells==materialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Materials,Uint8(team),Uint8(swim),Uint8(material)};
+    if(cells==marketMaterialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Markets,Uint8(team),Uint8(swim),Uint8(material)};
+    return std::nullopt;
+}
+
 bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MaterialCount);
-	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
-	if (!gradient) { *stopWork=false; return false; }
-	size_t hereIndex=coordToIndex(x, y);
-    Uint16 here=gradient[hereIndex];
+    std::optional<GradientFieldKey> key;
+	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target,&key);
+	if (!gradient) {if(key)gradientMovementDemand(*key);*stopWork=false;return false;}
+    const size_t hereIndex=coordToIndex(x,y);
+    const Uint16 here=gradient[hereIndex];
+    if(gradient==materialGradients[teamNumber][resourceType][swimClass])
+        key=GradientFieldKey{GradientFieldFamily::Materials,Uint8(teamNumber),Uint8(swimClass),resourceType};
+    else if(gradient==marketMaterialGradients[teamNumber][resourceType][swimClass])
+        key=GradientFieldKey{GradientFieldFamily::Markets,Uint8(teamNumber),Uint8(swimClass),resourceType};
+    // Reading stale zero still demands this field: a removed blocker may now
+    // admit a route. Actual escape outcome/quality stays with Forbidden only.
+    if(key)gradientMovementDemand(*key);
+    std::optional<GradientQueryContext> context;
+    if(key && here!=GRADIENT_FORBIDDEN)context=GradientQueryContext{*key,x,y,random};
+    GradientQueryResult outcome;
+    const auto move=[&]() {
+
     // Resolve the already-selected destination instead of repeating supplier
     // key rules. Stable cache entries remain pinned while their ticket exists.
     const auto refresh=[&] {
@@ -48,17 +69,29 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 		return false;
 	}
 	*stopWork=false;
-    if (here==GRADIENT_AT_GOAL) {
-        if (!materialAmountAtSlot(hereIndex,resourceType)) refresh();
+    if(here==GRADIENT_AT_GOAL) {
+        outcome.atGoal=true;
+        outcome.goalValid=key?gradientGoalValid(*key,x,y):materialAmountAtSlot(hereIndex,resourceType)>0;
+        outcome.travelRequired=!outcome.goalValid;
+        if(!outcome.goalValid)refresh();
         return false;
     }
-	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true))
-		return true;
-    if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false)) return true;
+    if(directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,true))return true;
+    if(directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,false))return true;
+    if(key && key->family==GradientFieldFamily::Markets && gradientGoalValid(*key,x,y)) {
+        outcome.atGoal=outcome.goalValid=true;outcome.travelRequired=false;return false;
+    }
     refresh();
     return false;
+    };
+    const bool moved=move();
+    if(context) {
+        outcome.moved=moved;
+        if(moved){outcome.dx=*dx;outcome.dy=*dy;}
+        gradientMovementOutcome(*context,gradient,outcome);
+    }
+    return moved;
 }
-
 
 void Map::pathfindRandom(Unit *unit)
 {
@@ -133,8 +166,9 @@ void Map::pathfindRandom(Unit *unit)
 
 StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
 {
-    const auto* field=getMaterialGradientSlot(team,material,swim,markets,target);
-    if (!field) { *stopWork=false; return StepResult::Pending; }
+    std::optional<GradientFieldKey> key;
+    const auto* field=getMaterialGradientSlot(team,material,swim,markets,target,&key);
+    if (!field) {if(key)gradientMovementDemand(*key);*stopWork=false;return StepResult::Pending;}
     if (field[coordToIndex(x,y)]==GRADIENT_FORBIDDEN && !getForbiddenGradient(team,swim)) { *stopWork=false; return StepResult::Pending; }
     const bool atGoal=field[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
     const bool stepped=pathfindMaterial(random,team,material,swim,x,y,dx,dy,stopWork,target,markets);

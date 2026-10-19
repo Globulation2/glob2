@@ -367,7 +367,9 @@ checksum adapter remains available for diagnostic fixtures.
   is rejected. Format 172 adds tagged order checksum metadata. Format 173
   combines delayed-ground demand with air slots, reading master formats 168/169
   and earlier air formats 171/172 with their independent layout gates. The
-  released save floor remains 58; replay acceptance begins at 173.
+  released save floor remains 58; format 174 appends adaptive resource scheduling
+  and ground movement counts without changing released layouts. Replay acceptance
+  begins at 174.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
@@ -453,7 +455,7 @@ checksum adapter remains available for diagnostic fixtures.
   Earlier supported saves retain their completed pending outputs and historical
   deadlines, including zero-delay outputs; they are never regenerated from the
   loaded world. New admissions use the new timing rule. The current replay floor
-  is 173, also requiring integrated air and delayed gradient publication; simulation revisions keep
+  is 174, also requiring adaptive resource scheduling and integrated air/delayed publication; simulation revisions keep
   these trajectories separate from earlier executions.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
   areas, visibility, entities, teams, rules, published resource fields, growth and
@@ -480,9 +482,40 @@ checksum adapter remains available for diagnostic fixtures.
   standalone inspection cache does not revoke an established owner observation;
   live entity helpers and orders cannot refresh that retained handle.
   Named views drop unwanted extras.
+- TeamStats counts living non-flying units by their actual ground movement
+  class during its existing snapshot scan. These counts support population
+  reporting, not gradient admission: the unified scheduler uses demand on each
+  exact field. The Population chart retains the movement bands; history predating
+  their collection is unavailable rather than zero. Building fields retain their
+  query-triggered refresh and idle-expiry rules.
+
 ## Scheduled gradient work
 
-- Gradient selection, round-robin flags, invalidation and publication stay on the
+- Periodic material, shared-market, guard, clearing and forbidden-escape fields
+  share Adaptive24: demand makes a field eligible, and the deterministic integer
+  model admits refreshes with predicted net benefit of at least 24 direction-cost
+  units over capture-relative offsets 8..127. Warm admissions for each exact
+  field are at least 32 ticks apart, including reactive recovery; publication
+  remains eight ticks after capture. Cold initialization remains immediate. A demanded field whose serving
+  capture reaches 1,024 ticks is eligible for a safety refresh, subject to
+  capacity and publication delay; idle fields remain idle. There is no
+  round-robin filler or global one-field-per-tick quota. Cold initialization and
+  explicit reactive recovery remain available without a model benefit prediction.
+  Stable key order determines admission, and skipped work leaves capacity idle.
+  One exact field can have only one queued or in-flight replacement.
+  The twelve selected inputs describe serving-capture age, movement queries over
+  32 and 128 ticks, effective target additions/removals with captured-count
+  fractions, and since-capture contradiction counts and event rates. The stable
+  family ID selects its trained model; an unknown or unmeasured family uses a
+  combined model trained on all observed families. Family and material IDs are
+  not numerical features. Markets use the combined fallback and remain
+  unmeasured by the AI training campaign.
+  Planning demand, including cached-unreachable answers, can request upkeep
+  without incrementing movement-query counts. Capture metadata stays immutable
+  while a replacement computes; save/load preserves captures, jobs and demand.
+  See [collecting and fitting the model](../development/resource-gradient-model.md).
+
+- Gradient selection, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Refresh publication remains after the configured
   delay (eight ticks by default), before team stepping; missing building fields
@@ -499,7 +532,7 @@ checksum adapter remains available for diagnostic fixtures.
   immediately and skips periodic natural-material work. The owner keeps
   serving an older field while a refresh waits. It validates proposed
   steps against current occupancy, forbidden paint and movement capabilities.
-- Ground material and area demand share one FIFO admission per tick and the
+- Ground material and area requests share a deterministic FIFO and the
   configured delay; queue waiting precedes that delay. This applies to edits of
   already-used clearing, guard and forbidden areas as well as cold demand. Zone
   membership changes immediately; replacement guidance publishes later. Requests

@@ -4,6 +4,8 @@
 #pragma once
 
 #include "BaseTeam.h"
+#include "SaveLoadProfile.h"
+#include <stdexcept>
 #include "Team.h"
 #include "ExperimentalFeatures.h"
 #include <vector>
@@ -53,7 +55,14 @@ public:
 	// Resolve the terrain layout before reading any version-dependent game state.
 	void resolveGrowthLayout(GAGCore::InputStream *stream);
 	bool historicalGrowthLayout = false;
-	Sint32 loadingVersion() const { return historicalGrowthLayout ? 145 : versionMinor; }
+	bool privateAdaptive174=false;
+    void applyLoadProfile(SaveLoadProfile profile) {
+        const bool selected=profile==SaveLoadProfile::PrivateAdaptive174;
+        if (selected && versionMinor!=174)
+            throw std::runtime_error("Private adaptive174 migration requires a format174 input");
+        privateAdaptive174=selected;
+    }
+    Sint32 loadingVersion() const { return historicalGrowthLayout ? 145 : privateAdaptive174 ? 173 : versionMinor; }
 	
 	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;

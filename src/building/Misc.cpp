@@ -205,9 +205,6 @@ void Building::removeUnitFromInside(Unit* unit)
 
 void Building::updateMaterialsPointer()
 {
-	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-		for (int r = 0; r < MaterialSlotCount; ++r)
-			owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 	if(!type->useTeamMaterials)
 	{
 		sharedMaterials=nullptr;
@@ -216,6 +213,11 @@ void Building::updateMaterialsPointer()
 	{
 		sharedMaterials=owner->teamMaterials;
 	}
+    // Membership is measured after switching the pool, not against the retired
+    // pointer. Other suppliers sharing the team pool are diffed at the same time.
+    if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
+        for(int r=0;r<MaterialCount;++r)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
+    }
 }
 
 
@@ -232,8 +234,7 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 	const Uint64 multiplier=type->materialMultiplier[resourceType];
 	const Sint32 converted=Uint64(packet.numerator)*multiplier/packet.denominator;
 	const int before = material(resourceType);
-	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
-		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
+    const bool sourceWasEmpty=(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0;
 	// A shared pool may already exceed this recipient's own acceptance limit.
 	// Reject excess delivery without deleting inventory owned by other consumers.
 	changeMaterial(resourceType, std::min(materialDeliveryNeed(resourceType),converted));
@@ -245,6 +246,9 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 		funding[resourceType]=std::min(accepted,constructionMaterialNeed(resourceType));
 		if (reserveMaterials(funding)) { funded=funding[resourceType]; constructionReserved[resourceType]+=funded; }
 	}
+    // Construction may immediately reserve delivery. Observe its final
+    // availability so an unavailable transient packet is not a fake goal.
+    if(sourceWasEmpty)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resourceType);
 	owner->stats.events().delivered[resourceType] += accepted;
 	if (type->canExchange)
 		owner->stats.events().transferredIn[resourceType] += accepted;

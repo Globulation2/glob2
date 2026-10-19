@@ -16,6 +16,9 @@
 #include "BitArray.h"
 #include "Brush.h"
 #include "Map.h"
+#include "Order.h"
+#include "Version.h"
+#include "ai/observation/ObservationAreaOrders.h"
 
 namespace
 {
@@ -190,4 +193,111 @@ TEST_SUITE("BrushAccumulator")
 	TEST_CASE_FIXTURE(BrushAccumulatorTest, "OppositeSeamWrapsOneRow") { testOppositeSeamWrapsOneRow(); }
 	TEST_CASE_FIXTURE(BrushAccumulatorTest, "WrapNegativeDelta") { testWrapNegativeDelta(); }
 	TEST_CASE_FIXTURE(BrushAccumulatorTest, "LargeBrushAcrossSeamBothAxes") { testLargeBrushAcrossSeamBothAxes(); }
+}
+
+TEST_SUITE("BrushAccumulatorOrderBounds")
+{
+    TEST_CASE("OversizedStrokePreservesEveryPaintedWorldTile")
+    {
+        BrushAccumulator acc;
+        acc.applyBrush(BrushApplication(256, 256, 7), 512, 512);
+        acc.applyBrush(BrushApplication(0, 0, 7), 512, 512);
+        acc.applyBrush(BrushApplication(511, 511, 7), 512, 512);
+        Utilities::BitArray original, folded;
+        BrushAccumulator::AreaDimensions before, after;
+        REQUIRE(acc.getBitmap(&original, &before));
+        REQUIRE(acc.getOrderBitmap(&folded, &after, 512));
+        REQUIRE(before.maxX - before.minX > 512);
+        REQUIRE(before.maxY - before.minY > 512);
+        CHECK_EQ(512, after.maxX - after.minX);
+        CHECK_EQ(512, after.maxY - after.minY);
+        Utilities::BitArray expected;
+        expected.resize(512 * 512, false);
+        const int width = before.maxX - before.minX;
+        for (int y = before.minY; y < before.maxY; ++y)
+            for (int x = before.minX; x < before.maxX; ++x)
+                if (original.get(static_cast<size_t>(y - before.minY) * width + x - before.minX))
+                    expected.set(static_cast<size_t>((before.centerY + y + 1024) % 512) * 512
+                        + (before.centerX + x + 1024) % 512, true);
+        for (int y = 0; y < 512; ++y)
+            for (int x = 0; x < 512; ++x)
+                CHECK_EQ(expected.get(static_cast<size_t>((after.centerY + after.minY + y + 1024) % 512) * 512
+                    + (after.centerX + after.minX + x + 1024) % 512), folded.get(static_cast<size_t>(y) * 512 + x));
+    }
+    TEST_CASE("OrdinaryStrokeRetainsItsExactBitmapAndBounds")
+    {
+        BrushAccumulator acc;
+        acc.applyBrush(BrushApplication(1, 1, 7), 512, 512);
+        acc.applyBrush(BrushApplication(510, 510, 7), 512, 512);
+        Utilities::BitArray original, folded;
+        BrushAccumulator::AreaDimensions before, after;
+        REQUIRE(acc.getBitmap(&original, &before));
+        REQUIRE(acc.getOrderBitmap(&folded, &after, 512));
+        CHECK_EQ(before.centerX, after.centerX); CHECK_EQ(before.centerY, after.centerY);
+        CHECK_EQ(before.minX, after.minX); CHECK_EQ(before.maxX, after.maxX);
+        CHECK_EQ(before.minY, after.minY); CHECK_EQ(before.maxY, after.maxY);
+        REQUIRE(original.getBitLength() == folded.getBitLength());
+        for (size_t i = 0; i < original.getBitLength(); ++i) CHECK_EQ(original.get(i), folded.get(i));
+    }
+}
+
+TEST_SUITE("BrushAccumulatorOrderCodec")
+{
+    TEST_CASE("RectangularTorusFoldsOnlyOversizedAxisAndRoundTripsAddAndDelete")
+    {
+        BrushAccumulator acc;
+        acc.applyBrush(BrushApplication(128, 256, 7), 256, 512);
+        acc.applyBrush(BrushApplication(128, 0, 7), 256, 512);
+        acc.applyBrush(BrushApplication(128, 511, 7), 256, 512);
+        Utilities::BitArray original;
+        BrushAccumulator::AreaDimensions before;
+        REQUIRE(acc.getBitmap(&original, &before));
+        REQUIRE(before.maxY - before.minY > 512);
+        for (const auto mode : {BrushTool::MODE_ADD, BrushTool::MODE_DEL})
+        {
+            auto order = AIEngine::observationAreaOrder<OrderAlterGuardArea>(0, mode, acc);
+            std::vector<Uint8> bytes{order->getOrderType()};
+            const auto* data = order->getData();
+            bytes.insert(bytes.end(), data, data + order->getDataLength());
+            // Unit builds provide an intentionally narrow Order::getOrder stub;
+            // exercise the real guard-area payload decoder directly.
+            CHECK_EQ(ORDER_ALTER_GUARD_AREA, bytes.front());
+            auto decoded = OrderAlterGuardArea::deserialize(bytes.data() + 1, bytes.size() - 1, VERSION_MINOR);
+            REQUIRE(decoded);
+            auto* area = dynamic_cast<OrderAlterGuardArea*>(decoded.get());
+            REQUIRE(area);
+            CHECK_EQ(mode, area->type);
+            CHECK_EQ(before.minX, area->minX); CHECK_EQ(before.maxX, area->maxX);
+            CHECK_EQ(before.minY, area->minY); CHECK_EQ(before.minY + 512, area->maxY);
+            const int width = before.maxX - before.minX;
+            // The decoded mask must describe exactly the same world cells for
+            // either operation, including both aliases of a seam-crossing brush.
+            for (int y = 0; y < 512; ++y)
+                for (int x = 0; x < width; ++x)
+                {
+                    bool expected = false;
+                    for (int oldY = y; oldY < before.maxY - before.minY; oldY += 512)
+                        expected |= original.get(static_cast<size_t>(oldY) * width + x);
+                    CHECK_EQ(expected, area->mask.get(static_cast<size_t>(y) * width + x));
+                }
+        }
+    }
+    TEST_CASE("OrdinaryObservationOrderHasIdenticalWireBytes")
+    {
+        BrushAccumulator acc;
+        acc.applyBrush(BrushApplication(1, 1, 7), 512, 512);
+        acc.applyBrush(BrushApplication(510, 510, 7), 512, 512);
+        Utilities::BitArray mask;
+        BrushAccumulator::AreaDimensions dimensions;
+        REQUIRE(acc.getBitmap(&mask, &dimensions));
+        OrderAlterGuardArea previous(0, BrushTool::MODE_ADD, dimensions.centerX, dimensions.centerY,
+            dimensions.maxX - dimensions.minX, dimensions.maxY - dimensions.minY, mask);
+        previous.minX = dimensions.minX; previous.maxX = dimensions.maxX;
+        previous.minY = dimensions.minY; previous.maxY = dimensions.maxY;
+        auto current = AIEngine::observationAreaOrder<OrderAlterGuardArea>(0, BrushTool::MODE_ADD, acc);
+        REQUIRE(previous.getDataLength() == current->getDataLength());
+        const auto* oldData = previous.getData(); const auto* newData = current->getData();
+        CHECK_EQ(previous.getOrderType(), current->getOrderType());
+        for (int i = 0; i < previous.getDataLength(); ++i) CHECK_EQ(oldData[i], newData[i]);
+    }
 }

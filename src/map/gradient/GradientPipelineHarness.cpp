@@ -263,7 +263,8 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
         ComputeExecutor executor; executor.configure(threads);
         GradientPipeline pipeline;
         TestBuildingPipelineBase buildings;
-        auto* field=new std::uint16_t[1]{};
+        std::array<std::uint16_t*,MaterialCount> fields{};
+        for (auto& field:fields) field=new std::uint16_t[1]{};
         pipeline.configure(executor,16,1,[](auto& job,auto&) { ++job.data[0]; });
         buildings.configure(executor,BuildingDelay,runTestBuildingJob);
         unsigned published=0;
@@ -274,11 +275,13 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
         std::size_t peak=0;
         for (unsigned tick=1; tick<ai.size(); ++tick) {
             pipeline.advance(); buildings.advance();
-            if (tick>16) CHECK(field[0]==tick-16);
+            if (tick>16) for (auto* field:fields) CHECK(field[0]==tick-16);
             if (tick>BuildingDelay) CHECK(published==(tick-BuildingDelay)*PerTick);
             const ComputeExecutor::Group group{1,{[](void* p,size_t) { ++static_cast<AIJob*>(p)->value; }, &ai[tick]},0};
             ai[tick].batch=executor.submit(std::span(&group,1),ComputeExecutor::boundaryDue(tick+8));
-            pipeline.submit(&field,0,[tick](auto& job) { job.data[0]=tick-1; });
+            std::vector<GradientPipeline::Job*> resourceJobs;
+            for (auto& field:fields) resourceJobs.push_back(pipeline.reserve(&field,0));
+            pipeline.prepareBatch(resourceJobs,[tick](auto& job) { job.data[0]=tick-1; });
             std::vector<TestBuildingPipelineBase::Job*> staged;
             while (buildings.canReserve()) {
                 auto* job=buildings.reserve(); job->payload={}; job->payload.value=tick; job->payload.input=input;
@@ -296,11 +299,11 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
         CHECK(peak<ComputeExecutor::Slots);
         pipeline.finish(); buildings.finish();
         for(auto& job:ai) executor.join(job.batch);
-        CHECK(field[0]==83); // Finishing private work does not publish it.
+        for (auto* field:fields) CHECK(field[0]==83); // Finishing never publishes early.
         CHECK(published==(ai.size()-1-BuildingDelay)*PerTick);
         CHECK(buildings.metrics.batches==ai.size()-1);
         CHECK(buildings.metrics.maxBatch==PerTick);
-        pipeline.reset(); buildings.reset(); delete[] field;
+        pipeline.reset(); buildings.reset(); for (auto* field:fields) delete[] field;
     }
 }
 

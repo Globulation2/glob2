@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Integrated format175 combines released173 routing with lazy initial fields.
+	// Adaptive24 and the 32-tick refresh minimum require current replay execution.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 175);
-	CHECK(VERSION_MINOR == 175);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 185);
+	CHECK(VERSION_MINOR == 185);
 
 	CHECK(NET_PROTOCOL_VERSION == 72);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

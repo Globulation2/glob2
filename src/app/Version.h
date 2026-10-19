@@ -7,8 +7,25 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 175
-// version 175 combines lazy initial building fields with ground/air routing; initial fields publish after one tick.
+#define VERSION_MINOR 185
+// version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
+// Existing saves retain their masks and committed jobs; counts rebuild on load.
+// version 184 deploys Adaptive24 with a 32-tick minimum refresh interval.
+// The saved layout remains version 178; existing committed jobs keep their deadlines.
+// version 183 selects per-family Adaptive16 models with a combined fallback and
+// demanded capture-age 1024 safety refresh. The saved layout remains version 178.
+// version 182 refits the validated twelve-input Adaptive16 model. The saved layout
+// remains version 178; earlier replay execution has different coefficients.
+// version 181 tested a seven-input Adaptive16 model. The saved layout
+// remains version 178; older replay execution uses different coefficients.
+// version 180 refits Adaptive16 on cumulative unified training data. The
+// saved layout remains version 178; replay execution uses the new coefficients.
+// version 179 uses Adaptive16 with the refitted unified movement model. The
+// saved layout remains version 178; older replays use different movement decisions.
+// version 178 persists unified demand-driven gradient state and capture identities.
+// version 177 refreshes the adaptive movement model; serialized state remains version 176.
+// version 176 combines capture-aligned adaptive movement evidence with lazy building routing.
+// version 175 integrates lazy initial building fields with ground/air routing.
 // version 173 integrates delayed ground guidance with the air routing layout.
 // version 172 combines air routing with tagged snapshot checksum metadata.
 // version 171 appends one shared air routing class and preserves released save layouts.

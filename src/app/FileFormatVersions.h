@@ -15,6 +15,9 @@
 
 #pragma once
 
+// Sparse common field policy state, including serving/pending capture metadata.
+static constexpr int FILE_FORMAT_VERSION_UNIFIED_GRADIENTS = 178;
+
 // === Save-format minor-version feature gates ===
 // Each constant is the FIRST versionMinor at which the named feature
 // appears in the save stream. Loaders write/read the new field if
@@ -278,6 +281,12 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE = 155;
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
 // Completed pending measurement frames replace raw labour deltas.
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
+
+// Published movement-class counts and stale suspended shared fields.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_DEMAND = 176;
+// Selected movement counters and serving/pending capture baselines. Counter
+// blocks carry stable IDs so later model feature selections remain readable.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_CONTRADICTIONS = 176;
 
 // Cached hiring suggestions and their pending deadlines.
 static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;

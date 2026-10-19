@@ -89,6 +89,7 @@ void Team::attachUnit(int id, Unit* unit)
 	assert(!myUnits[id] || myUnits[id]==unit);
 	liveUnits.append(*unit);
 	myUnits[id]=unit;
+    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->gradientGuardCostsChanged(teamNumber);
 	if (taskSwapNext==0xffff) taskSwapNext=id;
 }
 Unit* Team::detachUnit(int id)
@@ -98,6 +99,7 @@ Unit* Team::detachUnit(int id)
 	assert(unit->owner==this);
 	Unit* next=unit->populationNext;
 	liveUnits.remove(*unit);
+    if(unit->hasCapability(UnitRuntimeTraits::GuardIdle))map->gradientGuardCostsChanged(teamNumber);
 	myUnits[id]=nullptr;
 	if (taskSwapNext==id) taskSwapNext=next ? Unit::GIDtoID(next->gid)
 		: liveUnits.empty() ? 0xffff : Unit::GIDtoID(liveUnits.front()->gid);

@@ -599,6 +599,42 @@ glob2 map validate\-set set.json \-\-report\-file artifacts/set\-report.json \-\
 Outputs: Validation JSON and optional PNG
 .PP
 Platform: all
+.SS "game migrate"
+Convert a private adaptive174 file without advancing simulation
+.PP
+Usage: glob2 game migrate [OPTIONS]
+.TP
+.B \-\-output\-dir
+Structured job directory; must not already contain result.json Type: directory. Required.
+.TP
+.B \-\-profile
+Isolated profile label Default: glob2\-tournament. Type: string.
+.TP
+.B \-\-building\-catalog
+Building catalog manifest Type: file.
+.TP
+.B \-\-data\-dir
+Add an asset search directory (in order) Type: directory. Repeatable.
+.TP
+.B \-\-generator\-package
+Load a custom generator package or directory Type: file. Repeatable.
+.TP
+.B \-\-input
+Private format174 map or saved game Type: file. Required.
+.TP
+.B \-\-legacy\-adaptive\-174
+Explicitly select the private adaptive174 binary layout; never inferred Default: false. Required.
+.TP
+.B \-\-help
+Show this command's help (also \-h) Default: false.
+.PP
+.nf
+glob2 game migrate \-\-input private174.game.gz \-\-legacy\-adaptive\-174 \-\-output\-dir artifacts/migration
+.fi
+.PP
+Outputs: migrated.map or migrated.game, result.json with provenance and verified state
+.PP
+Platform: all
 .SS "game run"
 Run or continue a structured headless game
 .PP
@@ -708,6 +744,18 @@ Write game.replay Default: false.
 .TP
 .B \-\-benchmark\-warmup
 Ticks excluded from benchmark counters Type: integer. Units: ticks. Range: 0..2147483647.
+.TP
+.B \-\-gradient\-work\-stats
+Opt\-in gradient\-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection Type: file.
+.TP
+.B \-\-resource\-gradient\-probe
+Collect unified\-gradient\-h128\-v4 quality for all periodic field families (historical flag alias) Default: false.
+.TP
+.B \-\-resource\-gradient\-exploration
+All\-family collection: seeded per\-field intervals32..65536;0=adaptive only after unified model training Type: intervals.
+.TP
+.B \-\-resource\-gradient\-exploration\-seed
+Seed for deterministic per\-field collection assignment Type: integer. Range: 0..4294967295.
 .TP
 .B \-\-diagnostic\-fields
 Diagnostic field selection Allowed: maxima. Type: enum.

@@ -22,9 +22,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 175 changes initial building-gradient publication timing.
+//! the reader still accepts. Version 185 omits empty-zone gradient requests;
+//! older recorded orders cannot reproduce its gradient and movement decisions.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 175;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 185;
 
 
 /// This class is used for reading replays.
