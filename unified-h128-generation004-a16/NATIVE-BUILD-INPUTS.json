@@ -1,0 +1,28 @@
+{
+  "files": {
+    "src/app/Version.h": "a66bf8cc4c04d4230f8c89afb569f872bde832e85c32e269551bf20b57bd06e3",
+    "src/game/Game.cpp": "65069112f29f16aa3f34a5b6de63f082968cbde8866303a8159f7966c8069b95",
+    "src/game/SimRevision.h": "4e324c35d4f9845237e52c99524eca3ec24e4a376d8bd2ca0f86ba387c5095e8",
+    "src/map/Map.cpp": "fc8a16eeb386d5b7e8eeabcddaba45c277c4150c9fc86bc109cce62ab706fccc",
+    "src/map/gradient/AdaptiveGradientModel.h": "89a3936a8e4cc560a1b3b299aa9c804824430bcbab1ce90314d6e2faed429b9a",
+    "src/map/gradient/AdaptiveGradientState.cpp": "def80ecd0009aec01c3503cbc5b6367aedcc6fc284e7e3f65bbcd15afc75911e",
+    "src/map/gradient/AdaptiveGradientState.h": "7584e86343e42c969fa5cdb3f230190034f7b9d0dc87354cc90fe734ac67e592",
+    "src/map/gradient/AdaptiveGradientStateTest.cpp": "37cc6e71c8ee1d63dea83e19d571cade8acce72d44d8afb937853b55a2155c26",
+    "src/replay/ReplayReader.h": "fbd0a6788d13de58a9be30ee08d0c208a9d61c94a798c8a731f0a59e06a85bba",
+    "src/replay/ReplayStepCounterTest.cpp": "6d950272e10a00db43085aa51740632e7f724d9896be0e4dbe3ff06d87972e9f",
+    "src/unit/MarketsV2Test.cpp": "489b15610cc16742de48b61bf3eeb53bc06292ebff7b732711be2bf17ecc7212",
+    "src/map/Map.h": "81cdbcbc7ac9322ba0961ac96ff2ba3179df3e76b58fe1d27c88986cefb4aa56",
+    "src/map/MapStep.cpp": "d23411b62c73b2c6581199bba45ce13aac9984e1bd09c1d89359e472dc85b8d9"
+  },
+  "horizon": 128,
+  "native_source": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+  "previous_head": "dea71831a",
+  "replay_floor": 179,
+  "save_floor": 58,
+  "sim_revision": 89,
+  "status": "LIFECYCLE-FIX-NATIVE-INPUTS-FROZEN",
+  "threshold_milli": 16000,
+  "utc": "2026-10-19T13:00:31.734068+00:00",
+  "version_minor": 179,
+  "golden_source": "98ef41c0f01897e08b5c28049775c1b0a61aacd4"
+}

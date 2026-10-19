@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "source_revision": "ca0c128152102ae5672d450d2613fa966e3d77c5",
+  "actual_native_build_revision": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+  "only_diff": [
+    "src/unit/MarketsV2Test.cpp"
+  ],
+  "ordinary_scons_exit_code": 0,
+  "byte_identical_binary_sha256": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc",
+  "model_sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1",
+  "header_sha256": "89a3936a8e4cc560a1b3b299aa9c804824430bcbab1ce90314d6e2faed429b9a",
+  "note": "Final source differs only in an unlinked engine test. Exact ELF and all game compilation inputs are unchanged; runtime proofs bind the same executable.",
+  "created_utc": "2026-10-19T13:14:22.072594+00:00"
+}

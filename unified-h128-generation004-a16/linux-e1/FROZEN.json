@@ -1,0 +1,36 @@
+{
+  "source_revision": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+  "host": "devlaptop.local",
+  "files": {
+    "glob2": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/frozen/glob2",
+      "sha256": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc"
+    },
+    "adaptive-gradient.json": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/frozen/adaptive-gradient.json",
+      "sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1"
+    },
+    "AdaptiveGradientModel.h": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/frozen/AdaptiveGradientModel.h",
+      "sha256": "89a3936a8e4cc560a1b3b299aa9c804824430bcbab1ce90314d6e2faed429b9a"
+    }
+  },
+  "ordinary_release": true,
+  "model_trained": true,
+  "research_candidate_only": true,
+  "created_utc": "2026-10-19T13:14:13.103226+00:00",
+  "actual_native_build_revision": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+  "source_equivalence": {
+    "status": "PASS",
+    "source_revision": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+    "actual_native_build_revision": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+    "intermediate_source_revision": "ca0c128152102ae5672d450d2613fa966e3d77c5",
+    "only_diff": [
+      "src/unit/MarketsV2Test.cpp"
+    ],
+    "byte_identical_binary_sha256": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc",
+    "model_sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1",
+    "header_sha256": "89a3936a8e4cc560a1b3b299aa9c804824430bcbab1ce90314d6e2faed429b9a",
+    "prior_equivalence_receipt_sha256": "f2329b1fe7322c21a253a7d950c7e71a5e508036950208e12beb5a5c9348b50a"
+  }
+}

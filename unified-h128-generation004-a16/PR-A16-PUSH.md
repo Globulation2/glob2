@@ -1,0 +1,7 @@
+Adaptive16 model checkpoint pushed at `ca0c128152102ae5672d450d2613fa966e3d77c5` (base `7c83e71d0303da637d84b0a31eeb1d1adb38f388`).
+
+The cumulative 768-planned-game fit is now in the generated C++ coefficients and model JSON, with a deployment threshold of 16000 milli direction-cost units. The prediction horizon remains 128 ticks, the minimum interval/publication delay remain eight ticks, and there is no forced maximum age. Spatial measurements remain diagnostic only. Historical threshold metadata and fit metrics are preserved; this is the selected research candidate, not a claim of stable performance superiority.
+
+This checkpoint also includes the threshold-aware training/export tooling, documentation, compatibility gates, and a fix for derived market supplier ledgers surviving world replacement. Live pipeline resets retain supplier turnover history. Save version/replay floor are 179, durable save floor remains 58, and SIM_REVISION is 89.
+
+Validation is still in progress. Corrected ordinary macOS and Linux release builds, final market regression, golden regeneration, and final runtime/platform comparisons have not all completed. Previously generated local golden changes are deliberately not included because they predate the final lifecycle correction; the match-record gate remains pending regeneration. Keep this PR draft. This push records the model as requested and is not a readiness or deployment approval.

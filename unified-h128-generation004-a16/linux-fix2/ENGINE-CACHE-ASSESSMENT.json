@@ -1,0 +1,19 @@
+{
+  "planned_compiles": 164,
+  "limit": 250,
+  "argv": [
+    "taskset",
+    "-c",
+    "1,2,4,5,8,10,12,14",
+    "scons",
+    "release=1",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "CXXFLAGS=",
+    "--build=build/unified-release",
+    "-j8",
+    "engine-tests"
+  ]
+}

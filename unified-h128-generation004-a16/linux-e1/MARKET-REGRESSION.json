@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "source_revision": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+  "tests": 2,
+  "failures": 0,
+  "engine_sha256": "2a29f727420773338057281118f199379978dcca7ad3f7ba140e2378893addc5",
+  "main_unchanged": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc",
+  "fixture_root": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-004/candidate-gen004/linux-e1/market-fixture-root"
+}

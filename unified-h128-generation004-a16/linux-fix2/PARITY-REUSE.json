@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "candidate_source_revision": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+  "proof_source_revision": "8737fa3ae3ede5a9c5c565aaf9fa7cff1bce03dd",
+  "scope": "Unchanged generated header/model/math inputs; Game.cpp/Map.cpp lifecycle andSIM89 only",
+  "vectors": 530
+}

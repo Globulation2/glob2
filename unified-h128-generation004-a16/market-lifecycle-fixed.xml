@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="world teardown and map reuse discard derived supplier ledgers" time="0.045322" status="run" />
+  </testsuite></testsuites>

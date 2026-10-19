@@ -1,0 +1,157 @@
+{
+  "status": "PASS",
+  "source_revision": "e1cac289914889cb7f49a6b9fa1268aae55eaf7d",
+  "actual_linux_native_source": "85df2964574042ad97fc827aefb45509c3d9bcf3",
+  "macos_binary_sha256": "64807701b9096e38be0ddd4f97aea3673b6e3d3e3618bc0222135c53712979c1",
+  "linux_binary_sha256": "ffbbff5e07525d3c208ca6d5a563a77c34595419d8de88e3cb0cebe337b47abc",
+  "model_sha256": "495713960e3e614040e874e181995e6f5970ae7a99488d47b6465252f00db2d1",
+  "threshold_milli": 16000,
+  "runs": [
+    {
+      "name": "t1-probeoff",
+      "simulation_files": {
+        "world.checksums": "01300ade063dda6a4d599b212a001b08bd05d7fd5b17a152f6fad9901f5c37f7",
+        "snapshot.checksums": "9cc96795439c0eab72adcc249bae0d719dfae597e83282e4647b5de14f3d3ced",
+        "game.replay.checksums": "bd45b7c838caf7bdffc7f702b4d8bb51020717fe5211f9c9e42dfb01fed9b85c",
+        "final.game.gz": "c6a38959523c72fcfca3edba3dcd3ea7f1f2e765bcc914898d98717364347910"
+      }
+    },
+    {
+      "name": "t1-probeon",
+      "simulation_files": {
+        "world.checksums": "01300ade063dda6a4d599b212a001b08bd05d7fd5b17a152f6fad9901f5c37f7",
+        "snapshot.checksums": "9cc96795439c0eab72adcc249bae0d719dfae597e83282e4647b5de14f3d3ced",
+        "game.replay.checksums": "bd45b7c838caf7bdffc7f702b4d8bb51020717fe5211f9c9e42dfb01fed9b85c",
+        "final.game.gz": "c6a38959523c72fcfca3edba3dcd3ea7f1f2e765bcc914898d98717364347910"
+      }
+    },
+    {
+      "name": "t4-probeon",
+      "simulation_files": {
+        "world.checksums": "01300ade063dda6a4d599b212a001b08bd05d7fd5b17a152f6fad9901f5c37f7",
+        "snapshot.checksums": "9cc96795439c0eab72adcc249bae0d719dfae597e83282e4647b5de14f3d3ced",
+        "game.replay.checksums": "bd45b7c838caf7bdffc7f702b4d8bb51020717fe5211f9c9e42dfb01fed9b85c",
+        "final.game.gz": "c6a38959523c72fcfca3edba3dcd3ea7f1f2e765bcc914898d98717364347910"
+      }
+    },
+    {
+      "name": "mature-t1-probeoff",
+      "simulation_files": {
+        "world.checksums": "4c8003728c879f5b160f02f6ad072664fe4911f19d32f15afbd83d5dc525cb7c",
+        "snapshot.checksums": "f5a6909d5f4e7304a73f6841f4d3bee5bbc6ca2773e76bc45d1d37cdba0b36cc",
+        "game.replay.checksums": "66bea05302ccc7a4a4f627701969f98300a684aead7f9de90849c163723a3f9b",
+        "final.game.gz": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be"
+      }
+    },
+    {
+      "name": "mature-t1-probeon",
+      "simulation_files": {
+        "world.checksums": "4c8003728c879f5b160f02f6ad072664fe4911f19d32f15afbd83d5dc525cb7c",
+        "snapshot.checksums": "f5a6909d5f4e7304a73f6841f4d3bee5bbc6ca2773e76bc45d1d37cdba0b36cc",
+        "game.replay.checksums": "66bea05302ccc7a4a4f627701969f98300a684aead7f9de90849c163723a3f9b",
+        "final.game.gz": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be"
+      }
+    },
+    {
+      "name": "mature-t4-probeon",
+      "simulation_files": {
+        "world.checksums": "4c8003728c879f5b160f02f6ad072664fe4911f19d32f15afbd83d5dc525cb7c",
+        "snapshot.checksums": "f5a6909d5f4e7304a73f6841f4d3bee5bbc6ca2773e76bc45d1d37cdba0b36cc",
+        "game.replay.checksums": "66bea05302ccc7a4a4f627701969f98300a684aead7f9de90849c163723a3f9b",
+        "final.game.gz": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be"
+      }
+    },
+    {
+      "name": "mature-continuation-t1",
+      "simulation_files": {
+        "world.checksums": "58cd272bb504ed527a96a9a59937fe3f74cf04f807903225bdc0975ff456f13a",
+        "snapshot.checksums": "4ae70c9c5117aa94cbdd3d5691ad99afd7ebe290d1d30f14396e2669b451791d",
+        "game.replay.checksums": "9a2762115a128a3ca5f4486037a6dd4d9676e81a90c79addf87d7d4223a261ea",
+        "final.game.gz": "c7fc30db59440d54060ce8d665fd73ba30f386bbaf06d516ea31df2e6f2fb4be"
+      }
+    }
+  ],
+  "diagnostic_pairs": [
+    {
+      "run": "t1-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "4a3c860912c044e8b1a30a37180772206fef68499e5b4131a102142ac6e71ef7"
+    },
+    {
+      "run": "mature-t1-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "401c0875bb1ffad6258041f3d011a36b30775c9eed701ffd8cd35a6b69d6fa2c"
+    },
+    {
+      "run": "mature-t1-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "19ec5f79906f66e076722cbf2854bfb69c3160c720a1ca1528ea8a7833f89504"
+    },
+    {
+      "run": "mature-t1-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "ff2f9a1c35bcefd1ad8d565fc3b52f56883edc92ffbe15cc22f8d49d25a5ab17"
+    },
+    {
+      "run": "mature-t1-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "418a7ae3feba27b24275fb250c3e1ca3f6569292713cab363c1f5920a419515a"
+    },
+    {
+      "run": "mature-t4-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "401c0875bb1ffad6258041f3d011a36b30775c9eed701ffd8cd35a6b69d6fa2c"
+    },
+    {
+      "run": "mature-t4-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "19ec5f79906f66e076722cbf2854bfb69c3160c720a1ca1528ea8a7833f89504"
+    },
+    {
+      "run": "mature-t4-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "ff2f9a1c35bcefd1ad8d565fc3b52f56883edc92ffbe15cc22f8d49d25a5ab17"
+    },
+    {
+      "run": "mature-t4-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "418a7ae3feba27b24275fb250c3e1ca3f6569292713cab363c1f5920a419515a"
+    }
+  ],
+  "note": "Seven matching actual executions; finalsource equivalence records test-only updates, same native inputs. Main world/snapshot/replaychecksums/finalsave byteexact;16CSV pairs byteexact."
+}
