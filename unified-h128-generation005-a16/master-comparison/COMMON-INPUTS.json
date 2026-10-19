@@ -1,0 +1,159 @@
+{
+  "original_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/COMMON-INPUTS.json",
+  "original_sha256": "2ad4fe815db1ca104f9efc0de12d69f416591334b40cd3f01e43e3b75f684b00",
+  "inputs": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/66294c58700ef1b4/map.map.gz",
+      "map_sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz",
+      "warm_sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          2,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "generator": "polder",
+        "generator_params": {
+          "algae-amount": 75,
+          "crop-crossings": 1,
+          "dyke-spacing": 32,
+          "fruit-amount": 125,
+          "ground": 1,
+          "hamlets": 1,
+          "row-angle": 2,
+          "stone-amount": 100,
+          "village-size": 16,
+          "water-crossings": 1,
+          "wheat-amount": 75,
+          "wood-amount": 75,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 330329066,
+        "players": 4,
+        "width": 128
+      }
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/1d043310cbecdceb/map.map.gz",
+      "map_sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz",
+      "warm_sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+      "start_tick": 16384,
+      "usable": true,
+      "termination": "tick_cap",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "maxima",
+          "warrush",
+          "castor",
+          "castor",
+          "warrush"
+        ],
+        "alliances": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          2,
+          3,
+          1
+        ],
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "generator": "fjord-continent",
+        "generator_params": {
+          "algae-amount": 150,
+          "bank-deposits": 1,
+          "coast-roughness": 23,
+          "continent-size": 34,
+          "fjord-width": 4,
+          "fruit-amount": 150,
+          "lake-connected": 0,
+          "lake-size": 30,
+          "resource-islands": 3,
+          "sandy-lake-shore": 1,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3680668015,
+        "players": 8,
+        "width": 128
+      }
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "format": "2v2",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/0083541d8ee4d18b/map.map.gz",
+      "map_sha256": "2c3a587c2c96797ae0b2213f469017532490dd38154e6b795b3b80323ebc7a31",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-0083541d8ee4d18b/final.game.gz",
+      "warm_sha256": "ce06f86013fb034c0ee9bff17a3fb2fd649eff4928f7608fa9059c1020d5695b",
+      "start_tick": 14850,
+      "usable": false,
+      "termination": "engine_end",
+      "spec": {
+        "ais": [
+          "maxima",
+          "warrush",
+          "maxima",
+          "econo"
+        ],
+        "alliances": [
+          2,
+          2,
+          1,
+          1
+        ],
+        "format": "2v2",
+        "game_seed": 3333364126,
+        "generator": "islands",
+        "generator_params": {
+          "algae-amount": 125,
+          "desert": 2,
+          "extra-islands": 2,
+          "fruit": 5,
+          "grass": 73,
+          "hilltop-stone": 0,
+          "repeat": 2,
+          "sand": 5,
+          "smoothing": 6,
+          "stone-amount": 125,
+          "water": 57,
+          "wheat-amount": 150,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 128,
+        "map_seed": 2679416391,
+        "players": 4,
+        "width": 64
+      }
+    }
+  ],
+  "bound_before_measurements": true,
+  "utc": "2026-10-19T16:03:20.818063+00:00"
+}

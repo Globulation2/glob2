@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-19T15:57:45.210630+00:00",
+  "uname": "Darwin Mac 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:29 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8122 arm64\n",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "xcode": "/Applications/Xcode.app/Contents/Developer\n",
+  "sdk": "27.0\n",
+  "candidate_build_flags": "release=1 CXXFLAGS= dev_fast=0 pch=0 unity=0 linker=default; candidate release reused3781; source finish-macos.py",
+  "master_flags": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "--build=build/final-master-release",
+    "-j6",
+    "build/final-master-release/src/glob2"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "plan_sha256": "1af1d5851712fb950e1f50d5af4ccdb387c0ba0117fcf5e89b707170ce0adc24",
+  "created_utc": "2026-10-19T16:03:18.920311+00:00",
+  "reason": "Explicit shared asset precedence correction; original inputs and all prior evidence retained"
+}

@@ -1,0 +1,3796 @@
+{
+  "utc": "2026-10-19T16:03:20.765270+00:00",
+  "supervisor_pid": 31095,
+  "plan_sha256": "1af1d5851712fb950e1f50d5af4ccdb387c0ba0117fcf5e89b707170ce0adc24",
+  "binary_sha256": {
+    "master": "da5eeacf577e3b29dbfe570dfbc0dd71a529fb8af765995ab8ab3f378de79713",
+    "gen005": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236"
+  },
+  "initial_context": {
+    "utc": "2026-10-19T16:03:20.765416+00:00",
+    "loadavg": [
+      2.2861328125,
+      2.92529296875,
+      3.11474609375
+    ],
+    "processes": [
+      {
+        "pid": 1,
+        "cpu_percent": "0.2",
+        "command": "/sbin/launchd"
+      },
+      {
+        "pid": 426,
+        "cpu_percent": "0.7",
+        "command": "/usr/libexec/log"
+      },
+      {
+        "pid": 428,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Use"
+      },
+      {
+        "pid": 430,
+        "cpu_percent": "0.4",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 431,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 434,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/system"
+      },
+      {
+        "pid": 438,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/con"
+      },
+      {
+        "pid": 440,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 441,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/IOM"
+      },
+      {
+        "pid": 445,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/rem"
+      },
+      {
+        "pid": 449,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 451,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/wat"
+      },
+      {
+        "pid": 455,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 457,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ker"
+      },
+      {
+        "pid": 458,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dis"
+      },
+      {
+        "pid": 462,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/syslog"
+      },
+      {
+        "pid": 464,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/the"
+      },
+      {
+        "pid": 465,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 466,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/xpr"
+      },
+      {
+        "pid": 467,
+        "cpu_percent": "1.0",
+        "command": "/usr/libexec/ope"
+      },
+      {
+        "pid": 468,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 469,
+        "cpu_percent": "0.5",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 470,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tim"
+      },
+      {
+        "pid": 471,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 472,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/securi"
+      },
+      {
+        "pid": 474,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/loc"
+      },
+      {
+        "pid": 477,
+        "cpu_percent": "0.0",
+        "command": "autofsd"
+      },
+      {
+        "pid": 478,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/das"
+      },
+      {
+        "pid": 479,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cor"
+      },
+      {
+        "pid": 481,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 485,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 486,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 487,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/Kernel"
+      },
+      {
+        "pid": 491,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/blueto"
+      },
+      {
+        "pid": 492,
+        "cpu_percent": "0.1",
+        "command": "/usr/sbin/notify"
+      },
+      {
+        "pid": 494,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cor"
+      },
+      {
+        "pid": 495,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Air"
+      },
+      {
+        "pid": 496,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 499,
+        "cpu_percent": "0.8",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 500,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 501,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 502,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 505,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 506,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/run"
+      },
+      {
+        "pid": 508,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 509,
+        "cpu_percent": "0.3",
+        "command": "/usr/sbin/coreau"
+      },
+      {
+        "pid": 515,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/lsd"
+      },
+      {
+        "pid": 517,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mob"
+      },
+      {
+        "pid": 518,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/apf"
+      },
+      {
+        "pid": 519,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ane"
+      },
+      {
+        "pid": 520,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nsu"
+      },
+      {
+        "pid": 523,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 524,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/bio"
+      },
+      {
+        "pid": 527,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 529,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/eli"
+      },
+      {
+        "pid": 537,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 539,
+        "cpu_percent": "0.1",
+        "command": "/usr/libexec/air"
+      },
+      {
+        "pid": 541,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 542,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/mDNSRe"
+      },
+      {
+        "pid": 546,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sym"
+      },
+      {
+        "pid": 547,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/App"
+      },
+      {
+        "pid": 551,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 554,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/mDNSRe"
+      },
+      {
+        "pid": 588,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sys"
+      },
+      {
+        "pid": 599,
+        "cpu_percent": "0.0",
+        "command": "Core"
+      },
+      {
+        "pid": 601,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/Wirele"
+      },
+      {
+        "pid": 602,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/aud"
+      },
+      {
+        "pid": 605,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 614,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/aud"
+      },
+      {
+        "pid": 616,
+        "cpu_percent": "0.0",
+        "command": "/Library/SystemE"
+      },
+      {
+        "pid": 618,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/com"
+      },
+      {
+        "pid": 625,
+        "cpu_percent": "0.0",
+        "command": "Core"
+      },
+      {
+        "pid": 628,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 630,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/appleh"
+      },
+      {
+        "pid": 631,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mod"
+      },
+      {
+        "pid": 642,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 650,
+        "cpu_percent": "0.0",
+        "command": "/Library/Privile"
+      },
+      {
+        "pid": 653,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cam"
+      },
+      {
+        "pid": 654,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 659,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 661,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 662,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 667,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sea"
+      },
+      {
+        "pid": 668,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 669,
+        "cpu_percent": "1.5",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 670,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 672,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 679,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 681,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 682,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 685,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sec"
+      },
+      {
+        "pid": 687,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Use"
+      },
+      {
+        "pid": 694,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/univer"
+      },
+      {
+        "pid": 696,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pbo"
+      },
+      {
+        "pid": 697,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/con"
+      },
+      {
+        "pid": 698,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 700,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/lsd"
+      },
+      {
+        "pid": 704,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 706,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 710,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 711,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 712,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 713,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/rap"
+      },
+      {
+        "pid": 714,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 717,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 718,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 719,
+        "cpu_percent": "0.2",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 721,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sha"
+      },
+      {
+        "pid": 727,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nsu"
+      },
+      {
+        "pid": 730,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Xc"
+      },
+      {
+        "pid": 735,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 736,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 738,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 739,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 742,
+        "cpu_percent": "0.1",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 747,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/userno"
+      },
+      {
+        "pid": 748,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 751,
+        "cpu_percent": "0.4",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 752,
+        "cpu_percent": "0.5",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 753,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 754,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 758,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 759,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/gam"
+      },
+      {
+        "pid": 760,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 769,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/fileco"
+      },
+      {
+        "pid": 772,
+        "cpu_percent": "0.0",
+        "command": "automountd"
+      },
+      {
+        "pid": 776,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 777,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 778,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 781,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Con"
+      },
+      {
+        "pid": 787,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 790,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 792,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ass"
+      },
+      {
+        "pid": 793,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fee"
+      },
+      {
+        "pid": 795,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 797,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/gam"
+      },
+      {
+        "pid": 798,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/gam"
+      },
+      {
+        "pid": 800,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ros"
+      },
+      {
+        "pid": 804,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 808,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nfc"
+      },
+      {
+        "pid": 809,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 811,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 814,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 818,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 819,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 820,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 823,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 824,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 825,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 828,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 829,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 830,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 831,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 837,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 838,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 839,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 846,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 848,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 849,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 851,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 852,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 853,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 854,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 855,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 857,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 859,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 860,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 864,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nea"
+      },
+      {
+        "pid": 865,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 866,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 867,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 870,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 873,
+        "cpu_percent": "0.0",
+        "command": "/System/Volumes/"
+      },
+      {
+        "pid": 877,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 879,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 885,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 886,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 890,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 896,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 901,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 912,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/iou"
+      },
+      {
+        "pid": 913,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 929,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 930,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/avc"
+      },
+      {
+        "pid": 939,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 941,
+        "cpu_percent": "0.0",
+        "command": "/Library/Develop"
+      },
+      {
+        "pid": 949,
+        "cpu_percent": "0.0",
+        "command": "/Library/Apple/S"
+      },
+      {
+        "pid": 953,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 956,
+        "cpu_percent": "0.0",
+        "command": "/Library/Develop"
+      },
+      {
+        "pid": 960,
+        "cpu_percent": "0.0",
+        "command": "/Library/Develop"
+      },
+      {
+        "pid": 962,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dis"
+      },
+      {
+        "pid": 971,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 972,
+        "cpu_percent": "0.0",
+        "command": "/Library/Develop"
+      },
+      {
+        "pid": 973,
+        "cpu_percent": "0.0",
+        "command": "/Library/Develop"
+      },
+      {
+        "pid": 976,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 977,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 979,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 980,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mil"
+      },
+      {
+        "pid": 999,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1000,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1001,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1002,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1015,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1035,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1036,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1082,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1102,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1141,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1323,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1409,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1435,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1443,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1446,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1447,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1452,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1465,
+        "cpu_percent": "0.1",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 1483,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1553,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1558,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tri"
+      },
+      {
+        "pid": 1570,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sec"
+      },
+      {
+        "pid": 1575,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 1576,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Di"
+      },
+      {
+        "pid": 1646,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 1828,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1864,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 1866,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1889,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1905,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1964,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1966,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1974,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 1985,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 1997,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 2012,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 2053,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 2054,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 2101,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 2102,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 2103,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 2105,
+        "cpu_percent": "0.0",
+        "command": "/Users/bradley/."
+      },
+      {
+        "pid": 2108,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 2667,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 2707,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 2956,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 3101,
+        "cpu_percent": "0.0",
+        "command": "/System/Cryptexe"
+      },
+      {
+        "pid": 3102,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/key"
+      },
+      {
+        "pid": 3207,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 3208,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 3281,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 3366,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/neh"
+      },
+      {
+        "pid": 3698,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 3700,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 3843,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/system"
+      },
+      {
+        "pid": 4228,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 4229,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 4233,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/lsd"
+      },
+      {
+        "pid": 4341,
+        "cpu_percent": "1.4",
+        "command": "/usr/bin/ssh-age"
+      },
+      {
+        "pid": 4946,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 4953,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 4991,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 5102,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ses"
+      },
+      {
+        "pid": 5216,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 5583,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 5622,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 5704,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 5753,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/smd"
+      },
+      {
+        "pid": 6735,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/key"
+      },
+      {
+        "pid": 7594,
+        "cpu_percent": "0.0",
+        "command": "/Users/bradley/."
+      },
+      {
+        "pid": 7645,
+        "cpu_percent": "2.3",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 7652,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 7653,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 7654,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 7655,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 7926,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 7933,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 7935,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/system"
+      },
+      {
+        "pid": 7958,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/spindu"
+      },
+      {
+        "pid": 7959,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/spi"
+      },
+      {
+        "pid": 7979,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 7982,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8156,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8175,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8198,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8211,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8214,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8217,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8272,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8276,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dpr"
+      },
+      {
+        "pid": 8299,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8300,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/NRD"
+      },
+      {
+        "pid": 8377,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8381,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8383,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8388,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8392,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 8395,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/swt"
+      },
+      {
+        "pid": 8451,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 9467,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mma"
+      },
+      {
+        "pid": 9470,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ASP"
+      },
+      {
+        "pid": 9528,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 9578,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dir"
+      },
+      {
+        "pid": 10268,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pro"
+      },
+      {
+        "pid": 10555,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 10562,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 10626,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 10785,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11209,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11211,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sys"
+      },
+      {
+        "pid": 11214,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11238,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11326,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11330,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11336,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11337,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11338,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11339,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11340,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11341,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11622,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 11625,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 12152,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mob"
+      },
+      {
+        "pid": 12403,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 12479,
+        "cpu_percent": "0.0",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 13100,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 13683,
+        "cpu_percent": "0.0",
+        "command": "/Users/bradley/."
+      },
+      {
+        "pid": 13759,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 13840,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cip"
+      },
+      {
+        "pid": 14026,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/met"
+      },
+      {
+        "pid": 14473,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/swc"
+      },
+      {
+        "pid": 14474,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 14528,
+        "cpu_percent": "4.8",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 14529,
+        "cpu_percent": "0.0",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 14534,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 14535,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 14536,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 14541,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 15073,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tas"
+      },
+      {
+        "pid": 15573,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 15575,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 15984,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/adp"
+      },
+      {
+        "pid": 16411,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nat"
+      },
+      {
+        "pid": 16523,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 16981,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nes"
+      },
+      {
+        "pid": 17228,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/blu"
+      },
+      {
+        "pid": 17406,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 18211,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18217,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18218,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18219,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18220,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18221,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18222,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 18224,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18225,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 18226,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 18506,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 18707,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 18753,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Pow"
+      },
+      {
+        "pid": 19080,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 19081,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 19099,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 19102,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 19943,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 20163,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mis"
+      },
+      {
+        "pid": 20249,
+        "cpu_percent": "0.4",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 20680,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 20683,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 20713,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 20981,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 21032,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 21398,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 21729,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sym"
+      },
+      {
+        "pid": 21921,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 21931,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/use"
+      },
+      {
+        "pid": 21936,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 21937,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 22122,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sec"
+      },
+      {
+        "pid": 22980,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 23100,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 23578,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23581,
+        "cpu_percent": "16.5",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23582,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23612,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23617,
+        "cpu_percent": "1.8",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23633,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23634,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23648,
+        "cpu_percent": "0.6",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23682,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 23689,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 23711,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Do"
+      },
+      {
+        "pid": 23768,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/con"
+      },
+      {
+        "pid": 24978,
+        "cpu_percent": "0.0",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 25067,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 25338,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25339,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25340,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25341,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25349,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 25350,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25407,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 25612,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 25978,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 25979,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 28026,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 28479,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29464,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/wif"
+      },
+      {
+        "pid": 29610,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29612,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/int"
+      },
+      {
+        "pid": 29614,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29615,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29635,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29651,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29652,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29659,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29664,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Gam"
+      },
+      {
+        "pid": 29667,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 29953,
+        "cpu_percent": "0.0",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 30125,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 30631,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mic"
+      },
+      {
+        "pid": 31084,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31095,
+        "cpu_percent": "78.1",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 31096,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 31151,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31156,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31160,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31170,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 31172,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 31188,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/lin"
+      },
+      {
+        "pid": 31196,
+        "cpu_percent": "0.0",
+        "command": "ssh"
+      },
+      {
+        "pid": 31268,
+        "cpu_percent": "0.4",
+        "command": "(ssh)"
+      },
+      {
+        "pid": 31293,
+        "cpu_percent": "0.7",
+        "command": "ssh"
+      },
+      {
+        "pid": 31326,
+        "cpu_percent": "1.7",
+        "command": "ssh"
+      },
+      {
+        "pid": 31332,
+        "cpu_percent": "0.0",
+        "command": "ps"
+      },
+      {
+        "pid": 31386,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31437,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 31475,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 32431,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 32543,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tip"
+      },
+      {
+        "pid": 34218,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pro"
+      },
+      {
+        "pid": 34582,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 36864,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 37869,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 37978,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 38877,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 38878,
+        "cpu_percent": "0.0",
+        "command": "/Users/bradley/L"
+      },
+      {
+        "pid": 39496,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 39499,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 39944,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 39989,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 40037,
+        "cpu_percent": "0.0",
+        "command": "/System/iOSSuppo"
+      },
+      {
+        "pid": 40078,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 40080,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 40238,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 40239,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41761,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41884,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mlr"
+      },
+      {
+        "pid": 41924,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/uar"
+      },
+      {
+        "pid": 41925,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ass"
+      },
+      {
+        "pid": 41926,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/gri"
+      },
+      {
+        "pid": 41928,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41929,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41930,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41932,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 41933,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 42053,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 42054,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 42055,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 42810,
+        "cpu_percent": "0.0",
+        "command": "/System/Cryptexe"
+      },
+      {
+        "pid": 43249,
+        "cpu_percent": "0.0",
+        "command": "/System/Cryptexe"
+      },
+      {
+        "pid": 43252,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 43423,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 43637,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/inp"
+      },
+      {
+        "pid": 43717,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 44549,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 44550,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 46274,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 46353,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 46729,
+        "cpu_percent": "0.0",
+        "command": "/Library/Apple/S"
+      },
+      {
+        "pid": 46775,
+        "cpu_percent": "0.0",
+        "command": "/Library/Apple/S"
+      },
+      {
+        "pid": 46892,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 49917,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 49920,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pkd"
+      },
+      {
+        "pid": 49950,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 49983,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 50241,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 51572,
+        "cpu_percent": "0.0",
+        "command": "adb"
+      },
+      {
+        "pid": 52239,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 53414,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 56315,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 56316,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 56317,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 56319,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 56388,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 56799,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 56802,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 56805,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fin"
+      },
+      {
+        "pid": 56843,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 58213,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 60095,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 61060,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 61553,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 62000,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 62102,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 62510,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 64421,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 65995,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 68996,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 69233,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 69888,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/rtc"
+      },
+      {
+        "pid": 69949,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 69950,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 70150,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 70206,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 70433,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 71431,
+        "cpu_percent": "0.0",
+        "command": "/Users/bradley/."
+      },
+      {
+        "pid": 73707,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 73877,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 75249,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 76077,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 76969,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fin"
+      },
+      {
+        "pid": 76970,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fin"
+      },
+      {
+        "pid": 77112,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/netbio"
+      },
+      {
+        "pid": 77475,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/wif"
+      },
+      {
+        "pid": 77865,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 77867,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 77868,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 77869,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 77876,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 77877,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 77958,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 78217,
+        "cpu_percent": "1.2",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 79197,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/MTL"
+      },
+      {
+        "pid": 79385,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79388,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79534,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79553,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mob"
+      },
+      {
+        "pid": 79722,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 79734,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 79735,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/cfpref"
+      },
+      {
+        "pid": 79788,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79789,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79842,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tzd"
+      },
+      {
+        "pid": 79843,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79848,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 79863,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80000,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/kno"
+      },
+      {
+        "pid": 80002,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/spo"
+      },
+      {
+        "pid": 80006,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sea"
+      },
+      {
+        "pid": 80018,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80023,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 80025,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 80027,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tru"
+      },
+      {
+        "pid": 80127,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80161,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80480,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fsk"
+      },
+      {
+        "pid": 80488,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80495,
+        "cpu_percent": "0.7",
+        "command": "/Applications/Wi"
+      },
+      {
+        "pid": 80496,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80510,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80944,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 80948,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Wh"
+      },
+      {
+        "pid": 80952,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81132,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/con"
+      },
+      {
+        "pid": 81217,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81232,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cou"
+      },
+      {
+        "pid": 81235,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pro"
+      },
+      {
+        "pid": 81240,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81244,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/osp"
+      },
+      {
+        "pid": 81245,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81247,
+        "cpu_percent": "0.0",
+        "command": "aslmanager"
+      },
+      {
+        "pid": 81248,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81250,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81251,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81260,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/aud"
+      },
+      {
+        "pid": 81261,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81262,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81263,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81415,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/onl"
+      },
+      {
+        "pid": 81466,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/rep"
+      },
+      {
+        "pid": 81487,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81488,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81506,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81507,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81508,
+        "cpu_percent": "0.0",
+        "command": "/System/Cryptexe"
+      },
+      {
+        "pid": 81509,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/bet"
+      },
+      {
+        "pid": 81510,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/bet"
+      },
+      {
+        "pid": 81511,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81512,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81513,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81514,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81515,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81516,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81517,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81521,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81522,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81523,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81524,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81525,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81526,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81527,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81528,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81529,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81530,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81531,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81532,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81533,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81534,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81535,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81536,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81537,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81538,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81547,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81548,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/mlh"
+      },
+      {
+        "pid": 81549,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81551,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pkd"
+      },
+      {
+        "pid": 81552,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81554,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Ass"
+      },
+      {
+        "pid": 81555,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tri"
+      },
+      {
+        "pid": 81557,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81558,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81559,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81560,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81566,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81567,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81568,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81572,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 81574,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sto"
+      },
+      {
+        "pid": 81577,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fsk"
+      },
+      {
+        "pid": 81590,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/amf"
+      },
+      {
+        "pid": 81804,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/cor"
+      },
+      {
+        "pid": 82005,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tex"
+      },
+      {
+        "pid": 82336,
+        "cpu_percent": "0.1",
+        "command": "/usr/libexec/sys"
+      },
+      {
+        "pid": 82762,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 83429,
+        "cpu_percent": "0.0",
+        "command": "/usr/sbin/distno"
+      },
+      {
+        "pid": 83616,
+        "cpu_percent": "0.8",
+        "command": "/System/Applicat"
+      },
+      {
+        "pid": 83773,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 83828,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 83895,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Fi"
+      },
+      {
+        "pid": 83950,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 83952,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 83953,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 83954,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 83961,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 84006,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84287,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 84352,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 84379,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 84394,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84395,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84397,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84398,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84405,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 84406,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 84452,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 85112,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85633,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85766,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85771,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85775,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85780,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/san"
+      },
+      {
+        "pid": 85784,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85785,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85787,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/net"
+      },
+      {
+        "pid": 85789,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/due"
+      },
+      {
+        "pid": 85790,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dmd"
+      },
+      {
+        "pid": 85792,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85793,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85794,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sir"
+      },
+      {
+        "pid": 85796,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85797,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85800,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/nea"
+      },
+      {
+        "pid": 85802,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85872,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85873,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85884,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85928,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85933,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85934,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 85963,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/rou"
+      },
+      {
+        "pid": 86013,
+        "cpu_percent": "1.2",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 86126,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pow"
+      },
+      {
+        "pid": 86137,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 86142,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/app"
+      },
+      {
+        "pid": 86323,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 86350,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86351,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86352,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86354,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86360,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 86409,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86508,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86510,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 86733,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 86986,
+        "cpu_percent": "1.2",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 87023,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 87351,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 87442,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/Per"
+      },
+      {
+        "pid": 87649,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 87650,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 87656,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 87891,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 87950,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 87953,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 88038,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/pow"
+      },
+      {
+        "pid": 88039,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/dpr"
+      },
+      {
+        "pid": 88151,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 88170,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 88437,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/log"
+      },
+      {
+        "pid": 88646,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 88647,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 88945,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/sep"
+      },
+      {
+        "pid": 88950,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 89135,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 89634,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90029,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90030,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90188,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/key"
+      },
+      {
+        "pid": 90461,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90462,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90480,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 90481,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 91676,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 91678,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/app"
+      },
+      {
+        "pid": 92110,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fil"
+      },
+      {
+        "pid": 93215,
+        "cpu_percent": "0.4",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 93662,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 93785,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/ane"
+      },
+      {
+        "pid": 94445,
+        "cpu_percent": "0.0",
+        "command": "/Library/Apple/S"
+      },
+      {
+        "pid": 94532,
+        "cpu_percent": "0.0",
+        "command": "/Library/Apple/S"
+      },
+      {
+        "pid": 94651,
+        "cpu_percent": "0.0",
+        "command": "cloudphotod"
+      },
+      {
+        "pid": 95092,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 95094,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 95095,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 95096,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 95103,
+        "cpu_percent": "0.0",
+        "command": "npm"
+      },
+      {
+        "pid": 95113,
+        "cpu_percent": "0.0",
+        "command": "/Applications/Ch"
+      },
+      {
+        "pid": 95361,
+        "cpu_percent": "0.0",
+        "command": "node"
+      },
+      {
+        "pid": 96141,
+        "cpu_percent": "0.0",
+        "command": "/opt/homebrew/Ce"
+      },
+      {
+        "pid": 96147,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 96335,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 96522,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 96552,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 97414,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 98176,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 98682,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/tra"
+      },
+      {
+        "pid": 98683,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 98961,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99519,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99520,
+        "cpu_percent": "0.0",
+        "command": "/usr/libexec/fra"
+      },
+      {
+        "pid": 99522,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99523,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99524,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99526,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      },
+      {
+        "pid": 99548,
+        "cpu_percent": "0.0",
+        "command": "/System/Library/"
+      }
+    ],
+    "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n",
+    "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=28835939)\t100%; charged; 0:00 remaining present: true\n"
+  },
+  "hardware": "Mac15,12\n8\n8\n8\n",
+  "sources": {
+    "master": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+    "gen005": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e"
+  }
+}

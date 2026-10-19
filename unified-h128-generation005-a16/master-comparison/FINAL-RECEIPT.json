@@ -1,0 +1,44 @@
+{
+  "status": "COMPLETE-PASS",
+  "utc": "2026-10-19T16:05:17.014784+00:00",
+  "master_source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "candidate_source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "plan_sha256": "1af1d5851712fb950e1f50d5af4ccdb387c0ba0117fcf5e89b707170ce0adc24",
+  "measured_runs": 16,
+  "usable_common_states": 2,
+  "skipped_predeclared_state": "2v2 master warm game ended14850 before16384; preserved, no replacement",
+  "common_input_save_minors": {
+    "66294c58700ef1b4": 175,
+    "1d043310cbecdceb": 175,
+    "0083541d8ee4d18b": 175
+  },
+  "all_commands_no_trace_probe_work": true,
+  "all_compute_telemetry_off": true,
+  "high_priority_common_assets_and_isolated_profiles": true,
+  "common_working_directory": true,
+  "all_measurement_windows_full": true,
+  "within_arm_repeat_result_checksum_gate": "PASS",
+  "cross_arm_equality_required": false,
+  "strict_assets_vs_prior_fallback_final_checksum_pairs_equal": 16,
+  "prior_timings_excluded_from_final_totals": true,
+  "loadavg1_range": [
+    2.2861328125,
+    3.0302734375
+  ],
+  "thermal_outputs": [
+    "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+  ],
+  "hashes": {
+    "PLAN.json": "1af1d5851712fb950e1f50d5af4ccdb387c0ba0117fcf5e89b707170ce0adc24",
+    "run-master-comparison.py": "46c7b170d644472ceeb5667c382b45a16a42b80d7b7d7d612380a8dc3508fcd1",
+    "mac-observation-helpers.py": "d8a48000b82c78e1a2538450c9ead80fa0b4ee8ff75daf884bf108b1f757a097",
+    "summarize-master.py": "e89d1ef6c6eb33170471c312d6128a8686052ae72b73a627a9e5056c1adf58cd",
+    "BUILD.json": "861da0f1a1df689261cb966ddcef45baea70b8d9292fdcd31a9b9123d9bd5f92",
+    "DEPENDENCIES.json": "1f9340f957ac71e411a6655f9b66795de3bfb0e019b4e0958459d08009ce65ba",
+    "ASSETS.json": "f57d8b9ff3d0c189fb43ed6b04f981348e11dac158e4fcdb165ac1757724c838",
+    "COMMON-INPUTS.json": "a0d08148e56bacfaf0c45633d68ccc114ed355e04a1cb2f983f645630d8e9aaa",
+    "REPEAT-PARITY.json": "127babde18f9a55cce7e302bb9019591ba2757fb2ac19d6d55b924da0f99339c",
+    "SUMMARY.json": "221b51e4d93cb5aa542280b9643df94ee9cd32e9d563ff7b9f4528586af47cec",
+    "README.md": "e6f6a92f760aeb0214b5272d4056d0314ba7d09cc9ac2b26befacf20321101b4"
+  }
+}

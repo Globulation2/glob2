@@ -1,0 +1,357 @@
+{
+  "schema": 1,
+  "status": "FROZEN-DESIGN-BEFORE-COMMON-INPUT-GENERATION-AND-CPU-OUTCOMES",
+  "created_utc": "2026-10-19T16:03:18.919197+00:00",
+  "host": "MacBook-local",
+  "master_source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "master_version": 175,
+  "master_sim_revision": 77,
+  "master_binary": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/build/final-master-release/src/glob2",
+  "candidate_source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "candidate_binary": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/build/candidate-release/src/glob2",
+  "candidate_binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+  "candidate_model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "threshold_milli": 16000,
+  "maps": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          2,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 3326282988,
+        "generator": "polder",
+        "generator_params": {
+          "algae-amount": 75,
+          "crop-crossings": 1,
+          "dyke-spacing": 32,
+          "fruit-amount": 125,
+          "ground": 1,
+          "hamlets": 1,
+          "row-angle": 2,
+          "stone-amount": 100,
+          "village-size": 16,
+          "water-crossings": 1,
+          "wheat-amount": 75,
+          "wood-amount": 75,
+          "workers": 3
+        },
+        "height": 64,
+        "map_seed": 330329066,
+        "players": 4,
+        "width": 128
+      }
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "maxima",
+          "warrush",
+          "castor",
+          "castor",
+          "warrush"
+        ],
+        "alliances": [
+          8,
+          7,
+          4,
+          6,
+          5,
+          2,
+          3,
+          1
+        ],
+        "format": "8ffa",
+        "game_seed": 4255079131,
+        "generator": "fjord-continent",
+        "generator_params": {
+          "algae-amount": 150,
+          "bank-deposits": 1,
+          "coast-roughness": 23,
+          "continent-size": 34,
+          "fjord-width": 4,
+          "fruit-amount": 150,
+          "lake-connected": 0,
+          "lake-size": 30,
+          "resource-islands": 3,
+          "sandy-lake-shore": 1,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 128,
+        "map_seed": 3680668015,
+        "players": 8,
+        "width": 128
+      }
+    },
+    {
+      "group": "0083541d8ee4d18b",
+      "format": "2v2",
+      "spec": {
+        "ais": [
+          "maxima",
+          "warrush",
+          "maxima",
+          "econo"
+        ],
+        "alliances": [
+          2,
+          2,
+          1,
+          1
+        ],
+        "format": "2v2",
+        "game_seed": 3333364126,
+        "generator": "islands",
+        "generator_params": {
+          "algae-amount": 125,
+          "desert": 2,
+          "extra-islands": 2,
+          "fruit": 5,
+          "grass": 73,
+          "hilltop-stone": 0,
+          "repeat": 2,
+          "sand": 5,
+          "smoothing": 6,
+          "stone-amount": 125,
+          "water": 57,
+          "wheat-amount": 150,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 128,
+        "map_seed": 2679416391,
+        "players": 4,
+        "width": 64
+      }
+    }
+  ],
+  "schedule": [
+    {
+      "index": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "master",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "master",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 4,
+      "group": "0083541d8ee4d18b",
+      "arm": "master",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 5,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "repeat": 0,
+      "kind": "off"
+    },
+    {
+      "index": 6,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 7,
+      "group": "1d043310cbecdceb",
+      "arm": "master",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 8,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 9,
+      "group": "0083541d8ee4d18b",
+      "arm": "master",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 10,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 11,
+      "group": "66294c58700ef1b4",
+      "arm": "master",
+      "repeat": 1,
+      "kind": "off"
+    },
+    {
+      "index": 12,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 13,
+      "group": "0083541d8ee4d18b",
+      "arm": "master",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 14,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 15,
+      "group": "66294c58700ef1b4",
+      "arm": "master",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 16,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 17,
+      "group": "1d043310cbecdceb",
+      "arm": "master",
+      "repeat": 2,
+      "kind": "off"
+    },
+    {
+      "index": 18,
+      "group": "66294c58700ef1b4",
+      "arm": "master",
+      "repeat": 3,
+      "kind": "off"
+    },
+    {
+      "index": 19,
+      "group": "66294c58700ef1b4",
+      "arm": "gen005",
+      "repeat": 3,
+      "kind": "off"
+    },
+    {
+      "index": 20,
+      "group": "1d043310cbecdceb",
+      "arm": "master",
+      "repeat": 3,
+      "kind": "off"
+    },
+    {
+      "index": 21,
+      "group": "1d043310cbecdceb",
+      "arm": "gen005",
+      "repeat": 3,
+      "kind": "off"
+    },
+    {
+      "index": 22,
+      "group": "0083541d8ee4d18b",
+      "arm": "master",
+      "repeat": 3,
+      "kind": "off"
+    },
+    {
+      "index": 23,
+      "group": "0083541d8ee4d18b",
+      "arm": "gen005",
+      "repeat": 3,
+      "kind": "off"
+    }
+  ],
+  "data_dir": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/data",
+  "master_working_directory": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2",
+  "candidate_working_directory": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "warm_master_ticks": 16384,
+  "benchmark_warmup_ticks": 256,
+  "measured_ticks": 8192,
+  "requested_advancing_ticks": 8448,
+  "absolute_tick_limit": 24832,
+  "compute_threads": 1,
+  "gpu": "off",
+  "compute_telemetry": "off",
+  "probe": false,
+  "work_stats": false,
+  "checksum_tracing": false,
+  "wall_cap_seconds": 1800,
+  "input_policy": "Master175 generates predetermined maps and warm states. Exact same175 warm save used by both binaries. Bind input hashes before timed cells. No adaptive178 input reinterpretation.",
+  "unusable_policy": "Preserve failures and early game ends; no replacement/resampling. If warm state ends before16384 skip all eight paired measurements for that state and report explicitly. A measured-cell failure/early finish stops for review and retains evidence; no automatic retries.",
+  "asset_policy": "One explicit master data tree for all map generation, warmup and both comparison arms; record manifest and verify stable at end. Record source data differences (UI text/completions only) and prove behavior catalogs equal.",
+  "dependency_policy": "Mach-O load commands and resolved non-system dependency content must match before timing; verify unchanged at end.",
+  "parity": "Within each arm/state all four initialChecksum/finalChecksum/actual/measured tick results must match. Cross-arm checksum equality is not required; no timing trace instrumentation.",
+  "primary": "Ratio of pooled measured simulation CPU/tick (8192 measured ticks/run), report per-state mean deltas and median/repeat ranges.",
+  "secondary": "Whole-process CPU and wall include setup and256 unmeasured simulation ticks; pooled wall TPS=sum actual advancing ticks/sum invocation wall seconds. Do not mix with measured-window CPU or arithmetic mean TPS.",
+  "limits": [
+    "Three corresponding already examined generator/map/roster specs; regenerated with current master, not a fresh representative sample",
+    "Common states follow master gameplay through16384; prospective continuation trajectories can diverge",
+    "Comparison is full current master77 versus candidate90, including all code differences, not a model-only coefficient effect",
+    "Mac OS scheduler may migrate cores; ambient load and available pmset diagnostics recorded, no cold/uncontended or continuous thermal-control claim",
+    "No local training; remote collection/coordinators continue",
+    "Four timing repeats quantify repeat spread, not uncertainty over map population",
+    "No ON/quality expansion; CPU-only requested comparison"
+  ],
+  "data_tree_git_oid": "a10ff66218ab8a0f482f06a0816855240057eaa4",
+  "pre_outcome_field_label_correction": "Data tree identifier is a Git SHA1 object ID, not a SHA256. Initial plan retained; experiment choices unchanged.",
+  "protocol_revision": 2,
+  "parent_plan_sha256": "8a7aff2fe23c45cabf6cd6a8dd8677eb211d23a21da25e1e230300318f5279e8",
+  "common_inputs_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/COMMON-INPUTS.json",
+  "common_inputs_sha256": "2ad4fe815db1ca104f9efc0de12d69f416591334b40cd3f01e43e3b75f684b00",
+  "asset_environment": "GLOB2_ASSET_DIR=shared master data, GLOB2_USER_DATA_DIR=isolated run profile, common master cwd; both precede compiled source fallback",
+  "prior_observations": "Original completed16 CPU cells retained separately. This revision corrects explicit asset precedence only; input bytes/schedule/skip rules unchanged.",
+  "reuse_common_inputs": true
+}

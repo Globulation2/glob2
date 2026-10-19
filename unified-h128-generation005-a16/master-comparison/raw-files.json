@@ -1,0 +1,712 @@
+[
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/result.json",
+    "sha256": "9b73f3f74bf49354428db9503bfdb000aceb8da9927a26514cf5bfb2a762aa03",
+    "size": 53590
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/MEASUREMENT.json",
+    "sha256": "bfa5f7ef1b74279c9fadfa94f12fb3e7a2aceb235c83c61ff6b8a8223aff59a9",
+    "size": 257487
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/stdout.log",
+    "sha256": "68b0982966ecfb6e408f4c01ba03945dd231c93e82a3c459b51a3da007629bb9",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/COMMAND.json",
+    "sha256": "7c5c829241847a436a5eee596b2d5b450ab37c377040e7a88d331ea95c874b37",
+    "size": 81483
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/21-1d043310cbecdceb-gen005-r3/artifacts.json",
+    "sha256": "90bc6161ab4d057af51ee4d3374d1a44cc8b7bf42f1b49a2300529a38f028b8e",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/result.json",
+    "sha256": "f2bd9a7cea53c863c4dd6bbc4fb96fe183e91565221ad123f966fb4beb812975",
+    "size": 53591
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/MEASUREMENT.json",
+    "sha256": "3ffac68d4c9256eb9c7c6bcec22ab78a97399d678b91cbbe575634d344b6dc4d",
+    "size": 257486
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/stdout.log",
+    "sha256": "68b0982966ecfb6e408f4c01ba03945dd231c93e82a3c459b51a3da007629bb9",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/COMMAND.json",
+    "sha256": "c50c211d03f9215d9acd14490834d0fcf9d5193fb43328c01f63dffa0be5cf4d",
+    "size": 81671
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/06-1d043310cbecdceb-gen005-r1/artifacts.json",
+    "sha256": "aa30370d58d2b040af0d4b122decb9e751eefbdf6457bc8c0a9aaa833a2a561d",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/result.json",
+    "sha256": "26d0a2f83e0592c134a9c9b44a56db9fc7ac476ad7e012c3e1cc607c19eea111",
+    "size": 19078
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/MEASUREMENT.json",
+    "sha256": "40c12aec1377e795c147f973faeea7758fb9f549b031fba8ccd1bb22498427db",
+    "size": 163315
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/stdout.log",
+    "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/COMMAND.json",
+    "sha256": "9a1e9be09fe1931586796d8093f172ac051e51fc8402c4eaa569c29f07d00da8",
+    "size": 81720
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/00-66294c58700ef1b4-master-r0/artifacts.json",
+    "sha256": "942682d2b0bab1178501286e222207e199da4bd6d61d895da40cc75e12cbedf8",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/result.json",
+    "sha256": "71fcd4273070ea3430b8db3c10f86c54df3743c1923947eb7a4390b7ba0b66e5",
+    "size": 19078
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/MEASUREMENT.json",
+    "sha256": "fd14e5698fd24fd82f0544fe7257f15eba342de10c35a2e6502f805827c2d3f4",
+    "size": 163332
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/stdout.log",
+    "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/COMMAND.json",
+    "sha256": "69aeefda713b8d7174ad35476234c76c7e337b9b367368f0659aed6f44922815",
+    "size": 81625
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/11-66294c58700ef1b4-master-r1/artifacts.json",
+    "sha256": "26814408993590d2197ca4b1a67f472af7ffbb57363f0c9fc14c760241fc9f83",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/result.json",
+    "sha256": "d60c827405a2de1ffebe5209ac99f7895c3c5952e2cf1c4eabce777c1a1a6b2f",
+    "size": 19078
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/MEASUREMENT.json",
+    "sha256": "6156498ad292f90b1b418c74a7ba9780a3a4409ddb6eb1fba8873d6a9706e8b2",
+    "size": 163221
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/stdout.log",
+    "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/COMMAND.json",
+    "sha256": "3bf88c3bb8eb4d4ca8c07f68551bbc3ed0409e6aec927afebd6583da10c8e8dc",
+    "size": 81532
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/15-66294c58700ef1b4-master-r2/artifacts.json",
+    "sha256": "90653b4b31333edc7ab7b009b4d8e53e3514da02f17f979419470753f513ea77",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/result.json",
+    "sha256": "3435afbae3c03e4b24bc7bc2e619ebcaba42fa991285aaf135fe90714af30135",
+    "size": 19078
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/MEASUREMENT.json",
+    "sha256": "8da5b6e349a83a30d80b0098413d443bd542871182c61e051d6f584386c13698",
+    "size": 163315
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/stdout.log",
+    "sha256": "4346115cb90cbac07ea0b31efc333f5310714ad31e3fba06db7e8a431db0a2e7",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/COMMAND.json",
+    "sha256": "f4b03c37392f8a6d66619764ef4c0d0be2fc4b4b47f8586a96b50f6fd8bfd157",
+    "size": 81719
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/18-66294c58700ef1b4-master-r3/artifacts.json",
+    "sha256": "6eaa8dd4a3fce5f2c24408f5e2f903eafb82991c9dabb59215a6f4a40ea9ea1e",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/result.json",
+    "sha256": "065997da413432de98ac79e32a943768483c692ecba6697317358ba46b9e6c28",
+    "size": 53250
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/MEASUREMENT.json",
+    "sha256": "2c5fe57b949ae8be2f3cfffca6ad235f0ab1be42a6f6bb1547ee0afead49b209",
+    "size": 257056
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/stdout.log",
+    "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/COMMAND.json",
+    "sha256": "9120dc4966a563cfa8a78e75a7ba51808d64e5d7d1a8a4494f103d0799904655",
+    "size": 81720
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/02-1d043310cbecdceb-master-r0/artifacts.json",
+    "sha256": "a9a7886349f10aeeab9b22f08d73cfa9b21769a3914beaa1e17308d7aa3b424a",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/result.json",
+    "sha256": "2bef71e4ca0d17550eca1a1095afddced83de56be392935f676b144ec4de6544",
+    "size": 53250
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/MEASUREMENT.json",
+    "sha256": "07adc5663442a8aabe5210967c408a9d9612763b1f7bce9302f30a818618da91",
+    "size": 257069
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/stdout.log",
+    "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/COMMAND.json",
+    "sha256": "f3928ab500b2caa2ee076e8c8a35dab169f33b2596ffe06e5b3a8786f802ef9b",
+    "size": 81719
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/17-1d043310cbecdceb-master-r2/artifacts.json",
+    "sha256": "5c4f99b3a6084658e56b8dbfa5714e6cbfa11f6e7528178be1c730484fc9efc7",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/result.json",
+    "sha256": "5acd93d82b26987d8c585ad6e6879c1c51f98d516649e5b6a915473518259568",
+    "size": 19422
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/MEASUREMENT.json",
+    "sha256": "10ded1c3536a66354fe0c5f8ed6bb4c3907e90894398152269b0ced90968bee3",
+    "size": 163751
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/stdout.log",
+    "sha256": "bcb34d99b3a363d44b8a87417101522ac74445b0a5bbb438c4152e3613097611",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/COMMAND.json",
+    "sha256": "157c0b22f13837be14944d88a9bd85a19d3fa82b2443c9ba56117e85da8265da",
+    "size": 81670
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/10-66294c58700ef1b4-gen005-r1/artifacts.json",
+    "sha256": "c03ab48f16a3c525d5d65e62ef205fe2d9ed637a32de469cab561ac0b71e8f56",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/result.json",
+    "sha256": "422658c2e0beb43607b4fa1a8e0f9180575098e2ca9ddea53f517c072bdf9609",
+    "size": 19425
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/MEASUREMENT.json",
+    "sha256": "72fbf8f3bfe3dac78d6cbbc66e3fab2ae6d09aa46518771d9668ba736642610b",
+    "size": 163748
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/stdout.log",
+    "sha256": "bcb34d99b3a363d44b8a87417101522ac74445b0a5bbb438c4152e3613097611",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/COMMAND.json",
+    "sha256": "07dff92e6fccae7a38fbd542b2b69aea8e48e7c4bbce6139adb685d0e840944c",
+    "size": 81669
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/14-66294c58700ef1b4-gen005-r2/artifacts.json",
+    "sha256": "8006f50e59ee7c4561f8b0409543203723e6b2b206e82593454e417517667eac",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/result.json",
+    "sha256": "069ff7333fb319399de7aae1104f2f89d6060bbab423db88834deb8b33128425",
+    "size": 53247
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/MEASUREMENT.json",
+    "sha256": "6b93eaf91f26ec0b44baf5c11d6e0ff0902b4073b30c2027cdbdf358db04b9fb",
+    "size": 257053
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/stdout.log",
+    "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/COMMAND.json",
+    "sha256": "bbb07f4852727f949973ecdc71413d0cb7b87f15fa40e237b9c87baffc142182",
+    "size": 81719
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/07-1d043310cbecdceb-master-r1/artifacts.json",
+    "sha256": "80c9e357b44472d9264b5fb5a39978de3ba5a30a30057b6dc2255b84f68d2d19",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/result.json",
+    "sha256": "323c53ccd6539869e72618bff5da4d197fd279232a4e4ec2830db21fcd582d21",
+    "size": 53247
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/MEASUREMENT.json",
+    "sha256": "48f5ff2b3ae9a975ebed58725886daabfbd74c4cf0303d60e5643ab911e78314",
+    "size": 257064
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/stdout.log",
+    "sha256": "f2d6af048650e872e0a073a7b34bb785c24968f5763659cd87927c8500d891bc",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/COMMAND.json",
+    "sha256": "8a04485e318aafafb22ebd15b6a3979f426f4e163b2646dc373108b44beb1cef",
+    "size": 81719
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/20-1d043310cbecdceb-master-r3/artifacts.json",
+    "sha256": "80c9e357b44472d9264b5fb5a39978de3ba5a30a30057b6dc2255b84f68d2d19",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/result.json",
+    "sha256": "c2048d70e8a23621578ebc9a4b91cb4c6e235dd11edf2cb3f2410f3b9fbd773f",
+    "size": 19422
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/MEASUREMENT.json",
+    "sha256": "29b8334f4c160efac68e1281b25427f15a056a4541f96c559ff96b6a9f9512c4",
+    "size": 163752
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/stdout.log",
+    "sha256": "bcb34d99b3a363d44b8a87417101522ac74445b0a5bbb438c4152e3613097611",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/COMMAND.json",
+    "sha256": "1ac7a45968a5961afe1216ad8fb097cff4df692e7226633384585a53a0ec8050",
+    "size": 81670
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/01-66294c58700ef1b4-gen005-r0/artifacts.json",
+    "sha256": "c03ab48f16a3c525d5d65e62ef205fe2d9ed637a32de469cab561ac0b71e8f56",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/result.json",
+    "sha256": "57a37b5b7b08678552a043bc53769b3d13b877e88b0a26ddda6fd54eb344b55a",
+    "size": 53591
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/MEASUREMENT.json",
+    "sha256": "f28a1922b1f189c9e163e422092920b76afae82c8855c077872589b44c116b22",
+    "size": 257489
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/stdout.log",
+    "sha256": "68b0982966ecfb6e408f4c01ba03945dd231c93e82a3c459b51a3da007629bb9",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/COMMAND.json",
+    "sha256": "23c5b50f7343527126d6bf38b56cd51165d0e58e34c13cbca58a3d46efa684f6",
+    "size": 81669
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/16-1d043310cbecdceb-gen005-r2/artifacts.json",
+    "sha256": "8f0f01b683cfed8a32fbe6dcf799de2015e615c4789c647f5acbe5ec42aa5666",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/result.json",
+    "sha256": "6409fa4c3e2b56463c8af9ecbbc44970170a36a8b74ba2c90a1e321a03c8dd85",
+    "size": 19422
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/MEASUREMENT.json",
+    "sha256": "1f759a36d2e79555312af6d6b9db6016c37c99802a9ce4a2b6405a37936d2944",
+    "size": 163658
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/stdout.log",
+    "sha256": "bcb34d99b3a363d44b8a87417101522ac74445b0a5bbb438c4152e3613097611",
+    "size": 262
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/COMMAND.json",
+    "sha256": "7e3fd9be330a85090eda29ccd965d61ba250c3ae5db39d5ec94a6a62e0b3027d",
+    "size": 81670
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/19-66294c58700ef1b4-gen005-r3/artifacts.json",
+    "sha256": "c03ab48f16a3c525d5d65e62ef205fe2d9ed637a32de469cab561ac0b71e8f56",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/stderr.log",
+    "sha256": "e92e15b081b4c9e7fb328dab8c596d290420391148dd29c4b2dd9bac94307f6d",
+    "size": 205
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/result.json",
+    "sha256": "f14c34ccd79af91e56553c2ed37562bc96263f4ea441e71e9e506fc7fc1faba1",
+    "size": 53590
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/progress.jsonl",
+    "sha256": "cbf5553dcfbf127d169315afc4b67776c904776aca796a8812c7682a5856c257",
+    "size": 1122
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/MEASUREMENT.json",
+    "sha256": "f2c78592dced2bca78f1127a937a742f5ca6d5ae4c363ac3d226728cd7748384",
+    "size": 257488
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/stdout.log",
+    "sha256": "68b0982966ecfb6e408f4c01ba03945dd231c93e82a3c459b51a3da007629bb9",
+    "size": 310
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/COMMAND.json",
+    "sha256": "e05acc9c318b4d57511f5e1ca56ac4ddc0be27a1f3b3ca807560be59daa2f642",
+    "size": 81671
+  },
+  {
+    "path": "master-comparison-macos-strict-assets/runs/03-1d043310cbecdceb-gen005-r0/artifacts.json",
+    "sha256": "3b4a3fa9ac4c120a79963df3ddcf22f6b83216dba4f0fddf54cdff199924f34d",
+    "size": 217
+  },
+  {
+    "path": "master-comparison-macos/maps/0083541d8ee4d18b/map.map.gz",
+    "sha256": "2c3a587c2c96797ae0b2213f469017532490dd38154e6b795b3b80323ebc7a31",
+    "size": 24762
+  },
+  {
+    "path": "master-comparison-macos/maps/0083541d8ee4d18b/generation.json",
+    "sha256": "04987742939f055c4ce07d514b800fee806bda0e28b5185a54cb6002ca723b2a",
+    "size": 582552
+  },
+  {
+    "path": "master-comparison-macos/maps/1d043310cbecdceb/map.map.gz",
+    "sha256": "2292524c80579732c98d8689670aa6736d12f1968ae8f020418ec8a74cab3f4c",
+    "size": 35207
+  },
+  {
+    "path": "master-comparison-macos/maps/1d043310cbecdceb/generation.json",
+    "sha256": "ec3d370d31fe627d40a687fafa543cc263879f6183b7a73c3ab5c60d4349b19e",
+    "size": 950663
+  },
+  {
+    "path": "master-comparison-macos/maps/66294c58700ef1b4/map.map.gz",
+    "sha256": "7a06dbd7e1a5f887cebc26034e9d2e899ffa5260f65e742b376a871b5525e6ee",
+    "size": 22379
+  },
+  {
+    "path": "master-comparison-macos/maps/66294c58700ef1b4/generation.json",
+    "sha256": "42f96ed30ec65197061dfc8deafaa46577157522c3dba9006b04e22bb7a775df",
+    "size": 581955
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/stderr.log",
+    "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+    "size": 60
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/result.json",
+    "sha256": "23ae3351a31366679af88c4cbcb218d2b6e1beb8bf3f0629b1fb3cf9868bd420",
+    "size": 17564
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/progress.jsonl",
+    "sha256": "c49ddcefd0d9f3efc4525cf75f6c17a54befe9999c089f157cf28633b21b42ed",
+    "size": 2134
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/MEASUREMENT.json",
+    "sha256": "81648c3c18375caeaa3988d4799c73bd82672f78e55d7156ffa6459e2fb419aa",
+    "size": 154692
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/final.game.gz",
+    "sha256": "089d8ec1df2043973dfbc4e4ddf8061db882e0bf2e0cd1aed0d44dd541120825",
+    "size": 474027
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/stdout.log",
+    "sha256": "20868a80a4037227fea5c007b6d52febca56557d4b04c8b9cda36c6e2b45943e",
+    "size": 429
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/COMMAND.json",
+    "sha256": "e1d7ebee1c4deda3682d516c188c17a161d6530b4f68a93ae2af8975b7b4079e",
+    "size": 81523
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-66294c58700ef1b4/artifacts.json",
+    "sha256": "b9f95adf4125500ac91993849bb36ac9817f94bee0749be8a13a5b23d645ef00",
+    "size": 256
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/stderr.log",
+    "sha256": "725ce1c0a956cbb245c622bbfbf802e19ea9001505017296c3010d851a1e967c",
+    "size": 23020
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/result.json",
+    "sha256": "1fc7ecd2b8d7f99834264b60acb56bb520b3f7c4aaa2906bf26867753fbd4aa8",
+    "size": 50894
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/progress.jsonl",
+    "sha256": "c49ddcefd0d9f3efc4525cf75f6c17a54befe9999c089f157cf28633b21b42ed",
+    "size": 2134
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/MEASUREMENT.json",
+    "sha256": "6cc92d5700296981a3a02076259672dc0883e7f1beb176dbd883da6eb33c6d71",
+    "size": 240622
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/final.game.gz",
+    "sha256": "7bad501c510a2f84cab933560b04009247d6ad21ede92050953303e2f6dbdb5e",
+    "size": 731751
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/stdout.log",
+    "sha256": "5932e1837c9bb4cd309b10178df4c971a664210bc7f3723023adc55fe8c08f3e",
+    "size": 477
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/COMMAND.json",
+    "sha256": "3bfe56a8c690c8a8ae78a462cc94a3974bf70f578f05f075fcb9ee580ec7fc08",
+    "size": 82027
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-1d043310cbecdceb/artifacts.json",
+    "sha256": "c6de665f0a5d2c33a2d95e9e5916e4665784c4a38459c2af676eda7569c979c1",
+    "size": 259
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/stderr.log",
+    "sha256": "767645f8f056bc3862b0c16e19e9073510eb3c581da8b19b9f98aa13e1d5c526",
+    "size": 45970
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/result.json",
+    "sha256": "c19ff23fcc06df5720c0a2716d985d78c6fec407992ec5739718f74dcb15531b",
+    "size": 63047
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/progress.jsonl",
+    "sha256": "67561023ecc0353be7e7ad66fb992e562a3c25311da7caaa0b7403795b50d6c4",
+    "size": 1930
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/MEASUREMENT.json",
+    "sha256": "b9974c65a14f519f52e974b77de1847f3731fba6f4cb8d09dff5afabe7acc9b0",
+    "size": 198780
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/final.game.gz",
+    "sha256": "ce06f86013fb034c0ee9bff17a3fb2fd649eff4928f7608fa9059c1020d5695b",
+    "size": 648294
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/stdout.log",
+    "sha256": "1b0141c14fcbc40c1bc5e04e890fc4d7c8e1f25001007471b682261d14733801",
+    "size": 415
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/COMMAND.json",
+    "sha256": "2a8a7698c1611e17e2781f11a760ec9b39e55b2b46816dc2c4553b3bfc122115",
+    "size": 81611
+  },
+  {
+    "path": "master-comparison-macos/runs/warm-master-0083541d8ee4d18b/artifacts.json",
+    "sha256": "b0d2acfea75910d292e8ee9d94933db59e1db7835995ced9d337594cb07f80eb",
+    "size": 259
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "argv": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "--build=build/final-master-release",
+    "-j6",
+    "build/final-master-release/src/glob2"
+  ],
+  "cwd": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2",
+  "started_utc": "2026-10-19T15:51:44.149706+00:00",
+  "finished_utc": "2026-10-19T15:56:50.362875+00:00",
+  "binary": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/build/final-master-release/src/glob2",
+  "binary_sha256": "da5eeacf577e3b29dbfe570dfbc0dd71a529fb8af765995ab8ab3f378de79713"
+}

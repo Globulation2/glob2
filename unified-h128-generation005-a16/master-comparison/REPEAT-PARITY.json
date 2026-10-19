@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "scope": "Within-arm initial/final result checksums and actual/measured ticks; no cross-arm equality assertion",
+  "usable_states": 2
+}

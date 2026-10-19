@@ -1,0 +1,385 @@
+{
+  "status": "COMPLETE",
+  "utc": "2026-10-19T16:05:16.949568+00:00",
+  "master_source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "candidate_source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "plan_sha256": "1af1d5851712fb950e1f50d5af4ccdb387c0ba0117fcf5e89b707170ce0adc24",
+  "states": [
+    {
+      "group": "66294c58700ef1b4",
+      "format": "4ffa",
+      "arms": {
+        "master": {
+          "simulation_cpu_ms_per_measured_tick": {
+            "mean": 0.1583592529296875,
+            "median": 0.1587188720703125,
+            "minimum": 0.15662646484375,
+            "maximum": 0.159372802734375,
+            "repeats": [
+              0.15662646484375,
+              0.159372802734375,
+              0.1591368408203125,
+              0.1583009033203125
+            ]
+          },
+          "total_simulation_cpu_seconds": {
+            "mean": 1.297279,
+            "median": 1.3002250000000002,
+            "minimum": 1.283084,
+            "maximum": 1.305582,
+            "repeats": [
+              1.283084,
+              1.305582,
+              1.303649,
+              1.296801
+            ]
+          },
+          "total_process_cpu_seconds": {
+            "mean": 1.6026082499999998,
+            "median": 1.6027545,
+            "minimum": 1.59066,
+            "maximum": 1.614264,
+            "repeats": [
+              1.614264,
+              1.601889,
+              1.60362,
+              1.59066
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.8094847185129765,
+            "median": 1.6820496245054528,
+            "minimum": 1.6179109580116346,
+            "maximum": 2.255928667029366,
+            "repeats": [
+              2.255928667029366,
+              1.6377440829528496,
+              1.726355166058056,
+              1.6179109580116346
+            ]
+          },
+          "wall_tps": {
+            "mean": 4754.552355998566,
+            "median": 5025.930998267766,
+            "minimum": 3744.7992587125677,
+            "maximum": 5221.548168746162,
+            "repeats": [
+              3744.7992587125677,
+              5158.315079831198,
+              4893.546916704335,
+              5221.548168746162
+            ]
+          }
+        },
+        "gen005": {
+          "simulation_cpu_ms_per_measured_tick": {
+            "mean": 0.1156048583984375,
+            "median": 0.11580987548828126,
+            "minimum": 0.1146668701171875,
+            "maximum": 0.1161328125,
+            "repeats": [
+              0.1146668701171875,
+              0.1157020263671875,
+              0.1161328125,
+              0.115917724609375
+            ]
+          },
+          "total_simulation_cpu_seconds": {
+            "mean": 0.9470350000000001,
+            "median": 0.9487145,
+            "minimum": 0.939351,
+            "maximum": 0.95136,
+            "repeats": [
+              0.939351,
+              0.947831,
+              0.95136,
+              0.949598
+            ]
+          },
+          "total_process_cpu_seconds": {
+            "mean": 1.2364950000000001,
+            "median": 1.2379565000000001,
+            "minimum": 1.229975,
+            "maximum": 1.240092,
+            "repeats": [
+              1.229975,
+              1.235856,
+              1.240092,
+              1.240057
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.3019422919605859,
+            "median": 1.2999492919771,
+            "minimum": 1.2907483339076862,
+            "maximum": 1.3171222499804571,
+            "repeats": [
+              1.2907483339076862,
+              1.306148499948904,
+              1.2937500840052962,
+              1.3171222499804571
+            ]
+          },
+          "wall_tps": {
+            "mean": 6489.187315959155,
+            "median": 6498.862822507226,
+            "minimum": 6413.983212359633,
+            "maximum": 6545.040406462534,
+            "repeats": [
+              6545.040406462534,
+              6467.870996544791,
+              6529.854648469663,
+              6413.983212359633
+            ]
+          }
+        }
+      },
+      "change_pct_ratio_of_means": {
+        "simulation_cpu_ms_per_measured_tick": -26.99835578930978,
+        "total_simulation_cpu_seconds": -26.99835578930978,
+        "total_process_cpu_seconds": -22.844837470417346,
+        "wall_seconds": -28.049003197412237,
+        "wall_tps": 36.48366512931742
+      },
+      "paired_repeat_cpu_change_pct": [
+        -26.78959444588196,
+        -27.401649226168868,
+        -27.02330151750969,
+        -26.77380723796481
+      ]
+    },
+    {
+      "group": "1d043310cbecdceb",
+      "format": "8ffa",
+      "arms": {
+        "master": {
+          "simulation_cpu_ms_per_measured_tick": {
+            "mean": 0.13922381591796876,
+            "median": 0.13928619384765625,
+            "minimum": 0.1384647216796875,
+            "maximum": 0.139858154296875,
+            "repeats": [
+              0.1384647216796875,
+              0.139858154296875,
+              0.1395611572265625,
+              0.13901123046875
+            ]
+          },
+          "total_simulation_cpu_seconds": {
+            "mean": 1.1405215,
+            "median": 1.1410325000000001,
+            "minimum": 1.134303,
+            "maximum": 1.145718,
+            "repeats": [
+              1.134303,
+              1.145718,
+              1.143285,
+              1.13878
+            ]
+          },
+          "total_process_cpu_seconds": {
+            "mean": 1.47211275,
+            "median": 1.4724715000000002,
+            "minimum": 1.468311,
+            "maximum": 1.475197,
+            "repeats": [
+              1.468311,
+              1.474984,
+              1.475197,
+              1.469959
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.515506281517446,
+            "median": 1.51189358351985,
+            "minimum": 1.5063111670315266,
+            "maximum": 1.5319267919985577,
+            "repeats": [
+              1.5063111670315266,
+              1.5095732089830562,
+              1.5142139580566436,
+              1.5319267919985577
+            ]
+          },
+          "wall_tps": {
+            "mean": 5574.610706304388,
+            "median": 5587.708017923755,
+            "minimum": 5514.623834588535,
+            "maximum": 5608.402954781511,
+            "repeats": [
+              5608.402954781511,
+              5596.2837375016115,
+              5579.132298345897,
+              5514.623834588535
+            ]
+          }
+        },
+        "gen005": {
+          "simulation_cpu_ms_per_measured_tick": {
+            "mean": 0.1167608642578125,
+            "median": 0.11693109130859375,
+            "minimum": 0.1157801513671875,
+            "maximum": 0.117401123046875,
+            "repeats": [
+              0.1157801513671875,
+              0.117401123046875,
+              0.1171485595703125,
+              0.116713623046875
+            ]
+          },
+          "total_simulation_cpu_seconds": {
+            "mean": 0.9565049999999999,
+            "median": 0.9578995,
+            "minimum": 0.948471,
+            "maximum": 0.96175,
+            "repeats": [
+              0.948471,
+              0.96175,
+              0.959681,
+              0.956118
+            ]
+          },
+          "total_process_cpu_seconds": {
+            "mean": 1.28526225,
+            "median": 1.286859,
+            "minimum": 1.274954,
+            "maximum": 1.292377,
+            "repeats": [
+              1.274954,
+              1.292377,
+              1.290289,
+              1.283429
+            ]
+          },
+          "wall_seconds": {
+            "mean": 1.345420718746027,
+            "median": 1.3500190830091015,
+            "minimum": 1.2957927499664947,
+            "maximum": 1.3858519589994103,
+            "repeats": [
+              1.2957927499664947,
+              1.3858519589994103,
+              1.3152491659857333,
+              1.3847890000324696
+            ]
+          },
+          "wall_tps": {
+            "mean": 6284.784060438809,
+            "median": 6261.842969596031,
+            "minimum": 6095.889207458698,
+            "maximum": 6519.5610951044755,
+            "repeats": [
+              6519.5610951044755,
+              6095.889207458698,
+              6423.117549493764,
+              6100.568389698298
+            ]
+          }
+        }
+      },
+      "change_pct_ratio_of_means": {
+        "simulation_cpu_ms_per_measured_tick": -16.134417457277227,
+        "total_simulation_cpu_seconds": -16.134417457277216,
+        "total_process_cpu_seconds": -12.692675883691651,
+        "wall_seconds": -11.223019320059546,
+        "wall_tps": 12.739425074674337
+      },
+      "paired_repeat_cpu_change_pct": [
+        -16.38292413931728,
+        -16.057005301479077,
+        -16.059337785416584,
+        -16.04014822880626
+      ]
+    }
+  ],
+  "aggregate": {
+    "master": {
+      "runs": 8,
+      "actual_ticks": 67584,
+      "measured_ticks": 65536,
+      "total_simulation_cpu_seconds": 9.751202,
+      "total_process_cpu_seconds": 12.298884,
+      "total_wall_seconds": 13.29996400012169,
+      "pooled_wall_tps": 5081.517513835498,
+      "simulation_cpu_ms_per_measured_tick": 0.14879153442382811
+    },
+    "gen005": {
+      "runs": 8,
+      "actual_ticks": 67584,
+      "measured_ticks": 65536,
+      "total_simulation_cpu_seconds": 7.61416,
+      "total_process_cpu_seconds": 10.087029,
+      "total_wall_seconds": 10.589452042826451,
+      "pooled_wall_tps": 6382.199921834768,
+      "simulation_cpu_ms_per_measured_tick": 0.116182861328125
+    },
+    "change_pct": {
+      "total_simulation_cpu_seconds": -21.91567767748016,
+      "total_process_cpu_seconds": -17.984192712119253,
+      "total_wall_seconds": -20.37984431589769,
+      "pooled_wall_tps": 25.5963381894855,
+      "simulation_cpu_ms_per_measured_tick": -21.915677677480172
+    }
+  },
+  "skipped_inputs": [
+    {
+      "group": "0083541d8ee4d18b",
+      "format": "2v2",
+      "map_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/maps/0083541d8ee4d18b/map.map.gz",
+      "map_sha256": "2c3a587c2c96797ae0b2213f469017532490dd38154e6b795b3b80323ebc7a31",
+      "warm_path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos/runs/warm-master-0083541d8ee4d18b/final.game.gz",
+      "warm_sha256": "ce06f86013fb034c0ee9bff17a3fb2fd649eff4928f7608fa9059c1020d5695b",
+      "start_tick": 14850,
+      "usable": false,
+      "termination": "engine_end",
+      "spec": {
+        "ais": [
+          "maxima",
+          "warrush",
+          "maxima",
+          "econo"
+        ],
+        "alliances": [
+          2,
+          2,
+          1,
+          1
+        ],
+        "format": "2v2",
+        "game_seed": 3333364126,
+        "generator": "islands",
+        "generator_params": {
+          "algae-amount": 125,
+          "desert": 2,
+          "extra-islands": 2,
+          "fruit": 5,
+          "grass": 73,
+          "hilltop-stone": 0,
+          "repeat": 2,
+          "sand": 5,
+          "smoothing": 6,
+          "stone-amount": 125,
+          "water": 57,
+          "wheat-amount": 150,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 128,
+        "map_seed": 2679416391,
+        "players": 4,
+        "width": 64
+      }
+    }
+  ],
+  "parity": "Within-arm repeated initial/final checksums and actual/measured ticks exact; cross-arm equality not expected",
+  "limits": [
+    "Three corresponding already examined generator/map/roster specs; regenerated with current master, not a fresh representative sample",
+    "Common states follow master gameplay through16384; prospective continuation trajectories can diverge",
+    "Comparison is full current master77 versus candidate90, including all code differences, not a model-only coefficient effect",
+    "Mac OS scheduler may migrate cores; ambient load and available pmset diagnostics recorded, no cold/uncontended or continuous thermal-control claim",
+    "No local training; remote collection/coordinators continue",
+    "Four timing repeats quantify repeat spread, not uncertainty over map population",
+    "No ON/quality expansion; CPU-only requested comparison"
+  ],
+  "scope": "CPU only; 256 unmeasured settling ticks after common master175 save, then8192 measured ticks. Process CPU/wall cover full8448+setup; primary engine CPU excludes initial256. No trace/probe/work/compute telemetry."
+}

@@ -1,0 +1,32 @@
+{
+  "status": "COMPLETE",
+  "aggregate": {
+    "master": {
+      "runs": 8,
+      "actual_ticks": 67584,
+      "measured_ticks": 65536,
+      "total_simulation_cpu_seconds": 9.751202,
+      "total_process_cpu_seconds": 12.298884,
+      "total_wall_seconds": 13.29996400012169,
+      "pooled_wall_tps": 5081.517513835498,
+      "simulation_cpu_ms_per_measured_tick": 0.14879153442382811
+    },
+    "gen005": {
+      "runs": 8,
+      "actual_ticks": 67584,
+      "measured_ticks": 65536,
+      "total_simulation_cpu_seconds": 7.61416,
+      "total_process_cpu_seconds": 10.087029,
+      "total_wall_seconds": 10.589452042826451,
+      "pooled_wall_tps": 6382.199921834768,
+      "simulation_cpu_ms_per_measured_tick": 0.116182861328125
+    },
+    "change_pct": {
+      "total_simulation_cpu_seconds": -21.91567767748016,
+      "total_process_cpu_seconds": -17.984192712119253,
+      "total_wall_seconds": -20.37984431589769,
+      "pooled_wall_tps": 25.5963381894855,
+      "simulation_cpu_ms_per_measured_tick": -21.915677677480172
+    }
+  }
+}
