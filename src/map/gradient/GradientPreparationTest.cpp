@@ -1848,11 +1848,15 @@ TEST_CASE("forbidden paint is ground-only for air material service guard and cle
         CHECK(distance>0);
         CHECK_FALSE(map.buildingAvailable(inn,0,8,8,&distance,BuildingRoute::Footprint));
         CHECK(map.buildingAvailable(flag,AIR_MOVEMENT_CLASS,8,8,&distance,BuildingRoute::Clearing));
+        // AIR shared fields follow the same cold asynchronous contract as
+        // ground; availability/seed assertions require actual publication.
+        glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,false);});
+        glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,0,false);});
         CHECK(map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8));
         CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,0,8,8));
-        CHECK(map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,20)]==GRADIENT_AT_GOAL);
+        CHECK(glob2test::awaitGradient(game,[&]{return map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS);})[map.coordToIndex(18,20)]==GRADIENT_AT_GOAL);
         CHECK(glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,0); })[map.coordToIndex(18,20)]==GRADIENT_FORBIDDEN);
-        CHECK(map.getGuardAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,16)]==GRADIENT_AT_GOAL);
+        CHECK(glob2test::awaitGradient(game,[&]{return map.getGuardAreasGradient(0,AIR_MOVEMENT_CLASS);})[map.coordToIndex(18,16)]==GRADIENT_AT_GOAL);
         CHECK(glob2test::awaitGradient(world.game,[&] { return map.getGuardAreasGradient(0,0); })[map.coordToIndex(18,16)]==GRADIENT_FORBIDDEN);
         CHECK(map.pathfindPointToPoint(8,8,12,8,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
         CHECK(dx==1);CHECK(dy==0);
@@ -2212,6 +2216,9 @@ TEST_CASE("blocked live guidance and removed material goals deduplicate delayed 
         auto& map=world.game.map;
         map.setResourceByIndex(20,20,WHEAT,1); // Keep a real source beyond the stale local goal.
         map.configureCompute(2); map.configureGradientPipeline(1,3);
+        // These hand-installed warm fields represent a prior capture at0.
+        // Recovery deduplication is tested at the next eligible minimum8 age.
+        world.game.stepCounter=AdaptiveGradientState::MinimumInterval;
         EntityRandom random; random.seed(42,54);
         int dx=0,dy=0; bool stopWork=false;
         const auto blockNeighbors=[&] {

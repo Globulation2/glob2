@@ -226,7 +226,16 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         const auto expected=referenceArea(f,gradient_preparation::Kind::Forbidden,0,swim);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
         const auto jobs=map.gradientPipelineStatus().jobs;
-        // World edits alone do not revive the removed periodic round. This
+        if(mutation==7 || mutation==8) {
+            // Terrain paint explicitly invalidates warm route fields. That
+            // recovery is retained; it is not arbitrary periodic maintenance.
+            await(f,[&]{return map.gradientPipelineStatus().jobs==jobs+1 && map.gradientPipelineStatus().pending==0;});
+            CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)));
+            for(unsigned idle=0;idle<16;++idle)boundary(f,true);
+            CHECK(map.gradientPipelineStatus().jobs==jobs+1);
+            continue;
+        }
+        // Other point edits alone do not revive the removed periodic round. This
         // untrained fixture declares research behavior before demanding work.
         map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
         map.gradientRuntime->exploration->intervals={8};
