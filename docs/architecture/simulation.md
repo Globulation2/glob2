@@ -495,15 +495,20 @@ checksum adapter remains available for diagnostic fixtures.
   share Adaptive16: demand makes a field eligible, and the deterministic integer
   model admits refreshes with predicted net benefit of at least 16 direction-cost
   units over capture-relative offsets 8..127. The minimum admission interval and
-  normal publication delay are eight ticks. There is no maximum-age refresh,
+  normal publication delay are eight ticks. A demanded field whose serving
+  capture reaches 1,024 ticks is eligible for a safety refresh, subject to
+  capacity and publication delay; idle fields remain idle. There is no
   round-robin filler or global one-field-per-tick quota. Cold initialization and
   explicit reactive recovery remain available without a model benefit prediction.
   Stable key order determines admission, and skipped work leaves capacity idle.
   One exact field can have only one queued or in-flight replacement.
   The twelve selected inputs describe serving-capture age, movement queries over
   32 and 128 ticks, effective target additions/removals with captured-count
-  fractions, and since-capture contradiction counts and event rates. Family and
-  material identities are diagnostic groups, not inputs.
+  fractions, and since-capture contradiction counts and event rates. The stable
+  family ID selects its trained model; an unknown or unmeasured family uses a
+  combined model trained on all observed families. Family and material IDs are
+  not numerical features. Markets use the combined fallback and remain
+  unmeasured by the AI training campaign.
   Planning demand, including cached-unreachable answers, can request upkeep
   without incrementing movement-query counts. Capture metadata stays immutable
   while a replacement computes; save/load preserves captures, jobs and demand.

@@ -5,6 +5,8 @@
 #include <stdexcept>
 
 const std::int64_t AdaptiveGradientState::Threshold=AdaptiveGradientModel::ThresholdMilli;
+static_assert(AdaptiveGradientState::MaximumAge==AdaptiveGradientModel::DemandedAgeCapTicks,
+    "Compiled scheduling cap must match the deployed model policy");
 
 namespace {
 void write64(GAGCore::OutputStream* s,std::uint64_t value,const char* name) {
@@ -63,14 +65,18 @@ AdaptiveGradientState::Evaluation AdaptiveGradientState::Field::evaluate(std::ui
     const auto accept=[&](Reason reason){acceptedReason=reason;return Evaluation{reason};};
     if(!hasServing)return accept(Reason::Cold);
     if(deferred && acceptedReason!=Reason::None)return {acceptedReason};
-    // The minimum remains a correctness guard. Warm ordinary admissions have
-    // no maximum-age fallback: the model must accept, or explicit recovery applies.
+    // Keep the minimum between admissions, including a late publication whose
+    // immutable capture has already aged beyond the safety bound.
     const auto age=std::uint32_t(tick-submitted);
     if(age<MinimumInterval){demand=false;return {};}
     if(reactive)return accept(Reason::Reactive);
     // Legacy fields get one demanded capture to establish honest new semantics.
     if(!serving.known)return accept(Reason::HistoryInitialization);
-    // Fixed intervals are explicit research behavior, never a production cap.
+    // Only a presently demanded field reaches this point. Bound its serving
+    // snapshot's age (not the admission/publication clock), including research
+    // intervals longer than the cap. Idle fields never age into scheduled work.
+    if(std::uint32_t(tick-serving.tick)>=MaximumAge)return accept(Reason::AgeCap);
+    // Fixed intervals remain explicit research behavior below the safety bound.
     if(fixedInterval && age>=std::max(fixedInterval,MinimumInterval))return accept(Reason::Bootstrap);
     if(!fixedInterval && predict && predict(inputs(tick,now),contradictions())>=Threshold)return accept(Reason::Model);
     demand=false;acceptedReason=Reason::None;return {};
@@ -119,7 +125,7 @@ void AdaptiveGradientState::load(GAGCore::InputStream* s,unsigned teams,unsigned
         if(!key.valid(teams,movementClasses,materials)||fields.contains(key)||!targets.contains(GradientTargetKey::of(key)))throw std::runtime_error("Invalid adaptive gradient field key");
         auto& f=fields[key];f.serving=Capture::load(s);s->readEnterSection("totals");if(!loadCounts(s,f.total))f.serving.known=false;s->readLeaveSection();
         f.submitted=s->readUint32("submitted");f.queryTick=s->readUint32("queryTick");
-        f.demand=loadFlag(s,"demand");f.reactive=loadFlag(s,"reactive");f.queued=loadFlag(s,"queued");f.inflight=loadFlag(s,"inflight");f.deferred=loadFlag(s,"deferred");const auto accepted=s->readUint8("acceptedReason");if(accepted>unsigned(Reason::Bootstrap)||accepted==unsigned(Reason::AgeCap))throw std::runtime_error("Invalid adaptive accepted reason");f.acceptedReason=Reason(accepted);f.queryKnown=loadFlag(s,"queryKnown");
+        f.demand=loadFlag(s,"demand");f.reactive=loadFlag(s,"reactive");f.queued=loadFlag(s,"queued");f.inflight=loadFlag(s,"inflight");f.deferred=loadFlag(s,"deferred");const auto accepted=s->readUint8("acceptedReason");if(accepted>unsigned(Reason::Bootstrap))throw std::runtime_error("Invalid adaptive accepted reason");f.acceptedReason=Reason(accepted);f.queryKnown=loadFlag(s,"queryKnown");
         if((f.queued&&f.inflight)||(f.deferred&&(f.inflight||f.acceptedReason==Reason::None)))throw std::runtime_error("Conflicting adaptive gradient association");
         if(!f.validCapture(f.serving))throw std::runtime_error("Invalid adaptive movement baseline");
         const auto now=currentTargets(key);

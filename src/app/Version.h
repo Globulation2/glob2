@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 182
+#define VERSION_MINOR 183
+// version 183 selects per-family Adaptive16 models with a combined fallback and
+// demanded capture-age 1024 safety refresh. The saved layout remains version 178.
 // version 182 refits the validated twelve-input Adaptive16 model. The saved layout
 // remains version 178; earlier replay execution has different coefficients.
 // version 181 tested a seven-input Adaptive16 model. The saved layout

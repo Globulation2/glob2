@@ -442,8 +442,11 @@ void Map::stagePeriodicGradientPreparation()
         auto** slot=gradientFieldDestination(key);
         if(!slot)continue;
         const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
+        const auto prediction=[family=static_cast<unsigned>(key.family)](const auto& inputs,const auto& counts) {
+            return AdaptiveGradientModel::predict(inputs,counts,family);
+        };
         const auto evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
-            AdaptiveGradientModel::predict,interval);
+            prediction,interval);
         if(!evaluation.requested())continue;
         if(!pipeline.canReserve()){field.defer(evaluation.reason);continue;}
         if(!requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,key.swim,-1,1,int(evaluation.reason)))continue;

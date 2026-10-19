@@ -6,7 +6,11 @@
 
 // Persistent logical identities. Values are wire-format IDs, independent of
 // buffer addresses, request order and the backend used to calculate a field.
-enum class GradientFieldFamily : std::uint8_t { Materials, Markets, Guard, Clear, Forbidden };
+// These IDs also select deployed family models. Append new IDs without changing
+// existing values; an unmeasured model ID uses the combined inference fallback.
+enum class GradientFieldFamily : std::uint8_t {
+    Materials=0, Markets=1, Guard=2, Clear=3, Forbidden=4
+};
 struct GradientFieldKey
 {
     static constexpr std::uint8_t NoMaterial=255;

@@ -11,11 +11,13 @@ material identity. Its publication carries the immutable capture tick, effective
 seed count and change epochs, movement-counter baseline and history-known flag.
 Requests made while a replacement is pending do not move its deadline. Published
 cells remain available until replacement publication, normally eight ticks after
-capture. Adaptive admissions retain an eight-tick minimum interval and have no forced
-maximum-age refresh. Age remains a model input; an idle or old field does not
-refresh solely because it aged. Demand is
-registered before cached-unreachable returns, so a new source or opened route
-can recover. Team aliveness is not a substitute for actual demand.
+capture. Adaptive admissions retain an eight-tick minimum interval. A demanded
+field is eligible for a safety refresh when its serving capture reaches 1,024
+ticks, even if its predicted benefit is below threshold. Admission remains
+subject to executor capacity and normal publication delay, so serving age can
+exceed 1,024 while a replacement is pending. Idle fields do not refresh solely
+because they aged. Demand is registered before cached-unreachable returns, so a
+new source or opened route can recover. Team aliveness is not a substitute for actual demand.
 
 ## Generic inference contract
 
@@ -26,7 +28,19 @@ since-capture counters add invalid-goal events, reachable required-travel querie
 that produced no move, and their movement-query denominator. Two Q12 event rates
 complete the twelve selected inputs. Rates use uncapped 64-bit counts before
 bounded count/log transforms. Family, material, map-generator and AI identities
-are diagnostic metadata, never model inputs.
+are not numerical inputs. The stable field family selects a measured family
+model: materials, guard, clearing or forbidden escape. Each uses the same twelve
+inputs. A separately trained combined model uses all observed families and is
+the fallback for unmeasured or unknown family IDs. Markets currently use that
+fallback because market behavior was not measured by the AI campaign. The
+fallback is an initial policy for a new family, not evidence that the family has
+been validated. There are no one-hot family inputs.
+
+The combined fit and every family fit share the same whole-map split registry.
+Each expert uses only its family’s development rows, retaining their original
+relative weights and applying one scalar normalization for regularization. The
+combined fit uses all observed families. Per-family quality checks accompany
+pooled scores; dispatch alone is not evidence of improved guidance.
 
 Feature removal must pass prospective reachability and missed-move checks as
 well as grouped direction-cost validation. Direction cost alone does not penalize
@@ -36,7 +50,7 @@ A simpler fit is therefore not qualified solely by lower held-out direction cost
 
 The target semantics and deployment threshold are separate from feature
 names. Models trained on the earlier 32-tick target are incompatible and their
-coefficients are not reused or rescaled. The common integer model predicts
+coefficients are not reused or rescaled. Each family model and the combined fallback predict
 `P(help)*E(amount|help) - P(hurt)*E(amount|hurt)` using two logistic and two linear
 heads. Integer Q12 log/Q16 sigmoid interpolation, bounded accumulators and portable
 64-bit fraction division make inference deterministic. The default deployment threshold is
@@ -66,15 +80,17 @@ Conflicting explicit policy declarations are rejected. New label contracts omit
 the threshold; old 128000 deployment models remain valid for comparisons.
 New supplied bundles must explicitly attest `build_options.refresh_threshold_milli`
 as a positive signed 64-bit integer. Every pool must agree, and preparation
-records that attested value as actual collection policy. Missing or contradictory
-attestations fail rather than assuming a default. Frozen historical exports remain
+records that attested value as actual collection policy. Fresh bundles must also
+attest the same positive `build_options.refresh_age_cap_ticks` in every pool;
+the current cap is `1024`. Missing or contradictory attestations fail rather
+than assuming a default. Frozen historical exports remain
 readable and their bytes are not amended.
 Hash-only qualification receipts accept only the canonical declaration or the
 explicitly reconstructed historical 128000 declaration.
 
 An untrained header is an explicit placeholder, not a mapped resource-only model.
-Ordinary execution retains cold/reactive/history initialization without a forced
-maximum-age refresh and without pretending that placeholder predictions
+Ordinary execution retains cold/reactive/history initialization and the demanded
+1,024-tick safety refresh without pretending that placeholder predictions
 establish adaptive quality. Collection bootstrapping requires explicit positive fixed intervals.
 Interval 0 is available only with a trained generic model. Engine promotion still
 requires total-compute and per-family quality evidence.
@@ -194,13 +210,15 @@ preserves raw receipt/transport hashes, excludes unterminated final CSV bytes an
 incomplete horizons, validates derived rows with the same loader, and records
 censoring and unknown whole-game totals. It never calls a capped game completed.
 
-Fit the generic twelve-input model and explicitly emit a research candidate:
+Fit the combined model and measured family models, then explicitly emit a
+research candidate. This AI campaign excludes market coverage:
 
 ```sh
 python3 tools/adaptive_gradient_model.py fit \
   --manifest artifacts/exploration.cohort.json \
   --collector-contract unified-gradient-h128-v4 \
   --split-registry artifacts/map-splits.json --threshold-milli 16000 \
+  --expected-families materials,guard,clear,forbidden \
   --output artifacts/research.json
 python3 tools/adaptive_gradient_model.py emit \
   --model artifacts/research.json --contract unified-gradient-h128-v2 \
@@ -231,9 +249,10 @@ master, the resource-only reference, and useful fixed-interval baselines using
 matched maps/seeds, repeated interleaved order and controlled physical-core/SMT
 load. Keep diagnostic quality repeats separate from production timings.
 
-Review age/demand joint support explicitly before qualifying an uncapped model;
-older-field extrapolation is a coverage limitation, not a reason to add a hidden
-forced-refresh fallback.
+Review age/demand joint support explicitly. Historical uncapped cohorts retain
+their original policy metadata; their H128 labels remain compatible with a
+changed deployment cap. The 1,024-tick demanded safety refresh is an explicit
+policy, not a learned prediction or a guarantee of publication by that age.
 
 Scheduling/state changes require save/load, thread/platform checksum and
 simulation/replay compatibility checks. Later coefficient-only rounds retain the

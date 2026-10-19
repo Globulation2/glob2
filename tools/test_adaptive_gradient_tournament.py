@@ -6,15 +6,15 @@ from tools import adaptive_gradient_dataset as data
 from tools.adaptive_gradient_tournament import ADAPTIVE_POLICY,policy_from_bundles
 
 class ModelThresholdPolicyTests(unittest.TestCase):
- def bundle(self,value):
-  return {'build_options':{'refresh_threshold_milli':value}}
- def test_default_matches_selected_a16_without_age_cap(self):
+ def bundle(self,value,cap=1024):
+  return {'build_options':{'refresh_threshold_milli':value,'refresh_age_cap_ticks':cap}}
+ def test_default_matches_selected_a16_with_demanded_age_cap(self):
   self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000)
   self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],data.DEFAULT_THRESHOLD_MILLI)
   self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8)
   self.assertEqual(ADAPTIVE_POLICY['publication_delay'],8)
   self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
-  self.assertIsNone(ADAPTIVE_POLICY['forced_age_cap'])
+  self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024)
  def test_qualified_model_threshold_overrides_current_tool_default(self):
   before=copy.deepcopy(ADAPTIVE_POLICY)
   self.assertEqual(policy_from_bundles([self.bundle(16000),self.bundle(16000)])['threshold_milli'],16000)
@@ -34,6 +34,24 @@ class ModelThresholdPolicyTests(unittest.TestCase):
    with self.subTest(value=bad),self.assertRaises(ValueError):
     policy_from_bundles([self.bundle(bad)])
   self.assertEqual(policy_from_bundles([self.bundle((1<<63)-1)])['threshold_milli'],(1<<63)-1)
+
+ def test_fresh_bundles_must_attest_an_actual_common_cap(self):
+  before=copy.deepcopy(ADAPTIVE_POLICY)
+  for cap in [8,512,1024,4096,(1<<32)-1]:
+   with self.subTest(cap=cap):
+    self.assertEqual(policy_from_bundles([self.bundle(16000,cap),self.bundle(16000,cap)])['forced_age_cap'],cap)
+  self.assertEqual(ADAPTIVE_POLICY,before)
+  with self.assertRaisesRegex(ValueError,'caps must agree'):
+   policy_from_bundles([self.bundle(16000,512),self.bundle(16000,1024)])
+ def test_old_missing_or_uncapped_bundle_is_not_silently_relabelled(self):
+  historical={'build_options':{'refresh_threshold_milli':128000}}
+  before=copy.deepcopy(historical)
+  with self.assertRaisesRegex(ValueError,'refresh_age_cap_ticks'):
+   policy_from_bundles([historical])
+  self.assertEqual(historical,before)
+  for cap in [None,True,False,1024.0,'1024',0,-1,7,1<<32]:
+   with self.subTest(cap=cap),self.assertRaisesRegex(ValueError,'refresh_age_cap_ticks'):
+    policy_from_bundles([self.bundle(16000,cap)])
 
 class DirectExperimentThresholdTests(unittest.TestCase):
  def case(self,kind,option='missing',policy_threshold=16000):
@@ -70,6 +88,32 @@ class DirectExperimentThresholdTests(unittest.TestCase):
    with self.subTest(value=value):
     module,plan,maps,bundle,cohort=self.case('unified',value)
     with self.assertRaises(ValueError):module.make_experiment(plan,maps,[bundle],cohort)
+
+ def test_capped_direct_constructor_requires_matching_explicit_bundle_cap(self):
+  module,plan,maps,bundle,cohort=self.case('unified',16000)
+  cohort['policy']['forced_age_cap']=1024
+  for attested in ['missing',None,True,1024.0,'1024',0,7,-1,1<<32,512]:
+   with self.subTest(cap=attested):
+    supplied=copy.deepcopy(bundle)
+    if attested!='missing':supplied['build_options']['refresh_age_cap_ticks']=attested
+    with self.assertRaisesRegex(ValueError,'[Aa]ge.cap|refresh_age_cap_ticks'):
+     module.make_experiment(plan,maps,[supplied],cohort)
+  bundle['build_options']['refresh_age_cap_ticks']=1024
+  actual=module.make_experiment(plan,maps,[bundle],cohort)
+  self.assertEqual(actual['jobs'][0]['labels']['resource_gradient']['cohort']['policy']['forced_age_cap'],1024)
+ def test_direct_historical_uncapped_metadata_remains_unchanged(self):
+  module,plan,maps,bundle,cohort=self.case('unified',16000)
+  cohort['policy']['forced_age_cap']=None;before=copy.deepcopy(cohort)
+  result=module.make_experiment(plan,maps,[bundle],cohort)
+  self.assertEqual(result['jobs'][0]['labels']['resource_gradient']['cohort'],before)
+  self.assertEqual(cohort,before)
+ def test_direct_constructor_rejects_invalid_explicit_cohort_cap(self):
+  for cap in [True,False,7,0,-1,1024.0,'1024',1<<32]:
+   with self.subTest(cap=cap):
+    module,plan,maps,bundle,cohort=self.case('unified',16000)
+    cohort['policy']['forced_age_cap']=cap;bundle['build_options']['refresh_age_cap_ticks']=1024
+    with self.assertRaisesRegex(ValueError,'collection age cap'):
+     module.make_experiment(plan,maps,[bundle],cohort)
 
 class CurrentCollectorPlanTests(unittest.TestCase):
  def test_new_plans_emit_v4_and_do_not_reinterpret_historical_plans(self):

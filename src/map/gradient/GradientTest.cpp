@@ -3,8 +3,6 @@
 
 #include "GradientTest.h"
 #include <cmath>
-#include <chrono>
-#include <iostream>
 
 #include "Map.h"
 #include "MapInternal.h"
@@ -502,74 +500,4 @@ void GradientTest::testMatchesLegacyKernelOnLargeMaps()
 				map.propagateGradient(input.data(), swimClass, maxCost);
 				CHECK_MESSAGE(input == expected, ("trial " + std::to_string(trial)));
 			}
-}
-
-TEST_SUITE("ResourceGradientContradictions") {
-TEST_CASE("movement evidence observes overlapping rejections and both passes without changing RNG") {
-    GrassMap map;
-    auto cells=blank(map);
-    cells[map.coordToIndex(3,3)]=100;
-    cells[map.coordToIndex(2,3)]=110;map.putWater(2,3);
-    cells[map.coordToIndex(3,2)]=110;map.putGroundUnit(3,2);
-    cells[map.coordToIndex(4,3)]=110;
-    cells[map.coordToIndex(3,4)]=100;
-    EntityRandom actual,reference;actual.seed(42,54);reference=actual;
-    GradientMovementEvidence evidence;
-    int dx=0,dy=0,rx=0,ry=0;
-    CHECK(map.directionByGradientObserved(actual,1,0,3,3,cells.data(),&dx,&dy,true,evidence));
-    CHECK(map.directionByGradient(reference,1,0,3,3,cells.data(),&rx,&ry,true));
-    CHECK(dx==rx);CHECK(dy==ry);CHECK(actual==reference);
-    CHECK(evidence.persistentProgressBlocked);CHECK(evidence.unitProgressBlocked);
-    CHECK_FALSE(evidence.sidestepUsed); // Rejected candidates count even when another succeeds.
-    map.putGroundUnit(4,3);
-    evidence={};
-    CHECK_FALSE(map.directionByGradientObserved(actual,1,0,3,3,cells.data(),&dx,&dy,true,evidence));
-    CHECK_FALSE(map.directionByGradient(reference,1,0,3,3,cells.data(),&rx,&ry,true));
-    CHECK(map.directionByGradientObserved(actual,1,0,3,3,cells.data(),&dx,&dy,false,evidence));
-    CHECK(map.directionByGradient(reference,1,0,3,3,cells.data(),&rx,&ry,false));
-    CHECK(dx==rx);CHECK(dy==ry);CHECK(actual==reference);CHECK(evidence.sidestepUsed);
-    ResourceGradientContradictionCounts counts;counts.record(evidence);
-    CHECK((counts.values==std::array<std::uint64_t,6>{0,1,1,1,0,1}));
-}
-TEST_CASE("first rejection preserves unit before terrain and ignores nonimproving blockers") {
-    GrassMap map;
-    auto cells=blank(map);cells[map.coordToIndex(3,3)]=100;
-    cells[map.coordToIndex(2,3)]=110;map.putWater(2,3);map.putGroundUnit(2,3);
-    cells[map.coordToIndex(3,2)]=90;map.putWater(3,2);
-    EntityRandom random;
-    GradientMovementEvidence evidence;int dx=0,dy=0;
-    CHECK_FALSE(map.directionByGradientObserved(random,1,0,3,3,cells.data(),&dx,&dy,true,evidence));
-    CHECK(evidence.unitProgressBlocked);CHECK_FALSE(evidence.persistentProgressBlocked);
-}
-TEST_CASE("direction contradiction classification benchmark [benchmark]" * doctest::skip(std::getenv("GLOB2_GRADIENT_CONTRADICTION_BENCHMARK")==nullptr)) {
-    GrassMap map;
-    auto cells=blank(map);cells[map.coordToIndex(3,3)]=100;
-    for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx) if(dx||dy)
-        cells[map.coordToIndex(3+dx,3+dy)]=dx==0 && dy==1 ? 100 : 110;
-    map.putWater(2,3);map.putWater(2,2);map.putWater(2,4);
-    map.putGroundUnit(3,2);map.putGroundUnit(4,2);map.putGroundUnit(4,3);map.putGroundUnit(4,4);
-    constexpr unsigned iterations=200000;
-    std::uint64_t referenceChecksum=0;EntityRandom referenceRandom;
-    // ABBA order limits warmup/order bias. Oracle rebuilds and CSV I/O are absent.
-    for(bool enabled:{false,true,true,false}) {
-        EntityRandom random;random.seed(42,54);std::uint64_t checksum=0,events=0;
-        const auto started=std::chrono::steady_clock::now();
-        for(unsigned i=0;i<iterations;++i) {
-            GradientMovementEvidence evidence;int dx=0,dy=0;
-            const auto select=[&](bool strict) {
-                if(enabled) return map.directionByGradientObserved(random,1,0,3,3,cells.data(),&dx,&dy,strict,evidence);
-                return map.directionByGradient(random,1,0,3,3,cells.data(),&dx,&dy,strict);
-            };
-            const bool moved=select(true) || select(false);
-            checksum+=unsigned(dx+2)+5*unsigned(dy+2)+31*moved;
-            events+=evidence.persistentProgressBlocked+evidence.unitProgressBlocked+evidence.sidestepUsed;
-        }
-        const auto elapsed=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-started).count();
-        if(!referenceChecksum) {referenceChecksum=checksum;referenceRandom=random;}
-        CHECK(checksum==referenceChecksum);CHECK(random==referenceRandom);
-        if(enabled) CHECK(events==iterations*3);
-        std::cout<<"gradient_contradiction_benchmark enabled="<<enabled<<" iterations="<<iterations
-            <<" ns="<<elapsed<<" ns_per_query="<<double(elapsed)/iterations<<" checksum="<<checksum<<'\n';
-    }
-}
 }

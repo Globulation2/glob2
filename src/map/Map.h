@@ -939,13 +939,6 @@ private:
 	//! every occupant building reject.
 	bool checkTile(int x, int y, TileChecks c, bool canSwim,
 	               Uint32 teamMask, Uint16 ignoreGid) const;
-    bool checkTileClassified(int x,int y,TileChecks c,bool canSwim,
-        Uint32 teamMask,Uint16 ignoreGid,MovementRejection& rejection) const;
-    template<bool Track> bool checkTileImpl(int x,int y,TileChecks c,bool canSwim,
-        Uint32 teamMask,Uint16 ignoreGid,MovementRejection* rejection) const;
-    template<bool Track> bool directionByGradientImpl(EntityRandom& random,Uint32 teamMask,int swimClass,
-        int x,int y,const Uint16* gradient,int* dx,int* dy,bool strict,Uint32 guardAreaMask,
-        GradientMovementEvidence* evidence) const;
 
 public:
 	//! Return true if unit can go to position (x,y)
@@ -1210,10 +1203,6 @@ public:
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
 	//! (guard-area balancing: stepping within an area).
 	bool directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
-    // Collection-only specialization; ordinary callers retain their original ABI
-    // and a selector/predicate path with all evidence handling compiled away.
-    bool directionByGradientObserved(EntityRandom& random,Uint32 teamMask,int swimClass,int x,int y,
-        const Uint16* gradient,int* dx,int* dy,bool strict,GradientMovementEvidence& evidence,Uint32 guardAreaMask=0) const;
 	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
 	//! Direction toward the resource of resourceType nearest to (x, y). A target building
 	//! selects which suppliers (markets, stock) its resource gradient includes.

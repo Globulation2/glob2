@@ -3,15 +3,12 @@
 #include <array>
 #include <cstdint>
 
-// Stack-only evidence from checks the live movement selector already performs.
-// Flags combine strict and sidestep passes: each category counts once per query,
-// even if multiple uphill neighbours fail or both passes inspect the same tile.
+// Outcomes already determined by the family movement selector. Each eligible
+// query records at most one event of each kind; no extra neighbour scan is used.
 struct GradientMovementEvidence
 {
-    bool emptyGoal=false, persistentProgressBlocked=false, unitProgressBlocked=false;
-    bool sidestepUsed=false, reachableNoMove=false;
+    bool emptyGoal=false, reachableNoMove=false;
 };
-enum class MovementRejection : std::uint8_t { None, Persistent, Unit };
 
 // Stable counter IDs also name the diagnostic CSV columns. Generated models
 // select a compact subset; do not reorder these when changing model features.
@@ -27,28 +24,14 @@ inline constexpr unsigned GradientMovementOutcomeMask=
     | gradientMovementCounterBit(GradientMovementCounter::ReachableNoMove)
     | gradientMovementCounterBit(GradientMovementCounter::MovementQueries);
 
-// A compile-time ID lets the policy update only its selected production
-// counters. Diagnostic totals below deliberately retain all six categories.
-template<unsigned Id>
-std::uint64_t contradictionValue(const GradientMovementEvidence& evidence) {
-    static_assert(Id<6);
-    if constexpr (Id==0) return evidence.emptyGoal;
-    else if constexpr (Id==1) return evidence.persistentProgressBlocked;
-    else if constexpr (Id==2) return evidence.unitProgressBlocked;
-    else if constexpr (Id==3) return evidence.sidestepUsed;
-    else if constexpr (Id==4) return evidence.reachableNoMove;
-    else return 1; // Every eligible natural-ground query, including no movement.
-}
-
 struct ResourceGradientContradictionCounts
 {
-    // Order is part of the collection CSV contract; no values enter simulation
-    // state, checksums, inference, or the scheduling policy.
+    // Keep historical counter IDs stable. Retired blocker/sidestep slots 1..3
+    // are reserved; current collection emits only outcome slots 0, 4 and 5.
+    // This diagnostic total is separate from persisted scheduling state.
     std::array<std::uint64_t,6> values{};
     void record(const GradientMovementEvidence& e) {
-        values[0]+=e.emptyGoal;values[1]+=e.persistentProgressBlocked;
-        values[2]+=e.unitProgressBlocked;values[3]+=e.sidestepUsed;
-        values[4]+=e.reachableNoMove;++values[5];
+        values[0]+=e.emptyGoal;values[4]+=e.reachableNoMove;++values[5];
     }
     ResourceGradientContradictionCounts since(const ResourceGradientContradictionCounts& baseline) const {
         ResourceGradientContradictionCounts result;

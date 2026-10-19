@@ -20,7 +20,7 @@ struct AdaptiveGradientState
 {
     using Counts=AdaptiveGradientFeatures::Counts;
     using Inputs=AdaptiveGradientFeatures::Base;
-    static constexpr unsigned MinimumInterval=8, QueryHistoryTicks=128;
+    static constexpr unsigned MinimumInterval=8, MaximumAge=1024, QueryHistoryTicks=128;
     // The generated deployment model owns its benefit cutoff. Define this in
     // the implementation so coefficient updates do not widen header rebuilds.
     static const std::int64_t Threshold;
@@ -39,7 +39,7 @@ struct AdaptiveGradientState
         void save(GAGCore::OutputStream*) const;
         static Capture load(GAGCore::InputStream*);
     };
-    enum class Reason : std::uint8_t { None,Cold,Reactive,HistoryInitialization,Model,AgeCap/* reserved wire ID; never admitted */,Bootstrap };
+    enum class Reason : std::uint8_t { None,Cold,Reactive,HistoryInitialization,Model,AgeCap,Bootstrap };
     struct Evaluation { Reason reason=Reason::None; bool requested() const { return reason!=Reason::None; } };
     using Prediction=std::function<std::int64_t(const Inputs&,const Counts&)>;
     struct Field {

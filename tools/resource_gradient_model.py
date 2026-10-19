@@ -186,12 +186,12 @@ def fit_heads(rows, features=FEATURES, transforms=None, weighting=None, threshol
     return model
 
 
-def metrics(rows,model,weighting=None):
+def metrics(rows,model,weighting=None,prediction=None):
     rows=[r for r in rows if r.get('movement_label_available',1)]
     if not rows:return dict(episodes=0,states=0,note='No observed movement labels')
     import numpy as np
     y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float)
-    pred=np.array([predict(model,[r[k] for k in model.get('features',FEATURES)])/1000 for r in rows]);w=(weighting or weights)(rows)
+    pred=np.array([(prediction(r) if prediction is not None else predict(model,[r[k] for k in model.get('features',FEATURES)]))/1000 for r in rows]);w=(weighting or weights)(rows)
     threshold=model['threshold']/1000
     take=pred>=threshold;ideal=y>=threshold;positive=np.maximum(y,0)
     # The threshold is the decision's opportunity cost in the same benefit

@@ -4,6 +4,14 @@ from tools import adaptive_gradient_dataset as d
 from tools.adaptive_gradient_model import validate,predict,age_demand_support
 from tools.resource_gradient_dataset import seal,file_hash
 ROOT=pathlib.Path(__file__).resolve().parents[1]
+def shared_model():
+ """Historical shared fixtures stay independent of the selected deployment."""
+ value=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text())
+ value.pop('family_experts',None);value['schema']=4
+ if 'deployment' in value:
+  value['deployment'].pop('strategy',None);value['deployment'].pop('demanded_age_cap_ticks',None)
+ return value
+
 class UnifiedDatasetTests(unittest.TestCase):
  def fixture(self,root,**updates):
   row=dict(tick=300,family=0,team=0,movement=0,material=1,key=1,complete=1,publication_delay=8,queries=2,defer_extra=9,refresh_extra=1,capture_known=1,movement_observed=1,**dict.fromkeys(d.MOVEMENT_REACHABILITY,0),**dict(zip(d.BASE_FEATURES,[32,1,2,3,4,5,6])),**dict(zip(d.COUNTERS,[1,1,2])));row.update(dict(serving_capture_tick=268,captured_goal_count=4096,capture_target_added_epoch=0,capture_target_removed_epoch=0,capture_route_epoch=0,capture_seed_cost_epoch=0,current_target_added_epoch=3,current_target_removed_epoch=4,current_route_epoch=0,current_seed_cost_epoch=0,target_added_frac_q12=3,target_removed_frac_q12=4));row.update(updates);p=root/'episodes.csv'
@@ -47,7 +55,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    p=self.fixture(pathlib.Path(tmp));document=json.loads(p.read_text());document['cohort']['contract']['future_offsets']=[8,31];document['content_sha256']=d.canonical_hash(dict(cohort=document['cohort'],records=document['records']));p.write_text(json.dumps(document))
    with self.assertRaises(ValueError):d.load([p])
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['threshold']=16000;validate(model)
+  model=shared_model();model['threshold']=16000;validate(model)
   for value in (0,-1,True,1.5,1<<63):
    model['threshold']=value
    with self.assertRaises(ValueError):validate(model)
@@ -71,7 +79,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   from types import SimpleNamespace
   from tools.adaptive_gradient_model import emit
   from tools.adaptive_gradient_codegen import render
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model.update(schema=2,research_only=True,threshold=128000,candidate_contract=dict(d.CONTRACT,refresh_threshold_milli=128000));model['provenance']={'threshold':128000,'holdout':{'threshold':128}}
+  model=shared_model();model.update(schema=2,research_only=True,threshold=128000,candidate_contract=dict(d.CONTRACT,refresh_threshold_milli=128000));model['provenance']={'threshold':128000,'holdout':{'threshold':128}}
   with tempfile.TemporaryDirectory() as tmp:
    root=pathlib.Path(tmp);source=root/'research.json';source.write_text(json.dumps(model));before=file_hash(source);a=SimpleNamespace(model=str(source),contract=d.CONTRACT_ID,output=str(root/'emitted.json'),header=str(root/'model.h'),threshold_milli=16000);emit(a);new=json.loads(pathlib.Path(a.output).read_text());validate(new)
    self.assertEqual(new['threshold'],16000);self.assertEqual(new['deployment']['source_fit_metrics_threshold_milli'],128000);self.assertFalse(new['deployment']['coefficients_refit']);self.assertEqual(new['provenance'],model['provenance']);self.assertEqual(file_hash(source),before)
@@ -84,12 +92,26 @@ class UnifiedDatasetTests(unittest.TestCase):
   self.assertEqual(report['materials']['high_demand_age4096plus'],1);self.assertEqual(report['clear']['episodes'],0)
  def test_untrained_bootstrap_rejects_inference_and_nonzero_coefficients(self):
   # This contract remains valid after the committed deployment model is trained.
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text())
+  model=shared_model()
   model['trained']=False
   for name in ('positive_probability','negative_probability','positive_mean','negative_mean'):
    model[name]=dict(coef=[0]*len(model['features']),bias=0,shift=28)
   validate(model)
+  from tools.adaptive_gradient_codegen import render
+  header = render(model)
+  self.assertIn('DemandedAgeCapTicks=1024', header)
+  compiler = shutil.which('clang++') or shutil.which('g++')
+  if compiler:
+   with tempfile.TemporaryDirectory() as tmp:
+    root = pathlib.Path(tmp)
+    (root/'model.h').write_text(header)
+    (root/'main.cpp').write_text('#include "model.h"\nstatic_assert(AdaptiveGradientModel::DemandedAgeCapTicks == 1024);\nstatic_assert(!AdaptiveGradientModel::Trained);\nint main() {}\n')
+    subprocess.run([compiler, '-std=c++20', str(root/'main.cpp'), '-o', str(root/'run')], check=True, capture_output=True)
   with self.assertRaisesRegex(ValueError,'No unified model'):predict(model,[0]*7,[0]*3)
+  for invalid_cap in (None, True, 0, 7, 2**32):
+   invalid=copy.deepcopy(model)
+   invalid['deployment']['demanded_age_cap_ticks']=invalid_cap
+   with self.assertRaisesRegex(ValueError,'demanded-age cap'):validate(invalid)
   model['positive_mean']['bias']=1
   with self.assertRaisesRegex(ValueError,'Untrained'):validate(model)
  def test_portable_fraction_and_predicted_math(self):
@@ -97,7 +119,7 @@ class UnifiedDatasetTests(unittest.TestCase):
   if not compiler:self.skipTest('C++20 compiler unavailable')
   from tools.adaptive_gradient_codegen import render
   from tools.resource_gradient_model import predict as integer_predict
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['trained']=True;model.update(features=list(d.FEATURES),transforms=list(d.TRANSFORMS))
+  model=shared_model();model['trained']=True;model.update(features=list(d.FEATURES),transforms=list(d.TRANSFORMS))
   for index,name in enumerate(('positive_probability','negative_probability','positive_mean','negative_mean')):model[name]=dict(coef=[((-1)**(i+index))*(i+1)*5000 for i in range(12)],bias=(index+1)*123456789,shift=28)
   with tempfile.TemporaryDirectory() as tmp:
    p=pathlib.Path(tmp);(p/'model.h').write_text(render(model));(p/'main.cpp').write_text('#include "model.h"\n#include <iostream>\nint main(){std::uint64_t a,b,q;while(std::cin>>a>>b>>q){AdaptiveGradientModel::BaseFeatures x={32,17,99,3,7,123,456};std::cout<<AdaptiveGradientModel::predict(x,{a,b,q})<<" "<<AdaptiveGradientModel::fraction(a,q)<<"\\n";}}')
@@ -133,7 +155,7 @@ class UnifiedTournamentTests(unittest.TestCase):
   from tools.adaptive_gradient_tournament import plan,ADAPTIVE_POLICY
   from tools.test_resource_gradient_tournament import catalog
   from collections import Counter
-  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8);self.assertIsNone(ADAPTIVE_POLICY['forced_age_cap']);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
+  self.assertEqual(ADAPTIVE_POLICY['minimum_interval'],8);self.assertEqual(ADAPTIVE_POLICY['forced_age_cap'],1024);self.assertEqual(ADAPTIVE_POLICY['threshold_milli'],16000);self.assertEqual(ADAPTIVE_POLICY['horizon_ticks'],128)
   a=plan(catalog(),181101);self.assertEqual(a,plan(catalog(),181101));slots=a['unified']['slots']
   self.assertEqual(len(slots),256);self.assertEqual(Counter(r['role'] for r in slots),{'exploration':128,'candidate':128})
   for role in ['exploration','candidate']:self.assertEqual(set(Counter(r['spec']['format'] for r in slots if r['role']==role).values()),{16})
@@ -254,10 +276,10 @@ class CompactDeploymentTests(unittest.TestCase):
  def test_compaction_keeps_exact_codegen_and_predictions(self):
   from tools.adaptive_gradient_model import compact_deployment
   from tools.adaptive_gradient_codegen import render
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());before=copy.deepcopy(model);small=compact_deployment(model,evidence_url='https://example.com/evidence');self.assertEqual(render(small),render(model));self.assertLess(len(json.dumps(small)),12000);self.assertNotIn('candidate_contract',small);self.assertNotIn('holdout',small['provenance']);self.assertEqual(model,before);self.assertEqual(predict(small,[32,1,2,3,4,5,6],[1,1,2]),predict(model,[32,1,2,3,4,5,6],[1,1,2]))
+  model=shared_model();before=copy.deepcopy(model);small=compact_deployment(model,evidence_url='https://example.com/evidence');self.assertEqual(render(small),render(model));self.assertLess(len(json.dumps(small)),12000);self.assertNotIn('candidate_contract',small);self.assertNotIn('holdout',small['provenance']);self.assertEqual(model,before);self.assertEqual(predict(small,[32,1,2,3,4,5,6],[1,1,2]),predict(model,[32,1,2,3,4,5,6],[1,1,2]))
  def test_training_receipt_must_match_fit_manifests_and_splits(self):
   from tools.adaptive_gradient_model import compact_deployment
-  model=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());model['provenance']=dict(manifests=[dict(sha256='a'*64)],split=dict(registry=dict(sha256='b'*64)),coverage={})
+  model=shared_model();model['provenance']=dict(manifests=[dict(sha256='a'*64)],split=dict(registry=dict(sha256='b'*64)),coverage={})
   inputs=dict(expected_slots=4,slot_counts={'completed':3,'user-censored':1},manifests=['sealed.json'],files={'sealed.json':'a'*64,'map-splits.json':'b'*64})
   with tempfile.TemporaryDirectory() as tmp:
    p=pathlib.Path(tmp)/'inputs.json';p.write_text(json.dumps(inputs));small=compact_deployment(model,p);self.assertEqual(small['provenance']['training_game_slots'],4);self.assertEqual(small['provenance']['training_input_sha256'],file_hash(p));inputs['files']['sealed.json']='c'*64;p.write_text(json.dumps(inputs))
@@ -289,7 +311,7 @@ class SelectedBase7Tests(unittest.TestCase):
   for name in ['adaptive_gradient_collection','adaptive_gradient_codegen','adaptive_gradient_dataset','adaptive_gradient_model']:
    ast.parse((ROOT/'tools'/f'{name}.py').read_text(),feature_version=(3,11))
  def model(self):
-  value=json.loads((ROOT/'tools/models/adaptive-gradient.json').read_text());value.update(features=list(d.BASE_FEATURES),transforms=list(d.TRANSFORMS[:7]),trained=True)
+  value=shared_model();value.update(features=list(d.BASE_FEATURES),transforms=list(d.TRANSFORMS[:7]),trained=True)
   for index,name in enumerate(('positive_probability','negative_probability','positive_mean','negative_mean')):value[name]=dict(coef=[((-1)**(i+index))*(i+1)*5000 for i in range(7)],bias=(index+1)*123456789,shift=28)
   return value
  def test_strict_selection_and_counter_independence(self):
@@ -306,3 +328,78 @@ class SelectedBase7Tests(unittest.TestCase):
    subprocess.run([compiler,'-std=c++20','-O2','-fsanitize=undefined',str(p/'main.cpp'),'-o',str(p/'run')],check=True,capture_output=True)
    vectors=[[0]*7,[1]*7,[1000000]*7,[2**63-1]*7,[32,17,99,3,7,123,456]];result=subprocess.check_output([str(p/'run')],input=''.join(' '.join(map(str,v))+'\n' for v in vectors),text=True).splitlines()
    for vector,line in zip(vectors,result):self.assertEqual(list(map(int,line.split())),[predict(model,vector,[0,0,0])]*2)
+
+class FamilyExpertDeploymentTests(unittest.TestCase):
+ def model(self):
+  value=shared_model();value.update(schema=5,features=list(d.FEATURES),transforms=list(d.TRANSFORMS),trained=True)
+  value['deployment']=dict(threshold_milli=value['threshold'],strategy='family-experts-with-combined-fallback',demanded_age_cap_ticks=1024)
+  value['family_experts']={}
+  for identifier in (0,2,3,4):
+   heads={name:dict(coef=[0]*12,bias=0,shift=28) for name in ('positive_probability','negative_probability','positive_mean','negative_mean')}
+   heads['positive_probability']['bias']=12000*(1<<28);heads['negative_probability']['bias']=-12000*(1<<28);heads['positive_mean']['bias']=(identifier+1)*1000*(1<<28)
+   value['family_experts'][str(identifier)]=dict(family=d.FAMILIES[identifier],training_support=dict(rows=3,maps=1,positive=1,negative=1,zero=1),**heads)
+  return value
+ def test_dispatch_known_ids_and_combined_unmeasured_or_future_fallback(self):
+  from tools.resource_gradient_model import predict as raw_predict
+  model=self.model();validate(model);base=[32,1,2,3,4,5,6];counts=[1,1,2];raw=d.prepare(base,counts)
+  for identifier in (0,2,3,4):
+   selected=dict(model,**{name:model['family_experts'][str(identifier)][name] for name in ('positive_probability','negative_probability','positive_mean','negative_mean')})
+   self.assertEqual(predict(model,base,counts,identifier),raw_predict(selected,raw))
+  for identifier in (None,1,5,255,2**32-1):self.assertEqual(predict(model,base,counts,identifier),raw_predict(model,raw))
+  for identifier in (-1,True,2**32):
+   with self.assertRaises(ValueError):predict(model,base,counts,identifier)
+ def test_cpp_family_dispatch_and_unknown_fallback(self):
+  compiler=shutil.which('clang++') or shutil.which('g++')
+  if not compiler:self.skipTest('C++20 compiler unavailable')
+  from tools.adaptive_gradient_codegen import render
+  model=self.model()
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);(root/'model.h').write_text(render(model))
+   (root/'main.cpp').write_text('#include "model.h"\n#include <iostream>\nint main(){unsigned family;while(std::cin>>family)std::cout<<AdaptiveGradientModel::predict({32,1,2,3,4,5,6},{1,1,2},family)<<"\\n";}')
+   subprocess.run([compiler,'-std=c++20','-O2','-fsanitize=undefined',str(root/'main.cpp'),'-o',str(root/'run')],check=True,capture_output=True)
+   families=[0,1,2,3,4,5,255,2**32-1]
+   actual=subprocess.check_output([str(root/'run')],input=''.join(str(f)+'\n' for f in families),text=True).splitlines()
+   self.assertEqual(list(map(int,actual)),[predict(model,[32,1,2,3,4,5,6],[1,1,2],f) for f in families])
+ def test_rejects_hidden_unmeasured_mismatched_or_unsafe_experts(self):
+  changes=[]
+  value=self.model();value['family_experts']['00']=value['family_experts'].pop('0');changes.append(value)
+  value=self.model();value['family_experts']['5']=value['family_experts'].pop('0');changes.append(value)
+  value=self.model();value['family_experts']['0']['family']='guard';changes.append(value)
+  value=self.model();value['family_experts']['0']['training_support']['maps']=0;changes.append(value)
+  value=self.model();value['family_experts']['0']['positive_mean']['coef'][0]=1<<61;changes.append(value)
+  value=self.model();value['schema']=4;changes.append(value)
+  value=self.model();value['deployment']['demanded_age_cap_ticks']=True;changes.append(value)
+  for value in changes:
+   with self.assertRaises(ValueError):validate(value)
+ def test_emit_compacts_experts_without_relabeling_historical_cap_metrics(self):
+  from tools.adaptive_gradient_model import emit
+  from tools.adaptive_gradient_codegen import render
+  from types import SimpleNamespace
+  model=self.model();model.update(schema=2,research_only=True,candidate_contract=d.CONTRACT)
+  model['provenance']=dict(adaptive_policy={'forced_age_cap':None},holdout={'decision_regret':123},expert_fit_sha256='a'*64,combined_fit_sha256='b'*64)
+  with tempfile.TemporaryDirectory() as tmp:
+   p=pathlib.Path(tmp);source=p/'research.json';source.write_text(json.dumps(model));before=file_hash(source)
+   emit(SimpleNamespace(model=str(source),contract=d.CONTRACT_ID,threshold_milli=16000,compact=True,output=str(p/'model.json'),header=str(p/'model.h')))
+   actual=json.loads((p/'model.json').read_text());validate(actual)
+   self.assertEqual(actual['family_experts'],model['family_experts']);self.assertEqual(actual['deployment']['demanded_age_cap_ticks'],1024);self.assertIsNone(actual['deployment']['source_fit_age_cap_ticks']);self.assertNotIn('holdout',actual['provenance']);self.assertEqual(file_hash(source),before);self.assertEqual((p/'model.h').read_text(),render(actual));self.assertLess(len(json.dumps(actual)),24000)
+ def test_fit_experts_preserves_global_weights_and_omits_unmeasured_families(self):
+  try:import numpy as np
+  except ImportError:self.skipTest('numpy unavailable')
+  from unittest.mock import patch
+  from tools.adaptive_gradient_model import fit_family_experts
+  rows=[dict(format='1v1',cohort_role='exploration',cohort='c',group=g,family=f,collection=g+f,defer_extra=1,refresh_extra=0) for g,f in [('a','materials'),('a','guard'),('b','materials'),('c','materials'),('c','guard')]]
+  expected={id(row):weight for row,weight in zip(rows,d.balanced_weights(rows))};seen=[]
+  def fitted(actual,features,transforms,weighting,threshold):
+   got=weighting(actual);want=np.asarray([expected[id(row)] for row in actual]);want*=len(want)/sum(want);np.testing.assert_allclose(got,want,rtol=0,atol=1e-15);seen.append(actual[0]['family'])
+   return {name:dict(coef=[0]*12,bias=0,shift=28) for name in ('positive_probability','negative_probability','positive_mean','negative_mean')}
+  with patch('tools.adaptive_gradient_model.integer.fit_heads',side_effect=fitted):experts=fit_family_experts(rows,16000)
+  self.assertEqual(set(experts),{'0','2'});self.assertEqual(set(seen),{'materials','guard'})
+ def test_mixture_metrics_uses_expert_predictions_without_rebalancing_rows(self):
+  try:import numpy as np
+  except ImportError:self.skipTest('numpy unavailable')
+  from tools.adaptive_gradient_model import model_metrics
+  from tools.resource_gradient_model import metrics
+  model=self.model();rows=[dict(zip(d.FEATURES,[32,1,2,3,4,5,6,1,1,2,2048,2048]),family_id=family,group='g',defer_extra=20,refresh_extra=1) for family in [0,1,2,255]]
+  weights=lambda actual:np.asarray([1,2,3,4],float)
+  actual=model_metrics(rows,model,weights);expected=metrics(rows,model,weighting=weights,prediction=lambda row:predict(model,[row[k] for k in d.BASE_FEATURES],[row[k] for k in d.COUNTERS],row['family_id']))
+  self.assertEqual(actual,expected)

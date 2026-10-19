@@ -725,8 +725,8 @@ struct HeadlessRunner
             << ",\"threshold_milli_direction_cost\":" << AdaptiveGradientState::Threshold
             << ",\"prediction_horizon_ticks\":" << ResourceGradientProbe::HorizonTicks
             << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
-            << ",\"demanded_age_cap\":null"
-            << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"shared-adaptive-model":"untrained-cold-reactive-and-history-init-only")
+            << ",\"demanded_age_cap\":" << AdaptiveGradientState::MaximumAge
+            << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"adaptive-model":"untrained-cold-reactive-and-history-init-only")
             << ",\"quality_collection\":" << (one(options,"--resource-gradient-probe","false")=="true"?"true":"false") << '}';
         if (options.count("--gradient-work-stats")) result << ",\"gradient_work_stats\":" << quote(fs::absolute(one(options,"--gradient-work-stats")).string());
 		result << ",\"compute_telemetry\":";

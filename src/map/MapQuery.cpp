@@ -23,43 +23,26 @@
 // gid-tolerant building overloads accept a specific occupant gid.
 // C++: Map.cpp historically inlined the same five tests in eight near-duplicate
 // bodies — see the original isFree*/isHardSpace* implementations.
-template<bool Track>
-bool Map::checkTileImpl(int x, int y, TileChecks c, bool canSwim,
-                    Uint32 teamMask, Uint16 ignoreGid, MovementRejection* rejection) const
+bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
+                    Uint32 teamMask, Uint16 ignoreGid) const
 {
-    // First rejected predicate wins, preserving the existing short circuit.
-    // In particular, a unit may hide a later terrain/forbidden rejection; the
-    // observer deliberately does not perform additional world checks to decide.
-    const auto blocked=[&](MovementRejection reason) {
-        if constexpr (Track) *rejection=reason;
-        return false;
-    };
 	if (c.noResource && (c.requireBuildable ? resourceBlocksBuilding(coordToIndex(x,y))
 		: resourceBlocksGround(coordToIndex(x,y))))
-		return blocked(MovementRejection::Persistent);
+		return false;
 	Uint16 buid = getBuilding(x, y);
 	if (buid != NOGBID && buid != ignoreGid)
-		return blocked(MovementRejection::Persistent);
+		return false;
 	if (c.noUnit && getGroundUnit(x, y) != NOGUID)
-		return blocked(MovementRejection::Unit);
+		return false;
 	if (c.requireGroundPassable && !terrainPropertiesAt(x, y).walkable && !(canSwim && terrainPropertiesAt(x, y).swimmable))
-		return blocked(MovementRejection::Persistent);
+		return false;
 	if (c.requireBuildable && !terrainPropertiesAt(x, y).buildable)
-		return blocked(MovementRejection::Persistent);
+		return false;
 	if (c.checkForbidden && (getForbidden(x, y) & teamMask))
-		return blocked(MovementRejection::Persistent);
+		return false;
 	return true;
 }
 
-bool Map::checkTile(int x,int y,TileChecks c,bool canSwim,Uint32 teamMask,Uint16 ignoreGid) const
-{
-    return checkTileImpl<false>(x,y,c,canSwim,teamMask,ignoreGid,nullptr);
-}
-bool Map::checkTileClassified(int x,int y,TileChecks c,bool canSwim,
-    Uint32 teamMask,Uint16 ignoreGid,MovementRejection& rejection) const
-{
-    return checkTileImpl<true>(x,y,c,canSwim,teamMask,ignoreGid,&rejection);
-}
 
 bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const
 {

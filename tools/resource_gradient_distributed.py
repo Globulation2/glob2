@@ -85,6 +85,15 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         from tools.adaptive_gradient_dataset import declared_threshold_milli
         actual_threshold=collection_threshold(metadata)
         if unified and actual_threshold is None:raise ValueError('Explicit unified collection threshold required')
+        age_cap=metadata.get('policy',{}).get('forced_age_cap')
+        if age_cap is not None:
+            if type(age_cap)is not int or not 8<=age_cap<=2**32-1:
+                raise ValueError('Explicit collection age cap must be an integer between8 and UINT32_MAX')
+            for supplied in bundles:
+                attested=supplied.get('build_options',{}).get('refresh_age_cap_ticks')
+                if type(attested)is not int or not 8<=attested<=2**32-1:
+                    raise ValueError('Capped collection requires explicit bundle refresh_age_cap_ticks')
+                if attested!=age_cap:raise ValueError('Bundle refresh age cap differs from collection behavior')
         for supplied in bundles:
             options=supplied.get('build_options',{})
             # Historical bundles predate this attestation. Keep them usable for
