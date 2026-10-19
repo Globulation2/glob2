@@ -1,0 +1,3572 @@
+{
+  "schema": 2,
+  "features": [
+    "age",
+    "q32",
+    "q128",
+    "source_added",
+    "source_removed",
+    "source_added_frac_q12",
+    "source_removed_frac_q12",
+    "since_capture_empty_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_empty_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
+  ],
+  "threshold": 32000,
+  "research_only": true,
+  "transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "identity_q12",
+    "identity_q12"
+  ],
+  "positive_probability": {
+    "coef": [
+      3399218,
+      31433817,
+      22476532,
+      4581915,
+      9562188,
+      2551506,
+      6569139,
+      30460691,
+      7477102,
+      -1775509,
+      -78454535,
+      37245320
+    ],
+    "bias": -1555069908101,
+    "shift": 28,
+    "accumulator_bound": 127075085672364
+  },
+  "positive_mean": {
+    "coef": [
+      70951633,
+      840164462,
+      -58233723,
+      204594900,
+      -614411489,
+      92165023,
+      201926490,
+      207053602,
+      723269404,
+      163607081,
+      -2230603304,
+      -3940174757
+    ],
+    "bias": -5041628857054,
+    "shift": 28,
+    "accumulator_bound": 6435135997642727
+  },
+  "negative_probability": {
+    "coef": [
+      -8237112,
+      7855660,
+      26796127,
+      846523,
+      8422541,
+      -2539573,
+      6543340,
+      -12684902,
+      418231,
+      7750572,
+      75478718,
+      38643817
+    ],
+    "bias": -1493987045200,
+    "shift": 28,
+    "accumulator_bound": 122318641543459
+  },
+  "negative_mean": {
+    "coef": [
+      9513781,
+      66314133,
+      22985552,
+      4066551,
+      -64000514,
+      55730804,
+      11234493,
+      173029385,
+      429292453,
+      -272151,
+      -492167730,
+      -1127513614
+    ],
+    "bias": 1822727155223,
+    "shift": 28,
+    "accumulator_bound": 1689790181375286
+  },
+  "candidate_contract": {
+    "id": "goal-stall-v1",
+    "base_features": [
+      "age",
+      "q32",
+      "q128",
+      "source_added",
+      "source_removed",
+      "source_added_frac_q12",
+      "source_removed_frac_q12"
+    ],
+    "diagnostic_contract": {
+      "version": 1,
+      "scope": "natural-ground-resource-movement",
+      "counters": [
+        "since_capture_empty_goal",
+        "since_capture_persistent_progress_blocked",
+        "since_capture_unit_progress_blocked",
+        "since_capture_sidestep_used",
+        "since_capture_reachable_no_move",
+        "since_capture_movement_queries"
+      ],
+      "window": "since-field-capture",
+      "classification": "first-rejection-existing-check-order",
+      "capture_known": "contradiction_capture_known",
+      "denominator": "since_capture_movement_queries",
+      "future_stall_columns": [
+        "defer_stalls",
+        "refresh_stalls"
+      ],
+      "future_stall_definition": "reachable-non-goal-selector-no-move"
+    },
+    "counter_ids": [
+      0,
+      4,
+      5
+    ],
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "source_added",
+      "source_removed",
+      "source_added_frac_q12",
+      "source_removed_frac_q12",
+      "since_capture_empty_goal",
+      "since_capture_reachable_no_move",
+      "since_capture_movement_queries",
+      "since_capture_empty_goal_frac_q12",
+      "since_capture_reachable_no_move_frac_q12"
+    ],
+    "transforms": [
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "log1p_q12",
+      "identity_q12",
+      "identity_q12"
+    ],
+    "rate": "floor(4096*min(uncapped_event_count,uncapped_movement_queries)/max(1,uncapped_movement_queries))"
+  },
+  "provenance": {
+    "manifests": [
+      {
+        "name": "706a6ed43094d7592b1df7e5.cohort.json",
+        "sha256": "a9a8d0d99cd29d1cc6a31cddeca6550d029ac5463cde93d852b6478f33e899d8"
+      },
+      {
+        "name": "73762b0c283dd0acdade94ea.partial.cohort.json",
+        "sha256": "c4f75589506005dde9329407bfddd4a5ed4d4afacfc05f8abbdf38946d7a4c88"
+      },
+      {
+        "name": "709320ccad761362a85a7d3d.cohort.json",
+        "sha256": "e01be5e7b38bfe22b20e3518b46ec67b6ec68b1fd6c6eba7e97358ccec60ff4b"
+      },
+      {
+        "name": "724df33713ff2602525912b2.cohort.json",
+        "sha256": "6c9cf49ab7539cab659092f375663ada8fd364555b444e5143533488e578bba4"
+      },
+      {
+        "name": "14ceed4e030643289b884858.partial.cohort.json",
+        "sha256": "f6e96c9cf084b83d35af5c443222870b853a56233e7d49ca6bf1de7b19c8c7ce"
+      },
+      {
+        "name": "ef8a82e140260ff96cb490ee.partial.cohort.json",
+        "sha256": "969a7ca2420c932aa6aab3af50392e20ceb50d21ef373afb6cf8bcaffc75fca1"
+      },
+      {
+        "name": "455e1d50546045bb08bb27d8.cohort.json",
+        "sha256": "fac1ef591f7564ffb6a1279254356cf6fe4b37d71d4d9a845bdfef627e13c88f"
+      },
+      {
+        "name": "6c3c7e2b97a8d96a953ef9f6.cohort.json",
+        "sha256": "a1b15bb927b219abdb85de49590a1b495738d9fb913992db10be483913e7fa0d"
+      },
+      {
+        "name": "2a52ea69fa7350af76b26c1b.partial.cohort.json",
+        "sha256": "a9eac26b48562b4cfcfb0913ae9e3ac275595f52a586d39c2fb0b4136cbd2cdd"
+      },
+      {
+        "name": "e227d91036a954302d0168bb.partial.cohort.json",
+        "sha256": "343afdd65a2da4cce4fbc13659097cac1701ed0540c8fdd62c9dd318e0154a32"
+      }
+    ],
+    "training_games": 256,
+    "eligible_movement_episodes": 318468,
+    "development_states": [
+      "019520843c7b4dc7",
+      "019d1c4f8ca36be2",
+      "01ace45939592a75",
+      "02df0a7965675c54",
+      "06f8524c5b107f0c",
+      "0a5e5dd12153e96c",
+      "0b8c8536ad633da3",
+      "0e79557db515953c",
+      "0eaffd087c7ac9cd",
+      "0ecc0533556e7f83",
+      "0fa71185f26bee30",
+      "0fd3d6547177b407",
+      "10223544da91b07a",
+      "1046efde234ed18b",
+      "11d33f16ac95bd21",
+      "125a96256932ee70",
+      "143fe00bad891a3e",
+      "1585855274b54661",
+      "1663544b39bafd4f",
+      "17080e9bd100498a",
+      "17ad652403af0042",
+      "17e76d8087a84155",
+      "1959a53d3049c0cb",
+      "1a5d63d063e9c151",
+      "1cda155bd4b49efc",
+      "1d0b40a27c72d2b0",
+      "1e9afa80fd012586",
+      "1ead18b118c5c1b7",
+      "20509199771f4a46",
+      "2286f679d747cb25",
+      "2424a12a642b3174",
+      "28b56c4b76d139c5",
+      "2a9f4be9369b989d",
+      "2b8274281a811f84",
+      "2bdf92aaba4755e3",
+      "2c07085bc6158307",
+      "2d8543e2044e2ae9",
+      "2eb5355308511293",
+      "31fd8a6972fc19d7",
+      "327fc077468a80c9",
+      "340db79822bc0de9",
+      "39718f497f034664",
+      "398c85ee51cf3853",
+      "3adba1c4f1ce0eff",
+      "3ae4a6108ba266ba",
+      "3b47b665f61edada",
+      "3d571762087a61b3",
+      "3e47dc2d33edfe03",
+      "4044afde2ed7874e",
+      "408afb1059fce688",
+      "42e35eba35552342",
+      "456a18f9e0bd74d1",
+      "46abdcb8b2156aa0",
+      "490c9c433a3cddd1",
+      "49eb5f18a0281472",
+      "4d9549a2f0141200",
+      "4ddad8864fcf05d7",
+      "51f65c59fc6bf420",
+      "557ef936b3cccbc6",
+      "5a16a5f866727b10",
+      "5c48581f96eab250",
+      "5cbf12628c56507b",
+      "5fee1ae9fbee7836",
+      "608e21db2544f818",
+      "60f9934e6a26ce01",
+      "611c8657008d7aaa",
+      "62be505edc802df5",
+      "632f2aeec6800cdb",
+      "63f4958e8453fb6a",
+      "650f9a72841f8d81",
+      "656c735c6e570211",
+      "66666929c379a659",
+      "67e3fd993ad8c502",
+      "6a698379986bc447",
+      "6d0df3a5d1da2761",
+      "6dfd9c3aa670a115",
+      "74f70378d58819ad",
+      "768eaf124a49b67d",
+      "79f29e3c6a1d08d5",
+      "7b879092812a9fd8",
+      "7c724e0f4e0d3753",
+      "810f22fd9ac08ed8",
+      "82a4ae18054f2955",
+      "8301e57ddd148e80",
+      "8590d1113d111486",
+      "89ffa99bb441502a",
+      "9153c172e09c07bb",
+      "93707cc97571187b",
+      "9471ead74326dc3c",
+      "96d9c03336b4c8e7",
+      "97fe55b080358d19",
+      "987c1db17e5544a6",
+      "98feaf1b38c46a39",
+      "9a1b57f8d2d98304",
+      "9f70a63fd74f2999",
+      "9f85aa3b75e3b9d2",
+      "a081b5f23ce64fca",
+      "a3a188134ee138bb",
+      "a4d2eb13649541aa",
+      "a5fab7aa76423216",
+      "a6dcc2c9ac07bb61",
+      "a8502f52e5e9d8cc",
+      "aa121eb1a7c9d9c2",
+      "aeaba640969f1fb3",
+      "aed106ef13a64f32",
+      "af5f08dc5bb437da",
+      "af706abc3652c885",
+      "af862d768724c1e6",
+      "b079269c2596966c",
+      "b07a47e5b9ad2327",
+      "b100cefe1c744d96",
+      "b15061cd33d35d8c",
+      "b1e5ce13374c33a2",
+      "b2261a04ca68b22e",
+      "b271382306df3086",
+      "b2a982cc78bd09bb",
+      "b399f686518d4d3a",
+      "b50bb5ec6e127e90",
+      "b5438895d68982b0",
+      "b595f2ab9c54a16a",
+      "b5baf4cd00ff7c30",
+      "b96f99271d3556c8",
+      "bb3864d63450a57d",
+      "bc89739a31d34c64",
+      "bdf2ba8874961a81",
+      "c0324c3b553b4f17",
+      "c08928bf15f8e9a9",
+      "c14444cbff2b2385",
+      "c28abaa8da903e58",
+      "c3156a7b60a3fddb",
+      "c32feaf05a92506d",
+      "c3669eeb2a622193",
+      "c3e6497adebe4889",
+      "c45c619192cfa319",
+      "c503460a17f22fb1",
+      "c638e542d3a1d8b2",
+      "c74f9ad886feb456",
+      "c78751af590da069",
+      "c9588a872313160a",
+      "ca9b41bae5f7be02",
+      "caee0d0a6ed48a12",
+      "cba5ce492198fb7d",
+      "cf95a498b3045314",
+      "d0f7db58b527ed1d",
+      "d1dcc0a2e2306485",
+      "d2915462b333275c",
+      "d33f66384ce35a60",
+      "d3560ce705efee75",
+      "d36312c2bee34e4a",
+      "d3b39b69339c6c0d",
+      "d3ca7c3a1ffb6b75",
+      "d40512a8e3ec7972",
+      "d40c1021db67d8b7",
+      "d51bb08e8955ec27",
+      "d550c105dfe33722",
+      "d71adf82360883c3",
+      "d764e18f73ec58e6",
+      "d9b86b20a578cb19",
+      "da771b3716d6021f",
+      "daecbbc21ab2624a",
+      "dd32873545c1e213",
+      "df5ca7e1be5df2c3",
+      "e0dea4b9b9c0a55b",
+      "e24c00b4ec9bb4b2",
+      "e571d4867b3e0ccc",
+      "e66a42761664a67a",
+      "e672641a77e2444d",
+      "e8c300936cc3d310",
+      "e98bfa5f29b4312f",
+      "eb79c1d60d4d105d",
+      "ec4c872e87951990",
+      "ed06bd496bc0485e",
+      "ef508a11234112cb",
+      "f157c658cb45127a",
+      "f19f8aebf2c4b5c5",
+      "f2041a6f91720ce8",
+      "f217381bd109b254",
+      "f5d6887ea38529d9",
+      "f63c03a335ad0196",
+      "f70a31aafc4d18e7",
+      "f8aeef9dbbacce05",
+      "fa2ff64f83eb4395",
+      "fb35dbad75297896",
+      "fc749a4ba43902c2",
+      "fc9877ccd20bf6ad",
+      "fdc2881061704bde",
+      "ff5d32203437a1be"
+    ],
+    "heldout_states": [
+      "0058b7ca0f24fe5e",
+      "194795667ce61e5f",
+      "1fcf98748b7c88d5",
+      "212bc3e2a36d2f1f",
+      "2f706a22128d31fd",
+      "322221adc0ba48f6",
+      "32c0819b0452fb8a",
+      "355eceb29d4a2884",
+      "35fa9e3870286af8",
+      "3c32b897e96d02f5",
+      "3fd173a8e4f1418c",
+      "402921a8b58abbcd",
+      "4203c4cc1be907bd",
+      "437fc749d69d0d4e",
+      "457c01b197fa8138",
+      "49412200f2a9055b",
+      "4db73c1c5b28677b",
+      "4db8b989755dbbb0",
+      "51253d73ca37ddbb",
+      "5629368c6b7a172c",
+      "638ab93e22771d73",
+      "65c80644d993ac3d",
+      "687c7f7b81dbb824",
+      "68affadf78133a1a",
+      "6a70b1b2a364f280",
+      "72649ea21e98b757",
+      "7409fafd35c525b6",
+      "81be97ed34ce4b6e",
+      "8275a48473630a61",
+      "84615a5a0bc05ede",
+      "8672594bfe708b46",
+      "8a72e45c328a51cf",
+      "8c2aba4b832f99f1",
+      "92b87fab8de63748",
+      "95a7bb2181900077",
+      "9828557dbd233bda",
+      "a251bc71f72dff2a",
+      "a68e07fd3d3bd121",
+      "a917b0639d202f1e",
+      "aa4a83fac096a7f2",
+      "ac85780a66c2d599",
+      "ae973e3a016d7b50",
+      "afa98bd2eff7db31",
+      "b12df6e7943943fa",
+      "b3044f4247c7c449",
+      "b5b9b72ae80037f7",
+      "b69d34bd5fe7d1f1",
+      "b6e5b24e1a8abcc6",
+      "bc27231092ae5205",
+      "be6f71387054700c",
+      "c22182bb831e79c9",
+      "c83f6257567bc1d5",
+      "cdd31e4578891373",
+      "dfe7daab6d9285d0",
+      "e10634b6ff7b5b43",
+      "ea570457d09f2869",
+      "ead6dc1a6c867966",
+      "f42f5073fc4a99e6",
+      "f87f6261f1102757",
+      "f8a7ac1721222a58",
+      "fa991ee5a19d9429",
+      "fb88553a5dacf3d6"
+    ],
+    "cross_validation": [
+      {
+        "episodes": 84120,
+        "states": 63,
+        "mae": 4.0393348308058545,
+        "mse": 429.310355811321,
+        "selected_pct": 0.76059212388324,
+        "selected_actual_benefit": 60.32040302988141,
+        "positive_benefit_captured_fraction": 0.17700219379773757,
+        "missed_positive_benefit": 2.3249786759734774,
+        "negative_benefit_selected": 0.04124108642271076,
+        "threshold": 32.0,
+        "decision_regret": 1.1922188994529561,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 32.0,
+        "false_refresh_pct": 0.4211922965332746,
+        "missed_threshold_decision_pct": 1.9688378044530774,
+        "absolute_error_p95": 18.324,
+        "absolute_error_p99": 63.394999999999996
+      },
+      {
+        "episodes": 77234,
+        "states": 60,
+        "mae": 4.427231412798971,
+        "mse": 248.49871781618288,
+        "selected_pct": 1.8051047585451119,
+        "selected_actual_benefit": 30.168054393208067,
+        "positive_benefit_captured_fraction": 0.23555141524444617,
+        "missed_positive_benefit": 1.8894857766518496,
+        "negative_benefit_selected": 0.03764689600145394,
+        "threshold": 32.0,
+        "decision_regret": 1.0976210851677628,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 32.0,
+        "false_refresh_pct": 1.3951811985257716,
+        "missed_threshold_decision_pct": 1.6982508409474202,
+        "absolute_error_p95": 22.975,
+        "absolute_error_p99": 57.799
+      },
+      {
+        "episodes": 86582,
+        "states": 64,
+        "mae": 3.969942881499238,
+        "mse": 262.7886926003048,
+        "selected_pct": 0.8943172854898188,
+        "selected_actual_benefit": 46.55972350214256,
+        "positive_benefit_captured_fraction": 0.1832190376568526,
+        "missed_positive_benefit": 2.0157822004371257,
+        "negative_benefit_selected": 0.03578547892789069,
+        "threshold": 32.0,
+        "decision_regret": 0.9744989236286096,
+        "decision_regret_p95": 0.0,
+        "decision_regret_p99": 32.0,
+        "false_refresh_pct": 0.5937918691415045,
+        "missed_threshold_decision_pct": 2.024886990487225,
+        "absolute_error_p95": 19.455,
+        "absolute_error_p99": 58.189
+      }
+    ],
+    "holdout": {
+      "episodes": 70532,
+      "states": 62,
+      "mae": 3.973806288317262,
+      "mse": 296.0377231854003,
+      "selected_pct": 0.9761829889812788,
+      "selected_actual_benefit": 56.683121499962226,
+      "positive_benefit_captured_fraction": 0.24008395216070597,
+      "missed_positive_benefit": 1.9059995035184008,
+      "negative_benefit_selected": 0.04884065138776153,
+      "threshold": 32.0,
+      "decision_regret": 0.8241402574089577,
+      "decision_regret_p95": 0.0,
+      "decision_regret_p99": 30.0,
+      "false_refresh_pct": 0.6015160680574185,
+      "missed_threshold_decision_pct": 1.8632634460157886,
+      "absolute_error_p95": 18.596,
+      "absolute_error_p99": 55.076
+    },
+    "holdout_slices": {
+      "format": {
+        "16ffa": {
+          "episodes": 20111,
+          "states": 9,
+          "mae": 4.6887245575172996,
+          "mse": 908.2229266765241,
+          "selected_pct": 2.037846049691501,
+          "selected_actual_benefit": 76.5179779206842,
+          "positive_benefit_captured_fraction": 0.5373865121885993,
+          "missed_positive_benefit": 1.4541322030796886,
+          "negative_benefit_selected": 0.12984753527720327,
+          "threshold": 32.0,
+          "decision_regret": 0.9293956676412679,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 1.2699132669184738,
+          "missed_threshold_decision_pct": 1.157135010148621,
+          "absolute_error_p95": 17.974,
+          "absolute_error_p99": 60.956
+        },
+        "1v1": {
+          "episodes": 2760,
+          "states": 7,
+          "mae": 5.006463564643818,
+          "mse": 222.68478642151203,
+          "selected_pct": 0.5185978324276199,
+          "selected_actual_benefit": 39.88840375934286,
+          "positive_benefit_captured_fraction": 0.07026757656949066,
+          "missed_positive_benefit": 3.1097577523679125,
+          "negative_benefit_selected": 0.028169741999529246,
+          "threshold": 32.0,
+          "decision_regret": 1.2250922359420187,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 44.0,
+          "false_refresh_pct": 0.25719453910943285,
+          "missed_threshold_decision_pct": 3.506178316162936,
+          "absolute_error_p95": 25.678,
+          "absolute_error_p99": 63.323
+        },
+        "2v2": {
+          "episodes": 5678,
+          "states": 8,
+          "mae": 4.046449487636596,
+          "mse": 313.89137789302316,
+          "selected_pct": 1.211131793048783,
+          "selected_actual_benefit": 68.13948962183333,
+          "positive_benefit_captured_fraction": 0.4047147682128675,
+          "missed_positive_benefit": 1.2752334618737988,
+          "negative_benefit_selected": 0.04173009031752888,
+          "threshold": 32.0,
+          "decision_regret": 0.5991686100249969,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 30.0,
+          "false_refresh_pct": 0.7909047669517926,
+          "missed_threshold_decision_pct": 1.1981814239934745,
+          "absolute_error_p95": 17.747,
+          "absolute_error_p99": 55.3
+        },
+        "3ffa": {
+          "episodes": 4454,
+          "states": 8,
+          "mae": 2.3901300300962043,
+          "mse": 56.281906982996475,
+          "selected_pct": 0.14479892615044812,
+          "selected_actual_benefit": 35.161913968100535,
+          "positive_benefit_captured_fraction": 0.03953270137753958,
+          "missed_positive_benefit": 1.322037903962457,
+          "negative_benefit_selected": 0.0035008237232289955,
+          "threshold": 32.0,
+          "decision_regret": 0.2659332205358174,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 8.0,
+          "false_refresh_pct": 0.09830265425039787,
+          "missed_threshold_decision_pct": 1.1685159790612591,
+          "absolute_error_p95": 12.797,
+          "absolute_error_p99": 35.924
+        },
+        "4ffa": {
+          "episodes": 9121,
+          "states": 8,
+          "mae": 4.021010088778455,
+          "mse": 149.60043155367137,
+          "selected_pct": 0.5475237958742706,
+          "selected_actual_benefit": 38.92356409204241,
+          "positive_benefit_captured_fraction": 0.08913165124733394,
+          "missed_positive_benefit": 2.28476393376427,
+          "negative_benefit_selected": 0.010456360153635099,
+          "threshold": 32.0,
+          "decision_regret": 0.8074407692106577,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.32058515532781906,
+          "missed_threshold_decision_pct": 2.0653344507829328,
+          "absolute_error_p95": 20.086,
+          "absolute_error_p99": 55.894
+        },
+        "4v4": {
+          "episodes": 7487,
+          "states": 6,
+          "mae": 2.205070007290852,
+          "mse": 65.8370045181403,
+          "selected_pct": 0.18709743082565297,
+          "selected_actual_benefit": 27.79443495769426,
+          "positive_benefit_captured_fraction": 0.05741550269305892,
+          "missed_positive_benefit": 1.0398286716600977,
+          "negative_benefit_selected": 0.01133624822296426,
+          "threshold": 32.0,
+          "decision_regret": 0.3082116539265286,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 8.0,
+          "false_refresh_pct": 0.12526622993520656,
+          "missed_threshold_decision_pct": 1.1082922934248958,
+          "absolute_error_p95": 9.948,
+          "absolute_error_p99": 35.743
+        },
+        "8ffa": {
+          "episodes": 8513,
+          "states": 8,
+          "mae": 5.115824577775705,
+          "mse": 309.1411910217802,
+          "selected_pct": 1.90316850381931,
+          "selected_actual_benefit": 33.279460180931245,
+          "positive_benefit_captured_fraction": 0.22472381049010456,
+          "missed_positive_benefit": 2.611120271588645,
+          "negative_benefit_selected": 0.12350270963067103,
+          "threshold": 32.0,
+          "decision_regret": 1.4294966203399062,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 38.0,
+          "false_refresh_pct": 1.279332556327841,
+          "missed_threshold_decision_pct": 2.5513296482557797,
+          "absolute_error_p95": 25.477,
+          "absolute_error_p99": 67.981
+        },
+        "8v8": {
+          "episodes": 12408,
+          "states": 8,
+          "mae": 4.316777992799166,
+          "mse": 342.6421604155548,
+          "selected_pct": 1.2592995800126447,
+          "selected_actual_benefit": 70.34173552208148,
+          "positive_benefit_captured_fraction": 0.30138347087499623,
+          "missed_positive_benefit": 2.1511218298503354,
+          "negative_benefit_selected": 0.04218170177733141,
+          "threshold": 32.0,
+          "decision_regret": 1.0283832816504683,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 0.6706293756383849,
+          "missed_threshold_decision_pct": 2.151140446296407,
+          "absolute_error_p95": 19.909,
+          "absolute_error_p99": 64.33
+        }
+      },
+      "generator": {
+        "anthill": {
+          "episodes": 1104,
+          "states": 2,
+          "mae": 3.3480041298914323,
+          "mse": 213.88181261576392,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 1.605717409982036,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.8629032258064518,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 8.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 1.1520737327188941,
+          "absolute_error_p95": 12.898,
+          "absolute_error_p99": 37.709
+        },
+        "braided-river": {
+          "episodes": 4170,
+          "states": 1,
+          "mae": 5.265908153477219,
+          "mse": 448.9666167992805,
+          "selected_pct": 2.9496402877697845,
+          "selected_actual_benefit": 60.76422764227643,
+          "positive_benefit_captured_fraction": 0.4396584962820159,
+          "missed_positive_benefit": 2.4395683453237416,
+          "negative_benefit_selected": 0.12182254196642686,
+          "threshold": 32.0,
+          "decision_regret": 1.5134292565947243,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 41.0,
+          "false_refresh_pct": 1.390887290167866,
+          "missed_threshold_decision_pct": 1.8705035971223023,
+          "absolute_error_p95": 24.761000000000003,
+          "absolute_error_p99": 93.422
+        },
+        "canals": {
+          "episodes": 607,
+          "states": 1,
+          "mae": 4.471135090609556,
+          "mse": 160.67040394233936,
+          "selected_pct": 1.9769357495881386,
+          "selected_actual_benefit": 37.16666666666667,
+          "positive_benefit_captured_fraction": 0.26533996683250416,
+          "missed_positive_benefit": 2.189456342668864,
+          "negative_benefit_selected": 0.05601317957166392,
+          "threshold": 32.0,
+          "decision_regret": 0.8665568369028007,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 1.3179571663920924,
+          "missed_threshold_decision_pct": 2.14168039538715,
+          "absolute_error_p95": 23.079,
+          "absolute_error_p99": 49.848
+        },
+        "caravanserai": {
+          "episodes": 2230,
+          "states": 2,
+          "mae": 2.9280794611817504,
+          "mse": 97.91343755693536,
+          "selected_pct": 0.4537948498008389,
+          "selected_actual_benefit": 25.392001509149217,
+          "positive_benefit_captured_fraction": 0.07778888940388178,
+          "missed_positive_benefit": 1.507410869675016,
+          "negative_benefit_selected": 0.011923136517687385,
+          "threshold": 32.0,
+          "decision_regret": 0.6122044362491429,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 22.0,
+          "false_refresh_pct": 0.32234757723543833,
+          "missed_threshold_decision_pct": 1.7290174455484704,
+          "absolute_error_p95": 16.058,
+          "absolute_error_p99": 43.39
+        },
+        "central-quarry": {
+          "episodes": 846,
+          "states": 1,
+          "mae": 5.357905437352246,
+          "mse": 304.93997332151304,
+          "selected_pct": 0.7092198581560284,
+          "selected_actual_benefit": 78.66666666666667,
+          "positive_benefit_captured_fraction": 0.14946401225114855,
+          "missed_positive_benefit": 3.2825059101654848,
+          "negative_benefit_selected": 0.018912529550827423,
+          "threshold": 32.0,
+          "decision_regret": 1.6477541371158393,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 56.0,
+          "false_refresh_pct": 0.1182033096926714,
+          "missed_threshold_decision_pct": 2.7186761229314422,
+          "absolute_error_p95": 22.837,
+          "absolute_error_p99": 80.367
+        },
+        "comb": {
+          "episodes": 2602,
+          "states": 2,
+          "mae": 4.412352136322807,
+          "mse": 128.12628143574898,
+          "selected_pct": 0.5078124999999999,
+          "selected_actual_benefit": 23.846153846153854,
+          "positive_benefit_captured_fraction": 0.049377518969720514,
+          "missed_positive_benefit": 2.5569236951588503,
+          "negative_benefit_selected": 0.01171875,
+          "threshold": 32.0,
+          "decision_regret": 0.6382729765506808,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 26.0,
+          "false_refresh_pct": 0.3515625,
+          "missed_threshold_decision_pct": 2.527243286686838,
+          "absolute_error_p95": 24.172,
+          "absolute_error_p99": 51.123999999999995
+        },
+        "contested-commons": {
+          "episodes": 420,
+          "states": 3,
+          "mae": 2.08734942725667,
+          "mse": 36.66264525784051,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 1.2280324925556139,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.14990767501605654,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 2.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 1.3296804752729607,
+          "absolute_error_p95": 10.099,
+          "absolute_error_p99": 34.414
+        },
+        "crater-lakes": {
+          "episodes": 6799,
+          "states": 2,
+          "mae": 5.335333730849936,
+          "mse": 313.642303621209,
+          "selected_pct": 3.4192448183577056,
+          "selected_actual_benefit": 50.607594587691715,
+          "positive_benefit_captured_fraction": 0.42856921736581993,
+          "missed_positive_benefit": 2.4198572691453024,
+          "negative_benefit_selected": 0.08447900945624415,
+          "threshold": 32.0,
+          "decision_regret": 1.3076184054982931,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 38.0,
+          "false_refresh_pct": 1.9241116759329022,
+          "missed_threshold_decision_pct": 2.557323170775276,
+          "absolute_error_p95": 27.328,
+          "absolute_error_p99": 73.664
+        },
+        "drowned-forest": {
+          "episodes": 1323,
+          "states": 1,
+          "mae": 2.0115774754346183,
+          "mse": 38.00068212018141,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 1.4263038548752833,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.15873015873015872,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 5.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 1.5117157974300828,
+          "absolute_error_p95": 10.163,
+          "absolute_error_p99": 32.878
+        },
+        "drumlin-field": {
+          "episodes": 2516,
+          "states": 5,
+          "mae": 2.7575202686889906,
+          "mse": 86.1031210885025,
+          "selected_pct": 0.563204005006258,
+          "selected_actual_benefit": 12.444444444444445,
+          "positive_benefit_captured_fraction": 0.07119650339715035,
+          "missed_positive_benefit": 1.3159925754700035,
+          "negative_benefit_selected": 0.030788485607008774,
+          "threshold": 32.0,
+          "decision_regret": 0.595347318476454,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.4505632040050064,
+          "missed_threshold_decision_pct": 1.1972652382642486,
+          "absolute_error_p95": 11.743,
+          "absolute_error_p99": 53.472
+        },
+        "encircled-kingdom": {
+          "episodes": 476,
+          "states": 1,
+          "mae": 0.7605840336134454,
+          "mse": 5.614603218487396,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.11764705882352942,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 2.662,
+          "absolute_error_p99": 16.241
+        },
+        "even-ground": {
+          "episodes": 32,
+          "states": 1,
+          "mae": 0.607125,
+          "mse": 0.7633898125,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": null,
+          "missed_positive_benefit": 0.0,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 2.208,
+          "absolute_error_p99": 2.592
+        },
+        "faulted-city": {
+          "episodes": 519,
+          "states": 1,
+          "mae": 1.0131676300578034,
+          "mse": 5.010266751445087,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.16570327552986513,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 5.207,
+          "absolute_error_p99": 9.628
+        },
+        "fingerprint": {
+          "episodes": 893,
+          "states": 1,
+          "mae": 3.038703247480403,
+          "mse": 69.86521238073908,
+          "selected_pct": 1.5677491601343785,
+          "selected_actual_benefit": 18.857142857142858,
+          "positive_benefit_captured_fraction": 0.21470588235294116,
+          "missed_positive_benefit": 1.1959686450167972,
+          "negative_benefit_selected": 0.03135498320268757,
+          "threshold": 32.0,
+          "decision_regret": 0.4412094064949608,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 18.0,
+          "false_refresh_pct": 1.2318029115341544,
+          "missed_threshold_decision_pct": 1.1198208286674132,
+          "absolute_error_p95": 17.634,
+          "absolute_error_p99": 44.126
+        },
+        "fjord-continent": {
+          "episodes": 1652,
+          "states": 2,
+          "mae": 3.0460793866811833,
+          "mse": 153.41379613843628,
+          "selected_pct": 1.7171717171717171,
+          "selected_actual_benefit": 51.05882352941177,
+          "positive_benefit_captured_fraction": 0.4533033858211272,
+          "missed_positive_benefit": 1.1532389765922701,
+          "negative_benefit_selected": 0.07946127946127947,
+          "threshold": 32.0,
+          "decision_regret": 0.5676767676767677,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 22.0,
+          "false_refresh_pct": 0.8417508417508417,
+          "missed_threshold_decision_pct": 0.8417508417508417,
+          "absolute_error_p95": 15.133,
+          "absolute_error_p99": 48.699
+        },
+        "gauntlet": {
+          "episodes": 909,
+          "states": 1,
+          "mae": 1.5918591859185915,
+          "mse": 14.881548147414742,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.21342134213421338,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.052805280528052806,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.22002200220022,
+          "absolute_error_p95": 6.939,
+          "absolute_error_p99": 11.004
+        },
+        "hilbert-river": {
+          "episodes": 2051,
+          "states": 1,
+          "mae": 1.2618293515358363,
+          "mse": 11.679359850804484,
+          "selected_pct": 0.04875670404680643,
+          "selected_actual_benefit": 0.0,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.16479765967820578,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.019502681618722574,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.04875670404680643,
+          "missed_threshold_decision_pct": 0.04875670404680643,
+          "absolute_error_p95": 6.115,
+          "absolute_error_p99": 15.516
+        },
+        "hills": {
+          "episodes": 1867,
+          "states": 1,
+          "mae": 2.5933470808784147,
+          "mse": 101.33447127423675,
+          "selected_pct": 1.6068559185859668,
+          "selected_actual_benefit": 31.066666666666666,
+          "positive_benefit_captured_fraction": 0.502262443438914,
+          "missed_positive_benefit": 0.5891805034815212,
+          "negative_benefit_selected": 0.09534011783610069,
+          "threshold": 32.0,
+          "decision_regret": 0.45259775040171396,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 22.0,
+          "false_refresh_pct": 1.0712372790573113,
+          "missed_threshold_decision_pct": 0.42849491162292447,
+          "absolute_error_p95": 13.691,
+          "absolute_error_p99": 39.866
+        },
+        "hungry-marches": {
+          "episodes": 564,
+          "states": 1,
+          "mae": 6.19706205673759,
+          "mse": 1189.1530618670215,
+          "selected_pct": 4.432624113475178,
+          "selected_actual_benefit": 88.4,
+          "positive_benefit_captured_fraction": 0.8876669285153181,
+          "missed_positive_benefit": 0.5070921985815604,
+          "negative_benefit_selected": 0.08865248226950356,
+          "threshold": 32.0,
+          "decision_regret": 1.0106382978723407,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 2.659574468085107,
+          "missed_threshold_decision_pct": 0.35460992907801425,
+          "absolute_error_p95": 24.305999999999997,
+          "absolute_error_p99": 89.04599999999999
+        },
+        "islands": {
+          "episodes": 4594,
+          "states": 2,
+          "mae": 5.324881330415129,
+          "mse": 303.66389048629804,
+          "selected_pct": 2.3786321361201463,
+          "selected_actual_benefit": 37.66502372442048,
+          "positive_benefit_captured_fraction": 0.2579324980954017,
+          "missed_positive_benefit": 2.7861303387590604,
+          "negative_benefit_selected": 0.07250838022713872,
+          "threshold": 32.0,
+          "decision_regret": 1.5627226813544797,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 48.0,
+          "false_refresh_pct": 1.585754757413431,
+          "missed_threshold_decision_pct": 2.7341864542117915,
+          "absolute_error_p95": 28.05,
+          "absolute_error_p99": 75.532
+        },
+        "isles": {
+          "episodes": 1833,
+          "states": 1,
+          "mae": 22.057738134206215,
+          "mse": 11825.23974543044,
+          "selected_pct": 8.947081287506817,
+          "selected_actual_benefit": 180.18292682926827,
+          "positive_benefit_captured_fraction": 0.9031834778639891,
+          "missed_positive_benefit": 1.8516093835242766,
+          "negative_benefit_selected": 1.1522094926350241,
+          "threshold": 32.0,
+          "decision_regret": 2.962902345881069,
+          "decision_regret_p95": 22.0,
+          "decision_regret_p99": 54.0,
+          "false_refresh_pct": 5.073649754500818,
+          "missed_threshold_decision_pct": 1.8548827059465356,
+          "absolute_error_p95": 72.899,
+          "absolute_error_p99": 609.764
+        },
+        "locust": {
+          "episodes": 289,
+          "states": 1,
+          "mae": 2.720152249134948,
+          "mse": 22.790366456747403,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.2076124567474048,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 11.279,
+          "absolute_error_p99": 16.605
+        },
+        "marchland": {
+          "episodes": 691,
+          "states": 1,
+          "mae": 3.192722141823445,
+          "mse": 51.520367541244575,
+          "selected_pct": 1.4471780028943564,
+          "selected_actual_benefit": 5.6000000000000005,
+          "positive_benefit_captured_fraction": 0.11934900542495477,
+          "missed_positive_benefit": 0.7047756874095515,
+          "negative_benefit_selected": 0.014471780028943563,
+          "threshold": 32.0,
+          "decision_regret": 0.44283646888567296,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 28.0,
+          "false_refresh_pct": 1.4471780028943564,
+          "missed_threshold_decision_pct": 0.43415340086830684,
+          "absolute_error_p95": 14.009,
+          "absolute_error_p99": 34.927
+        },
+        "maze": {
+          "episodes": 4098,
+          "states": 2,
+          "mae": 5.2952510374282316,
+          "mse": 322.2618117738555,
+          "selected_pct": 1.9516124498415306,
+          "selected_actual_benefit": 26.861952558851318,
+          "positive_benefit_captured_fraction": 0.16767594941741568,
+          "missed_positive_benefit": 2.9423344506988798,
+          "negative_benefit_selected": 0.06850715746421268,
+          "threshold": 32.0,
+          "decision_regret": 1.4684625331168875,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 1.4403650060787494,
+          "missed_threshold_decision_pct": 2.703111054891461,
+          "absolute_error_p95": 27.659,
+          "absolute_error_p99": 61.719
+        },
+        "old-growth": {
+          "episodes": 4732,
+          "states": 4,
+          "mae": 11.006857573725863,
+          "mse": 1323.0920330098095,
+          "selected_pct": 4.375423760557357,
+          "selected_actual_benefit": 95.67921708377872,
+          "positive_benefit_captured_fraction": 0.4512457965642486,
+          "missed_positive_benefit": 5.321497449158096,
+          "negative_benefit_selected": 0.1895467270313605,
+          "threshold": 32.0,
+          "decision_regret": 2.901092605336531,
+          "decision_regret_p95": 16.0,
+          "decision_regret_p99": 70.0,
+          "false_refresh_pct": 1.8543593265879417,
+          "missed_threshold_decision_pct": 5.773103619852663,
+          "absolute_error_p95": 50.19,
+          "absolute_error_p99": 156.799
+        },
+        "orchard-commons": {
+          "episodes": 1177,
+          "states": 1,
+          "mae": 4.1384316057773995,
+          "mse": 115.08441471028037,
+          "selected_pct": 0.33984706881903143,
+          "selected_actual_benefit": 23.5,
+          "positive_benefit_captured_fraction": 0.035391566265060244,
+          "missed_positive_benefit": 2.1767204757858964,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.6040781648258283,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 14.0,
+          "false_refresh_pct": 0.2548853016142736,
+          "missed_threshold_decision_pct": 2.463891248937978,
+          "absolute_error_p95": 20.471,
+          "absolute_error_p99": 38.243
+        },
+        "plantations": {
+          "episodes": 3067,
+          "states": 3,
+          "mae": 2.5535906604763263,
+          "mse": 42.84146352176882,
+          "selected_pct": 0.15015015015015015,
+          "selected_actual_benefit": 34.800000000000004,
+          "positive_benefit_captured_fraction": 0.03525611595903113,
+          "missed_positive_benefit": 1.429824001211721,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.15890653686862216,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 1.0,
+          "false_refresh_pct": 0.09009009009009009,
+          "missed_threshold_decision_pct": 0.9465863968233635,
+          "absolute_error_p95": 13.711,
+          "absolute_error_p99": 28.316
+        },
+        "polder": {
+          "episodes": 356,
+          "states": 1,
+          "mae": 3.979775280898876,
+          "mse": 106.7671150280899,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 1.7078651685393258,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.44662921348314605,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 28.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 1.9662921348314606,
+          "absolute_error_p95": 17.412,
+          "absolute_error_p99": 55.3
+        },
+        "ring-world": {
+          "episodes": 2343,
+          "states": 3,
+          "mae": 4.115606026056944,
+          "mse": 194.9471252524433,
+          "selected_pct": 1.1698618841475983,
+          "selected_actual_benefit": 5.136563876651983,
+          "positive_benefit_captured_fraction": 0.1532183128162183,
+          "missed_positive_benefit": 2.0615225718976715,
+          "negative_benefit_selected": 0.31292517006802717,
+          "threshold": 32.0,
+          "decision_regret": 0.9242946317966269,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.7180650037792894,
+          "missed_threshold_decision_pct": 2.1128608319350537,
+          "absolute_error_p95": 20.11,
+          "absolute_error_p99": 60.04
+        },
+        "river": {
+          "episodes": 136,
+          "states": 1,
+          "mae": 2.379830882352941,
+          "mse": 20.641263242647057,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.9558823529411765,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 11.482,
+          "absolute_error_p99": 16.43
+        },
+        "rugged-archipelago": {
+          "episodes": 2462,
+          "states": 2,
+          "mae": 7.72274394366011,
+          "mse": 865.0600069384524,
+          "selected_pct": 5.083016074450085,
+          "selected_actual_benefit": 51.39082492458129,
+          "positive_benefit_captured_fraction": 0.620975371102565,
+          "missed_positive_benefit": 1.7440659369712352,
+          "negative_benefit_selected": 0.24518824027072758,
+          "threshold": 32.0,
+          "decision_regret": 1.9454103214890015,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 42.0,
+          "false_refresh_pct": 3.6024746192893398,
+          "missed_threshold_decision_pct": 1.1844331641285957,
+          "absolute_error_p95": 36.33,
+          "absolute_error_p99": 102.095
+        },
+        "savannah": {
+          "episodes": 1548,
+          "states": 2,
+          "mae": 3.5053687746962985,
+          "mse": 111.47849888500183,
+          "selected_pct": 0.19323002135129133,
+          "selected_actual_benefit": 9.276889848812093,
+          "positive_benefit_captured_fraction": 0.012497992267027322,
+          "missed_positive_benefit": 1.4163635362012061,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.4810517722907314,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 8.0,
+          "false_refresh_pct": 0.19323002135129133,
+          "missed_threshold_decision_pct": 1.6063549723134347,
+          "absolute_error_p95": 19.746,
+          "absolute_error_p99": 42.745
+        },
+        "shattered-coast": {
+          "episodes": 299,
+          "states": 1,
+          "mae": 8.659652173913045,
+          "mse": 752.5118825016722,
+          "selected_pct": 2.675585284280936,
+          "selected_actual_benefit": 27.75,
+          "positive_benefit_captured_fraction": 0.18240620957309187,
+          "missed_positive_benefit": 4.2274247491638794,
+          "negative_benefit_selected": 0.2006688963210702,
+          "threshold": 32.0,
+          "decision_regret": 3.0568561872909696,
+          "decision_regret_p95": 2.0,
+          "decision_regret_p99": 92.0,
+          "false_refresh_pct": 2.006688963210702,
+          "missed_threshold_decision_pct": 3.0100334448160537,
+          "absolute_error_p95": 32.72,
+          "absolute_error_p99": 131.66
+        },
+        "spider-web": {
+          "episodes": 2030,
+          "states": 1,
+          "mae": 2.894303448275862,
+          "mse": 135.48828316453202,
+          "selected_pct": 1.3300492610837438,
+          "selected_actual_benefit": 32.88888888888889,
+          "positive_benefit_captured_fraction": 0.3289308176100629,
+          "missed_positive_benefit": 1.0512315270935964,
+          "negative_benefit_selected": 0.07783251231527094,
+          "threshold": 32.0,
+          "decision_regret": 0.38719211822660093,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 16.0,
+          "false_refresh_pct": 0.7881773399014778,
+          "missed_threshold_decision_pct": 0.8866995073891626,
+          "absolute_error_p95": 13.312999999999999,
+          "absolute_error_p99": 40.231
+        },
+        "stone-highlands": {
+          "episodes": 421,
+          "states": 2,
+          "mae": 4.584662851405622,
+          "mse": 388.23881569939755,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 3.1662650602409634,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 1.8409638554216865,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 44.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 2.8915662650602405,
+          "absolute_error_p95": 17.518,
+          "absolute_error_p99": 64.968
+        },
+        "swamp": {
+          "episodes": 2443,
+          "states": 1,
+          "mae": 5.930163733115023,
+          "mse": 322.63604961522714,
+          "selected_pct": 2.1285304952926727,
+          "selected_actual_benefit": 55.61538461538461,
+          "positive_benefit_captured_fraction": 0.26052139870095203,
+          "missed_positive_benefit": 3.4019647973802702,
+          "negative_benefit_selected": 0.014735980352026197,
+          "threshold": 32.0,
+          "decision_regret": 1.5452312730249693,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 48.0,
+          "false_refresh_pct": 1.1051985264019648,
+          "missed_threshold_decision_pct": 3.5611952517396643,
+          "absolute_error_p95": 30.725,
+          "absolute_error_p99": 76.249
+        },
+        "symmetric-arena": {
+          "episodes": 2997,
+          "states": 1,
+          "mae": 3.783517183850517,
+          "mse": 116.1613927937938,
+          "selected_pct": 0.7674341007674342,
+          "selected_actual_benefit": 14.043478260869566,
+          "positive_benefit_captured_fraction": 0.06467391304347825,
+          "missed_positive_benefit": 1.722722722722723,
+          "negative_benefit_selected": 0.011344678011344679,
+          "threshold": 32.0,
+          "decision_regret": 0.6713380046713381,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 0.6673340006673341,
+          "missed_threshold_decision_pct": 1.5348682015348685,
+          "absolute_error_p95": 21.048,
+          "absolute_error_p99": 46.217
+        },
+        "tidal-flats": {
+          "episodes": 3129,
+          "states": 1,
+          "mae": 5.890331415787792,
+          "mse": 345.5762955982742,
+          "selected_pct": 0.6391818472355385,
+          "selected_actual_benefit": 39.3,
+          "positive_benefit_captured_fraction": 0.0708133971291866,
+          "missed_positive_benefit": 4.654841802492809,
+          "negative_benefit_selected": 0.10354745925215723,
+          "threshold": 32.0,
+          "decision_regret": 2.0703100031959094,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 66.0,
+          "false_refresh_pct": 0.19175455417066153,
+          "missed_threshold_decision_pct": 4.570150207734101,
+          "absolute_error_p95": 28.961,
+          "absolute_error_p99": 87.056
+        },
+        "watershed": {
+          "episodes": 307,
+          "states": 1,
+          "mae": 0.7730553745928339,
+          "mse": 3.4764734918566775,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.08469055374592833,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 4.331,
+          "absolute_error_p99": 7.164
+        }
+      },
+      "dimensions": {
+        "128x128": {
+          "episodes": 1110,
+          "states": 6,
+          "mae": 3.557339791845945,
+          "mse": 213.53206531388145,
+          "selected_pct": 0.6688963210702342,
+          "selected_actual_benefit": 27.75,
+          "positive_benefit_captured_fraction": 0.1274794677831835,
+          "missed_positive_benefit": 1.6138134943061693,
+          "negative_benefit_selected": 0.05016722408026755,
+          "threshold": 32.0,
+          "decision_regret": 0.8842140468227425,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.5016722408026756,
+          "missed_threshold_decision_pct": 1.2525083612040133,
+          "absolute_error_p95": 14.347,
+          "absolute_error_p99": 55.894
+        },
+        "128x256": {
+          "episodes": 4744,
+          "states": 3,
+          "mae": 7.373865590747243,
+          "mse": 694.137106942379,
+          "selected_pct": 3.9837067652805884,
+          "selected_actual_benefit": 51.74834232673746,
+          "positive_benefit_captured_fraction": 0.4327160723665838,
+          "missed_positive_benefit": 2.89473452155784,
+          "negative_benefit_selected": 0.14655990725522064,
+          "threshold": 32.0,
+          "decision_regret": 2.1857882616207625,
+          "decision_regret_p95": 4.0,
+          "decision_regret_p99": 56.0,
+          "false_refresh_pct": 2.6173179697216833,
+          "missed_threshold_decision_pct": 2.7945451955084013,
+          "absolute_error_p95": 35.96,
+          "absolute_error_p99": 104.487
+        },
+        "128x64": {
+          "episodes": 812,
+          "states": 3,
+          "mae": 2.786984577409352,
+          "mse": 78.01845103195996,
+          "selected_pct": 0.6589785831960462,
+          "selected_actual_benefit": 37.16666666666666,
+          "positive_benefit_captured_fraction": 0.13523791221587256,
+          "missed_positive_benefit": 1.6855027885967504,
+          "negative_benefit_selected": 0.01867105985722131,
+          "threshold": 32.0,
+          "decision_regret": 0.4352877317614346,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 16.0,
+          "false_refresh_pct": 0.4393190554640308,
+          "missed_threshold_decision_pct": 1.8699628292909003,
+          "absolute_error_p95": 13.656,
+          "absolute_error_p99": 41.001999999999995
+        },
+        "256x128": {
+          "episodes": 7095,
+          "states": 11,
+          "mae": 4.966122033302205,
+          "mse": 202.82492794783258,
+          "selected_pct": 0.23760906184145852,
+          "selected_actual_benefit": 41.89384853279752,
+          "positive_benefit_captured_fraction": 0.037394923539108435,
+          "missed_positive_benefit": 2.7630417780495184,
+          "negative_benefit_selected": 0.007794037577132203,
+          "threshold": 32.0,
+          "decision_regret": 1.0770241451518738,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 36.0,
+          "false_refresh_pct": 0.12026243864510615,
+          "missed_threshold_decision_pct": 2.7394812368514123,
+          "absolute_error_p95": 22.217,
+          "absolute_error_p99": 61.455
+        },
+        "256x256": {
+          "episodes": 17728,
+          "states": 10,
+          "mae": 4.798926844727852,
+          "mse": 271.59129467347435,
+          "selected_pct": 1.0761977703817225,
+          "selected_actual_benefit": 47.701204814667044,
+          "positive_benefit_captured_fraction": 0.15959999305529357,
+          "missed_positive_benefit": 2.865657424331324,
+          "negative_benefit_selected": 0.030856429422522532,
+          "threshold": 32.0,
+          "decision_regret": 1.301701609688811,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 38.0,
+          "false_refresh_pct": 0.6054043114463854,
+          "missed_threshold_decision_pct": 2.8489170806031954,
+          "absolute_error_p95": 23.965,
+          "absolute_error_p99": 68.972
+        },
+        "256x512": {
+          "episodes": 11188,
+          "states": 9,
+          "mae": 4.298486600117304,
+          "mse": 364.81594933658823,
+          "selected_pct": 1.8694108172300001,
+          "selected_actual_benefit": 66.03538536574408,
+          "positive_benefit_captured_fraction": 0.4250843613724554,
+          "missed_positive_benefit": 1.7760306327227038,
+          "negative_benefit_selected": 0.07869889014920708,
+          "threshold": 32.0,
+          "decision_regret": 0.8260705448338542,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 1.0817035435478952,
+          "missed_threshold_decision_pct": 1.6775983594078545,
+          "absolute_error_p95": 19.899,
+          "absolute_error_p99": 59.316
+        },
+        "512x256": {
+          "episodes": 18208,
+          "states": 9,
+          "mae": 4.594085578844272,
+          "mse": 415.9511654746989,
+          "selected_pct": 2.040847426787439,
+          "selected_actual_benefit": 62.960093680868795,
+          "positive_benefit_captured_fraction": 0.42449421292469874,
+          "missed_positive_benefit": 1.835069772000381,
+          "negative_benefit_selected": 0.06863166102596165,
+          "threshold": 32.0,
+          "decision_regret": 0.9567254625788469,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 32.0,
+          "false_refresh_pct": 1.1980743034130097,
+          "missed_threshold_decision_pct": 1.6658862206743723,
+          "absolute_error_p95": 22.242,
+          "absolute_error_p99": 63.612
+        },
+        "512x512": {
+          "episodes": 9279,
+          "states": 8,
+          "mae": 6.995008099922556,
+          "mse": 2193.200083474226,
+          "selected_pct": 2.715738744418693,
+          "selected_actual_benefit": 115.27719536849327,
+          "positive_benefit_captured_fraction": 0.6572623575005828,
+          "missed_positive_benefit": 1.8301752079485418,
+          "negative_benefit_selected": 0.379069530659977,
+          "threshold": 32.0,
+          "decision_regret": 1.2961540497667239,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 34.0,
+          "false_refresh_pct": 1.5231206009184948,
+          "missed_threshold_decision_pct": 1.7569304955325826,
+          "absolute_error_p95": 24.527,
+          "absolute_error_p99": 91.197
+        },
+        "64x128": {
+          "episodes": 307,
+          "states": 1,
+          "mae": 0.7730553745928339,
+          "mse": 3.4764734918566775,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.08469055374592833,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 4.331,
+          "absolute_error_p99": 7.164
+        },
+        "64x64": {
+          "episodes": 61,
+          "states": 2,
+          "mae": 1.1829924242424246,
+          "mse": 10.438484213636364,
+          "selected_pct": 0.0,
+          "selected_actual_benefit": null,
+          "positive_benefit_captured_fraction": 0.0,
+          "missed_positive_benefit": 0.1272727272727273,
+          "negative_benefit_selected": 0.0,
+          "threshold": 32.0,
+          "decision_regret": 0.0,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 0.0,
+          "false_refresh_pct": 0.0,
+          "missed_threshold_decision_pct": 0.0,
+          "absolute_error_p95": 2.487,
+          "absolute_error_p99": 13.875
+        }
+      },
+      "cohort": {
+        "contradictions-20261018-round001-exploration": {
+          "episodes": 42249,
+          "states": 32,
+          "mae": 5.308585493367302,
+          "mse": 714.4019449838477,
+          "selected_pct": 1.988007904945623,
+          "selected_actual_benefit": 72.16628733379669,
+          "positive_benefit_captured_fraction": 0.4250118555525785,
+          "missed_positive_benefit": 2.1194992147694456,
+          "negative_benefit_selected": 0.1319908818106959,
+          "threshold": 32.0,
+          "decision_regret": 1.2092838270857962,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 34.0,
+          "false_refresh_pct": 1.1596613822838007,
+          "missed_threshold_decision_pct": 1.9329075301972884,
+          "absolute_error_p95": 23.124000000000002,
+          "absolute_error_p99": 71.62
+        },
+        "contradictions-20261018-round002-candidate": {
+          "episodes": 15006,
+          "states": 16,
+          "mae": 3.5074562239314817,
+          "mse": 134.7107157113028,
+          "selected_pct": 0.5989321827679871,
+          "selected_actual_benefit": 31.186148558184694,
+          "positive_benefit_captured_fraction": 0.10045742507895065,
+          "missed_positive_benefit": 1.8785184918441231,
+          "negative_benefit_selected": 0.02300177735793334,
+          "threshold": 32.0,
+          "decision_regret": 0.6954182971293157,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.40420597162713484,
+          "missed_threshold_decision_pct": 1.9332454571738737,
+          "absolute_error_p95": 17.529,
+          "absolute_error_p99": 47.641
+        },
+        "contradictions-20261018-round002-exploration": {
+          "episodes": 13277,
+          "states": 14,
+          "mae": 3.5717272120387813,
+          "mse": 200.32751633514783,
+          "selected_pct": 0.7188596854435181,
+          "selected_actual_benefit": 56.35101113115031,
+          "positive_benefit_captured_fraction": 0.19468639624927575,
+          "missed_positive_benefit": 1.7474618156159099,
+          "negative_benefit_selected": 0.017368169024483526,
+          "threshold": 32.0,
+          "decision_regret": 0.6964406082914033,
+          "decision_regret_p95": 0.0,
+          "decision_regret_p99": 24.0,
+          "false_refresh_pct": 0.4379909466916038,
+          "missed_threshold_decision_pct": 1.6536553395181162,
+          "absolute_error_p95": 16.792,
+          "absolute_error_p99": 49.185
+        }
+      }
+    },
+    "split_coverage": {
+      "development_maps": {
+        "16ffa": 23,
+        "1v1": 23,
+        "2v2": 23,
+        "3ffa": 21,
+        "4ffa": 24,
+        "4v4": 25,
+        "8ffa": 24,
+        "8v8": 24
+      },
+      "holdout_maps": {
+        "16ffa": 9,
+        "1v1": 7,
+        "2v2": 8,
+        "3ffa": 8,
+        "4ffa": 8,
+        "4v4": 6,
+        "8ffa": 8,
+        "8v8": 8
+      },
+      "folds": [
+        {
+          "training_maps": {
+            "16ffa": 15,
+            "1v1": 18,
+            "2v2": 12,
+            "3ffa": 16,
+            "4ffa": 16,
+            "4v4": 16,
+            "8ffa": 15,
+            "8v8": 16
+          },
+          "validation_maps": {
+            "16ffa": 8,
+            "1v1": 5,
+            "2v2": 11,
+            "3ffa": 5,
+            "4ffa": 8,
+            "4v4": 9,
+            "8ffa": 9,
+            "8v8": 8
+          }
+        },
+        {
+          "training_maps": {
+            "16ffa": 17,
+            "1v1": 14,
+            "2v2": 18,
+            "3ffa": 11,
+            "4ffa": 15,
+            "4v4": 18,
+            "8ffa": 18,
+            "8v8": 16
+          },
+          "validation_maps": {
+            "16ffa": 6,
+            "1v1": 9,
+            "2v2": 5,
+            "3ffa": 10,
+            "4ffa": 9,
+            "4v4": 7,
+            "8ffa": 6,
+            "8v8": 8
+          }
+        },
+        {
+          "training_maps": {
+            "16ffa": 14,
+            "1v1": 14,
+            "2v2": 16,
+            "3ffa": 15,
+            "4ffa": 17,
+            "4v4": 16,
+            "8ffa": 15,
+            "8v8": 16
+          },
+          "validation_maps": {
+            "16ffa": 9,
+            "1v1": 9,
+            "2v2": 7,
+            "3ffa": 6,
+            "4ffa": 7,
+            "4v4": 9,
+            "8ffa": 9,
+            "8v8": 8
+          }
+        }
+      ],
+      "registry": {
+        "name": "map-split-registry.json",
+        "sha256": "a41640d96fe7b1c04eb3ad318341376b3ed17de966eb3978e1fdea1e98e0a46d",
+        "strategy": "map-hash-713-v1"
+      }
+    },
+    "support": {
+      "schema": 1,
+      "overall": {
+        "episodes": 447625,
+        "maps": 252,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 10194
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 17462
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 13751
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 29559
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 2650
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 30899
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 4280
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 489
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 3972
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 31232
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 16364
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 4949
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 15176
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 612
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 37359
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 9119
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 2192
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 10100
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 102
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 14527
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 15443
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 9404
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 22304
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 1255
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 30780
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 5610
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 808
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 6110
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 15
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 25910
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 24607
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 10725
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 31497
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 1117
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 7015
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 27
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 10
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 23686,
+        "maximum_age": 81453,
+        "movement_label_episodes": 318468,
+        "behavior_intervals": {
+          "0": 133207,
+          "1024": 45686,
+          "128": 44561,
+          "256": 43830,
+          "32": 44112,
+          "4096": 46405,
+          "512": 45962,
+          "64": 43862
+        }
+      },
+      "movement_population": {
+        "episodes": 318468,
+        "maps": 249,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 2808
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 17462
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 13751
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 29559
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 2650
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 4055
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 4280
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 489
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 3972
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 14649
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 16364
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 4949
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 15176
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 612
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 18498
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 9119
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 2192
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 10100
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 102
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 3014
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 15443
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 9404
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 22304
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 1255
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 10201
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 5610
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 808
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 6110
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 15
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 5400
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 24607
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 10725
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 31497
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 1117
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 134
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 27
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 10
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 23686,
+        "maximum_age": 31240,
+        "movement_label_episodes": 318468,
+        "behavior_intervals": {
+          "0": 96199,
+          "1024": 31578,
+          "128": 32437,
+          "256": 31397,
+          "32": 31505,
+          "4096": 32327,
+          "512": 32520,
+          "64": 30505
+        }
+      },
+      "planning_population": {
+        "episodes": 349603,
+        "maps": 252,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 6143
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 16198
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 13735
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 28919
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 2647
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 18899
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 3750
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 486
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 3833
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 18362
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 12919
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 4942
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 14720
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 612
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 23580
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 7838
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 2190
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 9795
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 102
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 6392
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 13667
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 9377
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 21620
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 1254
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 19493
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 4865
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 808
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 5907
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 15
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 11027
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 20433
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 10710
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 30592
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 1117
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 2625
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 21
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 10
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 23036,
+        "maximum_age": 81453,
+        "movement_label_episodes": 287801,
+        "behavior_intervals": {
+          "0": 105054,
+          "1024": 35215,
+          "128": 35443,
+          "256": 34238,
+          "32": 33908,
+          "4096": 36340,
+          "512": 35675,
+          "64": 33730
+        }
+      },
+      "cohorts": {
+        "contradictions-20261018-round001-exploration": {
+          "episodes": 280145,
+          "maps": 126,
+          "age_demand": [
+            {
+              "age": "0..31",
+              "q128": "0..0",
+              "episodes": 6234
+            },
+            {
+              "age": "0..31",
+              "q128": "1..7",
+              "episodes": 10454
+            },
+            {
+              "age": "0..31",
+              "q128": "32..127",
+              "episodes": 8835
+            },
+            {
+              "age": "0..31",
+              "q128": "8..31",
+              "episodes": 18320
+            },
+            {
+              "age": "0..31",
+              "q128": ">=128",
+              "episodes": 1750
+            },
+            {
+              "age": "1024..4095",
+              "q128": "0..0",
+              "episodes": 22021
+            },
+            {
+              "age": "1024..4095",
+              "q128": "1..7",
+              "episodes": 3321
+            },
+            {
+              "age": "1024..4095",
+              "q128": "32..127",
+              "episodes": 413
+            },
+            {
+              "age": "1024..4095",
+              "q128": "8..31",
+              "episodes": 3076
+            },
+            {
+              "age": "1024..4095",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "128..255",
+              "q128": "0..0",
+              "episodes": 18198
+            },
+            {
+              "age": "128..255",
+              "q128": "1..7",
+              "episodes": 9651
+            },
+            {
+              "age": "128..255",
+              "q128": "32..127",
+              "episodes": 4084
+            },
+            {
+              "age": "128..255",
+              "q128": "8..31",
+              "episodes": 11039
+            },
+            {
+              "age": "128..255",
+              "q128": ">=128",
+              "episodes": 573
+            },
+            {
+              "age": "256..511",
+              "q128": "0..0",
+              "episodes": 23257
+            },
+            {
+              "age": "256..511",
+              "q128": "1..7",
+              "episodes": 6954
+            },
+            {
+              "age": "256..511",
+              "q128": "32..127",
+              "episodes": 1665
+            },
+            {
+              "age": "256..511",
+              "q128": "8..31",
+              "episodes": 7739
+            },
+            {
+              "age": "256..511",
+              "q128": ">=128",
+              "episodes": 95
+            },
+            {
+              "age": "32..63",
+              "q128": "0..0",
+              "episodes": 8284
+            },
+            {
+              "age": "32..63",
+              "q128": "1..7",
+              "episodes": 8583
+            },
+            {
+              "age": "32..63",
+              "q128": "32..127",
+              "episodes": 5919
+            },
+            {
+              "age": "32..63",
+              "q128": "8..31",
+              "episodes": 12814
+            },
+            {
+              "age": "32..63",
+              "q128": ">=128",
+              "episodes": 1010
+            },
+            {
+              "age": "512..1023",
+              "q128": "0..0",
+              "episodes": 20524
+            },
+            {
+              "age": "512..1023",
+              "q128": "1..7",
+              "episodes": 4310
+            },
+            {
+              "age": "512..1023",
+              "q128": "32..127",
+              "episodes": 575
+            },
+            {
+              "age": "512..1023",
+              "q128": "8..31",
+              "episodes": 4863
+            },
+            {
+              "age": "512..1023",
+              "q128": ">=128",
+              "episodes": 4
+            },
+            {
+              "age": "64..127",
+              "q128": "0..0",
+              "episodes": 14126
+            },
+            {
+              "age": "64..127",
+              "q128": "1..7",
+              "episodes": 12521
+            },
+            {
+              "age": "64..127",
+              "q128": "32..127",
+              "episodes": 6517
+            },
+            {
+              "age": "64..127",
+              "q128": "8..31",
+              "episodes": 15786
+            },
+            {
+              "age": "64..127",
+              "q128": ">=128",
+              "episodes": 987
+            },
+            {
+              "age": ">=4096",
+              "q128": "0..0",
+              "episodes": 5616
+            },
+            {
+              "age": ">=4096",
+              "q128": "1..7",
+              "episodes": 19
+            },
+            {
+              "age": ">=4096",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": "8..31",
+              "episodes": 8
+            },
+            {
+              "age": ">=4096",
+              "q128": ">=128",
+              "episodes": 0
+            }
+          ],
+          "high_demand_old": 18345,
+          "maximum_age": 81453,
+          "movement_label_episodes": 198412,
+          "behavior_intervals": {
+            "0": 32694,
+            "1024": 36291,
+            "128": 34374,
+            "256": 34676,
+            "32": 34786,
+            "4096": 37075,
+            "512": 35710,
+            "64": 34539
+          }
+        },
+        "contradictions-20261018-round002-candidate": {
+          "episodes": 90814,
+          "maps": 62,
+          "age_demand": [
+            {
+              "age": "0..31",
+              "q128": "0..0",
+              "episodes": 2185
+            },
+            {
+              "age": "0..31",
+              "q128": "1..7",
+              "episodes": 3956
+            },
+            {
+              "age": "0..31",
+              "q128": "32..127",
+              "episodes": 2380
+            },
+            {
+              "age": "0..31",
+              "q128": "8..31",
+              "episodes": 5972
+            },
+            {
+              "age": "0..31",
+              "q128": ">=128",
+              "episodes": 432
+            },
+            {
+              "age": "1024..4095",
+              "q128": "0..0",
+              "episodes": 4149
+            },
+            {
+              "age": "1024..4095",
+              "q128": "1..7",
+              "episodes": 12
+            },
+            {
+              "age": "1024..4095",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": "1024..4095",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "1024..4095",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "128..255",
+              "q128": "0..0",
+              "episodes": 7843
+            },
+            {
+              "age": "128..255",
+              "q128": "1..7",
+              "episodes": 3836
+            },
+            {
+              "age": "128..255",
+              "q128": "32..127",
+              "episodes": 214
+            },
+            {
+              "age": "128..255",
+              "q128": "8..31",
+              "episodes": 1141
+            },
+            {
+              "age": "128..255",
+              "q128": ">=128",
+              "episodes": 3
+            },
+            {
+              "age": "256..511",
+              "q128": "0..0",
+              "episodes": 7514
+            },
+            {
+              "age": "256..511",
+              "q128": "1..7",
+              "episodes": 123
+            },
+            {
+              "age": "256..511",
+              "q128": "32..127",
+              "episodes": 2
+            },
+            {
+              "age": "256..511",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "256..511",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "32..63",
+              "q128": "0..0",
+              "episodes": 3508
+            },
+            {
+              "age": "32..63",
+              "q128": "1..7",
+              "episodes": 4260
+            },
+            {
+              "age": "32..63",
+              "q128": "32..127",
+              "episodes": 1977
+            },
+            {
+              "age": "32..63",
+              "q128": "8..31",
+              "episodes": 5865
+            },
+            {
+              "age": "32..63",
+              "q128": ">=128",
+              "episodes": 106
+            },
+            {
+              "age": "512..1023",
+              "q128": "0..0",
+              "episodes": 5128
+            },
+            {
+              "age": "512..1023",
+              "q128": "1..7",
+              "episodes": 30
+            },
+            {
+              "age": "512..1023",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": "512..1023",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "512..1023",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "64..127",
+              "q128": "0..0",
+              "episodes": 7115
+            },
+            {
+              "age": "64..127",
+              "q128": "1..7",
+              "episodes": 8203
+            },
+            {
+              "age": "64..127",
+              "q128": "32..127",
+              "episodes": 2674
+            },
+            {
+              "age": "64..127",
+              "q128": "8..31",
+              "episodes": 11253
+            },
+            {
+              "age": "64..127",
+              "q128": ">=128",
+              "episodes": 48
+            },
+            {
+              "age": ">=4096",
+              "q128": "0..0",
+              "episodes": 883
+            },
+            {
+              "age": ">=4096",
+              "q128": "1..7",
+              "episodes": 2
+            },
+            {
+              "age": ">=4096",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": ">=128",
+              "episodes": 0
+            }
+          ],
+          "high_demand_old": 2,
+          "maximum_age": 48826,
+          "movement_label_episodes": 65376,
+          "behavior_intervals": {
+            "0": 90814
+          }
+        },
+        "contradictions-20261018-round002-exploration": {
+          "episodes": 76666,
+          "maps": 64,
+          "age_demand": [
+            {
+              "age": "0..31",
+              "q128": "0..0",
+              "episodes": 1775
+            },
+            {
+              "age": "0..31",
+              "q128": "1..7",
+              "episodes": 3052
+            },
+            {
+              "age": "0..31",
+              "q128": "32..127",
+              "episodes": 2536
+            },
+            {
+              "age": "0..31",
+              "q128": "8..31",
+              "episodes": 5267
+            },
+            {
+              "age": "0..31",
+              "q128": ">=128",
+              "episodes": 468
+            },
+            {
+              "age": "1024..4095",
+              "q128": "0..0",
+              "episodes": 4729
+            },
+            {
+              "age": "1024..4095",
+              "q128": "1..7",
+              "episodes": 947
+            },
+            {
+              "age": "1024..4095",
+              "q128": "32..127",
+              "episodes": 76
+            },
+            {
+              "age": "1024..4095",
+              "q128": "8..31",
+              "episodes": 896
+            },
+            {
+              "age": "1024..4095",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "128..255",
+              "q128": "0..0",
+              "episodes": 5191
+            },
+            {
+              "age": "128..255",
+              "q128": "1..7",
+              "episodes": 2877
+            },
+            {
+              "age": "128..255",
+              "q128": "32..127",
+              "episodes": 651
+            },
+            {
+              "age": "128..255",
+              "q128": "8..31",
+              "episodes": 2996
+            },
+            {
+              "age": "128..255",
+              "q128": ">=128",
+              "episodes": 36
+            },
+            {
+              "age": "256..511",
+              "q128": "0..0",
+              "episodes": 6588
+            },
+            {
+              "age": "256..511",
+              "q128": "1..7",
+              "episodes": 2042
+            },
+            {
+              "age": "256..511",
+              "q128": "32..127",
+              "episodes": 525
+            },
+            {
+              "age": "256..511",
+              "q128": "8..31",
+              "episodes": 2361
+            },
+            {
+              "age": "256..511",
+              "q128": ">=128",
+              "episodes": 7
+            },
+            {
+              "age": "32..63",
+              "q128": "0..0",
+              "episodes": 2735
+            },
+            {
+              "age": "32..63",
+              "q128": "1..7",
+              "episodes": 2600
+            },
+            {
+              "age": "32..63",
+              "q128": "32..127",
+              "episodes": 1508
+            },
+            {
+              "age": "32..63",
+              "q128": "8..31",
+              "episodes": 3625
+            },
+            {
+              "age": "32..63",
+              "q128": ">=128",
+              "episodes": 139
+            },
+            {
+              "age": "512..1023",
+              "q128": "0..0",
+              "episodes": 5128
+            },
+            {
+              "age": "512..1023",
+              "q128": "1..7",
+              "episodes": 1270
+            },
+            {
+              "age": "512..1023",
+              "q128": "32..127",
+              "episodes": 233
+            },
+            {
+              "age": "512..1023",
+              "q128": "8..31",
+              "episodes": 1247
+            },
+            {
+              "age": "512..1023",
+              "q128": ">=128",
+              "episodes": 11
+            },
+            {
+              "age": "64..127",
+              "q128": "0..0",
+              "episodes": 4669
+            },
+            {
+              "age": "64..127",
+              "q128": "1..7",
+              "episodes": 3883
+            },
+            {
+              "age": "64..127",
+              "q128": "32..127",
+              "episodes": 1534
+            },
+            {
+              "age": "64..127",
+              "q128": "8..31",
+              "episodes": 4458
+            },
+            {
+              "age": "64..127",
+              "q128": ">=128",
+              "episodes": 82
+            },
+            {
+              "age": ">=4096",
+              "q128": "0..0",
+              "episodes": 516
+            },
+            {
+              "age": ">=4096",
+              "q128": "1..7",
+              "episodes": 6
+            },
+            {
+              "age": ">=4096",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": "8..31",
+              "episodes": 2
+            },
+            {
+              "age": ">=4096",
+              "q128": ">=128",
+              "episodes": 0
+            }
+          ],
+          "high_demand_old": 5339,
+          "maximum_age": 30975,
+          "movement_label_episodes": 54680,
+          "behavior_intervals": {
+            "0": 9699,
+            "1024": 9395,
+            "128": 10187,
+            "256": 9154,
+            "32": 9326,
+            "4096": 9330,
+            "512": 10252,
+            "64": 9323
+          }
+        }
+      },
+      "roles": {
+        "candidate": {
+          "episodes": 90814,
+          "maps": 62,
+          "age_demand": [
+            {
+              "age": "0..31",
+              "q128": "0..0",
+              "episodes": 2185
+            },
+            {
+              "age": "0..31",
+              "q128": "1..7",
+              "episodes": 3956
+            },
+            {
+              "age": "0..31",
+              "q128": "32..127",
+              "episodes": 2380
+            },
+            {
+              "age": "0..31",
+              "q128": "8..31",
+              "episodes": 5972
+            },
+            {
+              "age": "0..31",
+              "q128": ">=128",
+              "episodes": 432
+            },
+            {
+              "age": "1024..4095",
+              "q128": "0..0",
+              "episodes": 4149
+            },
+            {
+              "age": "1024..4095",
+              "q128": "1..7",
+              "episodes": 12
+            },
+            {
+              "age": "1024..4095",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": "1024..4095",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "1024..4095",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "128..255",
+              "q128": "0..0",
+              "episodes": 7843
+            },
+            {
+              "age": "128..255",
+              "q128": "1..7",
+              "episodes": 3836
+            },
+            {
+              "age": "128..255",
+              "q128": "32..127",
+              "episodes": 214
+            },
+            {
+              "age": "128..255",
+              "q128": "8..31",
+              "episodes": 1141
+            },
+            {
+              "age": "128..255",
+              "q128": ">=128",
+              "episodes": 3
+            },
+            {
+              "age": "256..511",
+              "q128": "0..0",
+              "episodes": 7514
+            },
+            {
+              "age": "256..511",
+              "q128": "1..7",
+              "episodes": 123
+            },
+            {
+              "age": "256..511",
+              "q128": "32..127",
+              "episodes": 2
+            },
+            {
+              "age": "256..511",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "256..511",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "32..63",
+              "q128": "0..0",
+              "episodes": 3508
+            },
+            {
+              "age": "32..63",
+              "q128": "1..7",
+              "episodes": 4260
+            },
+            {
+              "age": "32..63",
+              "q128": "32..127",
+              "episodes": 1977
+            },
+            {
+              "age": "32..63",
+              "q128": "8..31",
+              "episodes": 5865
+            },
+            {
+              "age": "32..63",
+              "q128": ">=128",
+              "episodes": 106
+            },
+            {
+              "age": "512..1023",
+              "q128": "0..0",
+              "episodes": 5128
+            },
+            {
+              "age": "512..1023",
+              "q128": "1..7",
+              "episodes": 30
+            },
+            {
+              "age": "512..1023",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": "512..1023",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": "512..1023",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "64..127",
+              "q128": "0..0",
+              "episodes": 7115
+            },
+            {
+              "age": "64..127",
+              "q128": "1..7",
+              "episodes": 8203
+            },
+            {
+              "age": "64..127",
+              "q128": "32..127",
+              "episodes": 2674
+            },
+            {
+              "age": "64..127",
+              "q128": "8..31",
+              "episodes": 11253
+            },
+            {
+              "age": "64..127",
+              "q128": ">=128",
+              "episodes": 48
+            },
+            {
+              "age": ">=4096",
+              "q128": "0..0",
+              "episodes": 883
+            },
+            {
+              "age": ">=4096",
+              "q128": "1..7",
+              "episodes": 2
+            },
+            {
+              "age": ">=4096",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": "8..31",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": ">=128",
+              "episodes": 0
+            }
+          ],
+          "high_demand_old": 2,
+          "maximum_age": 48826,
+          "movement_label_episodes": 65376,
+          "behavior_intervals": {
+            "0": 90814
+          }
+        },
+        "exploration": {
+          "episodes": 356811,
+          "maps": 190,
+          "age_demand": [
+            {
+              "age": "0..31",
+              "q128": "0..0",
+              "episodes": 8009
+            },
+            {
+              "age": "0..31",
+              "q128": "1..7",
+              "episodes": 13506
+            },
+            {
+              "age": "0..31",
+              "q128": "32..127",
+              "episodes": 11371
+            },
+            {
+              "age": "0..31",
+              "q128": "8..31",
+              "episodes": 23587
+            },
+            {
+              "age": "0..31",
+              "q128": ">=128",
+              "episodes": 2218
+            },
+            {
+              "age": "1024..4095",
+              "q128": "0..0",
+              "episodes": 26750
+            },
+            {
+              "age": "1024..4095",
+              "q128": "1..7",
+              "episodes": 4268
+            },
+            {
+              "age": "1024..4095",
+              "q128": "32..127",
+              "episodes": 489
+            },
+            {
+              "age": "1024..4095",
+              "q128": "8..31",
+              "episodes": 3972
+            },
+            {
+              "age": "1024..4095",
+              "q128": ">=128",
+              "episodes": 0
+            },
+            {
+              "age": "128..255",
+              "q128": "0..0",
+              "episodes": 23389
+            },
+            {
+              "age": "128..255",
+              "q128": "1..7",
+              "episodes": 12528
+            },
+            {
+              "age": "128..255",
+              "q128": "32..127",
+              "episodes": 4735
+            },
+            {
+              "age": "128..255",
+              "q128": "8..31",
+              "episodes": 14035
+            },
+            {
+              "age": "128..255",
+              "q128": ">=128",
+              "episodes": 609
+            },
+            {
+              "age": "256..511",
+              "q128": "0..0",
+              "episodes": 29845
+            },
+            {
+              "age": "256..511",
+              "q128": "1..7",
+              "episodes": 8996
+            },
+            {
+              "age": "256..511",
+              "q128": "32..127",
+              "episodes": 2190
+            },
+            {
+              "age": "256..511",
+              "q128": "8..31",
+              "episodes": 10100
+            },
+            {
+              "age": "256..511",
+              "q128": ">=128",
+              "episodes": 102
+            },
+            {
+              "age": "32..63",
+              "q128": "0..0",
+              "episodes": 11019
+            },
+            {
+              "age": "32..63",
+              "q128": "1..7",
+              "episodes": 11183
+            },
+            {
+              "age": "32..63",
+              "q128": "32..127",
+              "episodes": 7427
+            },
+            {
+              "age": "32..63",
+              "q128": "8..31",
+              "episodes": 16439
+            },
+            {
+              "age": "32..63",
+              "q128": ">=128",
+              "episodes": 1149
+            },
+            {
+              "age": "512..1023",
+              "q128": "0..0",
+              "episodes": 25652
+            },
+            {
+              "age": "512..1023",
+              "q128": "1..7",
+              "episodes": 5580
+            },
+            {
+              "age": "512..1023",
+              "q128": "32..127",
+              "episodes": 808
+            },
+            {
+              "age": "512..1023",
+              "q128": "8..31",
+              "episodes": 6110
+            },
+            {
+              "age": "512..1023",
+              "q128": ">=128",
+              "episodes": 15
+            },
+            {
+              "age": "64..127",
+              "q128": "0..0",
+              "episodes": 18795
+            },
+            {
+              "age": "64..127",
+              "q128": "1..7",
+              "episodes": 16404
+            },
+            {
+              "age": "64..127",
+              "q128": "32..127",
+              "episodes": 8051
+            },
+            {
+              "age": "64..127",
+              "q128": "8..31",
+              "episodes": 20244
+            },
+            {
+              "age": "64..127",
+              "q128": ">=128",
+              "episodes": 1069
+            },
+            {
+              "age": ">=4096",
+              "q128": "0..0",
+              "episodes": 6132
+            },
+            {
+              "age": ">=4096",
+              "q128": "1..7",
+              "episodes": 25
+            },
+            {
+              "age": ">=4096",
+              "q128": "32..127",
+              "episodes": 0
+            },
+            {
+              "age": ">=4096",
+              "q128": "8..31",
+              "episodes": 10
+            },
+            {
+              "age": ">=4096",
+              "q128": ">=128",
+              "episodes": 0
+            }
+          ],
+          "high_demand_old": 23684,
+          "maximum_age": 81453,
+          "movement_label_episodes": 253092,
+          "behavior_intervals": {
+            "0": 42393,
+            "1024": 45686,
+            "128": 44561,
+            "256": 43830,
+            "32": 44112,
+            "4096": 46405,
+            "512": 45962,
+            "64": 43862
+          }
+        }
+      },
+      "policies": [
+        "{\"assignment\": \"sha256(master-seed:planned-game-group) low32, then unsigned field hash\", \"intervals\": [0, 32, 64, 128, 256, 512, 1024, 4096], \"model_sha256\": \"f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217\", \"name\": \"seeded-field-intervals\", \"seed\": 181041}",
+        "{\"intervals\": [], \"max_age\": 128, \"min_age\": 8, \"model_sha256\": \"f6385494fc8ce3e36650ab98419c296ddc8ead1a4b7df01d829465b00470bbd6\", \"name\": \"adaptive32-goal-stall-v1\", \"selected_contract\": \"goal-stall-v1\", \"selected_counter_ids\": [0, 4, 5], \"threshold\": 32}"
+      ],
+      "label_contracts": [
+        "e4cdcf9770318ac2b929a86535b7a4e7a96ad689865a6609f476a1d1193e6866"
+      ],
+      "planning_coverage": {
+        "measured": true,
+        "episodes_with_instrumentation": 447625,
+        "episodes_with_planning_queries": 349603,
+        "planning_queries": 54733431,
+        "planning_only_episodes": 61802,
+        "defer_false_negative": 358260,
+        "defer_false_positive": 1209041,
+        "refresh_false_negative": 345191,
+        "refresh_false_positive": 436223,
+        "note": "Separate reachability labels; not converted to movement benefit. Legacy episodes lack this instrumentation."
+      },
+      "warning": "Observed support is not proof of safety beyond these bins; offline accuracy does not establish closed-loop improvement."
+    },
+    "excluded": {
+      "planning_only": 129157
+    },
+    "weighting": "equal format, role, cohort, map, collection, episode",
+    "regularization": {
+      "logistic_C": 1,
+      "ridge_alpha": 100
+    },
+    "note": "Research candidate only; explicit promotion and prospective engine validation required."
+  }
+}

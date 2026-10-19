@@ -1,0 +1,2376 @@
+{
+  "planned": 64,
+  "full_successes": 43,
+  "partial_trajectories": 21,
+  "verified_censored_partials": 20,
+  "other_failure_partials": 1,
+  "unresolved": 0,
+  "by_format_planned": {
+    "8v8": 8,
+    "4v4": 8,
+    "16ffa": 8,
+    "8ffa": 8,
+    "4ffa": 8,
+    "2v2": 8,
+    "3ffa": 8,
+    "1v1": 8
+  },
+  "by_format_full": {
+    "8v8": 2,
+    "4v4": 4,
+    "16ffa": 4,
+    "2v2": 8,
+    "4ffa": 7,
+    "8ffa": 2,
+    "3ffa": 8,
+    "1v1": 8
+  },
+  "partials": [
+    {
+      "job": "099584f8b619a6ef",
+      "attempt": "0af8d9ec42274af7b08f388b3cf1f982",
+      "format": "4ffa",
+      "spec": {
+        "ais": [
+          "cabino",
+          "nicowar",
+          "cabino",
+          "nicowar"
+        ],
+        "alliances": [
+          2,
+          4,
+          3,
+          1
+        ],
+        "format": "4ffa",
+        "game_seed": 16666995,
+        "generator": "islands",
+        "generator_params": {
+          "algae-amount": 75,
+          "desert": 2,
+          "extra-islands": 1,
+          "fruit": 4,
+          "grass": 88,
+          "hilltop-stone": 0,
+          "repeat": 1,
+          "sand": 6,
+          "smoothing": 4,
+          "stone-amount": 125,
+          "water": 56,
+          "wheat-amount": 75,
+          "wood-amount": 100,
+          "workers": 3
+        },
+        "height": 256,
+        "map_seed": 2599771245,
+        "players": 4,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 768,
+      "complete_retained": 768
+    },
+    {
+      "job": "9b7bc4f416df83c1",
+      "attempt": "160525a38aea418c9b6c936cd0d95d6e",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "castor",
+          "warrush",
+          "cortex",
+          "warrush",
+          "cortex",
+          "castor",
+          "cortex",
+          "warrush"
+        ],
+        "alliances": [
+          1,
+          5,
+          7,
+          4,
+          2,
+          3,
+          8,
+          6
+        ],
+        "format": "8ffa",
+        "game_seed": 1009793881,
+        "generator": "stone-highlands",
+        "generator_params": {
+          "algae-amount": 125,
+          "fruit-amount": 150,
+          "home-valley-fruit": 1,
+          "loopiness": 40,
+          "pass-width": 5,
+          "pond-size": 8,
+          "stone-amount": 150,
+          "valley-size": 32,
+          "wheat-amount": 100,
+          "wood-amount": 150,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 175234374,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1531,
+      "complete_retained": 1531
+    },
+    {
+      "job": "50f02bbf48b019b3",
+      "attempt": "19aded921a42417fabbb2588c71e50ba",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "econo",
+          "warrush",
+          "maxima",
+          "econo",
+          "cabino",
+          "warrush",
+          "econo",
+          "cortex",
+          "maxima",
+          "castor",
+          "numbi",
+          "nicowar",
+          "warrush",
+          "numbi",
+          "econo",
+          "cortex"
+        ],
+        "alliances": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          1,
+          2,
+          2,
+          2,
+          1
+        ],
+        "format": "8v8",
+        "game_seed": 3626842229,
+        "generator": "caravanserai",
+        "generator_params": {
+          "algae-amount": 100,
+          "caravanserais": 3,
+          "desert": 0,
+          "fruit-amount": 150,
+          "oases": 1,
+          "oasis-size": 28,
+          "stone-amount": 75,
+          "wheat-amount": 150,
+          "wood-amount": 75,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 673057678,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1575,
+      "complete_retained": 1575
+    },
+    {
+      "job": "eb772a8b34bb93db",
+      "attempt": "2f54e3901c144596918406994f6e9d21",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "numbi",
+          "econo",
+          "castor",
+          "cabino",
+          "numbi",
+          "numbi",
+          "econo",
+          "castor"
+        ],
+        "alliances": [
+          6,
+          3,
+          2,
+          1,
+          4,
+          8,
+          5,
+          7
+        ],
+        "format": "8ffa",
+        "game_seed": 128406362,
+        "generator": "isles",
+        "generator_params": {
+          "algae-amount": 75,
+          "bridge-width": 4,
+          "island-size": 60,
+          "land-bridges": 1,
+          "sandy-beaches": 1,
+          "stone-amount": 150,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 636582047,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 666,
+      "complete_retained": 666
+    },
+    {
+      "job": "adf1b60fcb917d14",
+      "attempt": "35d14203025849caa981b781f79263e3",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex",
+          "cortex"
+        ],
+        "alliances": [
+          14,
+          8,
+          2,
+          15,
+          10,
+          6,
+          12,
+          4,
+          13,
+          3,
+          1,
+          5,
+          7,
+          16,
+          9,
+          11
+        ],
+        "format": "16ffa",
+        "game_seed": 32130442,
+        "generator": "caravanserai",
+        "generator_params": {
+          "algae-amount": 100,
+          "caravanserais": 1,
+          "desert": 1,
+          "fruit-amount": 125,
+          "oases": 1,
+          "oasis-size": 24,
+          "stone-amount": 150,
+          "wheat-amount": 100,
+          "wood-amount": 125,
+          "workers": 4
+        },
+        "height": 256,
+        "map_seed": 4251117363,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1354,
+      "complete_retained": 1354
+    },
+    {
+      "job": "2127144bad2fd44a",
+      "attempt": "3bfcc51a334d4495bd58b107712f7b0d",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          2,
+          2,
+          2,
+          1,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ],
+        "format": "8v8",
+        "game_seed": 2390556622,
+        "generator": "savannah",
+        "generator_params": {
+          "algae-amount": 75,
+          "dry-patches": 6,
+          "fruit-amount": 125,
+          "stone-amount": 125,
+          "watering-holes": 0,
+          "wheat-amount": 100,
+          "wood-amount": 125,
+          "workers": 3
+        },
+        "height": 512,
+        "map_seed": 3291938565,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1121,
+      "complete_retained": 1121
+    },
+    {
+      "job": "355ffb35f631e70c",
+      "attempt": "46a3e058d66b4595be68d6da738a2e4b",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "econo",
+          "nicowar",
+          "nicowar",
+          "econo",
+          "econo",
+          "nicowar",
+          "nicowar",
+          "econo",
+          "warrush",
+          "econo",
+          "nicowar",
+          "warrush",
+          "econo"
+        ],
+        "alliances": [
+          1,
+          2,
+          1,
+          1,
+          2,
+          2,
+          2,
+          1,
+          2,
+          1,
+          2,
+          2,
+          1,
+          1,
+          1,
+          2
+        ],
+        "format": "8v8",
+        "game_seed": 2129109992,
+        "generator": "shattered-coast",
+        "generator_params": {
+          "algae-amount": 150,
+          "colony-meadows": 1,
+          "grass": 60,
+          "sand": 5,
+          "smoothing": 6,
+          "stone-amount": 125,
+          "water": 38,
+          "wheat-amount": 125,
+          "wood-amount": 75,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 934439438,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 855,
+      "complete_retained": 855
+    },
+    {
+      "job": "c34ae5e5681b6822",
+      "attempt": "58648e2b6055446cbad7d6d8282f027a",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "cabino",
+          "cabino",
+          "warrush",
+          "numbi",
+          "cabino",
+          "warrush",
+          "numbi",
+          "warrush"
+        ],
+        "alliances": [
+          2,
+          7,
+          8,
+          1,
+          4,
+          6,
+          5,
+          3
+        ],
+        "format": "8ffa",
+        "game_seed": 1001257253,
+        "generator": "shattered-coast",
+        "generator_params": {
+          "algae-amount": 75,
+          "colony-meadows": 1,
+          "grass": 69,
+          "sand": 2,
+          "smoothing": 3,
+          "stone-amount": 100,
+          "water": 49,
+          "wheat-amount": 125,
+          "wood-amount": 125,
+          "workers": 4
+        },
+        "height": 256,
+        "map_seed": 2010607206,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 588,
+      "complete_retained": 588
+    },
+    {
+      "job": "00d71c3f7b41bc00",
+      "attempt": "5ca6daaf00634299826f36c4b08e4ee4",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush"
+        ],
+        "alliances": [
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2
+        ],
+        "format": "8v8",
+        "game_seed": 3691695139,
+        "generator": "drumlin-field",
+        "generator_params": {
+          "algae-amount": 75,
+          "drumlin-length": 200,
+          "drumlin-spacing": 22,
+          "esker-loops": 35,
+          "fruit-amount": 100,
+          "grain": 2,
+          "home-size": 13,
+          "stone-amount": 100,
+          "water-gap": 7,
+          "wheat-amount": 100,
+          "wood-amount": 150,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 3946548000,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 925,
+      "complete_retained": 925
+    },
+    {
+      "job": "8a6f713a4c32624a",
+      "attempt": "6d5b65abef6b4f888bb1fff12d257ede",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "castor",
+          "castor",
+          "cabino",
+          "nicowar",
+          "econo",
+          "econo",
+          "castor",
+          "nicowar",
+          "cabino",
+          "castor",
+          "nicowar",
+          "econo",
+          "cabino",
+          "cabino",
+          "nicowar",
+          "castor"
+        ],
+        "alliances": [
+          1,
+          1,
+          1,
+          1,
+          2,
+          1,
+          1,
+          2,
+          2,
+          2,
+          1,
+          2,
+          2,
+          1,
+          2,
+          2
+        ],
+        "format": "8v8",
+        "game_seed": 2685402124,
+        "generator": "canals",
+        "generator_params": {
+          "algae-amount": 100,
+          "block-shape": 1,
+          "block-size": 24,
+          "canal-width": 3,
+          "extra-bridges": 20,
+          "fruit-amount": 100,
+          "starting-towers": 0,
+          "stone-amount": 75,
+          "tower-count": 2,
+          "warp": 40,
+          "wheat-amount": 100,
+          "wood-amount": 100,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 1300007429,
+        "players": 16,
+        "width": 256
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 3262,
+      "complete_retained": 3262
+    },
+    {
+      "job": "ba0fce573fe95c4e",
+      "attempt": "79f867d6de73403b8a79e494a5908237",
+      "format": "4v4",
+      "spec": {
+        "ais": [
+          "castor",
+          "nicowar",
+          "numbi",
+          "cabino",
+          "numbi",
+          "nicowar",
+          "cabino",
+          "castor"
+        ],
+        "alliances": [
+          2,
+          1,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2
+        ],
+        "format": "4v4",
+        "game_seed": 3485009152,
+        "generator": "rugged-archipelago",
+        "generator_params": {
+          "algae-amount": 75,
+          "beach-size": 3,
+          "extra-deposit": 1,
+          "island-size": 65,
+          "stone-amount": 150,
+          "wheat-amount": 75,
+          "wood-amount": 125,
+          "workers": 3
+        },
+        "height": 512,
+        "map_seed": 355285126,
+        "players": 8,
+        "width": 256
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1584,
+      "complete_retained": 1584
+    },
+    {
+      "job": "8cc8dd8d55939533",
+      "attempt": "7b81b29433824302b9e1f9c055bee5de",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "cortex",
+          "nicowar",
+          "warrush",
+          "maxima",
+          "castor",
+          "castor",
+          "warrush",
+          "cortex"
+        ],
+        "alliances": [
+          5,
+          2,
+          3,
+          8,
+          1,
+          4,
+          7,
+          6
+        ],
+        "format": "8ffa",
+        "game_seed": 850995478,
+        "generator": "contested-commons",
+        "generator_params": {
+          "algae-amount": 75,
+          "bridge-count": 3,
+          "commons-size": 400,
+          "fruit-amount": 75,
+          "home-island-size": 25,
+          "jagged-coasts": 0,
+          "moat-bridges": 1,
+          "moat-width": 40,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 100,
+          "workers": 3
+        },
+        "height": 256,
+        "map_seed": 86180823,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 2323,
+      "complete_retained": 2323
+    },
+    {
+      "job": "65e4363b49e31083",
+      "attempt": "86b3ea01e5b04f829b2189294ae1ee78",
+      "format": "8v8",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "castor",
+          "numbi",
+          "maxima",
+          "econo",
+          "cabino",
+          "maxima",
+          "cabino",
+          "econo",
+          "numbi",
+          "castor",
+          "castor",
+          "econo",
+          "warrush",
+          "maxima"
+        ],
+        "alliances": [
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2,
+          1,
+          1,
+          1,
+          2,
+          1,
+          2,
+          2,
+          2
+        ],
+        "format": "8v8",
+        "game_seed": 2646427072,
+        "generator": "savannah",
+        "generator_params": {
+          "algae-amount": 125,
+          "dry-patches": 3,
+          "fruit-amount": 75,
+          "stone-amount": 150,
+          "watering-holes": 2,
+          "wheat-amount": 75,
+          "wood-amount": 125,
+          "workers": 6
+        },
+        "height": 256,
+        "map_seed": 1342322993,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 2610,
+      "complete_retained": 2610
+    },
+    {
+      "job": "4dd3be45be5ba037",
+      "attempt": "92328146a9c44772927f56ea9eb85a0a",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush",
+          "warrush"
+        ],
+        "alliances": [
+          15,
+          3,
+          5,
+          2,
+          1,
+          11,
+          16,
+          4,
+          9,
+          10,
+          8,
+          12,
+          6,
+          14,
+          13,
+          7
+        ],
+        "format": "16ffa",
+        "game_seed": 2208391659,
+        "generator": "plantations",
+        "generator_params": {
+          "algae-amount": 125,
+          "causeways": 1,
+          "coast-roughness": 60,
+          "farm-width": 4,
+          "fruit-amount": 75,
+          "islands-per-colony": 2,
+          "outpost-inns": 1,
+          "plot-size": 11,
+          "stone-amount": 125,
+          "strait-width": 4,
+          "wheat-amount": 125,
+          "wood-amount": 100,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 2014820440,
+        "players": 16,
+        "width": 256
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 4103,
+      "complete_retained": 4103
+    },
+    {
+      "job": "0fc822410a9c5f86",
+      "attempt": "ab7dfe3d6b984d14a79c3f2d68d736af",
+      "format": "4v4",
+      "spec": {
+        "ais": [
+          "maxima",
+          "maxima",
+          "econo",
+          "nicowar",
+          "numbi",
+          "cabino",
+          "castor",
+          "nicowar"
+        ],
+        "alliances": [
+          2,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2,
+          1
+        ],
+        "format": "4v4",
+        "game_seed": 2388302952,
+        "generator": "who-ate-the-map",
+        "generator_params": {
+          "algae-amount": 125,
+          "appetite": 1,
+          "fruit-amount": 75,
+          "stone-amount": 125,
+          "wheat-amount": 75,
+          "wood-amount": 150,
+          "workers": 4
+        },
+        "height": 256,
+        "map_seed": 3105453976,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 2663,
+      "complete_retained": 2663
+    },
+    {
+      "job": "3f32df3b000c18d8",
+      "attempt": "c1b9803bc2804aadb8ae319af9082658",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "cabino",
+          "cabino",
+          "numbi",
+          "numbi",
+          "warrush",
+          "cabino"
+        ],
+        "alliances": [
+          1,
+          6,
+          2,
+          8,
+          5,
+          7,
+          4,
+          3
+        ],
+        "format": "8ffa",
+        "game_seed": 4136761581,
+        "generator": "coral",
+        "generator_params": {
+          "algae-amount": 75,
+          "branch-width": 15,
+          "branching": 6,
+          "fork-angle": 28,
+          "fruit-amount": 100,
+          "home-size": 170,
+          "land-bridges": 2,
+          "lean": 20,
+          "sand-roads": 1,
+          "stone-amount": 75,
+          "strait-width": 7,
+          "wheat-amount": 150,
+          "wood-amount": 100,
+          "workers": 5
+        },
+        "height": 256,
+        "map_seed": 3384604422,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 899,
+      "complete_retained": 899
+    },
+    {
+      "job": "248d46949f3dc3c1",
+      "attempt": "dc0c2b12948a4cdebbad32ba604190f5",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "warrush",
+          "cabino",
+          "numbi",
+          "cortex",
+          "cabino",
+          "numbi",
+          "econo",
+          "maxima",
+          "castor",
+          "warrush",
+          "cortex",
+          "nicowar",
+          "cabino",
+          "econo",
+          "cortex",
+          "numbi"
+        ],
+        "alliances": [
+          1,
+          6,
+          10,
+          15,
+          11,
+          2,
+          4,
+          13,
+          12,
+          5,
+          16,
+          8,
+          9,
+          7,
+          14,
+          3
+        ],
+        "format": "16ffa",
+        "game_seed": 626199637,
+        "generator": "watershed",
+        "generator_params": {
+          "algae-amount": 100,
+          "dryness": 3,
+          "fords": 3,
+          "fruit-amount": 75,
+          "meanders": 1,
+          "river-delta": 0,
+          "river-density": 4,
+          "river-width": 3,
+          "stone-amount": 150,
+          "wheat-amount": 150,
+          "wood-amount": 125,
+          "workers": 5
+        },
+        "height": 256,
+        "map_seed": 3810822093,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 2017,
+      "complete_retained": 2017
+    },
+    {
+      "job": "445b3954a339d98b",
+      "attempt": "e2b8feac73ce4d73968af8d5bf28b642",
+      "format": "4v4",
+      "spec": {
+        "ais": [
+          "econo",
+          "numbi",
+          "maxima",
+          "warrush",
+          "nicowar",
+          "maxima",
+          "castor",
+          "econo"
+        ],
+        "alliances": [
+          1,
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2
+        ],
+        "format": "4v4",
+        "game_seed": 1122374365,
+        "generator": "watershed",
+        "generator_params": {
+          "algae-amount": 100,
+          "dryness": 6,
+          "fords": 5,
+          "fruit-amount": 125,
+          "meanders": 1,
+          "river-delta": 1,
+          "river-density": 4,
+          "river-width": 3,
+          "stone-amount": 150,
+          "wheat-amount": 100,
+          "wood-amount": 150,
+          "workers": 6
+        },
+        "height": 512,
+        "map_seed": 4251328337,
+        "players": 8,
+        "width": 256
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1972,
+      "complete_retained": 1972
+    },
+    {
+      "job": "d5204a127e8af55a",
+      "attempt": "ee26a13f7a1b45348f5903124422c16d",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "castor",
+          "cortex",
+          "castor",
+          "cortex",
+          "econo",
+          "maxima",
+          "cabino",
+          "econo",
+          "castor",
+          "warrush",
+          "cortex",
+          "cabino",
+          "maxima",
+          "maxima",
+          "warrush",
+          "econo"
+        ],
+        "alliances": [
+          11,
+          7,
+          10,
+          12,
+          13,
+          6,
+          4,
+          14,
+          16,
+          2,
+          8,
+          15,
+          1,
+          3,
+          9,
+          5
+        ],
+        "format": "16ffa",
+        "game_seed": 4242933238,
+        "generator": "maze",
+        "generator_params": {
+          "algae-amount": 125,
+          "cell-shape": 1,
+          "cell-size": 32,
+          "channel-width": 2,
+          "dead-end-treasure": 0,
+          "fruit-amount": 100,
+          "loopiness": 5,
+          "sand-roads": 1,
+          "stone-amount": 150,
+          "warp": 0,
+          "wheat-amount": 150,
+          "wood-amount": 75,
+          "workers": 6
+        },
+        "height": 256,
+        "map_seed": 3694961204,
+        "players": 16,
+        "width": 256
+      },
+      "censor_category": "other-failure-no-verified-cap",
+      "raw_category": "crash",
+      "rows": 3237,
+      "complete_retained": 3237
+    },
+    {
+      "job": "9d83caf2e8e66865",
+      "attempt": "f8c06e3711494eea87b2d8f4e28c1e16",
+      "format": "8ffa",
+      "spec": {
+        "ais": [
+          "maxima",
+          "maxima",
+          "maxima",
+          "maxima",
+          "maxima",
+          "maxima",
+          "maxima",
+          "maxima"
+        ],
+        "alliances": [
+          5,
+          8,
+          4,
+          6,
+          1,
+          7,
+          3,
+          2
+        ],
+        "format": "8ffa",
+        "game_seed": 320020252,
+        "generator": "gauntlet",
+        "generator_params": {
+          "algae-amount": 150,
+          "court-size": 90,
+          "fruit-amount": 150,
+          "gate-width": 7,
+          "partition-wall": 3,
+          "starting-towers": 1,
+          "wheat-amount": 75,
+          "wood-amount": 100,
+          "workers": 3
+        },
+        "height": 512,
+        "map_seed": 4168895365,
+        "players": 8,
+        "width": 256
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 2250,
+      "complete_retained": 2250
+    },
+    {
+      "job": "9270b8a3332233c5",
+      "attempt": "fc617703de3740cd8b6301faaddcb6c4",
+      "format": "4v4",
+      "spec": {
+        "ais": [
+          "numbi",
+          "numbi",
+          "numbi",
+          "numbi",
+          "numbi",
+          "numbi",
+          "numbi",
+          "numbi"
+        ],
+        "alliances": [
+          2,
+          1,
+          1,
+          2,
+          1,
+          2,
+          2,
+          1
+        ],
+        "format": "4v4",
+        "game_seed": 2190783764,
+        "generator": "isles",
+        "generator_params": {
+          "algae-amount": 100,
+          "bridge-width": 4,
+          "island-size": 55,
+          "land-bridges": 1,
+          "sandy-beaches": 1,
+          "stone-amount": 150,
+          "wheat-amount": 150,
+          "wood-amount": 150,
+          "workers": 5
+        },
+        "height": 512,
+        "map_seed": 3019043810,
+        "players": 8,
+        "width": 512
+      },
+      "censor_category": "censored-user-wall-cap",
+      "raw_category": "crash",
+      "rows": 1105,
+      "complete_retained": 1105
+    }
+  ],
+  "manifests": [
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/709320ccad761362a85a7d3d.cohort.json",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/724df33713ff2602525912b2.cohort.json",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/14ceed4e030643289b884858.partial.cohort.json",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/ef8a82e140260ff96cb490ee.partial.cohort.json"
+  ],
+  "episodes": 76666,
+  "support": {
+    "schema": 1,
+    "overall": {
+      "episodes": 76666,
+      "maps": 64,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 1775
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 3052
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 2536
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 5267
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 468
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 4729
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 947
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 76
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 896
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 5191
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 2877
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 651
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 2996
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 36
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 6588
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 2042
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 525
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 2361
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 7
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 2735
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 2600
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 1508
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 3625
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 139
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 5128
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 1270
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 233
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 1247
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 11
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 4669
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 3883
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 1534
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 4458
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 82
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 516
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 6
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 2
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 5339,
+      "maximum_age": 30975,
+      "movement_label_episodes": 54680,
+      "behavior_intervals": {
+        "0": 9699,
+        "1024": 9395,
+        "128": 10187,
+        "256": 9154,
+        "32": 9326,
+        "4096": 9330,
+        "512": 10252,
+        "64": 9323
+      }
+    },
+    "movement_population": {
+      "episodes": 54680,
+      "maps": 64,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 403
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 3052
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 2536
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 5267
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 468
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 844
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 947
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 76
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 896
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 2274
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 2877
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 651
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 2996
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 36
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 2968
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 2042
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 525
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 2361
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 7
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 433
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 2600
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 1508
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 3625
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 139
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 1636
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 1270
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 233
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 1247
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 11
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 761
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 3883
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 1534
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 4458
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 82
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 26
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 6
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 2
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 5339,
+      "maximum_age": 22767,
+      "movement_label_episodes": 54680,
+      "behavior_intervals": {
+        "0": 7000,
+        "1024": 6317,
+        "128": 7193,
+        "256": 6801,
+        "32": 6379,
+        "4096": 6764,
+        "512": 7607,
+        "64": 6619
+      }
+    },
+    "planning_population": {
+      "episodes": 58369,
+      "maps": 64,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 935
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 2823
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 2534
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 5130
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 466
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 2637
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 842
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 76
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 874
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 2903
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 2322
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 651
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 2921
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 36
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 3781
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 1712
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 525
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 2298
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 7
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 1035
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 2263
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 1503
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 3505
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 139
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 2900
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 1081
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 233
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 1200
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 11
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 1699
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 3149
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 1531
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 4323
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 82
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 234
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 6
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 2
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 5207,
+      "maximum_age": 23701,
+      "movement_label_episodes": 49292,
+      "behavior_intervals": {
+        "0": 7574,
+        "1024": 6905,
+        "128": 7918,
+        "256": 7048,
+        "32": 6893,
+        "4096": 7124,
+        "512": 7988,
+        "64": 6919
+      }
+    },
+    "cohorts": {
+      "contradictions-20261018-round002-exploration": {
+        "episodes": 76666,
+        "maps": 64,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 1775
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 3052
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 2536
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 5267
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 468
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 4729
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 947
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 76
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 896
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 5191
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 2877
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 651
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 2996
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 36
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 6588
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 2042
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 525
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 2361
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 7
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 2735
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 2600
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 1508
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 3625
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 139
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 5128
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 1270
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 233
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 1247
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 11
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 4669
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 3883
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 1534
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 4458
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 82
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 516
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 6
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 2
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 5339,
+        "maximum_age": 30975,
+        "movement_label_episodes": 54680,
+        "behavior_intervals": {
+          "0": 9699,
+          "1024": 9395,
+          "128": 10187,
+          "256": 9154,
+          "32": 9326,
+          "4096": 9330,
+          "512": 10252,
+          "64": 9323
+        }
+      }
+    },
+    "roles": {
+      "exploration": {
+        "episodes": 76666,
+        "maps": 64,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 1775
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 3052
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 2536
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 5267
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 468
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 4729
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 947
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 76
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 896
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 5191
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 2877
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 651
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 2996
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 36
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 6588
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 2042
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 525
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 2361
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 7
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 2735
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 2600
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 1508
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 3625
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 139
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 5128
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 1270
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 233
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 1247
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 11
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 4669
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 3883
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 1534
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 4458
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 82
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 516
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 6
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 2
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 5339,
+        "maximum_age": 30975,
+        "movement_label_episodes": 54680,
+        "behavior_intervals": {
+          "0": 9699,
+          "1024": 9395,
+          "128": 10187,
+          "256": 9154,
+          "32": 9326,
+          "4096": 9330,
+          "512": 10252,
+          "64": 9323
+        }
+      }
+    },
+    "policies": [
+      "{\"assignment\": \"sha256(master-seed:planned-game-group) low32, then unsigned field hash\", \"intervals\": [0, 32, 64, 128, 256, 512, 1024, 4096], \"model_sha256\": \"f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217\", \"name\": \"seeded-field-intervals\", \"seed\": 181041}"
+    ],
+    "label_contracts": [
+      "e4cdcf9770318ac2b929a86535b7a4e7a96ad689865a6609f476a1d1193e6866"
+    ],
+    "planning_coverage": {
+      "measured": true,
+      "episodes_with_instrumentation": 76666,
+      "episodes_with_planning_queries": 58369,
+      "planning_queries": 9439046,
+      "planning_only_episodes": 9077,
+      "defer_false_negative": 62653,
+      "defer_false_positive": 161863,
+      "refresh_false_negative": 45891,
+      "refresh_false_positive": 58175,
+      "note": "Separate reachability labels; not converted to movement benefit. Legacy episodes lack this instrumentation."
+    },
+    "warning": "Observed support is not proof of safety beyond these bins; offline accuracy does not establish closed-loop improvement."
+  },
+  "complete_episode_games": 64,
+  "note": "Partial records preserve the original full-game cohort metadata; no extra cohort or role weight. No completed-game or whole-game totals claim for censored trajectories."
+}

@@ -1,0 +1,1353 @@
+{
+  "planned": 128,
+  "full_successes": 125,
+  "censored_partials": 3,
+  "unresolved": 0,
+  "by_format_planned": {
+    "8v8": 16,
+    "16ffa": 16,
+    "8ffa": 16,
+    "4v4": 16,
+    "2v2": 16,
+    "4ffa": 16,
+    "3ffa": 16,
+    "1v1": 16
+  },
+  "by_format_full": {
+    "8v8": 16,
+    "16ffa": 13,
+    "8ffa": 16,
+    "4v4": 16,
+    "2v2": 16,
+    "4ffa": 16,
+    "3ffa": 16,
+    "1v1": 16
+  },
+  "partials": [
+    {
+      "job": "05fe5cff222d6b10",
+      "attempt": "489ccabb50ea4a579bd94b21a72c8b0e",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "alliances": [
+          3,
+          4,
+          12,
+          13,
+          8,
+          9,
+          5,
+          7,
+          2,
+          16,
+          15,
+          10,
+          6,
+          14,
+          1,
+          11
+        ],
+        "format": "16ffa",
+        "game_seed": 2963975613,
+        "generator": "concrete-islands",
+        "generator_params": {
+          "algae-amount": 100,
+          "channel-width": 7,
+          "extra-islands": 2,
+          "fruit-amount": 75,
+          "sandy-beaches": 1,
+          "stone-amount": 125,
+          "wheat-amount": 150,
+          "wood-amount": 75,
+          "workers": 4
+        },
+        "height": 512,
+        "map_seed": 380758488,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-explicit-user-retirement",
+      "raw_category": "crash",
+      "rows": 7811,
+      "complete_retained": 7811
+    },
+    {
+      "job": "3ec5832e8eb38bd9",
+      "attempt": "7f5b7860c1104b8a8ce8fbbb24d2c600",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "cortex",
+          "maxima",
+          "nicowar",
+          "econo",
+          "castor",
+          "warrush",
+          "cortex",
+          "warrush",
+          "econo",
+          "maxima",
+          "numbi",
+          "nicowar",
+          "castor",
+          "castor",
+          "nicowar",
+          "warrush"
+        ],
+        "alliances": [
+          11,
+          6,
+          5,
+          10,
+          13,
+          7,
+          15,
+          3,
+          12,
+          1,
+          16,
+          9,
+          4,
+          14,
+          2,
+          8
+        ],
+        "format": "16ffa",
+        "game_seed": 670135628,
+        "generator": "isles",
+        "generator_params": {
+          "algae-amount": 150,
+          "bridge-width": 4,
+          "island-size": 65,
+          "land-bridges": 1,
+          "sandy-beaches": 1,
+          "stone-amount": 150,
+          "wheat-amount": 125,
+          "wood-amount": 150,
+          "workers": 3
+        },
+        "height": 512,
+        "map_seed": 145115346,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-explicit-user-retirement",
+      "raw_category": "crash",
+      "rows": 1992,
+      "complete_retained": 1992
+    },
+    {
+      "job": "81c48e83ad74dc8d",
+      "attempt": "f10a140f1f524bef997748e0e5f655a7",
+      "format": "16ffa",
+      "spec": {
+        "ais": [
+          "castor",
+          "maxima",
+          "cabino",
+          "castor",
+          "cabino",
+          "maxima",
+          "maxima",
+          "cabino",
+          "castor",
+          "econo",
+          "cabino",
+          "castor",
+          "econo",
+          "cortex",
+          "maxima",
+          "castor"
+        ],
+        "alliances": [
+          15,
+          3,
+          1,
+          13,
+          11,
+          4,
+          6,
+          12,
+          10,
+          8,
+          14,
+          2,
+          7,
+          16,
+          5,
+          9
+        ],
+        "format": "16ffa",
+        "game_seed": 2538354231,
+        "generator": "swamp",
+        "generator_params": {
+          "algae-amount": 125,
+          "fruit": 3,
+          "grass": 65,
+          "hilltop-stone": 0,
+          "repeat": 2,
+          "smoothing": 5,
+          "stone-amount": 150,
+          "water": 39,
+          "wheat-amount": 100,
+          "wood-amount": 75,
+          "workers": 6
+        },
+        "height": 512,
+        "map_seed": 2818777688,
+        "players": 16,
+        "width": 512
+      },
+      "censor_category": "censored-explicit-user-retirement",
+      "raw_category": "crash",
+      "rows": 6205,
+      "complete_retained": 6205
+    }
+  ],
+  "manifests": [
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/completed-only/706a6ed43094d7592b1df7e5.cohort.json",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/73762b0c283dd0acdade94ea.partial.cohort.json"
+  ],
+  "episodes": 280145,
+  "support": {
+    "schema": 1,
+    "overall": {
+      "episodes": 280145,
+      "maps": 126,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 6234
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 10454
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 8835
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 18320
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 1750
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 22021
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 3321
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 413
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 3076
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 18198
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 9651
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 4084
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 11039
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 573
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 23257
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 6954
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 1665
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 7739
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 95
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 8284
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 8583
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 5919
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 12814
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 1010
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 20524
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 4310
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 575
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 4863
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 4
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 14126
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 12521
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 6517
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 15786
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 987
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 5616
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 19
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 8
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 18345,
+      "maximum_age": 81453,
+      "movement_label_episodes": 198412,
+      "behavior_intervals": {
+        "0": 32694,
+        "1024": 36291,
+        "128": 34374,
+        "256": 34676,
+        "32": 34786,
+        "4096": 37075,
+        "512": 35710,
+        "64": 34539
+      }
+    },
+    "movement_population": {
+      "episodes": 198412,
+      "maps": 124,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 1683
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 10454
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 8835
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 18320
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 1750
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 3124
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 3321
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 413
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 3076
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 8561
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 9651
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 4084
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 11039
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 573
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 11298
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 6954
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 1665
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 7739
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 95
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 1709
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 8583
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 5919
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 12814
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 1010
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 7075
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 4310
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 575
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 4863
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 4
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 2979
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 12521
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 6517
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 15786
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 987
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 98
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 19
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 8
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 18345,
+      "maximum_age": 31240,
+      "movement_label_episodes": 198412,
+      "behavior_intervals": {
+        "0": 23823,
+        "1024": 25261,
+        "128": 25244,
+        "256": 24596,
+        "32": 25126,
+        "4096": 25563,
+        "512": 24913,
+        "64": 23886
+      }
+    },
+    "planning_population": {
+      "episodes": 219675,
+      "maps": 126,
+      "age_demand": [
+        {
+          "age": "0..31",
+          "q128": "0..0",
+          "episodes": 3884
+        },
+        {
+          "age": "0..31",
+          "q128": "1..7",
+          "episodes": 9681
+        },
+        {
+          "age": "0..31",
+          "q128": "32..127",
+          "episodes": 8822
+        },
+        {
+          "age": "0..31",
+          "q128": "8..31",
+          "episodes": 17929
+        },
+        {
+          "age": "0..31",
+          "q128": ">=128",
+          "episodes": 1749
+        },
+        {
+          "age": "1024..4095",
+          "q128": "0..0",
+          "episodes": 13526
+        },
+        {
+          "age": "1024..4095",
+          "q128": "1..7",
+          "episodes": 2896
+        },
+        {
+          "age": "1024..4095",
+          "q128": "32..127",
+          "episodes": 410
+        },
+        {
+          "age": "1024..4095",
+          "q128": "8..31",
+          "episodes": 2959
+        },
+        {
+          "age": "1024..4095",
+          "q128": ">=128",
+          "episodes": 0
+        },
+        {
+          "age": "128..255",
+          "q128": "0..0",
+          "episodes": 10860
+        },
+        {
+          "age": "128..255",
+          "q128": "1..7",
+          "episodes": 7762
+        },
+        {
+          "age": "128..255",
+          "q128": "32..127",
+          "episodes": 4077
+        },
+        {
+          "age": "128..255",
+          "q128": "8..31",
+          "episodes": 10733
+        },
+        {
+          "age": "128..255",
+          "q128": ">=128",
+          "episodes": 573
+        },
+        {
+          "age": "256..511",
+          "q128": "0..0",
+          "episodes": 14566
+        },
+        {
+          "age": "256..511",
+          "q128": "1..7",
+          "episodes": 6003
+        },
+        {
+          "age": "256..511",
+          "q128": "32..127",
+          "episodes": 1663
+        },
+        {
+          "age": "256..511",
+          "q128": "8..31",
+          "episodes": 7497
+        },
+        {
+          "age": "256..511",
+          "q128": ">=128",
+          "episodes": 95
+        },
+        {
+          "age": "32..63",
+          "q128": "0..0",
+          "episodes": 3798
+        },
+        {
+          "age": "32..63",
+          "q128": "1..7",
+          "episodes": 7550
+        },
+        {
+          "age": "32..63",
+          "q128": "32..127",
+          "episodes": 5903
+        },
+        {
+          "age": "32..63",
+          "q128": "8..31",
+          "episodes": 12400
+        },
+        {
+          "age": "32..63",
+          "q128": ">=128",
+          "episodes": 1009
+        },
+        {
+          "age": "512..1023",
+          "q128": "0..0",
+          "episodes": 13038
+        },
+        {
+          "age": "512..1023",
+          "q128": "1..7",
+          "episodes": 3754
+        },
+        {
+          "age": "512..1023",
+          "q128": "32..127",
+          "episodes": 575
+        },
+        {
+          "age": "512..1023",
+          "q128": "8..31",
+          "episodes": 4707
+        },
+        {
+          "age": "512..1023",
+          "q128": ">=128",
+          "episodes": 4
+        },
+        {
+          "age": "64..127",
+          "q128": "0..0",
+          "episodes": 6157
+        },
+        {
+          "age": "64..127",
+          "q128": "1..7",
+          "episodes": 10250
+        },
+        {
+          "age": "64..127",
+          "q128": "32..127",
+          "episodes": 6509
+        },
+        {
+          "age": "64..127",
+          "q128": "8..31",
+          "episodes": 15312
+        },
+        {
+          "age": "64..127",
+          "q128": ">=128",
+          "episodes": 987
+        },
+        {
+          "age": ">=4096",
+          "q128": "0..0",
+          "episodes": 2016
+        },
+        {
+          "age": ">=4096",
+          "q128": "1..7",
+          "episodes": 13
+        },
+        {
+          "age": ">=4096",
+          "q128": "32..127",
+          "episodes": 0
+        },
+        {
+          "age": ">=4096",
+          "q128": "8..31",
+          "episodes": 8
+        },
+        {
+          "age": ">=4096",
+          "q128": ">=128",
+          "episodes": 0
+        }
+      ],
+      "high_demand_old": 17827,
+      "maximum_age": 81453,
+      "movement_label_episodes": 179683,
+      "behavior_intervals": {
+        "0": 25921,
+        "1024": 28310,
+        "128": 27525,
+        "256": 27190,
+        "32": 27015,
+        "4096": 29216,
+        "512": 27687,
+        "64": 26811
+      }
+    },
+    "cohorts": {
+      "contradictions-20261018-round001-exploration": {
+        "episodes": 280145,
+        "maps": 126,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 6234
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 10454
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 8835
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 18320
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 1750
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 22021
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 3321
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 413
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 3076
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 18198
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 9651
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 4084
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 11039
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 573
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 23257
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 6954
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 1665
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 7739
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 95
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 8284
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 8583
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 5919
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 12814
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 1010
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 20524
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 4310
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 575
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 4863
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 4
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 14126
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 12521
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 6517
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 15786
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 987
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 5616
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 19
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 8
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 18345,
+        "maximum_age": 81453,
+        "movement_label_episodes": 198412,
+        "behavior_intervals": {
+          "0": 32694,
+          "1024": 36291,
+          "128": 34374,
+          "256": 34676,
+          "32": 34786,
+          "4096": 37075,
+          "512": 35710,
+          "64": 34539
+        }
+      }
+    },
+    "roles": {
+      "exploration": {
+        "episodes": 280145,
+        "maps": 126,
+        "age_demand": [
+          {
+            "age": "0..31",
+            "q128": "0..0",
+            "episodes": 6234
+          },
+          {
+            "age": "0..31",
+            "q128": "1..7",
+            "episodes": 10454
+          },
+          {
+            "age": "0..31",
+            "q128": "32..127",
+            "episodes": 8835
+          },
+          {
+            "age": "0..31",
+            "q128": "8..31",
+            "episodes": 18320
+          },
+          {
+            "age": "0..31",
+            "q128": ">=128",
+            "episodes": 1750
+          },
+          {
+            "age": "1024..4095",
+            "q128": "0..0",
+            "episodes": 22021
+          },
+          {
+            "age": "1024..4095",
+            "q128": "1..7",
+            "episodes": 3321
+          },
+          {
+            "age": "1024..4095",
+            "q128": "32..127",
+            "episodes": 413
+          },
+          {
+            "age": "1024..4095",
+            "q128": "8..31",
+            "episodes": 3076
+          },
+          {
+            "age": "1024..4095",
+            "q128": ">=128",
+            "episodes": 0
+          },
+          {
+            "age": "128..255",
+            "q128": "0..0",
+            "episodes": 18198
+          },
+          {
+            "age": "128..255",
+            "q128": "1..7",
+            "episodes": 9651
+          },
+          {
+            "age": "128..255",
+            "q128": "32..127",
+            "episodes": 4084
+          },
+          {
+            "age": "128..255",
+            "q128": "8..31",
+            "episodes": 11039
+          },
+          {
+            "age": "128..255",
+            "q128": ">=128",
+            "episodes": 573
+          },
+          {
+            "age": "256..511",
+            "q128": "0..0",
+            "episodes": 23257
+          },
+          {
+            "age": "256..511",
+            "q128": "1..7",
+            "episodes": 6954
+          },
+          {
+            "age": "256..511",
+            "q128": "32..127",
+            "episodes": 1665
+          },
+          {
+            "age": "256..511",
+            "q128": "8..31",
+            "episodes": 7739
+          },
+          {
+            "age": "256..511",
+            "q128": ">=128",
+            "episodes": 95
+          },
+          {
+            "age": "32..63",
+            "q128": "0..0",
+            "episodes": 8284
+          },
+          {
+            "age": "32..63",
+            "q128": "1..7",
+            "episodes": 8583
+          },
+          {
+            "age": "32..63",
+            "q128": "32..127",
+            "episodes": 5919
+          },
+          {
+            "age": "32..63",
+            "q128": "8..31",
+            "episodes": 12814
+          },
+          {
+            "age": "32..63",
+            "q128": ">=128",
+            "episodes": 1010
+          },
+          {
+            "age": "512..1023",
+            "q128": "0..0",
+            "episodes": 20524
+          },
+          {
+            "age": "512..1023",
+            "q128": "1..7",
+            "episodes": 4310
+          },
+          {
+            "age": "512..1023",
+            "q128": "32..127",
+            "episodes": 575
+          },
+          {
+            "age": "512..1023",
+            "q128": "8..31",
+            "episodes": 4863
+          },
+          {
+            "age": "512..1023",
+            "q128": ">=128",
+            "episodes": 4
+          },
+          {
+            "age": "64..127",
+            "q128": "0..0",
+            "episodes": 14126
+          },
+          {
+            "age": "64..127",
+            "q128": "1..7",
+            "episodes": 12521
+          },
+          {
+            "age": "64..127",
+            "q128": "32..127",
+            "episodes": 6517
+          },
+          {
+            "age": "64..127",
+            "q128": "8..31",
+            "episodes": 15786
+          },
+          {
+            "age": "64..127",
+            "q128": ">=128",
+            "episodes": 987
+          },
+          {
+            "age": ">=4096",
+            "q128": "0..0",
+            "episodes": 5616
+          },
+          {
+            "age": ">=4096",
+            "q128": "1..7",
+            "episodes": 19
+          },
+          {
+            "age": ">=4096",
+            "q128": "32..127",
+            "episodes": 0
+          },
+          {
+            "age": ">=4096",
+            "q128": "8..31",
+            "episodes": 8
+          },
+          {
+            "age": ">=4096",
+            "q128": ">=128",
+            "episodes": 0
+          }
+        ],
+        "high_demand_old": 18345,
+        "maximum_age": 81453,
+        "movement_label_episodes": 198412,
+        "behavior_intervals": {
+          "0": 32694,
+          "1024": 36291,
+          "128": 34374,
+          "256": 34676,
+          "32": 34786,
+          "4096": 37075,
+          "512": 35710,
+          "64": 34539
+        }
+      }
+    },
+    "policies": [
+      "{\"assignment\": \"sha256(master-seed:planned-game-group) low32, then unsigned field hash\", \"intervals\": [0, 32, 64, 128, 256, 512, 1024, 4096], \"model_sha256\": \"f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217\", \"name\": \"seeded-field-intervals\", \"seed\": 181041}"
+    ],
+    "label_contracts": [
+      "e4cdcf9770318ac2b929a86535b7a4e7a96ad689865a6609f476a1d1193e6866"
+    ],
+    "planning_coverage": {
+      "measured": true,
+      "episodes_with_instrumentation": 280145,
+      "episodes_with_planning_queries": 219675,
+      "planning_queries": 36286391,
+      "planning_only_episodes": 39992,
+      "defer_false_negative": 237976,
+      "defer_false_positive": 892292,
+      "refresh_false_negative": 245699,
+      "refresh_false_positive": 308185,
+      "note": "Separate reachability labels; not converted to movement benefit. Legacy episodes lack this instrumentation."
+    },
+    "warning": "Observed support is not proof of safety beyond these bins; offline accuracy does not establish closed-loop improvement."
+  },
+  "complete_episode_games": 126,
+  "note": "Partial records preserve the original full-game cohort metadata; no extra cohort or role weight. No completed-game or whole-game totals claim for censored trajectories."
+}

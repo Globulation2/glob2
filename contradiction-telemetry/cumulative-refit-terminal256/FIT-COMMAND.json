@@ -1,0 +1,80 @@
+{
+  "argv": [
+    "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/source/tools/resource_gradient_model.py",
+    "fit-candidate",
+    "--feature-set",
+    "goal-stall-v1",
+    "--split-registry",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/map-split-registry.json",
+    "--output",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/cumulative-lean12-candidate.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/completed-only/706a6ed43094d7592b1df7e5.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/73762b0c283dd0acdade94ea.partial.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/709320ccad761362a85a7d3d.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/724df33713ff2602525912b2.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/14ceed4e030643289b884858.partial.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/ef8a82e140260ff96cb490ee.partial.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/completed-only/455e1d50546045bb08bb27d8.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/completed-only/6c3c7e2b97a8d96a953ef9f6.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/2a52ea69fa7350af76b26c1b.partial.cohort.json",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/e227d91036a954302d0168bb.partial.cohort.json"
+  ],
+  "started_utc": "2026-10-19T00:53:42.438114+00:00",
+  "source_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "source_archive_sha256": "22304232d70a045dac362e5ebdccb9f80e1e43ab4932fcc11fcb8d2bdc234d01",
+  "registry_before_sha256": "15c6670f4e4e2e92faf3709f0834c6015e73de2b86f6ae69c1956f4334680508",
+  "manifests": [
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/completed-only/706a6ed43094d7592b1df7e5.cohort.json",
+      "sha256": "a9a8d0d99cd29d1cc6a31cddeca6550d029ac5463cde93d852b6478f33e899d8"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round001/73762b0c283dd0acdade94ea.partial.cohort.json",
+      "sha256": "c4f75589506005dde9329407bfddd4a5ed4d4afacfc05f8abbdf38946d7a4c88"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/709320ccad761362a85a7d3d.cohort.json",
+      "sha256": "e01be5e7b38bfe22b20e3518b46ec67b6ec68b1fd6c6eba7e97358ccec60ff4b"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/completed-only/724df33713ff2602525912b2.cohort.json",
+      "sha256": "6c9cf49ab7539cab659092f375663ada8fd364555b444e5143533488e578bba4"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/14ceed4e030643289b884858.partial.cohort.json",
+      "sha256": "f6e96c9cf084b83d35af5c443222870b853a56233e7d49ca6bf1de7b19c8c7ce"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-exploration/ef8a82e140260ff96cb490ee.partial.cohort.json",
+      "sha256": "969a7ca2420c932aa6aab3af50392e20ceb50d21ef373afb6cf8bcaffc75fca1"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/completed-only/455e1d50546045bb08bb27d8.cohort.json",
+      "sha256": "fac1ef591f7564ffb6a1279254356cf6fe4b37d71d4d9a845bdfef627e13c88f"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/completed-only/6c3c7e2b97a8d96a953ef9f6.cohort.json",
+      "sha256": "a1b15bb927b219abdb85de49590a1b495738d9fb913992db10be483913e7fa0d"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/2a52ea69fa7350af76b26c1b.partial.cohort.json",
+      "sha256": "a9eac26b48562b4cfcfb0913ae9e3ac275595f52a586d39c2fb0b4136cbd2cdd"
+    },
+    {
+      "path": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-cumulative-round002/round002-candidate/e227d91036a954302d0168bb.partial.cohort.json",
+      "sha256": "343afdd65a2da4cce4fbc13659097cac1701ed0540c8fdd62c9dd318e0154a32"
+    }
+  ],
+  "promotion": false
+}

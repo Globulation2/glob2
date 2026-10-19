@@ -1,0 +1,5 @@
+{
+  "revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "archive_sha256": "22304232d70a045dac362e5ebdccb9f80e1e43ab4932fcc11fcb8d2bdc234d01",
+  "scope": "exact committed tools and generated model header; no working-tree substitutions"
+}

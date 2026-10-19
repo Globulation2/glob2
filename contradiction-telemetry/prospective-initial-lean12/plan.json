@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-18T23:42:10.445584+00:00",
+  "selection": "Four predefined fresh map seeds, not outcome-selected; do not regenerate or substitute on outcomes",
+  "reference_revision": "54cdc48bf240e8779b3d926107b323ecdad85926",
+  "candidate_revision": "2d4dc8e9e1051a80b98fb9c73cf2e7e6610173ec",
+  "common_map_generator_source": "f65c8d1698f6deefc4820209e69ad704f91d5776",
+  "protocol": {
+    "single_remote_host": true,
+    "threads": 1,
+    "pinned_single_cpu": true,
+    "gpu": "off",
+    "compute_telemetry": "off",
+    "probe_off_order": [
+      "reference",
+      "candidate",
+      "candidate",
+      "reference"
+    ],
+    "repeated_pairs": 2,
+    "probe_on_separate": true,
+    "timing_wall_cap_seconds": 1800,
+    "diagnostic_wall_cap_seconds": 1800,
+    "requested_metrics": [
+      "CPU/tick",
+      "totalCPU",
+      "wall",
+      "ticks",
+      "ticks/sec",
+      "live_stall_rate",
+      "sidestep_rate",
+      "movement_quality",
+      "planning_quality"
+    ],
+    "migration": "Same frozen private174 original for both arms; explicit per-arm migration, compare normalized_state,tick0,inputSHA; never crossload intermediate176 saves",
+    "warm_start": "Each arm warm checkpoint generated and resumed only by itself; no byte-equality expected across incompatible private176 encodings",
+    "inference": "Net model+selected production bookkeeping; no f65-versus-current-master attribution",
+    "runtime_budget": "16 timing games +8 diagnostic warm/window processes; one CPU; estimate15\u201335minutes plus build/migration, stop/censor at fixed cap not outcome tuning"
+  },
+  "games": [
+    {
+      "generator": "river",
+      "width": 64,
+      "height": 64,
+      "format": "1v1",
+      "players": 2,
+      "alliances": [
+        1,
+        2
+      ],
+      "ais": [
+        "nicowar",
+        "nicowar"
+      ],
+      "map_seed": 2850100001,
+      "game_seed": 2950100001,
+      "generator_params": {
+        "workers": 4
+      },
+      "timing_ticks": 4096,
+      "diagnostic_warmup_ticks": 2048,
+      "diagnostic_window_ticks": 2048
+    },
+    {
+      "generator": "river",
+      "width": 128,
+      "height": 128,
+      "format": "4ffa",
+      "players": 4,
+      "alliances": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "map_seed": 2850100002,
+      "game_seed": 2950100002,
+      "generator_params": {
+        "workers": 4
+      },
+      "timing_ticks": 8192,
+      "diagnostic_warmup_ticks": 4096,
+      "diagnostic_window_ticks": 2048
+    },
+    {
+      "generator": "polder",
+      "width": 256,
+      "height": 256,
+      "format": "4v4",
+      "players": 8,
+      "alliances": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2
+      ],
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "map_seed": 2850100003,
+      "game_seed": 2950100003,
+      "generator_params": {
+        "workers": 4
+      },
+      "timing_ticks": 8192,
+      "diagnostic_warmup_ticks": 4096,
+      "diagnostic_window_ticks": 2048
+    },
+    {
+      "generator": "concrete-islands",
+      "width": 512,
+      "height": 512,
+      "format": "8v8",
+      "players": 16,
+      "alliances": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "map_seed": 2850100004,
+      "game_seed": 2950100004,
+      "generator_params": {
+        "workers": 4
+      },
+      "timing_ticks": 16384,
+      "diagnostic_warmup_ticks": 12288,
+      "diagnostic_window_ticks": 2048
+    }
+  ]
+}
