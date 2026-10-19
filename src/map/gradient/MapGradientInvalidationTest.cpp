@@ -226,8 +226,9 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         const auto expected=referenceArea(f,gradient_preparation::Kind::Forbidden,0,swim);
         CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
         const auto jobs=map.gradientPipelineStatus().jobs;
-        if(mutation==7 || mutation==8) {
-            // Terrain paint explicitly invalidates warm route fields. That
+        if((mutation==7 && swim!=WATER_ONLY_CLASS) || mutation==8) {
+            // A real terrain paint explicitly invalidates warm route fields
+            // (WATER over the water-only fixture is a no-op). That
             // recovery is retained; it is not arbitrary periodic maintenance.
             await(f,[&]{return map.gradientPipelineStatus().jobs==jobs+1 && map.gradientPipelineStatus().pending==0;});
             CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)));
