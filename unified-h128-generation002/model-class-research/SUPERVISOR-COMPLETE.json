@@ -1,0 +1,22 @@
+{
+  "started_utc": "2026-10-19T08:46:36.852060+00:00",
+  "supervisor_pid": 1034544,
+  "argv": [
+    "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+    "-u",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/model-research-cumulative256/run-research.py"
+  ],
+  "cwd": "/home/bradley/glob2/artifacts/gradient-unified-20261019/model-research-cumulative256",
+  "environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "plan_sha256": "16c2827d0b16682ed20330e49fe684fbb198afec07e972c7fae0c7dac3ab0661",
+  "wall_timeout_seconds": 900,
+  "scope": "singleCPU nice19 artifactonly; no games/emission/production changes",
+  "research_pid": 1034549,
+  "returncode": 0,
+  "finished_utc": "2026-10-19T08:47:11.400822+00:00"
+}

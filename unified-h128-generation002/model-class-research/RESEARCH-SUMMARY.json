@@ -1,0 +1,297 @@
+{
+  "status": "complete-artifact-only-research",
+  "finished_utc": "2026-10-19T08:47:10.670322+00:00",
+  "plan_sha256": "16c2827d0b16682ed20330e49fe684fbb198afec07e972c7fae0c7dac3ab0661",
+  "selection_sha256": "8bba5a48184b00d68406af49b20a4766e15e4f4fb7b7c453bc1a7002152b2be2",
+  "resources": {
+    "cpu_seconds": 33.760435,
+    "wall_seconds": 33.762988451868296,
+    "cpu_ids": [
+      0
+    ],
+    "nice": 19,
+    "blas_threads": 1,
+    "pinned_dependencies": {
+      "numpy": "2.4.6",
+      "sklearn": "1.9.1",
+      "scipy": "1.17.1"
+    }
+  },
+  "protocol": {
+    "candidates": 15,
+    "development_map_folds": 3,
+    "development_rows": 46653,
+    "development_maps": 193,
+    "heldout_rows": 13915,
+    "heldout_maps": 63,
+    "global_winner_selected_before_heldout": "cart-d4-w0.02",
+    "selection_tie_note": "All direct Ridge/CART/forest/boost alternatives made0OOF refresh decisions and tied never-refresh regret1.3961283643360436; CART won the frozen secondary calibration criterion, not additional action skill.",
+    "same_rows_weights_splits_targets_threshold": true,
+    "new_headers_or_production_models_emitted": false,
+    "frozen_references_not_used_for_development_model_selection": true
+  },
+  "heldout_table": [
+    {
+      "model": "boost16-stumps",
+      "selected_on_development": true,
+      "decision_regret": 2.069087857955423,
+      "selected_weighted_percent": 0.0,
+      "selected_actual_mean_benefit": null,
+      "mae_direction_cost": 8.677539060190412,
+      "calibration_ece": 1.593238301290869,
+      "maximum_prediction_direction_cost": 10.224,
+      "raw_selected_rows": 0
+    },
+    {
+      "model": "cart-d4-w0.02",
+      "selected_on_development": true,
+      "decision_regret": 2.069087857955423,
+      "selected_weighted_percent": 0.0,
+      "selected_actual_mean_benefit": null,
+      "mae_direction_cost": 7.953782346546423,
+      "calibration_ece": 0.30846824853192434,
+      "maximum_prediction_direction_cost": 50.539,
+      "raw_selected_rows": 0
+    },
+    {
+      "model": "forest16-d3",
+      "selected_on_development": true,
+      "decision_regret": 2.069087857955423,
+      "selected_weighted_percent": 0.0,
+      "selected_actual_mean_benefit": null,
+      "mae_direction_cost": 8.040717489973964,
+      "calibration_ece": 0.8542422259661714,
+      "maximum_prediction_direction_cost": 70.298,
+      "raw_selected_rows": 0
+    },
+    {
+      "model": "hurdle-turnover",
+      "selected_on_development": true,
+      "decision_regret": 2.168827686442161,
+      "selected_weighted_percent": 0.02708606406206326,
+      "selected_actual_mean_benefit": -240.23300815578608,
+      "mae_direction_cost": 7.910916757158435,
+      "calibration_ece": 0.48989025513978673,
+      "maximum_prediction_direction_cost": 169.623,
+      "raw_selected_rows": 10
+    },
+    {
+      "model": "hurdle12",
+      "selected_on_development": true,
+      "decision_regret": 2.249757901424048,
+      "selected_weighted_percent": 0.03779216222009335,
+      "selected_actual_mean_benefit": -350.0622035236893,
+      "mae_direction_cost": 8.16334376410747,
+      "calibration_ece": 0.738654192725121,
+      "maximum_prediction_direction_cost": 177.056,
+      "raw_selected_rows": 14
+    },
+    {
+      "model": "ridge-10000",
+      "selected_on_development": true,
+      "decision_regret": 2.069087857955423,
+      "selected_weighted_percent": 0.0,
+      "selected_actual_mean_benefit": null,
+      "mae_direction_cost": 9.351412885318664,
+      "calibration_ece": 3.243587045532592,
+      "maximum_prediction_direction_cost": 65.858,
+      "raw_selected_rows": 0
+    },
+    {
+      "model": "frozen_incumbent",
+      "selected_on_development": false,
+      "decision_regret": 2.08310728151432,
+      "selected_weighted_percent": 0.011748120300751877,
+      "selected_actual_mean_benefit": 8.666666666666664,
+      "mae_direction_cost": 7.767074806680218,
+      "calibration_ece": 0.9730400259142475,
+      "maximum_prediction_direction_cost": 147.255,
+      "raw_selected_rows": 6
+    },
+    {
+      "model": "frozen_gen002",
+      "selected_on_development": false,
+      "decision_regret": 2.249757901424048,
+      "selected_weighted_percent": 0.03779216222009335,
+      "selected_actual_mean_benefit": -350.0622035236893,
+      "mae_direction_cost": 8.16334376410747,
+      "calibration_ece": 0.738654192725121,
+      "maximum_prediction_direction_cost": 177.056,
+      "raw_selected_rows": 14
+    },
+    {
+      "model": "never_refresh",
+      "selected_on_development": false,
+      "decision_regret": 2.069087857955423,
+      "selected_weighted_percent": 0.0,
+      "selected_actual_mean_benefit": null,
+      "mae_direction_cost": 6.109847644419584,
+      "calibration_ece": 3.7725606885332974,
+      "maximum_prediction_direction_cost": 0.0,
+      "raw_selected_rows": 0
+    }
+  ],
+  "interpretation": [
+    "Basic nonlinear models did not uncover useful expected benefit above128 with these inputs. The chosen CART never predicted more than50.539 direction-cost units and its policy exactly equals never-refresh on this holdout. Better overall calibration is not evidence of useful threshold-level actions.",
+    "The current four-head refit produces14raw refresh predictions with weighted selected actual benefit -350.06, while the turnover-interaction hurdle produces10raw predictions with -240.23. Interaction regret improves from2.249758 to2.168828 but remains worse than incumbent2.083107 and never-refresh2.069088.",
+    "Empirical never-refresh gains over incumbent are tiny: regret difference -0.014019 with map-cluster95percent interval[-0.046238,0]. Gains over fresh refit are larger[-0.461028,-0.011616], but only eliminate harmful predictions; they do not identify beneficial updates.",
+    "The evidence favors sparse/weak threshold-level signal and tail-calibration problems over linearity alone. It does not establish intrinsic unpredictability:42024unique transformed feature vectors among46653DEVrows, and no observed identical-vector groups with labels on both sides of128, leave little repeated-state evidence for irreducible noise. Missing context, data scarcity, policy-induced sampling and bounded model/fit objectives remain alternatives.",
+    "Observed opportunities concentrate in Materials195/227raw threshold-positive heldout rows and Clear32/227; Guard/Forbidden have none in this holdout regime, Markets unmeasured. Highdemand(q128>=32) contains139raw threshold-positive rows, weighted rate3.237percent; lowdemand0..7 contains11, rate0.142percent. Conditional slice weights are recomputed by the unchanged hierarchy, so slices are not additive contributions.",
+    "No production replacement, target/threshold change, new data, dependency install or gameplay work was performed. Default collection/refit/deployment paths continue unchanged."
+  ],
+  "opportunity": {
+    "raw_threshold_positive_rows": 227,
+    "weighted_threshold_positive_percent": 0.9308422340546855,
+    "per_family": {
+      "materials": {
+        "rows": 5306,
+        "raw_actual_threshold_rows": 195,
+        "actual_threshold_pct": 3.173864178366702,
+        "decision_regret": 7.955647536923077
+      },
+      "clear": {
+        "rows": 4217,
+        "raw_actual_threshold_rows": 32,
+        "actual_threshold_pct": 0.5164642042322182,
+        "decision_regret": 0.3046179483248624
+      },
+      "guard": {
+        "rows": 3580,
+        "raw_actual_threshold_rows": 0,
+        "actual_threshold_pct": 0.0,
+        "decision_regret": 0.0
+      },
+      "forbidden": {
+        "rows": 812,
+        "raw_actual_threshold_rows": 0,
+        "actual_threshold_pct": 0.0,
+        "decision_regret": 0.0
+      }
+    },
+    "per_age": {
+      "128-511": {
+        "rows": 3314,
+        "raw_actual_threshold_rows": 63,
+        "actual_threshold_pct": 0.9546265131516067,
+        "decision_regret": 1.2807186231378935
+      },
+      "32-127": {
+        "rows": 2889,
+        "raw_actual_threshold_rows": 63,
+        "actual_threshold_pct": 0.9897922428861524,
+        "decision_regret": 3.087566637881029
+      },
+      "512-4095": {
+        "rows": 2816,
+        "raw_actual_threshold_rows": 37,
+        "actual_threshold_pct": 0.6191842657155073,
+        "decision_regret": 0.7401517844799437
+      },
+      "0-31": {
+        "rows": 3089,
+        "raw_actual_threshold_rows": 58,
+        "actual_threshold_pct": 0.7196499331155769,
+        "decision_regret": 2.514411068953386
+      },
+      "4096+": {
+        "rows": 1807,
+        "raw_actual_threshold_rows": 6,
+        "actual_threshold_pct": 0.3577441077441077,
+        "decision_regret": 0.4815867003367003
+      }
+    },
+    "per_demand": {
+      "8-31": {
+        "rows": 4972,
+        "raw_actual_threshold_rows": 77,
+        "actual_threshold_pct": 1.086152888039749,
+        "decision_regret": 0.7778686990564192
+      },
+      "0-7": {
+        "rows": 5202,
+        "raw_actual_threshold_rows": 11,
+        "actual_threshold_pct": 0.14150719820170252,
+        "decision_regret": 0.0765565018673855
+      },
+      "32+": {
+        "rows": 3741,
+        "raw_actual_threshold_rows": 139,
+        "actual_threshold_pct": 3.237043237322275,
+        "decision_regret": 10.264445489260245
+      }
+    },
+    "per_format": {
+      "3ffa": {
+        "rows": 1226,
+        "raw_actual_threshold_rows": 3,
+        "actual_threshold_pct": 0.13104838709677422,
+        "decision_regret": 0.19354838709677422
+      },
+      "4ffa": {
+        "rows": 1894,
+        "raw_actual_threshold_rows": 51,
+        "actual_threshold_pct": 1.55789568618516,
+        "decision_regret": 3.0449886892556064
+      },
+      "1v1": {
+        "rows": 1242,
+        "raw_actual_threshold_rows": 25,
+        "actual_threshold_pct": 0.8761036912261748,
+        "decision_regret": 2.679926322363868
+      },
+      "2v2": {
+        "rows": 1498,
+        "raw_actual_threshold_rows": 30,
+        "actual_threshold_pct": 0.8180168235952422,
+        "decision_regret": 3.022295829658021
+      },
+      "8ffa": {
+        "rows": 1897,
+        "raw_actual_threshold_rows": 21,
+        "actual_threshold_pct": 0.6030757538467963,
+        "decision_regret": 0.8379038248500725
+      },
+      "4v4": {
+        "rows": 2276,
+        "raw_actual_threshold_rows": 31,
+        "actual_threshold_pct": 0.7107320338851305,
+        "decision_regret": 0.7989441294886448
+      },
+      "8v8": {
+        "rows": 2119,
+        "raw_actual_threshold_rows": 42,
+        "actual_threshold_pct": 1.8181635406273031,
+        "decision_regret": 4.454882125722553
+      },
+      "16ffa": {
+        "rows": 1763,
+        "raw_actual_threshold_rows": 24,
+        "actual_threshold_pct": 0.9317019559749028,
+        "decision_regret": 1.5202135552078422
+      }
+    }
+  },
+  "integer_checks": {
+    "prototype_only_no_native_implementation": true,
+    "current_hurdle_scalar_parity": true,
+    "all_cv_float_integer_threshold_decision_flips": 0,
+    "maximum_float_integer_prediction_difference_milli": 1.3194032278252052,
+    "integer_accumulator_or_tree_sum_bounds_below_2pow61": true
+  },
+  "uncertainty": "1000pairedmapclusterbootstrap draws with fixed evaluation weights, not IIDepisodes; descriptive intervals, no multiplecomparison correction or prospective policy-quality claim",
+  "limits": [
+    "sparse-tail complete horizons from capped trajectories retained; whole games not imputed",
+    "finite models do not establish intrinsic unpredictability; rare support/missing context/class bias remain alternatives",
+    "Markets unmeasured and never imputed",
+    "parallel lowpriority artifact-only research must not gate collection/refits/deployment"
+  ],
+  "artifacts": {
+    "full_metrics_slices_bootstrap": "RESULTS.json",
+    "development_choices": "DEVELOPMENT-SELECTION.json",
+    "input_proof": "INPUT-PROOF.json",
+    "source_and_plan": "run-research.py / PLAN.json",
+    "commands": "SUPERVISOR-COMPLETE.json",
+    "raw_prediction_audit": "oof-predictions.npz / heldout-predictions.npz",
+    "postrun_immutable_input_check": "POST-RUN-INPUT-VERIFIED.json"
+  }
+}

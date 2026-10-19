@@ -1,0 +1,35 @@
+{
+  "plan_sha256": "16c2827d0b16682ed20330e49fe684fbb198afec07e972c7fae0c7dac3ab0661",
+  "terminal_inputs_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+  "manifests": {
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/0592ad89853481cd95fe045e.cohort.json": "c0e4d04baf34be4d45f3e9eaebc325704f3127a221db24f06cb773e034d0ddff",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/completed/3e0fc39a86fec90c27e8baa7.cohort.json": "ab1c9fe9c8985495824ea1e3cf1429e0fb8694abcddd6228de515f00979f3abf",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/exploration-export/61ac95f187bf495d82ea1308.cohort.json": "79a076d53ceecfdc09de4d68765f964409e504da3fe22debf100a163db504969",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/97e12890d0d46ffec0dc9e98.cohort.json": "88ba15c4e229716640da6c795cc6e849f0a5aa82303c0728393bb1aa0925c8af",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/completed/8f64703519515785f94a7c08.cohort.json": "108cbc21f0067aefc7b082127efceed192143db59d14c08e69e27f2a353fb900",
+    "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research/candidate-export/f105e763c4278d70ff60f3ab.cohort.json": "35a17d55ddfe5142e6e7b9f1fcdbe833cf2fa580274039766ae62f3e1639ef66"
+  },
+  "registry_sha256": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+  "rows": 60568,
+  "dev_rows": 46653,
+  "heldout_rows": 13915,
+  "dev_maps": 193,
+  "heldout_maps": 63,
+  "dependencies": {
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1",
+    "scipy": "1.17.1"
+  },
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "affinity": [
+    0
+  ],
+  "nice": 19,
+  "source_sha256": {
+    "adaptive_gradient_dataset.py": "d7f2320eb97016a918ed62ea41895d47235f9b66f8f65c49dfed2a67fc09cf59",
+    "adaptive_gradient_spatial.py": "547205158a41d5fc3987b308f13390de1d2f9d09b614b049b7458ee12244adfb",
+    "adaptive_gradient_model.py": "372210417e2b7e74b24c61a9a3e1f855e225c52296684f5edd2cf0ba3fd39325",
+    "resource_gradient_model.py": "569da4176b9cc8a1fa1c2bfe6bc5f3c11f8a6368a6015ede85c15c36aaeb9961",
+    "resource_gradient_dataset.py": "2b0f8d38f1077b6f7cf4c7485e3c0ddf0aa33548c184574fe65000ca6be4f0de"
+  }
+}

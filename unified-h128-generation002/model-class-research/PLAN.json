@@ -1,0 +1,178 @@
+{
+  "study": "cumulative256-basic-regressor-class-review-v1",
+  "remote_data_root": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/cumulative-256-research",
+  "remote_output_root": "/home/bradley/glob2/artifacts/gradient-unified-20261019/model-research-cumulative256",
+  "python": "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+  "terminal_inputs_sha256": "66b899c7cb3b3726a63056b14cf12394e6d18e2b59e9592c57a68a6cadeb241a",
+  "analysis_source_sha256": {
+    "adaptive_gradient_dataset.py": "d7f2320eb97016a918ed62ea41895d47235f9b66f8f65c49dfed2a67fc09cf59",
+    "adaptive_gradient_spatial.py": "547205158a41d5fc3987b308f13390de1d2f9d09b614b049b7458ee12244adfb",
+    "adaptive_gradient_model.py": "372210417e2b7e74b24c61a9a3e1f855e225c52296684f5edd2cf0ba3fd39325",
+    "resource_gradient_model.py": "569da4176b9cc8a1fa1c2bfe6bc5f3c11f8a6368a6015ede85c15c36aaeb9961",
+    "resource_gradient_dataset.py": "2b0f8d38f1077b6f7cf4c7485e3c0ddf0aa33548c184574fe65000ca6be4f0de"
+  },
+  "reference_model_hashes": {
+    "incumbent-gen001.json": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070",
+    "reference-gen002.json": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a"
+  },
+  "candidates": [
+    {
+      "id": "hurdle12",
+      "class": "hurdle",
+      "interaction": "none"
+    },
+    {
+      "id": "ridge-1",
+      "class": "ridge",
+      "alpha": 1
+    },
+    {
+      "id": "ridge-100",
+      "class": "ridge",
+      "alpha": 100
+    },
+    {
+      "id": "ridge-10000",
+      "class": "ridge",
+      "alpha": 10000
+    },
+    {
+      "id": "cart-d2-w0.005",
+      "class": "cart",
+      "depth": 2,
+      "leaf_weight": 0.005
+    },
+    {
+      "id": "cart-d2-w0.02",
+      "class": "cart",
+      "depth": 2,
+      "leaf_weight": 0.02
+    },
+    {
+      "id": "cart-d3-w0.005",
+      "class": "cart",
+      "depth": 3,
+      "leaf_weight": 0.005
+    },
+    {
+      "id": "cart-d3-w0.02",
+      "class": "cart",
+      "depth": 3,
+      "leaf_weight": 0.02
+    },
+    {
+      "id": "cart-d4-w0.005",
+      "class": "cart",
+      "depth": 4,
+      "leaf_weight": 0.005
+    },
+    {
+      "id": "cart-d4-w0.02",
+      "class": "cart",
+      "depth": 4,
+      "leaf_weight": 0.02
+    },
+    {
+      "id": "forest16-d3",
+      "class": "forest",
+      "trees": 16,
+      "depth": 3,
+      "leaf_weight": 0.01
+    },
+    {
+      "id": "boost16-stumps",
+      "class": "boost",
+      "trees": 16,
+      "depth": 1,
+      "leaf_weight": 0.01,
+      "learning_rate": 0.1
+    },
+    {
+      "id": "hurdle-turnover",
+      "class": "hurdle_interactions",
+      "interaction": "turnover"
+    },
+    {
+      "id": "hurdle-contradictions",
+      "class": "hurdle_interactions",
+      "interaction": "contradictions"
+    },
+    {
+      "id": "hurdle-both",
+      "class": "hurdle_interactions",
+      "interaction": "both"
+    }
+  ],
+  "random_seed": 713,
+  "data": {
+    "eligible": "exact generic known capture + movement observed completeH128 rows, no spatial eligibility filter",
+    "expected_total_rows": 61824,
+    "expected_eligible_rows": 60568,
+    "expected_development_maps": 193,
+    "expected_heldout_maps": 63,
+    "expected_heldout_rows": 13915,
+    "weights": "unchanged equal format/role/cohort/map/family/collection/episode via frozen adaptive_gradient_dataset.balanced_weights",
+    "split_registry_sha256": "246c31295448773c343681a04839016539f5c56f95728bf7be45d65a69fec009",
+    "threshold_direction_cost": 128,
+    "prediction_milli_threshold": 128000,
+    "targets": "signed defer_extra-refresh_extra, same8..127 offsets, no target transforms/caps/new labels"
+  },
+  "features": {
+    "base": "same12 current transformed inputs; no family/material/map/format/AI IDs",
+    "interaction_definition": "research-only bounded integer products: log1p_q12(q128)*log1p_q12(target_added/removed)//4096; log1p_q12(q128)*invalid_goal/no_move_frac_q12//4096; each bounded1000000; no production additions"
+  },
+  "selection": {
+    "folds": "same3persistent DEV map folds; no holdout model selection",
+    "primary": "minimum whole-DEV weighted out-of-fold decision regret at128 rounded12decimals",
+    "secondary": "global prediction-bin calibration ECE after primary ties",
+    "tertiary": "predeclared complexity then candidate ID",
+    "freeze": "write hash-bound DEVELOPMENT-SELECTION.json before any heldout scoring; select global and per-class winners",
+    "heldout": "one scoring pass after frozen selection, only predeclared class winners + freshhurdle baseline + frozenincumbent/gen002 descriptive references; never retune after heldout",
+    "existing_knowledge": "parent already reported gen002 cumulative holdout regret2.249758 vs incumbent2.083107; fixed grid independent of any new heldout outcomes",
+    "calibration_bins_direction_cost": [
+      -1000000000,
+      0,
+      8,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1000000000
+    ],
+    "complexity_proxy": "Ridge13; CART maximum nodes; forest16\u00d7maximum nodes; boost16\u00d73; hurdle4\u00d7(features+1)"
+  },
+  "integer_portability": {
+    "ridge": "quantized linear accumulator bound<2^61; truncate division and milliunits",
+    "cart": "integer floor split thresholds, milli leaf means, bounded depths",
+    "forest": "16boundeddepth3trees, integer mean of milli leaves",
+    "boost": "16stumps, integer1/10learningrate, milli leaf residuals",
+    "hurdle": "exactcurrentinteger inference, same4heads; interaction variants remain artifact-only",
+    "verify": "vectorized hurdle parity against frozen scalar routine; float/quantized threshold-flip counts; no deployable model/header emitted"
+  },
+  "outputs": [
+    "CVscores/OOF prediction arrays",
+    "frozen DEVELOPMENT-SELECTION receipt",
+    "one heldout report with family/format/age/demand slices and map-cluster bootstrap uncertainty",
+    "hashes/commands/CPU accounting",
+    "no production model emission, runtime changes, new dependencies, games or training data ingestion"
+  ],
+  "budget": {
+    "cpu_ids": [
+      0
+    ],
+    "nice": 19,
+    "blas_threads": 1,
+    "cpu_seconds_limit": 300,
+    "wall_seconds_limit": 900,
+    "no_exclusive_cpu_claim": true
+  },
+  "limitations": [
+    "sparse-tail complete horizons from capped trajectories retained; whole games not imputed",
+    "finite models do not establish intrinsic unpredictability; rare support/missing context/class bias remain alternatives",
+    "Markets unmeasured and never imputed",
+    "parallel lowpriority artifact-only research must not gate collection/refits/deployment"
+  ],
+  "evaluation_uncertainty": "1000pairedwhole-mapclusterbootstrap draws, fixedheldout evaluation weights; no reselection/IIDepisodeassumption/multiplecomparisonclaim",
+  "research_script_sha256": "7d670576fd17d0b7e5670ff040e69fe6d42bb7f70ea16282573c76bd2d23db16"
+}

@@ -1,0 +1,56 @@
+{
+  "boost16-stumps": {
+    "minimum_direction_cost": 0.389,
+    "maximum_direction_cost": 10.224,
+    "raw_predictions_at_least128": 0,
+    "raw_predictions_in64_to256": 0
+  },
+  "cart-d4-w0.02": {
+    "minimum_direction_cost": 0.033,
+    "maximum_direction_cost": 50.539,
+    "raw_predictions_at_least128": 0,
+    "raw_predictions_in64_to256": 0
+  },
+  "forest16-d3": {
+    "minimum_direction_cost": -1.206,
+    "maximum_direction_cost": 70.298,
+    "raw_predictions_at_least128": 0,
+    "raw_predictions_in64_to256": 117
+  },
+  "hurdle-turnover": {
+    "minimum_direction_cost": -14.265,
+    "maximum_direction_cost": 169.623,
+    "raw_predictions_at_least128": 10,
+    "raw_predictions_in64_to256": 241
+  },
+  "hurdle12": {
+    "minimum_direction_cost": -4.142,
+    "maximum_direction_cost": 177.056,
+    "raw_predictions_at_least128": 14,
+    "raw_predictions_in64_to256": 168
+  },
+  "ridge-10000": {
+    "minimum_direction_cost": -7.161,
+    "maximum_direction_cost": 65.858,
+    "raw_predictions_at_least128": 0,
+    "raw_predictions_in64_to256": 2
+  },
+  "frozen_incumbent": {
+    "minimum_direction_cost": -23.72,
+    "maximum_direction_cost": 147.255,
+    "raw_predictions_at_least128": 6,
+    "raw_predictions_in64_to256": 86
+  },
+  "frozen_gen002": {
+    "minimum_direction_cost": -4.142,
+    "maximum_direction_cost": 177.056,
+    "raw_predictions_at_least128": 14,
+    "raw_predictions_in64_to256": 168
+  },
+  "never_refresh": {
+    "minimum_direction_cost": 0.0,
+    "maximum_direction_cost": 0.0,
+    "raw_predictions_at_least128": 0,
+    "raw_predictions_in64_to256": 0
+  }
+}

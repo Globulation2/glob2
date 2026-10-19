@@ -1,0 +1,31 @@
+{
+  "status": "complete",
+  "sealed_utc": "2026-10-19T08:52:40.692729+00:00",
+  "scope": "artifact-only bounded MLclass comparison; no production emission/promotion",
+  "files": {
+    "CV-PARTIAL.json": "6c798f521e3b56297b8edf9a8b7348156757b850e364bea152f96cf44a921698",
+    "DEVELOPMENT-SELECTION.json": "8bba5a48184b00d68406af49b20a4766e15e4f4fb7b7c453bc1a7002152b2be2",
+    "INPUT-PROOF.json": "e035c9aba6634d8bc31835549642c418d3821c9375310cb9a1b6c16e53b783dd",
+    "LAUNCHED.json": "f9f217459b44a549b5cef6500dc8b5e787ce42457e90d6110ad19956c97f6222",
+    "PLAN.json": "16c2827d0b16682ed20330e49fe684fbb198afec07e972c7fae0c7dac3ab0661",
+    "PLAN.sha256": "dc5879be7867e4b60a70202933ad884cef34bd104eef78d97352650a8f4dec84",
+    "POST-RUN-INPUT-VERIFIED.json": "94f0b7a042f17c896e42a61d34ed29ee462223f209cacbf3b555da32c97de9d0",
+    "PREDICTION-SUPPORT.json": "ae01a607a75f3855744733b93a9910786427af548b33b4e48ee0e55d35e65fea",
+    "REMOTE-LAUNCHED.json": "b6aa52454b96de00dae7d148c5c98a10a64107c12c09db38cc840dd35c6679a7",
+    "RESEARCH-SUMMARY.json": "81de1637968c5a81b4b8394a396e388c0de319935fa50aa8f9515f38dff4150d",
+    "RESULTS.json": "7885a0976a3aed1b09fbb8c652de200f7226597db02236ca9fdfbe6b940d6304",
+    "STATUS.json": "dfb757efcdd5727657f2fb1aad6d745b717d58767b1e3e2aaea5a8bfa1c7f6dc",
+    "SUPERVISOR-COMPLETE.json": "734cb4563dc813bcb6caf104fa0a3ca24e7dd04702d19bb80e9ef8d54720d234",
+    "heldout-predictions.npz": "fe70001cda6edf286d73744d458d098a428438832f8dc461c08e2680e76b44ac",
+    "incumbent-gen001.json": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070",
+    "oof-predictions.npz": "16102c73c7726bc675b8c398122c2fbe3bf5bba0692c26c734b2d5cd22832d82",
+    "reference-gen002.json": "0c87e6bd4b000ca763ebec1b7408133cbadc47bb51ed220d804bbddbb0b7344a",
+    "research.log": "9c839308815785a91162a4ac0a42a1d496667e25b09c7303a011c95de8743f65",
+    "run-research.py": "7d670576fd17d0b7e5670ff040e69fe6d42bb7f70ea16282573c76bd2d23db16",
+    "supervise.py": "6e9a7db19535338ba96e6712861483c3d884d4edaed20f405613065b341521b9",
+    "supervisor.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "result_sha256": "7885a0976a3aed1b09fbb8c652de200f7226597db02236ca9fdfbe6b940d6304",
+  "input_plan_sha256": "16c2827d0b16682ed20330e49fe684fbb198afec07e972c7fae0c7dac3ab0661",
+  "heldout_selection_sha256": "8bba5a48184b00d68406af49b20a4766e15e4f4fb7b7c453bc1a7002152b2be2"
+}
