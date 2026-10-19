@@ -310,3 +310,53 @@ TEST_CASE("idle escape fields cross tick wrap without maintenance and explicit r
 }
 
 }
+
+TEST_SUITE("ZoneGradientDemand") {
+TEST_CASE("empty painted areas produce no demand or cold jobs and first paint becomes eligible") {
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    Fixture f(0);auto& map=f.game.map;
+    EntityRandom random;random.seed(123,456);const auto before=random;
+    int dx=7,dy=9;
+    for(auto kind:{Map::AreaKind::Guard,Map::AreaKind::Clear}) {
+        CHECK_FALSE(map.pathfindArea(random,kind,0,0,10,10,&dx,&dy));
+        CHECK(map.queryAreaStep(random,kind,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    }
+    CHECK(random==before);CHECK(dx==7);CHECK(dy==9);
+    CHECK(map.gradientRuntime->adaptive.fields.empty());
+    CHECK(map.gradientPipelineStatus().jobs==0);
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    CHECK_FALSE(map.gradientRuntime->adaptive.fields.empty());
+    await(f,[&]{return map.lookupGuardAreasGradient(0,0)!=nullptr;});
+    const GradientFieldKey key{GradientFieldFamily::Guard,0,0};
+    const auto& field=map.gradientRuntime->adaptive.fields.at(key);
+    const auto queries=field.queries;const auto outcomes=field.total;
+    const auto savedRandom=random;
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,0);
+    const auto fields=map.gradientRuntime->adaptive.fields.size();
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.gradientRuntime->adaptive.fields.size()==fields);
+    CHECK(field.queries==queries);CHECK(field.total==outcomes);CHECK(random==savedRandom);
+    map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
+    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy));
+}
+}
+
+TEST_SUITE("ZoneGradientFarmDemand") {
+TEST_CASE("farm-only paint enables clearing requests only under the farming rules") {
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    Fixture f(0);auto& map=f.game.map;
+    map.setAreaMask(0,&Tile::farmArea,1);
+    CHECK_FALSE(map.hasClearingArea(0));
+    EntityRandom random;int dx=0,dy=0;
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.gradientRuntime->adaptive.fields.empty());
+    f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+    CHECK(map.hasClearingArea(0));
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    map.setAreaMask(0,&Tile::farmArea,0);
+    CHECK_FALSE(map.hasClearingArea(0));
+    map.setAreaMask(0,&Tile::clearArea,1);
+    CHECK(map.hasClearingArea(0));
+}
+}

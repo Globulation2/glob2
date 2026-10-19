@@ -26,7 +26,8 @@ struct ResourceGradientExploration
             const auto parsed=std::from_chars(text.data()+start,text.data()+stop,value);
             if (parsed.ec!=std::errc{} || parsed.ptr!=text.data()+stop || start==stop
                 || (value!=0 && (value<AdaptiveGradientState::MinimumInterval || value>65536)))
-                throw std::invalid_argument("Gradient exploration intervals must be 0 (adaptive) or 8..65536 ticks");
+                throw std::invalid_argument("Gradient exploration intervals must be 0 (adaptive) or "
+                    +std::to_string(AdaptiveGradientState::MinimumInterval)+"..65536 ticks");
             if (std::find(result.begin(),result.end(),value)!=result.end())
                 throw std::invalid_argument("Gradient exploration intervals must be unique");
             result.push_back(value);

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Balanced all-family bootstrap plans using the ordinary tournament coordinator."""
-import argparse,collections,copy,json,itertools
+import argparse,collections,copy,json,itertools,re
 from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
@@ -52,6 +52,20 @@ ROUTING = {
  'remote-only': dict(small=32,middle=224,large=0,description='Pharaoh small32; Rig/dev all remaining224; Mac paused'),
  'with-mac': dict(small=32,middle=192,large=32,description='Pharaoh small32; Rig/dev middle192; Mac largest32'),
 }
+
+def exploration_intervals(text,minimum):
+ """Freeze only strata the attested executable can actually admit."""
+ if minimum>65536:raise ValueError('Bundle minimum interval exceeds exploration maximum 65536')
+ if text is None:
+  return sorted({minimum,*[v for v in (8,16,32,64,128,256,512,1024,4096) if v>=minimum]})
+ tokens=text.split(',')
+ if any(not re.fullmatch(r'[0-9]+',v) for v in tokens):
+  raise ValueError('Exploration intervals must be comma-separated integers')
+ values=[int(v) for v in tokens]
+ if any(not minimum<=v<=65536 for v in values):
+  raise ValueError(f'Exploration intervals must be between the bundle minimum {minimum} and 65536')
+ if len(set(values))!=len(values):raise ValueError('Exploration intervals must be unique')
+ return values
 
 def pool_for_rank(rank,routing):
  if routing not in ROUTING:raise ValueError('Unknown pre-outcome execution routing')
@@ -163,8 +177,9 @@ def prepare(a):
  maps=maps.get('maps',maps) if isinstance(maps,dict) else maps;index={r['group']:r for r in maps};supplied=[inspect_bundle(p) for p in a.bundle];modelhash={b['build_options'].get('model_sha256') for b in supplied};headerhash={b['build_options'].get('header_sha256') for b in supplied}
  if len(modelhash)!=1 or len(headerhash)!=1 or None in modelhash|headerhash:raise ValueError('Pin common actual model/header in all bundles')
  if a.role=='candidate' and a.intervals:raise ValueError('Candidate role cannot silently use a fixed exploration override')
- intervals=(a.intervals or '8,16,32,64,128,256,512,1024,4096') if a.role=='exploration' else ''
- policy=dict(**policy_from_bundles(supplied),name='all-family-fixed-interval-bootstrap' if a.role=='exploration' else 'unified-adaptive',model_sha256=next(iter(modelhash)),seed=a.seed,intervals=[int(x) for x in intervals.split(',')] if intervals else [])
+ compiled_policy=policy_from_bundles(supplied)
+ intervals=exploration_intervals(a.intervals,compiled_policy['minimum_interval']) if a.role=='exploration' else []
+ policy=dict(**compiled_policy,name='all-family-fixed-interval-bootstrap' if a.role=='exploration' else 'unified-adaptive',model_sha256=next(iter(modelhash)),seed=a.seed,intervals=intervals)
  if a.role=='exploration' and (not policy['intervals'] or 0 in policy['intervals']):raise ValueError('Bootstrap requires explicit nonzero all-family intervals; no legacy adaptive0 fallback')
  if a.role=='candidate':
   for b in supplied:

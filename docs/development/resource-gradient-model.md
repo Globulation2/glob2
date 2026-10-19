@@ -1,5 +1,14 @@
 # Adaptive gradient scheduling and model collection
 
+Painted zone counts live in `Map`, separately from reachable gradient goals and
+presentation statistics. Guard fallback and idle clearing skip field requests
+when their team has no corresponding painted tiles; clearing also includes farm
+zones while farming is enabled. Mask edits update only changed team bits, and
+loading reconstructs the derived counts from saved masks. No map scan occurs in
+a movement query. First paint restores normal demand; erasing the final tile
+stops new requests while committed gradient jobs retain their deadlines.
+
+
 Periodic material, shared-market, guard, clearing and forbidden-escape fields use
 one sparse demand policy. Building-specific and consumer-specific fields retain
 their lazy initialization/invalidation paths. Skipping one field does not cause
@@ -205,7 +214,10 @@ python3 tools/adaptive_gradient_tournament.py route-accepted \
 
 Use `adaptive_gradient_tournament.py prepare --help` to prepare one role, with
 `--routing-amendment artifacts/actual-routing.json`.
-Exploration defaults to per-field intervals 8,16,32,64,128,256,512,1024,4096,
+Exploration derives its defaults from the bundle's attested minimum: current
+builds use per-field intervals 32,64,128,256,512,1024,4096. Explicit intervals
+below that minimum are rejected before dispatch; historical minimum8 bundles
+retain their 8,16 strata. Intervals are
 assigned from a per-game seed and the entire stable field key. Fields in a game do
 not all receive the same interval. The new candidate role remains unavailable
 until a generic model has been trained; an untrained bootstrap must not be

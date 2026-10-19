@@ -358,6 +358,7 @@ try
 	}
 	stream->readLeaveSection();
 	if (!legacyCellTerrain.empty()) convertLegacyCellTerrain(legacyCellTerrain);
+	rebuildPaintedAreaCounts();
 
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)

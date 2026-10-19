@@ -344,7 +344,10 @@ void Unit::handleMovementAttackingAround()
 	}
 
 	// if we haven't found anything satisfactory, follow guard area gradients
-	if (movement == MOV_RANDOM_GROUND)
+	const bool hasGuardArea=owner->map->paintedAreaTileCount(GuardArea,owner->teamNumber)!=0;
+	if (movement==MOV_RANDOM_GROUND && !attachedBuilding && !hasGuardArea) setValidTarget(false);
+	if (movement == MOV_RANDOM_GROUND && (attachedBuilding ||
+		hasGuardArea))
 	{
 
 		// Under guard-area balancing a crowded area's tiles sit below the goal
@@ -573,7 +576,8 @@ void Unit::handleMovementRandom()
 		}
 		movement=MOV_GOING_DX_DY;
 	}
-	else if(hasCapability(UnitRuntimeTraits::ClearIdle) && hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST])
+	else if(hasCapability(UnitRuntimeTraits::ClearIdle) && hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST]
+		&& map->hasClearingArea(owner->teamNumber))
 	{
 		// g==0: on obstacle. g==1: no clearing area reachable from this cell.
 		// Both cases mean "nothing found".

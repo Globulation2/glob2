@@ -131,6 +131,10 @@ class Map
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	// Derived from painted masks, independent of reachable gradient goals.
+	std::array<std::array<Uint32, Team::MAX_COUNT>, 4> paintedAreaCounts{};
+	void paintedAreaMaskChanged(AreaType kind, Uint32 before, Uint32 after);
+	void rebuildPaintedAreaCounts();
 	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markResource(size_t index) { resourceChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
@@ -139,7 +143,7 @@ class Map
 	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
-	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); }
+	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
 	//! Size the trackers to the current dimensions; every chunk becomes dirty.
 	void resetChangeTracking()
 	{
@@ -800,6 +804,16 @@ public:
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
+	Uint32 paintedAreaTileCount(AreaType kind, int team) const
+	{
+		assert(unsigned(kind)<paintedAreaCounts.size() && unsigned(team)<Team::MAX_COUNT);
+		return paintedAreaCounts[kind][team];
+	}
+	bool hasClearingArea(int team) const
+	{
+		return paintedAreaTileCount(ClearingArea,team) ||
+			(farmAreasEnabled() && paintedAreaTileCount(FarmArea,team));
+	}
 
 	Uint32 getForbidden(int x, int y) const
 	{

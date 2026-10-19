@@ -132,6 +132,7 @@ bool Map::pathfindForbidden(const Uint16* option,int team,int swim,int x,int y,i
 bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
 {
     PERF_SCOPE_TIME(PathArea);
+    if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return false;
     const GradientFieldKey key{kind==AreaKind::Guard?GradientFieldFamily::Guard:GradientFieldFamily::Clear,Uint8(team),Uint8(swim)};
     gradientMovementDemand(key);
     const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
@@ -157,6 +158,7 @@ StepResult Map::queryForbiddenStep(const Uint16* option,int team,int swim,int x,
 }
 StepResult Map::queryAreaStep(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
 {
+    if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return StepResult::Blocked;
     const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
     if(!cells) {
         gradientMovementDemand({kind==AreaKind::Guard?GradientFieldFamily::Guard:GradientFieldFamily::Clear,Uint8(team),Uint8(swim)});

@@ -498,3 +498,47 @@ TEST_CASE("wrapped distance preserves negative coordinates and multiple periods"
     }
 }
 }
+
+TEST_SUITE("MapPaintedAreas")
+{
+    TEST_CASE("exact per-team counts follow overlapping paint erase and tile replacement")
+    {
+        GrassMap map;
+        for (auto kind:{ClearingArea,ForbiddenArea,GuardArea,FarmArea})
+            CHECK(map.paintedAreaTileCount(kind,0)==0);
+        map.setAreaMask(0,&Tile::guardArea,3);
+        map.setAreaMask(0,&Tile::guardArea,3); // Idempotent repaint.
+        map.setAreaMask(1,&Tile::guardArea,1);
+        CHECK(map.paintedAreaTileCount(GuardArea,0)==2);
+        CHECK(map.paintedAreaTileCount(GuardArea,1)==1);
+        map.setAreaMask(0,&Tile::guardArea,2);
+        CHECK(map.paintedAreaTileCount(GuardArea,0)==1);
+        auto tile=map.getTile(size_t(1));
+        tile.guardArea=0;tile.clearArea=3;tile.farmArea=1;tile.forbidden=2;
+        map.replaceTile(size_t(1),tile);
+        CHECK(map.paintedAreaTileCount(GuardArea,0)==0);
+        CHECK(map.paintedAreaTileCount(GuardArea,1)==1);
+        CHECK(map.paintedAreaTileCount(ClearingArea,0)==1);
+        CHECK(map.paintedAreaTileCount(ClearingArea,1)==1);
+        CHECK(map.paintedAreaTileCount(FarmArea,0)==1);
+        CHECK(map.paintedAreaTileCount(ForbiddenArea,1)==1);
+        map.setAreaMask(0,&Tile::guardArea,Uint32(1)<<31); // Historical padding.
+        CHECK(map.paintedAreaTileCount(GuardArea,1)==0);
+        map.setAreaMask(0,&Tile::guardArea,0);
+    }
+    TEST_CASE("bootstrap reconstruction counts masks independently of reachable goals")
+    {
+        GrassMap map;
+        map.areaCells[0].guard=3;
+        map.areaCells[1].guard=1;
+        map.areaCells[1].clear=2;
+        map.areaCells[2].farm=1;
+        map.bindBootstrappedArrays();
+        CHECK(map.paintedAreaTileCount(GuardArea,0)==2);
+        CHECK(map.paintedAreaTileCount(GuardArea,1)==1);
+        CHECK(map.paintedAreaTileCount(ClearingArea,1)==1);
+        CHECK(map.paintedAreaTileCount(FarmArea,0)==1);
+        map.bindBootstrappedArrays();
+        CHECK(map.paintedAreaTileCount(GuardArea,0)==2);
+    }
+}

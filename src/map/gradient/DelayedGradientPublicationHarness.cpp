@@ -927,3 +927,46 @@ TEST_CASE("ordinary terrain edits with markets disabled round-trip binary and te
         }
     }
 }
+
+TEST_SUITE("ZoneCountsPersistence") {
+TEST_CASE("binary and text loads rebuild painted masks and subsequent erases remain exact [save-format]") {
+    glob2test::HeadlessGlobals globals;
+    for(bool text:{false,true}) {
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true});
+        auto& game=world.game;auto& map=game.map;
+        map.setAreaMask(0,&Tile::guardArea,3);
+        map.setAreaMask(1,&Tile::guardArea,1);
+        map.setAreaMask(2,&Tile::clearArea,2);
+        map.setAreaMask(3,&Tile::farmArea,1);
+        map.setAreaMask(4,&Tile::forbidden,1);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text?static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)):new GAGCore::BinaryOutputStream(memory));
+        game.save(out.get(),false,"painted zone counts are derived from masks");out->flush();
+        const auto bytes=memory->takeContents();
+        auto backend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());backend->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend.get())):new GAGCore::BinaryInputStream(backend.release()));
+        GameGUI resumed;REQUIRE(resumed.game.load(in.get()));auto& loaded=resumed.game.map;
+        CHECK(loaded.paintedAreaTileCount(GuardArea,0)==2);
+        CHECK(loaded.paintedAreaTileCount(GuardArea,1)==1);
+        CHECK(loaded.paintedAreaTileCount(ClearingArea,1)==1);
+        CHECK(loaded.paintedAreaTileCount(FarmArea,0)==1);
+        CHECK(loaded.paintedAreaTileCount(ForbiddenArea,0)==1);
+        loaded.setAreaMask(0,&Tile::guardArea,0);
+        loaded.setAreaMask(1,&Tile::guardArea,0);
+        CHECK(loaded.paintedAreaTileCount(GuardArea,0)==0);
+        CHECK(loaded.paintedAreaTileCount(GuardArea,1)==0);
+    }
+}
+TEST_CASE("tiling and resizing remove per-team zone counts with their masks") {
+    glob2test::HeadlessGlobals globals;
+    Map map;map.setSize(6,6,GRASS);
+    map.setAreaMask(0,&Tile::guardArea,1);
+    map.setAreaMask(1,&Tile::clearArea,1);
+    map.tile(2,1);
+    CHECK(map.paintedAreaTileCount(GuardArea,0)==0);
+    CHECK(map.paintedAreaTileCount(ClearingArea,0)==0);
+    map.setAreaMask(0,&Tile::farmArea,1);
+    map.setSize(6,6,GRASS);
+    CHECK(map.paintedAreaTileCount(FarmArea,0)==0);
+}
+}

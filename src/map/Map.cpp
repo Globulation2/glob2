@@ -611,6 +611,7 @@ void Map::clear()
 	resourceStocks.clear();
 	freeResourceStocks.clear();
 	materialSourceCounts.fill(0);
+	paintedAreaCounts={};
 	vertexTerrain.clear();
 	cellRules.clear();
 	refreshLiveView();

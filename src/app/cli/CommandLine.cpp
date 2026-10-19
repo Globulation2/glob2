@@ -502,7 +502,7 @@ const std::vector<Command> &commands()
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
              flag("--resource-gradient-probe", "Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias)"),
-             value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals8..65536;0=adaptive only after unified model training"),
+             value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training"),
              integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,

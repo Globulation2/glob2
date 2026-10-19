@@ -8,7 +8,7 @@
 TEST_SUITE("ResourceGradientExploration") {
 TEST_CASE("interval strata are validated and assigned without consuming game randomness") {
     CHECK((ResourceGradientExploration::parseIntervals("0,32,128,512")==std::vector<unsigned>{0,32,128,512}));
-    for (const auto* invalid:{"","8,","-1","1","7","65537","32,32","32, 64","32x"})
+    for (const auto* invalid:{"","8,","-1","1","7","8","16","31","65537","32,32","32, 64","32x"})
         CHECK_THROWS_AS(ResourceGradientExploration::parseIntervals(invalid),std::invalid_argument);
     ResourceGradientExploration first,second;
     first.intervals=second.intervals={0,32,128,512};first.seed=second.seed=123456;

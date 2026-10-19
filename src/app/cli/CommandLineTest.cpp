@@ -175,11 +175,11 @@ TEST_CASE("gradient work stats is an independent game-run observer") {
 }
 TEST_CASE("interval exploration requires explicit headless collection") {
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
-        "--resource-gradient-exploration","8,32,512","--resource-gradient-exploration-seed","4294967295"}));
+        "--resource-gradient-exploration","32,128,512","--resource-gradient-exploration-seed","4294967295"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-exploration","32"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
         "--resource-gradient-exploration","32","--write-replay"}));
-    for (const auto* invalid:{"32,","32,32","nope","7","65537"})
+    for (const auto* invalid:{"32,","32,32","nope","7","8","16","31","65537"})
         CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/gradient-cli-test","--load-game","checkpoint.game.gz","--resource-gradient-probe",
             "--resource-gradient-exploration",invalid}));
 }

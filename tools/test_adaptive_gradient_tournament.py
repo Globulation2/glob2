@@ -3,7 +3,20 @@
 import copy
 import unittest
 from tools import adaptive_gradient_dataset as data
-from tools.adaptive_gradient_tournament import ADAPTIVE_POLICY,policy_from_bundles
+from tools.adaptive_gradient_tournament import ADAPTIVE_POLICY,policy_from_bundles,exploration_intervals
+
+class ExplorationIntervalTests(unittest.TestCase):
+ def test_defaults_follow_attested_minimum_without_relabelling_history(self):
+  self.assertEqual(exploration_intervals(None,32),[32,64,128,256,512,1024,4096])
+  self.assertEqual(exploration_intervals(None,8),[8,16,32,64,128,256,512,1024,4096])
+  self.assertEqual(exploration_intervals(None,48),[48,64,128,256,512,1024,4096])
+  self.assertEqual(exploration_intervals(None,65536),[65536])
+ def test_explicit_strata_must_be_admissible_and_unique(self):
+  self.assertEqual(exploration_intervals('32,128,65536',32),[32,128,65536])
+  for invalid in ['', '0', '8,32', '16', '31', '65537', '32,32', '32,', '32, 64', '-32', '32x']:
+   with self.subTest(intervals=invalid),self.assertRaises(ValueError):
+    exploration_intervals(invalid,32)
+  with self.assertRaises(ValueError):exploration_intervals(None,65537)
 
 class ModelThresholdPolicyTests(unittest.TestCase):
  def bundle(self,value,cap=1024,minimum=32):

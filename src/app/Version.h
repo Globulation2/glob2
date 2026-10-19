@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 184
+#define VERSION_MINOR 185
+// version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
+// Existing saves retain their masks and committed jobs; counts rebuild on load.
 // version 184 deploys Adaptive24 with a 32-tick minimum refresh interval.
 // The saved layout remains version 178; existing committed jobs keep their deadlines.
 // version 183 selects per-family Adaptive16 models with a combined fallback and
