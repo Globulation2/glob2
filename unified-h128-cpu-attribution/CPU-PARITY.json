@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "runs": 64,
+  "within_arm_repeats_exact": true,
+  "research_default_vs_immutable_exact": true
+}

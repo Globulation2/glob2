@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-19T17:16:04.495671+00:00",
+  "hashes": {
+    "PLAN.json": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+    "run-attribution.py": "f7734430f6ec2a3fce42ddb43ad032aba408f10a3be45049769f36ac5bef4be9",
+    "mac-observation-helpers.py": "8ef73f487910e304af8050360737c0bf510493b9642a1a006432c49bf36dc085",
+    "summarize-attribution.py": "358988a460e88ae88795b3e58668f1871ebae35e90090db0835f656c1f76b156"
+  },
+  "note": "Analyzer phase label corrected and class aggregate admissions/skips added before any simulation/CPU outcomes."
+}

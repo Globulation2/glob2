@@ -1,0 +1,88 @@
+{
+  "master_reference": {
+    "id": "master_reference",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/master-comparison-macos-strict-assets/bin/glob2-master-84edb385c",
+    "binary_sha256": "da5eeacf577e3b29dbfe570dfbc0dd71a529fb8af765995ab8ab3f378de79713",
+    "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+    "env": {},
+    "research": false
+  },
+  "class_off": {
+    "id": "class_off",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/master-class-runtime/bin/glob2-master-class-research",
+    "binary_sha256": "46776362df7ec4f31353b4ee8d11aa25c936a4e4eb2681f754ce0dcd9151bfe2",
+    "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+    "patch_sha256": "53ef161124c64f0a6575ed9913d53c2af1f3f1d3a933fe1937bb85083f683bfd",
+    "env": {
+      "GLOB2_RESEARCH_CLASS_GATE": "0"
+    },
+    "research": true
+  },
+  "class_on": {
+    "id": "class_on",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/master-class-runtime/bin/glob2-master-class-research",
+    "binary_sha256": "46776362df7ec4f31353b4ee8d11aa25c936a4e4eb2681f754ce0dcd9151bfe2",
+    "source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+    "patch_sha256": "53ef161124c64f0a6575ed9913d53c2af1f3f1d3a933fe1937bb85083f683bfd",
+    "env": {
+      "GLOB2_RESEARCH_CLASS_GATE": "1"
+    },
+    "research": true
+  },
+  "gen005_reference": {
+    "id": "gen005_reference",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/immutable-gen005-glob2",
+    "binary_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "env": {},
+    "research": false
+  },
+  "adaptive16": {
+    "id": "adaptive16",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+    "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+    "env": {
+      "GLOB2_RESEARCH_GRADIENT_INTERVAL": "0"
+    },
+    "research": true,
+    "fixed_interval": 0
+  },
+  "fixed8": {
+    "id": "fixed8",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+    "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+    "env": {
+      "GLOB2_RESEARCH_GRADIENT_INTERVAL": "8"
+    },
+    "research": true,
+    "fixed_interval": 8
+  },
+  "fixed32": {
+    "id": "fixed32",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+    "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+    "env": {
+      "GLOB2_RESEARCH_GRADIENT_INTERVAL": "32"
+    },
+    "research": true,
+    "fixed_interval": 32
+  },
+  "fixed128": {
+    "id": "fixed128",
+    "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+    "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+    "source": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+    "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+    "env": {
+      "GLOB2_RESEARCH_GRADIENT_INTERVAL": "128"
+    },
+    "research": true,
+    "fixed_interval": 128
+  }
+}

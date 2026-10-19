@@ -1,0 +1,4 @@
+{
+  "utc": "2026-10-19T17:16:59.655693+00:00",
+  "error": "Traceback (most recent call last):\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/run-attribution.py\", line 56, in <module>\n    if fail.exists():raise RuntimeError('Master build failure: '+fail.read_text())\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Master build failure: {\n  \"utc\": \"2026-10-19T17:16:57.351164+00:00\",\n  \"error\": \"Traceback (most recent call last):\\n  File \\\"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/master-class-runtime/build.py\\\", line 8, in <module>\\n    assert code==0,'Research master build failed'\\n           ^^^^^^^\\nAssertionError: Research master build failed\\n\"\n}\n\n"
+}

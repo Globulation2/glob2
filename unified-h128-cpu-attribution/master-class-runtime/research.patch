@@ -1,0 +1,279 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index e848f0df7..5ee76b470 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -23,6 +23,7 @@
+ #include "AIMaximaStrategy.h"
+ #include "ai/cortex/CortexTuning.h"
+ #include "Game.h"
++#include "gradient/ResearchClassGate.h"
+ #include "GameRuleOverrides.h"
+ #include "Player.h"
+ #include "TeamStat.h"
+@@ -279,6 +280,7 @@ struct HeadlessRunner
+ 	static int game(const Options &options, const fs::path &output)
+ 	{
+ 		const auto setupStart = std::chrono::steady_clock::now();
++		research_class_gate::initialize();
+ 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+ 		const auto setupCpuStart=benchmark?processCpuNs():0;
+ 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
+@@ -518,7 +520,7 @@ struct HeadlessRunner
+ 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
+ 			setupCpu=processCpuNs()-setupCpuStart;
+ 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
+-			if(benchmarkWarmup==0) measureStart=processCpuNs();
++			if(benchmarkWarmup==0) {research_class_gate::resetStatistics();measureStart=processCpuNs();}
+ 			while(engine.gui.isRunning)
+ 			{
+                 const auto beforeTick=engine.gui.game.stepCounter;
+@@ -529,7 +531,7 @@ struct HeadlessRunner
+                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                     tickDurations.push_back(duration);
+                 }
+-				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
++				if(!measureStart && engine.gui.game.stepCounter>=start) {research_class_gate::resetStatistics();measureStart=processCpuNs();}
+ 			}
+ 			engine.finishSession();
+ 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
+@@ -549,6 +551,7 @@ struct HeadlessRunner
+ 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
+ 		PerformanceTelemetry::collector().reset();
+ 		Game &game=engine.gui.game;
++        research_class_gate::writeReport(game);
+ 		const auto pipelineResult = game.map.gradientPipelineStatus();
+ 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+ 		const auto gradient=gradient_kernel::configuration();
+@@ -611,6 +614,8 @@ struct HeadlessRunner
+ 			<< ",\"gradient_pipeline\":" << "true"
+ 			<< ",\"gradient_workers\":" << pipelineResult.workers
+ 			<< ",\"gradient_delay\":" << pipelineResult.delay
++			<< ",\"research_class_gate\":" << (research_class_gate::enabled()?"true":"false")
++            << ",\"research_class_diagnostics\":" << (research_class_gate::diagnosticsEnabled()?"true":"false")
+ 			<< ",\"gradient_jobs\":" << pipelineResult.jobs
+ 			<< ",\"gradient_published\":" << pipelineResult.published
+ 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
+diff --git a/src/map/MapStep.cpp b/src/map/MapStep.cpp
+index f0d76655c..cf53a2dc0 100644
+--- a/src/map/MapStep.cpp
++++ b/src/map/MapStep.cpp
+@@ -4,6 +4,7 @@
+ #include <PerformanceTelemetry.h>
+ #include "Map.h"
+ #include "gradient/GradientRuntime.h"
++#include "gradient/ResearchClassGate.h"
+ #include "field/RuntimeTerrainGradient.h"
+ #include "Game.h"
+ #include "Utilities.h"
+@@ -366,7 +367,7 @@ void Map::syncStep(Uint32 stepCounter)
+     if (escapeSlots && !(stepCounter&7)) {
+         const int slot=(stepCounter>>3)%escapeSlots;
+         const int team=slot/activeSwimClasses, swim=slot%activeSwimClasses;
+-        if (forbiddenGradient[team][swim]) updateForbiddenGradient(team,swim);
++        if (forbiddenGradient[team][swim] && research_class_gate::periodicAllowed(*game,team,swim,research_class_gate::Forbidden)) updateForbiddenGradient(team,swim);
+ 
+     }
+ 
+@@ -394,7 +395,8 @@ void Map::stagePeriodicGradientPreparation()
+             for (int t=0; t<numberOfTeam; t++)
+                 for (int r=0; r<MaterialCount; r++)
+                     for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
+-                        if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
++                        if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s]
++                            && research_class_gate::periodicAllowed(*game,t,s,research_class_gate::Materials))
+                         {
+                             const bool queued=dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
+                             gradientUpdated[t][r][s]=true; // Visited in this refresh round, even if already pending.
+@@ -405,7 +407,8 @@ void Map::stagePeriodicGradientPreparation()
+             for (int t=0; t<numberOfTeam; t++)
+                 for (int r=0; r<MaterialCount; r++)
+                     for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
+-                        if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
++                        if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s])
++                            && research_class_gate::periodicAllowed(*game,t,s,research_class_gate::Markets))
+                         {
+                             // A coalesced request has not captured the newer stock.
+                             // Preserve its dirty mark and inspect other destinations;
+@@ -419,7 +422,8 @@ void Map::stagePeriodicGradientPreparation()
+                         }
+             for (int t=0; t<numberOfTeam; t++)
+                 for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
+-                    if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
++                    if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s]
++                        && research_class_gate::periodicAllowed(*game,t,s,research_class_gate::Guard))
+                     {
+                         const bool queued=dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
+                         guardGradientUpdated[t][s]=true; // Visited in this refresh round, even if already pending.
+@@ -427,7 +431,8 @@ void Map::stagePeriodicGradientPreparation()
+                     }
+             for (int t=0; t<numberOfTeam; t++)
+                 for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
+-                    if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
++                    if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s]
++                        && research_class_gate::periodicAllowed(*game,t,s,research_class_gate::Clear))
+                     {
+                         const bool queued=dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
+                         clearGradientUpdated[t][s]=true; // Visited in this refresh round, even if already pending.
+@@ -455,6 +460,7 @@ void Map::stagePeriodicGradientPreparation()
+         auto request=gradientRuntime->fieldRequests.front();
+         gradientRuntime->fieldRequests.pop_front();
+         auto* job=gradientRuntime->pipeline.reserve(request.slot, request.request.swim);
++        research_class_gate::admitted(request.request,request.slot && *request.slot);
+         job->request=request.request;
+         gradientRuntime->preparation={job,request.request.kind,request.request.team,request.request.material,request.request.swim};
+     }
+diff --git a/src/map/gradient/ResearchClassGate.h b/src/map/gradient/ResearchClassGate.h
+new file mode 100644
+index 000000000..a624c24a9
+--- /dev/null
++++ b/src/map/gradient/ResearchClassGate.h
+@@ -0,0 +1,74 @@
++// Local attribution experiment only. Never ship or merge this header.
++#pragma once
++#include "Game.h"
++#include "Team.h"
++#include "TeamCapacity.h"
++#include "SnapshotGradient.h"
++#include <array>
++#include <cstdlib>
++#include <cstdint>
++#include <fstream>
++#include <stdexcept>
++
++namespace research_class_gate {
++enum Family { Materials,Markets,Guard,Clear,Forbidden,FamilyCount };
++inline bool enabled() {
++    static const bool value=[] {
++        const char* text=std::getenv("GLOB2_RESEARCH_CLASS_GATE");
++        if(!text || std::string(text)=="0")return false;
++        if(std::string(text)=="1")return true;
++        throw std::invalid_argument("Research class gate must be0 or1");
++    }();
++    return value;
++}
++inline const std::string& reportPath() {
++    static const std::string path=[] {const char* p=std::getenv("GLOB2_RESEARCH_CLASS_REPORT");return p?std::string(p):std::string{};}();
++    return path;
++}
++inline bool diagnosticsEnabled() {return !reportPath().empty();}
++inline void initialize() {(void)enabled();(void)reportPath();}
++using Counts=std::array<std::array<std::array<std::uint64_t,MOVEMENT_CLASS_COUNT>,TEAM_MAX_COUNT>,FamilyCount>;
++inline Counts visits{},zeroClassVisits{},admissions{};
++inline std::uint64_t consumerAdmissions=0,coldAdmissions=0,warmAdmissions=0;
++inline void resetStatistics() {if(diagnosticsEnabled()){visits={};zeroClassVisits={};admissions={};consumerAdmissions=coldAdmissions=warmAdmissions=0;}}
++inline bool periodicAllowed(const Game& game,int team,int movement,Family family) {
++    const auto& m=game.teams[team]->stats.measurements();
++    const bool knownZero=movement<AIR_MOVEMENT_CLASS && m.researchMovementKnown && !m.researchMovementCounts[movement];
++    if(diagnosticsEnabled()) {
++        ++visits[family][team][movement];
++        zeroClassVisits[family][team][movement]+=knownZero;
++    }
++    return !enabled() || !knownZero;
++}
++inline void admitted(const gradient_preparation::Request& request,bool warm) {
++    if(!diagnosticsEnabled())return;
++    ++admissions[int(request.kind)][request.team][request.swim];
++    consumerAdmissions+=request.consumer>=0;
++    warmAdmissions+=warm;coldAdmissions+=!warm;
++}
++inline void writeReport(const Game& game) {
++    if(!diagnosticsEnabled())return;
++    std::ofstream out(reportPath());if(!out)throw std::runtime_error("Cannot write research class report");
++    out<<"{\"research_only\":true,\"class_gate\":"<<(enabled()?"true":"false")
++       <<",\"counter_window\":\"measured benchmark window; otherwise full run\",\"consumer_admissions\":"<<consumerAdmissions
++       <<",\"cold_admissions\":"<<coldAdmissions<<",\"warm_admissions\":"<<warmAdmissions<<",\"teams\":[";
++    for(int team=0;team<game.teamsCount();++team) {
++        if(team)out<<',';const auto& m=game.teams[team]->stats.measurements();
++        out<<"{\"team\":"<<team<<",\"sample_tick\":"<<m.tick<<",\"known\":"<<(m.researchMovementKnown?"true":"false")<<",\"ground_bins\":[";
++        for(int movement=0;movement<SWIM_CLASS_COUNT;++movement){if(movement)out<<',';out<<m.researchMovementCounts[movement];}
++        out<<"],\"families\":[";
++        for(int family=0;family<FamilyCount;++family) {
++            if(family)out<<',';out<<"{\"family\":"<<family<<",\"movement\":[";
++            for(int movement=0;movement<MOVEMENT_CLASS_COUNT;++movement) {
++                if(movement)out<<',';out<<"{\"class\":"<<movement<<",\"periodic_candidates\":"<<visits[family][team][movement]
++                    <<",\"known_zero_candidates\":"<<zeroClassVisits[family][team][movement]
++                    <<",\"skipped\":"<<(enabled()?zeroClassVisits[family][team][movement]:0)
++                    <<",\"admissions\":"<<admissions[family][team][movement]<<'}';
++            }
++            out<<"]}";
++        }
++        out<<"]}";
++    }
++    out<<"]}\n";
++}
++} // namespace research_class_gate
+diff --git a/src/team/stats/TeamStat.cpp b/src/team/stats/TeamStat.cpp
+index 82e179803..a35d871aa 100644
+--- a/src/team/stats/TeamStat.cpp
++++ b/src/team/stats/TeamStat.cpp
+@@ -946,6 +946,8 @@ int TeamStats::getStarvingUnits() const
+ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+ {
+     publishedMeasurements.reset();
++    legacyMeasurements.researchMovementKnown=false;
++    legacyMeasurements.researchMovementCounts.fill(0);
+     displaySnapshot.reset();
+     historySnapshot.reset();
+ 	stream->readEnterSection("TeamStats");
+@@ -1374,6 +1376,8 @@ void TeamStats::rebuildMeasurementCountReset()
+ 
+ void TeamStats::beginMeasurementSnapshot(Team *team)
+ {
++    editMeasurements().researchMovementKnown=true;
++    editMeasurements().researchMovementCounts.fill(0);
+     configureUnits(team->race.unitTypeCount());
+ 	editMeasurements().tick = team->game->stepCounter;
+ 	editMeasurements().variants.resize(team->game->buildingsTypes.size());
+@@ -1393,6 +1397,8 @@ void TeamStats::observeMeasurementUnit(Unit *u)
+ {
+ 	if (u && !u->isDead)
+ 	{
++        if (!u->performance[FLY] && (u->performance[WALK] || u->performance[SWIM]))
++            ++editMeasurements().researchMovementCounts[u->swimClass()];
+ 		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
+ 			++editMeasurements().carried[u->carriedMaterial];
+         if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo())
+diff --git a/src/team/stats/TeamStat.h b/src/team/stats/TeamStat.h
+index 73ad3e1e1..7cac2d0b8 100644
+--- a/src/team/stats/TeamStat.h
++++ b/src/team/stats/TeamStat.h
+@@ -126,6 +126,11 @@ struct BuildingMeasurement
+ // drive rules or RNG; scheduled state is included in current simulation checksums.
+ struct GameplayMeasurements
+ {
++    // RESEARCH ONLY: derived population bins; deliberately absent from all
++    // measurement serializers/checksums. Restored frames remain unknown until
++    // a fresh sample has actually traversed their units.
++    bool researchMovementKnown=false;
++    std::array<Uint32,SWIM_CLASS_COUNT> researchMovementCounts{};
+     std::size_t capacityBytes() const { return variants.capacity()*sizeof(BuildingMeasurement)+unitCapacityBytes(); }
+     void configureUnits(std::size_t count) {
+         births.resize(count); deaths.resize(count); conversionsIn.resize(count); conversionsOut.resize(count);
+diff --git a/src/team/stats/TeamStatsSample.cpp b/src/team/stats/TeamStatsSample.cpp
+index 5c06716a6..e50a16592 100644
+--- a/src/team/stats/TeamStatsSample.cpp
++++ b/src/team/stats/TeamStatsSample.cpp
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "TeamStat.h"
++#include "Map.h"
+ #include "sim/snapshot/TeamRecords.h"
+ #include "Bullet.h"
+ #include "ai/observation/AIWorldView.h"
+@@ -334,6 +335,8 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
+ 	{
+ 		if (!u.isDead)
+ 		{
++            if (!u.performance[FLY] && (u.performance[WALK] || u.performance[SWIM]))
++                ++m.researchMovementCounts[Map::swimClass(u.performance[WALK],u.performance[SWIM])];
+ 			if (!u.widePrimaryCargo() && u.carriedMaterial >= 0 &&
+ 				u.carriedMaterial < MaterialSlotCount)
+ 				++m.carried[u.carriedMaterial];
+@@ -380,6 +383,7 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
+ 			smooth.totalNeededPerLevel[t.semantics.requiredWorkerLevel] += need;
+ 		}
+ 	}
++    m.researchMovementKnown=true;
+ 	if (sample.periodic)
+ 		periodic(world, teamId, sample);
+ 	if (!aggregate)

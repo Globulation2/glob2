@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "research_only": true,
+  "approved_for_cpu_and_separate_quality_measurement": true,
+  "not_for_training_collection": true,
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "source_directory": "/Users/bradley/.codex/worktrees/gradient-attribution-modern/glob2",
+  "model_sha256": "0f6def629ad66ef0f789d0a8b60282560c4f65b83d9097bc664d040299a85561",
+  "header_sha256": "7c4c6d19d15fab9d43855b40dcb0c6813fd831f6991fe79ba635fd0e51101f5f",
+  "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+  "binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+  "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+  "immutable_reference_binary": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/immutable-gen005-glob2",
+  "immutable_reference_sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236",
+  "environment_variable": "GLOB2_RESEARCH_GRADIENT_INTERVAL",
+  "allowed_values": [
+    0,
+    8,
+    32,
+    128
+  ],
+  "default_value": 0,
+  "meaning": {
+    "0": "unchanged Adaptive16",
+    "8": "existing demanded fixed8 evaluation",
+    "32": "existing demanded fixed32 evaluation",
+    "128": "existing demanded fixed128 evaluation"
+  },
+  "threshold_milli": 16000,
+  "horizon_ticks": 128,
+  "minimum_interval": 8,
+  "publication_delay": 8,
+  "maximum_interval": null,
+  "probe_off_no_observer_or_exploration_csv": true,
+  "probe_on_interval_annotations_verified": true,
+  "default_adaptive_world_snapshot_replay_save_exact": true,
+  "fixed_off_on_world_snapshot_replay_save_exact": true,
+  "invalid_environment_rejected_at_startup": true,
+  "mutually_exclusive_existing_exploration": true,
+  "ordinary_release_matching_flags": true,
+  "reused_link_inputs": 651,
+  "assets": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/data",
+  "execution_cwd": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2",
+  "checksums_contract_unchanged": true,
+  "production_source_and_binaries_unchanged": true,
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/BUILD-STATUS.json",
+      "sha256": "a2412d1c96bbd80366d933b96380b4928010eb55a5a7be67ffc4d33e97860914"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/QUALIFICATION-STATUS.json",
+      "sha256": "f255a079bac38ad2bd71d584acf7322566b435f962f9804ea4c5b71e502c2c5f"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/research-policy.patch",
+      "sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/compile-commands.json",
+      "sha256": "d01b788a7095b6cd942a794ad164f14f4f622bd66388c33a5d934fc6f6d971e8"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/link-command.json",
+      "sha256": "c9f9f27b68c22e7944cb79a89f98739a5192d28d237a690836816269dc1b395a"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/reused-link-inputs.json",
+      "sha256": "257d6f28b12d42de7a96ad01ddef4c02660bd125ce89338b10907067a2777d93"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/immutable-gen005-glob2",
+      "sha256": "3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/glob2",
+      "sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9"
+    }
+  ],
+  "limitations": [
+    "Research selector adds one cached accessor per scheduler stage in all research arms; immutable3781 CPU control is provided to quantify that overhead.",
+    "No timing interpretation from qualification runs; overlapping master build load is not performance evidence.",
+    "Observer ON data uses unchanged H128 label semantics with actual fixed interval annotation; sidecar policy/source distinguishes research runs, no automatic training pooling."
+  ],
+  "utc": "2026-10-19T17:09:31.017520+00:00"
+}

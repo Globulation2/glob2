@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "cpu_runs": 64,
+  "quality_runs": 8,
+  "class_diagnostic_runs": 8,
+  "full_window_class_runs": 4
+}

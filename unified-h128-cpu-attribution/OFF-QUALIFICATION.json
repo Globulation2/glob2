@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "pairs": 4,
+  "per_tick_world_snapshot_and_available_sidecars_exact": true,
+  "final_save_bytes_exact": true
+}

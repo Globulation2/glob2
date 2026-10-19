@@ -1,0 +1,23 @@
+{
+  "status": "FAILED",
+  "runs": [
+    {
+      "name": "adaptive-default-off",
+      "interval": null,
+      "probe": false,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "0d24da4a567ccc4555c9aa6c42f54a78ed6b80ae1cc65d04ffd41132df6d7d34",
+        "snapshot.checksums": "8c5fd47255b49291df314076dd6fc25bc913b0a8145b9e7ba079973c487cd039",
+        "game.replay.checksums": "10f660a4ac54a4e588a0e421f7870631a77750f5414990d91bba84d5f2b800b4",
+        "final.game.gz": "f638c7aee708fffdc0ee478569c0ead696ce1bc9c2c95c029f0cbdbdd1569a16"
+      },
+      "episode_rows": 0
+    }
+  ],
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+  "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+  "utc": "2026-10-19T17:07:18.146590+00:00",
+  "error": "Traceback (most recent call last):\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/qualify.py\", line 23, in <module>\n    default=run('adaptive-default-off',None,False);on=run('adaptive-explicit0-on-t1',0,True);four=run('adaptive-explicit0-on-t4',0,True);assert default==on==four;assert default=={f:h(reference/f) for f in simfiles},'Default policy differs from immutable3781 reference'\n                                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/gen005-policy-runtime/qualify.py\", line 19, in run\n    assert episodes and all(int(e['behavior_interval'])==interval for e in episodes),'Actual fixed interval annotation missing'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Actual fixed interval annotation missing\n"
+}

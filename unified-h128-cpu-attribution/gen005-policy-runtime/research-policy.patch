@@ -1,0 +1,111 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1e79240c3..8456f27fd 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -61,6 +61,9 @@
+ #include <sstream>
+ #include <stdexcept>
+ 
++// Artifact-only process-local selector, defined in the scheduler TU.
++unsigned researchGradientFixedInterval();
++
+ namespace fs = std::filesystem;
+ namespace Headless
+ {
+@@ -350,6 +353,9 @@ struct HeadlessRunner
+     }
+ 	static int game(const Options &options, const fs::path &output)
+ 	{
++        const unsigned researchInterval=researchGradientFixedInterval();
++        if(researchInterval && (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")))
++            throw std::invalid_argument("Research interval selector cannot combine with collection overrides");
+ 		const auto setupStart = std::chrono::steady_clock::now();
+ 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+ 		const auto setupCpuStart=benchmark?processCpuNs():0;
+@@ -734,7 +740,9 @@ struct HeadlessRunner
+             << ",\"prediction_horizon_ticks\":" << ResourceGradientProbe::HorizonTicks
+             << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
+             << ",\"demanded_age_cap\":null"
+-            << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"shared-adaptive-model":"untrained-cold-reactive-and-history-init-only")
++            << ",\"research_policy_runtime\":true,\"research_fixed_interval_ticks\":" << researchInterval
++            << ",\"research_override_active\":" << (researchInterval?"true":"false")
++            << ",\"mode\":" << quote(researchInterval?"research-fixed-interval":options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"shared-adaptive-model":"untrained-cold-reactive-and-history-init-only")
+             << ",\"spatial_overlap_collection\":" << (one(options,"--resource-gradient-probe","false")=="true" && one(options,"--gradient-spatial-overlap","on")=="on"?"true":"false")
+             << ",\"quality_collection\":" << (one(options,"--resource-gradient-probe","false")=="true"?"true":"false") << '}';
+         if (options.count("--gradient-work-stats")) result << ",\"gradient_work_stats\":" << quote(fs::absolute(one(options,"--gradient-work-stats")).string());
+diff --git a/src/map/MapStep.cpp b/src/map/MapStep.cpp
+index 1dabdbc77..7f595d891 100644
+--- a/src/map/MapStep.cpp
++++ b/src/map/MapStep.cpp
+@@ -15,10 +15,32 @@
+ #include "render/GameAnimations.h"
+ 
+ #include <algorithm>
++#include <charconv>
++#include <cstdlib>
++#include <stdexcept>
++#include <string_view>
+ #include <tuple>
+ #include <utility>
+ 
+ 
++// Artifact-only CPU attribution selector. Never creates an observer or an
++// exploration object: the existing fixedInterval argument is the only policy
++// change. Parse once, eagerly called by headless startup before world loading.
++unsigned researchGradientFixedInterval()
++{
++    static const unsigned interval=[] {
++        const char* raw=std::getenv("GLOB2_RESEARCH_GRADIENT_INTERVAL");
++        if(!raw)return 0u;
++        const std::string_view text(raw);unsigned value=0;
++        const auto parsed=std::from_chars(text.data(),text.data()+text.size(),value);
++        if(parsed.ec!=std::errc{} || parsed.ptr!=text.data()+text.size()
++            || (value!=0 && value!=8 && value!=32 && value!=128))
++            throw std::invalid_argument("GLOB2_RESEARCH_GRADIENT_INTERVAL must be exactly 0, 8, 32 or 128");
++        return value;
++    }();
++    return interval;
++}
++
+ // growResources, syncStep, fog of war, discovery, explored area
+ 
+ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate,int scarcity)
+@@ -423,6 +445,7 @@ void Map::syncStep(Uint32 stepCounter)
+ 
+ void Map::stagePeriodicGradientPreparation()
+ {
++    const unsigned researchInterval=researchGradientFixedInterval();
+     // Lazy building and consumer caches keep their explicit requests. Idle
+     // shared capacity stays idle; no family replaces another family's work.
+     stageBuildingGradientPreparation();
+@@ -448,7 +471,7 @@ void Map::stagePeriodicGradientPreparation()
+     for(auto& [key,field]:policy.fields) {
+         auto** slot=gradientFieldDestination(key);
+         if(!slot)continue;
+-        const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
++        const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):researchInterval;
+         AdaptiveGradientState::Evaluation evaluation;
+         auto* exploration=gradientRuntime->exploration.get();
+         const bool fork=exploration && exploration->forkField>=0 && std::uint32_t(exploration->forkField)==key.packed() && !exploration->forkComplete;
+diff --git a/src/map/gradient/ResourceGradientProbe.cpp b/src/map/gradient/ResourceGradientProbe.cpp
+index 1d88b420b..a2ea467d7 100644
+--- a/src/map/gradient/ResourceGradientProbe.cpp
++++ b/src/map/gradient/ResourceGradientProbe.cpp
+@@ -8,6 +8,9 @@
+ #include <filesystem>
+ #include <stdexcept>
+ 
++// Artifact-only policy annotation; labels and observation remain unchanged.
++unsigned researchGradientFixedInterval();
++
+ namespace {
+ void identity(std::ostream& out,GradientFieldKey k) {out<<unsigned(k.family)<<','<<unsigned(k.team)<<','<<unsigned(k.swim)<<','<<unsigned(k.material)<<','<<k.packed();}
+ const Uint16* serving(Map& map,GradientFieldKey k) {
+@@ -98,6 +101,7 @@ void ResourceGradientProbe::stageEpisodes(Map& map){
+         e.overlapEnabled=spatialEnabled;
+         if(spatialEnabled)if(const auto history=movementHistory.find(packed);history!=movementHistory.end())e.overlap=history->second.overlap;
+         if(const auto& behavior=map.gradientRuntime->exploration){e.behaviorInterval=behavior->intervalFor(packed);e.behaviorSeed=behavior->seed;}
++        else e.behaviorInterval=researchGradientFixedInterval();
+         e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));f.lastEpisode=lastTick;f.episodeKnown=true;
+     }
+ }

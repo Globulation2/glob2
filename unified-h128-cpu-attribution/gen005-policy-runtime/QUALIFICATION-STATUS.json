@@ -1,0 +1,168 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "name": "adaptive-default-off",
+      "interval": null,
+      "probe": false,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+        "snapshot.checksums": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+        "game.replay.checksums": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+        "final.game.gz": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46"
+      },
+      "episode_rows": 0
+    },
+    {
+      "name": "adaptive-explicit0-on-t1",
+      "interval": 0,
+      "probe": true,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+        "snapshot.checksums": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+        "game.replay.checksums": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+        "final.game.gz": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46"
+      },
+      "episode_rows": 19
+    },
+    {
+      "name": "adaptive-explicit0-on-t4",
+      "interval": 0,
+      "probe": true,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "2ebfb8bc11b4d01bf222be2045c488ec032180a95bab58f0cfb4c01537b57676",
+        "snapshot.checksums": "ccb2f952597d89394a59c345309e69cbf71c35a0112c8bc0f559a5dfd214de9b",
+        "game.replay.checksums": "d28851f668844ac7f7918a2429083c0e3ed439d4ec50496f2b70e4ad7c141e72",
+        "final.game.gz": "2c53429636afa5ef1fa7fc19ce718814718cf1ff74fbefa37d2135d0ecd13e46"
+      },
+      "episode_rows": 19
+    },
+    {
+      "name": "fixed8-off",
+      "interval": 8,
+      "probe": false,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "31632aee427f26a684c10355d333fafe73f1555fea8fd517316e609c0facc7e1",
+        "snapshot.checksums": "5e6e668f7dcb17ecd09f6276cee3ca6f6d3facd99e9a41c84c9cf4d6be0dbedb",
+        "game.replay.checksums": "771c2ea425aff6b25afd352bc68a17c23797e9cca3cfa8a99dbf5c693411fc05",
+        "final.game.gz": "890b94e8a9ee1b75ede8559c5b3f1d50c09538394a84d0d6f90af7fac43ea6c6"
+      },
+      "episode_rows": 0
+    },
+    {
+      "name": "fixed8-on",
+      "interval": 8,
+      "probe": true,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "31632aee427f26a684c10355d333fafe73f1555fea8fd517316e609c0facc7e1",
+        "snapshot.checksums": "5e6e668f7dcb17ecd09f6276cee3ca6f6d3facd99e9a41c84c9cf4d6be0dbedb",
+        "game.replay.checksums": "771c2ea425aff6b25afd352bc68a17c23797e9cca3cfa8a99dbf5c693411fc05",
+        "final.game.gz": "890b94e8a9ee1b75ede8559c5b3f1d50c09538394a84d0d6f90af7fac43ea6c6"
+      },
+      "episode_rows": 18
+    },
+    {
+      "name": "fixed32-off",
+      "interval": 32,
+      "probe": false,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "02b96f90d3b49ceccd6e1c6cb281dd3a017813c26d1937b715b2773141649acd",
+        "snapshot.checksums": "c5ce296bee83951619fc88b26afee992eb6afd1ffbb37d8c0c3c1a286cb729e4",
+        "game.replay.checksums": "75de91e988d0b0537f6f242ef49e0e1c4bdcc21959c6fac9446f500882a6b6e0",
+        "final.game.gz": "ec658a9e6cc30f1b6b6379baf3ee970c395272d3622b7bdd384f48abed0b4b83"
+      },
+      "episode_rows": 0
+    },
+    {
+      "name": "fixed32-on",
+      "interval": 32,
+      "probe": true,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "02b96f90d3b49ceccd6e1c6cb281dd3a017813c26d1937b715b2773141649acd",
+        "snapshot.checksums": "c5ce296bee83951619fc88b26afee992eb6afd1ffbb37d8c0c3c1a286cb729e4",
+        "game.replay.checksums": "75de91e988d0b0537f6f242ef49e0e1c4bdcc21959c6fac9446f500882a6b6e0",
+        "final.game.gz": "ec658a9e6cc30f1b6b6379baf3ee970c395272d3622b7bdd384f48abed0b4b83"
+      },
+      "episode_rows": 17
+    },
+    {
+      "name": "fixed128-off",
+      "interval": 128,
+      "probe": false,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "880ce233fa8b9b57eece963e3fd8094028f511a3fa9c00e5ab89a2534f39bc2c",
+        "snapshot.checksums": "45e0656ec28bd14154803f291115102342eb160ccf904a08ebb1d71714452d8d",
+        "game.replay.checksums": "964f8ccd956b53fcaa81b293729a3f6e798985e1fad5c15b2a60485d6a424acd",
+        "final.game.gz": "36a1112830439fd0960c95e5b382cd3a9e5adf71c9afae00581d209ba350d81d"
+      },
+      "episode_rows": 0
+    },
+    {
+      "name": "fixed128-on",
+      "interval": 128,
+      "probe": true,
+      "threads": 1,
+      "hashes": {
+        "world.checksums": "880ce233fa8b9b57eece963e3fd8094028f511a3fa9c00e5ab89a2534f39bc2c",
+        "snapshot.checksums": "45e0656ec28bd14154803f291115102342eb160ccf904a08ebb1d71714452d8d",
+        "game.replay.checksums": "964f8ccd956b53fcaa81b293729a3f6e798985e1fad5c15b2a60485d6a424acd",
+        "final.game.gz": "36a1112830439fd0960c95e5b382cd3a9e5adf71c9afae00581d209ba350d81d"
+      },
+      "episode_rows": 16
+    }
+  ],
+  "source_revision": "4cf3933fee8cfc63d1ddab802589dac6b0ffeb2e",
+  "patch_sha256": "2c299c34e958c281bba85b581884ed7bb8cf0ebf46e7568872defc5ee6d6194f",
+  "binary_sha256": "4e8e46e79d7cd7d5e5a4d81157c2a15ae218ad03b2f8d4609e226cfcd4e315e9",
+  "utc": "2026-10-19T17:09:01.419622+00:00",
+  "default_adaptive_matches_immutable3781": true,
+  "observer_thread_parity": true,
+  "fixed_off_on_parity": true,
+  "invalid_env_rejected": [
+    {
+      "value": "",
+      "returncode": 2
+    },
+    {
+      "value": "-1",
+      "returncode": 2
+    },
+    {
+      "value": "12",
+      "returncode": 2
+    },
+    {
+      "value": "32junk",
+      "returncode": 2
+    },
+    {
+      "value": "18446744073709551616",
+      "returncode": 2
+    },
+    {
+      "value": "32+existing-exploration",
+      "returncode": 2
+    }
+  ],
+  "no_probe_or_decisions_csv_off": true,
+  "label_contract_unchanged": true,
+  "release_flags_match": true,
+  "compatible_assets": "/Users/bradley/.codex/worktrees/gradient-master-integration/glob2/data",
+  "runtime_env": "GLOB2_RESEARCH_GRADIENT_INTERVAL",
+  "allowed_values": [
+    0,
+    8,
+    32,
+    128
+  ],
+  "research_only": true,
+  "not_collection_qualification": true
+}

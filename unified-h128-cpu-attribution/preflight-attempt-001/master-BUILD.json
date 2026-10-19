@@ -1,0 +1,19 @@
+{
+  "status": "BUILDING",
+  "supervisor_pid": 47773,
+  "pid": 47776,
+  "argv": [
+    "scons",
+    "release=1",
+    "CXXFLAGS=",
+    "dev_fast=0",
+    "pch=0",
+    "unity=0",
+    "linker=default",
+    "--build=build/research-release",
+    "-j3",
+    "build/research-release/src/glob2"
+  ],
+  "started_utc": "2026-10-19T17:08:38.853467+00:00",
+  "ordinary_dependency_graph": true
+}

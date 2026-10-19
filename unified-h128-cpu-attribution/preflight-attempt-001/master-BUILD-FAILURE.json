@@ -1,0 +1,4 @@
+{
+  "utc": "2026-10-19T17:16:57.351164+00:00",
+  "error": "Traceback (most recent call last):\n  File \"/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/master-class-runtime/build.py\", line 8, in <module>\n    assert code==0,'Research master build failed'\n           ^^^^^^^\nAssertionError: Research master build failed\n"
+}

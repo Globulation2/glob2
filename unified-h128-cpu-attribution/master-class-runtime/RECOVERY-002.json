@@ -1,0 +1,6 @@
+{
+  "reason": "Runtime asset export spawn imports require repo root on PYTHONPATH; no C++ source/flags change. Incremental ordinary graph resumes.",
+  "utc": "2026-10-19T17:18:03.169878+00:00",
+  "original_failure": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-005/candidate-gen005/cpu-attribution-experiment/preflight-attempt-001",
+  "benchmark_outcomes": 0
+}

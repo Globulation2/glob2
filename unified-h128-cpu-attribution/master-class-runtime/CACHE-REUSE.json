@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-19T17:21:53.626211+00:00",
+  "source": "/Users/bradley/.codex/worktrees/gradient-final-master-baseline/glob2/build/asset-cache",
+  "destination": "/Users/bradley/.codex/worktrees/gradient-attribution-master/glob2/build/asset-cache",
+  "strategy": "Only absent content-addressed entries; exclusive hardlinks, selection metadata last. Existing/active entries skipped. Exporter independently validates recipe/hash/pixels.",
+  "linked_files": 18023,
+  "existing_entries_skipped": 5418,
+  "errors": []
+}

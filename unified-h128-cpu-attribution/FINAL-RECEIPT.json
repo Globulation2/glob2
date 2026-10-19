@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-19T17:27:40.633555+00:00",
+  "plan_sha256": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+  "cpu_runs": 64,
+  "short_qualification_executions": 8,
+  "modern_quality_runs": 8,
+  "class_diagnostic_runs": 8,
+  "full_window_class_runs": 4,
+  "cpu_telemetry": "probe/work/checksum/compute telemetry OFF",
+  "qualification": "immutablemaster vsclassOFF andimmutablegen005 vsadaptive exactper-tick sidecars/finalsave bytes; all64CPU repeatedarm/default checksums exact; all8modernON finalchecksums matchOFF;4fullclassdiagnostics initial/finalchecksums matchCPU",
+  "asset_dependency_integrity": "Runner checked full commondata tree and dependency hashes unchanged before/after main study; no source/assets/deps changes for supplementalcounter-only runs",
+  "limits": "Two examined common warm states; no freshgeneralization/wholegame outcomes; fourrepeatspread is notpopulationconfidence; localprocess/thermal/load observations do notproveisolation; sameCPU does notimplysamequality; noadditivelearnedshare.",
+  "evidence": {
+    "PLAN.json": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+    "ROOT-REVIEW.json": "17ff93d2d9dea516ad7b2dba7851d5c29673c0b5822eacb5e21d8b714fce3d26",
+    "EXECUTION-READY.json": "137c8d429c7ed380e6794447b2ac5ef4ed051f0b76bbca1d9b320fb9aff035f1",
+    "BOUND-ARMS.json": "b0fd25e6d0fcb22cf73824922ff66a5160d73735db3711cd9eb6ccb73cc6e541",
+    "ASSETS.json": "f57d8b9ff3d0c189fb43ed6b04f981348e11dac158e4fcdb165ac1757724c838",
+    "DEPENDENCIES.json": "6eb7c55a49fce0a7b4fe3dc1684851e24134730f9c5cf8c4ba438ffe70f02ef1",
+    "OFF-QUALIFICATION.json": "59f0ef5dc84c41e85733bfa96a6f2a31e0222ac926122e0c7b490fbd5bcb5e55",
+    "CPU-PARITY.json": "e93db5807be57779a7e0283b4eac093512832bc19391681102062fbe958abd43",
+    "STATUS.json": "b1a8f512e5b1717d9f858be376079155f4385aaafb87423508757db0ed24d520",
+    "CPU-SUMMARY.json": "1fd3f292dacc88d68ad5dded2b7d286d1449127674919127a63f67c4de83b069",
+    "CLASS-FULL-PLAN.json": "7c3e8ba2e19d95c5f95f9f5828363d6ef25bcd8ca5c48844caa02fcaa5a33f40",
+    "CLASS-FULL-STATUS.json": "3149a4dce169ac22d28a8359a9d49789011795c1054d6b7163677adcc92d6c16",
+    "SUMMARY.json": "86975b20491c162c4df6c17b4f5be452eda247f788edc0ebde38e42570a55332",
+    "README.md": "843006943700df5106f7e247721d3f574be7d7e1b09cd984a38abfbc0cf02832",
+    "ANALYSIS-COMPLETE.json": "2b746a5173a1d8b2f3dde6d7d6299b1cf37c276390826d0a75db239a94a5c3f6",
+    "summarize-attribution.py": "21d1c810c6573a26c2870c059facf79e1ae543127e9276c1606f72ca4d7ea0bc",
+    "run-class-full.py": "bf66b3a7812f6240e0b55f42bd1815d9b21834d05070cd8db6831debac4f7752"
+  }
+}

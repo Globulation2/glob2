@@ -1,0 +1,37 @@
+{
+  "reason": "Original class diagnostics covered1024 measured ticks, insufficient to explain8192-tick CPU contrasts. Align admission/skip evidence with full CPU window; no new CPU measurements or input selection.",
+  "original_plan_sha256": "8b642f547aa36db5a6315f9fd6151da39092c3e2b8263e9398fa09f1d08b65d4",
+  "frozen_utc": "2026-10-19T17:26:53.863672+00:00",
+  "ticks": 8192,
+  "warmup": 256,
+  "schedule": [
+    {
+      "phase": "class_full",
+      "index": 0,
+      "group": "66294c58700ef1b4",
+      "arm": "class_off",
+      "repeat": 0
+    },
+    {
+      "phase": "class_full",
+      "index": 1,
+      "group": "66294c58700ef1b4",
+      "arm": "class_on",
+      "repeat": 0
+    },
+    {
+      "phase": "class_full",
+      "index": 2,
+      "group": "1d043310cbecdceb",
+      "arm": "class_on",
+      "repeat": 0
+    },
+    {
+      "phase": "class_full",
+      "index": 3,
+      "group": "1d043310cbecdceb",
+      "arm": "class_off",
+      "repeat": 0
+    }
+  ]
+}

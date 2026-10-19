@@ -1,0 +1,22 @@
+{
+  "base_source": "84edb385cd740c3979c06ef901ab4871ea8115c2",
+  "research_only": true,
+  "source": "/Users/bradley/.codex/worktrees/gradient-attribution-master/glob2",
+  "patch_sha256": "53ef161124c64f0a6575ed9913d53c2af1f3f1d3a933fe1937bb85083f683bfd",
+  "files": {
+    "src/app/cli/Headless.cpp": "12eb2024e17d3b0e76acd44cf984d2ea9b3fad8959cadd12e2ad49c5eafe9844",
+    "src/map/MapStep.cpp": "1ce7ac58806ff4fd83c79604d24717ff3efe16e639da45b7a326b359f261812c",
+    "src/map/gradient/ResearchClassGate.h": "c7df5871646f2ea353a46abf7c27c61872b5a98824a3120f67abec06db8cc5ac",
+    "src/team/stats/TeamStat.cpp": "5f51801e27a34e9af4177f1e94829780e260ad62ab7fbc40a092e771b9fcb16e",
+    "src/team/stats/TeamStat.h": "72f11700da1c0d9953329bd65cbeb26cecbd67491ef51cb84d098e325751b12c",
+    "src/team/stats/TeamStatsSample.cpp": "34d9110d8220cb0755b57f2775b83b5b97984e01b39a2dae35bfc2ec85304fb5"
+  },
+  "version_mutations": false,
+  "sim_revision_mutations": false,
+  "root_review": "Awaiting diagnostic-guard confirmation before interpreting any measurements",
+  "controls": {
+    "GLOB2_RESEARCH_CLASS_GATE": "0(default) or1",
+    "GLOB2_RESEARCH_CLASS_REPORT": "unset for CPU; JSON path enables diagnostic counters after timing"
+  },
+  "created_utc": "2026-10-19T17:08:38.744929+00:00"
+}

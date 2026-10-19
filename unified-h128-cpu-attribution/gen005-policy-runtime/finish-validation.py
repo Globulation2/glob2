@@ -1,0 +1,10 @@
+from pathlib import Path
+import json,subprocess,os,hashlib
+P=Path(__file__).resolve().parent;old=json.loads((P/'QUALIFICATION-STATUS.json').read_text());assert len(old['runs'])==9
+(P/'INVALID-TEST-SETUP-FAILURE.json').write_text(json.dumps(old,indent=2)+'\n');source=(P/'qualify.py').read_text();exec(compile(source[:source.index('\ntry:\n')],str(P/'qualify.py'),'exec'));runs=old['runs'];invalid=[]
+for value in ['', '-1','12','32junk','18446744073709551616']:
+ out=P/'startup-validation-v2'/str(len(invalid));out.mkdir(parents=True);argv=base.copy();argv[0]=str(binary);argv[argv.index('--output-dir')+1]=str(out);argv[argv.index('--profile')+1]=str(out/'profile');env=dict(os.environ,**{envname:value})
+ r=subprocess.run(argv,cwd=OLD,env=env,capture_output=True,text=True,timeout=30);(out/'stdout.log').write_text(r.stdout);(out/'stderr.log').write_text(r.stderr);assert r.returncode!=0 and envname in r.stderr+r.stdout;assert not list(out.glob('world.checksums')) and not list(out.glob('*.game.gz'));invalid.append(dict(value=value,returncode=r.returncode))
+out=P/'startup-validation-v2/mixed';out.mkdir();argv=base.copy();argv[0]=str(binary);argv[argv.index('--output-dir')+1]=str(out);argv[argv.index('--profile')+1]=str(out/'profile');argv.remove('--write-replay');argv+=['--resource-gradient-probe','--resource-gradient-exploration','32'];r=subprocess.run(argv,cwd=OLD,env=dict(os.environ,**{envname:'32'}),capture_output=True,text=True,timeout=30);(out/'stderr.log').write_text(r.stderr);assert r.returncode!=0 and 'cannot combine' in r.stderr+r.stdout;invalid.append(dict(value='32+existing-exploration',returncode=r.returncode))
+assert h(OLD/'build/candidate-release/src/glob2')=='3781b88988069b18b7588a50608c652aec2459a4ef81a30ae4c80777843a9236'
+save('PASS',default_adaptive_matches_immutable3781=True,observer_thread_parity=True,fixed_off_on_parity=True,invalid_env_rejected=invalid,no_probe_or_decisions_csv_off=True,label_contract_unchanged=True,release_flags_match=True,compatible_assets=str(OLD/'data'),runtime_env=envname,allowed_values=[0,8,32,128],research_only=True,not_collection_qualification=True)
