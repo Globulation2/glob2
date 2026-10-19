@@ -43,6 +43,21 @@ of maps alone does not fill those gaps. Use this loop across model generations:
    prospective comparison. Keep the incumbent unless the candidate meets the
    performance and quality requirements, including subgroup failures and tails.
 
+For later coefficient-only iterations that preserve the feature contract, counter
+mask, bookkeeping and scheduling, use a short validation path. Check dataset
+provenance and grouped splits, fit and quantize the model, verify integer bounds
+and prediction parity, then rebuild the ordinary release executable incrementally.
+Run a small deterministic smoke case across the collection platforms and required
+simulation/replay gates and goldens. Preserve the save-format floor; a replay
+acceptance change does not require dropping older saves.
+
+Launch the next research collection while the longer interleaved CPU and quality
+comparisons run alongside it. Keep the stable incumbent until those results justify
+promotion. Repeat broad native, historical-save and platform suites when code,
+features, state layout or a new failure makes them relevant, rather than repeating
+them for every coefficient update. Frozen plans and cumulative grouped splits
+still apply to every generation.
+
 There is no automatic convergence or promotion guarantee. Keep conservative
 runtime fallbacks for unsupported situations, retain fixed stress cases, and
 rotate fresh test maps to avoid repeatedly tuning to one evaluation suite. The
