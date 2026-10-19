@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Balanced all-family bootstrap plans using the ordinary tournament coordinator."""
-import argparse,collections,copy,json
+import argparse,collections,copy,json,itertools
 from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
@@ -27,20 +27,51 @@ def pool_for_rank(rank,routing):
  if routing not in ROUTING:raise ValueError('Unknown pre-outcome execution routing')
  return 'small-pharaoh' if rank<32 else 'large-mac' if routing=='with-mac' and rank>=224 else 'middle-linux'
 
+def balanced_roles(specs,routing,seed):
+ """Exact format/size-pool halves, chosen before map-generation outcomes.
+
+ Each format has32 slots, so it has zero or two odd pool strata. Choosing which
+ odd stratum gets the extra exploration slot has at most2**8 possibilities.
+ """
+ ranked=sorted(specs,key=lambda s:(s['width']*s['height']*s['players'],digest(s)))
+ pools={digest(s)[:16]:pool_for_rank(i,routing) for i,s in enumerate(ranked)}
+ formats=sorted({s['format'] for s in specs});strata={}
+ for fmt in formats:
+  for pool in sorted(set(pools.values())):
+   strata[fmt,pool]=sorted([s for s in specs if s['format']==fmt and pools[digest(s)[:16]]==pool],key=lambda s:(s['width']*s['height']*s['players'],digest(s)))
+ targets={pool:sum(value==pool for value in pools.values())//2 for pool in set(pools.values())}
+ base={pool:sum(len(strata[fmt,pool])//2 for fmt in formats) for pool in targets}
+ choices=[]
+ for fmt in formats:
+  if sum(len(strata[fmt,pool]) for pool in targets)!=32:raise ValueError('Each format must contain32 slots')
+  odd=[pool for pool in sorted(targets) if len(strata[fmt,pool])%2]
+  options=list(itertools.combinations(odd,len(odd)//2))
+  choices.append(sorted(options,key=lambda extra:digest(dict(seed=seed,format=fmt,extra=extra))))
+ selected=None
+ for options in itertools.product(*choices):
+  count=collections.Counter(pool for extra in options for pool in extra)
+  if all(base[pool]+count[pool]==targets[pool] for pool in targets):selected=dict(zip(formats,options));break
+ if selected is None:raise ValueError('Unable to balance format and execution-pool roles')
+ roles={}
+ for (fmt,pool),group in strata.items():
+  offset=(0 if pool in selected[fmt] else 1) if len(group)%2 else int(digest(dict(seed=seed,format=fmt,pool=pool))[:2],16)%2
+  for i,spec in enumerate(group):roles[digest(spec)[:16]]='exploration' if (i+offset)%2==0 else 'candidate'
+ return roles,pools
+
 def validate_plan(document):
  unified=document.get('unified',{});routing=unified.get('routing',{})
  mode=routing.get('mode')
  if mode not in ROUTING or routing!={'mode':mode,**ROUTING[mode],'order':'descending area*players,then planned group within each pool'}:raise ValueError('Unknown or changed frozen routing provenance')
  slots=unified.get('slots',[])
  if len(slots)!=256 or len({r['group'] for r in slots})!=256:raise ValueError('Frozen256 unique slots required')
- ranked=sorted(slots,key=lambda r:(r['spec']['width']*r['spec']['height']*r['spec']['players'],digest(r['spec'])))
- for i,row in enumerate(ranked):
-  if row['group']!=digest(row['spec'])[:16] or row['pool']!=pool_for_rank(i,mode):raise ValueError('Slot differs from pre-outcome routing')
+ if unified.get('role_assignment')!='format-pool-balanced-v2':raise ValueError('Exact pre-outcome format/pool role rule required')
+ roles,pools=balanced_roles([r['spec'] for r in slots],mode,document['design']['seed'])
+ for row in slots:
+  group=digest(row['spec'])[:16]
+  if row['group']!=group or row['pool']!=pools[group]:raise ValueError('Slot differs from pre-outcome routing')
+  if row['role']!=roles[group]:raise ValueError('Pre-outcome role assignment changed')
  if unified.get('contract')!=collector.CONTRACT:raise ValueError('Exact unified contract required')
  if (unified.get('ticks'),unified.get('timeout_seconds'),unified.get('process_attempts'))!=(90000,1800,1):raise ValueError('Frozen collection limits changed')
- for fmt in {r['spec']['format'] for r in slots}:
-  by_hash=sorted([r for r in slots if r['spec']['format']==fmt],key=lambda r:digest(r['spec']))
-  if len(by_hash)!=32 or any(r['role']!=('exploration' if i<16 else 'candidate') for i,r in enumerate(by_hash)):raise ValueError('Pre-outcome role assignment changed')
  for role in ('exploration','candidate'):
   chosen=[r for r in slots if r['role']==role]
   if len(chosen)!=128 or len(collections.Counter(r['spec']['format'] for r in chosen))!=8 or set(collections.Counter(r['spec']['format'] for r in chosen).values())!={16}:raise ValueError('128 slots and16 performat required for each role')
@@ -48,15 +79,10 @@ def validate_plan(document):
 
 def plan(catalog,seed,routing='remote-only'):
  if routing not in ROUTING:raise ValueError('Unknown pre-outcome execution routing')
- value=sample_plan(catalog,256,seed);roles={}
- for fmt in sorted({s['format'] for s in value['games']}):
-  group=sorted([s for s in value['games'] if s['format']==fmt],key=digest)
-  if len(group)!=32:raise ValueError('256game balanced eight-format plan required')
-  for i,spec in enumerate(group):roles[digest(spec)[:16]]='exploration' if i<16 else 'candidate'
+ value=sample_plan(catalog,256,seed);roles,pools=balanced_roles(value['games'],routing,seed)
  ranked=sorted(value['games'],key=lambda s:(s['width']*s['height']*s['players'],digest(s)))
- slots=[]
- for i,s in enumerate(ranked):slots.append(dict(group=digest(s)[:16],role=roles[digest(s)[:16]],pool=pool_for_rank(i,routing),spec=s))
- value['unified']=dict(contract=collector.CONTRACT,assignment='first16hashslots/format exploration,remaining16candidate; pools frozen by area*players before outcomes',routing=dict(mode=routing,**ROUTING[routing],order='descending area*players,then planned group within each pool'),ticks=90000,timeout_seconds=1800,process_attempts=1,slots=slots)
+ slots=[dict(group=digest(s)[:16],role=roles[digest(s)[:16]],pool=pools[digest(s)[:16]],spec=s) for s in ranked]
+ value['unified']=dict(contract=collector.CONTRACT,role_assignment='format-pool-balanced-v2',assignment='Exact half of each format and each size pool; bounded seeded odd-stratum allocation, size/hash alternation within strata; before outcomes',routing=dict(mode=routing,**ROUTING[routing],order='descending area*players,then planned group within each pool'),ticks=90000,timeout_seconds=1800,process_attempts=1,slots=slots)
  validate_plan(value)
  return value
 

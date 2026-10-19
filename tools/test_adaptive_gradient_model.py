@@ -111,7 +111,9 @@ class UnifiedTournamentTests(unittest.TestCase):
   from collections import Counter
   remote=plan(catalog(),181101);mac=plan(catalog(),181101,'with-mac')
   self.assertEqual(Counter(r['pool'] for r in mac['unified']['slots']),{'small-pharaoh':32,'middle-linux':192,'large-mac':32})
-  self.assertEqual([(r['group'],r['role']) for r in remote['unified']['slots']],[(r['group'],r['role']) for r in mac['unified']['slots']])
+  self.assertEqual([r['group'] for r in remote['unified']['slots']],[r['group'] for r in mac['unified']['slots']])
+  for role in ['exploration','candidate']:
+   self.assertEqual(Counter(r['pool'] for r in mac['unified']['slots'] if r['role']==role),{'small-pharaoh':16,'middle-linux':96,'large-mac':16})
   self.assertEqual(validate_plan(remote),'remote-only');self.assertEqual(validate_plan(mac),'with-mac')
   remote['unified']['slots'][-1]['pool']='large-mac'
   with self.assertRaisesRegex(ValueError,'routing'):validate_plan(remote)

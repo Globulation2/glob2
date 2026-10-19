@@ -110,7 +110,10 @@ python3 tools/adaptive_gradient_tournament.py plan \
 ```
 
 The plan reserves 128 exploration and 128 candidate games, 16 of each role per
-format. It freezes map/seed identities and size pools before outcomes: small work
+format and exactly half of every size pool per role (16 small, 96 middle and
+16 large in with-Mac mode). A bounded deterministic search assigns extras in
+odd format/pool strata; size/hash alternation chooses slots within each stratum.
+All assignments precede map-generation or game outcomes. It freezes map/seed identities and size pools before outcomes: small work
 on Pharaoh hosts, middle work on Rig/devlaptop and the largest work on the
 MacBook. Current campaign invocation explicitly uses `--routing with-mac`, which
 freezes 32 small, 192 middle and 32 largest Mac slots. The optional
