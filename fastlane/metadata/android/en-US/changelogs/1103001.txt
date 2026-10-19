@@ -1,0 +1,1 @@
+Improved simulation scheduling, recruitment and pathfinding; reduced rendering overhead; restored historical save loading; and refined touch controls, first-launch setup and map generation.
