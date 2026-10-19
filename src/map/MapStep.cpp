@@ -316,7 +316,7 @@ void Map::finishGradientPipeline(JoinContext context)
 	gradientRuntime->pipeline.finish(context);
 	gradientRuntime->buildings.finish(context);
 }
-void Map::resetGradientPipeline() noexcept
+void Map::resetGradientPipeline(bool replacingWorld) noexcept
 {
 	gradientRuntime->worldResultsPublishedTick.reset();
 	gradientRuntime->worldWorkSubmittedTick.reset();
@@ -325,6 +325,10 @@ void Map::resetGradientPipeline() noexcept
 	gradientRuntime->pipeline.reset();
     gradientRuntime->adaptive.clearAssociations();
 	resetBuildingGradientPipeline();
+    // Loading rebuilds this cache from authoritative suppliers without changing
+    // saved epochs. A live-world pipeline reset must keep the ledger so the next
+    // supplier transition is still observed.
+    if (replacingWorld) gradientRuntime->marketTargets={};
 }
 void Map::setGradientWorkerCount(unsigned workers)
 {

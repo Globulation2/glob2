@@ -281,7 +281,9 @@ public:
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
-	void resetGradientPipeline() noexcept;
+	// Live-world resets retain supplier turnover history; world replacement must
+	// discard derived supplier ledgers before teams are destroyed or reconstructed.
+	void resetGradientPipeline(bool replacingWorld=false) noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
     // Explicit headless-only experiment; deliberately absent from save state.
