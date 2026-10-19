@@ -2,7 +2,8 @@
 """Train the development-only selector; export inert trees for stdlib inference.
 
 Training consumes completed CI observations, never code or executable model files.
-The last chronological fifth is a publication guard, not a fresh research holdout.
+The last chronological fifth guards publication using observed CI outcomes.
+Checks that did not run remain unobserved during this validation.
 """
 from __future__ import annotations
 import argparse

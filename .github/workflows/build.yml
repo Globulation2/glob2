@@ -133,11 +133,9 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
           DRAFT: ${{ github.event.pull_request.draft }}
           CI_CALLED_FULL: ${{ inputs.revision != '' }}
-          CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
           CI_PREDICTIVE_ENABLED: ${{ vars.CI_PREDICTIVE_ENABLED || 'true' }}
           CI_PR_CHECK_BUDGET: ${{ vars.CI_PR_CHECK_BUDGET || '0.12' }}
           CI_PR_FULL_AUDIT_PERCENT: ${{ vars.CI_PR_FULL_AUDIT_PERCENT || '0' }}
-          CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then

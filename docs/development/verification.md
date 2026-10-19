@@ -186,8 +186,6 @@ expired, mismatched or inaccessible evidence triggers the full matrix. A skipped
 nightly is not a new full checkpoint. Manual and release verification retain their
 existing behavior. Local evidence never substitutes for a hosted full checkpoint.
 
-<a id="tiered-pull-request-coverage-rollout"></a>
-
 ## Predictive pull-request checks
 
 The executable check inventory is defined in
@@ -232,20 +230,37 @@ it never loads an executable pickle. The committed fallback assets are
 `.github/ci/model.json.gz`, `.github/ci/history.json.gz` and
 `.github/ci/model-manifest.json`. The selector first attempts to restore the latest
 available `ci-predictor` artifact produced by successful, trusted master runs of
-`.github/workflows/ci-model.yml`. Repository/ref/attempt provenance, archive members
-and SHA256 checksums are verified. Fork and PR-produced artifacts are not trusted
-model updates. If restoration fails, the committed seed is used. A missing or
+`.github/workflows/ci-model.yml`. Repository identity, master branch, successful
+workflow run, source SHA, archive members and SHA256 checksums are verified.
+Fork and PR-produced artifacts are not trusted model updates. If restoration fails, the committed seed is used. A missing or
 invalid model falls back to branch/recent-failure ranking; missing history makes
 checks unknown and runs them for warmup. The selection report records fallbacks.
+
+The two compressed files are runtime inputs: the forest ranks checks, and the
+history supplies their features and prevents every check from starting unknown.
+The manifest records both file hashes. Together they provide fallback state when
+no trusted refreshed bundle is available. The initial model is a bootstrap fit to
+completed observed jobs; it was not published by the refresh guard described
+below. It used raw historical job names before canonical inventory alias
+normalization; current refreshes use the canonical alias view. Its metadata
+records those distinctions.
+
+To replace the committed fallback, restore a verified successful master bundle
+with `ci_history.py bundle` and confirm that restoration succeeded. Review its model
+identity and training metadata, then replace both compressed files together and
+copy its `manifest.json` to `.github/ci/model-manifest.json` in the same change.
+Normal refreshes update trusted Actions artifacts without modifying these files.
 
 The refresh workflow checks out trusted master, uses read-only Actions/content
 permissions, collects completed master build observations, and runs after master
 push builds with a weekly/manual fallback. It performs no commits or pushes.
 Every refresh also checks the most recent 100 completed master runs for missing
 attempts, covering pending refreshes coalesced by GitHub concurrency. An explicitly
-triggering run is included even when outside that bounded backfill window. Only completed success/failure jobs enter history;
-missing, skipped and cancelled jobs do not become passing examples. Renames may
-use reviewed job-name aliases from the inventory. Source paths currently describe
+triggering run is included even when outside that bounded backfill window. Only
+completed success/failure jobs enter history; missing, skipped and cancelled jobs
+do not become passing examples. Aggregate and audit jobs are excluded because
+they summarize other checks rather than supply independent test outcomes.
+Renames may use reviewed job-name aliases from the inventory. Source paths currently describe
 the head commit's first-parent diff rather than the entire PR diff.
 
 The trainer uses the same feature constructor as prediction. Job outcomes must
@@ -256,9 +271,9 @@ publication guard against the branch-history baseline, measuring failing-run,
 observed pass-to-fail-run and individual failing-job recall at 10%, 12%, 25% and
 50% budgets. The guard declines sparse evidence, a mixed-objective decrease over
 three percentage points, or a failing-run recall decrease over five percentage
-points at either the deployed 12% budget or the 25% reference budget. It reports whether validation used PR observations or
-pooled events. This guard uses observed inventories, including historical
-selection bias; it cannot establish what unrun checks would have done.
+points at either the deployed 12% budget or the 25% reference budget. It reports
+whether validation used PR observations or pooled events. This guard uses
+observed inventories, including historical selection bias; it cannot establish what unrun checks would have done.
 
 When the guard rejects an update, the refresh retains the previous model and
 publishes fresh completed history with the rejection reason in `manifest.json`.

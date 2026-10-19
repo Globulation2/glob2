@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select opt-in PR verification, full master checks and fallback nightly coverage."""
+"""Select predictive PR checks, explicit overrides and full master verification."""
 
 import argparse
 import json
@@ -196,59 +196,129 @@ def changed_paths(base):
     return [os.fsdecode(path) for path in diff.stdout.split(b"\0") if path]
 
 
-def choose_checks(paths, known, event, labels=(), *, branch='', history=None, model=None,
-                  budget=.12, prediction_time=None, disabled=False, audit=False,
-                  browser_only=False, called_full=False, reused=False):
+def choose_checks(
+    paths,
+    known,
+    event,
+    labels=(),
+    *,
+    branch='',
+    history=None,
+    model=None,
+    budget=0.12,
+    prediction_time=None,
+    disabled=False,
+    audit=False,
+    browser_only=False,
+    called_full=False,
+    reused=False,
+):
     """Resolve the policy into one exact, dependency-complete execution plan."""
     from ci_policy import CHEAP_FLAGS, CHEAP_PATHS, full, select, browser_matrix
-    from ci_check_inventory import inventory, execution_plan, flags_from_plan, from_flags, critical_change
+    from ci_check_inventory import (
+        inventory,
+        execution_plan,
+        flags_from_plan,
+        from_flags,
+        critical_change,
+    )
     from ci_predictive import select_checks
-    checks=inventory()
-    desired,reasons=select(paths,labels,known)
-    complete=event in ('push','schedule','workflow_dispatch') or called_full or 'ci:full' in labels
-    if complete:desired=full()
-    if browser_only:desired={flag:flag in ('browser','deployment') for flag in desired}
-    report=None;exceptions=[];mode='affected';selected_ids=[]
+
+    checks = inventory()
+    desired, reasons = select(paths, labels, known)
+    complete = (
+        event in ('push', 'schedule', 'workflow_dispatch')
+        or called_full
+        or 'ci:full' in labels
+    )
+    if complete:
+        desired = full()
+    if browser_only:
+        desired = {flag: flag in ('browser', 'deployment') for flag in desired}
+    report = None
+    exceptions = []
+    mode = 'affected'
+    selected_ids = []
+    # Resolve mandatory/full modes before prediction so it cannot weaken them.
     if reused:
-        mode='nightly-reused'
-    elif event=='pull_request' and (not known or critical_change(paths) or disabled or audit):
-        selected_ids=[c['id'] for c in checks];mode='full'
-        exceptions=[('diff unavailable' if not known else 'CI/build inventory changed' if critical_change(paths)
-                     else 'predictive reduction disabled' if disabled else 'full PR audit')]
+        mode = 'nightly-reused'
+    elif event == 'pull_request' and (
+        not known or critical_change(paths) or disabled or audit
+    ):
+        selected_ids = [c['id'] for c in checks]
+        mode = 'full'
+        if not known:
+            reason = 'diff unavailable'
+        elif critical_change(paths):
+            reason = 'CI/build inventory changed'
+        elif disabled:
+            reason = 'predictive reduction disabled'
+        else:
+            reason = 'full PR audit'
+        exceptions = [reason]
     elif complete:
-        mode='affected' if browser_only else 'full'
-        entries=browser_matrix(desired,paths,True)
-        selected_ids=from_flags(desired,entries,['arm64-v8a','armeabi-v7a','x86_64'],'full',checks)
-    elif event=='pull_request' and 'ci:run' not in labels:
-        engine=any(v for k,v in desired.items() if k not in CHEAP_FLAGS)
+        mode = 'affected' if browser_only else 'full'
+        entries = browser_matrix(desired, paths, True)
+        selected_ids = from_flags(
+            desired, entries, ['arm64-v8a', 'armeabi-v7a', 'x86_64'], 'full', checks
+        )
+    elif event == 'pull_request' and 'ci:run' not in labels:
+        engine = any(v for k, v in desired.items() if k not in CHEAP_FLAGS)
         if engine:
-            mode='predictive'
-            candidates=[c for c in checks if not c.get('full_only')]
-            report=select_checks(candidates,paths if known else None,history,model,budget=budget,
-                                 event=event,branch=branch,prediction_time=prediction_time)
-            selected_ids=list(report['selected_ids'])
+            mode = 'predictive'
+            candidates = [c for c in checks if not c.get('full_only')]
+            report = select_checks(
+                candidates,
+                paths if known else None,
+                history,
+                model,
+                budget=budget,
+                event=event,
+                branch=branch,
+                prediction_time=prediction_time,
+            )
+            # The quota counts ranked leaves; prerequisites are added below.
+            selected_ids = list(report['selected_ids'])
             # New checks need one observed result; never infer a pass for them.
             selected_ids += report['unknown_ids']
-            if report['unknown_ids']:exceptions.append('new checks: '+', '.join(report['unknown_ids']))
-            if 'ci:windows' in labels:selected_ids.append('windows')
-            if 'ci:android' in labels:selected_ids += [c['id'] for c in checks if c['job']=='android']
-            if 'ci:browsers' in labels:selected_ids += [c['id'] for c in checks if c['job']=='web-test']
-        else:mode='cheap-contracts'
+            if report['unknown_ids']:
+                exceptions.append('new checks: ' + ', '.join(report['unknown_ids']))
+            if 'ci:windows' in labels:
+                selected_ids.append('windows')
+            if 'ci:android' in labels:
+                selected_ids += [c['id'] for c in checks if c['job'] == 'android']
+            if 'ci:browsers' in labels:
+                selected_ids += [c['id'] for c in checks if c['job'] == 'web-test']
+        else:
+            mode = 'cheap-contracts'
         for flag in CHEAP_FLAGS:
-            if desired.get(flag) and any(p.startswith(CHEAP_PATHS[flag]) for p in paths):selected_ids.append(flag)
+            if desired.get(flag) and any(
+                p.startswith(CHEAP_PATHS[flag]) for p in paths
+            ):
+                selected_ids.append(flag)
     else:
         # Explicit ci:run retains affected verification; primary GCC13 stays complete.
-        entries=browser_matrix(desired,paths,desired['coverage'] or 'ci:browsers' in labels)
-        selected_ids=from_flags(desired,entries,['arm64-v8a','armeabi-v7a','x86_64'],'full',checks)
-    selected_ids=sorted(set(selected_ids))
-    plan=execution_plan(selected_ids,checks)
-    plan.update(mode=mode,requested_budget=budget,predictor=report,exceptions=exceptions,
-                inventory_count=len(checks),ranked_count=report['selected_count'] if report else len(selected_ids),
-                executed_count=len(plan['executed_ids']))
+        entries = browser_matrix(
+            desired, paths, desired['coverage'] or 'ci:browsers' in labels
+        )
+        selected_ids = from_flags(
+            desired, entries, ['arm64-v8a', 'armeabi-v7a', 'x86_64'], 'full', checks
+        )
+    selected_ids = sorted(set(selected_ids))
+    plan = execution_plan(selected_ids, checks)
+    plan.update(
+        mode=mode,
+        requested_budget=budget,
+        predictor=report,
+        exceptions=exceptions,
+        inventory_count=len(checks),
+        ranked_count=report['selected_count'] if report else len(selected_ids),
+        executed_count=len(plan['executed_ids']),
+    )
     # A prediction does not imply the compound full-matrix comparison ran.
-    full_matrix=set(plan['executed_ids'])=={c['id'] for c in checks}
-    plan['full_matrix']=full_matrix
-    return flags_from_plan(plan),plan,dict(desired,reasons=reasons)
+    full_matrix = set(plan['executed_ids']) == {c['id'] for c in checks}
+    plan['full_matrix'] = full_matrix
+    return flags_from_plan(plan), plan, dict(desired, reasons=reasons)
 
 
 def _prediction_inputs():
@@ -343,13 +413,21 @@ def main():
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
             f.write('## Selected development checks\n\n'+f'Verification mode: **{plan["mode"]}**.\n\n')
-            f.write(f'Ranked budget: {budget:.0%}; {plan["ranked_count"]} ranked checks; {plan["executed_count"]} checks execute after prerequisites and policy additions, out of {plan["inventory_count"]}.\n\n')
+            if plan['predictor']:
+                eligible=plan['predictor']['inventory_count']
+                f.write(f'Ranked budget: {budget:.0%}; {plan["ranked_count"]} of {eligible} eligible checks. ')
+            f.write(f'{plan["executed_count"]} of {plan["inventory_count"]} checks execute after prerequisites and policy additions.\n\n')
             if plan['predictor']:f.write('Model: `'+plan['predictor']['model_id']+'`.\n\n')
             for reason in plan['exceptions']+input_reasons:f.write('- '+reason+'\n')
             f.write('\n| Check | Decision |\n|---|---|\n')
             from ci_check_inventory import inventory
             for check in inventory():
-                cid=check['id'];decision='selected' if cid in plan['ranked_ids'] else 'prerequisite' if cid in plan['executed_ids'] else 'not selected'
+                cid=check['id']
+                ranked=plan['predictor']['selected_ids'] if plan['predictor'] else ()
+                decision=('ranked' if cid in ranked else
+                          'policy addition' if plan['predictor'] and cid in plan['ranked_ids'] else
+                          'selected' if cid in plan['ranked_ids'] else
+                          'prerequisite' if cid in plan['executed_ids'] else 'not selected')
                 f.write(f'| {check["name"]} | {decision} |\n')
             if not any(v for k,v in selected.items() if k not in CHEAP_FLAGS):f.write('\nCheap-only success does not establish engine verification or acceptance of PR evidence.\n')
 

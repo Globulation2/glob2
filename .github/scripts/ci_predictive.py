@@ -31,6 +31,8 @@ def _finite(value):
 
 
 def _records(history, prediction_time):
+    # Completion, not run creation, determines what was knowable at prediction.
+    # This also excludes outcomes from overlapping runs during offline training.
     if not isinstance(history, dict) or history.get("schema") != 1 or not isinstance(history.get("records"), list):
         return [], ["missing_or_invalid_history"]
     valid = []
@@ -79,6 +81,7 @@ def _features(check, paths, records, event, branch, prediction_time):
         raise ValueError("paths must be a list of strings, or None when unavailable")
     lexical = _words(" ".join(changed))
     tokens = _words(check.get("name", check["id"]))
+    # Five virtual observations with a 5% failure rate smooth sparse histories.
     failure_rate = (sum(record["failed"] for record in recent) + .25) / (len(recent) + 5)
     features = {
         "last_failed": history[-1]["failed"] if history else 0,
@@ -278,6 +281,8 @@ def select_checks(inventory, paths, history, model=None, budget=.12, event="pull
         if active_model is not None:
             probability = model_probabilities[cid]
             probabilities[cid] = probability
+            # De-emphasize persistent failures to leave room for new failures.
+            # This is a ranking policy; the adjusted score is not a probability.
             scores[cid] = probability * (.5 if prior == 1 else 1)
             reasons[cid].append("learned_failure_score")
             if prior == 1:

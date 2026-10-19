@@ -113,6 +113,14 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(plan['mode'], 'full')
             self.assertTrue(plan['full_matrix'])
 
+    def test_documentation_beside_ci_and_build_code_stays_cheap(self):
+        for path in ('.github/README.md', '.github/actions/sdl3/README.md',
+                     'scons/README.md', 'test/build_system/README.md'):
+            with self.subTest(path=path):
+                _, plan, _ = selector.choose_checks([path], True, 'pull_request')
+                self.assertEqual(plan['mode'], 'cheap-contracts')
+                self.assertEqual(plan['executed_ids'], [])
+
     def test_dependency_graph_rejects_unknown_checks_and_cycles(self):
         with self.assertRaisesRegex(ValueError, 'Unknown check'):
             checks.dependency_closure(['unknown'])

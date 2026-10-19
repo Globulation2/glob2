@@ -171,9 +171,9 @@ result, verification and limits in the PR.
 ## Validation and CI feedback
 
 Keep unfinished PRs in draft. Draft and ready PRs run cheap contracts and, for
-ordinary engine changes, a predictive subset of hosted checks. The default ranking budget is 12% of eligible
-logical checks, rounded up; new checks with no history and required build
-prerequisites are added. This is a check-count budget, not a runner-time or error
+ordinary engine changes, a predictive subset of hosted checks. The default ranking
+budget is 12% of eligible logical checks, rounded up. New checks with no history
+and required build prerequisites are added. This is a check-count budget, not a runner-time or error
 recall guarantee. Documentation and other cheap-only changes remain cheap.
 Becoming ready re-evaluates the same policy. Relevant local or VM testing remains
 the standard merge verification path, and maintainers may accept their own evidence.
@@ -202,9 +202,7 @@ coverage rationale and accessible evidence in the PR using the
 Refresh evidence when later edits affect tested behavior or integration. Preserve
 all affected simulation determinism, save/load, replay/network, platform and
 simulation-version requirements; focused or predictive coverage does not waive
-those boundaries. When an API changes, update test doubles and build the affected
-harnesses. Fixtures changing process-wide SDL drivers or other global state must
-restore them or run in isolation through the engine test registry.
+those boundaries.
 
 Full master CI detects regressions asynchronously after merges. Every retained
 master push runs the full development matrix, irrespective of tier-reduction

@@ -100,6 +100,26 @@ class HistoryTest(unittest.TestCase):
         result = self.collect(api)
         self.assertEqual([r["name"] for r in result["records"]], ["native tests"])
 
+    def test_linux_aggregate_results_are_not_independent_training_labels(self):
+        api = FakeAPI()
+        leaves = [
+            "Primary Linux programs / linux build (ubuntu:24.04, g++-13)",
+            "Linux GCC 13 build and tests / Linux tests (ubuntu-24.04, shard 2/4)",
+            "Linux GCC 11 build and tests / Map generators (ubuntu-22.04, telemetry)",
+            "linux variants (ubuntu:22.04)",
+            "linux variants (ubuntu:24.04)",
+            # Newly named substantive checks must survive a narrow helper filter.
+            "linux (ubuntu:26.04)",
+            "Linux integration (ubuntu:22.04)",
+        ]
+        api.jobs = [job(name, failed=True) for name in leaves]
+        api.jobs += [job("linux (ubuntu:22.04)", failed=True),
+                     job("linux (ubuntu:24.04)")]
+        result = self.collect(api)
+        self.assertEqual({record["name"] for record in result["records"]}, set(leaves))
+        self.assertEqual(len(result["records"]), len(leaves))
+        self.assertTrue(all(record["failed"] == 1 for record in result["records"]))
+
     def test_retry_dedup_keeps_attempt_identity(self):
         api = FakeAPI()
         first = self.collect(api)

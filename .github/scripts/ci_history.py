@@ -36,6 +36,9 @@ OMIT_NAMES = {
     "Relevant checks passed", "Select relevant checks", "linux-build",
     "linux-map-generators", "Cheap contracts", "Predict PR checks",
     "Refresh CI predictor", "Train CI predictor",
+    # These current workflow wrappers only combine producer/check results;
+    # their failures are derived outcomes, not independent training labels.
+    "linux (ubuntu:22.04)", "linux (ubuntu:24.04)",
 }
 OMIT_PARTS = ("Audit native shard coverage", "Reuse primary Linux build")
 

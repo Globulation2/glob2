@@ -116,6 +116,11 @@ def from_flags(flags, entries, arches, profile='full', checks=None):
 
 
 def execution_plan(selected, checks=None):
+    """Translate direct requests into executable jobs and matrix prerequisites.
+
+    ``ranked_ids`` includes policy additions such as labels and unknown checks;
+    the predictor report separately retains the IDs chosen within its budget.
+    """
     checks=checks or inventory();by_id={r['id']:r for r in checks}
     executed=dependency_closure(selected,checks)
     jobs={job:False for job in TOP_JOBS}
@@ -157,8 +162,10 @@ def fingerprint(checks=None):
 def critical_change(paths):
     """New CI/build/test machinery gets a full validation before ranking it."""
     from ci_policy import cheap_path
-    # Release packaging and mirror-only deployment have their own workflows.
-    paths=[p for p in paths if not (p.startswith('.github/workflows/') and cheap_path(p))]
+    # Documentation does not change executable CI machinery. Release packaging
+    # and mirror-only deployment have their own workflows.
+    paths=[p for p in paths if not p.endswith('.md')
+           and not (p.startswith('.github/workflows/') and cheap_path(p))]
     prefixes=('.github/','scons/','test/build_system/')
     files={'SConstruct','vcpkg.json','requirements-dev.txt','test/run_tests.py',
            'test/ci_native_shard_plan.py','test/ci-compatibility.json','test/ci-native-auxiliary.json'}
