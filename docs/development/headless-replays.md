@@ -286,7 +286,7 @@ For work counts without quality collection, `--gradient-work-stats PATH` enables
 raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`
 outputs. It is independently opt-in and defaults off. Result metadata records
 the separate model and collector contracts, whether a generic model is trained,
-the 128,000 milli-unit threshold, eight-tick admission minimum, absence of a
+the 16,000 milli-unit threshold, eight-tick admission minimum, absence of a
 forced maximum-age refresh and explicit fixed-interval research overrides. An untrained
 placeholder cannot be mistaken for a qualified adaptive model.
 

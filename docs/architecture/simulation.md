@@ -482,47 +482,33 @@ checksum adapter remains available for diagnostic fixtures.
   standalone inspection cache does not revoke an established owner observation;
   live entity helpers and orders cannot refresh that retained handle.
   Named views drop unwanted extras.
-- TeamStats counts living non-flying units with ground movement by their actual
-  run/swim ratio class during its existing per-tick snapshot scan. Published
-  counts gate periodic material, market, guard, clear and forbidden refreshes;
-  team aliveness does not gate surviving units. Unused fields are suspended. Natural-resource fields use adaptive demand
-  scheduling; market, guard and clear fields retain their round robin.
-  Counts arrive at the fixed
-  `teamStatsDelay` deadline (eight ticks by default). Until the first known sample,
-  including after loading older saves, all classes remain eligible.
-  Inactive classes retain their allocated fields marked stale and cancel pending
-  periodic work. An explicit query enrolls a missing or suspended stale ground field in the
-  existing FIFO, including during the statistics delay; known-zero class counts
-  do not cancel first-use requests. Air routing keeps its existing policy. Counts, pending samples
-  and suspended freshness flags are saved for exact continuation. The Population
-  statistics chart retains those same counts as ground-movement bands; history
-  predating their collection is unavailable rather than zero. Building fields
-  retain their existing query-triggered refresh and idle-expiry rules.
+- TeamStats counts living non-flying units by their actual ground movement
+  class during its existing snapshot scan. These counts support population
+  reporting, not gradient admission: the unified scheduler uses demand on each
+  exact field. The Population chart retains the movement bands; history predating
+  their collection is unavailable rather than zero. Building fields retain their
+  query-triggered refresh and idle-expiry rules.
 
 ## Scheduled gradient work
 
-- Natural-resource fields use one fixed policy, adaptive 32. A movement query
-  requests a refresh; after a minimum eight ticks since submission the integer
-  model predicts the benefit of refreshing. A score of at least 32 direction-cost
-  units admits the field, and demand forces admission at 128 ticks. All accepted
-  fields are submitted together in stable key order as one executor batch per
-  observation. This removes the old global one-resource-field-per-tick cap.
-  The seven features are serving capture age, query counts over 32 and 128 ticks,
-  added and removed positive-stock source tiles since capture, and those two
-  changes divided by captured source count. Material identity is excluded.
-  Rolling tick buckets and source zero crossings provide these features without
-  scanning units or the map each tick. Unreachable owner distance/availability
-  answers also request upkeep, so a stale negative field cannot prevent
-  recruitment forever. Successful planning reads do not request upkeep: they
-  must not force idle fields through the movement policy's age cap. Neither
-  kind of planning read increments the model's movement-query counts.
-  Cold and suspended ground fields keep the existing FIFO admission and
-  delayed publication. One FIFO ticket and accepted warm natural fields share
-  the same prepared batch. Publication retains its configured fixed delay. Capture epochs,
-  pending jobs and rolling demand are saved; diagnostics never are.
+- Periodic material, shared-market, guard, clearing and forbidden-escape fields
+  share Adaptive16: demand makes a field eligible, and the deterministic integer
+  model admits refreshes with predicted net benefit of at least 16 direction-cost
+  units over capture-relative offsets 8..127. The minimum admission interval and
+  normal publication delay are eight ticks. There is no maximum-age refresh,
+  round-robin filler or global one-field-per-tick quota. Cold initialization and
+  explicit reactive recovery remain available without a model benefit prediction.
+  Stable key order determines admission, and skipped work leaves capacity idle.
+  One exact field can have only one queued or in-flight replacement.
+  The seven selected inputs describe serving-capture age, movement queries over
+  32 and 128 ticks, and effective target additions/removals with captured-count
+  fractions. Family and material identities are diagnostic groups, not inputs.
+  Planning demand, including cached-unreachable answers, can request upkeep
+  without incrementing movement-query counts. Capture metadata stays immutable
+  while a replacement computes; save/load preserves captures, jobs and demand.
   See [collecting and fitting the model](../development/resource-gradient-model.md).
 
-- Gradient selection, round-robin flags, invalidation and publication stay on the
+- Gradient selection, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Refresh publication remains after the configured
   delay (eight ticks by default), before team stepping; missing building fields
@@ -539,7 +525,7 @@ checksum adapter remains available for diagnostic fixtures.
   immediately and skips periodic natural-material work. The owner keeps
   serving an older field while a refresh waits. It validates proposed
   steps against current occupancy, forbidden paint and movement capabilities.
-- Ground material and area demand share one FIFO admission per tick and the
+- Ground material and area requests share a deterministic FIFO and the
   configured delay; queue waiting precedes that delay. This applies to edits of
   already-used clearing, guard and forbidden areas as well as cold demand. Zone
   membership changes immediately; replacement guidance publishes later. Requests
