@@ -231,6 +231,15 @@ Scheduling/state changes require save/load, thread/platform checksum and
 simulation/replay compatibility checks. Later coefficient-only rounds retain the
 same numerical/contract gates and the agreed focused validation workflow.
 
+When testing continuation across a save-version bump, use current-format saves
+for both sides of the raw world-checksum comparison. `MapHeader::checkSum`
+includes the loaded format version, while saving writes the current version
+without changing that in-memory identity. To test an older save, advance it one
+tick and save, continue that current-format checkpoint, then compare a later
+checkpoint's resumed raw checksum suffix against that control. Also compare the
+older-input run's snapshots and final saved state. Preserve and explain any
+format-identity difference; do not change or mask engine checksums to pass.
+
 ### One-command research campaign
 
 The permanent driver connects the components above. It uses the ordinary
