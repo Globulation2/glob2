@@ -120,7 +120,11 @@ freezes 32 small, 192 middle and 32 largest Mac slots. The optional
 `--routing remote-only` capability instead freezes 32 small and 224 remote
 middle-pool slots when local games must be excluded. Routing changes require a new plan before outcomes;
 preparation rejects relabelled pool assignments. Both modes run largest work
-first within each pool.
+first within each pool. If predeclared generation fallbacks change dimensions,
+create an explicit mechanical actual-size routing amendment before simulation
+outcomes; it changes execution hosts only, preserving every accepted map, role
+and seed. Actual role/pool totals can differ from the original planned halves
+and are reported without relabelling roles.
 Preparation uses immutable accepted map inputs and architecture-specific ordinary
 release bundles pinned to the same source/model/contract. The shared coordinator
 supplies leases and artifact transport; no separate SSH scheduler is introduced.
@@ -134,7 +138,16 @@ python3 tools/adaptive_gradient_tournament.py freeze-splits \
   --maps artifacts/maps.json --split-registry artifacts/map-splits.json
 ```
 
-Use `adaptive_gradient_tournament.py prepare --help` to prepare one role.
+Create the immutable accepted-size amendment, then pass it to preparation:
+
+```sh
+python3 tools/adaptive_gradient_tournament.py route-accepted \
+  --plan artifacts/plan.json --maps artifacts/maps.json \
+  --output artifacts/actual-routing.json
+```
+
+Use `adaptive_gradient_tournament.py prepare --help` to prepare one role, with
+`--routing-amendment artifacts/actual-routing.json`.
 Exploration defaults to per-field intervals 8,16,32,64,128,256,512,1024,4096,
 assigned from a per-game seed and the entire stable field key. Fields in a game do
 not all receive the same interval. The new candidate role remains unavailable

@@ -104,13 +104,33 @@ def freeze_splits(maps,registry):
  atomic_json(path,value)
  return dict(registry=str(path),sha256=d.file_hash(path),maps=len(assignments),prior_assignments_preserved=True)
 
+def accepted_routing(document,maps):
+ """Mechanical post-generation setup amendment; never changes roles or maps."""
+ mode=validate_plan(document);records=maps.get('maps',maps) if isinstance(maps,dict) else maps
+ slots={r['group']:r for r in document['unified']['slots']};index={r['group']:r for r in records}
+ if len(index)!=256 or len(records)!=256 or set(index)!=set(slots):raise ValueError('Actual routing requires every unique frozen planned slot')
+ ranked=sorted(records,key=lambda r:(r['spec']['width']*r['spec']['height']*r['spec']['players'],r['group']));assignment=[]
+ for i,record in enumerate(ranked):
+  slot=slots[record['group']];actual=record['spec'];planned=slot['spec']
+  base_spec={k:v for k,v in planned.items() if k!='map_candidates'}
+  if actual not in [base_spec,*[dict(base_spec,**v) for v in planned.get('map_candidates',[])]]:raise ValueError('Actual map was not a frozen planned candidate')
+  if record.get('planned_spec_sha256',digest(planned))!=digest(planned):raise ValueError('Accepted planned-slot provenance changed')
+  for key in ('format','players','alliances','ais','ai','game_seed'):
+   if actual.get(key)!=planned.get(key):raise ValueError('Accepted routing cannot change gameplay identity')
+  attempts=record.get('generation_attempts',[])
+  assignment.append(dict(group=record['group'],role=slot['role'],original_pool=slot['pool'],actual_pool=pool_for_rank(i,mode),planned_dimensions=[planned['width'],planned['height']],actual_dimensions=[actual['width'],actual['height']],actual_size=actual['width']*actual['height']*actual['players'],map_sha256=record['sha256'],actual_spec_sha256=digest(actual),generation_attempts_sha256=digest(attempts),fallback_rejections=sum(r['returncode']!=0 for r in attempts),fallback_reason='predeclared-generation-rejection' if len(attempts)>1 else 'none'))
+ return dict(schema=1,rule='actual-area*players-then-frozen-planned-group-v1',phase='post-generation-before-any-simulation-outcomes',routing_mode=mode,planned_plan_sha256=digest(document),accepted_maps_sha256=digest(records),roles_maps_seeds_unchanged=True,role_pools={role:dict(collections.Counter(r['actual_pool'] for r in assignment if r['role']==role)) for role in ('exploration','candidate')},assignments=assignment)
+
 def prepare(a):
  if not 0<=a.seed<=2**32-1:raise ValueError('Bootstrap assignment seed must be uint32')
  document=json.loads(Path(a.plan).read_text());validate_plan(document);slots=[r for r in document['unified']['slots'] if r['role']==a.role]
  if document['unified']['contract']!=collector.CONTRACT or len(slots)!=128 or set(collections.Counter(r['spec']['format'] for r in slots).values())!={16}:raise ValueError('Frozen exact unified256plan required')
  if not Path(a.split_registry).exists():raise ValueError('Freeze the persistent split registry before preparing collection')
  registry=json.loads(Path(a.split_registry).read_text())['assignments']
- maps=json.loads(Path(a.maps).read_text());maps=maps.get('maps',maps) if isinstance(maps,dict) else maps;index={r['group']:r for r in maps};supplied=[inspect_bundle(p) for p in a.bundle];modelhash={b['build_options'].get('model_sha256') for b in supplied};headerhash={b['build_options'].get('header_sha256') for b in supplied}
+ maps=json.loads(Path(a.maps).read_text());amendment=json.loads(Path(a.routing_amendment).read_text()) if a.routing_amendment else None
+ if amendment is not None and amendment!=accepted_routing(document,maps):raise ValueError('Actual-size routing amendment differs from frozen maps/roles')
+ effective={r['group']:r for r in amendment['assignments']} if amendment else {}
+ maps=maps.get('maps',maps) if isinstance(maps,dict) else maps;index={r['group']:r for r in maps};supplied=[inspect_bundle(p) for p in a.bundle];modelhash={b['build_options'].get('model_sha256') for b in supplied};headerhash={b['build_options'].get('header_sha256') for b in supplied}
  if len(modelhash)!=1 or len(headerhash)!=1 or None in modelhash|headerhash:raise ValueError('Pin common actual model/header in all bundles')
  if a.role=='candidate' and a.intervals:raise ValueError('Candidate role cannot silently use a fixed exploration override')
  intervals=(a.intervals or '8,16,32,64,128,256,512,1024,4096') if a.role=='exploration' else ''
@@ -124,15 +144,20 @@ def prepare(a):
  for row in slots:
   item=copy.deepcopy(index[row['group']]);item['cohort']=cohort
   if map_identity(item['spec']) not in registry:raise ValueError('Map split was not frozen before collection')
-  b=next((b for b in supplied if b['build_options'].get('execution_pool')==row['pool']),None)
+  pool=effective[row['group']]['actual_pool'] if effective else row['pool']
+  b=next((b for b in supplied if b['build_options'].get('execution_pool')==pool),None)
   if not b:raise ValueError('Missing predeclared pool bundle')
   item['build']=b['id'];selected.append(item)
- subplan=dict(games=[r['spec'] for r in sorted(slots,key=lambda r:(-r['spec']['width']*r['spec']['height']*r['spec']['players'],r['group']))])
+ subplan=dict(games=[r['spec'] for r in sorted(slots,key=lambda r:(-index[r['group']]['spec']['width']*index[r['group']]['spec']['height']*index[r['group']]['spec']['players'],r['group']))])
  manifest=make_experiment(subplan,selected,supplied,cohort,ticks=90000,timeout_seconds=1800);manifest['settings']['process_attempts']=1
  manifest['unified_routing']=copy.deepcopy(document['unified']['routing'])
+ if amendment is not None:manifest['unified_actual_routing']=copy.deepcopy(amendment)
  for job in manifest['jobs']:
   job['labels']['resource_gradient']['persistent_split_registry_sha256']=d.file_hash(a.split_registry)
   job['labels']['resource_gradient']['routing']=copy.deepcopy(document['unified']['routing'])
+  if amendment is not None:
+   job['labels']['resource_gradient']['actual_routing']=copy.deepcopy(effective[job['id']])
+   job['labels']['resource_gradient']['actual_routing_sha256']=digest(amendment)
  for record in selected:
   if store_artifact(record['path'],Path(a.output)/'artifacts',compress=False)['sha256']!=record['sha256']:raise ValueError('Frozen map changed')
  c=Coordinator.submit(a.output,manifest,a.bundle)
@@ -142,10 +167,15 @@ def prepare(a):
 
 def main():
  p=argparse.ArgumentParser();sub=p.add_subparsers(dest='command',required=True);q=sub.add_parser('plan');q.add_argument('--catalog',required=True);q.add_argument('--seed',type=int,required=True);q.add_argument('--routing',choices=sorted(ROUTING),default='remote-only');q.add_argument('--output',required=True)
- q=sub.add_parser('prepare');q.add_argument('--plan',required=True);q.add_argument('--split-registry',required=True);q.add_argument('--maps',required=True);q.add_argument('--bundle',action='append',required=True);q.add_argument('--role',choices=['exploration','candidate'],required=True);q.add_argument('--cohort',required=True);q.add_argument('--seed',type=int,default=181101);q.add_argument('--intervals');q.add_argument('--output',required=True)
+ q=sub.add_parser('prepare');q.add_argument('--plan',required=True);q.add_argument('--split-registry',required=True);q.add_argument('--maps',required=True);q.add_argument('--bundle',action='append',required=True);q.add_argument('--routing-amendment');q.add_argument('--role',choices=['exploration','candidate'],required=True);q.add_argument('--cohort',required=True);q.add_argument('--seed',type=int,default=181101);q.add_argument('--intervals');q.add_argument('--output',required=True)
+ q=sub.add_parser('route-accepted');q.add_argument('--plan',required=True);q.add_argument('--maps',required=True);q.add_argument('--output',required=True)
  q=sub.add_parser('freeze-splits');q.add_argument('--maps',required=True);q.add_argument('--split-registry',required=True)
  a=p.parse_args()
- if a.command=='freeze-splits':print(json.dumps(freeze_splits(json.loads(Path(a.maps).read_text()),a.split_registry),indent=2))
+ if a.command=='route-accepted':
+  value=accepted_routing(json.loads(Path(a.plan).read_text()),json.loads(Path(a.maps).read_text()));target=Path(a.output)
+  if target.exists() and json.loads(target.read_text())!=value:raise ValueError('Refusing to replace frozen routing amendment')
+  atomic_json(target,value)
+ elif a.command=='freeze-splits':print(json.dumps(freeze_splits(json.loads(Path(a.maps).read_text()),a.split_registry),indent=2))
  elif a.command=='plan':atomic_json(a.output,plan(json.loads(Path(a.catalog).read_text()),a.seed,a.routing))
  else:print(json.dumps(prepare(a),indent=2))
 if __name__=='__main__':main()

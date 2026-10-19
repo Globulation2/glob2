@@ -120,6 +120,22 @@ class UnifiedTournamentTests(unittest.TestCase):
   mac['unified']['routing']['mode']='remote-only'
   with self.assertRaisesRegex(ValueError,'routing'):validate_plan(mac)
 
+class ActualRoutingTests(unittest.TestCase):
+ def test_actual_size_amendment_is_mechanical_and_preserves_every_role_and_seed(self):
+  from tools.adaptive_gradient_tournament import plan,accepted_routing
+  from tools.test_resource_gradient_tournament import catalog
+  from collections import Counter
+  document=plan(catalog(),181101,'with-mac');slots=document['unified']['slots'];records=[dict(group=r['group'],spec={k:v for k,v in r['spec'].items() if k!='map_candidates'},sha256='a'*64,generation_attempts=[]) for r in slots]
+  records[0]['spec'].update(slots[0]['spec']['map_candidates'][0]);records[0]['generation_attempts']=[dict(returncode=2),dict(returncode=0)]
+  frozen=copy.deepcopy(records);result=accepted_routing(document,records);self.assertEqual(records,frozen)
+  self.assertEqual(Counter(r['actual_pool'] for r in result['assignments']),{'small-pharaoh':32,'middle-linux':192,'large-mac':32})
+  original={r['group']:r['role'] for r in slots};self.assertEqual({r['group']:r['role'] for r in result['assignments']},original)
+  self.assertTrue(result['roles_maps_seeds_unchanged']);self.assertEqual(result,accepted_routing(document,records))
+  self.assertTrue(any(r['fallback_rejections']==1 for r in result['assignments']))
+  with self.assertRaises(ValueError):accepted_routing(document,records[:-1]+[records[0]])
+  records[0]['spec']['width']=1
+  with self.assertRaisesRegex(ValueError,'planned candidate'):accepted_routing(document,records)
+
 class UnifiedSplitTests(unittest.TestCase):
  def test_map_only_split_assignment_preserves_historical_exclusions(self):
   from tools.adaptive_gradient_tournament import freeze_splits
