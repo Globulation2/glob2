@@ -203,6 +203,149 @@ Scheduling/state changes require save/load, thread/platform checksum and
 simulation/replay compatibility checks. Later coefficient-only rounds retain the
 same numerical/contract gates and the agreed focused validation workflow.
 
+### One-command research campaign
+
+The permanent driver connects the components above. It uses the ordinary
+tournament coordinator for all games and accepts explicit build/qualification
+and optional remote-fit adapters:
+
+```sh
+python3 tools/adaptive_gradient_campaign.py run \
+  --config artifacts/campaign-config.json --directory artifacts/campaign
+```
+
+The same command resumes the same directory. It freezes configuration, tool and
+worker identities, bundle manifests, maps, historical split assignments and
+stage outputs. Changed inputs fail rather than silently starting another cohort.
+A campaign lock prevents duplicate drivers. Use `status --directory
+artifacts/campaign` to read its ledger. Each configured round has 256 preselected
+slots: 128 exploration and 128 candidate, 16 of each role per format. Games retain
+the frozen 1,800-second cap and one attempt; the driver never retries capped
+games. It waits for every slot, preserves complete horizons from censored games,
+and stops on unresolved slots or non-cap failures before fitting.
+
+For example, a configuration using already generated maps is:
+
+```json
+{
+  "schema": 1,
+  "catalog": "catalog.json",
+  "bootstrap_bundles": ["bundles/small-id", "bundles/linux-id", "bundles/mac-id"],
+  "hosts": "hosts.json",
+  "host_pools": {
+    "pharaoh-1": ["small-pharaoh"],
+    "pharaoh-2": ["small-pharaoh"],
+    "rig": ["middle-linux"],
+    "dev": ["middle-linux"],
+    "mac": ["large-mac"]
+  },
+  "routing": "with-mac",
+  "split_registry": "historical-map-splits.json",
+  "expected_families": ["materials", "guard", "clear", "forbidden"],
+  "rounds": [{"seed": 181101, "accepted_maps": "accepted-maps.json"}],
+  "build_hook": {
+    "argv": ["python3", "build-research-candidate.py", "{request}", "{receipt}"],
+    "inputs": ["build-research-candidate.py"]
+  }
+}
+```
+
+Paths are relative to the configuration file, except bundle paths returned by
+hooks, which must be absolute. Host names match the ordinary coordinator host
+file; its CPU budgets, worker directories, transport and runtime environment
+remain explicit. Unlike the general coordinator's optional discovery, every
+campaign host entry must declare `"platform": {"os": "linux", "arch": "x86_64"}`
+(or its actual platform, such as `darwin`/`arm64`). This is validated before any
+plan or jobs are created. The driver derives the current bundle allowlists from these
+pool assignments. Supply qualified immutable bootstrap bundles for every
+required platform/pool. Bootstrap bundles are checked up front for ordinary O3
+release flags, exact model/collector contracts and common source/model/header
+identities. They may explicitly contain an untrained model for positive fixed
+exploration intervals; development, PCH and unity builds are rejected.
+Existing accepted maps must match the deterministic plan for that seed,
+including original slot groups and predeclared fallbacks. Alternatively omit
+`accepted_maps` and supply `map_generator_bundle`: one immutable runtime used for
+central sequential pure-map generation. Only explicit generation rejections use
+the existing fallback list; crashes and timeouts stop. Accepted maps and their
+receipts are resumable. The driver appends every predeclared fallback identity
+before generation, retains historical exclusions, and writes per-round registry
+copies without modifying the supplied historical registry.
+
+Optional `prior_manifests` supplies compatible sealed cumulative data; old
+resource-only contracts remain forbidden. `intervals` changes the explicitly
+fixed exploration mixture; candidate games never get that override.
+`spatial_analysis: true` adds the separate research comparison after cumulative
+fitting. Missing-family requirements never silently relax: the declared family
+scope goes into every fit and its provenance.
+
+The sequence is exploration collection/export, cumulative generic fit and
+candidate emission, external build/qualification, reserved candidate collection,
+then cumulative fit/emission including both roles. Further entries in `rounds`
+repeat this sequence with new frozen seeds and cumulative compatible data.
+Final JSON/header files are staged research outputs reported in `campaign.json`;
+they are not silently installed as the stable model. Candidate installation and
+ordinary compilation occur only through the explicit hook. Stable promotion,
+commits and pull-request actions remain separate. No cross-platform build system
+or source-version editor is hidden inside this driver.
+
+Hooks are trusted **argv arrays**, executed synchronously without a shell. Both
+`{request}` and `{receipt}` placeholders are required; `{directory}` is also
+available. Declare adapter/script inputs so changing them invalidates resume.
+They must finish their work and write a JSON receipt, not detach background
+jobs. Logs and the actual argv stay beside each request. Every receipt includes
+`request_sha256`, the SHA-256 of the exact request file. Reusing a receipt from
+different data or coefficients fails. A receipt alone never establishes success:
+the driver records a request/receipt/argv-bound success marker only after a
+zero child exit. A remaining running-attempt record or a receipt without that
+marker blocks resume, even if its recorded PID is no longer present. Inspect
+the adapter and preserve its attempt evidence before explicit recovery; PID
+reuse or a partially written receipt must not authorize another build or games.
+
+By default fitting runs locally through the permanent fitter. For Rig execution,
+provide `fit_hook` with the same argv/input shape. Its request pins manifests and
+their hashes, registry and hash, family scope, contract and the required local
+research-model output path. The adapter transfers immutable inputs, invokes
+`adaptive_gradient_model.py fit`, and returns the model to that path. Its receipt
+has `status: "fit-complete"` and `model_sha256`. Preserve requested manifest and
+registry identities in the returned model provenance, recording any remote path
+mapping in the adapter evidence. In particular, verify every transferred episode
+against its sealed manifest hash, retain the remote input/hash inventory and
+original-to-remote path mapping in the receipt, and map provenance back to the
+canonical requested identities without changing their hashes. A supplied remote
+adapter needs its own integration verification; the driver's mocked orchestration
+tests do not establish remote transfer correctness. The driver verifies the
+requested identities before
+emission; a command that merely returns a plausible model is insufficient.
+
+The build request pins the emitted JSON/header paths and hashes plus the
+collector contract. The adapter applies the research coefficients in its own
+checkout, performs the required simulation/version/golden updates and ordinary
+build, runs the appropriate lightweight numerical/determinism gates, and
+registers immutable bundles with the permanent bundler. It returns:
+
+```json
+{
+  "request_sha256": "request-file-sha256",
+  "status": "qualified-research",
+  "stable_promotion": false,
+  "model_sha256": "emitted-model-sha256",
+  "header_sha256": "emitted-header-sha256",
+  "collector_contract_sha256": "canonical-collector-contract-sha256",
+  "checks": {"integer_parity": true, "determinism_smoke": true, "simulation_gates": true},
+  "bundles": ["/absolute/qualified/bundle-id"],
+  "binaries": [{"binary_sha256": "actual-elf-or-mach-o-sha256", "source_revision": "actual-source-sha", "platform": {"os": "linux", "arch": "x86_64"}}]
+}
+```
+
+Supply every needed bundle and actual binary, not only the illustrative Linux
+entry. Each bundle must pin the same source/model/header/collector, ordinary
+release flags, execution pool and `unified_model_trained: true`. The driver checks
+their actual files and qualification identities before candidate admission.
+Adapter implementation is an explicit environment-specific boundary: a config
+with missing adapters is not a self-contained build recipe. The driver and its
+focused mocked orchestration tests can be verified without starting games;
+adopting a live campaign or replacing its frozen tools is deliberately excluded.
+
 ## Spatial seed-overlap research
 
 The spatial-h128-v3 collector extends the dataset, independently of the 12-input
