@@ -1,0 +1,58 @@
+{
+  "all_equal": true,
+  "source_revision": "6d9fcfc34f4bf154d462869c578c72424db8a49a",
+  "pairs": [
+    {
+      "run": "t1-probeoff",
+      "simulation_hashes_equal": true
+    },
+    {
+      "run": "t1-probeon",
+      "simulation_hashes_equal": true
+    },
+    {
+      "run": "t4-probeon",
+      "simulation_hashes_equal": true
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484"
+    },
+    {
+      "run": "t1-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "45ad37afca6271faaa0db7514acf5070a87df7cad356bf6557f4b3211a3d1109"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-episodes.csv",
+      "sha256": "593c53c795eedcc652fc531829e57aca5890bb9d2206c488696b0ab64b1abda8"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-quality.csv",
+      "sha256": "6c5f1447237b9ea97bec8be669e542a9f802de7d5976d38ddf33dc50540f20ad"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-planning-quality.csv",
+      "sha256": "c24c22d769bcf2fa1cfdf5be2c1cfe22b2a6d7171c8cfe1da5b4e3cfda920484"
+    },
+    {
+      "run": "t4-probeon",
+      "file": "gradient-contradictions.csv",
+      "sha256": "45ad37afca6271faaa0db7514acf5070a87df7cad356bf6557f4b3211a3d1109"
+    }
+  ]
+}

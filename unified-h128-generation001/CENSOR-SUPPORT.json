@@ -1,0 +1,87 @@
+{
+  "format": {
+    "16ffa": {
+      "user-censored": 14,
+      "completed": 2
+    },
+    "1v1": {
+      "user-censored": 3,
+      "completed": 13
+    },
+    "2v2": {
+      "user-censored": 8,
+      "completed": 8
+    },
+    "3ffa": {
+      "completed": 9,
+      "user-censored": 7
+    },
+    "4ffa": {
+      "user-censored": 6,
+      "completed": 10
+    },
+    "4v4": {
+      "user-censored": 11,
+      "completed": 5
+    },
+    "8ffa": {
+      "user-censored": 13,
+      "completed": 3
+    },
+    "8v8": {
+      "user-censored": 13,
+      "completed": 3
+    }
+  },
+  "dimensions": {
+    "128x128": {
+      "completed": 10
+    },
+    "128x256": {
+      "completed": 12,
+      "user-censored": 3
+    },
+    "128x64": {
+      "completed": 8
+    },
+    "256x128": {
+      "completed": 9,
+      "user-censored": 7
+    },
+    "256x256": {
+      "user-censored": 16,
+      "completed": 5
+    },
+    "256x512": {
+      "user-censored": 17,
+      "completed": 1
+    },
+    "512x256": {
+      "user-censored": 13,
+      "completed": 2
+    },
+    "512x512": {
+      "user-censored": 19,
+      "completed": 1
+    },
+    "64x128": {
+      "completed": 3
+    },
+    "64x64": {
+      "completed": 2
+    }
+  },
+  "actual_pool": {
+    "large-mac": {
+      "user-censored": 15,
+      "completed": 2
+    },
+    "middle-linux": {
+      "user-censored": 60,
+      "completed": 38
+    },
+    "small-pharaoh": {
+      "completed": 13
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "source_revision": "6d9fcfc34f4bf154d462869c578c72424db8a49a",
+  "host": "devlaptop.local",
+  "files": {
+    "glob2": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/frozen/glob2",
+      "sha256": "46cbeb1d4250189fac9174247eb72aec23af62d3a558e051cb307154047a53dd"
+    },
+    "adaptive-gradient.json": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/frozen/adaptive-gradient.json",
+      "sha256": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070"
+    },
+    "AdaptiveGradientModel.h": {
+      "path": "/home/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/frozen/AdaptiveGradientModel.h",
+      "sha256": "7a753bad31d85b82e6fe12b8116c5ccb55b83dd063ccad8bbea2c680047e17bf"
+    }
+  },
+  "ordinary_release": true,
+  "model_trained": true,
+  "research_candidate_only": true,
+  "created_utc": "2026-10-19T05:01:43.119312+00:00"
+}

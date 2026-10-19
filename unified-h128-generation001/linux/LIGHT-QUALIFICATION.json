@@ -1,0 +1,45 @@
+{
+  "source_revision": "6d9fcfc34f4bf154d462869c578c72424db8a49a",
+  "scope": "coefficient-only main build, actual integer bounds/parity, bounded3runadaptiveobserver/thread/platform smoke; research candidate only",
+  "ordinary_release": true,
+  "model_trained": true,
+  "stable_promotion": false,
+  "binary_sha256": "46cbeb1d4250189fac9174247eb72aec23af62d3a558e051cb307154047a53dd",
+  "model_sha256": "276709fe73052e88132f713184a08dcdb8eb5db3bc6ce79450d4afbc99464070",
+  "header_sha256": "7a753bad31d85b82e6fe12b8116c5ccb55b83dd063ccad8bbea2c680047e17bf",
+  "checks": {
+    "main_build": true,
+    "integer_bounds_parity_530_ubsan": true,
+    "adaptive_no_fixed_interval_override": true,
+    "probe_off_on_threads_1_4": true,
+    "mac_linux_world_and_finalsave": true,
+    "on_thread_diagnostic_csv_exact": true
+  },
+  "bundles": {
+    "middle-linux": "f21ce2ec28ee8c8209323bb623fe1f2911b3ce89dc0b975c172d14ec23b7be9d",
+    "small-pharaoh": "537ec10276b2a6c7591a3158fe87eb5462cc1a3765df0db2267dacc57e3d03c3"
+  },
+  "receipts": [
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/PARITY.json",
+      "sha256": "34d7cf32a4d2ee5d8a0c23c7f3a1eb6b695b9e494a774db48aa9f7f7fff109cc"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/FROZEN.json",
+      "sha256": "ca641065238df114baff0e60af60f38f0e4dec520de2cfef01b563489a9a03dc"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux/build-status.json",
+      "sha256": "ac6f7c26b088165456e68ab46f9bf34ddd1d2771e7149a47754e8c43a5e07d6c"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/runtime-linux/status.json",
+      "sha256": "8c140b3c52b470042b73964aaf1892073a5433df89cdedb0003f68d0603f52dc"
+    },
+    {
+      "path": "/Users/bradley/glob2/artifacts/gradient-unified-20261019/round-001/candidate-gen001/linux-bundles.json",
+      "sha256": "e4cc5b05a760da02d3d88103edbdc5bffe83cba5b0f343872a855a215c43e691"
+    }
+  ],
+  "updated_utc": "2026-10-19T05:03:51.583838+00:00"
+}
