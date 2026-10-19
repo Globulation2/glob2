@@ -43,7 +43,7 @@ All rates use observed queries during ticks16640–24831, excluding256 settling 
 | 8ffa | fixed32 | 1491 | 0.816 | 2.414% | 0.335% | 2.012% | 1786 | 0.336% | 2.912% |
 | 8ffa | fixed128 | 1905 | 0.994 | 2.677% | 0.682% | 2.257% | 2746 | 0.364% | 3.168% |
 
-Adaptive16 saves9.39% CPU versus demanded fixed32 on this panel, while extra direction cost/query and stall rate are worse on both states. Fixed8 costs more and improves several errors, with mixed direction quality across states. Fixed128 is near CPU parity with Adaptive16 (Adaptive16 +0.77%) and direction quality is mixed. This is a tradeoff, not evidence of adaptive dominance or an assignable learned share of the whole-branch CPU gain.
+Adaptive16 saves9.39% CPU versus demanded fixed32 on this panel, while extra direction cost/query and stall rate are worse on both states. Fixed8 costs more and lowers extra direction cost on both states; stall and planning-error comparisons remain mixed. Fixed128 is near CPU parity with Adaptive16 (Adaptive16 +0.77%) and direction quality is mixed. This is a tradeoff, not evidence of adaptive dominance or an assignable learned share of the whole-branch CPU gain.
 
 ## Class-gate diagnostics
 
