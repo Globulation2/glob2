@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Balanced all-family bootstrap plans using the ordinary tournament coordinator."""
+import argparse,collections,copy,json
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+from tools.resource_gradient_tournament import sample_plan,digest,map_identity
+from tools import adaptive_gradient_spatial as collector
+from tools import adaptive_gradient_dataset as d
+from tools.resource_gradient_experiments import exploration_seed_for_game
+from tools.resource_gradient_distributed import make_experiment
+from tools.tournaments.coordinator import Coordinator
+from tools.tournaments.common import store_artifact
+from tools.tournaments.bundles import inspect_bundle
+from tools.tournaments.common import atomic_json
+
+ADAPTIVE_POLICY=dict(minimum_interval=8,forced_age_cap=None,publication_delay=8,cold_initialization=True,reactive_refresh=True,history_initialization=True,threshold_milli=128000,horizon_ticks=128)
+
+ROUTING = {
+ 'remote-only': dict(small=32,middle=224,large=0,description='Pharaoh small32; Rig/dev all remaining224; Mac paused'),
+ 'with-mac': dict(small=32,middle=192,large=32,description='Pharaoh small32; Rig/dev middle192; Mac largest32'),
+}
+
+def pool_for_rank(rank,routing):
+ if routing not in ROUTING:raise ValueError('Unknown pre-outcome execution routing')
+ return 'small-pharaoh' if rank<32 else 'large-mac' if routing=='with-mac' and rank>=224 else 'middle-linux'
+
+def validate_plan(document):
+ unified=document.get('unified',{});routing=unified.get('routing',{})
+ mode=routing.get('mode')
+ if mode not in ROUTING or routing!={'mode':mode,**ROUTING[mode],'order':'descending area*players,then planned group within each pool'}:raise ValueError('Unknown or changed frozen routing provenance')
+ slots=unified.get('slots',[])
+ if len(slots)!=256 or len({r['group'] for r in slots})!=256:raise ValueError('Frozen256 unique slots required')
+ ranked=sorted(slots,key=lambda r:(r['spec']['width']*r['spec']['height']*r['spec']['players'],digest(r['spec'])))
+ for i,row in enumerate(ranked):
+  if row['group']!=digest(row['spec'])[:16] or row['pool']!=pool_for_rank(i,mode):raise ValueError('Slot differs from pre-outcome routing')
+ if unified.get('contract')!=collector.CONTRACT:raise ValueError('Exact unified contract required')
+ if (unified.get('ticks'),unified.get('timeout_seconds'),unified.get('process_attempts'))!=(90000,1800,1):raise ValueError('Frozen collection limits changed')
+ for fmt in {r['spec']['format'] for r in slots}:
+  by_hash=sorted([r for r in slots if r['spec']['format']==fmt],key=lambda r:digest(r['spec']))
+  if len(by_hash)!=32 or any(r['role']!=('exploration' if i<16 else 'candidate') for i,r in enumerate(by_hash)):raise ValueError('Pre-outcome role assignment changed')
+ for role in ('exploration','candidate'):
+  chosen=[r for r in slots if r['role']==role]
+  if len(chosen)!=128 or len(collections.Counter(r['spec']['format'] for r in chosen))!=8 or set(collections.Counter(r['spec']['format'] for r in chosen).values())!={16}:raise ValueError('128 slots and16 performat required for each role')
+ return mode
+
+def plan(catalog,seed,routing='remote-only'):
+ if routing not in ROUTING:raise ValueError('Unknown pre-outcome execution routing')
+ value=sample_plan(catalog,256,seed);roles={}
+ for fmt in sorted({s['format'] for s in value['games']}):
+  group=sorted([s for s in value['games'] if s['format']==fmt],key=digest)
+  if len(group)!=32:raise ValueError('256game balanced eight-format plan required')
+  for i,spec in enumerate(group):roles[digest(spec)[:16]]='exploration' if i<16 else 'candidate'
+ ranked=sorted(value['games'],key=lambda s:(s['width']*s['height']*s['players'],digest(s)))
+ slots=[]
+ for i,s in enumerate(ranked):slots.append(dict(group=digest(s)[:16],role=roles[digest(s)[:16]],pool=pool_for_rank(i,routing),spec=s))
+ value['unified']=dict(contract=collector.CONTRACT,assignment='first16hashslots/format exploration,remaining16candidate; pools frozen by area*players before outcomes',routing=dict(mode=routing,**ROUTING[routing],order='descending area*players,then planned group within each pool'),ticks=90000,timeout_seconds=1800,process_attempts=1,slots=slots)
+ validate_plan(value)
+ return value
+
+def freeze_splits(maps,registry):
+ """Append map-only assignments before admission, preserving every old exclusion."""
+ import hashlib
+ path=Path(registry)
+ if not path.exists():raise ValueError('Start from the persistent registry containing prior held-out exclusions')
+ value=json.loads(path.read_text())
+ if value.get('schema')!=1 or value.get('strategy')!='map-hash-713-v1':raise ValueError('Unknown persistent split registry')
+ assignments=value['assignments']
+ if not isinstance(assignments,dict) or any(not isinstance(k,str) or type(v)is not int or v not in (-1,0,1,2) for k,v in assignments.items()):raise ValueError('Invalid persistent map assignments')
+ records=maps.get('maps',maps) if isinstance(maps,dict) else maps
+ for record in records:
+  group=map_identity(record['spec'])
+  if group not in assignments:
+   code=int(hashlib.sha256(('resource-gradient-split-713:'+group).encode()).hexdigest(),16)
+   assignments[group]=-1 if code%4==0 else (code//4)%3
+ atomic_json(path,value)
+ return dict(registry=str(path),sha256=d.file_hash(path),maps=len(assignments),prior_assignments_preserved=True)
+
+def prepare(a):
+ if not 0<=a.seed<=2**32-1:raise ValueError('Bootstrap assignment seed must be uint32')
+ document=json.loads(Path(a.plan).read_text());validate_plan(document);slots=[r for r in document['unified']['slots'] if r['role']==a.role]
+ if document['unified']['contract']!=collector.CONTRACT or len(slots)!=128 or set(collections.Counter(r['spec']['format'] for r in slots).values())!={16}:raise ValueError('Frozen exact unified256plan required')
+ if not Path(a.split_registry).exists():raise ValueError('Freeze the persistent split registry before preparing collection')
+ registry=json.loads(Path(a.split_registry).read_text())['assignments']
+ maps=json.loads(Path(a.maps).read_text());maps=maps.get('maps',maps) if isinstance(maps,dict) else maps;index={r['group']:r for r in maps};supplied=[inspect_bundle(p) for p in a.bundle];modelhash={b['build_options'].get('model_sha256') for b in supplied};headerhash={b['build_options'].get('header_sha256') for b in supplied}
+ if len(modelhash)!=1 or len(headerhash)!=1 or None in modelhash|headerhash:raise ValueError('Pin common actual model/header in all bundles')
+ if a.role=='candidate' and a.intervals:raise ValueError('Candidate role cannot silently use a fixed exploration override')
+ intervals=(a.intervals or '8,16,32,64,128,256,512,1024,4096') if a.role=='exploration' else ''
+ policy=dict(**ADAPTIVE_POLICY,name='all-family-fixed-interval-bootstrap' if a.role=='exploration' else 'unified-adaptive128',model_sha256=next(iter(modelhash)),seed=a.seed,intervals=[int(x) for x in intervals.split(',')] if intervals else [])
+ if a.role=='exploration' and (not policy['intervals'] or 0 in policy['intervals']):raise ValueError('Bootstrap requires explicit nonzero all-family intervals; no legacy adaptive0 fallback')
+ if a.role=='candidate':
+  for b in supplied:
+   if not b['build_options'].get('unified_model_trained'):raise ValueError('An untrained placeholder cannot launch a candidate cohort')
+ cohort=dict(id=a.cohort,role=a.role,policy=policy,header_sha256=next(iter(headerhash)),contract=collector.CONTRACT)
+ selected=[]
+ for row in slots:
+  item=copy.deepcopy(index[row['group']]);item['cohort']=cohort
+  if map_identity(item['spec']) not in registry:raise ValueError('Map split was not frozen before collection')
+  b=next((b for b in supplied if b['build_options'].get('execution_pool')==row['pool']),None)
+  if not b:raise ValueError('Missing predeclared pool bundle')
+  item['build']=b['id'];selected.append(item)
+ subplan=dict(games=[r['spec'] for r in sorted(slots,key=lambda r:(-r['spec']['width']*r['spec']['height']*r['spec']['players'],r['group']))])
+ manifest=make_experiment(subplan,selected,supplied,cohort,ticks=90000,timeout_seconds=1800);manifest['settings']['process_attempts']=1
+ manifest['unified_routing']=copy.deepcopy(document['unified']['routing'])
+ for job in manifest['jobs']:
+  job['labels']['resource_gradient']['persistent_split_registry_sha256']=d.file_hash(a.split_registry)
+  job['labels']['resource_gradient']['routing']=copy.deepcopy(document['unified']['routing'])
+ for record in selected:
+  if store_artifact(record['path'],Path(a.output)/'artifacts',compress=False)['sha256']!=record['sha256']:raise ValueError('Frozen map changed')
+ c=Coordinator.submit(a.output,manifest,a.bundle)
+ try:return c.status()
+ finally:c.close()
+
+
+def main():
+ p=argparse.ArgumentParser();sub=p.add_subparsers(dest='command',required=True);q=sub.add_parser('plan');q.add_argument('--catalog',required=True);q.add_argument('--seed',type=int,required=True);q.add_argument('--routing',choices=sorted(ROUTING),default='remote-only');q.add_argument('--output',required=True)
+ q=sub.add_parser('prepare');q.add_argument('--plan',required=True);q.add_argument('--split-registry',required=True);q.add_argument('--maps',required=True);q.add_argument('--bundle',action='append',required=True);q.add_argument('--role',choices=['exploration','candidate'],required=True);q.add_argument('--cohort',required=True);q.add_argument('--seed',type=int,default=181101);q.add_argument('--intervals');q.add_argument('--output',required=True)
+ q=sub.add_parser('freeze-splits');q.add_argument('--maps',required=True);q.add_argument('--split-registry',required=True)
+ a=p.parse_args()
+ if a.command=='freeze-splits':print(json.dumps(freeze_splits(json.loads(Path(a.maps).read_text()),a.split_registry),indent=2))
+ elif a.command=='plan':atomic_json(a.output,plan(json.loads(Path(a.catalog).read_text()),a.seed,a.routing))
+ else:print(json.dumps(prepare(a),indent=2))
+if __name__=='__main__':main()

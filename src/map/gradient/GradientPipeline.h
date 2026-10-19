@@ -5,7 +5,7 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "SnapshotGradient.h"
 #include "ComputeExecutor.h"
-#include "ResourceGradientPolicy.h"
+#include "AdaptiveGradientState.h"
 #include "TeamCapacity.h"
 #include "UnitConsts.h"
 #include <algorithm>
@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <utility>
+#include <type_traits>
 #include <vector>
 
 // Owner reserves and publishes at fixed ticks. Workers own private outputs and
@@ -37,7 +38,11 @@ class GradientPipeline
 		bool superseded = false, done = false;
 		std::exception_ptr error;
 		gradient_preparation::Request request;
-        ResourceGradientPolicy::Capture capture;
+        std::optional<GradientFieldKey> adaptiveKey;
+        AdaptiveGradientState::Capture adaptiveCapture;
+        std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
+        bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
+        std::uint8_t workReason=255; // Observer-only, deliberately not persisted.
 		gradient_preparation::CrowdingScratch *crowding = nullptr;
 		ComputeExecutor::Batch batch;
 		GradientPipeline *owner = nullptr;
@@ -51,7 +56,10 @@ class GradientPipeline
 		const std::uint16_t *data;
 		unsigned remaining;
 		bool superseded;
-        ResourceGradientPolicy::Capture capture;
+        std::optional<GradientFieldKey> adaptiveKey;
+        AdaptiveGradientState::Capture adaptiveCapture;
+        std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
+        bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
 	};
 	struct RestoredSnapshot
 	{
@@ -60,14 +68,18 @@ class GradientPipeline
 		unsigned remaining;
 		bool superseded;
 		std::unique_ptr<std::uint16_t[]> data;
-        ResourceGradientPolicy::Capture capture;
+        std::optional<GradientFieldKey> adaptiveKey;
+        AdaptiveGradientState::Capture adaptiveCapture;
+        std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
+        bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
 		Job &, gradient_kernel::PlanDecision)>;
 	std::function<void(Job&)> onPublished;
+    std::function<void(Job&)> onSuperseded;
     // Warm natural ground jobs share the batch with one FIFO admission.
-    static constexpr unsigned MaxJobsPerTick = TEAM_MAX_COUNT * MaterialCount * SWIM_CLASS_COUNT + 1;
+    static constexpr unsigned MaxJobsPerTick = TEAM_MAX_COUNT * (2 * MaterialCount + 3) * MOVEMENT_CLASS_COUNT + 1;
     std::function<bool(std::uint16_t **)> validDestination;
 	std::function<std::uint64_t(unsigned)> deadline;
 	static constexpr unsigned MaxDelay = 16;
@@ -206,6 +218,7 @@ class GradientPipeline
 	unsigned workerCount() const { return executor ? executor->threadCount() - 1 : 0; }
 	unsigned delayTicks() const { return delay; }
 	std::size_t pendingCount() const { return pending.size(); }
+    bool canReserve() const { return enabled() && admitted<MaxJobsPerTick && pending.size()<delay*MaxJobsPerTick; }
 	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick})
 	{
 		for (auto &job : pending)
@@ -292,7 +305,7 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-									job->superseded, job->capture});
+									job->superseded, job->adaptiveKey,job->adaptiveCapture,job->preparedGoalCount,job->legacyAssociation});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
@@ -306,7 +319,7 @@ class GradientPipeline
 		job->due = tick + value.remaining;
 		job->superseded = value.superseded;
 		job->done = true;
-        job->capture = value.capture;
+        job->adaptiveKey=value.adaptiveKey;job->adaptiveCapture=value.adaptiveCapture;job->preparedGoalCount=value.preparedGoalCount;job->legacyAssociation=value.legacyAssociation;
 		job->data = std::move(value.data);
 		pending.push_back(std::move(job));
 	}
@@ -324,6 +337,7 @@ class GradientPipeline
 				auto *old = *job.slot;
 				*job.slot = job.data.release();
 				job.data.reset(old);
+                if(job.adaptiveKey) job.adaptiveCapture.goalCount=job.preparedGoalCount;
                 if (onPublished) onPublished(job);
 				++metrics.published;
 			}
@@ -337,15 +351,25 @@ class GradientPipeline
     { for (const auto& job:pending) visitor(job->slot, unsigned(job->due-tick), job->superseded); }
     // Metadata is owner-written before launch and immutable during worker work;
     // checksum inspection must never join jobs or inspect incomplete output.
-    template<class Visitor> void visitCaptures(Visitor visitor) const
-    { for (const auto& job:pending) visitor(job->slot,job->superseded,job->capture); }
+    template<class Identity> void associateLegacy(Identity identity)
+    { for(auto& job:pending) {job->adaptiveKey=identity(job->slot);job->adaptiveCapture={};job->preparedGoalCount=0;job->legacyAssociation=job->adaptiveKey.has_value();} }
+    template<class Visitor> void visitAdaptiveCaptures(Visitor visitor) const
+    { for (const auto& job:pending) if(job->adaptiveKey) {
+        if constexpr(std::is_invocable_v<Visitor,GradientFieldKey,bool,const AdaptiveGradientState::Capture&,bool>)
+            visitor(*job->adaptiveKey,job->superseded,job->adaptiveCapture,job->legacyAssociation);
+        else visitor(*job->adaptiveKey,job->superseded,job->adaptiveCapture);
+    } }
+    bool contains(GradientFieldKey key,const Job* except=nullptr) const
+    { return std::any_of(pending.begin(),pending.end(),[&](const auto& job){return job.get()!=except && !job->superseded && job->adaptiveKey==key;}); }
     template<class Visitor> void forEachDestination(Visitor visitor) const
     { for (const auto& job:pending) if (!job->superseded) visitor(job->slot); }
 	void invalidate(std::uint16_t **slot)
 	{
 		for (auto &job : pending)
-			if (job->slot == slot)
-				job->superseded = true;
+			if (job->slot == slot && !job->superseded) {
+                job->superseded=true;
+                if(onSuperseded)onSuperseded(*job);
+            }
 	}
 	Job *reserve(std::uint16_t **slot, int swim)
 	{
@@ -367,7 +391,7 @@ class GradientPipeline
         if (!job->data) job->data=std::make_unique_for_overwrite<std::uint16_t[]>(cells);
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
-		job->capture = {};
+        job->adaptiveKey.reset();job->adaptiveCapture={};job->preparedGoalCount=0;job->legacyAssociation=false;job->workReason=255;
         job->slot = slot;
 		job->swim = swim;
 		job->due = tick + delay;

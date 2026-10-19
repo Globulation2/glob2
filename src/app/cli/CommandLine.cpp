@@ -3,6 +3,7 @@
 #include "RecordingDefaults.h"
 #include "MapRender.h"
 #include "gradient/ResourceGradientExploration.h"
+#include "gradient/AdaptiveGradientModel.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -317,7 +318,12 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
-        if (r.has("--resource-gradient-exploration")) ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+        requireParent("--gradient-spatial-overlap", "--resource-gradient-probe");
+        if (r.has("--resource-gradient-exploration")) {
+            const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
+            if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
+                throw std::invalid_argument("Unified model is untrained; collection bootstrap requires explicit positive intervals");
+        }
         requireParent("--resource-gradient-exploration-seed", "--resource-gradient-exploration");
         requireParent("--resource-gradient-fork-field", "--load-game");
         requireParent("--resource-gradient-fork-field", "--resource-gradient-probe");
@@ -501,10 +507,12 @@ const std::vector<Command> &commands()
 					{"checksums", "team-timeline", "maxima"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
-			 flag("--resource-gradient-probe", "Write sampled natural-resource pathfinding quality comparisons"),
-             value("--resource-gradient-exploration", "intervals", "Headless collection: seeded per-field intervals, comma separated; 0=adaptive, others 8..65536"),
+			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             flag("--resource-gradient-probe", "Collect unified-gradient-spatial-h128-v3 quality for all periodic field families (historical flag alias)"),
+             choice("--gradient-spatial-overlap", "Enable patch diagnostics or disable only patch work for matched overhead measurements", {"on", "off"}),
+             value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals8..65536;0=adaptive only after unified model training"),
              integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),
-             integer("--resource-gradient-fork-field", "Saved warm natural-field key for one refresh-now/wait comparison", 0, 65535),
+             integer("--resource-gradient-fork-field", "Saved warm packed family/team/movement/material field key for a single refresh-now/wait comparison", 0, 2147483647),
              integer("--resource-gradient-fork-wait", "Wait before selected-field demanded refresh; baseline resumes after admission", 0, 65536),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
 			 integer("--diagnostic-interval", "Diagnostic interval in ticks", 1, 2147483647,

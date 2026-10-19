@@ -1,589 +1,229 @@
-# Adaptive resource-gradient model
+# Adaptive gradient scheduling and model collection
 
-Natural ground-resource fields use adaptive 32 in every match; air routing
-retains its existing refresh policy. `32` is the predicted
-avoided direction cost over a 32-tick episode, not a refresh interval. The
-scheduler consumes movement demand, admits a field no sooner than eight ticks
-since its previous submission, and admits demanded fields at 128 ticks even when
-the prediction is lower. Multiple accepted fields share one executor batch and
-publish after the configured fixed delay. Market, consumer-specific and area
-fields keep their existing mechanisms.
-Unreachable owner distance/availability answers also request upkeep, including a
-stale negative answer that would otherwise prevent recruitment. Successful
-planning reads are passive. They do not increment the
-movement-query features; the demanded 128-tick cap still guarantees a retry.
+Periodic material, shared-market, guard, clearing and forbidden-escape fields use
+one sparse demand policy. Building-specific and consumer-specific fields retain
+their lazy initialization/invalidation paths. Skipping one field does not cause
+another family to fill an executor slot. With no initialization, reactive request
+or accepted demanded refresh, no periodic work is submitted.
 
-## Training workflow
+A logical field key contains a stable family, team, movement class and optional
+material identity. Its publication carries the immutable capture tick, effective
+seed count and change epochs, movement-counter baseline and history-known flag.
+Requests made while a replacement is pending do not move its deadline. Published
+cells remain available until replacement publication, normally eight ticks after
+capture. Adaptive admissions retain an eight-tick minimum interval and have no forced
+maximum-age refresh. Age remains a model input; an idle or old field does not
+refresh solely because it aged. Demand is
+registered before cached-unreachable returns, so a new source or opened route
+can recover. Team aliveness is not a substitute for actual demand.
 
-`tools/resource_gradient_model.py` exposes the individual stages as subcommands.
-There is currently no single command that orchestrates collection, candidate
-builds, repeated retraining, evaluation and promotion end to end. Run the stages
-explicitly; candidate builds and acceptance remain coordinated by the operator.
+## Generic inference contract
 
-The collection policy determines which training situations can occur. A capped
-policy rarely produces old, heavily queried fields, and stale planning answers
-can prevent recruitment before any movement query occurs. Increasing the number
-of maps alone does not fill those gaps. Use this loop across model generations:
+`AdaptiveGradientFeatures.h` defines seven base inputs: serving-capture age,
+movement queries over 32 and 128 ticks, effective target tiles added/removed, and
+their Q12 fractions relative to the captured target count. Three cumulative
+since-capture counters add invalid-goal events, reachable required-travel queries
+that produced no move, and their movement-query denominator. Two Q12 event rates
+complete the 12 inputs. Rates use uncapped 64-bit counts before bounded count/log
+transforms. Family, material, map-generator and AI identities are diagnostic
+metadata, never model inputs.
 
-1. Freeze a varied tournament plan and collect an exploration cohort with a
-   mixture of demanded refresh intervals, including intervals beyond the current
-   production cap. Preserve its binary, collector sources, seeds and data.
-2. Audit actual coverage: inspect joint field age and movement demand, planning
-   failures, and representation by map generator, dimensions and match format.
-   Assigned intervals and completed-game counts alone do not establish support.
-3. Fit the integer model using compatible accumulated cohorts and the same
-   persistent map split registry. Reserve exploration weight as candidate-policy
-   cohorts accumulate; keep every map's holdout/fold assignment fixed.
-4. Build the candidate and evaluate complete games on held-out states. Measure
-   CPU with probing disabled and movement/planning quality in separate diagnostic
-   repeats. Use checkpoint interventions to investigate consequences that the
-   cheaper episode labels cannot establish.
-5. Collect another cohort under the candidate to expose the situations it creates.
-   Add those examples to the compatible exploration data, retrain, and repeat the
-   prospective comparison. Keep the incumbent unless the candidate meets the
-   performance and quality requirements, including subgroup failures and tails.
+The target semantics and decision threshold version independently of feature
+names. Models trained on the earlier 32-tick target are incompatible and their
+coefficients are not reused or rescaled. The common integer model predicts
+`P(help)*E(amount|help) - P(hurt)*E(amount|hurt)` using two logistic and two linear
+heads. Integer Q12 log/Q16 sigmoid interpolation, bounded accumulators and portable
+64-bit fraction division make inference deterministic. The threshold is
+128,000 milli direction-cost units. Generated coefficients live in
+`AdaptiveGradientModel.h`; `tools/models/adaptive-gradient.json` declares the
+matching contract and whether the model is trained.
 
-For later coefficient-only iterations that preserve the feature contract, counter
-mask, bookkeeping and scheduling, use a short validation path. Check dataset
-provenance and grouped splits, fit and quantize the model, verify integer bounds
-and prediction parity, then rebuild the ordinary release executable incrementally.
-Run a small deterministic smoke case across the collection platforms and required
-simulation/replay gates and goldens. Preserve the save-format floor; a replay
-acceptance change does not require dropping older saves.
+An untrained header is an explicit placeholder, not a mapped resource-only model.
+Ordinary execution retains cold/reactive/history initialization without a forced
+maximum-age refresh and without pretending that placeholder predictions
+establish adaptive quality. Collection bootstrapping requires explicit positive fixed intervals.
+Interval 0 is available only with a trained generic model. Engine promotion still
+requires total-compute and per-family quality evidence.
 
-Launch the next research collection while the longer interleaved CPU and quality
-comparisons run alongside it. Keep the stable incumbent until those results justify
-promotion. Repeat broad native, historical-save and platform suites when code,
-features, state layout or a new failure makes them relevant, rather than repeating
-them for every coefficient update. Frozen plans and cumulative grouped splits
-still apply to every generation.
+Target membership follows the actual seed predicates. Market seeds include
+eligible provider footprints and natural sources; guard membership is measured
+before crowding changes seed costs; clearing follows clear/farm/resource rules;
+forbidden destinations are eligible free outside tiles, with border seeds derived
+by the existing builder. Painted-tile counts are not interchangeable with these
+sets. Route-change epochs describe persistent changes, excluding ordinary moving
+unit congestion. Seed-cost changes, including weighted guard crowding, are
+separate diagnostic metadata; the initial 12 features do not claim to fully
+observe those changes.
 
-There is no automatic convergence or promotion guarantee. Keep conservative
-runtime fallbacks for unsupported situations, retain fixed stress cases, and
-rotate fresh test maps to avoid repeatedly tuning to one evaluation suite. The
-shipped model remains a deterministic integer calculation; learning happens only
-in the offline tools.
+## Collection
 
-A game produces many training episodes. Each episode concerns one field over
-32 ticks: capture the seven scheduler features, retain the serving field, and
-privately build a refreshed alternative. Score their additional direction cost
-on subsequent live movement queries after the publication delay. The difference
-is the movement-benefit target. These are comparisons along the observed game
-trajectory, not two simulations of alternative futures. Complete quiet movement
-episodes retain their valid zero future benefit. Planning reachability errors
-are separate measurements and currently do not train the movement heads.
+`game run --resource-gradient-probe` is the historical CLI spelling for the
+**unified-gradient-spatial-h128-v3** all-family observer. It writes:
 
-## Runtime and disabled diagnostics
+- `gradient-episodes.csv`: frozen causal inputs, complete future direction labels
+  and separate outcomes, with explicit family/team/movement/material/key columns.
+- `gradient-quality.csv`: live direction cost, reachability, invalid goals, missed
+  moves, stalls and forbidden escape failures.
+- `gradient-planning-quality.csv`: separate planning reachability outcomes.
+- `gradient-contradictions.csv`: non-overlapping cumulative movement totals.
+- `gradient-decisions.csv` when an explicit exploration override is enabled.
 
-`ResourceGradientPolicy` owns simulation state. Each allocated natural field
-tracks serving capture/source epochs, last submission and exact 32/128-tick query
-counts in a 128-bucket ring. Source bookkeeping counts tile stock transitions
-between zero and nonzero; consuming part of a deposit does not count as removal.
-Initialization scans source tiles once. Queries update counters without per-query
-allocation. A rolling hash avoids scanning the history during checksums.
+The observer preserves each family's real selector and pre-decision RNG context,
+including guard balancing and forbidden lexicographic base/option ordering.
+Counterfactual alternatives use independent RNG copies and a private current-world
+oracle; they never publish or request live fields. Equal-quality directions have
+zero cost. Actual guard-balancing moves can be direction-scored without treating
+an intentional guard stay, clearing arrival or completed escape as a stall.
+Planning, reachability and escape failures are not silently added to direction
+cost. Episodes apply the real publication delay and retain only complete initial
+future horizons. The 128-tick window starts at capture, includes offsets 8 through
+127 under the normal delay, and completes at age 128; it is not 128 additional
+ticks after publication. The training contract requires the capture-anchored offsets 8..127 (complete at age 128 ticks).
 
-The deployed `goal-stall-v1` predictor uses twelve inputs. Seven base inputs stay
-in a fixed order for policy history and episode CSVs: serving capture age, queries
-in 32 and 128 ticks, added sources, removed sources, and added/removed counts
-relative to source count at capture. The other inputs are empty-goal count,
-reachable-no-move count, movement queries since capture, and the two event/query
-fractions. Count inputs use integer log2(1+x) interpolation; event fractions use
-integer Q12 ratios. Ratios use the full counters before count-feature clamping.
-The generated feature order and required counter IDs are part of the model
-contract, separate from the stable seven-column base measurement layout.
+Reference arrays, snapshots, oracle selectors, sampling state and streams exist
+only when collection is enabled. This is an expensive diagnostic mode; its CPU
+must not be reported as production-policy CPU. Collection-off behavior must be
+checked against the same policy with collection on.
 
-Two logistic components estimate the probabilities of positive and negative
-benefit. Two linear components estimate their conditional magnitudes. Their
-expected difference is the refresh score. Fitting standardizes transformed inputs;
-export folds that scaling into the integer coefficients. Runtime probabilities
-use an integer sigmoid lookup table. Accumulators use signed 64-bit arithmetic
-with export-time bounds. The final prediction is milli cost; the engine compares
-it with 32000. It uses no material/category IDs, simulation RNG, clock, floating
-point or platform-specific math library. Coefficient signs are conditional on the
-other inputs; correlated counts and rates need not have matching signs.
+For cheap total-work evidence without quality collection, use
+`game run --gradient-work-stats artifacts/work.csv`. The explicit observer writes
+raw per-family events and adjacent `.summary.csv` and `.intervals.csv` files.
+It is independent of quality collection and defaults off. Combine these counts
+with ordinary release matched-game CPU/wall/tick measurements; field-cell work
+and jobs are not substitutes for actual CPU time.
 
-The policy retains only the three selected cumulative movement counters. A real
-field capture snapshots their values; pending work carries that exact baseline
-through delayed publication. Inference subtracts the serving capture baseline
-from current totals. Format 176 saves live totals, serving and pending baselines,
-and whether each history is known. Counter blocks identify stable counter IDs so
-later feature selections can read earlier blocks safely. Supported older saves
-remain readable: histories absent from a save stay explicitly unknown, and the
-frozen seven-feature predictor is used until a fresh capture publishes. Missing
-history is never presented to training as measured zeros. New-save continuation
-must preserve this state, including unpublished work.
+## Balanced tournaments and fitting
 
-`ResourceGradientProbe` owns all diagnostic state. With collection disabled no
-probe, output stream, reference field, episode copy, sampling map or diagnostic
-source bookkeeping is allocated. No diagnostic blocker classification or extra neighbor scans run in normal
-movement. The policy's demand, turnover and three selected movement counters are
-required by gameplay regardless of whether data is being collected. The collector reads copies of policy state and
-unit RNG state; it must never advance those live inputs.
-
-## Contradiction telemetry experiments
-
-The seven base inputs remain the comparison baseline. Collection records all six
-contradiction counters while natural ground-resource movement queries follow a
-cached field. Production uses only empty goals, reachable-no-move and movement
-queries. Persistent blockers, unit occupancy and sidesteps remain diagnostic;
-adding them to inference requires incremental held-out and prospective evidence,
-plus compatible counter-state persistence and measured runtime overhead.
-
-Each query contributes at most once to each category; categories can overlap:
-
-| Counter | Observation |
-| --- | --- |
-| `empty_goal` | The serving field reports a goal, but the requested resource has zero stock on that tile. |
-| `persistent_progress_blocked` | An inspected gradient-improving neighbor is rejected by an existing persistent-world check. |
-| `unit_progress_blocked` | An inspected gradient-improving neighbor is rejected by temporary unit occupancy. |
-| `sidestep_used` | Strict progress fails and the equal-value fallback succeeds. |
-| `reachable_no_move` | The serving field is reachable and not at goal, but both direction passes fail. |
-| `movement_queries` | Observed natural ground-resource movement queries, the event-rate denominator. |
-
-Enrollment follows the existing adaptive field: owner queries using that team's
-natural ground-field pointer, including goal, unreachable and forbidden entries.
-Null cold reads, the shared known-absent-material plane, air, consumer/market
-fields and worker reads do not enter this denominator.
-
-The observations reuse normal direction checks. They are not counts of blocked
-neighbors and require no reference gradient of their own. The existing training
-probe still builds reference fields for its benefit labels. A rejected improving
-neighbor can be counted even if another neighbor
-permits progress. Classifications follow the existing first-rejection order;
-a transient blocker can hide a later persistent rejection. Do not add scans or
-change that order to obtain a more complete diagnosis. Congestion and entrapment
-can produce these events without a stale field; an empty goal is a direct
-contradiction. Some events already trigger reactive refreshes, so feature value
-must be incremental to the existing seven inputs and behavior.
-
-The policy owns selected production counters and their capture snapshots. The
-optional observer also keeps all six diagnostic histories. Both use the same
-per-query evidence; diagnostic classification must not alter ordinary movement.
-Capture baselines follow the field through pending computation and delayed
-publication. Episode features use current totals minus the serving field's
-capture baseline; never substitute the publication tick or include future
-observations in a feature. The three unselected diagnostic categories do not affect scheduling, saves,
-checksums or gameplay RNG. The selected production histories affect scheduling
-and therefore participate in saves and checksums. A feature-selection change
-requires compatible persistence, simulation-version and overhead review.
-
-Episode columns use the `since_capture_` prefix for the six counters above.
-`contradiction_capture_known` distinguishes a measured capture from a field that
-already existed when observation began; unknown captures are excluded from all
-paired fits, including their baseline. `defer_stalls` and `refresh_stalls` count
-reachable, non-goal direction-selection failures in the episode's existing
-future scoring window. They are separate outcomes. `gradient-contradictions.csv`
-contains unsampled cumulative field totals, emitted once per world epoch, for
-actual event rates. Do not sum overlapping episode histories to estimate those
-rates.
-
-A counter/schema change starts a fresh immutable dataset contract. Drain and seal
-old collection separately, preserving planned slots, attempts, binaries, models,
-maps and receipts. Never invent zeros for old rows or relabel an old cohort as
-instrumented. Compare baseline seven inputs, transformed counts, event fractions
-and their combination on identical new rows, weights and persistent whole-map
-splits. Report incremental held-out performance, individual additions and
-removals, plus slices by format, generator and map dimensions. Movement cost
-remains the target; report stalls and planning reachability errors separately.
+Create a 256-game plan from a frozen engine catalog:
 
 ```sh
-python3 tools/resource_gradient_model.py compare-contradictions \
-  --manifest artifacts/gradient-contradictions/cohort.json \
-  --split-registry artifacts/gradient-splits.json \
-  --output artifacts/gradient-contradictions/comparison.json
+python3 tools/adaptive_gradient_tournament.py plan \
+  --catalog artifacts/catalog.json --seed 181101 --routing remote-only \
+  --output artifacts/plan.json
 ```
 
-The command compares the baseline, integer-log counts, Q12 event fractions,
-log-transformed fractions and their combinations, with individual additions and
-leave-event-out ablations. Its research-only models cannot be emitted into the
-production header. All variants use the same eligible rows, balanced weights,
-held-out maps and validation folds. Passing this comparison does not implement
-production counter bookkeeping or authorize replacing the incumbent.
+The plan reserves 128 exploration and 128 candidate games, 16 of each role per
+format. It freezes map/seed identities and size pools before outcomes: small work
+on Pharaoh hosts and all remaining work on Rig/devlaptop while Mac games are
+paused. This `remote-only` routing freezes 32 small and 224 remote middle-pool
+slots. Explicit `--routing with-mac` instead freezes 32 small, 192 middle and
+32 largest Mac slots. Routing changes require a new plan before outcomes;
+preparation rejects relabelled pool assignments. Both modes run largest work
+first within each pool.
+Preparation uses immutable accepted map inputs and architecture-specific ordinary
+release bundles pinned to the same source/model/contract. The shared coordinator
+supplies leases and artifact transport; no separate SSH scheduler is introduced.
+Each game has a 1,800-second actual-start wall cap and one process attempt.
 
-Before collection, compare old/new binaries and probing off/on on exact held-out
-states and orders, including asynchronous publication and save continuation.
-Record per-tick checksum parity and repeated, interleaved CPU per tick. Separate
-normal probing cost from new bookkeeping/classification cost. Collection
-throughput cannot establish production CPU savings. After each refit, compare
-promising candidates against the incumbent and original model with probing
-disabled; use separate diagnostic repeats for quality. Preserve the incumbent
-unless prospective results establish a useful improvement.
-
-## Collect a tournament
-
-Use a release binary and run from the repository root. No runtime dependencies
-are added. The runner itself uses the Python standard library. Fitting uses the
-pinned development numpy/scikit-learn dependencies in `requirements-dev.txt`.
+Before preparing either role, append actual accepted map identities to a copy of
+the persistent registry that retains historical held-out exclusions:
 
 ```sh
-scons release=1 --build=build/resource-gradient-release -j4 \
-  build/resource-gradient-release/src/glob2
-python3 tools/resource_gradient_model.py plan \
-  --binary build/resource-gradient-release/src/glob2 \
-  --output artifacts/resource-gradient-plan.json --games 256 --seed 5101
-# Inspect the printed coverage and saved plan before starting collection.
-python3 tools/resource_gradient_model.py run \
-  --binary build/resource-gradient-release/src/glob2 \
-  --plan artifacts/resource-gradient-plan.json \
-  --output artifacts/resource-gradient-training \
-  --ticks 90000 --jobs 4 --threads 4
+python3 tools/adaptive_gradient_tournament.py freeze-splits \
+  --maps artifacts/maps.json --split-registry artifacts/map-splits.json
 ```
 
-The default is a **bounded 256-game stratified random sample**, rather than a
-cross product or fixed map lineup. It uses the same `generator_samples` helper
-and catalog `searchValues` domains as the AI rating tournaments:
+Use `adaptive_gradient_tournament.py prepare --help` to prepare one role.
+Exploration defaults to per-field intervals 8,16,32,64,128,256,512,1024,4096,
+assigned from a per-game seed and the entire stable field key. Fields in a game do
+not all receive the same interval. The new candidate role remains unavailable
+until a generic model has been trained; an untrained bootstrap must not be
+presented as an adaptive candidate.
 
-- Thirty-two games each: 1v1, 3/4/8/16-player FFA, 2v2, 4v4 and 8v8.
-- All non-editor generators advertised by the supplied binary are eligible.
-  Choose among the least-used compatible generators, so each is sampled before
-  any compatible repeat. A budget smaller than the generator pool samples a
-  subset; the primary-plan coverage report explicitly lists unselected generators.
-- Width and height draw from 64, 128, 256 and 512 tiles, including rectangular
-  maps with aspect ratio at most 2. Registered dimensions/player counts must
-  permit the combination. Density stays between 1,024 and 32,768 tiles per
-  colony, avoiding extremely cramped starts and very sparse expensive games.
-  Compatible shapes receive balanced exposure.
-- Generator-specific controls and starting workers vary over their catalog
-  search domains. These are the engine's curated search values, not arbitrary
-  values invented by the collector. Geometry and player count take precedence.
-- All native AIs in the catalog are eligible. Each game has a 50% chance of
-  a homogeneous roster; otherwise it draws a mixed roster; a mixed draw can still
-  coincide. AI seat exposure is balanced, and alliance seating is shuffled.
-- Each game has separate random 32-bit map and simulation seeds. Plan order is
-  shuffled, and the sampling seed, entire catalog snapshot, controls, roster and
-  map dimensions are frozen before collection. The same inputs reproduce the
-  same plan.
+`adaptive_gradient_export.py` exports completed trajectories and separately
+recovers complete original episode records from explicitly censored ones. It
+preserves raw receipt/transport hashes, excludes unterminated final CSV bytes and
+incomplete horizons, validates derived rows with the same loader, and records
+censoring and unknown whole-game totals. It never calls a capped game completed.
 
-`--games`, `--seed`, `--generators`, `--sizes`, `--formats` and `--ais` constrain
-the sampling design on `plan` or on `run` without a supplied plan. `plan` only
-inspects the catalog and writes a plan; it runs no matches. The game budget must
-cover every requested format at least once. A useful fit needs at least four
-independent maps **with complete episodes** per format; the 256-game default
-provides 32 planned maps each but sparse games may yield no usable episodes.
-Inspect collection coverage before fitting or increasing the budget.
-
-`--jobs` bounds concurrent games; `--threads` is compute participants per game.
-Collection timings are diagnostic and never CPU evidence. Custom legacy JSON
-lists are also accepted: records need `format`, `generator`, `width`/`height`
-(or square `size`), `players`, `alliances`, `map_seed`, `game_seed`, optional
-per-seat `ais` (or uniform `ai`) and optional displayed `generator_params`.
-`format` should identify the match rules (such as `4ffa`), not a unique map or
-seed: it is the balancing/holdout stratum. Generator parameters cannot override
-the separately recorded geometry, player count or map seed. Individual catalog bounds do not encode every generator's relationship constraints.
-Each sampled match therefore freezes up to 32 map candidates: its balanced primary
-draw followed by random alternatives from the same eligible pool. The format,
-AI roster, alliances and simulation seed stay fixed while map inputs vary.
-Collection tries the candidates in order, accepting the first playable map.
-Only structured invalid-request, placement and world-validation rejections are
-retried. Crashes, script errors, missing dependencies and other failures stop the
-run; exhausting candidates also fails rather than shortening the tournament.
-
-Every rejection keeps its specification, command, JSON report and log. The
-manifest records the actual selected map and its validation-group identity;
-`coverage.json` reports actual completed-match coverage separately from planned
-primary coverage. This samples playable configurations conditional on successful
-generation, so acceptance can change the generator/dimension mix. Inspect both
-coverage and rejections before claiming broad representation; a catalog entry
-alone does not establish a feasible generator/size/player combination. Custom
-lists have no alternatives unless explicitly supplied in `map_candidates`.
-
-The output retains the frozen plan, binary/model hashes, exact commands, map
-hashes, losslessly compressed episode/query CSVs and an atomically updated manifest. Repeating the exact
-command resumes completed games; changing its plan or build requires a fresh
-output directory. Generation has a ten-minute process timeout; matches default to
-`--timeout-seconds 7200`. Failures are retained in `failures.json`; other queued
-games still finish, compress and enter the manifest before the runner exits
-unsuccessfully. Repair failures and resume the frozen plan rather than omitting
-those states. Preserve raw data outside Git under `artifacts/`. Incomplete
-32-tick episodes remain in the CSV but never enter a fit.
-
-Before interpreting a new collector or policy implementation, run identical
-starting state/seed/orders with probing enabled and disabled and compare per-tick
-checksums, also across the supported platforms. Repeated collection from a state
-stays in the same validation group, even if collected with a later model.
-
-## Fit, validate and replace coefficients
+Fit the unchanged generic 12-input model and explicitly emit a research candidate:
 
 ```sh
-python3 tools/resource_gradient_model.py fit-candidate \
-  --feature-set goal-stall-v1 \
-  --manifest artifacts/resource-gradient-training/cohort.json \
-  --split-registry artifacts/resource-gradient-splits.json \
-  --output artifacts/resource-gradient-training/model.json
-python3 tools/resource_gradient_model.py promote \
-  --model artifacts/resource-gradient-training/model.json \
-  --contract goal-stall-v1 \
-  --output artifacts/resource-gradient-training/deployment-model.json \
-  --header artifacts/resource-gradient-training/ResourceGradientModel.h
-python3 -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_tournament
+python3 tools/adaptive_gradient_model.py fit \
+  --manifest artifacts/exploration.cohort.json \
+  --collector-contract unified-gradient-spatial-h128-v3 \
+  --split-registry artifacts/map-splits.json --output artifacts/research.json
+python3 tools/adaptive_gradient_model.py emit \
+  --model artifacts/research.json --contract unified-gradient-h128-v2 \
+  --output artifacts/candidate.json --header artifacts/AdaptiveGradientModel.h
 ```
 
-For subsequent generations, pass every compatible cohort explicitly and reuse
-the existing split registry:
+The new loader rejects resource-only datasets. Older tools/data remain available
+for reproduction; reuse would require an explicit validated semantic mapping.
+Whole-map splits persist across roles, models, families and platforms, including
+historical held-out exclusions. Weights balance format, role, cohort, map, family,
+collection and episode. OS is not a separate cohort. Missing-family support is
+reported rather than fabricated. Fit gates require each family in grouped
+cross-validation and held-out maps. Reports also score the same unified rows with
+the previous weighting, so a weighting change is not mistaken for a feature gain.
+
+Review pooled and per-family results, format/generator/size, age/demand,
+target-change, route-change and weighted-cost-change slices. A good pooled score
+cannot waive a guard or forbidden-escape regression. Coefficient emission is not
+production approval: compare total gradient work and ordinary release CPU against
+master, the resource-only reference, and useful fixed-interval baselines using
+matched maps/seeds, repeated interleaved order and controlled physical-core/SMT
+load. Keep diagnostic quality repeats separate from production timings.
+
+Review age/demand joint support explicitly before qualifying an uncapped model;
+older-field extrapolation is a coverage limitation, not a reason to add a hidden
+forced-refresh fallback.
+
+Scheduling/state changes require save/load, thread/platform checksum and
+simulation/replay compatibility checks. Later coefficient-only rounds retain the
+same numerical/contract gates and the agreed focused validation workflow.
+
+## Spatial seed-overlap research
+
+The spatial-h128-v3 collector extends the dataset, independently of the 12-input
+`unified-gradient-h128-v2` inference contract. It initially validates natural ground
+resource and clearing fields. Markets, air, weighted guard seeds and derived
+forbidden borders report explicit unsupported reasons. Supported fields attached
+after publication have unknown history until a real replacement publishes.
+Neither case is silently treated as measured zero.
+
+For each eligible query the observer compares its aligned 4×4 patch against the
+field actually read. Old seed classes come from the published gradient; current
+classes use the authoritative family seed predicate. Goal differences and
+passability differences excluding goal cells count once per query/category.
+Directional additions/removals and blocked/opened categories are diagnostic.
+No previous full seed buffer, world heatmap or per-query allocation is required.
+These comparisons exist only with diagnostic collection enabled. To isolate
+patch bookkeeping overhead using the same binary and other oracle diagnostics,
+compare `--resource-gradient-probe --gradient-spatial-overlap on` with
+`--resource-gradient-probe --gradient-spatial-overlap off` in repeated interleaved
+ordinary release runs. The isolation flag requires the probe and result metadata
+records `spatial_overlap_collection`; it is not a production scheduling toggle.
+
+Overlap counters and their denominator reset at actual publication. They do not
+use the capture-time movement-counter baseline. Episodes freeze the generation,
+publication tick, known/support flags, support reason and raw counters at their
+start, independently of the subsequent label horizon. The loader requires the
+exact spatial-h128-v3 contract and all columns; it never fills older data with zeros.
+Raw partial recovery also preserves the explicit categorical support reason.
+An explicit spatial-disabled isolation run retains the supported-family flag but
+reports reason `disabled` and unknown history; its zeros are never training data.
+
+Compare research variants without changing generated inference:
 
 ```sh
-python3 tools/resource_gradient_model.py fit-candidate \
-  --feature-set goal-stall-v1 \
-  --manifest artifacts/gradient-exploration/cohort.json \
-  --manifest artifacts/gradient-candidate-v1/cohort.json \
-  --split-registry artifacts/resource-gradient-splits.json \
-  --output artifacts/gradient-refit/model.json
+python3 tools/adaptive_gradient_spatial.py \
+  --manifest artifacts/exploration.cohort.json \
+  --split-registry artifacts/map-splits.json \
+  --output artifacts/spatial-research.json
 ```
 
-Collect `gradient-candidate-v1` using `run` with the candidate binary, a new output
-directory and cohort identity, and no `--exploration` option. The runner records
-the candidate role automatically. Reusing a plan is allowed; repeated maps stay
-in their existing validation groups. Inspect the fit and prospective evaluation
-before exporting coefficients into the engine.
+Every variant uses the same eligible known resource/clear rows, family-balanced
+weights and persistent map splits. Variants compare the baseline 12 inputs with
+overlap counts, fractions, their combination and directional diagnostics.
+Development-fold regret selects a research variant; held-out comparisons remain
+exploratory. Reports include separate family/scenario slices, calibration around
+the 128-unit threshold and benefit captured at equal weighted episode-selection
+shares. Those shares are offline ranking diagnostics, not measured simulation
+refresh rates or CPU savings. Stalls, planning and escape outcomes remain separate
+from direction-cost labels. Missing resource/clear fold coverage blocks the fit;
+unsupported guard/forbidden/market/air support remains a reported gap.
 
-The feature list, transforms and regularization are fixed. Every fit standardizes
-using its training rows only, fits logistic heads with C=1 and conditional ridge
-heads with alpha=100, then folds standardization into exported integer
-coefficients. Constant outcome classes are represented explicitly. Weights give
-equal mass to each format, then collection role (exploration/candidate), then cohort within that role,
-then each starting state, collection game and episode. All collection rounds, AI-roster changes and seat swaps of the same generated
-map stay together. New manifests record this map identity separately from the
-full game identity; older manifests with saved map specifications derive the same identity.
-Manifests without map metadata retain their historical starting-state groups.
-
-At least four independent maps with complete episodes per format are required.
-Approximately a quarter of maps are excluded from coefficients as a holdout;
-development maps have three validation folds. Seeded `StratifiedGroupKFold`
-assigns whole maps, stratifying map/format pairs rather than episodes. This
-handles maps reused across format labels without splitting them. Every format
-must retain at least one holdout map, three development maps, and at least one
-validation/two training maps in each fold; otherwise fitting fails explicitly
-and requests more independent maps. Split coverage is recorded in the fit report. Reports
-score the quantized integer model, including holdout slices by match format,
-generator and dimensions. Each slice reports its sample/map count; small slices
-are diagnostic, not evidence of precise generalization performance. Held-out error and selected-episode benefit
-are useful diagnostics, but do not prove lower full-match CPU or better gameplay.
-Measure prospective matched maps after refitting, because a different scheduler
-changes the trajectories that generate the next dataset.
-
-The committed deployment model is `tools/models/resource-gradient.json`.
-`fit-candidate` produces a research report; `promote --contract goal-stall-v1`
-explicitly packages reviewed coefficients with the selected feature contract and
-pinned legacy fallback. Promotion creates a candidate, not evidence of prospective
-quality or performance. Validate it before copying its deployment JSON and generated
-header into the engine. `emit` reproduces the header from the validated deployment
-contract; arbitrary research reports cannot emit production code. The separate
-`fit` command remains available for seven-feature baseline comparisons.
-
-The generated header is the only model used by the engine. No model-selection
-environment variables or alternate runtime thresholds are supported. Tests check
-header reproducibility, overflow bounds, dataset hashes, balancing and C++/Python
-integer parity under undefined-behavior sanitization.
-
-Every coefficient/policy change changes simulation behavior. Bump `SIM_REVISION`,
-regenerate the golden match, and verify per-tick deterministic execution,
-collector on/off equivalence and save continuation including in-flight batches.
-New scheduling and movement-evidence state is persisted from save format 176;
-older supported saves load with conservative empty demand history and retain
-their saved fields and deadlines. Saves keep their separate historical compatibility floor; earlier
-replays and mixed-version network matches use the updated acceptance gates.
-
-## Migrate private experiment files
-
-Private adaptive experiments reused format 174, which also identifies a published
-building-gradient draft. Ordinary loading retains the published 174/175 layouts.
-For a binary file known by provenance to come from the adaptive experiment, use:
-
-```sh
-glob2 game migrate --input old.map.gz --legacy-adaptive-174 --output-dir migration
-```
-
-This explicit profile reads the experiment's shared format-173 layout plus
-adaptive demand state. Conversion preserves encoded map initialization, advances
-zero ticks, and checks decoded simulation state before serialization and after
-reloading the new file. It rejects other source versions and trailing binary
-data. Text migration is not supported. The result includes input/output hashes;
-use `migrated.map` or `migrated.game` for subsequent ordinary runs. Preserve the
-original file, its hash and its map-group identity when migrating tournament
-inputs; conversion must not create a new validation group for the same map.
-
-## Collect across policy generations
-
-A model changes which fields become old and which units get recruited. More maps
-under one capped policy do not establish support for removing that cap. Keep an
-exploration cohort alongside candidate-policy cohorts, and accumulate their
-examples rather than replacing the dataset each generation.
-
-```sh
-python3 tools/resource_gradient_model.py run \
-  --binary build/resource-gradient-release/src/glob2 \
-  --plan artifacts/resource-gradient-plan.json \
-  --output artifacts/gradient-exploration --cohort exploration-v1 \
-  --exploration 0,32,64,128,256,512 --exploration-seed 8101 \
-  --ticks 90000 --jobs 4 --threads 4
-python3 tools/resource_gradient_model.py audit \
-  --manifest artifacts/gradient-exploration/cohort.json \
-  --output artifacts/gradient-exploration/support.json
-```
-
-The runner hashes the master exploration seed with each planned game identity
-to derive a reproducible per-game seed. A fixed unsigned hash of field key and
-that per-game seed assigns each field to one interval, uniformly over the listed
-entries. This varies a common field's assignment across games and avoids tying
-resource or team slots to one fixed policy throughout a tournament. Zero means the ordinary
-adaptive32 policy, including its demanded-field age cap. Other entries replace
-that field's adaptive admission rule with a demanded fixed interval. They can
-exceed the production cap. This is a collection intervention; it is available
-only in structured headless runs with probing enabled and replay recording
-rejected. No simulation RNG is consumed. A field still needs demand, an active
-movement class and an available source. Cold/reactive paths keep their existing
-rules. The mixture creates coverage, not an unbiased estimate of the production
-state distribution; inspect actual joint age/demand coverage, not just assigned
-interval counts. Use multiple exploration seeds across immutable cohorts.
-
-`gradient-decisions.csv` records due admission attempts, chosen interval, seed,
-reason and acceptance. Episode rows carry interval/seed metadata as well. Frozen
-run metadata includes the model/header/binary and collector-tool hashes, a copy
-of the collector sources, behavior policy, seed,
-label contract and cohort identity. A completed run seals `cohort.json`; changing
-its contents or reusing its identity for another declared policy is rejected.
-Keep the episode files it references. Never edit an old cohort to impersonate a
-new collector contract. Older manifests remain readable on their own, but their
-unspecified historical label contract cannot silently mix with explicit new
-contracts. A new feature or label definition requires a deliberate migration or
-fresh collection, not a metadata relabel.
-
-Repeat `--manifest` on `fit` and `audit` to aggregate compatible cohorts. Weights
-balance formats, then exploration/candidate roles, cohorts within each role, maps,
-collection games and episodes. Repeated candidate generations therefore cannot
-erase the permanent exploration role's total weight. This preserves an exploration generation's weight when a later model
-produces many more rows. Shared map identities stay in one split across all
-cohorts. The CLI requires `--split-registry artifacts/gradient-splits.json` on every fit
-to freeze each map's holdout/fold assignment as the dataset grows. Existing
-assignments never move into training on a later generation; newly encountered
-maps receive deterministic assignments. Insufficient format/fold coverage fails
-explicitly instead of reshuffling old holdouts. There is no automatic stopping or promotion rule: check joint support,
-held-out benefit capture, threshold decision regret, false refreshes and tails,
-plus slices by format, generator, dimensions and cohort. Unsupported regions
-still require a conservative runtime fallback.
-
-The scalar oracle writes `gradient-planning-quality.csv`, comparing owner natural
-ground-resource distance/availability answers with a private fresh field. False
-unreachable answers can hide recruitment opportunities even when movement
-quality appears good. Episodes contain separate planning query counts and
-retained/refreshed false-negative/false-positive totals. These are different units
-from direction cost and are never silently added to the movement target.
-`movement_observed` distinguishes planning-only examples from movement examples;
-quiet movement examples retain their valid zero future benefit. Planning-only
-examples stay in the support report but do not train the movement heads. The
-production negative-answer retry and age cap remain safety mechanisms while
-planning quality is evaluated separately.
-
-## Checkpoint interventions and prospective validation
-
-For selected warm fields, compare the consequences of one admission now versus
-waiting. Obtain a checkpoint using `game run --save every:N` or `--save final`,
-and choose a field key from its preceding probe data:
-
-```sh
-python3 tools/resource_gradient_model.py branch \
-  --binary build/resource-gradient-release/src/glob2 \
-  --checkpoint artifacts/checkpoint.game --field 12 --wait 32 128 512 \
-  --ticks 12000 --output artifacts/gradient-branches
-```
-
-`--ticks` is the absolute final tick, greater than the checkpoint tick. The runner
-always includes a zero-wait arm. The selected field must be captured and have no
-pending/queued refresh. Each arm suppresses its ordinary adaptive admission until
-the first demanded eligible admission at checkpoint tick plus wait, retaining the
-eight-tick minimum, then resumes ordinary behavior. Fork saves/replays are rejected: the one-shot
-intervention state is not serialized, so branches cannot be resumed from an
-intermediate save. Interrupted runner arms restart from the original checkpoint.
-It does not force inactive
-or unrequested work. Check `gradient-decisions.csv` for `checkpoint_fork` with
-`admitted=1`; an arm that never receives demand is not an executed intervention.
-Other fields follow the ordinary policy. All arms start from identical saved
-bytes, but subsequent AI decisions and trajectories may differ. Their bounded
-outcomes are diagnostic evidence, not independent training maps or isolated
-movement labels. Branch runs contain expensive oracle work and make no CPU claim.
-
-Before promoting coefficients, compare ordinary release binaries on held-out
-saved states, separate from the fitting dataset:
-
-```sh
-python3 tools/resource_gradient_model.py compare \
-  --incumbent artifacts/incumbent/glob2 --candidate artifacts/candidate/glob2 \
-  --checkpoint artifacts/heldout-a.game --checkpoint artifacts/heldout-b.game \
-  --ticks 20000 --warmup 256 --repeats 2 --threads 4 --quality \
-  --output artifacts/gradient-prospective
-```
-
-Runs execute one at a time, alternating incumbent/candidate order across repeats
-and maps. CPU measurements have probing disabled. Optional quality repeats run
-separately and must reproduce each binary's benchmark final checksum and tick.
-The report retains per-run CPU/tick, total measured CPU, game ticks, run wall time,
-throughput and paired ratios, including the worst pair. Run wall time includes
-warmup; its throughput denominator is explicitly named. Quality samples are
-reported separately for movement and planning. Inspect per-map failures and tails,
-not only the aggregate median; predictions or averages never automatically approve
-a candidate. Rotate fresh test maps as the experiment evolves, retain the fixed
-stress cases, and document build flags/platform coverage. Passing observer parity
-here does not replace per-tick cross-platform determinism or save/replay gates.
-
-## Distributed collection
-
-`tools/resource_gradient_distributed.py` uses the shared tournament Coordinator
-for localhost and SSH execution, including leases, retries, host eligibility and
-verified artifact transfer. It adds no separate SSH scheduler. Supply immutable
-platform-specific bundles with matching source and simulation versions, and
-explicit `model_sha256` / `header_sha256` in each bundle's build options and the
-cohort declaration (`policy.model_sha256` and `header_sha256`).
-
-Generate maps centrally before dispatch. The accepted-map index is a JSON list
-of `{group, spec, path, sha256}` records: `group` is the first 16 hexadecimal
-characters of the canonical planned-game SHA256, `spec` is the actual accepted
-map specification, and `path` points to its exact compressed map file. Preserve
-all generation attempts and the original plan. This avoids relying on
-same-seed generation being identical across architectures. A subset/chunk must
-select planned slots before outcomes and include exactly those slots in its map
-index; never select only games that finish quickly.
-
-An accepted-map record may also pin a supplied `build` ID before dispatch. This
-can route a static large-map workload class to faster hosts: register identical
-binary bundles with distinct execution-pool metadata and configure each host's
-build allowlist. Keep the pool rule and every planned slot in the frozen index;
-do not route or omit games based on their outcomes. Exports retain each bundle
-receipt and merge compatible collections by binary identity. Without an explicit
-build, the weighted allocation below remains the default.
-
-```sh
-python3 tools/resource_gradient_distributed.py prepare \
-  --plan artifacts/chunk-plan.json --maps artifacts/accepted-maps.json \
-  --bundle artifacts/bundles/MAC_ID --bundle artifacts/bundles/LINUX_ID \
-  --cohort artifacts/chunk-cohort.json --weights artifacts/build-weights.json \
-  --directory artifacts/distributed-chunk --ticks 90000
-python3 tools/resource_gradient_distributed.py collect \
-  artifacts/distributed-chunk --hosts artifacts/hosts.json
-python3 tools/resource_gradient_distributed.py export \
-  artifacts/distributed-chunk --output artifacts/chunk-dataset
-```
-
-Build weights map bundle IDs to positive capacity weights. Allocation is frozen
-within each format before results; compatible Linux hosts share the Linux pool.
-Configure host slots and Linux CPU allocations using the
-[distributed tournament guide](../tools/tournaments.md). Mac collection jobs use
-one compute participant because CPU affinity allocation is unavailable there;
-set slots to the desired concurrent-game budget. Collection explicitly disables
-GPU execution and compute telemetry. Probe cost makes its timings unsuitable as
-engine performance measurements.
-
-Distributed preparation defaults to a two-hour per-game wall timeout. Set
-`prepare --timeout-seconds SECONDS` before dispatch when large maps with training
-probes need longer; the timeout is frozen in the experiment identity. It changes
-the failure deadline, not the simulation tick cap. Do not repeatedly retry an
-unchanged slow diagnostic game against an insufficient deadline or drop it from
-the planned sample because it finishes late.
-
-Export requires every planned slot to succeed, preserves accepted worker receipts
-and both transported/decoded artifact hashes, and seals cohorts for the permanent
-`audit` and `fit` commands. Architecture-specific exports share the logical
-cohort identity, so a smaller platform pool does not receive an artificially
-larger training weight. Audit and refit after each completed chunk; accumulate
-compatible cohorts using the same split registry. A partial export is diagnostic
-only and reports every missing slot. Qualify each supplied binary/data bundle
-and cross-platform execution before starting the full collection.
+There is no augmentation emitter or automatic promotion. Retaining any overlap
+inputs requires real collection data, prospective quality/compute validation,
+measured enabled/disabled overhead and scheduling-state compatibility work.

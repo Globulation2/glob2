@@ -155,6 +155,11 @@ void Map::ensureBuildingGradientPipeline()
 			b->setLocked(b->routeAccess(swim, p.route),p.locked);
 			if (p.route == BuildingRoute::Clearing) b->anyResourceToClear[swimAccessVariant(swim)] = p.resourceState;
 		}
+        if(auto& stats=gradientRuntime->workStats) {
+            const auto key=GradientWorkStats::buildingKey(p.team,p.swim,p.buildingId,p.scriptIdentity,unsigned(p.route));
+            stats->published(key,game->stepCounter,p.workReason,size);
+            if(b->globalGradientSearch[slot])stats->partial(key,game->stepCounter,0,b->globalGradientSearch[slot]->settledCost(),true);
+        }
 		b->refreshRequested.reset(slot);
 		return true;
 	};
@@ -186,6 +191,10 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
 	auto& rt = *gradientRuntime;
 	if (!buildingGradientPipelineActive()) return false;
 	if (!building->globalGradient[slot] && game->preparingBuildingGradient(*building, slot)) return true;
+    if(auto& stats=rt.workStats) {
+        const auto key=GradientWorkStats::buildingKey(building->owner->teamNumber,slotSwim(slot),Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(slotRoute(slot)));
+        stats->request(key,game->stepCounter,unsigned(building->globalGradient[slot]?AdaptiveGradientState::Reason::Reactive:AdaptiveGradientState::Reason::Cold),building->refreshRequested.test(slot));
+    }
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),
@@ -236,6 +245,7 @@ void Map::stageBuildingGradientPreparation()
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
 		p.slot = request.slot; p.swim = slotSwim(request.slot); p.route = slotRoute(request.slot);
 		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
+        if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,p.swim,p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);
 		p.data.reset(acquireBuildingGradientBuffer());
 		p.search = acquireBuildingGradientSearch();
 		// Cold initialization stays lazy for every route, including flags.

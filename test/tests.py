@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/map/gradient/GradientLegacyQueueHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/gradient/GradientMarketTurnoverHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
@@ -224,6 +226,9 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/map/gradient/GradientMarketTargetsTest.cpp',
+    '#src/map/gradient/GradientTargetCellTest.cpp',
+    '#src/map/gradient/AdaptiveGradientStateTest.cpp',
     '#src/building/HiringRankingTest.cpp',
     '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
@@ -437,6 +442,9 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
     '#src/map/gradient/ResourceGradientPolicy.cpp',
+    '#src/map/gradient/AdaptiveGradientState.cpp',
+    '#src/map/gradient/MapGradientTargets.cpp',
+    '#src/map/gradient/MapGradientMarketTargets.cpp',
     '#src/resource/ResourceRegistry.cpp',
     '#src/map/pathfind/MapPathfindPoint.cpp',
     '#src/net/message/MessageRecipients.cpp',

@@ -8,6 +8,7 @@
 #include "Building.h"
 
 #include "Utilities.h"
+#include "gradient/DirectFlightDirection.h"
 
 void Unit::setNewValidDirectionGround(void)
 {
@@ -51,21 +52,16 @@ void Unit::setNewValidDirectionAir(void)
 void Unit::flyToTarget()
 {
     assert(performance[FLY]);
-    findDisplacement([&](int* pathDx, int* pathDy) {
-        simplifyDirection(targetX-posX, targetY-posY, pathDx, pathDy);
-        return true;
-    });
+    const auto step=direct_flight::select(posX,posY,targetX,targetY,owner->map->getW(),owner->map->getH(),
+        [&](int x,int y){return owner->map->isFreeForMovement(x,y,AIR_MOVEMENT_CLASS,owner->me);});
+    findDisplacement([&](int* x,int* y){*x=step.dx;*y=step.dy;return true;});
     directionFromDxDy();
-    if (dx==0 && dy==0) return;
-    const int bearing=direction;
-    for (int turn : {0, 1, 7, 2, 6, 3, 5, 4}) {
-        direction=(bearing+turn)&UNIT_DIRECTION_MASK;
-        dxDyFromDirection();
-        if (owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me))
-            return;
+    if(directGradientDecision) {
+        const auto key=*directGradientDecision;directGradientDecision.reset();
+        const auto* cells=*owner->map->gradientFieldDestination(key);
+        owner->map->directGradientMovement(key,posX,posY,entityRandom,cells,dx||dy,true,false);
     }
-    dx=dy=0;
-    direction=UNIT_DIRECTION_NONE;
+
 }
 
 void Unit::escapeGroundTarget()
@@ -163,38 +159,9 @@ int Unit::directionFromDxDy(int dx, int dy)
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapW=owner->map->getW();
-	int mapH=owner->map->getH();
-	if (ldx>(mapW>>1))
-		ldx-=mapW;
-	else if (ldx<-(mapW>>1))
-		ldx+=mapW;
-	if (ldy>(mapH>>1))
-		ldy-=mapH;
-	else if (ldy<-(mapH>>1))
-		ldy+=mapH;
+    const auto step=direct_flight::bearing(ldx,ldy,owner->map->getW(),owner->map->getH());
+    *cdx=step.dx;*cdy=step.dy;
 
-        /* We consider a cell to be vertical or horizontal in
-           direction (rather than diagonal) if it is 2.41 times more
-           vertical than horizontal, or vice versa.  This is because
-           the halfway point between 45 degrees and 90 degrees is 67.5
-           degrees and sin(67.5 deg) / cos(67.5 deg) =
-           2.41421356237. */
-	if ((100 * abs(ldx)) > (241 * abs(ldy)))
-	{
-		*cdx=SIGN(ldx);
-		*cdy=0;
-	}
-	else if ((100 * abs(ldy)) > (241 * abs(ldx)))
-	{
-		*cdx=0;
-		*cdy=SIGN(ldy);
-	}
-	else
-	{
-		*cdx=SIGN(ldx);
-		*cdy=SIGN(ldy);
-	}
 }
 
 int Unit::movementClass() const

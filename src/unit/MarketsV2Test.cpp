@@ -237,7 +237,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 		CHECK(g.map.getMaterialGradientSlot(0,CHERRY,sw,true)==g.map.getMaterialGradientSlot(0,CHERRY,sw));
 		CHECK(g.map.marketMaterialGradients[0][CHERRY][sw]==nullptr);
 		g.map.dirtyMarketGradientsSlot(0,CHERRY);
-		CHECK_FALSE(g.map.marketGradientDirty[0][CHERRY][sw]);
+		CHECK(g.map.marketMaterialGradients[0][CHERRY][sw]==nullptr); // No market field is enrolled while disabled.
 	}
 	CHECK_FALSE(g.map.isStockedMarketTile(market->gid,0,CHERRY));
 	CHECK_FALSE(g.isBuildingTypeAvailable(51));

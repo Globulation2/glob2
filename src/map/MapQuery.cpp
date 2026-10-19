@@ -11,6 +11,7 @@
 #include "Game.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientTargetCell.h"
 #include "gradient/ResourceSeedCache.h"
 
 
@@ -370,9 +371,12 @@ void Map::markImmobileUnit(int x, int y, int teamNumber)
 {
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == teamNumber) return;
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	occupancyCells[index].immobileUnit = teamNumber;
 	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 
@@ -380,9 +384,12 @@ void Map::clearImmobileUnit(int x, int y)
 {
 	const auto index = coordToIndex(x, y);
 	if (occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE) return;
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	occupancyCells[index].immobileUnit = IMMOBILE_UNIT_NONE;
 	markOccupancy(index);
 	resourceSeedChanged(index, ResourceSeedCache::Immobile);
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 

@@ -2,6 +2,9 @@
 #include <Environment.h>
 #include "Headless.h"
 #include "ResourceGrowth.h"
+#include "gradient/AdaptiveGradientModel.h"
+#include "gradient/AdaptiveGradientState.h"
+#include "gradient/ResourceGradientProbe.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -557,6 +560,13 @@ struct HeadlessRunner
 			}
 			engine.gui.game.map.setGradientWorkerCount(1);
 		}
+        if (options.count("--gradient-spatial-overlap"))
+            engine.gui.game.map.setGradientSpatialOverlap(one(options,"--gradient-spatial-overlap")=="on");
+        if (options.count("--gradient-work-stats")) {
+            const auto path=fs::absolute(one(options,"--gradient-work-stats"));
+            fs::create_directories(path.parent_path());
+            engine.gui.game.map.configureGradientWorkStats(path.string());
+        }
         if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
             if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
                 throw std::invalid_argument("Gradient collection overrides require the probe and reject replay recording");
@@ -567,7 +577,7 @@ struct HeadlessRunner
             engine.gui.game.map.configureResourceGradientExploration(
                 one(options,"--resource-gradient-exploration"),
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
-                options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,65535) : -1,
+                options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,std::numeric_limits<int>::max()) : -1,
                 integer(one(options,"--resource-gradient-fork-wait","0"),0,65536),
                 (output/"gradient-decisions.csv").string());
         }
@@ -716,6 +726,18 @@ struct HeadlessRunner
 		result << '}';
 
 
+        // Dataset observation semantics version independently of inference.
+        result << ",\"adaptive_gradient_policy\":{\"contract\":" << quote(AdaptiveGradientModel::ContractId)
+            << ",\"collector_contract\":" << quote(ResourceGradientProbe::CollectorContract)
+            << ",\"model_trained\":" << (AdaptiveGradientModel::Trained?"true":"false")
+            << ",\"threshold_milli_direction_cost\":" << AdaptiveGradientState::Threshold
+            << ",\"prediction_horizon_ticks\":" << ResourceGradientProbe::HorizonTicks
+            << ",\"minimum_interval\":" << AdaptiveGradientState::MinimumInterval
+            << ",\"demanded_age_cap\":null"
+            << ",\"mode\":" << quote(options.count("--resource-gradient-exploration")?"explicit-per-field-fixed-interval-research":AdaptiveGradientModel::Trained?"shared-adaptive-model":"untrained-cold-reactive-and-history-init-only")
+            << ",\"spatial_overlap_collection\":" << (one(options,"--resource-gradient-probe","false")=="true" && one(options,"--gradient-spatial-overlap","on")=="on"?"true":"false")
+            << ",\"quality_collection\":" << (one(options,"--resource-gradient-probe","false")=="true"?"true":"false") << '}';
+        if (options.count("--gradient-work-stats")) result << ",\"gradient_work_stats\":" << quote(fs::absolute(one(options,"--gradient-work-stats")).string());
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
         result << ",\"resource_plan\":";
@@ -792,7 +814,7 @@ struct HeadlessRunner
         if (options.count("--resource-gradient-exploration") || options.count("--resource-gradient-fork-field")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
                 << ",\"seed\":" << integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX)
-                << ",\"fork_field\":" << (options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,65535) : -1)
+                << ",\"fork_field\":" << (options.count("--resource-gradient-fork-field") ? integer(one(options,"--resource-gradient-fork-field"),0,std::numeric_limits<int>::max()) : -1)
                 << ",\"fork_wait\":" << integer(one(options,"--resource-gradient-fork-wait","0"),0,65536)
                 << ",\"save_continuation_supported\":" << (options.count("--resource-gradient-fork-field")?"false":"true")
                 << ",\"continuation_policy\":" << quote(options.count("--resource-gradient-fork-field")

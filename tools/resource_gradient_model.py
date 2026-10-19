@@ -83,9 +83,9 @@ def predict(model, raw):
     return max(-10**9, min(10**9, value))
 
 
-def validate_heads(model, research=False):
+def validate_heads(model, research=False, expected_threshold=32000):
     features=tuple(model.get('features',()))
-    if type(model.get('threshold')) is not int or model['threshold']!=32000:raise ValueError('Expected adaptive-32 integer threshold')
+    if type(model.get('threshold')) is not int or model['threshold']!=expected_threshold:raise ValueError('Unexpected integer decision threshold')
     if research:
         if model.get('schema')!=2 or not model.get('research_only'):raise ValueError('Expected research-only model schema')
         if not features or len(set(features))!=len(features):raise ValueError('Invalid research features')
@@ -326,19 +326,20 @@ def weights(rows):
     return balanced_weights(rows)
 
 
-def fit_heads(rows, features=FEATURES, transforms=None):
+def fit_heads(rows, features=FEATURES, transforms=None, weighting=None, threshold=32000):
     rows=[r for r in rows if r.get('movement_label_available',1)]
     if not rows:raise ValueError('No observed movement labels to fit')
     import numpy as np
     from sklearn.linear_model import LogisticRegression,Ridge
+    if type(threshold)is not int or threshold<0:raise ValueError('Nonnegative integer decision threshold required')
     features=tuple(features);transforms=transforms or ['log1p_q12']*len(features)
     if len(transforms)!=len(features) or any(t not in ('log1p_q12','identity_q12') for t in transforms):raise ValueError('Invalid feature transforms')
     x=np.array([[log_integer(r[k]) if t=='log1p_q12' else max(0,min(LIMIT,int(r[k]))) for k,t in zip(features,transforms)] for r in rows],dtype=np.int64)
-    y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float);w=weights(rows)
+    y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float);w=(weighting or weights)(rows)
     mu=np.average(x,axis=0,weights=w);sd=np.sqrt(np.average((x-mu)**2,axis=0,weights=w));sd[sd<1e-12]=1
     z=(x-mu)/sd
     research=features!=FEATURES or any(t!='log1p_q12' for t in transforms)
-    model=dict(schema=2 if research else 1,features=list(features),threshold=32000)
+    model=dict(schema=2 if research else 1,features=list(features),threshold=threshold)
     if research:model.update(research_only=True,transforms=list(transforms))
     bounds=[log_integer(LIMIT) if t=='log1p_q12' else LIMIT for t in transforms]
     def export(beta,intercept):
@@ -360,16 +361,16 @@ def fit_heads(rows, features=FEATURES, transforms=None):
             est=Ridge(alpha=100).fit(z[mask],sign*y[mask],sample_weight=w[mask])
             beta=est.coef_/sd;model[name+'_mean']=export(beta,float(est.intercept_)-float(beta@mu))
         else:model[name+'_mean']=export(np.zeros(len(features)),0)
-    validate_heads(model,research=research)
+    validate_heads(model,research=research,expected_threshold=threshold)
     return model
 
 
-def metrics(rows,model):
+def metrics(rows,model,weighting=None):
     rows=[r for r in rows if r.get('movement_label_available',1)]
     if not rows:return dict(episodes=0,states=0,note='No observed movement labels')
     import numpy as np
     y=np.array([r['defer_extra']-r['refresh_extra'] for r in rows],dtype=float)
-    pred=np.array([predict(model,[r[k] for k in model.get('features',FEATURES)])/1000 for r in rows]);w=weights(rows)
+    pred=np.array([predict(model,[r[k] for k in model.get('features',FEATURES)])/1000 for r in rows]);w=(weighting or weights)(rows)
     threshold=model['threshold']/1000
     take=pred>=threshold;ideal=y>=threshold;positive=np.maximum(y,0)
     # The threshold is the decision's opportunity cost in the same benefit

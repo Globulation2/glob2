@@ -352,6 +352,10 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
+    // Recovery may shift an overlay footprint after capability registration.
+    if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
+        for(int material=0;material<MaterialCount;++material)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,material);
+    }
 
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;

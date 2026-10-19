@@ -11,8 +11,9 @@
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
 #include "ResourceGradientProbe.h"
-#include "ResourceGradientPolicy.h"
 #include "ResourceGradientExploration.h"
+#include "GradientWorkStats.h"
+#include "GradientMarketTargets.h"
 #include <cstdlib>
 #include "field/GradientWorkspace.h"
 
@@ -30,9 +31,10 @@
 struct GradientRuntime
 {
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
-    ResourceGradientPolicy resources;
+    AdaptiveGradientState adaptive;
+    std::unique_ptr<GradientWorkStats> workStats;
+    GradientMarketTargets marketTargets;
     std::unique_ptr<ResourceGradientExploration> exploration;
-    void initializeResourcePolicy(const Map&);
 	struct Workspace
 	{
 		GradientWorkspace propagation;
@@ -131,6 +133,12 @@ struct GradientRuntime
         shareBackendSession();
     }
     GradientRuntime() {
+        pipeline.onSuperseded=[this](GradientPipeline::Job& job) {
+            if(job.adaptiveKey) {
+                const auto found=adaptive.fields.find(*job.adaptiveKey);
+                if(found!=adaptive.fields.end())found->second.inflight=false;
+            }
+        };
         shareBackendSession();
         if (const char* path=std::getenv("GLOB2_RESOURCE_GRADIENT_PROBE"))
             if (*path) qualityProbe=std::make_unique<ResourceGradientProbe>(path);

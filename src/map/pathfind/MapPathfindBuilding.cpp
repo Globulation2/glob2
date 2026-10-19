@@ -9,6 +9,7 @@
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
 
@@ -93,7 +94,14 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	assert(building->globalGradient[slot]);
 	assert(cell < size);
-	if (auto &search = building->globalGradientSearch[slot]) search->resolve(cell);
+    if(auto& search=building->globalGradientSearch[slot]) {
+        if(auto& stats=gradientRuntime->workStats) {
+            const auto before=search->settledCost();const bool complete=search->complete();
+            search->resolve(cell);
+            if(before!=search->settledCost() || complete!=search->complete())
+                stats->partial(GradientWorkStats::buildingKey(building->owner->teamNumber,swimClass,Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(building->resolveRoute(route))),game->stepCounter,before,search->settledCost());
+        } else search->resolve(cell);
+    }
 	return building->globalGradient[slot][cell];
 }
 

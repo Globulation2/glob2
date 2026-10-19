@@ -234,6 +234,10 @@ void Unit::resolveDeath()
 	{
 		if (!isDead)
 		{
+            // Guard crowding excludes dead units immediately, before the
+            // population list removes them on a subsequent simulation step.
+            if (hasCapability(UnitRuntimeTraits::GuardIdle))
+                owner->map->gradientGuardCostsChanged(owner->teamNumber);
 			++owner->stats.events().deaths[typeNum][diagnosticDeathCause];
 			if (diagnosticDeathCause == GameplayMeasurements::COMBAT)
 				owner->stats.recordCombatDeath(this);

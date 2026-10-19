@@ -261,38 +261,47 @@ The rendering thread polls pending artwork with the application's 2 ms budget,
 including when simulation runs on a separate thread, so HD reloads finish during
 automatic matches too.
 
-## Resource gradient quality probe
+## Unified gradient diagnostics
 
-`game run --resource-gradient-probe` writes `gradient-quality.csv` and
-`gradient-episodes.csv` in the output directory. The first compares sampled live
-natural-resource movement decisions with freshly rebuilt private CPU fields;
-market and consumer-specific fields are excluded. Reachability disagreements,
-depleted goals, missed moves and additional selected-step cost are recorded.
-Equal-cost alternative moves score zero. Extra cost alone excludes unreachable
-neighbors, so inspect the flags alongside it.
+`game run --resource-gradient-probe` retains its historical name but collects the
+`unified-gradient-spatial-h128-v3` contract for material, shared-market, guard, clearing and
+forbidden-escape fields, including applicable air movement classes. Explicit
+family/team/movement/material identities accompany all streams. It produces
+`gradient-quality.csv`, `gradient-episodes.csv`, separate planning outcomes and
+non-overlapping movement totals. Episodes freeze serving-capture metadata and
+compare deferred versus delayed-refresh alternatives over capture-anchored
+offsets 8 through 127 under the normal eight-tick publication delay. An episode
+is complete at age 128 ticks. Spatial overlap is initially supported only for
+ground material and clearing fields; explicit support reasons and independent
+publication-generation known flags distinguish unsupported or late-attached
+history from measured zero.
+Incomplete horizons and unknown historical counters are not fitted as complete
+known examples. Equal-quality alternative directions score zero; stalls,
+reachability, invalid destinations, forbidden failures and planning outcomes are
+separate from direction cost. Guard balancing uses its real RNG/context and
+weighted goals without treating intentional stays as failures.
 
-The second records seven scheduler inputs and a 32-tick counterfactual label:
-additional direction cost from retaining the serving field versus refreshing at
-capture, with the configured publication delay. These are comparisons along the
-live trajectory, not simulations of two different future games. Complete quiet
-episodes are retained, including zero-query examples; interrupted episodes are
-marked incomplete and excluded from training. Sampling uses one deterministic
-hash group out of eight during the first 1024 ticks of each 4096-tick window,
-with 256 ticks of warmup per sampled field. It uses private RNG copies and
-private fields and must produce identical simulation checksums with probing off.
+The oracle uses private current-world snapshots, selectors and RNG copies. It
+must not request/publish a live field or change simulation execution. These
+reference calculations and streams exist only when collection is enabled, and
+make diagnostic CPU unsuitable for production performance comparisons.
+`--gradient-spatial-overlap on|off` requires the probe and isolates spatial patch
+collection while retaining the other diagnostic work. An explicit off run emits
+unknown spatial histories with reason `disabled`, not measured zero; result
+metadata records `spatial_overlap_collection`.
 
-The separate `gradient-planning-quality.csv` compares sampled scalar planning
-answers with fresh reachability, including failed recruitment opportunities.
-Episode planning counters remain separate from movement direction-cost labels.
-See the model workflow for seeded exploration cohorts and checkpoint branches.
+For work counts without quality collection, `--gradient-work-stats PATH` enables
+raw per-family scheduling events and adjacent `.summary.csv` and `.intervals.csv`
+outputs. It is independently opt-in and defaults off. Result metadata records
+the separate model and collector contracts, whether a generic model is trained,
+the 128,000 milli-unit threshold, eight-tick admission minimum, absence of a
+forced maximum-age refresh and explicit fixed-interval research overrides. An untrained
+placeholder cannot be mistaken for a qualified adaptive model.
 
-The observer adds substantial reference computation and CSV I/O. Its objects and
-buffers exist only when enabled; disabled movement paths perform a null check.
-Never use collector-enabled runs for performance comparisons. Legacy entry points
-can enable it with `GLOB2_RESOURCE_GRADIENT_PROBE` set to a quality CSV path;
-structured jobs clear that variable and require the explicit flag. Diagnostic
-histories are deliberately absent from saves and checksums. See
-[the model workflow](resource-gradient-model.md) for tournaments and fitting.
+See [the model workflow](resource-gradient-model.md) for the new dataset contract,
+fixed-interval bootstrap tournament, whole-map splits and family-balanced fitting.
+Resource-only datasets remain separate unless an explicit validated compatibility
+mapping is introduced.
 
 ## Verifying a match record
 

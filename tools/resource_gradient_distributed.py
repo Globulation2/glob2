@@ -64,7 +64,10 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
         metadata=accepted.get('cohort',cohort)
         if not metadata.get('id') or metadata.get('role') not in ('exploration','candidate'):raise ValueError('Explicit cohort id and role required')
         contract=metadata.get('contract',{})
-        if (tuple(contract.get('features',()))!=FEATURES or contract.get('label')!='movement-direction-extra-cost'
+        from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
+        unified=contract==UNIFIED_CONTRACT
+        if unified and any(b.get('build_options',{}).get('adaptive_gradient_contract_sha256')!=canonical_hash(UNIFIED_CONTRACT) for b in bundles):raise ValueError('Supplied bundle does not pin unified collector contract')
+        if not unified and (tuple(contract.get('features',()))!=FEATURES or contract.get('label')!='movement-direction-extra-cost'
             or contract.get('future_offsets')!=[8,31] or contract.get('benefit_unit')!='direction-cost'
             or contract.get('request_type')!='movement'):
             raise ValueError('Collection requires the current eight-tick movement label contract')
@@ -85,10 +88,10 @@ def make_experiment(plan, maps, bundles, cohort, build_weights=None, ticks=90000
             options=supplied.get('build_options',{})
             if options.get('model_sha256')!=model_hash or options.get('header_sha256')!=header_hash:
                 raise ValueError('Supplied bundle model/header identity differs from cohort')
-        collection={}
+        collection={'contract':'unified-gradient-spatial-h128-v3'} if unified else {}
         if any(intervals):
-            collection={'exploration':','.join(map(str,intervals)),
-                        'seed':accepted.get('collection_seed',exploration_seed_for_game(policy.get('seed',0),group))}
+            collection.update(exploration=','.join(map(str,intervals)),
+                        seed=accepted.get('collection_seed',exploration_seed_for_game(policy.get('seed',0),group)))
         if 'build' in accepted:
             # Optional predeclared execution pool: identical binaries may have
             # separate bundle identities/host allowlists for large-map work.
@@ -149,7 +152,8 @@ def export(directory, output, allow_partial=False):
         if identity not in expected or record['job']!=expected[identity]:raise ValueError('Result does not match frozen job')
         if identity in accepted:raise ValueError('Duplicate logical result')
         if record.get('accepted') is not True:raise ValueError('Unaccepted result export')
-        if record.get('category')!='success' or record.get('result',{}).get('status')!='completed':
+        externally_censored=expected[identity]['labels']['resource_gradient']['cohort']['contract'].get('id')=='unified-gradient-spatial-h128-v3' and any(a['path']=='runtime-cap-override.json' for a in record.get('artifacts',[]))
+        if externally_censored or record.get('category')!='success' or record.get('result',{}).get('status')!='completed':
             failed.append(identity);continue
         accepted[identity]=record
     missing=sorted(set(expected)-accepted.keys())
@@ -195,6 +199,15 @@ def export(directory, output, allow_partial=False):
             else:raise ValueError('Unknown encoding')
             artifacts[name]=dict(path=str(target.resolve()),sha256=file_hash(target),decoded_sha256=decoded.hexdigest(),decoded_bytes=decoded_bytes,transport=info)
         episode=artifacts['gradient-episodes.csv']
+        from tools.adaptive_gradient_spatial import CONTRACT as UNIFIED_CONTRACT
+        if metadata['contract']==UNIFIED_CONTRACT:
+            policy_result=record.get('result',{}).get('adaptive_gradient_policy',{})
+            if policy_result.get('collector_contract')!='unified-gradient-spatial-h128-v3':raise ValueError('Runtime did not attest the spatial collector contract')
+            from tools.tournaments.jobs import resource_gradient_collection_outputs
+            for name,required in resource_gradient_collection_outputs(record['job']['config']['resource_gradient_collection']).items():
+                if name not in artifacts:raise ValueError('Missing unified output: '+name)
+                with gzip.open(artifacts[name]['path'],'rt') as stream:columns=set(next(csv.reader(stream),[]))
+                if not required<=columns:raise ValueError('Unified output schema mismatch: '+name)
         if 'contradictions' in metadata['contract']:
             from tools.resource_gradient_dataset import CONTRADICTION_CONTRACT
             if metadata['contract']['contradictions'] != CONTRADICTION_CONTRACT:

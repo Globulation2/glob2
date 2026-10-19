@@ -4,6 +4,8 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientTargetCell.h"
+#include "gradient/AdaptiveGradientModel.h"
 #include "field/RuntimeTerrainGradient.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -224,6 +226,17 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 }
 
 
+void Map::setGradientSpatialOverlap(bool enabled)
+{
+    if(auto& probe=gradientRuntime->qualityProbe)probe->setSpatialEnabled(enabled);
+}
+
+void Map::configureGradientWorkStats(const std::string& path)
+{
+    gradientRuntime->workStats.reset();
+    gradientRuntime->workStats=std::make_unique<GradientWorkStats>(path);
+}
+
 bool Map::gradientPipelineEnabled() const { return gradientRuntime->pipeline.enabled(); }
 
 Map::GradientPipelineStatus Map::gradientPipelineStatus() const
@@ -240,6 +253,13 @@ bool Map::hasPendingGradientPreparation() const
 	return !gradientRuntime->preparations.empty() || !gradientRuntime->stagedBuildings.empty();
 }
 namespace {
+std::optional<GradientWorkStats::Key> gradientWorkIdentity(const Map& map,std::optional<GradientFieldKey> shared,int kind,int team,int material,int swim,int consumer,unsigned modes)
+{
+    if(shared)return GradientWorkStats::Key(*shared);
+    if(kind!=int(gradient_preparation::Kind::Markets) || !map.game)return std::nullopt;
+    const auto* building=consumer<0?nullptr:map.game->teams[team]->myBuildings[Building::GIDtoID(consumer)];
+    return GradientWorkStats::consumerKey(team,swim,material,consumer<0?65535:consumer,building?building->scriptIdentity:0,modes);
+}
 gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation& p, const Map& map)
 {
     gradient_preparation::Request request;
@@ -272,19 +292,15 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
         request.excludesShared=job->request.excludesShared;
         job->request=request;
         job->snapshotLease=foundation.gradientView();
-        if (preparation.kind==gradient_preparation::Kind::Materials && preparation.swim<SWIM_CLASS_COUNT) {
-            gradientRuntime->initializeResourcePolicy(*this);
-            const int fieldKey=(preparation.team*MaterialCount+preparation.material)*SWIM_CLASS_COUNT+preparation.swim;
-            job->capture=gradientRuntime->resources.fields[fieldKey].capture(unsigned(foundation.tick),gradientRuntime->resources.sources[preparation.material]);
-            if (auto& probe=gradientRuntime->qualityProbe) {
-                const int key=(preparation.team*MaterialCount+preparation.material)*SWIM_CLASS_COUNT+preparation.swim;
-                probe->capturedMovement(key,unsigned(foundation.tick));
-            }
+        if(job->adaptiveKey) {
+            if(job->adaptiveKey->family==GradientFieldFamily::Markets)ensureGradientMarketTargets(job->adaptiveKey->team,job->adaptiveKey->material);
+            auto& policy=gradientRuntime->adaptive;
+            job->adaptiveCapture=policy.enroll(*job->adaptiveKey).capture(unsigned(foundation.tick),policy.currentTargets(*job->adaptiveKey),0);
         }
         jobs.push_back(job);
     }
     gradientRuntime->pipeline.prepareBatch(jobs,[](GradientPipeline::Job& job) {
-        gradient_preparation::seed(job.request,*job.snapshotLease,job.data.get(),*job.crowding);
+        job.preparedGoalCount=gradient_preparation::seed(job.request,*job.snapshotLease,job.data.get(),*job.crowding);
     });
 }
 
@@ -307,6 +323,7 @@ void Map::resetGradientPipeline() noexcept
 	gradientRuntime->preparations.clear();
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
+    gradientRuntime->adaptive.clearAssociations();
 	resetBuildingGradientPipeline();
 }
 void Map::setGradientWorkerCount(unsigned workers)
@@ -330,16 +347,18 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
     };
 	gradientRuntime->pipeline.onPublished = [this](GradientPipeline::Job& job) {
         auto** slot=job.slot;
+        if(job.adaptiveKey) {
+            auto capture=job.adaptiveCapture;
+            capture.goalCount=job.preparedGoalCount;
+            auto& field=gradientRuntime->adaptive.enroll(*job.adaptiveKey);
+            field.published(capture);
+            field.inflight=gradientRuntime->pipeline.contains(*job.adaptiveKey,&job);
+        }
+        if(auto& stats=gradientRuntime->workStats)
+            if(const auto key=gradientWorkIdentity(*this,job.adaptiveKey,int(job.request.kind),job.request.team,job.request.material,job.request.swim,job.request.consumer,job.request.modes))
+                stats->published(*key,game->stepCounter,job.workReason,size);
         if (const auto key=planeKeyForSlot(slot)) {
             const auto id=MapState::decodePlaneKey(*key);
-            if (!id.market && id.resource<MaterialCount && id.swim<SWIM_CLASS_COUNT) {
-                // Released pre-adaptive saves have no source epochs. Initialize
-                // before creating a field so an immediate re-save stays valid.
-                gradientRuntime->initializeResourcePolicy(*this);
-                const int field=(id.team*MaterialCount+id.resource)*SWIM_CLASS_COUNT+id.swim;
-                gradientRuntime->resources.fields[field].serving=job.capture;
-                if (auto& probe=gradientRuntime->qualityProbe) probe->publishedMovement(field,job.capture.tick);
-            }
             (id.market ? marketMaterialGradientStale[id.team][id.resource][id.swim]
                        : materialGradientStale[id.team][id.resource][id.swim])=false;
         } else {
@@ -351,6 +370,8 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
                 }
         }
         publishPlane(slot);
+        if(job.adaptiveKey && job.adaptiveKey->family==GradientFieldFamily::Clear)
+            if(auto& probe=gradientRuntime->qualityProbe)probe->publishedOverlap(*job.adaptiveKey,game->stepCounter,*slot);
         for (auto& [key,entry] : gradientRuntime->materialFields)
             if (&entry.published==slot) {
                 // advance() has moved the old allocation into the retired job.
@@ -394,186 +415,89 @@ void Map::syncStep(Uint32 stepCounter)
 			updateExploredArea(team);
 	}
 	
-    // Refresh one enrolled escape field per eight ticks. Seeding and partition
-    // examination belong to the worker; publication keeps the fixed deadline.
-    const int activeSwimClasses=game->hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-    const int escapeSlots=game->teamsCount()*activeSwimClasses;
-    if (escapeSlots && !(stepCounter&7)) {
-        const int slot=(stepCounter>>3)%escapeSlots;
-        const int team=slot/activeSwimClasses, swim=slot%activeSwimClasses;
-        if (forbiddenGradient[team][swim] && periodicGradientClassActive(team,swim)) updateForbiddenGradient(team,swim);
-
-    }
-
-}
-
-bool Map::periodicGradientClassActive(int team, int swim) const
-{
-    // Air routing retains its existing scheduling; the learned population is
-    // the eight ground movement classes only.
-    return swim==AIR_MOVEMENT_CLASS || game->teams[team]->stats.usesGroundMovementClass(swim);
-}
-
-void Map::suspendUnusedGradientClasses()
-{
-    const auto suspend = [&](Uint16** slot, bool& stale) {
-        if (*slot && !stale) {
-            gradientRuntime->pipeline.invalidate(slot);
-            stale = true;
-        }
-    };
-    for (int team=0; team<game->teamsCount(); ++team)
-        for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim) {
-            if (periodicGradientClassActive(team,swim)) continue;
-            for (int material=0; material<MaterialCount; ++material) {
-                suspend(&materialGradients[team][material][swim],materialGradientStale[team][material][swim]);
-                suspend(&marketMaterialGradients[team][material][swim],marketMaterialGradientStale[team][material][swim]);
-            }
-            suspend(&guardAreasGradient[team][swim],guardGradientStale[team][swim]);
-            suspend(&clearAreasGradient[team][swim],clearGradientStale[team][swim]);
-            suspend(&forbiddenGradient[team][swim],forbiddenGradientStale[team][swim]);
-        }
 }
 
 void Map::stagePeriodicGradientPreparation()
 {
-	// Building work has its own admission budget. Periodic selection may return
-	// early inside enqueuePeriodic without skipping FIFO material/area admission.
-	stageBuildingGradientPreparation();
-    suspendUnusedGradientClasses();
-    if (auto& probe=gradientRuntime->qualityProbe) probe->stageEpisodes(*this);
-    const auto enqueuePeriodic=[&]() {
-        using Kind = GradientRuntime::Preparation::Kind;
-
-        // Round-robin visits enroll at most one new warm request per boundary.
-        // Coalesced destinations do not consume that opportunity; cold and warm
-        // requests then share the same FIFO admission order.
-        auto dispatch = [&](Uint16 **slot, Kind kind, int team, int material, int swim) {
-            return requestGradientField(slot,int(kind),team,material,swim);
-        };
-        // A second pass begins a fresh visitation round. If every enrolled field
-        // already has a ticket, there is no additional work to enqueue this tick.
-        for (int pass=0; pass<2; pass++)
-        {
-            int numberOfTeam=game->mapHeader.getNumberOfTeams();
-            for (int t=0; t<numberOfTeam; t++)
-                for (int r=0; r<MaterialCount; r++)
-                    for (int s=AIR_MOVEMENT_CLASS; s<MOVEMENT_CLASS_COUNT; s++)
-                        if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
-                        {
-                            const bool queued=dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
-                            gradientUpdated[t][r][s]=true; // Visited in this refresh round, even if already pending.
-                            if (queued) return;
-                        }
-            // Market fields participate in the same fixed-tick pipeline and round robin.
-            // A stock transition also requests an early refresh.
-            for (int t=0; t<numberOfTeam; t++)
-                for (int r=0; r<MaterialCount; r++)
-                    for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-                        if (periodicGradientClassActive(t,s) && marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
-                        {
-                            // A coalesced request has not captured the newer stock.
-                            // Preserve its dirty mark and inspect other destinations;
-                            // the old ticket still publishes at its fixed deadline.
-                            const bool queued=dispatch(&marketMaterialGradients[t][r][s], Kind::Markets, t, r, s);
-                            marketGradientUpdated[t][r][s]=true;
-                            if (queued) {
-                                marketGradientDirty[t][r][s]=false;
-                                return;
-                            }
-                        }
-            for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-                    if(periodicGradientClassActive(t,s) && guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
-                    {
-                        const bool queued=dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
-                        guardGradientUpdated[t][s]=true; // Visited in this refresh round, even if already pending.
-                        if (queued) return;
-                    }
-            for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-                    if(periodicGradientClassActive(t,s) && clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
-                    {
-                        const bool queued=dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
-                        clearGradientUpdated[t][s]=true; // Visited in this refresh round, even if already pending.
-                        if (queued) return;
-                    }
-
-
-            for (int t=0; t<numberOfTeam; t++)
-                for (int r=0; r<MaterialCount; r++)
-                    for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-                    {
-                        gradientUpdated[t][r][s]=false;
-                        if (marketsV2Enabled()) marketGradientUpdated[t][r][s]=false;
-                    }
-            for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
-                {
-                    guardGradientUpdated[t][s]=false;
-                    clearGradientUpdated[t][s]=false;
-                }
-        }
-    };
-    enqueuePeriodic();
-    using Kind=GradientRuntime::Preparation::Kind;
+    // Lazy building and consumer caches keep their explicit requests. Idle
+    // shared capacity stays idle; no family replaces another family's work.
+    stageBuildingGradientPreparation();
+    if(auto& probe=gradientRuntime->qualityProbe)probe->stageEpisodes(*this);
+    auto& pipeline=gradientRuntime->pipeline;
+    auto& policy=gradientRuntime->adaptive;
     const auto admit=[&](const GradientRuntime::FieldRequest& request) {
-        auto* job=gradientRuntime->pipeline.reserve(request.slot,request.request.swim);
+        auto* job=pipeline.reserve(request.slot,request.request.swim);
         job->request=request.request;
+        job->adaptiveKey=gradientFieldKey(request.slot);
+        if(job->adaptiveKey) {
+            policy.enroll(*job->adaptiveKey).admitted(game->stepCounter);
+        }
+        if(auto& stats=gradientRuntime->workStats)
+            if(const auto key=gradientWorkIdentity(*this,job->adaptiveKey,int(request.request.kind),request.request.team,request.request.material,request.request.swim,request.request.consumer,request.request.modes))
+                job->workReason=stats->admitted(*key,game->stepCounter,size);
         gradientRuntime->preparations.push_back({job,request.request.kind,request.request.team,request.request.material,request.request.swim});
-        if (request.request.kind==Kind::Materials && request.request.swim<SWIM_CLASS_COUNT) {
-            gradientRuntime->initializeResourcePolicy(*this);
-            const int key=(request.request.team*MaterialCount+request.request.material)*SWIM_CLASS_COUNT+request.request.swim;
-            gradientRuntime->resources.fields[key].submitted=game->stepCounter;
-        }
     };
-    // Preserve one FIFO cold/consumer/area admission per tick, even if delayed
-    // TeamStats has not yet observed the unit that first requested this class.
-    if (!gradientRuntime->fieldRequests.empty()) {
+    while(!gradientRuntime->fieldRequests.empty() && pipeline.canReserve()) {
         const auto request=gradientRuntime->fieldRequests.front();
-        gradientRuntime->fieldRequests.pop_front();
-        admit(request);
+        gradientRuntime->fieldRequests.pop_front();admit(request);
     }
-    // Accepted warm natural fields join the same immutable preparation batch.
-    // Reuse the normal ticket coalescing before bypassing the FIFO only for a
-    // newly created warm ticket; existing cold requests never move in the queue.
-    auto& policy=gradientRuntime->resources;
-    for (auto& [key,field]:policy.fields) {
-        const int swim=key%SWIM_CLASS_COUNT, material=(key/SWIM_CLASS_COUNT)%MaterialCount,
-            team=key/(MaterialCount*SWIM_CLASS_COUNT);
-        if (!periodicGradientClassActive(team,swim) || !hasMaterialSourceSlot(material) || !materialGradients[team][material][swim]) {
-            field.requested=false;
-            continue;
-        }
-        auto& exploration=gradientRuntime->exploration;
-        const char* reason=nullptr;
-        if (exploration) reason=exploration->refresh(key,field,game->stepCounter,policy.sources[material]);
-        else if (field.refresh(game->stepCounter,policy.sources[material])) reason="adaptive";
-        if (!reason) continue;
-        const bool accepted=requestGradientField(&materialGradients[team][material][swim],int(Kind::Materials),team,material,swim);
-        if (exploration) exploration->record(game->stepCounter,key,reason,accepted);
-        if (!accepted) continue;
+    for(auto& [key,field]:policy.fields) {
+        auto** slot=gradientFieldDestination(key);
+        if(!slot)continue;
+        const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
+        AdaptiveGradientState::Evaluation evaluation;
+        auto* exploration=gradientRuntime->exploration.get();
+        const bool fork=exploration && exploration->forkField>=0 && std::uint32_t(exploration->forkField)==key.packed() && !exploration->forkComplete;
+        if(fork) {
+            if(field.demand && !field.queued && !field.inflight &&
+                Uint32(game->stepCounter-field.submitted)>=AdaptiveGradientState::MinimumInterval &&
+                Uint32(game->stepCounter-exploration->forkStart)>=exploration->forkWait)
+                evaluation.reason=AdaptiveGradientState::Reason::Bootstrap;
+            else field.demand=false;
+        } else evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
+            AdaptiveGradientModel::predict,interval);
+        if(!evaluation.requested())continue;
+        if(!pipeline.canReserve()){field.defer(evaluation.reason);continue;}
+        if(!requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,key.swim,-1,1,int(evaluation.reason)))continue;
         const auto request=gradientRuntime->fieldRequests.back();
-        gradientRuntime->fieldRequests.pop_back();
-        admit(request);
+        gradientRuntime->fieldRequests.pop_back();admit(request);
+        if(auto& exploration=gradientRuntime->exploration)
+            exploration->record(game->stepCounter,key.packed(),fork?"checkpoint_fork":GradientWorkStats::reasonName(unsigned(evaluation.reason)),true);
     }
-
 }
 
 void Map::switchFogOfWar(void)
 {
 	visibilityChanges.markAll();
 	PERF_SCOPE_TIME(Fog);
-	memset(fogOfWar, 0, size*sizeof(Uint32));
-	if (fogOfWar == &fogOfWarA[0])
-		fogOfWar = &fogOfWarB[0];
-	else
-		fogOfWar = &fogOfWarA[0];
+	auto* previous=fogOfWar;
+	auto* next=previous==fogOfWarA.data() ? fogOfWarB.data() : fogOfWarA.data();
+	if(gradientRuntime->adaptive.fields.empty()) {
+		memset(previous,0,size*sizeof(Uint32));
+		fogOfWar=next;
+	} else {
+		fogOfWar=next;
+		// Fuse target visibility deltas into the existing fog-plane clear. No
+		// inference scan, reference gradient, or loop over enrolled fields.
+		for(size_t index=0;index<size;++index) {
+			const auto old=previous[index];
+			previous[index]=0;
+			const auto type=resourceCells[index].resource.type;
+			if(old==next[index] || type==NO_RES_TYPE
+				|| !resourcePropertiesByIndex(type).visibleToHarvest || !materialMaskAt(index)) continue;
+			auto before=captureGradientTargetCell(index);
+			before.visibleTeams=old;
+			gradientTargetCellChanged(index,before);
+		}
+	}
 }
 
 void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 {
 	size_t index = coordToIndex(x, y);
+	const auto targetBefore=gradientRuntime->adaptive.fields.empty() || !fogOfWar
+		|| (fogOfWar[index]&sharedVision)==sharedVision ? std::optional<GradientTargetCell>{}
+		: std::optional{captureGradientTargetCell(index)};
 	// The snapshot observes discovery and the active fog plane. Updating only
 	// the inactive plane becomes visible after switchFogOfWar invalidates it.
 	if ((mapDiscovered[index] & sharedVision) != sharedVision
@@ -582,6 +506,7 @@ void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;
+	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
 }
 
 void Map::setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
@@ -713,19 +638,44 @@ void Map::updateExploredArea(int teamNumber)
 			exploredArea[teamNumber][i]--;
 }
 
-bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer, unsigned modes)
+bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer, unsigned modes, int refreshReason)
 {
     // Snapshot readers cannot mutate shared scheduling, even when a serial
     // executor runs their job on the owner thread. Enrollment is owner-only.
     if (compute.insideJob()) return false;
     if (!gradientRuntime->pipeline.enabled()) configureGradientPipeline(0,8);
+    const auto key=gradientFieldKey(slot);
+    const auto reason=refreshReason<0?unsigned(*slot?AdaptiveGradientState::Reason::Reactive:AdaptiveGradientState::Reason::Cold):unsigned(refreshReason);
+    const auto observedRequest=[&](bool duplicate) {
+        if(auto& stats=gradientRuntime->workStats)
+            if(const auto identity=gradientWorkIdentity(*this,key,kind,team,material,swim,consumer,modes))
+                stats->request(*identity,game?game->stepCounter:0,reason,duplicate);
+    };
     // A queued ticket captures all edits up to admission. An admitted ticket
     // keeps its snapshot/deadline; later edits are picked up by a subsequent
     // periodic or demand refresh instead of continually restarting this work.
-    for (const auto& queued:gradientRuntime->fieldRequests) if (queued.slot==slot) return false;
+    for (const auto& queued:gradientRuntime->fieldRequests) if (queued.slot==slot){observedRequest(true);return false;}
     bool inFlight=false;
     gradientRuntime->pipeline.forEachDestination([&](Uint16** destination) { if (destination==slot) inFlight=true; });
-    if (inFlight) return false;
+    if(inFlight) {
+        observedRequest(true);
+        // Re-reading an unchanged pending field does not manufacture a second
+        // reactive refresh. A real post-capture edit retains its recovery need.
+        if(key)gradientRuntime->pipeline.visitAdaptiveCaptures([&](GradientFieldKey pending,bool superseded,const AdaptiveGradientState::Capture& capture) {
+            if(!superseded && pending==*key && gradientRuntime->adaptive.currentTargets(*key)!=capture.targets)
+                gradientRuntime->adaptive.enroll(*key).reactive=true;
+        });
+        return false;
+    }
+    if(key && *slot) {
+        auto& field=gradientRuntime->adaptive.enroll(*key);
+        field.reactive=true;
+        // Direct recovery uses the same minimum as model evaluation. Retain the
+        // signal for a later boundary instead of bypassing it through the FIFO.
+        if(game && Uint32(game->stepCounter-field.submitted)<AdaptiveGradientState::MinimumInterval) {
+            field.demand=true;observedRequest(false);return false;
+        }
+    }
     gradient_preparation::Request request;
     request.kind=static_cast<gradient_preparation::Kind>(kind); request.team=team;
     request.material=material; request.swim=swim; request.consumer=consumer; request.modes=modes;
@@ -733,8 +683,37 @@ bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, 
         const auto* building=game->teams[team]->myBuildings[Building::GIDtoID(consumer)];
         request.excludesShared=building && building->usesTeamMaterials();
     }
+    observedRequest(false);
     gradientRuntime->fieldRequests.push_back({slot,request});
+    if(key)gradientRuntime->adaptive.enroll(*key).queued=true;
     return true;
+}
+
+std::optional<GradientFieldKey> Map::gradientFieldKey(Uint16* const* slot) const
+{
+    if(const auto plane=planeKeyForSlot(slot)) {
+        const auto id=MapState::decodePlaneKey(*plane);
+        if(id.resource<MaterialCount)return GradientFieldKey{id.market?GradientFieldFamily::Markets:GradientFieldFamily::Materials,
+            Uint8(id.team),Uint8(id.swim),Uint8(id.resource)};
+    }
+    for(int team=0;team<Team::MAX_COUNT;++team)for(int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
+        if(slot==&guardAreasGradient[team][swim])return GradientFieldKey{GradientFieldFamily::Guard,Uint8(team),Uint8(swim)};
+        if(slot==&clearAreasGradient[team][swim])return GradientFieldKey{GradientFieldFamily::Clear,Uint8(team),Uint8(swim)};
+        if(slot==&forbiddenGradient[team][swim])return GradientFieldKey{GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)};
+    }
+    return std::nullopt;
+}
+Uint16** Map::gradientFieldDestination(GradientFieldKey key)
+{
+    if(!key.valid(Team::MAX_COUNT,MOVEMENT_CLASS_COUNT,MaterialCount))return nullptr;
+    switch(key.family) {
+    case GradientFieldFamily::Materials:return &materialGradients[key.team][key.material][key.swim];
+    case GradientFieldFamily::Markets:return &marketMaterialGradients[key.team][key.material][key.swim];
+    case GradientFieldFamily::Guard:return &guardAreasGradient[key.team][key.swim];
+    case GradientFieldFamily::Clear:return &clearAreasGradient[key.team][key.swim];
+    case GradientFieldFamily::Forbidden:return &forbiddenGradient[key.team][key.swim];
+    }
+    return nullptr;
 }
 
 // Persisted destination namespaces. Keep these bases stable across save formats;
@@ -786,15 +765,18 @@ void Map::configureResourceGradientExploration(const std::string& intervals, Uin
         throw std::invalid_argument("Gradient exploration requires structured headless collection with the probe enabled");
     ResourceGradientExploration config;
     if (!intervals.empty()) config.intervals=ResourceGradientExploration::parseIntervals(intervals);
+    if(!AdaptiveGradientModel::Trained && std::find(config.intervals.begin(),config.intervals.end(),0u)!=config.intervals.end())
+        throw std::invalid_argument("Unified adaptive coefficients are untrained; bootstrap requires positive fixed intervals");
+    if(!AdaptiveGradientModel::Trained && config.intervals.empty() && forkField<0)
+        throw std::invalid_argument("Untrained unified collection requires explicit fixed intervals");
     config.seed=seed;config.forkField=forkField;config.forkWait=forkWait;config.forkStart=game->stepCounter;
     if (forkField>=0) {
-        const auto found=gradientRuntime->resources.fields.find(forkField);
-        const int swim=forkField%SWIM_CLASS_COUNT,material=(forkField/SWIM_CLASS_COUNT)%MaterialCount,
-            team=forkField/(SWIM_CLASS_COUNT*MaterialCount);
-        if (team>=game->mapHeader.getNumberOfTeams() || found==gradientRuntime->resources.fields.end()
-            || !materialGradients[team][material][swim])
-            throw std::invalid_argument("Gradient fork requires a captured warm natural-resource field");
-        auto** slot=&materialGradients[team][material][swim];
+        const auto key=GradientFieldKey::unpack(std::uint32_t(forkField));
+        const auto found=gradientRuntime->adaptive.fields.find(key);
+        auto** slot=gradientFieldDestination(key);
+        if(!key.valid(game->mapHeader.getNumberOfTeams(),MOVEMENT_CLASS_COUNT,MaterialCount)
+            || found==gradientRuntime->adaptive.fields.end() || !slot || !*slot || !found->second.serving.known)
+            throw std::invalid_argument("Gradient fork requires a captured warm shared field");
         bool pending=false;
         gradientRuntime->pipeline.forEachDestination([&](Uint16** destination){pending|=destination==slot;});
         for (const auto& request:gradientRuntime->fieldRequests) pending|=request.slot==slot;

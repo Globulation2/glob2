@@ -27,6 +27,26 @@ def resource_gradient_collection_outputs(collection):
     Keep this adapter local to the tournament package so remote zip workers need
     no imports from the model fitting tools or scientific Python environment.
     """
+    if collection.get('contract') == 'unified-gradient-spatial-h128-v3':
+        identity={'family','team','movement','material','key'}
+        outputs={
+            'gradient-episodes.csv':identity|{'tick','complete','publication_delay','queries','defer_extra','refresh_extra',
+                'age','q32','q128','target_added','target_removed','target_added_frac_q12','target_removed_frac_q12',
+                'since_capture_invalid_goal','since_capture_reachable_no_move','since_capture_movement_queries',
+                'capture_known','movement_observed','defer_stalls','refresh_stalls','defer_invalid_goals','refresh_invalid_goals',
+                'defer_missed_moves','refresh_missed_moves','defer_escape_failures','refresh_escape_failures',
+                'guard_balance_queries','route_changes','seed_cost_changes','planning_queries',
+                'serving_capture_tick','captured_goal_count','capture_target_added_epoch','capture_target_removed_epoch',
+                'capture_route_epoch','capture_seed_cost_epoch','current_target_added_epoch','current_target_removed_epoch',
+                'current_route_epoch','current_seed_cost_epoch','overlap_supported','overlap_support_reason','overlap_history_known','overlap_generation','overlap_publication_tick',
+                'queries_near_goal_change','queries_near_passability_change','overlap_movement_queries',
+                'queries_near_goal_added','queries_near_goal_removed','queries_near_blocked','queries_near_opened'},
+            'gradient-quality.csv':identity|{'query','tick','extra_cost','false_unreachable','false_reachable','invalid_goal','missed_move','escape_failure','stall','guard_balance'},
+            'gradient-planning-quality.csv':identity|{'query','tick','false_unreachable','false_reachable'},
+            'gradient-contradictions.csv':identity|{'epoch','invalid_goal','reachable_no_move','movement_queries'},
+        }
+        if collection.get('exploration') is not None:outputs['gradient-decisions.csv']={'tick','key','behavior_seed','behavior_interval','reason','admitted'}
+        return outputs
     outputs = {
         'gradient-episodes.csv': {'tick', 'key', 'complete', 'queries', 'defer_extra',
             'refresh_extra', 'age', 'q32', 'q128', 'source_added', 'source_removed',
@@ -45,8 +65,10 @@ def resource_gradient_collection_outputs(collection):
 
 
 def _validate_resource_gradient_collection(collection):
-    if not isinstance(collection, dict) or set(collection) - {'exploration', 'seed', 'threads'}:
-        raise ValueError('resource_gradient_collection must contain only exploration, seed and threads')
+    if not isinstance(collection, dict) or set(collection) - {'exploration', 'seed', 'threads', 'contract'}:
+        raise ValueError('resource_gradient_collection must contain only exploration, seed, threads and contract')
+    if 'contract' in collection and collection['contract'] != 'unified-gradient-spatial-h128-v3':
+        raise ValueError('Unknown explicit gradient collection contract')
     if type(collection.get('seed', 0)) is not int or not 0 <= collection.get('seed', 0) <= 2**32-1:
         raise ValueError('resource gradient exploration seed must be a uint32 integer')
     if 'threads' in collection and (type(collection['threads']) is not int or not 1 <= collection['threads'] <= 64):
@@ -209,6 +231,9 @@ class EngineJob:
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
+            collection=job['config']['resource_gradient_collection']
+            if collection.get('contract')=='unified-gradient-spatial-h128-v3' and result.get('adaptive_gradient_policy',{}).get('collector_contract')!='unified-gradient-spatial-h128-v3':
+                raise ValueError('engine did not attest the spatial collector contract')
             for name, required in resource_gradient_collection_outputs(job['config']['resource_gradient_collection']).items():
                 artifact = path.parent / name
                 if not artifact.is_file():

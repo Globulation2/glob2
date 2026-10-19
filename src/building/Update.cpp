@@ -385,6 +385,11 @@ bool Building::tryToBuildingSiteRoom(void)
 		// position
 		posX=newPosX;
 		posY=newPosY;
+        // Supplier lists were restored before the final site position. Diff the
+        // settled footprint too, including providers without occupancy cells.
+        if(type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) {
+            for(int material=0;material<MaterialCount;++material)owner->map->dirtyMarketGradientsSlot(owner->teamNumber,material);
+        }
 		resetPathfindGradients();
 
 		// flag useful :

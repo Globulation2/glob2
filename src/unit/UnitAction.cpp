@@ -27,8 +27,11 @@ void Unit::wrapPosition()
 	if (!performance[FLY] && !performance[WALK] && (dx || dy) && (!performance[SWIM] || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable)) {
 		dx=dy=0; direction=UNIT_DIRECTION_NONE;
 	}
+    const int oldX=posX,oldY=posY;
 	posX=(posX+dx)&(owner->map->getMaskW());
 	posY=(posY+dy)&(owner->map->getMaskH());
+    if((posX!=oldX || posY!=oldY) && !isDead && displacement!=DIS_INSIDE && hasCapability(UnitRuntimeTraits::GuardIdle))
+        owner->map->gradientGuardCostsChanged(owner->teamNumber);
 }
 
 void Unit::clearOccupiedMapSlot()

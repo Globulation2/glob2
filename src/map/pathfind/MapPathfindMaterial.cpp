@@ -13,32 +13,34 @@
 
 // Material pathfinding and idle ground movement.
 
+std::optional<GradientFieldKey> Map::materialGradientFieldKey(int team,int material,int swim,const Uint16* cells) const
+{
+    if(!cells)return std::nullopt;
+    if(cells==materialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Materials,Uint8(team),Uint8(swim),Uint8(material)};
+    if(cells==marketMaterialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Markets,Uint8(team),Uint8(swim),Uint8(material)};
+    return std::nullopt;
+}
+
 bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MaterialCount);
-	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
-	if (!gradient) { *stopWork=false; return false; }
-    // Published cells remain immutable throughout this movement query. Reuse
-    // the same value for demand, movement and outcome bookkeeping.
+    std::optional<GradientFieldKey> key;
+	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target,&key);
+	if (!gradient) {if(key)gradientMovementDemand(*key);*stopWork=false;return false;}
     const size_t hereIndex=coordToIndex(x,y);
     const Uint16 here=gradient[hereIndex];
-    // Only owner queries of ground natural fields enter the adaptive model.
-    // Cold reads may be null; air and consumer fields retain their own policies.
-    const bool naturalGround=game && !compute.insideJob() && swimClass<SWIM_CLASS_COUNT
-        && gradient==materialGradients[teamNumber][resourceType][swimClass];
-    std::optional<EntityRandom> before;
-    if (naturalGround && gradientRuntime->qualityProbe) before.emplace(random);
-    std::optional<GradientMovementEvidence> evidence;
-    if (naturalGround) evidence.emplace();
-    auto* movementEvidence=evidence ? &*evidence : nullptr;
-    ResourceGradientPolicy::Field* policyField=nullptr;
-    if (naturalGround) {
-        gradientRuntime->initializeResourcePolicy(*this);
-        auto& field=gradientRuntime->resources.fields[(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass];
-        policyField=&field;
-        field.queried(game->stepCounter,here!=GRADIENT_FORBIDDEN);
-    }
+    if(gradient==materialGradients[teamNumber][resourceType][swimClass])
+        key=GradientFieldKey{GradientFieldFamily::Materials,Uint8(teamNumber),Uint8(swimClass),resourceType};
+    else if(gradient==marketMaterialGradients[teamNumber][resourceType][swimClass])
+        key=GradientFieldKey{GradientFieldFamily::Markets,Uint8(teamNumber),Uint8(swimClass),resourceType};
+    if(key && here!=GRADIENT_FORBIDDEN && gradientRuntime->qualityProbe)
+        gradientRuntime->qualityProbe->observeOverlap(*this,*key,x,y,gradient);
+    // A forbidden tile delegates actual escape to its separate family selector.
+    if(key && here!=GRADIENT_FORBIDDEN)gradientMovementDemand(*key);
+    std::optional<GradientQueryContext> context;
+    if(key && here!=GRADIENT_FORBIDDEN)context=GradientQueryContext{*key,x,y,random};
+    GradientQueryResult outcome;
     const auto move=[&]() {
 
     // Resolve the already-selected destination instead of repeating supplier
@@ -68,43 +70,27 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 		return false;
 	}
 	*stopWork=false;
-    if (here==GRADIENT_AT_GOAL) {
-        if (!materialAmountAtSlot(hereIndex,resourceType)) {
-            if (movementEvidence) movementEvidence->emptyGoal=true;
-            refresh();
-        }
+    if(here==GRADIENT_AT_GOAL) {
+        outcome.atGoal=true;
+        outcome.goalValid=key?gradientGoalValid(*key,x,y):materialAmountAtSlot(hereIndex,resourceType)>0;
+        outcome.travelRequired=!outcome.goalValid;
+        if(!outcome.goalValid)refresh();
         return false;
     }
-    const auto select=[&](bool strict) {
-        // The selected production features need only the existing goal and
-        // final-move results. Neighbour rejection classification remains an
-        // opt-in diagnostic specialization, with the ordinary selector ABI
-        // unchanged for production movement and all other gradient types.
-        static_assert((ResourceGradientModel::RequiredMovementMask&~GradientMovementOutcomeMask)==0,
-            "The movement model requires additional selector instrumentation");
-        if (before) return directionByGradientObserved(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,*movementEvidence);
-        return directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,strict);
-    };
-    if (select(true)) return true;
-    if (select(false)) return true;
+    if(directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,true))return true;
+    if(directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,false))return true;
+    if(key && key->family==GradientFieldFamily::Markets && gradientGoalValid(*key,x,y)) {
+        outcome.atGoal=outcome.goalValid=true;outcome.travelRequired=false;return false;
+    }
     refresh();
     return false;
     };
     const bool moved=move();
-    if (movementEvidence) {
-        movementEvidence->reachableNoMove=!moved && here>GRADIENT_UNREACHABLE && here!=GRADIENT_AT_GOAL;
-        // Record after movement, exactly once even for goal/unreachable or
-        // forbidden reads. This matches the diagnostic query denominator.
-        // A refresh captured during this query keeps its earlier baseline;
-        // evidence from the query belongs after that capture in both streams.
-        policyField->recordMovement(*movementEvidence);
-        if (before) {
-            const int key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;
-            gradientRuntime->qualityProbe->recordMovement(key,*movementEvidence);
-        }
+    if(context) {
+        outcome.moved=moved;
+        if(moved){outcome.dx=*dx;outcome.dy=*dy;}
+        gradientMovementOutcome(*context,gradient,outcome);
     }
-    if (before && here!=GRADIENT_FORBIDDEN)
-        gradientRuntime->qualityProbe->observe(*this,teamNumber,resourceType,swimClass,x,y,gradient,*before);
     return moved;
 }
 
@@ -181,8 +167,9 @@ void Map::pathfindRandom(Unit *unit)
 
 StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
 {
-    const auto* field=getMaterialGradientSlot(team,material,swim,markets,target);
-    if (!field) { *stopWork=false; return StepResult::Pending; }
+    std::optional<GradientFieldKey> key;
+    const auto* field=getMaterialGradientSlot(team,material,swim,markets,target,&key);
+    if (!field) {if(key)gradientMovementDemand(*key);*stopWork=false;return StepResult::Pending;}
     if (field[coordToIndex(x,y)]==GRADIENT_FORBIDDEN && !getForbiddenGradient(team,swim)) { *stopWork=false; return StepResult::Pending; }
     const bool atGoal=field[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
     const bool stepped=pathfindMaterial(random,team,material,swim,x,y,dx,dy,stopWork,target,markets);

@@ -26,7 +26,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         ? (gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
           | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
         : 0u;
-    Uint32 cs = (legacy152 ? 0 : gradientRuntime->resources.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    Uint32 cs = (legacy152 ? 0 : gradientRuntime->adaptive.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)
@@ -99,10 +99,13 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
             mix(p.captureTick); mix(p.generation); mix(remaining);
             mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
         });
-        if (includePending) gradientRuntime->pipeline.visitCaptures([&](auto*,bool,const auto& capture) {
-            mix64(capture.tick);mix64(capture.sources.count);mix64(capture.sources.added);mix64(capture.sources.removed);
-            mix64(capture.contradictionKnown);
-            for (auto value:capture.movementBaseline) mix64(value);
+        if (includePending) gradientRuntime->pipeline.visitAdaptiveCaptures([&](auto key,bool,const auto& capture,bool legacy) {
+            mix64(key.packed());mix64(legacy);mix64(capture.tick);
+            // goalCount is derived worker output and is installed only after
+            // joining. Hash owner-captured metadata, never partially-built data.
+            mix64(capture.targets.added);mix64(capture.targets.removed);
+            mix64(capture.targets.routeEpoch);mix64(capture.targets.seedCostEpoch);
+            mix64(capture.known);for(auto value:capture.baseline)mix64(value);
         });
 
     }

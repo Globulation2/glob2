@@ -15,6 +15,9 @@
 
 #pragma once
 
+// Sparse common field policy state, including serving/pending capture metadata.
+static constexpr int FILE_FORMAT_VERSION_UNIFIED_GRADIENTS = 178;
+
 // === Save-format minor-version feature gates ===
 // Each constant is the FIRST versionMinor at which the named feature
 // appears in the save stream. Loaders write/read the new field if

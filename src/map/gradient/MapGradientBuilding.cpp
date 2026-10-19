@@ -43,6 +43,14 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	// Diagnostics read the replaced field and its search before reinitialization.
 	// A synchronous build supersedes any queued or pending scheduled refresh.
 	building->supersedeGradient(slot);
+    if(auto& stats=gradientRuntime->workStats) {
+        const auto key=GradientWorkStats::buildingKey(building->owner->teamNumber,swimClass,Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(route));
+        const auto why=gradientRuntime->syncReason;
+        const bool cold=why>=BuildingSyncReason::ColdNew && why<=BuildingSyncReason::ColdArea;
+        stats->request(key,game->stepCounter,unsigned(cold?AdaptiveGradientState::Reason::Cold:AdaptiveGradientState::Reason::Reactive),false);
+        const auto reason=stats->admitted(key,game->stepCounter,size);
+        stats->published(key,game->stepCounter,reason,size);
+    }
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
 		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));

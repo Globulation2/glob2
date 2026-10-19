@@ -302,23 +302,16 @@ RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, 
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
 	if (!field) return RouteResult::Pending;
 	const auto value=field[coordToIndex(x,y)];
-    // Observe both successful and failed planning reads. This diagnostic owns
-    // its sampling history and never enrolls a successful read as live demand.
-    if (gradientRuntime->qualityProbe && game && !compute.insideJob()
-        && swim<SWIM_CLASS_COUNT && field==materialGradients[team][material][swim])
-        gradientRuntime->qualityProbe->observePlanning(*this,team,material,swim,x,y,field);
-	if (value<=GRADIENT_UNREACHABLE) {
-		if (game && !compute.insideJob() && swim<SWIM_CLASS_COUNT
-			&& field==materialGradients[team][material][swim]) {
-			// A stale negative answer can prevent recruitment, leaving no moving
-			// unit to request a refresh. Keep that liveness fallback without
-			// turning successful planning reads into periodic movement demand.
-			// Neither case contributes to the model's movement-query counts.
-			gradientRuntime->initializeResourcePolicy(*this);
-			gradientRuntime->resources.fields[(team*MaterialCount+material)*SWIM_CLASS_COUNT+swim].requested=true;
-		}
-		return RouteResult::Unreachable;
-	}
+    const auto key=materialGradientFieldKey(team,material,swim,field);
+    if(key && gradientRuntime->qualityProbe && game && !compute.insideJob())
+        gradientRuntime->qualityProbe->observePlanning(*this,*key,x,y,field);
+    if(value<=GRADIENT_UNREACHABLE) {
+        // Failed recruitment needs a recovery path even without a moving unit.
+        // Successful planning reads and both outcomes' movement counters stay idle.
+        if(key && game && !compute.insideJob())gradientRuntime->adaptive.enroll(*key).demand=true;
+        return RouteResult::Unreachable;
+    }
+
 	if (distance) *distance=gradientTiles(value);
 	return RouteResult::Reachable;
 }

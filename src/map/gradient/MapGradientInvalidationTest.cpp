@@ -258,34 +258,37 @@ TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repe
     CHECK(dx==1); CHECK(dy==0);
 }
 
-TEST_CASE("scheduled escape publication covers all teams across tick wrap without mutating fields") {
+TEST_CASE("idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together") {
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-    Fixture f(3); player(f); auto& map=f.game.map;
-    const int slots=4*LEGACY_SWIM_CLASS_COUNT,cycle=8*slots;
-    for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) map.getForbiddenGradient(team,swim);
+    Fixture f(3);player(f);auto& map=f.game.map;
+    map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();map.gradientRuntime->exploration->intervals={8};
+    f.game.stepCounter=Uint32((1ULL<<32)-16);
+    std::vector<GradientFieldKey> keys;
+    for(int team=0;team<4;++team)for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) {
+        keys.push_back({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
+        map.getForbiddenGradient(team,swim);
+    }
     await(f,[&]{
-        for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim)
-            if (!map.lookupForbiddenGradient(team,swim)) return false;
+        for(auto key:keys)if(!map.lookupForbiddenGradient(key.team,key.swim))return false;
         return true;
     });
+    const auto jobs=map.gradientPipelineStatus().jobs;
     std::vector<const Uint16*> fields;
-    for (int team=0;team<4;++team) for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) fields.push_back(map.lookupForbiddenGradient(team,swim));
-    f.game.stepCounter=Uint32((1ULL<<32)-2*cycle);
-    std::vector<int> visits(slots),last(slots,-1);
-    for (int offset=0;offset<4*cycle;++offset) {
+    for(auto key:keys)fields.push_back(map.lookupForbiddenGradient(key.team,key.swim));
+    for(unsigned elapsed=0;elapsed<AdaptiveGradientState::QueryHistoryTicks+16;++elapsed) {
         boundary(f,true);
-        unsigned changed=0;
-        for (int slot=0;slot<slots;++slot) {
-            const auto* field=map.lookupForbiddenGradient(slot/LEGACY_SWIM_CLASS_COUNT,slot%LEGACY_SWIM_CLASS_COUNT);
-            if (field!=fields[slot]) {
-                ++changed; ++visits[slot]; fields[slot]=field;
-                if (last[slot]>=0) CHECK(offset-last[slot]<2*cycle);
-                last[slot]=offset;
-                CHECK(field[map.coordToIndex(10,10)]==GRADIENT_AT_GOAL);
-            }
-        }
-        CHECK(changed<=1);
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
     }
-    for (const auto count:visits) CHECK(count>=3);
+    for(auto key:keys)map.gradientMovementDemand(key);
+    boundary(f,true);
+    CHECK(map.gradientPipelineStatus().jobs==jobs+keys.size());
+    for(unsigned elapsed=1;elapsed<8;++elapsed) {
+        boundary(f,true);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
+    }
+    boundary(f,true);
+    for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)!=fields[i]);
 }
+
 }

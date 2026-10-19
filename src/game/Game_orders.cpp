@@ -612,7 +612,9 @@ bool Game::executeSetAlliance(const SetAllianceOrder& sao)
 {
 	Uint32 team=sao.teamNumber;
 	if (team >= static_cast<unsigned>(mapHeader.getNumberOfTeams()) || !teams[team]) return false;
+	const auto previousAllies=teams[team]->allies;
 	teams[team]->allies=sao.alliedMask;
+	map.gradientAlliancesChanged(team,previousAllies);
 	teams[team]->enemies=sao.enemyMask;
 	teams[team]->sharedVisionExchange=sao.visionExchangeMask;
 	teams[team]->sharedVisionFood=sao.visionFoodMask;

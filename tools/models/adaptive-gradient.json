@@ -1,0 +1,169 @@
+{
+  "schema": 4,
+  "trained": false,
+  "contract": {
+    "id": "unified-gradient-h128-v2",
+    "features": [
+      "age",
+      "q32",
+      "q128",
+      "target_added",
+      "target_removed",
+      "target_added_frac_q12",
+      "target_removed_frac_q12"
+    ],
+    "counters": [
+      "since_capture_invalid_goal",
+      "since_capture_reachable_no_move",
+      "since_capture_movement_queries"
+    ],
+    "families": [
+      "materials",
+      "markets",
+      "guard",
+      "clear",
+      "forbidden"
+    ],
+    "capture_metadata": [
+      "serving_capture_tick",
+      "captured_goal_count",
+      "capture_target_added_epoch",
+      "capture_target_removed_epoch",
+      "capture_route_epoch",
+      "capture_seed_cost_epoch",
+      "current_target_added_epoch",
+      "current_target_removed_epoch",
+      "current_route_epoch",
+      "current_seed_cost_epoch"
+    ],
+    "publication_delay": 8,
+    "key": "family:u8,team:u8,movement:u8,material:u8;255=none",
+    "target_semantics": "effective-seed-membership-v1",
+    "label": "movement-direction-extra-cost",
+    "benefit_unit": "direction-cost",
+    "request_type": "movement",
+    "future_offsets": [
+      8,
+      127
+    ],
+    "horizon_ticks": 128,
+    "refresh_threshold_milli": 128000,
+    "invalid_goal": "cached-arrival-rejected-by-real-family-destination-predicate",
+    "stall": "reachable-required-travel-selector-no-move",
+    "selector": "real-family-selector;pre-decision-RNG-copy;forbidden-lexicographic-base-option",
+    "separate_outcomes": [
+      "stalls",
+      "invalid_goals",
+      "false_unreachable",
+      "false_reachable",
+      "missed_moves",
+      "escape_failures",
+      "planning"
+    ]
+  },
+  "features": [
+    "age",
+    "q32",
+    "q128",
+    "target_added",
+    "target_removed",
+    "target_added_frac_q12",
+    "target_removed_frac_q12",
+    "since_capture_invalid_goal",
+    "since_capture_reachable_no_move",
+    "since_capture_movement_queries",
+    "since_capture_invalid_goal_frac_q12",
+    "since_capture_reachable_no_move_frac_q12"
+  ],
+  "transforms": [
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "log1p_q12",
+    "identity_q12",
+    "identity_q12"
+  ],
+  "threshold": 128000,
+  "provenance": {
+    "status": "untrained-new-contract",
+    "note": "Explicit fixed-interval research bootstrap only. Resource-only coefficients are deliberately not mapped."
+  },
+  "positive_probability": {
+    "coef": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bias": 0,
+    "shift": 28
+  },
+  "negative_probability": {
+    "coef": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bias": 0,
+    "shift": 28
+  },
+  "positive_mean": {
+    "coef": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bias": 0,
+    "shift": 28
+  },
+  "negative_mean": {
+    "coef": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bias": 0,
+    "shift": 28
+  }
+}
