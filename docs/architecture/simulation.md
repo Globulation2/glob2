@@ -679,7 +679,9 @@ queue positions. Subsequent jobs capture the new configuration/generation. Neith
 GPU completion speed nor backend switching advances or resets the simulation
 schedule. Resumable building searches stay on CPU without restarting their queues.
 
-An absent preference uses CPU automatic with graphics and OpenCL headless.
+An absent preference uses CPU automatic in both graphical and headless sessions.
+GPU gradients are experimental and require an explicit saved preference, environment
+override or CLI option; their performance benefit has not been established.
 Legacy `gpuCompute=0|1` resolves to CPU automatic/OpenCL. Explicit
 `--gradient-backend` overrides `--gpu`, then `GLOB2_GRADIENT_BACKEND`, then saved
 preferences/defaults. Algorithm selection uses `--gradient-algorithm`,
