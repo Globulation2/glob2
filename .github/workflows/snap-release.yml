@@ -1,4 +1,4 @@
-name: Publish Snap stable
+name: Build or publish Snap
 
 on:
   workflow_dispatch:
@@ -7,10 +7,30 @@ on:
         description: Existing public vVERSION tag
         required: true
         type: string
+      publish:
+        description: Upload the verified candidate to the Snap Store
+        required: true
+        default: false
+        type: boolean
+      channel:
+        description: Snap Store channel to update when publish is enabled
+        required: true
+        default: candidate
+        type: choice
+        options: [candidate, beta, edge, stable]
   workflow_call:
     inputs:
       tag:
         required: true
+        type: string
+
+      publish:
+        required: false
+        default: true
+        type: boolean
+      channel:
+        required: false
+        default: stable
         type: string
 
 permissions:
@@ -48,9 +68,14 @@ jobs:
   credentials:
     needs: context
     runs-on: ubuntu-24.04
-    environment: snap-release
+    environment: ${{ inputs.publish && 'snap-release' || '' }}
     steps:
+      - name: Validate selected channel
+        env:
+          CHANNEL: ${{ inputs.channel }}
+        run: '[[ "$CHANNEL" =~ ^(stable|candidate|beta|edge)$ ]]'
       - name: Require Snap Store credentials
+        if: ${{ inputs.publish }}
         env:
           STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: |
@@ -93,6 +118,7 @@ jobs:
           if-no-files-found: error
 
   publish:
+    if: ${{ inputs.publish }}
     needs: build
     runs-on: ubuntu-24.04
     environment: snap-release
@@ -112,8 +138,9 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         with:
           snap: ${{ steps.snap.outputs.path }}
-          release: stable
+          release: ${{ inputs.channel }}
       - name: Summarize publication
         env:
           TAG: ${{ inputs.tag }}
-        run: echo "Published Snap stable from public tag $TAG" >> "$GITHUB_STEP_SUMMARY"
+          CHANNEL: ${{ inputs.channel }}
+        run: echo "Published Snap $CHANNEL from public tag $TAG" >> "$GITHUB_STEP_SUMMARY"

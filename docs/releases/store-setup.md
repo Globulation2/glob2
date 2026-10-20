@@ -59,7 +59,18 @@ Before publishing a Snap, register the `globulation2` name in the Snap Store,
 build and install a candidate, and set the `snap-release` environment secret
 `SNAPCRAFT_STORE_CREDENTIALS` from a restricted `snapcraft export-login` token
 with package access, push, update and release rights for that name. The
-`snap-release.yml` workflow publishes only Snap stable. Configure the
+`snap-release.yml` workflow defaults to building and testing an unpublished
+candidate on manual dispatch (`publish=false`), without requiring store credentials.
+Enable `publish` and select `candidate`, `beta`, `edge`, or `stable` to upload
+the newly built package to that channel. Calls from `publish-desktop.yml` retain
+their stable-publication behavior. Security notices about Ubuntu stage packages
+require a fresh build, even when the game source tag has not changed. Retain the
+new package and verify its bundled package versions against the notice, then
+install and play it before stable promotion. Each channel pointing at the old
+revision needs updating or closing; publishing stable alone leaves other
+channels on their previous revision.
+
+Configure the
 `PUBLIC_RELEASE_GH_TOKEN` secret in the `github-release` environment
 with permission to create releases in `Globulation2/glob2`. The
 `github-release.yml` workflow stages final packages and `package-inventory.json`
