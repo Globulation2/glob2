@@ -136,7 +136,7 @@ TEST_SUITE("SettingsGraphics")
 		}
 	}
 
-    TEST_CASE("GPU local preference preserves graphical and headless defaults")
+    TEST_CASE("GPU local preference is opt-in for graphical and headless games")
     {
         glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
         glob2test::HeadlessGlobals globals;
@@ -144,11 +144,10 @@ TEST_SUITE("SettingsGraphics")
         const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
         Settings settings;
         CHECK_FALSE(settings.gpuComputeEnabled());
-        CHECK(settings.gpuComputeEnabled(true));
         REQUIRE(settings.save(file));
         settings.load(file);
         CHECK_FALSE(settings.gpuCompute.has_value());
-        CHECK(settings.gpuComputeEnabled(true));
+        CHECK_FALSE(settings.gpuComputeEnabled());
         for (bool enabled : {false, true}) {
             settings.gpuCompute = enabled;
             settings.setGraphicsDetail(!enabled);
@@ -156,7 +155,6 @@ TEST_SUITE("SettingsGraphics")
             Settings loaded; loaded.load(file);
             REQUIRE(loaded.gpuCompute.has_value());
             CHECK(loaded.gpuComputeEnabled() == enabled);
-            CHECK(loaded.gpuComputeEnabled(true) == enabled);
         }
         for (const char* value : {"", "auto", "true", "2", "1oops"}) {
             { std::ofstream out(path); out << "gpuCompute=" << value << '\n'; }
@@ -164,7 +162,6 @@ TEST_SUITE("SettingsGraphics")
             settings.load(file);
             CHECK_FALSE(settings.gpuCompute.has_value());
             CHECK_FALSE(settings.gpuComputeEnabled());
-            CHECK(settings.gpuComputeEnabled(true));
         }
         { std::ofstream out(path); out << "clouds=1\n"; }
         settings.gpuCompute = true;
@@ -175,7 +172,9 @@ TEST_SUITE("SettingsGraphics")
         globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--display"}));
         CHECK_FALSE(globals->gpuComputeEnabled());
         globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz"}));
-        CHECK(globals->gpuComputeEnabled());
+        CHECK(globals->runNoX);
+        CHECK_FALSE(globals->gpuComputeEnabled());
+        CHECK(globals->gradientConfiguration().backend == gradient_kernel::Backend::CPU);
         globals->settings.gpuCompute = false;
         CHECK_FALSE(globals->gpuComputeEnabled());
         globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--gpu=on"}));

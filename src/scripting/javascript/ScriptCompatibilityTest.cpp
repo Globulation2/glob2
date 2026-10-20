@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Adaptive24 and the 32-tick refresh minimum require current replay execution.
+	// Per-team building admission requires current replay execution.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 185);
-	CHECK(VERSION_MINOR == 185);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 186);
+	CHECK(VERSION_MINOR == 186);
 
 	CHECK(NET_PROTOCOL_VERSION == 72);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

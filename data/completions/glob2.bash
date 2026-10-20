@@ -80,7 +80,7 @@ _glob2_complete() {
     'map inspect-package') opts='--output --report-file --help ';;
     'map validate-set') opts='--report-file --preview --gallery --phase --variation --help ';;
     'game migrate') opts='--output-dir --profile --building-catalog --data-dir --generator-package --input --legacy-adaptive-174 --help ';;
-    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --gradient-work-stats --resource-gradient-probe --resource-gradient-exploration --resource-gradient-exploration-seed --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
+    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --benchmark-tick-profile --owner-tick-profile --owner-profile-min-ms --owner-profile-from-tick --ai-decision-profile --ai-profile-min-ms --ai-profile-from-tick --ai-profile-gate --gradient-work-stats --resource-gradient-probe --resource-gradient-exploration --resource-gradient-exploration-seed --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
     'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
     'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --instance --help ';;
@@ -254,6 +254,11 @@ _glob2_complete() {
     'game run|--save') kind='string'; values='';;
     'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima';;
     'game run|--benchmark-warmup') kind='integer'; values='';;
+    'game run|--owner-profile-min-ms') kind='integer'; values='';;
+    'game run|--owner-profile-from-tick') kind='integer'; values='';;
+    'game run|--ai-profile-min-ms') kind='integer'; values='';;
+    'game run|--ai-profile-from-tick') kind='integer'; values='';;
+    'game run|--ai-profile-gate') kind='player:observed-tick'; values='';;
     'game run|--gradient-work-stats') kind='file'; values='';;
     'game run|--resource-gradient-exploration') kind='intervals'; values='';;
     'game run|--resource-gradient-exploration-seed') kind='integer'; values='';;

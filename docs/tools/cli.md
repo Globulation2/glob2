@@ -708,6 +708,14 @@ Platform: all.
 | `--telemetry` | checksums, team-timeline, maxima | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
+| `--benchmark-tick-profile` | flag; default false | Export tick timings and the 1024 slowest ticks' phase/wait attribution; requires benchmark-warmup. |
+| `--owner-tick-profile` | flag; default false | Profile owner-thread CPU and wall time by tick and phase; requires benchmark-warmup. |
+| `--owner-profile-min-ms` | integer; default 20; 0..60000 | Minimum owner tick elapsed time to export. |
+| `--owner-profile-from-tick` | integer; default 0; 0..2147483647 | First owner tick to profile. |
+| `--ai-decision-profile` | flag; default false | Profile slow AI decisions by player and observed tick with thread CPU and nested function times. |
+| `--ai-profile-min-ms` | integer; default 20; 0..60000 | Minimum decision elapsed time to export. |
+| `--ai-profile-from-tick` | integer; default 0; 0..2147483647 | First observed tick to profile. |
+| `--ai-profile-gate` | player:observed-tick | Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only. |
 | `--gradient-work-stats` | file | Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection. |
 | `--resource-gradient-probe` | flag; default false | Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias). |
 | `--resource-gradient-exploration` | intervals | All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training. |

@@ -136,7 +136,7 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.capture(output+"/gradient-scalar.bmp");
         REQUIRE(screen.changeSetting("gameplay.gradientBackend", 0));
         gradientLoaded.load();
-        REQUIRE_FALSE(gradientLoaded.gpuComputeEnabled(true));
+        REQUIRE_FALSE(gradientLoaded.gpuComputeEnabled());
         screen.capture(output+"/gradient-cpu.bmp");
         for(const auto& row:screen.rows())REQUIRE((row.id!="graphics.torus" && row.id!="gameplay.torus"));
         screen.selectCategory(SettingsScreen::Category::Buildings);

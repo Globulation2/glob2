@@ -745,6 +745,30 @@ Write game.replay Default: false.
 .B \-\-benchmark\-warmup
 Ticks excluded from benchmark counters Type: integer. Units: ticks. Range: 0..2147483647.
 .TP
+.B \-\-benchmark\-tick\-profile
+Export tick timings and the 1024 slowest ticks' phase/wait attribution; requires benchmark\-warmup Default: false.
+.TP
+.B \-\-owner\-tick\-profile
+Profile owner\-thread CPU and wall time by tick and phase; requires benchmark\-warmup Default: false.
+.TP
+.B \-\-owner\-profile\-min\-ms
+Minimum owner tick elapsed time to export Default: 20. Type: integer. Range: 0..60000.
+.TP
+.B \-\-owner\-profile\-from\-tick
+First owner tick to profile Default: 0. Type: integer. Range: 0..2147483647.
+.TP
+.B \-\-ai\-decision\-profile
+Profile slow AI decisions by player and observed tick with thread CPU and nested function times Default: false.
+.TP
+.B \-\-ai\-profile\-min\-ms
+Minimum decision elapsed time to export Default: 20. Type: integer. Range: 0..60000.
+.TP
+.B \-\-ai\-profile\-from\-tick
+First observed tick to profile Default: 0. Type: integer. Range: 0..2147483647.
+.TP
+.B \-\-ai\-profile\-gate
+Hold one decision until ai\-profile\-release exists in output\-dir; diagnostic sampling only Type: player:observed\-tick.
+.TP
 .B \-\-gradient\-work\-stats
 Opt\-in gradient\-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection Type: file.
 .TP

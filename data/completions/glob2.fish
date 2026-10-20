@@ -296,6 +296,14 @@ complete -c glob2 -n "__glob2_at 'game run'" -l save -r
 complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums team-timeline maxima'
 complete -c glob2 -n "__glob2_at 'game run'" -l write-replay
 complete -c glob2 -n "__glob2_at 'game run'" -l benchmark-warmup -r
+complete -c glob2 -n "__glob2_at 'game run'" -l benchmark-tick-profile
+complete -c glob2 -n "__glob2_at 'game run'" -l owner-tick-profile
+complete -c glob2 -n "__glob2_at 'game run'" -l owner-profile-min-ms -r
+complete -c glob2 -n "__glob2_at 'game run'" -l owner-profile-from-tick -r
+complete -c glob2 -n "__glob2_at 'game run'" -l ai-decision-profile
+complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-min-ms -r
+complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-from-tick -r
+complete -c glob2 -n "__glob2_at 'game run'" -l ai-profile-gate -r
 complete -c glob2 -n "__glob2_at 'game run'" -l gradient-work-stats -r
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-probe
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-gradient-exploration -r

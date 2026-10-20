@@ -328,3 +328,6 @@ inline constexpr bool hasInitialBuildingGradient(unsigned version)
 { return version == 170 || version >= FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT; }
 static constexpr int FILE_FORMAT_VERSION_HIRING_GRADIENTS = 174;
 static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 174;
+
+// Per-team building admission widens pending counts from 8 to 16 bits.
+static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 186;

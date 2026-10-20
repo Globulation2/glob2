@@ -223,6 +223,7 @@ namespace {
 // Generic building payload: a destination key, a computed value, an injected
 // behaviour and a borrowed input whose lifetime must end with the computation.
 struct TestBuildingJob {
+    int team = 0;
     unsigned key = 0, value = 0, result = 0;
     enum class Behaviour { Normal, Slow, Throw, Gate } behaviour = Behaviour::Normal;
     std::shared_ptr<const unsigned> input;
@@ -258,7 +259,7 @@ void runTestBuildingJob(TestBuildingPipelineBase::Job& job)
 
 TEST_CASE("gradient, building and AI batches share the maximum deferred horizon" * doctest::test_suite("GradientPipeline"))
 {
-    constexpr unsigned PerTick=TestBuildingPipelineBase::MaxJobsPerTick, BuildingDelay=TestBuildingPipelineBase::MaxDelay;
+    constexpr unsigned PerTick=TestBuildingPipelineBase::MaxJobsPerTeamPerTick*TEAM_MAX_COUNT, BuildingDelay=TestBuildingPipelineBase::MaxDelay;
     for (unsigned threads : {1,2,4,8}) {
         ComputeExecutor executor; executor.configure(threads);
         GradientPipeline pipeline;
@@ -283,8 +284,9 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
             for (auto& field:fields) resourceJobs.push_back(pipeline.reserve(&field,0));
             pipeline.prepareBatch(resourceJobs,[tick](auto& job) { job.data[0]=tick-1; });
             std::vector<TestBuildingPipelineBase::Job*> staged;
-            while (buildings.canReserve()) {
-                auto* job=buildings.reserve(); job->payload={}; job->payload.value=tick; job->payload.input=input;
+            for (unsigned team=0;team<TEAM_MAX_COUNT;++team) while (buildings.canReserve(team)) {
+                auto* job=buildings.reserve(team); job->payload={}; job->payload.team=team;
+                job->payload.value=tick; job->payload.input=input;
                 staged.push_back(job);
             }
             CHECK(staged.size()==PerTick);
@@ -310,7 +312,7 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
 TEST_CASE("building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" * doctest::test_suite("GradientPipeline"))
 {
     using Behaviour = TestBuildingJob::Behaviour;
-    constexpr unsigned PerTick = TestBuildingPipeline::MaxJobsPerTick;
+    constexpr unsigned PerTick = TestBuildingPipeline::MaxJobsPerTeamPerTick;
     const auto input=std::make_shared<const unsigned>(7);
     for (unsigned workers : {0, 1, 2, 4}) for (unsigned delay : {1, 2, 4, 8}) {
         CAPTURE(workers); CAPTURE(delay);
@@ -431,7 +433,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
 
 TEST_CASE("building pipeline pending results survive a save-style round trip" * doctest::test_suite("GradientPipeline"))
 {
-    constexpr unsigned Delay=4, PerTick=TestBuildingPipeline::MaxJobsPerTick;
+    constexpr unsigned Delay=4, PerTick=TestBuildingPipeline::MaxJobsPerTeamPerTick;
     const auto input=std::make_shared<const unsigned>(5);
     for (unsigned phase=0; phase<Delay; ++phase) for (unsigned workers : {0, 1, 2}) {
         CAPTURE(phase); CAPTURE(workers);
@@ -495,6 +497,61 @@ TEST_CASE("building pipeline pending results survive a save-style round trip" * 
     disabled.configure(0, 0, runTestBuildingJob);
     CHECK_THROWS_AS(disabled.restoreCompleted(1, false, {}), std::runtime_error);
     CHECK_THROWS_AS(disabled.configure(0, TestBuildingPipeline::MaxDelay+1, runTestBuildingJob), std::invalid_argument);
+}
+
+TEST_CASE("building quotas are independent per team and a full multi-team horizon restores" * doctest::test_suite("GradientPipeline"))
+{
+    constexpr unsigned Delay=TestBuildingPipeline::MaxDelay;
+    constexpr unsigned PerTeam=TestBuildingPipeline::MaxJobsPerTeamPerTick;
+    const auto input=std::make_shared<const unsigned>(5);
+    for (unsigned workers : {0u,3u}) {
+        TestBuildingPipeline original, restored;
+        original.configure(workers,Delay,runTestBuildingJob);
+        restored.configure(0,Delay,[](auto&) { FAIL("restored jobs must already be complete"); });
+        std::vector<unsigned> originalValues, restoredValues;
+        original.publish=[&](auto& job) { originalValues.push_back(job.payload.result); return true; };
+        restored.publish=[&](auto& job) { restoredValues.push_back(job.payload.result); return true; };
+        for (unsigned tick=1;tick<=Delay;++tick) {
+            original.advance();
+            std::vector<TestBuildingPipeline::Job*> staged;
+            for (unsigned team=0;team<TEAM_MAX_COUNT;++team) {
+                REQUIRE(original.canReserve(team));
+                for (unsigned i=0;i<PerTeam;++i) {
+                    auto* job=original.reserve(team);
+                    job->payload={}; job->payload.team=team;
+                    job->payload.value=tick*1000+team*PerTeam+i; job->payload.input=input;
+                    staged.push_back(job);
+                }
+                CHECK_FALSE(original.canReserve(team));
+                CHECK_THROWS_AS(original.reserve(team),std::logic_error);
+            }
+            CHECK_FALSE(original.canReserve(TEAM_MAX_COUNT));
+            CHECK_THROWS_AS(original.reserve(TEAM_MAX_COUNT),std::logic_error);
+            original.prepare(staged);
+        }
+        const auto total=Delay*PerTeam*TEAM_MAX_COUNT;
+        REQUIRE(total>255);
+        REQUIRE(original.pendingCount()==total);
+        original.visitPending([&](auto& job,unsigned remaining) {
+            restored.restoreCompleted(remaining,job.superseded,job.payload);
+        });
+        CHECK(restored.pendingCount()==total);
+        for (unsigned i=0;i<Delay;++i) {
+            original.advance(); restored.advance();
+            CHECK(originalValues==restoredValues);
+            CHECK(originalValues.size()==(i+1)*PerTeam*TEAM_MAX_COUNT);
+        }
+        CHECK(original.pendingCount()==0);
+        CHECK(restored.pendingCount()==0);
+        original.advance(); restored.advance();
+        for (unsigned team=0;team<TEAM_MAX_COUNT;++team) {
+            CHECK(original.canReserve(team)); CHECK(restored.canReserve(team));
+        }
+        TestBuildingJob invalid; invalid.team=-1;
+        CHECK_THROWS_AS(restored.restoreCompleted(1,false,invalid),std::runtime_error);
+        invalid.team=TEAM_MAX_COUNT;
+        CHECK_THROWS_AS(restored.restoreCompleted(1,false,invalid),std::runtime_error);
+    }
 }
 
 TEST_CASE("serial preparation computes at join and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
@@ -1307,8 +1364,8 @@ TEST_CASE("building initialization deadlines overtake refreshes and survive pend
         std::vector<unsigned> published, resumed;
         original.publish=[&](auto& job){published.push_back(job.payload.key);return true;};
         original.advance();
-        auto* warm=original.reserve(8);warm->payload.key=8;
-        auto* initial=original.reserve(1);initial->payload.key=1;
+        auto* warm=original.reserve(0,8);warm->payload.key=8;
+        auto* initial=original.reserve(0,1);initial->payload.key=1;
         TestBuildingPipelineBase::Job* staged[]={warm,initial};
         original.prepare(staged);
         CHECK(original.metrics.batches==2);
@@ -1339,21 +1396,29 @@ TEST_CASE("mixed building deadlines retain bounded admission across the full exe
     pipeline.publish=[&](auto&){++published;return true;};
     for(unsigned tick=1;tick<=32;++tick) {
         pipeline.advance();
-        TestBuildingPipelineBase::Job* staged[]={pipeline.reserve(8),pipeline.reserve(1)};
+        std::vector<TestBuildingPipelineBase::Job*> staged;
+        for (unsigned team=0;team<TEAM_MAX_COUNT;++team) {
+            for (unsigned ticks : {8u,1u}) {
+                auto* job=pipeline.reserve(team,ticks);
+                job->payload.team=team;
+                staged.push_back(job);
+            }
+        }
         pipeline.prepare(staged);
     }
     for(unsigned tick=0;tick<8;++tick)pipeline.advance();
-    CHECK(published==64);
+    CHECK(published==64*TEAM_MAX_COUNT);
     CHECK(pipeline.pendingCount()==0);
     pipeline.reset();
     pipeline.configure(executor,8,[](auto&){});pipeline.advance();
     std::vector<TestBuildingPipelineBase::Job*> staged;
-    for(unsigned i=0;i<TestBuildingPipelineBase::MaxJobsPerTick;++i)staged.push_back(pipeline.reserve(8));
+    for(unsigned i=0;i<TestBuildingPipelineBase::MaxJobsPerTeamPerTick;++i)staged.push_back(pipeline.reserve(0,8));
     pipeline.prepare(staged);
     for(unsigned tick=0;tick<7;++tick)pipeline.advance();
-    CHECK_FALSE(pipeline.canReserve(1));
-    CHECK(pipeline.canReserve(8));
-    CHECK_FALSE(pipeline.canReserve(9));
+    CHECK_FALSE(pipeline.canReserve(0,1));
+    CHECK(pipeline.canReserve(1,1));
+    CHECK(pipeline.canReserve(0,8));
+    CHECK_FALSE(pipeline.canReserve(0,9));
     pipeline.finish();pipeline.reset();
 }
 
@@ -1368,8 +1433,8 @@ TEST_CASE("an unfinished refresh batch cannot hold up an initial building field"
     pipeline.configure(2,8,[&](auto& job){if(job.payload.key==8){warmStarted.set_value();release.wait();}});
     pipeline.publish=[&](auto& job){if(job.payload.key==1){CHECK_FALSE(opened.load());initialPublished.set_value();}return true;};
     pipeline.advance();
-    auto* warm=pipeline.reserve(8);warm->payload.key=8;
-    auto* initial=pipeline.reserve(1);initial->payload.key=1;
+    auto* warm=pipeline.reserve(0,8);warm->payload.key=8;
+    auto* initial=pipeline.reserve(0,1);initial->payload.key=1;
     TestBuildingPipelineBase::Job* staged[]={warm,initial};pipeline.prepare(staged);
     warmStarted.get_future().wait();
     // Release on a failed implementation too, so a coupled batch fails instead
