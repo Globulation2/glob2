@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.3.2" date="2026-10-19">
+      <description>
+        <p>Updated iOS privacy packaging, fixed Mac build compatibility, and stabilized iPhone build tooling.</p>
+      </description>
+    </release>
     <release version="0.11.3.1" date="2026-10-19">
       <description>
         <p>Improved Maxima AI planning responsiveness, admitted four building gradients per team per tick, and defaulted headless games to CPU gradients.</p>

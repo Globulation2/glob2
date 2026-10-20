@@ -266,6 +266,14 @@ TEST_CASE("MCP/HTTP restrictions bounded bodies restart and disconnect cancellat
 	CHECK(send(host, "", modern("tools/list").dump(), http::verb::post, {},
 			   "application/json;q=invalid, text/event-stream")
 			  .result_int() == 406);
+	for (const auto quality : {"0.5", "1", "1e-1"})
+		CHECK(send(host, "", modern("tools/list").dump(), http::verb::post, {},
+				   std::string("application/json;q=") + quality + ", text/event-stream")
+				  .result_int() == 200);
+	for (const auto quality : {"+1", "1junk", "nan", "1.1", "-0.1", ""})
+		CHECK(send(host, "", modern("tools/list").dump(), http::verb::post, {},
+				   std::string("application/json;q=") + quality + ", text/event-stream")
+				  .result_int() == 406);
 	CHECK(send(host, "", modern("tools/list").dump(), http::verb::post, {},
 			   "APPLICATION/JSON, TEXT/EVENT-STREAM", "APPLICATION/JSON; charset=utf-8")
 			  .result_int() == 200);

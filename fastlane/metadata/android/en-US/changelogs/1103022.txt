@@ -1,0 +1,1 @@
+Refreshed store packaging for the current Globulation 2 release.
