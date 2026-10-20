@@ -2,6 +2,7 @@
   Protected-wheat food ledger. See AIMaximaFoodLedger.h for the model.
  */
 
+#include "AIProfile.h"
 #include "field/UniformTraversal.h"
 #include "AIMaximaFoodLedger.h"
 #include "AIMaximaOperatingDemand.h"
@@ -154,6 +155,7 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 	int top, int width, int height, std::vector<ReachCell>& reach,
 	const std::vector<uint32_t>* residual, long long cap) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FoodWalk);
 	reach.clear();
 	const int size=input.width*input.height;
 	if(size<=0||int(input.traversable.size())!=size
@@ -211,6 +213,7 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 			}
 			return current.distance>=input.policy.supplyRadius?field::Visit::Skip:field::Visit::Expand;
 		},[&](const ReachCell& current,int px,int py){visit(px,py,current.distance+1);});
+    AIProfile::work(AIProfile::Work::WalkVisitedCells,queue.size());
 }
 
 void Ledger::prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,const OperatingPlan& plan) const
@@ -307,6 +310,7 @@ void Ledger::reserveQueryFootprint(const Input& input,int width,int height) cons
 
 void Ledger::evaluate(const Input& input, Result& result, EvaluationMode mode) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FoodEvaluate); AIProfile::work(AIProfile::Work::LedgerConsumers,input.consumers.size()); AIProfile::work(AIProfile::Work::LedgerMapCells,std::uint64_t(input.width)*input.height);
 	result.clear();
 	const int size=input.width*input.height;
 	if(size<=0||int(input.yield.size())!=size
@@ -478,6 +482,7 @@ void Ledger::prepareResidualSums(const Input& input, Result& result, EvaluationM
 long long Ledger::residualUpperBound(const Input& input, const Result& result,
 	int centerX, int centerY, int left, int top, int width, int height,bool services) const
 {
+    AIProfile::count(AIProfile::Phase::ResidualBound);
 	if(input.width<=0||input.height<=0)return 0;
 	if(result.residualSumsWidth!=input.width
 	   ||result.residualSumsHeight!=input.height)return 0;
@@ -521,6 +526,7 @@ int Ledger::residualQuality(const Input& input, const Result& result,
 	int centerX, int centerY, int left, int top, int width, int height,
 	long long demand) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ResidualQuality);
 	if(demand<=0)return 0;
 	walk(input,centerX,centerY,left,top,width,height,reachScratch,
 		&result.residual,demand);

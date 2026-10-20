@@ -1,3 +1,4 @@
+#include "AIProfile.h"
 /* Maxima farming and clearing policy. */
 
 #include "PowerOfTwo.h"
@@ -421,6 +422,7 @@ bool Maxima::continue_clearing_campaign(Context& runtime)
 
 void Maxima::manage_land_clearing(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::LandClearing);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_manage_land_clearing_calls);
 	if(!budget.farming_enabled)
@@ -527,6 +529,7 @@ struct Maxima::MaintenanceClearingPlan
 
 std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool after_harvest) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::WorkerCirculation);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	const AIEngine::AIWorldView* map=&runtime.observation();
 	const int w=(*map).width, h=(*map).height, size=w*h;
@@ -640,6 +643,7 @@ std::vector<std::vector<int> > Maxima::reservation_member_footprints(
 Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ClearingPlan);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	const AIEngine::AIWorldView* map=&runtime.observation();
 	const int w=(*map).width;
@@ -856,6 +860,7 @@ void Maxima::apply_maintenance_clearing_plan(Context& runtime,
 
 void Maxima::update_maintenance_clearing_areas(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::MaintenanceClearing);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	initialize_farming_cache(runtime);
 	const MaintenanceClearingPlan plan=build_maintenance_clearing_plan(runtime);
@@ -1380,6 +1385,7 @@ void Maxima::apply_farming_protection(Context& runtime,
 
 void Maxima::update_farming(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Farming);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_update_farming_calls);
 	const std::chrono::steady_clock::time_point started=

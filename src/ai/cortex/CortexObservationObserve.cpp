@@ -1,3 +1,4 @@
+#include "AIProfile.h"
 #include "CortexSnapshotQueries.h"
 #include "ai/observation/ObservationQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -28,6 +29,7 @@ namespace Cortex
 {
 	CortexObservation observeWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid)
 	{
+    AIProfile::Scope profileScope(AIProfile::Phase::CortexObserve);
 		PERF_SCOPE_TIME(AIObserve);
 		CortexObservation obs = makeEmptyObservation();
 

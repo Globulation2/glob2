@@ -1374,11 +1374,34 @@ TEST_CASE("complete joins and trace overflow remain valid and snapshots require 
     std::uint64_t lost = 0; for (const auto& stream : snapshot.streams) lost += stream.lost;
     CHECK(lost > 0);
     CHECK(snapshot.traceBytes <= sizeof(ComputeTelemetry::Event)*2);
+    CHECK(snapshot.summary.deferredCallbacks[unsigned(ComputeProducer::AI)].samples == 1);
+    CHECK(snapshot.summary.deferredCallbacks[unsigned(ComputeProducer::ResourceGrowth)].samples == 1);
     std::ostringstream out; ComputeTelemetry::writeJson(out, snapshot);
     CHECK(out.str().find("\"lost_events\"") != std::string::npos);
     executor.resetTelemetry();
     snapshot = executor.telemetrySnapshot(true);
     for (const auto& stream : snapshot.streams) { CHECK(stream.used == 0); CHECK(stream.lost == 0); }
+    CHECK(snapshot.summary.deferredCallbacks[unsigned(ComputeProducer::AI)].samples == 0);
+}
+TEST_CASE("callback histograms count every invocation and AI lane despite trace overflow")
+{
+    for (unsigned threads : {1u, 3u}) {
+        ComputeExecutor executor; executor.configure(threads);
+        for (auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits, ComputeTelemetryMode::Trace}) {
+            executor.configureTelemetry(mode, sizeof(ComputeTelemetry::Event)*2);
+            TelemetryCounter counter;
+            ComputeExecutor::Group group{100, {telemetryBump, &counter}, 3};
+            auto batch = executor.submit(std::span(&group,1), ComputeExecutor::boundaryDue(8), {ComputeProducer::AI,0,8});
+            executor.join(batch, {JoinReason::TickDeadline,8});
+            const auto snapshot = executor.telemetrySnapshot(true);
+            const auto& duration = snapshot.summary.deferredCallbacks[unsigned(ComputeProducer::AI)];
+            CHECK(duration.samples == (mode == ComputeTelemetryMode::Trace ? 100 : 0));
+            CHECK(snapshot.summary.aiLaneCallbacks[3].samples == duration.samples);
+            std::uint64_t count = 0; for (auto value : duration.histogram) count += value;
+            CHECK(count == duration.samples);
+            CHECK(counter.value == 5050);
+        }
+    }
 }
 TEST_CASE("trace preserves early external resolution and continuation callback ordering")
 {
@@ -1411,6 +1434,7 @@ TEST_CASE("trace preserves early external resolution and continuation callback o
         if (event.kind == ComputeTelemetry::EventKind::Runnable) ++runnable;
     }
     CHECK(starts == 2); CHECK(ends == 2); CHECK(completes == 1);
+    CHECK(snapshot.summary.deferredCallbacks[unsigned(ComputeProducer::PeriodicGradient)].samples == 2);
     CHECK(suspensions == 1); CHECK(resolutions == 1); CHECK(runnable == 1);
 }
 }

@@ -464,7 +464,7 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		groups[i] = {1, {compute, &b.work[i]}, ComputeExecutor::HiringLaneBase + b.work[i].team};
 	b.ticket =
 		executor.submit(std::span(groups).first(b.work.size()), ComputeExecutor::boundaryDue(b.due),
-						{ComputeProducer::Other, b.tick, b.due});
+						{ComputeProducer::Hiring, b.tick, b.due});
 	metrics.submitted += b.work.size();
 }
 void HiringPipeline::drain(JoinReason reason)

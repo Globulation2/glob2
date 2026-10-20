@@ -157,7 +157,7 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 			1, {compute, &submitted}, ComputeExecutor::StatisticsLaneBase};
 		submitted.ticket =
 			executor.submit(std::span(&group, 1), ComputeExecutor::boundaryDue(submitted.due),
-							{ComputeProducer::Other, submitted.tick, submitted.due});
+							{ComputeProducer::TeamStatistics, submitted.tick, submitted.due});
 	}
 	catch (...)
 	{

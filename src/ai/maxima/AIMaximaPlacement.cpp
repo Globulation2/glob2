@@ -1,3 +1,4 @@
+#include "AIProfile.h"
 #include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/PriorityTraversal.h"
@@ -860,6 +861,7 @@ void Planner::prepareMaterialSources(const WorldState& world) const
 
 void Planner::prepareScoringCaches(const WorldState& world) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ScoringCaches);
     prepareMaterialSources(world);
 	prepareColonyClaims(world);
 	prepareFoodLedger(world);
@@ -1247,10 +1249,14 @@ std::array<int,MaterialCount> Planner::operatingTrips(const WorldState& world,in
 void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 	int excludeBuilding,int candidateType,int candidateLevel,int candidateColony) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FoodLedger);
 	using namespace AIMaximaFoodLedger;
 	// An appraisal reads the replaced building's standing from the full ledger
 	// of the same world, so refresh that baseline before excluding anything.
-	if(excludeBuilding>=0)prepareFoodLedger(world,excludeAction,-1);
+	const bool batch=foodBaselineBatch && foodBaselineBatch->world==&world;
+	if(excludeBuilding>=0 && !(batch && foodBaselineBatch->ready
+		&& foodBaselineBatch->excludeAction==excludeAction))
+		prepareFoodLedger(world,excludeAction,-1);
 	foodResult.clear();foodInput.consumers.clear();
 	foodLedgerExcludedAction=excludeAction;foodLedgerExcludedBuilding=excludeBuilding;
 	foodLedgerPrepared=true;activeFoodCandidate=nullptr;foodQueryValid=false;
@@ -1415,7 +1421,9 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
             foodCandidateIndependent=independent;foodCandidateProduction=production;foodCandidateFeeding=feedingPackets;
         }
     }
-	foodLedger.evaluate(foodInput,foodResult,candidateType>=0
+	// Upgrade appraisals read claims and service reach, never the all-map best
+	// new-site result. Keep that expensive result for complete director ledgers.
+	foodLedger.evaluate(foodInput,foodResult,candidateType>=0 || batch
         ?AIMaximaFoodLedger::EvaluationMode::CandidateQuery:AIMaximaFoodLedger::EvaluationMode::Full);
 	if(excludeBuilding<0 && candidateType<0)
 	{
@@ -1423,6 +1431,11 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
         foodServiceBaseline.serviceResidual=foodResult.serviceResidual;
         foodServiceBaseline.independentClaimed=foodResult.independentClaimed;
 		foodBaselineValid=true;
+		if(batch)
+		{
+			foodBaselineBatch->excludeAction=excludeAction;
+			foodBaselineBatch->ready=true;
+		}
 	}
 }
 
@@ -1517,21 +1530,26 @@ const AIMaximaFoodLedger::Result& Planner::evaluateFoodLedger(
 	return foodResult;
 }
 
-void Planner::prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const
+void Planner::prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding,int onlyColony) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FeedingCandidates);
     if(world.feedingColonies.empty())return;
     if(candidateSetEpoch==foodLedgerEpoch && candidateSetType==type && candidateSetLevel==level
         && candidateSetExcludedAction==excludedAction && candidateSetExcludedBuilding==excludedBuilding
+        && (candidateSetColony<0 || candidateSetColony==onlyColony)
         && candidateFoodLedgers.size()==world.feedingColonies.size())return;
     if(!foodLedgerPrepared || foodLedgerExcludedAction!=excludedAction || foodLedgerExcludedBuilding!=excludedBuilding)
         prepareFoodLedger(world,excludedAction,excludedBuilding);
-    // Build every colony's immutable residual once before its spatial scan.
+    // Spatial scans need every colony; a fixed-position upgrade needs only one.
     // Querying another colony selects a result; it never copies a map grid.
     auto baseline=std::move(foodResult);
     auto baselineConsumers=std::move(foodInput.consumers);
     activeFoodCandidate=nullptr;
     candidateFoodLedgers.clear();candidateFoodLedgers.resize(world.feedingColonies.size());
-    for(size_t colony=0;colony<world.feedingColonies.size();++colony) {
+    const size_t begin=onlyColony<0?0:size_t(onlyColony);
+    const size_t end=onlyColony<0?world.feedingColonies.size():begin+1;
+    AIProfile::work(AIProfile::Work::CandidateColonies,end-begin);
+    for(size_t colony=begin;colony<end;++colony) {
         prepareFoodLedger(world,excludedAction,excludedBuilding,type,level,int(colony));
         candidateFoodLedgers[colony].result=std::move(foodResult);
         candidateFoodLedgers[colony].demand=foodCandidateDemand;
@@ -1544,6 +1562,7 @@ void Planner::prepareFeedingCandidateSet(const WorldState& world,int type,int le
     foodCandidateType=-1;foodCandidateColony=-1;
     candidateSetType=type;candidateSetLevel=level;candidateSetExcludedAction=excludedAction;
     candidateSetExcludedBuilding=excludedBuilding;candidateSetEpoch=foodLedgerEpoch;
+    candidateSetColony=onlyColony;
 }
 
 int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const
@@ -1566,7 +1585,8 @@ int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAc
             int(std::min<long long>(INT_MAX,static_cast<long long>(variant->independentMaterials[r])+variant->feedingMaterials[r]));
     } else {
         colony=world.feedingColonyAt(action.centerX,action.centerY);
-        prepareFeedingCandidateSet(world,action.buildingType,level,excludeAction,replaced);
+        prepareFeedingCandidateSet(world,action.buildingType,level,excludeAction,replaced,
+            action.type==UpgradeBuilding?colony:-1);
         activeFoodCandidate=&candidateFoodLedgers[colony];
         independent=activeFoodCandidate->independent;production=activeFoodCandidate->production;
         feedingTransferLimit=activeFoodCandidate->feeding;
@@ -1629,6 +1649,7 @@ bool Planner::foodCandidatePasses(const WorldState& world,
 bool Planner::foodUpgradePasses(const WorldState& world,
 	const DevelopmentAction& action, RejectionReason& reason) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::FoodUpgrade);
 	if(!foodManagedType(action.buildingType))return true;
 	if(action.type!=UpgradeBuilding)return true;
     const int demand=prepareFeedingCandidate(world,action);
@@ -1681,6 +1702,7 @@ uint32_t Planner::stateSignature(uint32_t worldSignature) const
 
 void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::RouteCache);
 	const int size=world.width*world.height;
 	std::vector<int>& distance=routeDistanceCache[orientation];
 	std::vector<int>& parent=routeParentCache[orientation];
@@ -2230,6 +2252,8 @@ int Planner::contractReservationId(int buildingId, int buildingType) const
 void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 	const DevelopmentLimits& limits, std::vector<Candidate>& candidates)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::UpgradeCandidates); AIProfile::work(AIProfile::Work::UpgradeBuildings,world.buildings.size());
+	FoodBaselineBatch baselineBatch(world,foodBaselineBatch);
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const WorldBuilding& building=world.buildings[b];
@@ -2876,6 +2900,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	const std::vector<DevelopmentIntent>& intents,const DevelopmentLimits& limits,
 	DevelopmentAction& selected,uint32_t occupancySignature,int originBudget)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::SelectAction);
 	if(!incrementalSelectionActive)
 	{
 		lastDiagnostics.clear();ensureMaskSize(world.width*world.height);
@@ -2932,15 +2957,20 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 
 	// A fallback must not delay ordinary work even by a map scan. Check it
 	// only after every ordinary intent; maintenance uses the same frozen world.
+	std::vector<Candidate> maintenance;
+	PlacementDiagnostics maintenanceDiagnostics;
+	bool reuseMaintenance=false;
 	const auto ordinaryAvailable=[&]() {
 		for(const DevelopmentAction& action:incrementalCandidates)
 			if(action.purpose!=Fortification && action.utility.total>=0)return true;
 		const PlacementDiagnostics saved=lastDiagnostics;
-		std::vector<Candidate> maintenance;
+		maintenance.clear();
 		addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,maintenance);
+		maintenanceDiagnostics=lastDiagnostics;
 		lastDiagnostics=saved;
-		return std::any_of(maintenance.begin(),maintenance.end(),
+		reuseMaintenance=std::any_of(maintenance.begin(),maintenance.end(),
 			[](const Candidate& c){return c.action.utility.total>=0;});
+		return reuseMaintenance;
 	};
 	size_t remaining=size_t(std::max(1,originBudget));
 	while(incrementalIntentIndex<incrementalIntents.size())
@@ -2983,7 +3013,14 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		candidates.push_back(value);
 	}
 	const size_t buildWinners=candidates.size();
-	addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,candidates);
+	if(reuseMaintenance)
+	{
+		// The successful probe ended the scan in this call. Reuse its candidates
+		// and diagnostics before any other placement work can change the caches.
+		candidates.insert(candidates.end(),maintenance.begin(),maintenance.end());
+		lastDiagnostics=maintenanceDiagnostics;
+	}
+	else addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,candidates);
 	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
 	if(candidates.empty())
 	{

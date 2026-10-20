@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "OwnerTickProfile.h"
 #include "ResourceGrowth.h"
 #include "gradient/AdaptiveGradientModel.h"
 #include "gradient/AdaptiveGradientState.h"
@@ -20,6 +21,7 @@
 #include "Sha256.h"
 #include "AINames.h"
 #include "AIJavaScript.h"
+#include "AIProfile.h"
 #include "ComputeThreads.h"
 #include "field/OpenCLGradient.h"
 #include "field/GradientAccelerators.h"
@@ -161,6 +163,97 @@ uint64_t processCpuNs()
 	return uint64_t(std::clock())*1000000000/CLOCKS_PER_SEC;
 #endif
 }
+// Benchmark-only snapshots. Collection and export run outside measured tick intervals.
+// Inclusive phase times overlap; sampled phases retain observed time, not estimates.
+struct TickProfile
+{
+    static constexpr unsigned Producers = unsigned(ComputeProducer::Count);
+    struct Sample {
+        Uint64 tick = 0, duration = 0;
+        std::array<Uint64, PerformanceTelemetry::ScopeCount> phases{};
+        std::array<Uint64, Producers> waits{}, attempts{};
+    };
+    std::array<Uint64, PerformanceTelemetry::ScopeCount> previousPhases{};
+    std::array<Uint64, Producers> previousWaits{}, previousAttempts{};
+    std::vector<Sample> slowest;
+    std::vector<std::pair<Uint64, Uint64>> durations;
+    Uint64 collectionNs = 0;
+    static bool faster(const Sample& a, const Sample& b) { return a.duration > b.duration; }
+    TickProfile() { slowest.reserve(1024); }
+    void capture(ComputeExecutor& executor, Uint64 tick = 0, Uint64 duration = 0)
+    {
+        const auto started = std::chrono::steady_clock::now();
+        Sample sample; sample.tick = tick; sample.duration = duration;
+        const auto& perf = PerformanceTelemetry::collector();
+        for (unsigned i = 0; i < previousPhases.size(); ++i) {
+            const auto cumulative = perf.total[i].time.total + perf.window[i].time.total;
+            sample.phases[i] = cumulative - previousPhases[i];
+            previousPhases[i] = cumulative;
+        }
+        const auto snapshot = executor.telemetrySnapshot();
+        for (unsigned p = 0; p < Producers; ++p) {
+            Uint64 wait = 0, attempts = 0;
+            for (unsigned r = 0; r < unsigned(JoinReason::Count); ++r) {
+                if (!ComputeTelemetry::required(JoinReason(r))) continue;
+                const auto& join = snapshot.summary.joins[p][r];
+                wait += join.background.totalNs; attempts += join.backgroundAttempts;
+            }
+            sample.waits[p] = wait - previousWaits[p];
+            sample.attempts[p] = attempts - previousAttempts[p];
+            previousWaits[p] = wait; previousAttempts[p] = attempts;
+        }
+        if (duration) {
+            durations.emplace_back(tick, duration);
+            if (slowest.size() < 1024 || duration > slowest.front().duration) {
+                if (slowest.size() == 1024) {
+                    std::pop_heap(slowest.begin(), slowest.end(), faster); slowest.pop_back();
+                }
+                slowest.push_back(sample); std::push_heap(slowest.begin(), slowest.end(), faster);
+            }
+        }
+        collectionNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-started).count();
+    }
+    void write(const fs::path& output)
+    {
+        std::ofstream csv(output / "tick-timings.csv");
+        csv << "tick_before_step,elapsed_ns\n";
+        for (const auto& [tick, ns] : durations) csv << tick << ',' << ns << '\n';
+        csv.close();
+        if (!csv) throw std::runtime_error("Cannot write tick-timings.csv");
+        nlohmann::json report = {{"schema_version", 1}, {"collection_ns", collectionNs},
+            {"measured_ticks", durations.size()}, {"retained_limit", 1024},
+            {"tick_convention", "tick_before_step"},
+            {"phases_inclusive", true}, {"phases_available", PerformanceTelemetry::collector().enabled},
+            {"ticks", nlohmann::json::array()}};
+        static constexpr const char* names[] = {
+#define PERF_SCOPE(id, name, stride) name,
+#include "PerformanceScopes.inc"
+#undef PERF_SCOPE
+        };
+        static constexpr unsigned strides[] = {
+#define PERF_SCOPE(id, name, stride) stride,
+#include "PerformanceScopes.inc"
+#undef PERF_SCOPE
+        };
+        std::sort(slowest.begin(), slowest.end(), faster);
+        for (const auto& sample : slowest) {
+            nlohmann::json row = {{"tick", sample.tick}, {"elapsed_ns", sample.duration},
+                {"phases", nlohmann::json::object()}, {"waits", nlohmann::json::object()}};
+            for (unsigned i = 0; i < sample.phases.size(); ++i) {
+                // These are duration observations, not time spent executing a phase.
+                const auto id = PerformanceTelemetry::Id(i);
+                if (id == PerformanceTelemetry::Id::SimulationLateness || id == PerformanceTelemetry::Id::SceneAge ||
+                    id == PerformanceTelemetry::Id::FrameInterval || id == PerformanceTelemetry::Id::Jitter) continue;
+                if (sample.phases[i]) row["phases"][names[i]] = {{"observed_ns", sample.phases[i]}, {"stride", strides[i]}};
+            }
+            for (unsigned p = 0; p < Producers; ++p)
+                if (sample.attempts[p]) row["waits"][std::string(ComputeTelemetry::ProducerNames[p])] =
+                    {{"elapsed_ns", sample.waits[p]}, {"attempts", sample.attempts[p]}};
+            report["ticks"].push_back(std::move(row));
+        }
+        Headless::writeJson((output / "slow-ticks.json").string(), report.dump(2));
+    }
+};
 void jsonArray(std::ostream& out, int value) { out << value; }
 void jsonArray(std::ostream& out, const std::vector<int>& values)
 {
@@ -350,8 +443,20 @@ struct HeadlessRunner
     }
 	static int game(const Options &options, const fs::path &output)
 	{
+		// Declared before the engine: its sink outlives every joined decision job.
+		std::unique_ptr<AIProfile::Session> aiProfile;
+		std::unique_ptr<OwnerTickProfile::Session> ownerProfile;
+		const bool profileAI=one(options,"--ai-decision-profile","false")=="true";
+		if (!profileAI && options.count("--ai-profile-gate"))
+			throw std::invalid_argument("--ai-profile-gate requires --ai-decision-profile");
 		const auto setupStart = std::chrono::steady_clock::now();
 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+		const bool profileOwner=one(options,"--owner-tick-profile","false")=="true";
+		if(profileOwner && !benchmark)
+			throw std::invalid_argument("--owner-tick-profile requires --benchmark-warmup");
+		const bool profileTicks=one(options,"--benchmark-tick-profile","false")=="true";
+		if (profileTicks && (!benchmark || one(options,"--compute-telemetry","off")=="off"))
+			throw std::invalid_argument("--benchmark-tick-profile requires --benchmark-warmup and --compute-telemetry waits or trace");
 		const auto setupCpuStart=benchmark?processCpuNs():0;
 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
 		const auto fields = one(options,"--diagnostic-fields");
@@ -546,7 +651,23 @@ struct HeadlessRunner
 		globals.configureExecutionResources();
 		const unsigned computeThreads = globals.resourcePlan.computeParticipants;
 		engine.gui.game.map.configureCompute(computeThreads);
+		if (profileAI) {
+			const auto first=integer(one(options,"--ai-profile-from-tick","0"),0,std::numeric_limits<int>::max());
+			const auto minimum=integer(one(options,"--ai-profile-min-ms","20"),0,60000);
+			unsigned gatePlayer=~0u;std::uint64_t gateTick=~std::uint64_t(0);
+			if (options.count("--ai-profile-gate")) {
+				const auto gate=one(options,"--ai-profile-gate");const auto colon=gate.find(':');
+				if (colon==std::string::npos) throw std::invalid_argument("Expected player:observed-tick for AI gate");
+				gatePlayer=integer(gate.substr(0,colon),0,engine.gui.game.gameHeader.getNumberOfPlayers()-1);
+				gateTick=integer(gate.substr(colon+1),first,std::numeric_limits<int>::max());
+				if (gateTick<engine.gui.game.stepCounter) throw std::invalid_argument("AI profile gate precedes the loaded tick");
+			}
+			aiProfile=std::make_unique<AIProfile::Session>(output,std::uint64_t(minimum)*1000000,first,gatePlayer,gateTick);
+		}
         const auto computeMode = ComputeTelemetry::parseMode(one(options, "--compute-telemetry", "off"));
+		if(profileOwner)ownerProfile=std::make_unique<OwnerTickProfile::Session>(output,
+			std::uint64_t(integer(one(options,"--owner-profile-min-ms","20"),0,60000))*1000000,
+			integer(one(options,"--owner-profile-from-tick","0"),0,std::numeric_limits<int>::max()));
         if (engine.gui.game.map.computeExecutor().telemetryMode() != computeMode)
             engine.gui.game.map.computeExecutor().configureTelemetry(computeMode);
         engine.gui.game.map.setResourceGrowthDelay(integer(
@@ -605,17 +726,28 @@ struct HeadlessRunner
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
+			std::unique_ptr<TickProfile> tickProfile;
+			if (profileTicks) {
+				tickProfile = std::make_unique<TickProfile>();
+				tickProfile->capture(engine.gui.game.map.computeExecutor());
+			}
 			if(benchmarkWarmup==0) measureStart=processCpuNs();
 			while(engine.gui.isRunning)
 			{
                 const auto beforeTick=engine.gui.game.stepCounter;
                 const auto tickStart=std::chrono::steady_clock::now();
+				std::optional<OwnerTickProfile::Tick> ownerTick;
+				if(ownerProfile)ownerTick.emplace(beforeTick);
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
+				const auto tickDuration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
+				ownerTick.reset(); // Export outside the timed step.
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
-                    const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
+                    const auto duration=tickDuration;
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
                     tickDurations.push_back(duration);
+                    if (tickProfile) tickProfile->capture(engine.gui.game.map.computeExecutor(), beforeTick, duration);
                 }
+                else if (tickProfile) tickProfile->capture(engine.gui.game.map.computeExecutor());
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
@@ -624,6 +756,7 @@ struct HeadlessRunner
 			engine.gui.game.drainHiring();
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
+			if (tickProfile) tickProfile->write(output);
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
         if (!engine.latestChecksum) throw std::runtime_error("Missing terminal snapshot checksum");

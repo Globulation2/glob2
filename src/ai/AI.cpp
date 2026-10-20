@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "AIProfile.h"
 #include <PerformanceTelemetry.h>
 #include "AI.h"
 #include "ai/engine/AIOrderScheduler.h"
@@ -160,6 +161,7 @@ void AI::prepareDecision()
 }
 AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
 {
+    AIProfile::Decision profile(unsigned(implementationID),context.player,context.team,context.world.tick,context.scheduledTick,context.pollSequence);
 	if (!decisionTelemetry) throw std::logic_error("AI decision dispatch was not prepared by owner");
 	auto& sink = aiImplementation->telemetry;
 	sink.series = decisionTelemetry.get(); sink.tick = context.world.tick;

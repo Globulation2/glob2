@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PresentationWork.h>
+#include "OwnerTickProfile.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GameplayRecording.h>
@@ -358,6 +359,7 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
 
 SimulationSnapshot::Handle Engine::establishObservation(bool present)
 {
+    OwnerTickProfile::Scope ownerObservation(OwnerTickProfile::Phase::Observation);
     SimulationSnapshot::CaptureOptions options;
     // Capture the requested graphical payload even while scene preparation is
     // busy. A later extraction must use this frozen observation, never live state.
@@ -374,8 +376,14 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
     // Retire due leases before the owner acquires its next pooled buffers.
     // Reconfigured serial fallback also releases its inputs before capture.
     collectChecksums();
-    const auto world=gui.game.observeCompletedWorld(options);
-    checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
+    const auto world=[&] {
+        OwnerTickProfile::Scope ownerCapture(OwnerTickProfile::Phase::CaptureWorld);
+        return gui.game.observeCompletedWorld(options);
+    }();
+    {
+        OwnerTickProfile::Scope ownerSubmit(OwnerTickProfile::Phase::SubmitChecksum);
+        checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
+    }
     if (globalContainer->replayWriter)
         globalContainer->replayWriter->enableDeferredChecksums([this] { flushChecksums(); });
     if (globalContainer->replayReader) globalContainer->replayReader->enableDeferredChecksums();
@@ -384,8 +392,11 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
     const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=world.tick
         || retainedPresentation->world.observationRevision!=world.observationRevision;
     const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
-    gui.game.admitAIOrders(observationPlayers(session ? session->wasReadyLastTick : true),
-        paused || globalContainer->replaying, diagnostics, world);
+    {
+        OwnerTickProfile::Scope ownerAI(OwnerTickProfile::Phase::AdmitAI);
+        gui.game.admitAIOrders(observationPlayers(session ? session->wasReadyLastTick : true),
+            paused || globalContainer->replaying, diagnostics, world);
+    }
     if (presentation) publishPresentation(world,*presentation);
     return world;
 }
@@ -397,6 +408,7 @@ bool Engine::routineMapChecksums() const
 
 void Engine::collectChecksums(bool flush)
 {
+    OwnerTickProfile::Scope ownerChecksums(OwnerTickProfile::Phase::CollectChecksums);
     if (!checksumPipeline) return;
     const auto now=turn ? turn->turn().executedTick() : gui.game.stepCounter;
     for (const auto& result:checksumPipeline->collect(now,flush,gui.game.stepCounter)) {
@@ -1298,24 +1310,25 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
 		PerformanceTelemetry::Scope loopTime(PerformanceTelemetry::Id::Loop);
 		PerformanceTelemetry::Scope workTime(PerformanceTelemetry::Id::Work);
 
-    pollAutomaticEndingConditions(now);
-    clientWork();
+    { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Ending);pollAutomaticEndingConditions(now); }
+    { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Client);clientWork(); }
 
-    pumpTurnSession(now);
-    gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0);
+    { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Turn);pumpTurnSession(now); }
+    { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Commander);gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0); }
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
-        gatherAndAdvanceOrders(st.wasReadyLastTick);
+        { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Orders);gatherAndAdvanceOrders(st.wasReadyLastTick); }
         readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
         const Sint64 elapsed = static_cast<Sint64>(now - st.startTime) * 1000000;
         const Uint64 lateness =
             st.speedNs && elapsed > st.needToBeTime ? elapsed - st.needToBeTime : 0;
-        executeOrdersAndStep(readyNow);
+        { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Step);executeOrdersAndStep(readyNow); }
         if (gui.game.stepCounter != tickBefore)
         {
             observedSimulationLateness.store(lateness, std::memory_order_relaxed);
             perf.record(PerformanceTelemetry::Id::SimulationLateness, lateness);
+            OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Statistics);
             gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
         }
     }
@@ -1328,6 +1341,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
 
 		if (!headlessOutput.empty() && readyNow)
 		{
+			OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Output);
 			const auto tick=gui.game.stepCounter;
 			if (tick % 256 == 0)
 				std::ofstream(headlessOutput + "/progress.jsonl", std::ios::app)

@@ -1,3 +1,4 @@
+#include "AIProfile.h"
 /*
   Copyright (C) 2006 Bradley Arsenault
 
@@ -343,6 +344,7 @@ void Maxima::OffenseDiagnostics::reset(int currentTick)
 /// budget fields and the diagnostics; the executor moves the flag.
 void Maxima::plan_offense(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::PlanOffense);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	offense_diagnostics.reset(timer);
 	budget.tactical_kind=Tactics::MissionNone;
@@ -1050,6 +1052,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 /// Keep the offensive flag on the planned target. Runs every review tick.
 void Maxima::control_offense(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::Offense);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	if(control_offense_waves(runtime))
 		return;
@@ -1587,6 +1590,7 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 
 void Maxima::update_preemptive_defense(Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::PreemptiveDefense);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	if(!budget.preemptive_defense_active)
 	{
@@ -1782,6 +1786,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 
 void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ReactiveDefense);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	if(!budget.reactive_defense_enabled)
 	{
@@ -2229,6 +2234,7 @@ void Maxima::modify_points(Uint16* counts, int w, int h, int x, int y, int dist,
 
 void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& runtime)
 {
+    AIProfile::Scope profileScope(AIProfile::Phase::ExplorerAttack);
     auto ownerObservation=runtime.scopeOwnerObservation();
 	//The algorithm here is interesting. Bassically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
 	//is counted as part of the larger group, and every unit 4 squares from those and so on, as long as it doesn't go past

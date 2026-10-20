@@ -835,6 +835,72 @@ static void economyStaffingRegressions()
     }
 }
 
+// Strategy consumes the same map-scale slot as clearing, including when an
+// invalidation and the ordinary review cadence occur on adjacent updates.
+static void strategyQueueRegression()
+{
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.terrain=GRASS,.teams=1,
+        .discovered=true,.loadDefaultRace=true});
+    auto& game=world.game;
+    Player player; player.setTeam(game.teams[0]);
+    AIMaxima::Maxima ai(&player); Context& c=ai.context;
+    c.initialize(); c.activeAI=&ai;
+    glob2test::withMaximaObservation(c,[&] { ai.ensure_strategy(); });
+    ai.timer=62;
+    ai.strategy.scheduling.strategy_interval_ticks=64;
+    ai.strategy.scheduling.strategy_phase_offset_ticks=0;
+    ai.strategy.scheduling.building_interval_ticks=10000;
+    ai.strategy.scheduling.building_phase_offset_ticks=5000;
+    ai.strategy.scheduling.fruit_interval_ticks=10000;
+    ai.strategy.scheduling.fruit_phase_offset_ticks=5000;
+    ai.strategy.scheduling.explorer_attack_interval_ticks=10000;
+    ai.strategy.scheduling.explorer_attack_phase_offset_ticks=5000;
+    ai.strategy.scheduling.defense_interval_ticks=10000;
+    ai.strategy.scheduling.defense_phase_offset_ticks=5000;
+    ai.last_farming_tick=62;
+    ai.land_clearing_pending=true;
+    ai.maintenance_clearing_pending=true;
+    ai.preemptive_defense_pending=true;
+    ai.reactive_defense_pending=true;
+    ai.development_cycle_pending=true;
+
+    for(int tick:{63,64})
+    {
+        ai.tick(c);
+        REQUIRE(ai.timer==tick);
+        REQUIRE(ai.director.initialized);
+        REQUIRE_FALSE(ai.director.dirty);
+        REQUIRE(ai.snapshot.tick==tick);
+        REQUIRE(ai.land_clearing_pending);
+        REQUIRE(ai.maintenance_clearing_pending);
+        REQUIRE(ai.preemptive_defense_pending);
+        REQUIRE(ai.reactive_defense_pending);
+        REQUIRE(ai.development_cycle_pending);
+        REQUIRE(ai.last_farming_tick==62);
+    }
+    ai.tick(c);
+    REQUIRE(ai.timer==65);
+    REQUIRE(ai.snapshot.tick==64);
+    REQUIRE_FALSE(ai.land_clearing_pending);
+    REQUIRE(ai.maintenance_clearing_pending);
+    REQUIRE(ai.preemptive_defense_pending);
+    REQUIRE(ai.development_cycle_pending);
+    ai.tick(c);
+    REQUIRE(ai.timer==66);
+    REQUIRE_FALSE(ai.maintenance_clearing_pending);
+    REQUIRE(ai.preemptive_defense_pending);
+    REQUIRE(ai.reactive_defense_pending);
+    REQUIRE(ai.development_cycle_pending);
+
+    ai.director.invalidate();
+    ai.tick(c);
+    REQUIRE(ai.snapshot.tick==67);
+    REQUIRE_FALSE(ai.director.dirty);
+    REQUIRE(ai.preemptive_defense_pending);
+    REQUIRE(ai.reactive_defense_pending);
+    REQUIRE(ai.development_cycle_pending);
+}
+
 // Current execution state round-trips; retired Maxima layouts are rejected
 // before the loader consumes any bytes.
 static void executionStateSaveRegression()
@@ -1806,6 +1872,7 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("repair labor contract regressions") { glob2test::HeadlessGlobals globals; repairLaborContractRegressions(); }
 	TEST_CASE("inn completion staffing regressions") { glob2test::HeadlessGlobals globals; innCompletionStaffingRegressions(); }
 	TEST_CASE("director upgrade priority regressions") { glob2test::HeadlessGlobals globals; directorUpgradePriorityRegressions(); }
+	TEST_CASE("strategy and maintenance share the deterministic queue") { glob2test::HeadlessGlobals globals; strategyQueueRegression(); }
 	TEST_CASE("director execution regressions") { glob2test::HeadlessGlobals globals; directorExecutionRegressions(); }
 	TEST_CASE("director upgrade regressions") { glob2test::HeadlessGlobals globals; directorUpgradeRegressions(); }
 	TEST_CASE("upgrade worker priority regressions") { glob2test::HeadlessGlobals globals; upgradeWorkerPriorityRegressions(); }
