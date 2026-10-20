@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.3.1" date="2026-10-19">
+      <description>
+        <p>Improved Maxima AI planning responsiveness, admitted four building gradients per team per tick, and defaulted headless games to CPU gradients.</p>
+      </description>
+    </release>
     <release version="0.11.3.0" date="2026-10-19">
       <description>
         <p>Improved simulation scheduling, recruitment and pathfinding; reduced rendering overhead; restored historical save loading; and refined touch controls, first-launch setup and map generation.</p>

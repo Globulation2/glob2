@@ -1,0 +1,1 @@
+Improved Maxima AI planning responsiveness, admitted four building gradients per team per tick, and defaulted headless games to CPU gradients.

@@ -77,15 +77,15 @@ class NativeAlignmentTests(unittest.TestCase):
 class AndroidReleaseTests(unittest.TestCase):
     def test_candidate_accepts_existing_version_but_publication_rejects_tag_collision(self):
         with mock.patch.object(android_release.subprocess, "check_output", side_effect=[
-                "v0.11.3.0\n", "candidate\n", "published\n"]):
+                "v0.11.3.1\n", "candidate\n", "published\n"]):
             with self.assertRaisesRegex(ValueError, "already points"):
                 android_release.check_prior_tags()
         with mock.patch.object(android_release.subprocess, "check_output", side_effect=AssertionError("Candidate must not inspect release tags")):
-            self.assertEqual(android_release.check_candidate()["versionName"], "0.11.3.0")
+            self.assertEqual(android_release.check_candidate()["versionName"], "0.11.3.1")
     def test_version_codes_and_desktop_version(self):
-        self.assertEqual(android_release.release_identity()["versionName"], "0.11.3.0")
+        self.assertEqual(android_release.release_identity()["versionName"], "0.11.3.1")
         self.assertEqual({arch: android_release.version_code(arch) for arch in android_release.ABI_CODES},
-                         {"armeabi-v7a": 1103001, "arm64-v8a": 1103002, "x86_64": 1103003})
+                         {"armeabi-v7a": 1103011, "arm64-v8a": 1103012, "x86_64": 1103013})
         self.assertEqual(android_release.check_recipe(), [1100001, 1100002, 1100003])
 
     def test_recipe_rejects_missing_abi(self):
@@ -141,17 +141,17 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_preflight_rejects_reused_tag_at_other_commit(self):
         with mock.patch.object(android_release.subprocess, "check_output",
-                               side_effect=["v0.11.3.0\n", "new-commit\n", "old-commit\n"]):
+                               side_effect=["v0.11.3.1\n", "new-commit\n", "old-commit\n"]):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
     def test_development_check_allows_released_version_but_not_lower_codes(self):
         with mock.patch.object(android_release.subprocess, "check_output",
-                               return_value="v0.10.0.0\nv0.11.3.0\n"):
+                               return_value="v0.10.0.0\nv0.11.3.1\n"):
             android_release.check_prior_tags(development=True)
         with mock.patch.object(android_release.subprocess, "check_output",
-                               return_value="v0.11.3.0\nv0.11.3.1\n"):
-            with self.assertRaisesRegex(ValueError, "would not increase past v0.11.3.1"):
+                               return_value="v0.11.3.1\nv0.11.3.2\n"):
+            with self.assertRaisesRegex(ValueError, "would not increase past v0.11.3.2"):
                 android_release.check_prior_tags(development=True)
 
     def test_development_cli_preserves_identity_and_recipe_validation(self):
@@ -228,7 +228,7 @@ class AndroidReleaseTests(unittest.TestCase):
                 for name in ("libmain.so", "libc++_shared.so"):
                     package.writestr("lib/arm64-v8a/" + name, native_elf())
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
-            badging = "package: name='org.globulation2.glob2' versionCode='1103002' versionName='0.11.3.0'\n"
+            badging = "package: name='org.globulation2.glob2' versionCode='1103012' versionName='0.11.3.1'\n"
             with (
                 mock.patch.object(android_release, "isolated", return_value=False),
                 mock.patch.object(android_release, "dependency_prefix", return_value=prefix),
@@ -240,12 +240,12 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_monitor_state_transitions(self):
         now = dt.datetime(2026, 10, 4, tzinfo=dt.timezone.utc)
-        release = {"tag_name": "v0.11.3.0", "published_at": "2026-09-30T00:00:00Z"}
-        package = {"packages": [{"versionName": "0.11.3.0", "versionCode": 1103001},
-                                {"versionName": "0.11.3.0", "versionCode": 1103002}]}
+        release = {"tag_name": "v0.11.3.1", "published_at": "2026-09-30T00:00:00Z"}
+        package = {"packages": [{"versionName": "0.11.3.1", "versionCode": 1103011},
+                                {"versionName": "0.11.3.1", "versionCode": 1103012}]}
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "overdue")
-        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [1103003])
-        package["packages"].append({"versionName": "0.11.3.0", "versionCode": 1103003})
+        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [1103013])
+        package["packages"].append({"versionName": "0.11.3.1", "versionCode": 1103013})
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "complete")
 
 
