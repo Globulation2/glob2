@@ -143,7 +143,9 @@ def main():
     lines += ['set_property(TARGET Glob2 PROPERTY XCODE_EMBED_FRAMEWORKS '+cmake_quote(compute_framework)+')',
               'set_target_properties(Glob2 PROPERTIES XCODE_EMBED_FRAMEWORKS_CODE_SIGN_ON_COPY YES XCODE_EMBED_FRAMEWORKS_REMOVE_HEADERS_ON_COPY YES)',
               'set_property(TARGET Glob2 APPEND PROPERTY BUILD_RPATH "@executable_path/Frameworks")']
-    for framework in ('VideoToolbox','UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    # SDL's iOS HID backend is disabled. Omit its unused CoreBluetooth framework
+    # as well, so the app does not advertise unrelated privacy access.
+    for framework in ('VideoToolbox','UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     if args.script_tests:
         lines += ['set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)']

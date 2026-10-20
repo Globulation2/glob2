@@ -173,6 +173,7 @@ jobs:
           binary_uuid="$(dwarfdump --uuid "$app/Glob2" | awk '{print $2}')"
           symbol_uuid="$(dwarfdump --uuid "$symbols" | awk '{print $2}')"
           test "$binary_uuid" = "$symbol_uuid"
+          python3 mobile/ios_privacy.py "$app"
           plutil -p "$ARCHIVE_PATH/Info.plist"
 
       - name: Preserve archive permissions

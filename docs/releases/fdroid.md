@@ -65,6 +65,11 @@ for all three codes after the GitHub release and opens one tracking issue when
 publication remains incomplete after 72 hours.
 
 F-Droid's initial listing requires an accepted `fdroiddata` merge request.
+Run `fdroid rewritemeta org.globulation2.glob2` on the materialized submission
+recipe as well as `fdroid lint`. Commit its canonical field order and line
+wrapping. Run `fdroid checkupdates` against the current public tags and refresh
+the submission to the selected qualified candidate if newer tags have appeared;
+a successful build does not make a stale submission's update check pass.
 Fork `fdroid/fdroiddata` into the submitting maintainer's personal GitLab
 namespace; a new GitLab group is unnecessary. Add only the app's YAML file on a
 dedicated branch and open a draft merge request using the app inclusion template.

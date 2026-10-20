@@ -11,6 +11,13 @@ not establish device gameplay or signing qualification. Set `upload: true` to
 request signing and TestFlight upload. Reusable release staging calls retain
 `upload: true` by default.
 
+Archive verification runs `mobile/ios_privacy.py` against the main executable
+and embedded Mach-O frameworks. Glob2 does not use camera capture or Bluetooth
+discovery: the SDL camera/HIDAPI backends and the CoreBluetooth link are omitted.
+The check rejects remaining camera/Bluetooth imports before signing. Keep
+AVFoundation for gameplay recording; screen recording does not require camera
+access. This local check does not replace Apple's processing or App Review.
+
 ## TestFlight upload
 
 `.github/workflows/ios-testflight.yml` is kept in the public source repository,
