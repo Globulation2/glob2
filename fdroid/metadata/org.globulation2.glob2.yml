@@ -21,6 +21,8 @@ Builds:
         curl perl nasm
     output: build/fdroid-output.apk
     rm:
+      - .github/ci/history.json.gz
+      - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
       - platform/apps/engine-agent/fixtures/ais
@@ -46,6 +48,8 @@ Builds:
         curl perl nasm
     output: build/fdroid-output.apk
     rm:
+      - .github/ci/history.json.gz
+      - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
       - platform/apps/engine-agent/fixtures/ais
@@ -71,6 +75,8 @@ Builds:
         curl perl nasm
     output: build/fdroid-output.apk
     rm:
+      - .github/ci/history.json.gz
+      - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
       - platform/apps/engine-agent/fixtures/ais

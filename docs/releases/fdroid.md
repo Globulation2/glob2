@@ -10,7 +10,9 @@ The main F-Droid repository builds and signs `org.globulation2.glob2` from a
 public `vVERSION` tag. This is the same application ID used by Play. The
 `--fdroid` build mode applies F-Droid's version codes and unsigned APK checks.
 The upstream build recipe is `fdroid/metadata/org.globulation2.glob2.yml`;
-submit its tested contents to F-Droid's `fdroiddata` project.
+submit its tested contents to F-Droid's `fdroiddata` project. The recipe removes compressed CI
+prediction data from the build checkout before source scanning; these files
+are not Android build inputs.
 `mobile/android-release.json` gives the version
 name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
 `10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
