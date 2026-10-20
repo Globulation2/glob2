@@ -53,6 +53,9 @@ Connect. The public version comes from `PACKAGE_VERSION` in
 The workflow does not submit an uploaded build for App Review; processing and
 submission are separate actions in App Store Connect.
 
+The build job pins Python 3.14.8 and SCons 4.11.1, and exposes the checkout on
+`PYTHONPATH` so spawned asset workers can import the packaging helpers.
+
 The release build runs on GitHub's arm64 `macos-26` runner with Xcode 26 or newer.
 The current App Store package declares macOS 26.0 as its minimum because the
 arm64 game and bundled Homebrew libraries are built on that runner. Supporting

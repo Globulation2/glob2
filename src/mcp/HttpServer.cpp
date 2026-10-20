@@ -5,7 +5,8 @@
 #include <SDL3_image/SDL_image.h>
 #include <thread>
 #include <set>
-#include <charconv>
+#include <sstream>
+#include <locale>
 namespace MCP
 {
 namespace asio = boost::asio;
@@ -50,8 +51,12 @@ bool accepts(std::string_view header, std::string_view expected)
 			if (equal == std::string_view::npos || mediaType(parameter.substr(0, equal)) != "q")
 				continue;
 			const auto value = trim(parameter.substr(equal + 1));
-			const auto parsed = std::from_chars(value.data(), value.data() + value.size(), quality);
-			if (parsed.ec != std::errc{} || parsed.ptr != value.data() + value.size() ||
+			// Floating-point from_chars is unavailable on older Apple deployment
+			// targets. Keep HTTP numbers independent of the user's numeric locale.
+			std::istringstream parser{std::string(value)};
+			parser.imbue(std::locale::classic());
+			parser >> std::noskipws >> quality;
+			if (!parser || !parser.eof() || value.empty() || value.front() == '+' ||
 				!(quality >= 0 && quality <= 1))
 				quality = 0;
 		}

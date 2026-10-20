@@ -63,6 +63,9 @@ Before tagging a new release, choose an unused version, update
 `PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
 `fedora/glob2.spec`, and add its AppStream release notes. Do not move an
 existing tag.
+Mac package jobs pin Python 3.14.8 and SCons 4.11.1 and set `PYTHONPATH` to the
+checkout so spawned asset encoder workers can import the source helpers.
+
 Build-only runs leave Flatpak off by default because it takes longer to build;
 select `build_flatpak` to exercise that recipe. An untagged run builds its other
 packages from the mirror checkout and pins the Flatpak recipe to the latest

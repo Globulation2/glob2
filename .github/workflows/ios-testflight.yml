@@ -121,6 +121,11 @@ jobs:
       - name: Require the default branch
         run: test "$GITHUB_REF" = refs/heads/master
 
+      # The runner's default Python may be newer than our pinned encoder wheels.
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.14.8'
+
       - name: Check toolchain and choose build number
         id: version
         run: |
