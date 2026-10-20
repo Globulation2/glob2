@@ -1,0 +1,26 @@
+{
+  "revision": "d8f9d32ef955765c17e3b78b1e2085e2afb0742b",
+  "base": "e0d8671e97f4dcefe4db3b17797c20678c883104",
+  "sim_revision": 97,
+  "version_minor": 186,
+  "release_build": "passed",
+  "maxima_integration": {
+    "cases": 30,
+    "assertions": 2103
+  },
+  "continuation_and_gradient": {
+    "cases": 7,
+    "assertions": 49278
+  },
+  "cli_contracts": {
+    "cases": 18,
+    "passed": true
+  },
+  "golden_verify": {
+    "cases": 1,
+    "assertions": 37
+  },
+  "save_compatibility": "185-format save loads; worker traces match; 185\u2192186 reload full checksum matches after the known save-version header XOR; native 186 continuations match exactly",
+  "coverage": "macOS arm64; no cross-platform equivalence or gameplay-feel validation",
+  "packaging_note": "A redundant final asset rebuild needed PYTHONPATH set to the repository root for Python spawn imports; no code change required."
+}
