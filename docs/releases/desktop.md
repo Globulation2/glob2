@@ -31,6 +31,9 @@ on native Apple Silicon and Intel runners. Both execute the frozen
 create a one-tick baseline save in the current format, repeat continuation to
 600, save at 300 and resume to 600, then finish a full match and
 create a replay. The comparison job rejects any per-tick divergence.
+Deep-world traces and snapshot-v3 traces are checked separately at every tick;
+result endpoints are matched to their declared checksum algorithm. Save/resume
+and repeatability must agree in both formats when snapshot traces are present.
 The comparison also requires matching release, CLI, save, network and SDL
 versions. Each architecture retains its own compilation timestamp in its report;
 that timestamp is not a compatibility identity. Configure

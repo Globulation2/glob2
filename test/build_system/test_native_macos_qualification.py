@@ -50,6 +50,48 @@ class NativeQualificationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'direct-600:.*initialChecksum=999.*traceInitialChecksum=101'):
                 qa.verify_cases(root)
 
+    def snapshots(self, root):
+        for name in qa.CASES:
+            output = root / 'cases' / name
+            result = json.loads((output / 'result.json').read_text())
+            first = int((output / 'world.checksums').read_text().split()[0])
+            last = result['ticks']
+            (output / 'snapshot.checksums').write_text(''.join(
+                f'{tick} {tick} {tick+1000}\n' for tick in range(first, last+1)))
+            result.update(checksum_algorithm='snapshot-v3', initialChecksum=first+1000,
+                          finalChecksum=last+1000)
+            (output / 'result.json').write_text(json.dumps(result))
+
+    def test_snapshot_endpoints_are_distinct_from_deep_world_checksums(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); self.cases(root); self.snapshots(root)
+            self.assertIn('snapshotTraceSha256', qa.verify_cases(root)['direct-600'])
+            path = root / 'cases/resume-600/snapshot.checksums'
+            path.write_text(path.read_text().replace('350 350 1350', '350 350 1351'))
+            with self.assertRaisesRegex(ValueError, 'Resumed snapshot simulation diverged'):
+                qa.verify_cases(root)
+
+    def test_snapshot_terminal_checksum_must_match_result(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); self.cases(root); self.snapshots(root)
+            path = root / 'cases/direct-600/snapshot.checksums'
+            path.write_text(path.read_text().replace('600 600 1600', '600 600 1601'))
+            with self.assertRaisesRegex(ValueError, 'direct-600:'):
+                qa.verify_cases(root)
+
+    def test_snapshot_cross_architecture_comparison_checks_actual_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for arch in ('arm64', 'x86_64'):
+                output = root / ('qualification-macos-' + arch)
+                self.cases(output); self.snapshots(output)
+                (output / 'report.json').write_text(json.dumps(self.report(arch, qa.verify_cases(output))))
+            qa.compare(root, root / 'comparison.json')
+            path = root / 'qualification-macos-x86_64/cases/direct-600/snapshot.checksums'
+            path.write_text(path.read_text().replace('350 350 1350', '350 350 1351'))
+            with self.assertRaisesRegex(ValueError, 'final snapshot trace bytes'):
+                qa.compare(root, root / 'bad.json')
+
     def test_missing_duplicate_and_reordered_ticks_rejected(self):
         for text in ('0 1\n2 3\n', '0 1\n0 1\n', '1 2\n0 1\n', 'not a checksum\n'):
             with self.subTest(text=text), tempfile.TemporaryDirectory() as directory:

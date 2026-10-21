@@ -15,10 +15,10 @@ FIXTURE_SHA256 = 'bdbc7f65ed3fc96b040ece0213050b92f67c063d5e3d2f82422b3530e22347
 CASES = ('direct-600', 'repeat-600', 'save-300', 'resume-600', 'full-match')
 
 
-def trace(path):
+def trace(path, columns=2):
     lines = path.read_text().splitlines()
     rows = [tuple(map(int, line.split())) for line in lines]
-    if not rows or any(len(row) != 2 for row in rows):
+    if not rows or any(len(row) != columns for row in rows):
         raise ValueError('Malformed simulation trace')
     if [row[0] for row in rows] != list(range(rows[0][0], rows[-1][0] + 1)):
         raise ValueError('Simulation trace has duplicate, missing or reordered ticks')
@@ -28,18 +28,34 @@ def trace(path):
 def verify_cases(root):
     traces = {name: trace(root / 'cases' / name / 'world.checksums') for name in CASES}
     results = {name: json.loads((root / 'cases' / name / 'result.json').read_text()) for name in CASES}
+    snapshots = {}
+    for name in CASES:
+        algorithm = results[name].get('checksum_algorithm')
+        if algorithm == 'snapshot-v3':
+            samples = trace(root / 'cases' / name / 'snapshot.checksums', columns=3)
+            if any(source != world for source, world, _ in samples):
+                raise ValueError(f'{name}: snapshot source/world ticks differ')
+            snapshots[name] = [(world, checksum) for _, world, checksum in samples]
+        elif algorithm is not None:
+            raise ValueError(f'{name}: unsupported checksum algorithm {algorithm!r}')
+    if snapshots and len(snapshots) != len(CASES):
+        raise ValueError('Qualification mixes checksum algorithms')
     for name in CASES:
         result, rows = results[name], traces[name]
+        endpoints = snapshots.get(name, rows)
         # world.checksums records the state before each step; result.json
         # describes the state after the final executed step.
         if (result.get('status') != 'completed' or result.get('ticks') != rows[-1][0] + 1 or
-                result.get('initialChecksum') != rows[0][1] or
+                result.get('initialChecksum') != endpoints[0][1] or
+                (name in snapshots and (endpoints[0][0] != rows[0][0] or
+                 endpoints[-1][0] != result.get('ticks') or
+                 result.get('finalChecksum') != endpoints[-1][1])) or
                 type(result.get('finalChecksum')) is not int or not 0 <= result['finalChecksum'] < 2**32):
             raise ValueError(f'{name}: incomplete simulation or final-byte trace/result mismatch; '
                              f'status={result.get("status")!r}, ticks={result.get("ticks")!r}, '
                              f'traceTicks={rows[0][0]}..{rows[-1][0]}, '
                              f'initialChecksum={result.get("initialChecksum")!r}, '
-                             f'traceInitialChecksum={rows[0][1]}, '
+                             f'traceInitialChecksum={endpoints[0][1]}, '
                              f'finalChecksum={result.get("finalChecksum")!r}')
     if traces['direct-600'][0][0] != 1 or traces['direct-600'][-1][0] != 599:
         raise ValueError('Direct simulation did not execute ticks 1 through 599')
@@ -47,11 +63,18 @@ def verify_cases(root):
             results['repeat-600']['finalChecksum'] != results['direct-600']['finalChecksum']):
         raise ValueError('Repeated simulation diverged')
     if (traces['save-300'] != traces['direct-600'][:299] or
-            results['save-300']['finalChecksum'] != traces['direct-600'][299][1]):
+            results['save-300']['finalChecksum'] != (snapshots['direct-600'][299][1] if snapshots else traces['direct-600'][299][1])):
         raise ValueError('Save simulation diverged')
     if (traces['resume-600'] != traces['direct-600'][299:] or
             results['resume-600']['finalChecksum'] != results['direct-600']['finalChecksum']):
         raise ValueError('Resumed save diverged')
+    if snapshots:
+        if snapshots['repeat-600'] != snapshots['direct-600']:
+            raise ValueError('Repeated snapshot simulation diverged')
+        if snapshots['save-300'] != snapshots['direct-600'][:300]:
+            raise ValueError('Save snapshot simulation diverged')
+        if snapshots['resume-600'] != snapshots['direct-600'][299:]:
+            raise ValueError('Resumed snapshot simulation diverged')
     full = results['full-match']
     if traces['full-match'][0][0] != 1 or not 600 < full['ticks'] < 90000 or full.get('unresolved') is not False:
         raise ValueError('Full match did not end naturally')
@@ -59,7 +82,8 @@ def verify_cases(root):
     if not replay.is_file() or replay.stat().st_size == 0:
         raise ValueError('Completed match did not produce a replay')
     return {name: {'ticks': results[name]['ticks'], 'finalChecksum': results[name]['finalChecksum'],
-                   'traceSha256': hashlib.sha256((root / 'cases' / name / 'world.checksums').read_bytes()).hexdigest()}
+                   'traceSha256': hashlib.sha256((root / 'cases' / name / 'world.checksums').read_bytes()).hexdigest(),
+                   **({'snapshotTraceSha256': hashlib.sha256((root / 'cases' / name / 'snapshot.checksums').read_bytes()).hexdigest()} if snapshots else {})}
             for name in CASES}
 
 
@@ -88,6 +112,16 @@ def compare(root, output):
             path = root / ('qualification-macos-' + arch) / 'cases' / name / 'world.checksums'
             if reports[arch]['cases'][name]['traceSha256'] != hashlib.sha256(path.read_bytes()).hexdigest():
                 raise ValueError('Qualification report differs from final trace bytes')
+        snapshot_rows = []
+        for arch in reports:
+            expected = reports[arch]['cases'][name].get('snapshotTraceSha256')
+            if expected is not None:
+                path = root / ('qualification-macos-' + arch) / 'cases' / name / 'snapshot.checksums'
+                if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+                    raise ValueError('Qualification report differs from final snapshot trace bytes')
+                snapshot_rows.append(trace(path, columns=3))
+        if snapshot_rows and (len(snapshot_rows) != 2 or snapshot_rows[0] != snapshot_rows[1]):
+            raise ValueError('Native Mac snapshot architectures diverged')
         if rows[0] != rows[1] or reports['arm64']['cases'][name] != reports['x86_64']['cases'][name]:
             raise ValueError('Native Mac release architectures diverged')
     output.parent.mkdir(parents=True, exist_ok=True)
