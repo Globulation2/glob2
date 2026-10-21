@@ -123,6 +123,12 @@ void Runtime::update_management_orders()
 {
 	for(std::vector<std::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
 	{
+        // Older saves can carry Econo's former inn/flag retirement orders.
+        if (!runtimeai->allowsBuildingDestruction() && dynamic_cast<DestroyBuilding*>(i->get()))
+        {
+            i=management_orders.erase(i);
+            continue;
+        }
 		tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
@@ -317,7 +323,8 @@ std::shared_ptr<Order> Runtime::decide()
 		other_view=observedTeam().otherVision;
 	}
 
-	while (!orders.empty() && (!AIEngine::selectedTargetExists(*orders.front(),observation())
+	while (!orders.empty() && ((!runtimeai->allowsBuildingDestruction() && orders.front()->getOrderType()==ORDER_DELETE)
+        || !AIEngine::selectedTargetExists(*orders.front(),observation())
         || !AIEngine::ObservationQueries::permittedQueuedOrder(observation(),*orders.front()))) {
         orderExecutionCompleted(*orders.front(),false);
         orders.erase(orders.begin());
