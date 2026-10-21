@@ -36,7 +36,7 @@ with no beach and seals its two wedges from each other along the coast. Each lon
 tongue therefore keeps one **ford**: the flow is cut across its whole width for about
 five tiles at a point 40–65% of the way down and filled with scree, slow but
 walkable. Short tongues stop inland and leave a broad coastal gap, as before. The
-crater is a lava lake with one to three void vents, ash between the lake and the rim
+crater is an uninterrupted lava lake, with ash between the lake and the rim
 circuit, and loam and moss on the rim. All colonies still meet on foot, over the rim,
 the fords and the short tongues' gaps; swimming adds coastal approaches. No colony
 requires swimming to survive or meet rivals.
@@ -79,7 +79,8 @@ These committed previews are native generator screenshots of revision 5. They sh
 the lava crater, unequal green wedges, live tongues with their scree fords, cooled
 grey branches, the crust and ash along the flows, dirt-track approaches, scored
 coastal towns and the deep-water ring at four useful scales. Resource sprites appear
-as small light marks.
+as small light marks. Revision 7 removes the central void vents visible in these
+older previews.
 
 | Default 256² | Minimum 128² |
 | --- | --- |
@@ -95,7 +96,7 @@ Short tongues leave broad green coastal gaps; long tongues seal the coast and ar
 crossed at their fords. All colonies can meet on foot. Swimming adds ocean approaches
 and may shorten travel; it is not a prerequisite for crossing a seal. The generator
 uses only existing catalogue terrain and does not alter resource or movement rules;
-a generated map carries the lava, paths, barren, rough, fertile, deep-water and void
+a generated map carries the lava, paths, barren, rough, fertile and deep-water
 terrain experiments in its header.
 
 ### Controls and support envelope
@@ -133,7 +134,7 @@ remain authoritative.
 | Budget | Meaning and rationale |
 | --- | --- |
 | Island radius `0.43 × shorter side`, roughness `0.06` | A gently irregular island with ocean left across every toroidal seam, including at maximum positive coastline wobble. Stretch changes centres to fill rectangles; flow thickness stays in map tiles. |
-| Crater radius `max(8, 0.06 × shorter side)`, roughness `0.08` | A visible lava lake at minimum size without consuming the whole slope. Corners touching anything but lava are ember; 1–3 void vents of radius 1.5 sit within 45% of the radius. No starter ponds are added. |
+| Crater radius `max(8, 0.06 × shorter side)`, roughness `0.08` | A visible lava lake at minimum size without consuming the whole slope. Corners touching anything but lava are ember. No starter ponds are added. |
 | Crater circuit at local lake radius + 5, half-width 1.5 corners | A continuous dirt-track route round the crater; inside it, two corners clear of the track, the crater wall is dirt and clay; outside it, out to the lava roots ±4 tiles by noise, the rim is loam with moss patches. The circuit uses approximately one sample per circumference tile. |
 | Lava roots at lake radius + rim width + 5 | Separates the useful rim budget from the fixed circuit cost. Thick root lobes form a broken crown of lava; the openings admit approaches. |
 | Angular interval weights `0.65 + U[0,1)` | Unequal green wedge sizes with a lower bound. The weights normalize to a full turn; no complete branch is copied into another sector. |
@@ -320,7 +321,7 @@ once, rather than summing discarded proposals into the final map.
 | `lava-shield.starter.wheat`, `.wood` | Actually planted guaranteed tiles per team; subject is the team index. Targets are 40/32, acceptance floors 20/16. |
 | `lava-shield.starter.secondary` | Fallback occurrence when a starter crop needs another compact patch because the first seed had insufficient connected frontage. Successful first fields do not probe or change. |
 | `lava-shield.ambient.wheat`, `.wood`, `.stone`, `lava-shield.prizes.fruit` | Actual optional tile placements, distinct from guarantees and the crust. |
-| `lava-shield.lava.vertices`, `.fords`, `.vents` | Lava and ember corners in the live tongues (not the crater), long tongues given a ford, and void vents in the crater. |
+| `lava-shield.lava.vertices`, `.fords` | Lava and ember corners in the live tongues (not the crater), and long tongues given a ford. |
 | `lava-shield.crater.ash`, `lava-shield.ground.loam`, `.deep-water` | Corners of crater-wall ash, rim loam and moss, and deep sea. |
 | `lava-shield.margin.crust`, `.scree`, `.ash` | Crust stone tiles, and scree and ash corners, laid along the flows after the towns. |
 

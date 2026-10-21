@@ -31,20 +31,56 @@
    shuffling candidates, then randomly deal selected sites to teams. One colony
    occupies each chosen island. This reduces crowding and persistent team-index
    bias; it does not establish equal walking distances or competitive balance.
-6. **Reserve supplies, then furnish the banks.** Place each home's guaranteed
-   wheat/wood kit on the bank before ambient resources can occupy those sites.
-   Short ambient wheat/wood patches occupy grass 2–10 steps from water; deeper
-   grass receives sparse stone and fruit. Each ambient layer scales
-   with its own amount control. Starter wheat and wood patches remain at 0%,
-   followed by the shared reachable-resource guarantee. Towns stay out of the
-   ambient resource mask. Beaches and town rims are gathering/circulation space;
-   initially empty grass outside the rims may grow crops later.
+6. **Allocate resources by island.** Place home supplies first: a 48-tile wheat
+   budget and 32-tile timber budget beside the upstream bank, splitting across
+   pockets if a sand approach interrupts the ground. These opening supplies
+   remain at zero resource amounts. Each island then gets a compact mixed orchard
+   on one town flank, a quarry on the other, and two wheat-field and two woodland
+   target reaches on separate banks. Only the patch anchors are jittered; crops
+   grow out as connected patches instead of independent random tile samples.
+   All placements stay on their original island, outside town plots and sand
+   approaches. The shared supply backstop uses that same outside-town mask and
+   preserves the permanent deposits' initially clear gathering frontage.
 7. **Check the finished world.** Require walking connectivity between colonies,
    unchanged designed grass/water terrain, no wheat or wood inside any reserved town,
-   and at least 64 reachable, free 4×4
+   compact, complete island orchards and bounded quarries, and at least 64 reachable, free 4×4
    building origins on every island. These origins overlap; they do **not** mean
    64 independent buildings. Swarms, resources and units already occupy their
    final positions when room is measured.
+
+### Fields, woods, quarries and orchards
+
+Revision 5 replaces the old grid-patterned, per-tile random resource decisions.
+It preserves the existing terrain, protected towns, seat assignment and routes.
+The new placement treats each useful island as an opening economy and an expansion area:
+
+- **Wheat fields** use fertile grass 2–14 steps from pure river water. The island's
+  default ambient budget is one eighth of that useful bank area, clamped to
+  96–768 tiles, divided between two target reaches.
+- **Woods** use separate reaches of the same bank habitat. Their default budget is
+  one sixteenth of useful bank area, clamped to 64–384 tiles. This gives renewable
+  food more room than the faster-spreading timber. Fields and woods grow as compact
+  patches around seeded anchors; water, roads and other deposits can split or limit
+  a patch. Shortfalls and actual patch counts are reported rather than filling
+  towns or raising river ground.
+- **Quarries** are single connected outcrops near an inland town flank, with a
+  default budget of 12 tiles per island. The stone amount scales that budget;
+  connected space can limit it.
+- **Orchards** are compact groups on the opposite flank, with cherries, oranges
+  and prunes together. Each fruit has three connected trees at 100%, one or more
+  at positive low amounts, and nine at 300%. Zero fruit removes orchards entirely.
+  The complete orchard and initial gathering frontage must fit before planting;
+  later fields, woods and resource repairs preserve that frontage. Fruit trees
+  are never scattered individually across the island interior.
+- **Algae** uses the shared small-clump seeding beside water, scaled by its amount.
+
+Ambient budgets scale with their corresponding resource controls. The starter
+food and timber remain independent of those controls. Orchard and quarry gathering
+space is an opening reservation, not a no-growth zone: ordinary crops can expand
+there later. Permanent town rims and ford approaches retain their existing
+long-term protection. These allocations are intended to give ordinary farming,
+mining and fruit gathering meaningful locations; they do not establish competitive
+balance or guarantee an AI chooses a good expansion.
 
 ### Keeping the approaches open
 
@@ -104,7 +140,8 @@ seed/settings sweeps should record those rejections as well as generation failur
 
 Telemetry records effective island length, channel separation, island count,
 orientation, requested/placed crossings, omitted-crossing events, adjusted clearings,
-connected ford endpoints, approach sand-corner count, longest approach and ambient tiles.
+connected ford endpoints, approach sand-corner count, longest approach, starter supplies,
+useful bank area, field/wood targets and actual patches, quarry targets/placement, and orchard locations.
 Shared settlement/resource records explain placement and topups. Instrumentation
 adds no RNG draws or terrain analysis when collection is disabled.
 

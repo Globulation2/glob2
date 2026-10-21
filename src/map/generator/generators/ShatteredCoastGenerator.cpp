@@ -10,6 +10,8 @@
 #include "HeightMap.h"
 #include "Map.h"
 #include "Pipeline.h"
+#include "Planting.h"
+#include "Growth.h"
 #include "Regions.h"
 #include "Resources.h"
 #include "StartingPositions.h"
@@ -18,6 +20,7 @@
 #include <algorithm>
 #include <cfloat>
 #include <cmath>
+#include <tuple>
 using namespace MapGeneration;
 
 // Old random (id "shattered-coast", legacy id 7): the game's original random map generator.
@@ -48,7 +51,8 @@ using namespace MapGeneration;
 // - Buildings need pure grass: the widest grass patches become homes (placeColonies), and each home
 //   is stamped a patch of grass big enough for the 4x4 swarm and its first buildings.
 //
-// Every draw here comes from named streams ("simulation", "terrain"), so a seed reproduces the map.
+// Every draw uses named streams ("simulation", "terrain", "shattered-coast-expansion"),
+// so a seed reproduces the map.
 // Several odd-looking details (the scratch map's offsets, the algae search's comparison) are
 // original behaviour kept on purpose: changing them changes every map this generator makes.
 
@@ -884,6 +888,79 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 	map.smoothResources(maxAmount * 3);
 }
 
+// A second, independent furnishing pass gives the coast destinations beyond the home deposits.
+// Run after all opening repairs: no new deposit or RNG draw can change the established starts.
+static void expansionResources(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+{
+	Map &map = game.map;
+	const Torus t(map);
+	const auto protectedHome = swarmSurroundings(t, context, 32);
+	const auto vacant = [&](int i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		return !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID && map.getGroundUnit(x, y) == NOGUID;
+	};
+	const auto fertility = Fertility::forMap(map, false);
+	std::vector<int> land, water;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		generationCheckpoint();
+		if (protectedHome[i] || !vacant(i))
+			continue;
+		if (map.isGrass(t.remainderX(i), i / t.w))
+			land.push_back(i);
+		else if (map.isWater(t.remainderX(i), i / t.w))
+			water.push_back(i);
+	}
+	std::vector<int> centres;
+	for (const auto [type, density, size] : {std::tuple{WHEAT, 700, 40}, {WOOD, 900, 32},
+		std::tuple{STONE, 2200, 12}, std::tuple{ALGA, 1600, 12}})
+	{
+		const auto &ground = type == ALGA ? water : land;
+		const int wanted = int(scaledCount(int(ground.size()) / density, options.percent(type)));
+		int patches = 0, tiles = 0;
+		for (int attempt = 0; attempt < wanted * 40 && patches < wanted && !ground.empty(); ++attempt)
+		{
+			generationCheckpoint();
+			const int seed = ground[context.bounded("shattered-coast-expansion", unsigned(ground.size()))];
+			const int sx = t.remainderX(seed), sy = seed / t.w;
+			if (std::any_of(centres.begin(), centres.end(), [&](int c)
+				{ return t.chebyshev(sx, sy, t.remainderX(c), c / t.w) < 12; }))
+				continue;
+			const auto eligible = [&](int i)
+			{
+				return !protectedHome[i] && t.chebyshev(sx, sy, t.remainderX(i), i / t.w) <= 5 &&
+					vacant(i) &&
+					map.isResourceAllowed(t.remainderX(i), i / t.w, type) &&
+					((type != WHEAT && type != WOOD) || fertility.values()[i] > 0);
+			};
+			// Reject slivers before planting: each destination must be a useful connected clump,
+			// rather than another scatter of individual resource tiles on tiny coastal fragments.
+			std::vector<int> pocket{seed};
+			if (!eligible(seed))
+				continue;
+			for (size_t head = 0; head < pocket.size() && pocket.size() < size_t(size); ++head)
+				for (const auto &step : kCardinalSteps)
+				{
+					const int next = t.at(t.remainderX(pocket[head]) + step[0], pocket[head] / t.w + step[1]);
+					if (eligible(next) && std::find(pocket.begin(), pocket.end(), next) == pocket.end())
+						pocket.push_back(next);
+				}
+			if (pocket.size() < 8)
+				continue;
+			tiles += growPatch(map, t, seed, type, size, eligible);
+			centres.push_back(seed);
+			++patches;
+		}
+		const std::string prefix = "shattered-coast.expansion." + std::to_string(type);
+		context.telemetry.measure(prefix + ".target-clumps", wanted);
+		context.telemetry.measure(prefix + ".clumps", patches);
+		context.telemetry.measure(prefix + ".tiles", tiles);
+		if (patches < wanted)
+			context.telemetry.fallback(prefix + ".shortfall", "Not enough separated coastal pockets outside the starting areas");
+	}
+}
+
 static bool generate(Game &game, GenerationContext &context)
 {
 	const ShatteredCoastOptions options(context.request);
@@ -904,6 +981,8 @@ static bool generate(Game &game, GenerationContext &context)
 	// around it: nothing here budgets its room. Opening it up costs a colony that already has
 	// its room nothing (openStartsBuriedByResources leaves such a colony untouched).
 	openStartsBuriedByResources(game, context);
+	context.stage = "expansion resources";
+	expansionResources(game, context, options);
 	return true;
 }
 
@@ -921,7 +1000,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		6,
+		7,
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
@@ -939,7 +1018,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		 // Off, colonies start in the shattered terrain rather than in a cleared meadow.
 		 GeneratorControl::toggle("colony-meadows", "Colony meadows", true, ControlGroup::Terrain)
 			 .withSearchValues({1}),
-		 // The area of each colony's own wheat, wood, stone and algae deposits.
+		 // Home deposit area and the number of additional expansion clumps.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

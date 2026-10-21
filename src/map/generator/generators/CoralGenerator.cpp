@@ -4,6 +4,8 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
+#include "Farmland.h"
+#include "Room.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
 #include "Pipeline.h"
@@ -136,6 +138,10 @@ constexpr int kBudFruitNear = 3, kBudFruitFar = 12;
 // this far apart.
 constexpr double kBridgeSearch = 30;
 constexpr double kBridgeApart = 30;
+// A compact neutral building court with a one-corner sand seal and room for one
+// 4x4 building. The wider land disc includes the rasterized sand margin.
+constexpr int kExpansionRadius = 4, kExpansionMargin = 1;
+constexpr double kExpansionLandRadius = 6;
 
 struct Geometry
 {
@@ -232,6 +238,7 @@ enum class Kind
 {
 	Branch,  // a branch of the fan: the trunk is branch 0
 	Bud,     // a disc of land at a branch's tip, for a fruit grove
+	Expansion, // a sand-ringed building court at a junction
 	Bridge,  // a strip of land joining this fan to the next colony's
 	Obstacle // the pad, as a circle growth keeps clear of; drawn as a shape instead
 };
@@ -274,7 +281,9 @@ struct Layout
 	std::vector<Bud> buds;     // colony 0's buds, in the order their pieces were added
 	std::vector<ShapePoint> pads;
 	std::vector<double> padAngle;                   // each pad's heading, outwards from the centre
-	std::vector<unsigned char> land, water, bridge; // per tile
+	std::vector<unsigned char> land, water, bridge, expansion; // per tile
+	std::vector<ShapePoint> nodeCentres;
+	std::vector<int> nodeOwners;
 	// Per tile: the colony whose pad it is, the bud it is part of (numbered over every colony), and
 	// the colony whose trunk tip it is; -1 elsewhere.
 	std::vector<int> padOf, budOf, tipOf;
@@ -319,7 +328,7 @@ struct Layout
 	/// sibling forking from the same point (a fork's two children start together). A bud (a
 	/// one-point path) passes its branch as `parent`; that branch's siblings are exempt for it too,
 	/// so the bud on one side of a fork is not refused for the branch on the other.
-	bool keepsClear(const std::vector<StrokePoint> &candidate, int parent) const
+	bool keepsClear(const std::vector<StrokePoint> &candidate, int parent, bool expansion = false) const
 	{
 		const bool bud = candidate.size() == 1;
 		const ShapePoint root =
@@ -346,6 +355,10 @@ struct Layout
 		{
 			for (const Piece &piece : pieces)
 			{
+				// A court deliberately widens its own fan's junction. Keep the full
+				// strait from pads, other courts, and every rival fan's land.
+				if (k == 0 && expansion && piece.kind == Kind::Branch)
+					continue;
 				if (k == 0 && piece.kind == Kind::Branch &&
 					(piece.branch == parent ||
 					 (forkParent >= 0 && tree[piece.branch].parent == forkParent &&
@@ -517,6 +530,41 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		return L;
 	}
 
+	// Reserve courts before buds and bridges, repeating the same sites for every
+	// colony. Prefer two different depths of the network; tight fans omit courts
+	// rather than shrinking the homes or closing a strait to another fan.
+	std::vector<int> junctions;
+	int deepest = 1;
+	for (int b = 1; b < int(L.tree.size()); ++b)
+		if (!L.tree[b].leaf)
+		{
+			junctions.push_back(b);
+			deepest = std::max(deepest, L.tree[b].depth);
+		}
+	int nodes = 0;
+	for (int slot = 0; slot < o.expansionNodes; ++slot)
+	{
+		const double depth = double(slot + 1) * deepest / (o.expansionNodes + 1);
+		std::stable_sort(junctions.begin(), junctions.end(), [&](int a, int b)
+		{ return std::abs(L.tree[a].depth - depth) < std::abs(L.tree[b].depth - depth); });
+		for (int b : junctions)
+		{
+			const auto &at = L.tree[b].path.back();
+			const std::vector<StrokePoint> court{{at.x, at.y, kExpansionLandRadius}};
+			if (L.keepsClear(court, b, true))
+			{
+				L.add(court, Kind::Expansion, b);
+				++nodes;
+				break;
+			}
+		}
+	}
+	context.telemetry.measure("coral.expansion.requested-per-fan", o.expansionNodes);
+	context.telemetry.measure("coral.expansion.actual-per-fan", nodes);
+	context.telemetry.measure("coral.expansion.radius", kExpansionRadius);
+	if (nodes < o.expansionNodes)
+		context.telemetry.fallback("coral.expansion.omitted", "Junctions lack room between pads and rival fans");
+
 	// Every fork, rolled for stone once; then a bud on every tip that keeps clear, rolled for its
 	// fruit. Both roll whether or not they are used, so the count never shifts later rolls.
 	const std::int64_t stonePerMille =
@@ -546,6 +594,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Stamp every colony's copy: its pad, its fan and buds, its bridges to the next colony.
 	L.land.assign(n, 0);
 	L.bridge.assign(n, 0);
+	L.expansion.assign(n, 0);
 	L.padOf.assign(n, -1);
 	L.budOf.assign(n, -1);
 	L.tipOf.assign(n, -1);
@@ -581,6 +630,18 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			if (piece.kind == Kind::Obstacle)
 				continue;
 			const std::vector<StrokePoint> turned = L.place(piece.path, k);
+			if (piece.kind == Kind::Expansion)
+			{
+				strokePath(L.land, t, turned);
+				strokePath(L.expansion, t, turned);
+				L.nodeCentres.push_back({turned.front().x, turned.front().y});
+				L.nodeOwners.push_back(k);
+				const int id = int(L.nodeCentres.size()) - 1;
+				context.telemetry.measure("coral.expansion.x", int(std::lround(turned.front().x)), id);
+				context.telemetry.measure("coral.expansion.y", int(std::lround(turned.front().y)), id);
+				context.telemetry.measure("coral.expansion.owner", k, id);
+				continue;
+			}
 			if (piece.kind == Kind::Bud)
 			{
 				// The same disc strokePath would draw for a one-point path, labelled as it goes.
@@ -669,7 +730,7 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 	};
 	const auto onBranch = [&](int i)
 	{
-		return coral[i] && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.bridge[i] &&
+		return coral[i] && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.bridge[i] && !L.expansion[i] &&
 			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 
@@ -733,6 +794,15 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 				[&](int i) { return splitKey[i]; });
 }
 
+std::vector<int> expansionCorners(const Layout &L, ShapePoint centre, GenerationContext &context)
+{
+	std::vector<int> corners;
+	const RadialShape circle(kExpansionRadius, 0, context, "coral-expansion-outline");
+	forEachTileInShape(L.t, std::lround(centre.x), std::lround(centre.y), circle, 0,
+		[&](int i, double, double) { corners.push_back(i); });
+	return corners;
+}
+
 bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "coral layout";
@@ -785,6 +855,10 @@ bool generate(Game &game, GenerationContext &context)
 			if (road[i] && terrain[i] == GRASS && L.padOf[i] < 0 && L.budOf[i] < 0)
 				terrain[i] = SAND;
 	}
+	// Courts overwrite through-roads and decorative sand inside their grass disc.
+	// Their complete sand perimeter stays walkable while sealing all crop growth.
+	for (const auto &centre : L.nodeCentres)
+		stampContainedPlot(terrain, t, expansionCorners(L, centre, context), kExpansionMargin);
 	layBeaches(terrain, t);
 	writeVertices(map, terrain);
 
@@ -831,6 +905,16 @@ bool generate(Game &game, GenerationContext &context)
 		if (workers[team].empty() || !openRoad(map, t, workers[team], tip))
 		{
 			context.detail = "colony " + std::to_string(team) + " cannot walk to its trunk's tip";
+			return false;
+		}
+	}
+	for (size_t node = 0; node < L.nodeCentres.size(); ++node)
+	{
+		const auto &p = L.nodeCentres[node];
+		const int target = t.at(int(std::lround(p.x)), int(std::lround(p.y)));
+		if (!openRoad(map, t, workers[L.nodeOwners[node]], tileMask(t, {target})))
+		{
+			context.detail = "A coral expansion court is unreachable from its colony.";
 			return false;
 		}
 	}
@@ -898,6 +982,32 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (!reached)
 			return "Colony " + std::to_string(k) + " cannot walk to its trunk's tip.";
 	}
+	// Verify the actual sand seal, empty grass and room for an accessible building,
+	// including after all resource/route repair stages.
+	const auto walking = groundUnitTiles(map);
+	const auto buildable = potentialBuildingTiles(map);
+	for (size_t node = 0; node < L.nodeCentres.size(); ++node)
+	{
+		const auto p = L.nodeCentres[node];
+		const int x = int(std::lround(p.x)), y = int(std::lround(p.y));
+		TerrainSketch seal(t.size(), WATER);
+		const auto inside = stampContainedPlot(seal, t, expansionCorners(L, p, replay), kExpansionMargin);
+		std::vector<unsigned char> room(t.size(), 0);
+		for (int i : inside)
+		{
+			if (!map.isGrass(t.remainderX(i), i / t.w) ||
+				map.getResource(t.remainderX(i), i / t.w).type != NO_RES_TYPE)
+				return "A coral expansion court has lost its clear grass interior.";
+			room[i] = buildable[i];
+		}
+		for (int i = 0; i < t.size(); ++i)
+			if (seal[i] == SAND && map.vertexTerrainAt(t.remainderX(i), i / t.w) != SAND)
+				return "A coral expansion court has a broken sand ring.";
+		const BuildingGrid grid{{x - 3, y - 3, x + 3, y + 3}, 4, 4, 2, 1};
+		const auto buildings = arrangeBuildingGrid(t, room, walking, grid, workers[L.nodeOwners[node]]);
+		if (!buildings.failure.empty() || buildings.footprints.size() != 1)
+			return "A coral expansion court lacks an accessible building footprint.";
+	}
 	if (CoralOptions(context.request).landBridges > 0 && L.g.teams >= 2)
 	{
 		const ColonyWalk walk = walkFromFirstColony(map, teams, "the coral", "over the bridges");
@@ -912,7 +1022,7 @@ CoralOptions::CoralOptions(const GenerationRequest &r)
 	: branching(r.option("branching")), forkAngle(r.option("fork-angle")),
 	  branchWidth(r.option("branch-width")), straitWidth(r.option("strait-width")),
 	  lean(r.option("lean")), landBridges(r.option("land-bridges")),
-	  homeSize(r.option("home-size")), sandRoads(r.option("sand-roads") != 0),
+	  homeSize(r.option("home-size")), expansionNodes(r.option("expansion-nodes")), sandRoads(r.option("sand-roads") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -925,7 +1035,8 @@ GeneratorDefinition coralDefinition()
 		"coral",
 		21,
 		"Coral",
-		2,
+		// Revision 3: sand-ringed, resource-free expansion courts along each fan.
+		3,
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the
@@ -946,6 +1057,8 @@ GeneratorDefinition coralDefinition()
 		 // Each home pad's radius as a percentage of the standard pad.
 		 GeneratorControl{"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout}
 			 .withSearchRange(120, 170),
+		 GeneratorControl{"expansion-nodes", "Expansion nodes", 0, 3, 1, 2, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
 		 // Off, the branches are grass from shore to shore, with no sand road down the middle.
 		 // Search keeps roads open as adjacent crops and trees regrow.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)

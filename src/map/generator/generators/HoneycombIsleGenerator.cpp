@@ -26,18 +26,16 @@ using namespace MapGeneration;
 
 // Honeycomb isle: a city of hexagon blocks on an island in a lagoon, cut in two by a wide river
 // that a few bridges cross. Paved streets draw the honeycomb. Pale wheat fields ring the island's
-// edge and line the river; the blocks inside are ruins, stone outlines broken open onto the street
-// and filled with rubble that has grown over, with a few open squares, crater gardens round flooded
-// bomb craters, and the shell of a landmark at the middle (a stadium, a cathedral or a station)
-// with an orchard growing in it. Every colony's home is two blocks with a cistern garden.
+// edge and line the river; the blocks inside contain overgrown rubble, with a few open squares,
+// crater gardens round flooded bomb craters, and an open orchard at the middle. Every colony's home is two blocks with a cistern garden.
 //
 // HOW IT PLAYS. The city is only as big as the colonies need (blocks per colony), and the lagoon
 // and river cannot be crossed until units swim, so colonies start a block or two apart and nobody
 // expands away from the fight. Food is on the island's edge and along the river; the ruins between
 // the homes are where they meet. Rubble is wood: it blocks walking and building, so it is cover and
 // chokepoint, and it is the city's lumber, so a colony builds its town by clearing its own cover,
-// and cutting through a ruin opens a way into a neighbour's flank. Stone outlines cannot be
-// cleared, so the ruins keep their shape and only their gaps and fill change hands. The bridges are
+// and cutting through a ruin opens a way into a neighbour's flank. Blocks have no stone liners,
+// so clearing rubble opens the whole block. The bridges are
 // where the two halves of the city meet, and the landmark's orchard is the prize at the middle.
 //
 // WHY IT WORKS (docs/map-generators/game-rules-for-map-design.md). Every street is paved, and a
@@ -130,23 +128,14 @@ enum class Block : unsigned char
 	Landmark
 };
 
-// The per-map designs every colony shares, and the landmark's.
+// The per-map garden design every colony shares.
 enum HomeDesign
 {
-	WellYard,     // the cistern in front of the home block's middle, nothing else standing
-	WalledCellar, // the same well, with the back half of the block's outline still standing
-	GardenCourt,  // the well on the street between the two blocks, stone posts round its court
+	WellYard,    // the cistern in front of the home block's middle
+	GardenCourt, // the well on the street between the two blocks
 	kHomeDesigns
 };
-enum LandmarkDesign
-{
-	Stadium,   // a thick ring of stone with four gates
-	Cathedral, // a ring and rows of pillars
-	Station,   // long platforms side by side
-	kLandmarkDesigns
-};
-const char *const kHomeDesignNames[] = {"well-yard", "walled-cellar", "garden-court"};
-const char *const kLandmarkDesignNames[] = {"stadium", "cathedral", "station"};
+const char *const kHomeDesignNames[] = {"well-yard", "garden-court"};
 
 struct Plot
 {
@@ -177,7 +166,7 @@ struct Layout
 	std::vector<int> homeCell, annexCell, craterCell, landmarkCell;
 	std::vector<ShapePoint> swarms, wells, landmarks;
 	std::vector<Plot> plots;
-	int homeDesign = 0, landmarkDesign = 0, bridges = 0;
+	int homeDesign = 0, bridges = 0;
 	std::string failure;
 	bool homesDidNotFit = false;
 	// What the design observed, replayed into the generation's telemetry by design(): the design is
@@ -518,9 +507,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		squares += L.kind[c] == Block::Square;
 	}
 	L.homeDesign = int(context.bounded("honeycomb-isle-home-design", kHomeDesigns));
-	L.landmarkDesign = int(context.bounded("honeycomb-isle-landmark-design", kLandmarkDesigns));
 	L.telemetry.choice("honeycomb-isle.home-design", kHomeDesignNames[L.homeDesign]);
-	L.telemetry.choice("honeycomb-isle.landmark-design", kLandmarkDesignNames[L.landmarkDesign]);
 	L.telemetry.measure("honeycomb-isle.blocks.city", wanted);
 	L.telemetry.measure("honeycomb-isle.blocks.ruins", ruins);
 	L.telemetry.measure("honeycomb-isle.blocks.collapsed", collapsed);
@@ -580,13 +567,6 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	for (int i = 0; i < n; ++i)
 		L.terrain[i] = !inCity[i] || L.river[i] ? WATER : paved(i) ? SAND : GRASS;
 
-	// An edge's midpoint on a cell's outline: where a gate or a gap in the outline goes.
-	const auto edgeMiddle = [&](int edge, int c)
-	{
-		const auto ends = L.g.edgeEnds(edge, c);
-		const ShapePoint a = tilePoint(ends.first), b = tilePoint(ends.second);
-		return ShapePoint{(a.x + b.x) / 2, (a.y + b.y) / 2};
-	};
 	const auto nearPoint = [&](int i, ShapePoint p, double r)
 	{ return t.dist2(t.remainderX(i), i / t.w, int(std::lround(p.x)), int(std::lround(p.y))) <= r * r; };
 	// The tiles of a cell, row-major; collected once.
@@ -595,9 +575,8 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		if (inCity[i])
 			tilesOf[L.cell[i]].push_back(i);
 
-	// Homes: a garden round the cistern and the design's standing stone.
+	// Homes: open gardens round the cistern, without stone walls or posts.
 	const std::vector<std::pair<int, int>> sharedMargin = discOffsets(o.streetWidth / 2.0 + 2.5);
-	const double gap = o.streetWidth / 2.0 + 2.2;
 	for (int k = 0; k < teams; ++k)
 	{
 		const ShapePoint home = cellCentre(L, L.homeCell[k]);
@@ -641,24 +620,6 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			   own);
 		L.plots.back().heading = std::atan2(annex.y - well.y, annex.x - well.x);
 		L.plots.back().wheatToward = annex;
-		if (L.homeDesign == WalledCellar)
-			// The back half of the home block's outline still stands; the front, towards the annex,
-			// fell.
-			for (int i : tilesOf[L.homeCell[k]])
-			{
-				const double dx = t.offsetX(int(home.x), t.remainderX(i)), dy = t.offsetY(int(home.y), i / t.w);
-				if (depth[i] == 1 && dx * std::cos(axis) + dy * std::sin(axis) < -2.0)
-					L.stone[i] = 1;
-			}
-		if (L.homeDesign == GardenCourt)
-			// Stone posts at the corners of the court round the well.
-			for (int corner = 0; corner < 4; ++corner)
-			{
-				const ShapePoint p =
-					polarPoint(well.x, well.y, kCisternRadius + kCisternGarden + 2.5,
-							   axis + kPi / 4 + corner * kPi / 2);
-				L.stone[t.at(int(std::lround(p.x)), int(std::lround(p.y)))] = 1;
-			}
 	}
 
 	// Craters: a pond blown into the block, its garden round it.
@@ -710,7 +671,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	}
 	L.telemetry.measure("honeycomb-isle.blocks.fields", fields);
 
-	// The landmark's stone and the orchard at its heart, which grows with the fruit amount.
+	// The central orchard is open grass, without stone rings, pillars or platforms.
 	const int groves = std::clamp(int(scaledCount(kOrchardGroves, o.fruit)), 0, kMostOrchardGroves);
 	const double orchardRadius = groves ? 3.5 + std::max(0, groves - kOrchardGroves) * 0.75 : 0.0;
 	L.telemetry.measure("honeycomb-isle.orchard.groves", groves);
@@ -718,42 +679,16 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	{
 		const ShapePoint centre = cellCentre(L, c);
 		L.landmarks.push_back(centre);
-		std::vector<ShapePoint> gates;
-		for (size_t e = 0; e < L.g.cells[c].edges.size(); e += 2)
-			gates.push_back(edgeMiddle(L.g.cells[c].edges[e], c));
 		for (int i : tilesOf[c])
 		{
 			if (!interior[i])
 				continue;
-			const int dx = t.offsetX(int(centre.x), t.remainderX(i)), dy = t.offsetY(int(centre.y), i / t.w);
-			bool wall = false;
-			switch (L.landmarkDesign)
-			{
-			case Stadium:
-				wall = depth[i] == 2 || depth[i] == 3;
-				break;
-			case Cathedral:
-				wall = depth[i] == 2 || (depth[i] >= 5 && dx % 3 == 0 && dy % 3 == 0 &&
-										 dx * dx + dy * dy > 9);
-				break;
-			case Station:
-				wall = depth[i] >= 2 && (dy + 64) % 4 == 0 && std::abs(dy) > 1;
-				break;
-			}
-			for (const ShapePoint &g : gates)
-				if (nearPoint(i, g, gap + 1))
-					wall = false;
-			if (wall)
-				L.stone[i] = 1;
 			if (nearPoint(i, centre, orchardRadius))
-			{
-				L.stone[i] = 0;
 				L.orchard[i] = 1;
-			}
 		}
 	}
 
-	// Ruins and collapsed blocks: outlines with gaps, and rubble.
+	// Ruins and collapsed blocks contain rubble, with open edges instead of stone outlines.
 	const std::vector<int> fill = periodicNoise(t.w, t.h, 4, context.stream("honeycomb-isle-fill"));
 	const std::vector<int> chunks = periodicNoise(t.w, t.h, 2, context.stream("honeycomb-isle-chunks"));
 	std::vector<unsigned char> rubbleGround(n, 0);
@@ -761,35 +696,12 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	{
 		if (L.kind[c] != Block::Ruin && L.kind[c] != Block::Collapsed)
 			continue;
-		const bool ruin = L.kind[c] == Block::Ruin;
-		std::vector<ShapePoint> gaps;
-		if (ruin)
-		{
-			for (int edge : L.g.cells[c].edges)
-				if (int(context.bounded("honeycomb-isle-gaps", 100)) < o.outlineGaps)
-					gaps.push_back(edgeMiddle(edge, c));
-			if (gaps.empty())
-			{
-				const auto &own = L.g.cells[c].edges;
-				gaps.push_back(
-					edgeMiddle(own[context.bounded("honeycomb-isle-gaps", std::uint32_t(own.size()))], c));
-			}
-		}
 		for (int i : tilesOf[c])
-		{
-			if (!interior[i])
-				continue;
-			bool opening = false;
-			for (const ShapePoint &g : gaps)
-				opening |= nearPoint(i, g, gap);
-			if (ruin && depth[i] == 1 && !opening)
-				L.stone[i] = 1;
-			else if (depth[i] >= (ruin ? 2 : 1))
+			if (interior[i] && depth[i] >= (L.kind[c] == Block::Ruin ? 2 : 1))
 				rubbleGround[i] = 1;
-		}
 	}
 	// The rubble control sets how full a ruin is; the wood amount scales it like any other wood, so
-	// at a wood amount of 0 the ruins stand empty.
+	// at a wood amount of 0 the blocks stand empty.
 	const int share = std::clamp(int(scaledCount(o.rubble + 10, o.wood)), 0, 100);
 	L.telemetry.measure("honeycomb-isle.rubble.share", share);
 	std::vector<unsigned char> rubbleShare = noisyShare(rubbleGround, fill, share);
@@ -797,7 +709,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	const int chunkShare = std::clamp(int(scaledCount(3, o.stone)), 0, 100);
 	const int chunkCut = chunkShare ? 65536 - 65536 * chunkShare / 100 : 65536;
 	for (int i = 0; i < n; ++i)
-		if (rubbleShare[i] && chunks[i] >= chunkCut)
+		if (rubbleShare[i] && depth[i] >= 2 && chunks[i] >= chunkCut)
 			L.stone[i] = 1;
 
 	// Squares keep their ground open: a single statue at the middle.
@@ -988,7 +900,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "honeycomb isle terrain";
 	writeVertices(map, L.terrain);
-	// Standing stone and rubble go down before the colonies: neither is ever on a home.
+	// Scattered masonry and rubble go down before the colonies: neither is ever on a home.
 	int stoneTiles = 0;
 	for (int i = 0; i < n; ++i)
 	{
@@ -1175,7 +1087,7 @@ HoneycombIsleOptions::HoneycombIsleOptions(const GenerationRequest &r)
 	: blockShape(r.option("block-shape")), blockSize(r.option("block-size")),
 	  streetWidth(r.option("street-width")), warp(r.option("warp")),
 	  blocksPerColony(r.option("blocks-per-colony")), rubble(r.option("rubble")),
-	  outlineGaps(r.option("outline-gaps")), craters(r.option("crater-gardens")),
+	  craters(r.option("crater-gardens")),
 	  riverWidth(r.option("river-width")), wheatFields(r.option("wheat-fields")),
 	  bridges(r.option("bridges")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
@@ -1191,13 +1103,14 @@ GeneratorDefinition honeycombIsleDefinition()
 		"honeycomb-isle",
 		53,
 		"Honeycomb isle",
-		3,
+		// Revision 4: hexagons by default, open cell edges and an unenclosed orchard.
+		4,
 		false,
 		// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
 		// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for
 		// ruins inside the ring of edge and riverside fields.
 		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons", "Random"},
-								  2, ControlGroup::Terrain)
+								  1, ControlGroup::Terrain)
 			 .withSearchValues({0, 1}),
 		 GeneratorControl{"block-size", "Block size", 16, 22, 1, 18, ControlGroup::Layout}
 			 .withSearchRange(18, 22),
@@ -1210,8 +1123,6 @@ GeneratorDefinition honeycombIsleDefinition()
 			 .withSearchRange(10, 14),
 		 GeneratorControl{"rubble", "Rubble", 20, 90, 5, 70, ControlGroup::Terrain}.withSearchRange(
 			 45, 75),
-		 GeneratorControl{"outline-gaps", "Outline gaps", 0, 100, 10, 40, ControlGroup::Terrain}
-			 .withSearchRange(20, 70),
 		 GeneratorControl{"crater-gardens", "Craters per colony", 0, 3, 1, 1, ControlGroup::Layout}
 			 .withSearchRange(1, 3),
 		 GeneratorControl::choice("wheat-fields", "Wheat fields", {"Few", "Normal", "Many"}, 1,
@@ -1224,7 +1135,7 @@ GeneratorDefinition honeycombIsleDefinition()
 			 2, 5),
 		 // Wheat fields are planted full at 100 and rubble is full at 200, so higher amounts would
 		 // change nothing (bulk study, 2026-09-16). The stone amount scales only the masonry
-		 // chunks in the rubble: ruin and landmark outlines are structural and stand at 0.
+		 // chunks in the rubble and the single statues in open squares.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 100),
 		 GeneratorControl::percentage("wood-amount", "Wood amount", 200),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

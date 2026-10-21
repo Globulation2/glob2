@@ -248,7 +248,7 @@ GeneratorDefinition locustDefinition()
 	return {"locust",
 			47,
 			"Locust",
-			5,
+			6,
 			false,
 			{GeneratorControl{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout}
 				 .withSearchRange(24, 30),
@@ -262,6 +262,6 @@ GeneratorDefinition locustDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			// Circular and square oases repeat on an obvious regular grid, no shared centre.
-			{"terrain:natural", "feature:forest", "style:expansion", "fairness:stamped-lattice"}};
+			// Independently offset clearings preserve room while breaking up the lattice.
+			{"terrain:natural", "feature:forest", "style:expansion"}};
 }

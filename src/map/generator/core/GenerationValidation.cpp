@@ -60,8 +60,7 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 			if (!g.map.getTile(x, y).canResourcesGrow)
 				return "Generated maps may not disable resource growth (no-growth zone at " +
 					   std::to_string(x) + "," + std::to_string(y) + ")";
-	// Every colony starts with the lobby's shared "Starting workers" value.
-	const int expectedWorkers = r.nbWorkers;
+	// Normally the shared worker count is per colony; detached settlements may grant it per swarm.
 	if (d.hasStartingColonies)
 		for (int i = 0; i < r.nbTeams; ++i)
 		{
@@ -72,14 +71,15 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 				team->startPosY >= g.map.getH())
 				return "Starting position outside map bounds";
 			int workers = 0;
-			bool swarm = false;
+			int swarms = 0;
 			for (const auto *unit : team->liveUnits.entries())
 			if (unit && unit->typeNum == WORKER)
 					++workers;
 			for (const auto *building : team->liveBuildings.entries())
 			if (building && building->typeNum == g.buildingsTypes.getStartingBuildingTypeNum())
-					swarm = true;
-			if (workers != expectedWorkers || !swarm)
+					++swarms;
+			const int expectedWorkers = r.nbWorkers * (d.workersPerStartingSwarm ? swarms : 1);
+			if (workers != expectedWorkers || !swarms)
 				return "Incomplete starting colony";
 		}
 	return {};

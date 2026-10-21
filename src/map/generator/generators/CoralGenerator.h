@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct CoralOptions
 {
-	int branching, forkAngle, branchWidth, straitWidth, lean, landBridges, homeSize;
+	int branching, forkAngle, branchWidth, straitWidth, lean, landBridges, homeSize, expansionNodes;
 	bool sandRoads;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit CoralOptions(const GenerationRequest &r);

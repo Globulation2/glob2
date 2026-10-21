@@ -8,12 +8,14 @@
 #include "Grid.h"
 #include "Growth.h"
 #include "Pipeline.h"
+#include "Orbits.h"
 #include "Planting.h"
 #include "Room.h"
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <limits>
 #include <string>
@@ -51,7 +53,7 @@ struct Layout
 	Farm towns;
 	std::vector<ShapePoint> sites, homes;
 	std::vector<Crossing> crossings;
-	std::vector<int> homeOf;
+	std::vector<int> homeOf, islandOf;
 	std::vector<unsigned char> approaches;
 	std::string failure;
 	bool transpose = false;
@@ -168,6 +170,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		land[i] = L.terrain[i] != WATER;
 	const auto islandOf = connectedRegions(land, t.w, t.h, true, GridNeighbors::Cardinal);
+	L.islandOf = islandOf;
 	std::vector<Crossing> fitted;
 	for (const auto &proposed : L.crossings)
 	{
@@ -362,56 +365,146 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "braided delta resources";
 	const auto water = pureTiles(L.terrain, t, WATER);
 	const auto distance = stepsFrom(t, water);
-	// Reserve guaranteed bank supplies BEFORE ambient decoration. Bulk seed 711038 at
-	// wheat=300%, wood=0% previously let wheat/stone/fruit occupy the wood kit's bank.
-	// The generic emergency topup then planted wood inside the sand-rimmed town; later
-	// crop growth trapped the colony in its own building clearing. Kit-first ordering
-	// gives food and wood priority over ambient abundance without carving new terrain,
-	// weakening the town budget, or depending on a particular AI clearing the crop wall.
-	// Guaranteed small starter patches are deliberately retained at 0%. Keep them outside the
-	// town, beside its rim on the upstream bank, so survival does not consume construction room.
-	for (const auto &p : L.homes)
-	{
-		const double u = L.transpose ? p.y : p.x, v = L.transpose ? p.x : p.y;
-		const auto wheat = L.point(u - 6, v - 17), wood = L.point(u + 6, v - 17);
-		plantKit(
-			map, t, context,
-			{{int(wheat.x), int(wheat.y), 5}, {int(wood.x), int(wood.y), 5}, {0, 0, 0}, 18, 18, -1},
-			[&](int i) { return !L.towns.plot[i] && clearGround(map, t.remainderX(i), i / t.w); });
-	}
-
-	// Bank crops occupy short separated patches, not an unbroken wall. Town rims and coastal
-	// beaches remain empty even at maximum abundance. Deposits near water can renew; the
-	// protected towns supply lasting building ground if the rest of the bank later overgrows.
-	int planted = 0;
+	const auto fertility = cropGrowthField(L.terrain, t);
+	std::vector<unsigned char> ground(t.size(), 0), bank(t.size(), 0), frontage(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.towns.plot[i] || !clearGround(map, t.remainderX(i), i / t.w))
-			continue;
-		const int u = L.transpose ? i / t.w : t.remainderX(i);
-		const int v = L.transpose ? t.remainderX(i) : i / t.w;
-		const int patch = (u / 8 + v / 8) % 4;
-		int type = -1, chance = 0;
-		if (distance[i] >= 2 && distance[i] <= 10 && u % 16 < 10)
+		ground[i] = !L.towns.plot[i] && map.isGrass(t.remainderX(i), i / t.w);
+		bank[i] = ground[i] && distance[i] >= 2 && distance[i] <= 14 && fertility.values()[i] > 0;
+	}
+	// Fund the opening first, with two coherent bank patches outside the protected town.
+	// Several pockets are allowed when a sand approach divides a starter field.
+	for (int team = 0; team < context.request.nbTeams; ++team)
+	{
+		const auto p = L.homes[team];
+		const int island = L.islandOf[t.at(int(p.x), int(p.y))];
+		const double u = L.transpose ? p.y : p.x, v = L.transpose ? p.x : p.y;
+		for (int crop = 0; crop < 2; ++crop)
 		{
-			type = patch < 2 ? WHEAT : WOOD;
-			chance = int(scaledCount(24, type == WHEAT ? o.wheat : o.wood));
+			const auto at = L.point(u + (crop ? 10 : -8), v - 17);
+			const auto placed = growPatchesNear(map, t, int(at.x), int(at.y), 14,
+				crop ? WOOD : WHEAT, crop ? 32 : 48,
+				[&](int i) { return bank[i] && L.islandOf[i] == island; });
+			context.telemetry.measure(crop ? "braided-delta.starter.wood" : "braided-delta.starter.wheat", placed.tiles, team);
+			if (placed.tiles < (crop ? 32 : 48))
+				context.telemetry.fallback("braided-delta.starter.partial", "Bank approaches split the starter supplies", team);
 		}
-		else if (distance[i] > 10)
+	}
+	// One compact mixed orchard and one quarry per island. Placement searches useful
+	// ground near the town's flanks; neither permanent resource is sprayed over the interior.
+	constexpr std::array<std::pair<int, int>, 9> treeOffsets{{
+		{0, 0}, {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}}};
+	for (size_t site = 0; site < L.sites.size(); ++site)
+	{
+		const auto p = L.sites[site];
+		const int island = L.islandOf[t.at(int(p.x), int(p.y))];
+		const double u = L.transpose ? p.y : p.x, v = L.transpose ? p.x : p.y;
+		const auto free = [&](int i)
+		{ return ground[i] && !frontage[i] && L.islandOf[i] == island && clearGround(map, t.remainderX(i), i / t.w); };
+		const int trees = o.fruit > 0 ? std::max(1, int(scaledCount(3, o.fruit))) : 0;
+		const int facing = int(context.bounded("braided-delta-orchards", 4));
+		const auto treeOffset = [&](int fruit, int tree)
 		{
-			type = patch == 0 ? STONE : CHERRY + patch - 1;
-			chance = int(scaledCount(2, type == STONE ? o.stone : o.fruit));
+			const int dx = (fruit - 1) * 3 + treeOffsets[tree].first;
+			const int dy = (fruit == 1 ? 3 : 0) + treeOffsets[tree].second;
+			return turnStencilVertex(facing, dx, dy);
+		};
+		if (trees)
+		{
+			const auto target = L.point(u - 18, v + 12);
+			const int centre = seedNear(t, int(target.x), int(target.y), 32, [&](int i)
+			{
+				if (!free(i))
+					return false;
+				for (int fruit = 0; fruit < 3; ++fruit)
+					for (int tree = 0; tree < trees; ++tree)
+					{
+						const auto [dx, dy] = treeOffset(fruit, tree);
+						// Leave harvest frontage around every grove, including at maximum fruit.
+						for (const auto &[ox, oy] : {std::pair{0, 0}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+							if (!free(t.at(t.remainderX(i) + dx + ox, i / t.w + dy + oy)))
+								return false;
+					}
+				return true;
+			});
+			if (centre < 0)
+			{
+				context.detail = "A delta island has no room for its compact orchard.";
+				return false;
+			}
+			for (int fruit = 0; fruit < 3; ++fruit)
+				for (int tree = 0; tree < trees; ++tree)
+				{
+					const auto [dx, dy] = treeOffset(fruit, tree);
+					map.setResourceByIndex(t.x(t.remainderX(centre) + dx), t.y(centre / t.w + dy), CHERRY + fruit, 1);
+					for (const auto &[ox, oy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+						frontage[t.at(t.remainderX(centre) + dx + ox, centre / t.w + dy + oy)] = 1;
+				}
+			context.telemetry.measure("braided-delta.orchard.trees-per-fruit", trees, int(site));
+			context.telemetry.measure("braided-delta.orchard.x", t.remainderX(centre), int(site));
+			context.telemetry.measure("braided-delta.orchard.y", centre / t.w, int(site));
 		}
-		if (type >= 0 && context.bounded("braided-delta-resources", 100) < unsigned(chance) &&
-			map.isResourceAllowed(t.remainderX(i), i / t.w, type))
+		const auto quarry = L.point(u + 18, v + 12);
+		const int seed = seedNear(t, int(quarry.x), int(quarry.y), 24, free);
+		int rock = 0;
+		if (seed >= 0 && o.stone > 0)
+			rock = growPatch(map, t, seed, STONE, int(scaledCount(12, o.stone)), [&](int i)
+			{ return free(i) && t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(seed), seed / t.w) <= 6; });
+		if (rock)
+			for (int dy = -6; dy <= 6; ++dy)
+				for (int dx = -6; dx <= 6; ++dx)
+				{
+					const int i = t.at(t.remainderX(seed) + dx, seed / t.w + dy);
+					if (map.getResource(t.remainderX(i), i / t.w).type != STONE || L.islandOf[i] != island)
+						continue;
+					for (const auto &[ox, oy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+						frontage[t.at(t.remainderX(i) + ox, i / t.w + oy)] = 1;
+				}
+		context.telemetry.measure("braided-delta.quarry.target", int(scaledCount(12, o.stone)), int(site));
+		context.telemetry.measure("braided-delta.quarry.tiles", rock, int(site));
+		if (rock < int(scaledCount(12, o.stone)))
+			context.telemetry.fallback("braided-delta.quarry.shortfall", "Not enough connected inland quarry ground", int(site));
+
+		int bankTiles = 0;
+		for (int i = 0; i < t.size(); ++i)
+			bankTiles += bank[i] && L.islandOf[i] == island;
+		context.telemetry.measure("braided-delta.bank.tiles", bankTiles, int(site));
+		// Two food fields and two copses on separate reaches of the island's banks.
+		// Budgets scale with useful bank ground; only patch anchors are jittered.
+		for (int crop = 0; crop < 2; ++crop)
 		{
-			map.setResourceByIndex(t.remainderX(i), i / t.w, type, 1);
-			++planted;
+			const int base = crop ? std::clamp(bankTiles / 16, 64, 384) : std::clamp(bankTiles / 8, 96, 768);
+			const int budget = int(scaledCount(base, crop ? o.wood : o.wheat));
+			context.telemetry.measure(crop ? "braided-delta.woods.target" : "braided-delta.fields.target", budget, int(site));
+			int planted = 0, patches = 0;
+			for (int shore = 0; shore < 2; ++shore)
+			{
+				const int wanted = budget / 2 + (shore == 0 ? budget % 2 : 0);
+				if (!wanted)
+					continue;
+				const double along = u + (crop ? 0.20 : -0.20) * L.cell +
+					int(context.bounded(crop ? "braided-delta-copses" : "braided-delta-fields", 13)) - 6;
+				const double across = L.bank(along, int(site) / L.cells + shore) + (shore ? -9 : 9);
+				const auto target = L.point(along, across);
+				const int radius = int(std::ceil(std::sqrt(double(wanted)))) + 4;
+				const auto placed = growPatchesNear(map, t, int(target.x), int(target.y), 28,
+					crop ? WOOD : WHEAT, wanted, [&](int i)
+					{ return free(i) && bank[i] && t.chebyshev(t.remainderX(i), i / t.w, int(target.x), int(target.y)) <= radius; });
+				planted += placed.tiles;
+				patches += placed.patches;
+			}
+			context.telemetry.measure(crop ? "braided-delta.woods.tiles" : "braided-delta.fields.tiles", planted, int(site));
+			context.telemetry.measure(crop ? "braided-delta.woods.patches" : "braided-delta.fields.patches", patches, int(site));
+			if (planted < budget)
+				context.telemetry.fallback(crop ? "braided-delta.woods.shortfall" : "braided-delta.fields.shortfall",
+					"The bank's water, town or approaches limited its compact patches", int(site));
 		}
 	}
 	seedAlgae(map, context, t, "braided-delta-algae", o.algae, AlgaeBand::anyWater(90));
-	secureStartingCrops(game, context, t);
-	context.telemetry.measure("braided-delta.ambient_tiles", planted);
+	// Repairs must respect towns and the permanent deposits' initial harvest frontage.
+	for (int i = 0; i < t.size(); ++i)
+		ground[i] = ground[i] && !frontage[i];
+	secureStartingCrops(game, context, t, 24, 32, 0, nullptr, &ground);
 	return true;
 }
 
@@ -439,6 +532,47 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (bool(grass[i]) != game.map.isGrass(L.t.remainderX(i), i / L.t.w) ||
 			bool(water[i]) != game.map.isWater(L.t.remainderX(i), i / L.t.w))
 			return "The delta shoreline or a crossing has changed.";
+	}
+	// Permanent deposits are coherent island features, never scattered interior noise.
+	const BraidedDeltaOptions options(context.request);
+	const int trees = options.fruit > 0 ? std::max(1, int(scaledCount(3, options.fruit))) : 0;
+	const int regions = *std::max_element(L.islandOf.begin(), L.islandOf.end()) + 1;
+	std::vector<int> siteOf(regions, -1);
+	for (size_t site = 0; site < L.sites.size(); ++site)
+		siteOf[L.islandOf[L.t.at(int(L.sites[site].x), int(L.sites[site].y))]] = int(site);
+	std::vector<std::array<int, 3>> fruitCounts(L.sites.size());
+	std::vector<std::vector<int>> orchards(L.sites.size()), quarries(L.sites.size());
+	for (int i = 0; i < L.t.size(); ++i)
+	{
+		const int type = game.map.getResource(L.t.remainderX(i), i / L.t.w).type;
+		if (L.towns.plot[i] && type != NO_RES_TYPE)
+			return "A resource occupies a protected delta town.";
+		if (type != STONE && (type < CHERRY || type > PRUNE))
+			continue;
+		const int region = L.islandOf[i];
+		if (region < 0 || siteOf[region] < 0)
+			return "A permanent delta deposit is outside its island resource area.";
+		const int site = siteOf[region];
+		if (type == STONE)
+			quarries[site].push_back(i);
+		else
+		{
+			++fruitCounts[site][type - CHERRY];
+			orchards[site].push_back(i);
+		}
+	}
+	for (size_t site = 0; site < L.sites.size(); ++site)
+	{
+		for (int fruit = 0; fruit < 3; ++fruit)
+			if (fruitCounts[site][fruit] != trees)
+				return "A delta island has lost one of its compact orchard's fruit groups.";
+		for (const auto &[tiles, reach] : {std::pair{&orchards[site], 8}, std::pair{&quarries[site], 12}})
+			for (int a : *tiles)
+				for (int b : *tiles)
+					if (L.t.chebyshev(L.t.remainderX(a), a / L.t.w, L.t.remainderX(b), b / L.t.w) > reach)
+						return "A delta orchard or quarry has been scattered across its island.";
+		if (quarries[site].size() > size_t(scaledCount(12, options.stone)))
+			return "A delta island has more stone than its quarry budget.";
 	}
 	const auto buildable = buildableTiles(game.map);
 	for (size_t k = 0; k < L.sites.size(); ++k)
@@ -474,7 +608,7 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			4,
+			5,
 			false,
 			{GeneratorControl{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain}
 				 .withSearchRange(2, 4),

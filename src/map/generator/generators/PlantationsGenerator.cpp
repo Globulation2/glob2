@@ -16,6 +16,7 @@
 #include "Resources.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "StartingLayout.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -780,7 +781,7 @@ bool generate(Game &game, GenerationContext &context)
 	// random on a free tile beside the swarm, stands where one must go (the first play lost a seed
 	// in four to that), and so Team::createLists, run when the home swarm goes down, takes them in
 	// with it. The granted islands' swarms follow the colonies: createLists insists a colony has no
-	// swarm before it runs, and no worker is dropped off the home island. A home without its pool would strand its colony on one island, so that
+	// swarm before it runs, and the granted islands receive their own workers afterwards. A home without its pool would strand its colony on one island, so that
 	// is a failed candidate; a missing outpost building is only noted.
 	context.stage = "plantations buildings";
 	const auto plotGrass = [&](const Island &island)
@@ -843,7 +844,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 
 	// THE COLONIES. Every home swarm stands beside its pool, against the ring the pool's upgrade
-	// keeps (the granted islands' swarms are already down), and the rest of the plot stays open; the home ground the swarm and its workers
+	// keeps, and the rest of the plot stays open; the home ground the swarm and its workers
 	// may use is the plot's grass and the walkable band its ring spoils.
 	context.stage = "plantations colonies";
 	const auto homeMask = [&](int team)
@@ -866,11 +867,44 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		int swarms = 0;
 		for (int cell : L.grantedCells[k])
-			if (placeAt(k, "swarm", L.islands[cell], swarmX, kPairRow, kSwarmSize))
-				++swarms;
-			else
-				context.telemetry.fallback("plantations.outpost.swarm-missing",
-										   "No room for a swarm on a granted plot", k);
+		{
+			const Island &island = L.islands[cell];
+			if (!placeAt(k, "swarm", island, swarmX, kPairRow, kSwarmSize))
+			{
+				context.detail = "No room for a swarm on a granted plot.";
+				return false;
+			}
+			++swarms;
+			// Populate every granted island beside its own swarm, after all its buildings fit.
+			// Use a separate stream so this does not move the home workers or change the landscape.
+			std::vector<int> tiles;
+			const int sx = island.plotX + swarmX, sy = island.plotY + kPairRow;
+			const auto ground = dilate(t, plotGrass(island), kRingBand);
+			for (int y = 0; y < t.h; ++y)
+				for (int x = 0; x < t.w; ++x)
+					if (ground[t.at(x, y)] && L.cell[t.at(x, y)] == cell &&
+						touchesStartingFootprint(x, y, sx, sy, kSwarmSize, kSwarmSize,
+												map.getMaskW(), map.getMaskH()) &&
+						map.isFreeForGroundUnit(x, y, false, 1u << k))
+						tiles.push_back(t.at(x, y));
+			if (tiles.size() < size_t(context.request.nbWorkers))
+			{
+				context.detail = "A granted island has too little room for its starting workers.";
+				return false;
+			}
+			for (int i = 0; i < context.request.nbWorkers; ++i)
+			{
+				const size_t selected = i + context.bounded("plantations-outpost-workers", tiles.size() - i);
+				std::swap(tiles[i], tiles[selected]);
+				if (!game.addUnit(t.remainderX(tiles[i]), tiles[i] / t.w, k, WORKER, 0, 0, 0, 0))
+				{
+					context.detail = "Could not place a granted island's starting worker.";
+					return false;
+				}
+			}
+			context.telemetry.measure("plantations.island.workers", context.request.nbWorkers, cell);
+		}
+		context.telemetry.measure("plantations.island.workers", context.request.nbWorkers, L.homeCell[k]);
 		context.telemetry.measure("plantations.outpost-swarms.placed", swarms, k);
 	}
 
@@ -998,19 +1032,35 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		if (countBuildings(game, k, "swarm") < 1 + int(L.grantedCells[k].size()))
 			return "Colony " + std::to_string(k) + " has lost a granted swarm.";
+	// Every owned island has its own workforce, even when causeways connect it to home.
+	const auto units = unitTilesByTeam(map, teams);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<int> counts(L.islands.size(), 0);
+		for (int tile : units[k])
+			++counts[L.cell[tile]];
+		auto owned = L.grantedCells[k];
+		owned.push_back(L.homeCell[k]);
+		for (int cell : owned)
+			if (counts[cell] != context.request.nbWorkers)
+				return "Colony " + std::to_string(k) + " has an island without its starting workers.";
+	}
 	// No colony can walk to another: the straits hold, causeways or not.
 	if (const std::string leak = coloniesApart(map, teams, "across a strait"); !leak.empty())
 		return leak;
 	// With causeways, every colony walks to each of its granted plots.
 	if (o.causeways)
 	{
-		const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
 		const std::vector<unsigned char> ground = groundUnitTiles(map);
 		for (int k = 0; k < teams; ++k)
 		{
 			if (units[k].empty())
 				continue;
-			const std::vector<int> steps = stepsFrom(t, tileMask(t, units[k]), ground);
+			std::vector<int> homeUnits;
+			for (int tile : units[k])
+				if (L.cell[tile] == L.homeCell[k])
+					homeUnits.push_back(tile);
+			const std::vector<int> steps = stepsFrom(t, tileMask(t, homeUnits), ground);
 			for (int cell : L.grantedCells[k])
 			{
 				const Island &outer = L.islands[cell];
@@ -1044,7 +1094,7 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		4,
+		5,
 		false,
 		// A plot of 10 seats a swarm beside a pool with room for its level-1 upgrade and four rows
 		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to
@@ -1078,5 +1128,6 @@ GeneratorDefinition plantationsDefinition()
 		validateWorld,
 		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
 		 "fairness:stamped-lattice"}};
+	definition.workersPerStartingSwarm = true;
 	return definition;
 }
