@@ -41,6 +41,15 @@ class NativeQualificationTests(unittest.TestCase):
             path.write_text(path.read_text().replace('350 450', '350 451'))
             with self.assertRaisesRegex(ValueError, 'Resumed save diverged'): qa.verify_cases(root)
 
+    def test_mismatch_names_case_and_reports_checksum_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); self.cases(root)
+            path = root / 'cases/direct-600/result.json'
+            result = json.loads(path.read_text()); result['initialChecksum'] = 999
+            path.write_text(json.dumps(result))
+            with self.assertRaisesRegex(ValueError, 'direct-600:.*initialChecksum=999.*traceInitialChecksum=101'):
+                qa.verify_cases(root)
+
     def test_missing_duplicate_and_reordered_ticks_rejected(self):
         for text in ('0 1\n2 3\n', '0 1\n0 1\n', '1 2\n0 1\n', 'not a checksum\n'):
             with self.subTest(text=text), tempfile.TemporaryDirectory() as directory:
@@ -137,6 +146,8 @@ class NativeQualificationTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(fixture.read_bytes()).hexdigest(), qa.FIXTURE_SHA256)
         workflow = (ROOT / '.github/workflows/macos-downloads-qualification.yml').read_text()
         self.assertIn('--kind signed-macos', workflow)
+        self.assertIn('if: always()\n        with:\n          name: qualification-macos-', workflow)
+        self.assertIn('path: artifacts/qualification/', workflow)
         self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}', workflow)
         self.assertIn('macos-15-intel', workflow)
         self.assertNotIn('environment:', workflow)

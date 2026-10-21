@@ -37,6 +37,9 @@ that timestamp is not a compatibility identity. Configure
 `MACOS_DOWNLOAD_TEAM_ID` only in the mirror's Actions variables; qualification
 jobs use no signing or publication credentials. Reports and traces remain CI
 artifacts and include package digests, source SHA and verifier/run identities.
+Qualification artifacts retain command diagnostics, saves, result JSON and tick
+traces even when a native check fails, so failures can be investigated against
+the exact signed package without rebuilding it.
 Interactive tutorial, audio, editor, updates and online play still require
 separate qualification; this workflow does not publish or deploy anything.
 Each channel retains a separate manual workflow for retries; no publication

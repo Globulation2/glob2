@@ -35,7 +35,12 @@ def verify_cases(root):
         if (result.get('status') != 'completed' or result.get('ticks') != rows[-1][0] + 1 or
                 result.get('initialChecksum') != rows[0][1] or
                 type(result.get('finalChecksum')) is not int or not 0 <= result['finalChecksum'] < 2**32):
-            raise ValueError('Incomplete simulation or final-byte trace/result mismatch')
+            raise ValueError(f'{name}: incomplete simulation or final-byte trace/result mismatch; '
+                             f'status={result.get("status")!r}, ticks={result.get("ticks")!r}, '
+                             f'traceTicks={rows[0][0]}..{rows[-1][0]}, '
+                             f'initialChecksum={result.get("initialChecksum")!r}, '
+                             f'traceInitialChecksum={rows[0][1]}, '
+                             f'finalChecksum={result.get("finalChecksum")!r}')
     if traces['direct-600'][0][0] != 1 or traces['direct-600'][-1][0] != 599:
         raise ValueError('Direct simulation did not execute ticks 1 through 599')
     if (traces['repeat-600'] != traces['direct-600'] or
