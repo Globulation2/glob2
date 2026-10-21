@@ -96,8 +96,7 @@ namespace AINames
                     + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]")
                     // The number behind the label, so a player can see that two
                     // AIs sharing one can still be far apart.
-                    + (entry.strength ? " (" + std::to_string(entry.strength) + ")" : "")
-                    + (id == AI::ECONO ? std::string(" - ") + Toolkit::getStringTable()->getString("[No warriors]") : "");
+                    + (entry.strength ? " (" + std::to_string(entry.strength) + ")" : "");
         return "unknown AI";
     }
     std::string getAISummary(int id)

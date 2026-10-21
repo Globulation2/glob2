@@ -40,7 +40,6 @@ The maintainer approved these:
 | Bramble Jig | An original score in 6/8 on CC0 samples | Flute, clarinet and glockenspiel over pizzicato strings. Combat is a real re-arrangement (galloping low riff, horns, drum line), not just louder |
 | Fennel Mist | An original slow pastoral score (E Dorian, 72 BPM) on CC0 samples | Bassoon and horn with a flute descant and harp. Misty and unhurried. Combat hands the tune to horn over driving strings |
 | Curious Critters | A human-composed CC BY 3.0 track separated with Demucs, reworked for contrast | Calm strips to the melody over a reverb bed. Combat adds soft synthesised taiko and timpani on the beat, kept quiet and simple to stay downtempo |
-| Orchestral Dawn | Generated with ACE-Step 1.5, then layered using Demucs | Judged "decent": orchestral colour fits better than the folk prompts did |
 
 **The target feel is downtempo:** the relaxed, unhurried music of "chill" or "cozy"
 games, not action-game scoring. Broadly, it is the calm, pleasant background music
@@ -80,6 +79,7 @@ Rejected by ear, with the reason heard and what the measurements showed:
 | Steel drums, lounge electric piano and other genre clichés | Don't fit the game | Taste, not measurable |
 | Toy Soldiers | Busy and bright | 5.5+ onsets per second and 2.4–2.8 kHz brightness. Calm still busy |
 | Unfiltered synths (early Surge renders of Moss Lanterns and Glass Garden) | Scratchy, with background noise | A constant hiss above 6 kHz, only 3–7 dB below its median even in quiet passages, from raw saw and pulse waves |
+| Orchestral Dawn (ACE-Step 1.5 + Demucs) | Disharmonious during gameplay; removed after in-game listening | Automated checks did not capture the perceived harmonic problems |
 | ACE-Step folk prompts | Don't fit Glob2's feel | Muddy low-mid mix, flat loudness, a uniform "produced song" texture |
 
 ## Practical rules

@@ -6,6 +6,34 @@ Dein Browser wurde nicht geöffnet. Öffne die Anmeldeseite, um fortzufahren.
 Falls die Seite danach fragt, prüfe, ob sie %0 anzeigt.
 [hub code copied]
 Code kopiert
+[settings Apply artwork on the next game or editor load.]
+
+[settings Apply at the next completed frame. Your game stays running.]
+
+[settings Automatically show the torus overview while moving around the map.]
+
+[settings Browse shared generators]
+
+[settings Changing renderer…]
+
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+
+[settings Menu scroll wheel enabled]
+
+[settings Move and animate units between game ticks.]
+
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+
+[settings Gesture scrolling]
+
 [settings Finish in your browser. The game continues by itself.]
 Im Browser abschließen. Das Spiel fährt automatisch fort.
 [music set]

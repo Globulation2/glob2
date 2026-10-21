@@ -47,10 +47,6 @@ namespace AISharedRuntime
 	/// (~12s). (Econo.cpp:630, 691.)
 	static constexpr int AI_SHARED_RUNTIME_RTI_UPGRADE_INTERVAL_TICKS = 300;
 
-	/// Cadence for the destroy-failing-buildings scan (~20s).
-	/// (Econo.cpp:761.)
-	static constexpr int AI_SHARED_RUNTIME_RTI_DELETE_SCAN_INTERVAL_TICKS = 500;
-
 	/// Cadence for the forbid-farming-area scan (~10s).
 	/// (Econo.cpp:804.)
 	static constexpr int AI_SHARED_RUNTIME_RTI_FARMING_INTERVAL_TICKS = 250;
@@ -67,15 +63,6 @@ namespace AISharedRuntime
 	static constexpr int AI_SHARED_RUNTIME_RTI_INN_POP_PER_L2 = 12;
 	/// Population that a level-3 inn supports.
 	static constexpr int AI_SHARED_RUNTIME_RTI_INN_POP_PER_L3 = 16;
-
-
-	// ---- Stale-inn destroy thresholds ----------------------------------------
-	// (EconoBuilding.cpp: tick_delete_old_inns.)
-
-	/// Min resource-tracker age (~60s) before an inn becomes a destroy candidate.
-	static constexpr int AI_SHARED_RUNTIME_RTI_INN_DELETE_AGE_TICKS = 1500;
-	/// Per-level food threshold; inn destroyed if total_level < THIS * level.
-	static constexpr int AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL = 24;
 
 
 	// ---- Exploration-flag radii / explorer-count gates -----------------------

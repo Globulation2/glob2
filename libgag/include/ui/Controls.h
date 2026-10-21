@@ -63,8 +63,15 @@ struct IconOptions
 };
 Element icon(IconRef asset, IconOptions options = {});
 
+struct ToggleOptions
+{
+	// Settings rows keep captions at the leading edge and the mark at the trailing edge.
+	bool trailing = false;
+	std::string help;
+	double controlWidth = 140;
+};
 Element toggle(const std::string &key, const std::string &text, bool value,
-			   std::function<void(bool)> change, bool enabled = true);
+			   std::function<void(bool)> change, bool enabled = true, ToggleOptions options = {});
 
 struct ChoiceOptions
 {

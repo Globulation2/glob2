@@ -43,6 +43,7 @@ namespace AISharedRuntime
 		  return AITelemetry::schema(0);
 	  }
 		virtual ~RuntimeAI(){}
+        virtual bool allowsBuildingDestruction() const { return true; }
 		///Your AI must implement the load function that loads all of its data from a stream
 		virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 		///Your AI must implement a save function that saves all of its data to a stream
@@ -63,6 +64,7 @@ namespace AISharedRuntime
 	  {
 		  return AITelemetry::schema(4);
 	  }
+        bool allowsBuildingDestruction() const override { return false; }
 		Econo();
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
@@ -84,7 +86,6 @@ namespace AISharedRuntime
 		void tick_school_inland(Runtime& runtime);
 		void tick_upgrade_l1_to_l2(Runtime& runtime);
 		void tick_upgrade_l2_to_l3(Runtime& runtime);
-		void tick_delete_old_inns(Runtime& runtime);
 		void tick_farming_areas(Runtime& runtime);
 
 		int timer;

@@ -12,6 +12,8 @@
 #include "SettingsScreen.h"
 #include "SoundMixer.h"
 #include "FrontendTheme.h"
+#include "UIRecordingCanvas.h"
+#include <set>
 #include "GameGUIKeyActions.h"
 #include "KeyboardManager.h"
 #include "FileManager.h"
@@ -84,13 +86,27 @@ static void run(int width,int height,bool gl,bool expanded)
         FrontendTheme theme;
         FrontendScope frontend;
         NativeSettings screen;
+        screen.rows();
+        if (screen.host().find("nav.0")) {
+            GAGGUI::ui::FixedTextMeasurer text(8,16);
+            std::set<std::string> categoryIcons;
+            for (auto category : screen.visibleCategories()) {
+                const auto key="nav."+std::to_string(int(category));
+                screen.host().scrollIntoView(key);
+                glob2test::RecordingCanvas canvas({width,height},text);
+                screen.host().paint(canvas,0);
+                const auto bounds=screen.host().bounds(key);
+                for (const auto& icon : canvas.icons)
+                    if (bounds.contains(icon.bounds)) categoryIcons.insert(icon.name);
+            }
+            CHECK(categoryIcons.size() == screen.visibleCategories().size());
+            screen.host().scrollIntoView("nav.0");
+        }
         for(auto category:screen.visibleCategories()){
             screen.selectCategory(category);
             for(const auto& r:screen.rows()){
-                if(category==SettingsScreen::Category::Online){
-                    CHECK(r.label.find("[settings ")==std::string::npos);
-                    CHECK(r.help.find("[settings ")==std::string::npos);
-                }
+                CHECK(r.label.find("[settings ")==std::string::npos);
+                CHECK(r.help.find("[settings ")==std::string::npos);
                 if(r.id.empty())continue;
                 if(!(r.control.w>0 && r.control.h>0)){std::cerr<<"row without bounds: "<<r.id<<"\n";
                     std::function<void(GAGGUI::ui::Node&,int)> dump=[&](GAGGUI::ui::Node& n,int d){std::cerr<<std::string(size_t(d)*2,' ')<<n.name()<<" "<<n.key<<" "<<n.bounds.x<<","<<n.bounds.y<<" "<<n.bounds.w<<"x"<<n.bounds.h<<"\n";for(auto& c:n.children)dump(*c,d+1);};
@@ -102,6 +118,8 @@ static void run(int width,int height,bool gl,bool expanded)
             screen.capture(output+"/category-"+std::to_string(int(category))+".bmp");
         }
         screen.selectCategory(SettingsScreen::Category::Display);
+        screen.host().scrollIntoView("graphics.unitmotion");
+        screen.capture(output+"/advanced-graphics.bmp");
         REQUIRE(screen.row("graphics.fps").label.starts_with("Target render FPS"));
         REQUIRE(screen.row("graphics.fps").choices.back() == "Unlimited");
         REQUIRE(screen.row("graphics.fps").value == "60 FPS");
@@ -368,6 +386,46 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
+    TEST_CASE("all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI", "1");
+        glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=480,.height=800};
+        options.beforeLoad=[](GlobalContainer& g){g.settings.language="en";g.settings.setTextSizePercent(150);};
+        glob2test::HeadlessGlobals globals(options);
+        FrontendTheme theme; FrontendScope frontend; NativeSettings screen;
+        screen.rows();
+        screen.activateSetting("nav.current");
+        GAGGUI::ui::FixedTextMeasurer text(8,16);
+        std::set<std::string> categoryIcons;
+        screen.capture((glob2test::artifactDir()/"compact-category-picker.bmp").string());
+        screen.key(SDLK_ESCAPE);
+        for (auto category : screen.visibleCategories()) {
+            screen.selectCategory(category);
+            const auto rows=screen.rows();
+            glob2test::RecordingCanvas canvas({480,800},text);
+            screen.host().paint(canvas,0);
+            const auto picker=screen.host().bounds("nav.current");
+            for (const auto& icon : canvas.icons)
+                if (picker.contains(icon.bounds)) categoryIcons.insert(icon.name);
+            for (const auto& row : rows) {
+                if(row.id.empty()) continue;
+                INFO(row.id);
+                CHECK(row.control.w > 0);
+                CHECK(row.control.h > 0);
+            }
+            const auto stem=glob2test::artifactDir()/("compact-large-category-"+std::to_string(int(category)));
+            screen.capture(stem.string()+".bmp");
+            for (auto it=rows.rbegin(); it!=rows.rend(); ++it)
+                if (!it->id.empty()) {
+                    screen.host().scrollIntoView(it->id);
+                    screen.capture(stem.string()+"-bottom.bmp");
+                    break;
+                }
+        }
+        CHECK(categoryIcons.size() == screen.visibleCategories().size());
+        screen.done();
+    }
+
     TEST_CASE("catalog building defaults in compact layout [display][artifacts][writes-preferences]")
     {
         glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI","1");
