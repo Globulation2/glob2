@@ -249,7 +249,7 @@ TEST_SUITE("AIDecisionCoverage")
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::NICOWAR,depleted,checkpoint);
     }
-    TEST_CASE("Econo retains wheat-starved swarms while still retiring starved inns")
+    TEST_CASE("Econo retains wheat-starved buildings")
     {
         glob2test::HeadlessGlobals globals;
         for (int wheat : {0,1})
@@ -262,21 +262,14 @@ TEST_SUITE("AIDecisionCoverage")
             AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
             AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
             MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
-            bool deletedInn=false;
             // Keep the world fixed so starvation/death and new construction cannot
             // hide the old deletion policy. Age the real trackers past its former
             // 2500-tick threshold, including several 500-tick deletion scans.
             for (int i=0; i<6000; ++i)
             {
                 auto order=runtime.getOrder();
-                if (order->getOrderType()==ORDER_DELETE)
-                {
-                    auto deletion=std::static_pointer_cast<OrderDelete>(order);
-                    REQUIRE(deletion->gid!=swarm->gid);
-                    deletedInn=true;
-                }
+                REQUIRE(order->getOrderType()!=ORDER_DELETE);
             }
-            CHECK(deletedInn);
             bool checkedTracker=false;
             for (int id : runtime.get_starting_buildings())
             {
@@ -289,6 +282,62 @@ TEST_SUITE("AIDecisionCoverage")
                 }
             }
             CHECK(checkedTracker);
+            // Pending management and emitted orders from older saves must also
+            // respect Econo's policy when execution resumes.
+            for (int id : runtime.get_starting_buildings())
+            {
+                runtime.add_management_order(new AISharedRuntime::Management::DestroyBuilding(id));
+                runtime.add_management_order(new AISharedRuntime::Management::RetireFeeding(id));
+                runtime.add_management_order(new AISharedRuntime::Management::RetireAttraction(id,1u<<EXPLORER));
+            }
+            runtime.push_order(std::make_shared<OrderDelete>(swarm->gid));
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(backend);
+            runtime.save(&output); output.flush();
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0);
+            REQUIRE(runtime.load(&input,game.players[0],VERSION_MINOR));
+            for (int i=0; i<128; ++i)
+                REQUIRE(runtime.getOrder()->getOrderType()!=ORDER_DELETE);
+        }
+    }
+    TEST_CASE("Econo retains exploration flags after their enemy target disappears")
+    {
+        glob2test::HeadlessGlobals globals;
+        World fixture(AI::ECONO,false,713);
+        auto& game=fixture.world.game;
+        for (int i=0; i<4; ++i) fixture.world.addUnit(EXPLORER,20+i,16,0);
+        for (int i=0; i<64; ++i) game.teams[0]->stats.step(game.teams[0]);
+        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
+        auto* target=game.teams[1]->myBuildings[0];
+        REQUIRE(target!=nullptr);
+        target->seenByMask|=game.teams[0]->me;
+        REQUIRE(game.teams[0]->stats.getLatestStat()->scouts>=3);
+        const int flagType=game.buildingsTypes.getTypeNum("explorationflag",0,false);
+        int flags=0;
+        for (int i=0; i<1000; ++i)
+        {
+            auto order=runtime.getOrder();
+            REQUIRE(order->getOrderType()!=ORDER_DELETE);
+            if (order->getOrderType()==ORDER_CREATE)
+            {
+                const auto creation=std::static_pointer_cast<OrderCreate>(order);
+                if (creation->typeNum==flagType) ++flags;
+            }
+            order->sender=0;
+            game.executeOrder(order,0);
+        }
+        REQUIRE(flags>0);
+        target->kill();
+        game.step(0);
+        for (int i=0; i<1000; ++i)
+        {
+            auto order=runtime.getOrder();
+            REQUIRE(order->getOrderType()!=ORDER_DELETE);
+            order->sender=0;
+            game.executeOrder(order,0);
         }
     }
     TEST_CASE("Econo adds new swarms as its colony grows")

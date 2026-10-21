@@ -314,6 +314,14 @@ framework:
 - `pageTitle()` and `hint()`: see Typography.
 - `animation()` and `mapPreview()` (hosts a `MapPreview` in a canvas).
 
+Settings use leading labels and help text with trailing value controls. Checkbox
+rows use `ToggleOptions::trailing` and `help` so the label, help and mark share
+one pointer, touch and keyboard target. Wide rows reserve the same control column
+as other settings fields; narrow rows keep a trailing checkbox beside wrapping
+captions while larger controls stack below their labels. Keep every category's
+sidebar icon distinct: recording uses Play, custom AIs Robot, map generators Map,
+and MCP uses Server.
+
 ### Typography
 
 TrueTypeFont measures shaped text using SDL_ttf metrics at the authored font size,
@@ -455,8 +463,8 @@ The main-menu Settings button uses a gear with its label in the desktop utility
 grid, and a gear alone beside the wordmark on touch hosts. Desktop Editor and Load
 game also retain their labels beside icons. Touch main-menu launch choices and
 More-page actions all use icons beside labels, including Back and More. Desktop
-settings-sidebar categories use labelled icons; the compact category dropdown
-and game-specific artwork retain their existing presentation.
+settings-sidebar categories and the compact category dropdown share the same
+labelled icons. Game-specific artwork retains its existing presentation.
 
 Choose icon-only controls for familiar actions in headers and toolbars. Keep
 labels in menu rows and desktop utility grids so neighbouring controls read

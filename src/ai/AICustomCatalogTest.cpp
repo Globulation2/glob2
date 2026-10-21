@@ -316,7 +316,7 @@ TEST_CASE("shared runtime retirement distinguishes attraction and feeding and pr
         auto* flagBuilding=game.addBuilding(4,4,flagType,0,2,2);
         auto* foodBuilding=game.addBuilding(12,12,foodType,0,2,2);
         REQUIRE(flagBuilding);REQUIRE(foodBuilding);
-        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        AISharedRuntime::Runtime runtime(new NewNicowar,game.players[0]);
         AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         runtime.br.initiate();
         using namespace AISharedRuntime::Management;

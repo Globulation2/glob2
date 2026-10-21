@@ -424,33 +424,3 @@ void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 		}
 	}
 }
-
-
-
-//Delete old inns that are hard to keep full of wheat. Existing swarms are retained.
-void Econo::tick_delete_old_inns(Runtime& runtime)
-{
-	// Preserve the historical telemetry column for save/load continuity.
-	telemetry.count(AITrace::AI4::Econo_tick_delete_old_inns_swarms_calls);
-	if((timer%AI_SHARED_RUNTIME_RTI_DELETE_SCAN_INTERVAL_TICKS)==0)
-	{
-		BuildingSearch inns(runtime);
-		inns.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
-		inns.add_condition(new NotUnderConstruction);
-		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
-		{
-			std::shared_ptr<MaterialTracker> rt=runtime.get_material_tracker(*i);
-			if(rt)
-			{
-				if(rt->get_age()>AI_SHARED_RUNTIME_RTI_INN_DELETE_AGE_TICKS)
-				{
-					if(rt->get_total_level() < AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL*runtime.get_building_register().get_level(*i))
-					{
-						ManagementOrder* mo_destroy=new RetireFeeding(*i);
-						runtime.add_management_order(mo_destroy);
-					}
-				}
-			}
-		}
-	}
-}

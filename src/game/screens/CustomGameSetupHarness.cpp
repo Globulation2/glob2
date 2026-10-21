@@ -2578,6 +2578,7 @@ TEST_SUITE("CustomGameSetup")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		CustomGameSetupHarness::preferencesModel();
+		REQUIRE(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ")");
 	}
 
 	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]")
@@ -2621,7 +2622,6 @@ TEST_SUITE("CustomGameSetup")
 		REQUIRE(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	REQUIRE(AINames::parseAIName("Econo") == AI::ECONO);
-	REQUIRE(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
 	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("food") != std::string::npos);
 	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =

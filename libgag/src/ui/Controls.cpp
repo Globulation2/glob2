@@ -210,10 +210,18 @@ class Button : public Node
 class Toggle : public Node
 {
   public:
-	Toggle(std::string key, std::string text, bool value, std::function<void(bool)> change, bool enabled)
-		: text(std::move(text)), value(value), change(std::move(change)), enabledValue(enabled)
+	Toggle(std::string key, std::string text, bool value, std::function<void(bool)> change, bool enabled, ToggleOptions options)
+		: options(std::move(options)), text(std::move(text)), value(value), change(std::move(change)), enabledValue(enabled)
 	{
 		this->key = std::move(key);
+		if (this->options.trailing)
+		{
+			std::vector<Element> captions{paragraph(this->text, {FontRole::Body, !enabled})};
+			if (!this->options.help.empty())
+				captions.push_back(paragraph(this->options.help, {FontRole::Support, true}));
+			captionNode = column(std::move(captions));
+			children = {captionNode};
+		}
 	}
 	const char *name() const override { return "toggle"; }
 	std::string accessibleText() const override { return (value ? "[x] " : "[ ] ") + text; }
@@ -231,8 +239,23 @@ class Toggle : public Node
 	{
 		const int box = ctx.metrics.control;
 		const int width = c.boundedW() ? c.maxW : box + ctx.metrics.gap + ctx.text.width(FontRole::Body, text) + ctx.metrics.padding;
+		if (captionNode)
+		{
+			const auto size = captionNode->measure(ctx, {0, 0, std::max(1, width - controlWidth(ctx, width) - ctx.metrics.gap), Constraints::Unbounded});
+			return c.clamp({width, std::max({box, ctx.metrics.minTarget, size.h})});
+		}
 		const auto block = layoutText(ctx.text, FontRole::Body, text, std::max(1, width - box - ctx.metrics.gap), ctx.metrics.lineGap);
 		return c.clamp({width, std::max(box, block.height + ctx.metrics.gap)});
+	}
+	void arrange(const LayoutContext &ctx, Rect rect) override
+	{
+		bounds = rect;
+		if (captionNode)
+		{
+			const int width = std::max(1, rect.w - controlWidth(ctx, rect.w) - ctx.metrics.gap);
+			const auto size = captionNode->measure(ctx, {0, 0, width, Constraints::Unbounded});
+			captionNode->arrange(ctx, {rect.x, rect.y + (rect.h - size.h) / 2, width, size.h});
+		}
 	}
 	void paint(Frame &frame) override
 	{
@@ -242,7 +265,7 @@ class Toggle : public Node
 		if (hovered || frame.pressed(key))
 			frame.canvas.fillRounded(bounds, mt.radius, p.hover.applyAlpha(60));
 		const int side = std::min(mt.control - mt.gap, frame.layout.presentation.pt(22));
-		const Rect mark{bounds.x + mt.halfGap, bounds.y + (bounds.h - side) / 2, side, side};
+		const Rect mark{options.trailing ? bounds.right() - mt.halfGap - side : bounds.x + mt.halfGap, bounds.y + (bounds.h - side) / 2, side, side};
 		frame.canvas.fillRounded(mark, std::max(2, mt.radius / 2), value ? p.accent : enabledValue ? p.field : p.disabled);
 		frame.canvas.strokeRect(mark, enabledValue ? p.ink : p.muted);
 		if (value)
@@ -251,12 +274,25 @@ class Toggle : public Node
 				frame.canvas.line({mark.x + side / 5, mark.y + side / 2 + t}, {mark.x + side * 2 / 5, mark.y + side * 3 / 4 + t}, p.ink);
 				frame.canvas.line({mark.x + side * 2 / 5, mark.y + side * 3 / 4 + t}, {mark.x + side * 4 / 5, mark.y + side / 4 + t}, p.ink);
 			}
+		if (captionNode)
+		{
+			captionNode->paint(frame);
+			return;
+		}
 		const Rect textRect{mark.right() + mt.gap, bounds.y, std::max(1, bounds.right() - mark.right() - mt.gap), bounds.h};
 		const auto block = layoutText(frame.canvas.measurer(), FontRole::Body, text, textRect.w, mt.lineGap);
 		drawLines(frame, textRect, FontRole::Body, block.lines, TextAlign::Left, inkFor(frame, enabledValue, false), mt.lineGap);
 	}
 
   private:
+	int controlWidth(const LayoutContext &ctx, int width) const
+	{
+		// Other fields stack on compact surfaces; a checkbox stays beside its caption.
+		return ctx.presentation.compact() || width < ctx.presentation.pt(480)
+			? ctx.metrics.control : std::min(width / 2, ctx.presentation.pt(options.controlWidth));
+	}
+	ToggleOptions options;
+	Element captionNode;
 	std::string text;
 	bool value;
 	std::function<void(bool)> change;
@@ -1748,9 +1784,9 @@ Element button(const std::string &key, const std::string &text, std::function<vo
 {
 	return std::make_shared<Button>(key, text, std::move(action), options);
 }
-Element toggle(const std::string &key, const std::string &text, bool value, std::function<void(bool)> change, bool enabled)
+Element toggle(const std::string &key, const std::string &text, bool value, std::function<void(bool)> change, bool enabled, ToggleOptions options)
 {
-	return std::make_shared<Toggle>(key, text, value, std::move(change), enabled);
+	return std::make_shared<Toggle>(key, text, value, std::move(change), enabled, std::move(options));
 }
 Element choice(const std::string &key, const std::vector<std::string> &options, int selected, std::function<void(int)> change, ChoiceOptions extra)
 {
