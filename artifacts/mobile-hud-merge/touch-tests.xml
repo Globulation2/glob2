@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="82.0761" status="run" />
+  <testcase classname="GameGUITouch" name="attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]" time="1.81848" status="run" />
+  <testcase classname="GameGUITouch" name="curved labels retain physical glyph detail and reuse their cache [display][artifacts]" time="1.33994" status="run" />
+  <testcase classname="GameGUITouch" name="notifications clear system gutters and HUD at mobile text sizes [display][artifacts]" time="1.64789" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.49695" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,8 @@
+PASS GameGUITouch/attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts] (2.0s)
+PASS GameGUITouch/notifications clear system gutters and HUD at mobile text sizes [display][artifacts] (1.9s)
+PASS GameGUITouch/curved labels retain physical glyph detail and reuse their cache [display][artifacts] (1.5s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.7s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (82.3s)
+
+5 passed, 0 failed, 0 skipped (89.5s of test time)
+[run_tests] JUnit report: artifacts/mobile-hud-merge/touch-tests.xml (5 cases)

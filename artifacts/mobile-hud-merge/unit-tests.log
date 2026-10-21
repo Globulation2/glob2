@@ -1,0 +1,7 @@
+PASS glob2-unit-tests GameEventFeed (12 cases) (0.1s)
+PASS glob2-unit-tests (2 cases) (0.1s)
+PASS glob2-unit-tests SurfaceRaster (12 cases) (0.1s)
+PASS glob2-unit-tests TextMetrics (2 cases) (0.4s)
+
+4 passed, 0 failed, 0 skipped (0.7s of test time)
+[run_tests] JUnit report: artifacts/mobile-hud-merge/unit-tests.xml (28 cases)

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="28" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/TextStreamTest.cpp"><testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/qualified save field names coexist with section inheritance" time="0.000193" status="run" />
+    <testcase classname="libgag/src/TextStreamTest.cpp" name="TextStream/raw binary fields roundtrip and malformed hex is rejected" time="0.000297" status="run" />
+  </testsuite><testsuite name="GameEventFeed"><testcase classname="GameEventFeed" name="reports of one situation share a row that keeps its place" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="different subjects, areas and teams are different situations" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="attack areas are measured across the map edge" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="at most kMaxRows rows; a new situation evicts the least recently updated" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="expiry, normal speed: game time decides" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="expiry, maximum speed: the wall-clock floor keeps the row readable" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="expiry, paused: wall-clock time alone never expires a row" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="expiry, an ongoing situation stays up" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="expiry, a fresh report revives a fading row" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="linger times per event kind" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="GoToEvent visits the most recent row, then steps through the rest" time="0" status="run" />
+    <testcase classname="GameEventFeed" name="clear forgets rows and records the team they belong to" time="0" status="run" />
+  </testsuite><testsuite name="SurfaceRaster"><testcase classname="SurfaceRaster" name="native nearest offsets skip far source origins without intermediate overflow" time="0.000122" status="run" />
+    <testcase classname="SurfaceRaster" name="native nearest copies retain alpha keys modulation and clipped source coordinates" time="0.000615" status="run" />
+    <testcase classname="SurfaceRaster" name="regional kernels match the original rasterizer across clipped tiles and alpha arithmetic" time="0.012088" status="run" />
+    <testcase classname="SurfaceRaster" name="opaque regional rows preserve padded pitches source clipping and scaled height" time="0" status="run" />
+    <testcase classname="SurfaceRaster" name="opaque regional alias views retain forward pixel traversal" time="0" status="run" />
+    <testcase classname="SurfaceRaster" name="negative source pitch preserves aliased regional forward sampling" time="0" status="run" />
+    <testcase classname="SurfaceRaster" name="negative target pitch preserves aliased regional forward sampling" time="0" status="run" />
+    <testcase classname="SurfaceRaster" name="portable nearest scalar and SIMD match independent arithmetic across tiles formats and signed pitches" time="0.009644" status="run" />
+    <testcase classname="SurfaceRaster" name="portable fill scalar and SIMD match independent arithmetic with stored alpha clipping and signed pitches" time="0.021057" status="run" />
+    <testcase classname="SurfaceRaster" name="portable linear sampling uses whole fractional geometry and premultiplied frame edges" time="0.000394" status="run" />
+    <testcase classname="SurfaceRaster" name="SDL nearest fixed-point centers preserve samples across clipped tile boundaries" time="0.000718" status="run" />
+    <testcase classname="SurfaceRaster" name="wide portable aliased views retain forward row traversal without sampling allocations" time="0" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.05663" status="run" />
+    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="0.170923" status="run" />
+  </testsuite></testsuites>
