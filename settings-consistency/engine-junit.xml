@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="32" failures="0" errors="0" skipped="0"><testsuite name="ClientCapabilities"><testcase classname="ClientCapabilities" name="Settings categories follow the resolved client capabilities" time="0.801667" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]" time="10.8449" status="run" />
+  <testcase classname="Settings" name="catalog building defaults in compact layout [display][artifacts][writes-preferences]" time="5.05222" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="20.292" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="38.1223" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="34.958" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="12.2136" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="18.5346" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="26.5125" status="run" />
+  <testcase classname="Settings" name="render FPS dropdown in compact layout [display][artifacts][writes-preferences]" time="3.34942" status="run" />
+  </testsuite><testsuite name="SettingsAILibrary"><testcase classname="SettingsAILibrary" name="AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="17.8426" status="run" />
+  <testcase classname="SettingsAILibrary" name="AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="25.2406" status="run" />
+  </testsuite><testsuite name="SettingsBuildings"><testcase classname="SettingsBuildings" name="catalog preferences isolate reused stock keys and persist assignment and radius" time="0.811412" status="run" />
+  <testcase classname="SettingsBuildings" name="known frozen stock fingerprints migrate to inherited costs with current preferences taking precedence" time="0.503183" status="run" />
+  <testcase classname="SettingsBuildings" name="per game assignment loads reject duplicate stable and legacy identities" time="0.433639" status="run" />
+  <testcase classname="SettingsBuildings" name="per game assignment overrides use stable keys and import old numeric saves" time="0.568879" status="run" />
+  <testcase classname="SettingsBuildings" name="version one preferences import only into known stock catalogs" time="0.569661" status="run" />
+  <testcase classname="SettingsBuildings" name="version two pre-material stock fingerprints retain preferences without crossing catalog identities" time="0.382781" status="run" />
+  </testsuite><testsuite name="SettingsExperiments"><testcase classname="SettingsExperiments" name="catalog experiments use translated text when available and English metadata otherwise" time="0.921405" status="run" />
+  <testcase classname="SettingsExperiments" name="every experiment's label and help are in the string tables" time="1.2373" status="run" />
+  <testcase classname="SettingsExperiments" name="preferences keep the enabled experiments and drop unknown keys" time="0.31528" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="GPU local preference is opt-in for graphical and headless games" time="0.609257" status="run" />
+  <testcase classname="SettingsGraphics" name="edge scrolling defaults migrate and independent modes round trip" time="0.439072" status="run" />
+  <testcase classname="SettingsGraphics" name="first-launch hand choice persists and migrates existing side preferences" time="0.376417" status="run" />
+  <testcase classname="SettingsGraphics" name="gradient settings preserve explicit variants and CLI precedence" time="0.425769" status="run" />
+  <testcase classname="SettingsGraphics" name="hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]" time="0.398677" status="run" />
+  <testcase classname="SettingsGraphics" name="illustrated hand choices activate through their phone overlay [display][writes-preferences]" time="2.31065" status="run" />
+  <testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="0.823866" status="run" />
+  <testcase classname="SettingsGraphics" name="render ceiling defaults migrates validates and round trips" time="0.644851" status="run" />
+  <testcase classname="SettingsGraphics" name="renderer preference migrates flags and round trips without startup overrides" time="0.703292" status="run" />
+  <testcase classname="SettingsGraphics" name="retired gradient verification preference is ignored and CLI options are rejected" time="0.258862" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.351492" status="run" />
+  </testsuite></testsuites>

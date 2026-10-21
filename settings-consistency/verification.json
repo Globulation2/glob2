@@ -1,0 +1,80 @@
+{
+  "revision": "9d3e771340ba830ed8d64ae3cafd87ed88b22de3",
+  "fetched_master": "f0104aab54ce22e6bbb7311c12924d75ad60d83a",
+  "working_diff_sha256": "fd685580b8f85e1d4db7b9e20afcd860689029c7c0e25c75c168b3d6a4806365",
+  "environment": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "macos": "26.6.2",
+    "build": "dev_fast=1 linker=auto; full native client features"
+  },
+  "builds": {
+    "native_client": "passed",
+    "engine_tests": "passed",
+    "unit_tests": "passed"
+  },
+  "tests": {
+    "engine-junit.xml": {
+      "cases": 32,
+      "failures": 0,
+      "errors": 0
+    },
+    "unit-junit.xml": {
+      "cases": 32,
+      "failures": 0,
+      "errors": 0
+    },
+    "screenshot-junit.xml": {
+      "cases": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    "smoke-junit.xml": {
+      "cases": 1,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "coverage": [
+    "All available settings categories at 640x480, 800x600, 1000x700 and 1280x900 using OpenGL",
+    "1000x700 using software rendering",
+    "Expanded wording at 640x480",
+    "Compact portrait 480x800 at 150 percent text, all available categories and category picker",
+    "Pointer, touch and keyboard activation, disabled rows and wrapped checkbox captions",
+    "Distinct icons in both navigation presentations, including scrolled sidebar entries",
+    "Settings persistence and migration; shortcut editing; building defaults; AI library interactions"
+  ],
+  "visual_review": [
+    "desktop-category-review.png",
+    "compact-review.png",
+    "compact-review-bottom.png",
+    "desktop-settings.png",
+    "compact-settings.png",
+    "compact-category-picker.png"
+  ],
+  "final_fixture_change": "After the full matrix passed, the screenshot fixture reset its sidebar with scrollIntoView instead of editing saved scroll state. Rebuilt both test binaries, reran the complete 1000x700 settings case and all 32 UILayout cases; production UI code and catalogs were unchanged.",
+  "localization": {
+    "new_settings_keys": 14,
+    "catalogs": 33,
+    "new_structural_errors": 0,
+    "existing_baseline_structural_errors": 352,
+    "details": "localization-audit.json"
+  },
+  "compatibility": "UI layout, icons and localization only. No simulation, serialization, replay or network behavior changed.",
+  "limitations": [
+    "Native Windows, Linux, Android, iOS and browser builds were not run. Compact and touch behavior was exercised on macOS.",
+    "Fast development build; no release readiness or performance claim.",
+    "The global translation audit retains 352 pre-existing missing statistics keys; confirmed identical to the base revision."
+  ],
+  "commands": [
+    "python3 tools/dev_build.py -j4",
+    "python3 tools/dev_build.py -j4 engine-tests unit-tests",
+    "python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'Settings*/*' --filter 'ClientCapabilities/Settings categories*' -j1 --artifacts artifacts/settings-consistency --junit artifacts/settings-consistency/engine-junit.xml",
+    "python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary unit --filter 'UILayout/*' -j1 --artifacts artifacts/settings-consistency --junit artifacts/settings-consistency/unit-junit.xml"
+  ],
+  "asset_build": "Initial parallel asset encoder worker exited unexpectedly. Single-worker asset preparation succeeded; final client and test builds passed.",
+  "committed_revision": "22d2ab809499e7def5b7847a014b08c387048a2e",
+  "committed_patch_sha256": "fd685580b8f85e1d4db7b9e20afcd860689029c7c0e25c75c168b3d6a4806365",
+  "committed_patch_matches_validated_diff": true,
+  "current_master_integration": "git merge-tree --write-tree HEAD origin/master succeeded with no conflicts; base changes only AI behavior and unrelated AI profile wording."
+}

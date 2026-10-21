@@ -1,0 +1,4 @@
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences] (47.8s)
+
+1 passed, 0 failed, 0 skipped (47.8s of test time)
+[run_tests] JUnit report: artifacts/settings-consistency/screenshot-junit.xml (1 cases)
