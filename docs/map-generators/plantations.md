@@ -13,7 +13,10 @@ plots the swarm and the pool stand side by side along the top, the pool against 
 with a clear tile all round for its level-1 upgrade (4x4 to 6x6) and the swarm against that ring,
 so a plot of 10 fits swarm, ring, pool and ring with upgrade clearance. Every shipped AI built swarms on islands without a pool and pools on islands without a
 swarm, breeding units that could never leave, so the pair is seeded rather than left to them (`claimNeighbourCells` deals them
-round by round, as many to each colony as to any other), with a rock islet beside them. The rest
+round by round, as many to each colony as to any other), with a rock islet beside them.
+Every owned island starts with the shared **Starting workers** count beside its swarm
+(four workers per island by default), including when causeways connect the islands.
+This count applies to the islands actually granted after any small-map reduction. The rest
 are neutral plantations of wheat, wood or both, orchard islets and rock islets. Every island is
 first stamped as the nominal rounded square and the homes and granted islands dealt on that; then,
 where the seed threw at least twice the islands the colonies need, the islands are reshaped: a

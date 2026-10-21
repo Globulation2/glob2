@@ -6,34 +6,6 @@ Trình duyệt không mở. Hãy mở trang đăng nhập để tiếp tục.
 Nếu trang yêu cầu, hãy kiểm tra mã hiển thị là %0.
 [hub code copied]
 Đã sao chép mã
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Hoàn tất trong trình duyệt. Trò chơi sẽ tự tiếp tục.
 [music set]
@@ -6039,97 +6011,623 @@ Quy tắc kịch bản đã quyết định kết quả.
 [outcome reason probability]
 Đã đạt ngưỡng xác suất thắng.
 [Discord community]
-
+Cộng đồng Discord
 [Globulation 2 Discord]
-
+Discord của Globulation 2
 [discord community intro]
-
+Tìm đối thủ, nhờ trợ giúp và chia sẻ bản đồ với cộng đồng Globulation 2.
 [discord opens externally]
-
+Tham gia máy chủ Discord của chúng tôi. Thao tác này sẽ mở Discord hoặc trình duyệt.
 [Join Discord]
-
+Tham gia Discord
 [Copy link]
-
+Sao chép liên kết
 [discord opened]
-
+Đã mở Discord. Bạn có thể quay lại trò chơi bất cứ lúc nào.
 [discord open failed]
-
+Không thể mở Discord. Hãy sao chép liên kết mời và mở trong trình duyệt.
 [discord link copied]
-
+Đã sao chép liên kết mời.
 [settings CPU automatic]
-
+CPU tự động
 [settings Scalar]
-
+Vô hướng
 [settings Unavailable]
-
+Không khả dụng
 [settings Initializing]
-
+Đang khởi tạo
 [settings Gradient backend]
-
+Bộ xử lý gradient
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Áp dụng tại điểm chuyển tiếp mô phỏng kế tiếp. Tác vụ không được hỗ trợ sẽ dùng CPU tự động; việc kết xuất hoạt động độc lập.
 [settings Gradient algorithm]
-
+Thuật toán gradient
 [settings All choices compute the same exact field.]
-
+Mọi lựa chọn đều tính ra chính xác cùng một trường.
 [settings Bucket propagation]
-
+Lan truyền theo nhóm mức
 [settings Verify gradient results]
-
+Kiểm tra kết quả gradient
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+So sánh kết quả GPU với phép tính CPU vô hướng trước khi sử dụng. Tăng khối lượng tính toán và dừng trò chơi nếu kết quả không khớp.
 [settings Gradient computation]
-
+Tính toán gradient
 [settings CPU fallback]
-
+Dự phòng bằng CPU
 [settings GPU fields]
-
+Trường GPU
 [settings CPU fallbacks]
-
+Số lần chuyển về CPU
 [settings MCP server]
-
+Máy chủ MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Bật máy chủ MCP cho phép ứng dụng khách cục bộ xem và điều khiển trò chơi.
 [settings Enable MCP server]
-
+Bật máy chủ MCP
 [settings Port]
-
+Cổng
 [settings Current controller: %0]
-
+Bên điều khiển hiện tại: %0
 [settings Copy endpoint]
-
+Sao chép địa chỉ kết nối
 [settings Retry listener]
-
+Thử khởi động lại bộ lắng nghe
 [settings Revoke control]
-
+Thu hồi quyền điều khiển
 [settings MCP server unavailable in this application]
-
+Máy chủ MCP không khả dụng trong ứng dụng này
 [settings Disabled]
-
+Đã tắt
 [settings Running]
-
+Đang chạy
 [settings Error: %0]
-
+Lỗi: %0
 [settings None]
-
+Không có
 [settings Starting]
-
+Đang khởi động
 [Which hand holds your phone?]
-
+Tay trái hay tay phải?
 [hand preference explanation]
-
+Cầm điện thoại như bình thường. Chạm vào tay bạn dùng để chơi.
 [hand silhouettes description]
-
+Đường viền điện thoại có tay trái và tay phải ở phía trên. Nhấn một trong hai vùng ngón cái có cạnh vát để chọn bên đó.
 [hand preference change later]
-
+Bạn có thể đổi bên sau trong Cài đặt.
 [hand preference save failed]
-
+Không thể lưu lựa chọn của bạn. Vui lòng thử lại.
 [Left hand]
-
+Tay trái
 [Right hand]
-
+Tay phải
 [discord copy failed]
-
+Không thể sao chép liên kết. Hãy chọn liên kết mời ở trên để sao chép thủ công.
+[Destroy this building?]
+Phá hủy công trình này?
+[stat ground movement]
+Di chuyển trên mặt đất
+[stat ground movement about]
+Các đơn vị mặt đất còn sống theo tỷ lệ tốc độ gần đúng. “Bơi 2×” nghĩa là bơi nhanh gấp đôi chạy. Không tính đơn vị bay và đơn vị không di chuyển được.
+[stat view by movement]
+Theo cách di chuyển
+[stat band land only]
+Chỉ trên cạn
+[stat band swim twice run]
+Bơi 2×
+[stat band swim faster run]
+Bơi 1,4×
+[stat band swim equals run]
+Bằng nhau
+[stat band run faster swim]
+Chạy 1,3×
+[stat band run twice swim]
+Chạy 2×
+[stat band run triple swim]
+Chạy 3×
+[stat band water only]
+Chỉ dưới nước
+[settings Browse shared generators]
+Duyệt bộ tạo bản đồ được chia sẻ
+[settings Apply artwork on the next game or editor load.]
+Áp dụng đồ họa khi tải trò chơi hoặc trình biên tập lần tới.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Yêu cầu bộ kết xuất hỗ trợ lọc kết cấu. Lựa chọn đã lưu của bạn được giữ nguyên.
+[settings Automatically show the torus overview while moving around the map.]
+Tự động hiển thị toàn cảnh bản đồ hình xuyến khi di chuyển trên bản đồ.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Yêu cầu bộ kết xuất hỗ trợ hình xuyến. Lựa chọn đã lưu của bạn được giữ nguyên.
+[settings Move and animate units between game ticks.]
+Di chuyển và tạo hoạt ảnh cho đơn vị giữa các nhịp trò chơi.
+[settings Renderer unavailable]
+Bộ kết xuất không khả dụng
+[settings Apply at the next completed frame. Your game stays running.]
+Áp dụng sau khi khung hình tiếp theo hoàn tất. Trò chơi vẫn tiếp tục chạy.
+[settings Active renderer: %0]
+Bộ kết xuất đang dùng: %0
+[settings Changing renderer…]
+Đang đổi bộ kết xuất…
+[settings Menu scroll wheel enabled]
+Đã bật cuộn bằng con lăn trong menu
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Điều khiển cuộn bằng con lăn trong menu. Con lăn luôn phóng to hoặc thu nhỏ bản đồ trò chơi và trình biên tập.
+[settings Gesture scrolling]
+Cuộn bằng cử chỉ
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Cuộn bằng cảm ứng và cử chỉ Mac. 0 tắt hiệu ứng; 50 là giá trị mặc định cho cảm ứng.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Khoảng cách danh sách và bảng tiếp tục cuộn sau khi vuốt nhanh. Cử chỉ Mac dùng quán tính của hệ thống; giá trị không sẽ tắt hiệu ứng trượt.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Mức độ danh sách và bảng kéo giãn vượt quá mép rồi nảy trở lại. Cử chỉ Mac dùng mức kéo giãn nhẹ hơn.
+[hive stopping]
+Đang dừng…
+[hive stopped]
+Đã dừng
+[hive stop failed]
+Dừng thất bại; hãy thử lại phím tắt dừng
+[hive updating]
+Đang cập nhật…
+[hive requested]
+Đã yêu cầu
+[hive update failed]
+Cập nhật thất bại; hãy thử lại
+[hive give order]
+Ra lệnh
+[hive less]
+Thu gọn
+[hive reports and details]
+Báo cáo / chi tiết
+[hive needs fresh order]
+Cần lệnh mới
+[hive active]
+Đang hoạt động
+[hive resume]
+Tiếp tục
+[recordings]
+Bản ghi
+[recording delete confirm]
+Xóa bản ghi?
+[recording delete warning]
+Bản ghi và siêu dữ liệu của nó sẽ bị xóa.
+[recording delete]
+Xóa
+[recording working]
+Đang xử lý…
+[recording none]
+Chưa có bản ghi nào.
+[recording interrupted]
+Bản ghi bị gián đoạn
+[recording recover]
+Khôi phục
+[recording export video]
+Xuất video
+[recording export metadata]
+Xuất siêu dữ liệu
+[recording export events]
+Xuất sự kiện
+[recording export failed]
+Không thể xuất bản ghi.
+[recording delete action]
+Xóa bản ghi
+[recording refresh]
+Làm mới
+[tutorial part1 message 1]
+Chào mừng đến với Globulation 2! Bốn nhiệm vụ sẽ dạy bạn quản lý thuộc địa. Lưu tiến độ trong menu trò chơi rồi tải lại từ menu chính khi muốn. Nhấn Phím cách hoặc chạm Đồng ý trên màn hình cảm ứng để tiếp tục. Một số thông báo sẽ biến mất; có thể đọc lại trong Lịch sử tin nhắn.
+[tutorial part1 message 2]
+Bạn bắt đầu với một Tổ và một công nhân. Hãy xem họ phối hợp thế nào.
+[tutorial part1 message 3]
+Công nhân thu hoạch lúa mì rồi mang về Tổ. Tổ dùng lúa mì tạo đơn vị mới nên rất quan trọng với thuộc địa.
+[tutorial part1 message 4]
+Chọn globule, tức đơn vị đang di chuyển, bằng nhấp chuột trái hoặc chạm.
+[tutorial part1 message 5]
+Thông tin đơn vị cho thấy lượng thức ăn giảm dần theo thời gian. Globule đang đói. Khi bật thanh thức ăn, thanh xanh dưới đơn vị biểu thị lượng còn lại.
+[tutorial part1 message 6]
+Globule ăn tại Quán trọ. Bỏ chọn bằng chuột phải hoặc chạm đất trống trên màn hình cảm ứng.
+[tutorial part1 message 7]
+Mở điều khiển xây dựng, chọn Quán trọ và đặt gần lúa mì. Nếu không thấy lúa mì, hãy theo đường thu hoạch của công nhân. Trên màn hình cảm ứng dùng Xây dựng rồi xác nhận vị trí hợp lệ. Xong thì nhấp chuột phải hoặc chạm Hủy để thoát chế độ đặt.
+[tutorial part1 message 8]
+Tốt! Công trường Quán trọ đã được đặt.
+[tutorial part1 message 9]
+Công nhân từ Tổ có thể xây Quán trọ. Họ lấy gỗ từ cây gần đó rồi mang đến công trường. Hãy chờ xây xong.
+[tutorial part1 message 10]
+Quán trọ hoàn thành cần lúa mì. Công nhân được phân công sẽ thu hoạch như khi tiếp tế Tổ.
+[tutorial part1 message 11]
+Thanh tài nguyên màu vàng của Quán trọ tăng khi lúa mì đến. Nó biểu thị lượng lúa mì dự trữ.
+[tutorial part1 message 12]
+Giờ hãy học cách phân công.
+[tutorial part1 message 13]
+Một công nhân tiếp tế Tổ, người kia tiếp tế Quán trọ. Cả hai có thể nghỉ ăn tại Quán trọ. Điều này bình thường.
+[tutorial part1 message 14]
+Chọn Tổ và tìm điều khiển phân công công nhân. Trên máy tính là mục Đang làm việc; trên cảm ứng dùng số công nhân được phân công và mục tiêu. Mục tiêu là số công nhân bạn muốn tại công trình.
+[tutorial part1 message 15]
+Đặt mục tiêu công nhân của Tổ về 0. Sau đó chọn Quán trọ và cũng đặt về 0.
+[tutorial part1 message 16]
+Công nhân đang rảnh nhưng vẫn cần ăn. Quán trọ không có người tiếp tế rồi sẽ hết lúa mì.
+[tutorial part1 message 17]
+Globule không tìm được thức ăn sẽ mất máu và có thể chết. Bệnh viện chữa trị cho họ, nhưng bạn vẫn phải tiếp tế Quán trọ.
+[tutorial part1 message 18]
+Xây Bệnh viện bằng điều khiển xây dựng. Không cần lúa mì, nên đặt gần gỗ hoặc ở trung tâm gần Tổ.
+[tutorial part1 message 19]
+Chọn công trường Bệnh viện và đặt mục tiêu 2 công nhân. Hai người sẽ hoàn thành nhanh hơn.
+[tutorial part1 message 20]
+Bệnh viện đã xong. Globule bị thương có thể đến hồi phục máu.
+[tutorial part1 message 21]
+Vùng đen chưa được khám phá. Đơn vị di chuyển sẽ hé lộ đất xung quanh. Công nhân đi theo công việc nên khó dùng để trinh sát. Nhà thám hiểm chuyên làm việc đó.
+[tutorial part1 message 22]
+Chọn Tổ và tìm tỷ lệ sản xuất công nhân, nhà thám hiểm và chiến binh. Tăng tỷ lệ nhà thám hiểm lên 1.
+[tutorial part1 message 23]
+Khi công nhân và nhà thám hiểm cùng có tỷ lệ 1, Tổ sẽ tạo số lượng bằng nhau theo thời gian. Đặt tỷ lệ công nhân về 0 để tạm chỉ tạo nhà thám hiểm.
+[tutorial part1 message 24]
+Đặt lại mục tiêu phân công công nhân của Tổ thành 1 để có người mang lúa mì.
+[tutorial part1 message 25]
+Chọn Quán trọ và cũng đặt mục tiêu 1 công nhân. Thuộc địa đang lớn cần nguồn thức ăn ổn định.
+[tutorial part1 message 26]
+Chờ Tổ tạo một nhà thám hiểm.
+[tutorial part1 message 27]
+Nhà thám hiểm bay quanh thuộc địa, hé lộ thêm đất. Hãy để Tổ tạo người thứ hai trước khi tiếp tục.
+[tutorial part1 message 28]
+Chọn lại Tổ. Đặt tỷ lệ nhà thám hiểm về 0 và công nhân thành 1 để tiếp tục tạo công nhân.
+[tutorial part2 message 1]
+Có đá ở phía đông căn cứ. Hãy nhớ vị trí này vì bạn sẽ cần đá sau này.
+[tutorial part2 message 2]
+Cây phía nam đá là cây cam. Chọn để xem thông tin tài nguyên. Sẽ nói về trái cây sau; hiện giờ hãy tập trung vào Tổ.
+[tutorial part2 message 3]
+Cho Tổ chỉ tạo công nhân: tỷ lệ công nhân 1, nhà thám hiểm và chiến binh 0.
+[tutorial part2 message 4]
+Hãy tăng trưởng nhanh hơn. Chọn Tổ và đặt mục tiêu phân công thành 6 công nhân. Dù chưa đủ sáu người, công nhân mới có thể nhận chỗ trống khi xuất hiện.
+[tutorial part2 message 5]
+Khi có 8 công nhân, ta sẽ bắt đầu việc tiếp theo. Giữ nguồn tiếp tế Tổ và Quán trọ trong lúc dân số tăng.
+[tutorial part2 message 6]
+Nhiều công nhân đang tiếp tế Tổ. Nhiều lúa mì đến hơn đồng nghĩa tạo đơn vị nhanh hơn.
+[tutorial part2 message 7]
+Công nhân mới tốn 5 lúa mì. Chuyển từ ruộng xa mất thời gian nên Tổ thường cần nhiều người tiếp tế hơn Quán trọ. Nếu có thể, đặt công trình dùng thức ăn gần lúa mì.
+[tutorial part2 message 8]
+Bạn có ít nhất 8 công nhân. Giảm mục tiêu phân công của Tổ về 1 để làm chậm tăng dân số trong lúc xây dựng.
+[tutorial part2 message 9]
+Thuộc địa cần thêm chỗ ăn. Xây Quán trọ thứ hai ở phía bắc quán hiện có.
+[tutorial part2 message 10]
+Phân công người rảnh tới công trường mới. Chỉ cần 3 gỗ nên hơn 3 thợ xây không giúp được nhiều.
+[tutorial part2 message 11]
+Quán trọ xây xong trở về mục tiêu vận hành, thường là 1 công nhân. Xây dựng và tiếp tế hằng ngày có mục tiêu phân công riêng.
+[tutorial part2 message 12]
+Công nhân có thể học di chuyển nhanh hơn. Đường chạy cung cấp huấn luyện này.
+[tutorial part2 message 13]
+Mở điều khiển xây dựng, tìm Đường chạy. Trên máy tính, rê chuột lên biểu tượng để xem mô tả và chi phí. Trên cảm ứng chọn trong Xây dựng để chuẩn bị đặt. Chưa đặt vội.
+[tutorial part2 message 14]
+Đường chạy cần nhiều gỗ và một ít đá. Chọn nơi trung tâm để đơn vị dễ đến.
+[tutorial part2 message 15]
+Xây Đường chạy, có thể ở phía nam Tổ. Chừa đất trống quanh đó: công trình huấn luyện cần mở rộng khi nâng cấp.
+[tutorial part2 message 16]
+Đặt mục tiêu công trường Đường chạy từ 5 đến 7 công nhân. Tổng cộng cần 7 vật liệu xây dựng.
+[tutorial part2 message 17]
+Sau khi hoàn thành, Đường chạy huấn luyện các đơn vị đến tập mà không cần cung cấp vật liệu hay lúa mì liên tục.
+[tutorial part2 message 18]
+Globule đang vào Đường chạy tập luyện. Học xong sẽ chạy nhanh hơn.
+[tutorial part2 message 19]
+Chọn Đường chạy xem tiến độ. Chỉ báo cho biết đơn vị bên trong còn bao lâu thì hoàn thành.
+[tutorial part2 message 20]
+Công nhân được huấn luyện di chuyển nhanh và giao tài nguyên sớm hơn. Theo dõi kho thức ăn khi thuộc địa lớn lên; việc giao nhanh chỉ có ích khi có đủ Quán trọ được tiếp tế đầy đủ.
+[tutorial part2 message 21]
+Tìm bộ đếm dân số công nhân trên giao diện. Tổng số cho biết dân số; số công nhân sẵn có giúp thấy người rảnh hay việc thiếu người. Tận dụng người rảnh nhưng đừng giao nhiều việc hơn thuộc địa đáp ứng được.
+[tutorial part2 message 22]
+Giao diện cũng hiện số nhà thám hiểm và chiến binh. Kiểm tra khi lập kế hoạch sản xuất hoặc giao đơn vị cho cờ.
+[tutorial part2 message 23]
+Bạn có 2 Quán trọ. Mỗi quán cơ bản cho 4 đơn vị ăn cùng lúc, tổng là 8 chỗ. Có thể hơn 8 đơn vị đói nên cần dự phòng cho hàng đợi.
+[tutorial part2 message 24]
+Hai Quán trọ không đủ nuôi thuộc địa lớn mãi. Thêm chỗ ăn trước khi thiếu hụt thành nạn đói.
+[tutorial part2 message 25]
+Xây thêm 3 Quán trọ gần lúa mì. Công nhân đói ngừng làm việc và đói lâu sẽ chết. Giao người rảnh đi xây nhưng vẫn giữ nguồn thức ăn hiện có.
+[tutorial part2 message 26]
+Xây xong thêm 3 Quán trọ để tổng số là 5.
+[tutorial part2 message 27]
+Quán trọ mới dùng mục tiêu vận hành sau khi xây, thường mỗi quán 1 công nhân. Kiểm tra người tiếp tế và đủ lúa mì.
+[tutorial part2 message 28]
+Đường chạy cải thiện đi lại trên cạn. Giờ dạy thuộc địa bơi.
+[tutorial part2 message 29]
+Hồ bơi dạy đơn vị bơi và cần gỗ để xây. Đặt ở bãi trống lớn phía đông bắc căn cứ, phía bắc đá. Chừa chỗ quanh hồ cho nâng cấp và tài nguyên mọc thêm, rồi giao công nhân sẵn có xây dựng.
+[tutorial part2 message 30]
+Hồ bơi dạy đơn vị bơi và cần gỗ để xây. Đặt ở bãi trống lớn phía đông bắc căn cứ, phía bắc đá. Chừa chỗ quanh hồ cho nâng cấp và tài nguyên mọc thêm, rồi giao công nhân sẵn có xây dựng.
+[tutorial part2 message 31]
+Hồ bơi đã xong. Globule có thể vào học bơi.
+[tutorial part2 message 32]
+Chọn Hồ bơi xem tiến độ. Hồ cơ bản huấn luyện 2 globule cùng lúc như Đường chạy cơ bản.
+[tutorial part2 message 33]
+Globule được học nay đã bơi được. Sắp tới họ sẽ có việc cần vượt nước.
+[tutorial part2 message 34]
+Còn nhiều điều để học. Nếu cần nghỉ, lưu tiến độ từ menu trò chơi rồi quay lại sau.
+[tutorial part2 message 35]
+Thuộc địa có thức ăn và luyện thể lực. Trường học dạy công nhân kỹ năng cần cho công trình tốt hơn.
+[tutorial part2 message 36]
+Trường học cải thiện thu hoạch và xây dựng. Xây trường cần tảo mọc dưới nước. Công nhân biết bơi có thể lấy.
+[tutorial part2 message 37]
+Bảo vệ công trình huấn luyện quan trọng. Trường học không cần cạnh nước; nơi kín đáo trong đất liền an toàn hơn trước tấn công.
+[tutorial part2 message 38]
+Xây Trường học ở nơi được che chở, như sau Hồ bơi hoặc tây nam Tổ cạnh Đường chạy. Giao công nhân sẵn có đi xây.
+[tutorial part2 message 39]
+Chọn công trình để xem công nhân được giao. Trên máy tính, thao tác bật/tắt đường đi có thể cấu hình cũng vẽ đường từ đơn vị tới đích; xem phím hiện tại trong Thiết lập, Điều khiển. Chờ trường xây xong.
+[tutorial part3 message 1]
+Thuộc địa có Quán trọ, Bệnh viện, Đường chạy, Hồ bơi và Trường học. Đến lúc chuẩn bị phòng thủ.
+[tutorial part3 message 2]
+Ta chưa tạo chiến binh nào. Thiếu họ, thuộc địa ít được bảo vệ khi bị đánh.
+[tutorial part3 message 3]
+Chọn Tổ và đặt tỷ lệ chiến binh thành 2. Giữ công nhân ở 1 để tiếp tục tạo cả công nhân.
+[tutorial part3 message 4]
+Tổ giờ tạo khoảng 2 chiến binh cho mỗi công nhân. Giao thêm người tiếp tế nếu muốn tăng tốc sản xuất.
+[tutorial part3 message 5]
+Chiến binh đầu tiên đã sẵn sàng và bắt đầu tập. Chờ người thứ hai trước khi tiếp tục.
+[tutorial part3 message 6]
+Chiến binh cũng dùng Đường chạy và Hồ bơi. Họ có thể luyện kỹ năng tấn công ở Doanh trại.
+[tutorial part3 message 7]
+Doanh trại tăng sức mạnh và tốc độ tấn công. Sức mạnh tăng sát thương mỗi đòn, tốc độ tăng tần suất đánh. Chiến binh được luyện kỹ có thể thắng nhóm địch chưa huấn luyện đông hơn nhiều.
+[tutorial part3 message 8]
+Xây Doanh trại gần gỗ cần cho xây dựng.
+[tutorial part3 message 9]
+Giao người sẵn có tới công trường Doanh trại. Giữ đủ người lo thức ăn và đừng tạo nhiều việc hơn họ làm được.
+[tutorial part3 message 10]
+Doanh trại đã xong. Chiến binh có thể luyện tấn công tại đây.
+[tutorial part3 message 11]
+Nâng cấp công trình làm thuộc địa mạnh hơn.
+[tutorial part3 message 12]
+Công nhân được huấn luyện tại Trường học có thể thực hiện việc nâng cấp. Chọn công trình phù hợp, tìm Nâng cấp trong điều khiển. Công trình hỏng có thể cần Sửa chữa trước.
+[tutorial part3 message 13]
+Hãy quyết định nâng gì trước. Quán trọ còn chỗ nên có thể chờ.
+[tutorial part3 message 14]
+Bệnh viện cũng còn chỗ. Có thể tập trung vào Trường học, Đường chạy, Hồ bơi hoặc Doanh trại.
+[tutorial part3 message 15]
+Nâng Đường chạy trước để đơn vị học di chuyển nhanh hơn nữa.
+[tutorial part3 message 16]
+Chọn Đường chạy rồi Nâng cấp trong điều khiển công trình. Đơn vị bên trong phải ra hết trước khi xây nên thay đổi có thể không bắt đầu ngay.
+[tutorial part3 message 17]
+Giao công nhân sẵn có nâng cấp Đường chạy. Chỉ công nhân đã hoàn thành huấn luyện cần thiết tại Trường học mới xây được công trình cấp 2.
+[tutorial part3 message 18]
+Chờ nâng cấp Đường chạy xong. Cấp công trình cao hơn tốn nhiều tài nguyên và thời gian hơn.
+[tutorial part3 message 19]
+Đường chạy cấp 2 hoàn thành. Chiếm nhiều đất hơn trước nên ta đã chừa khoảng trống. Không đủ chỗ mở rộng thì không nâng cấp được.
+[tutorial part3 message 20]
+Giờ nâng Doanh trại và Hồ bơi lên cấp 2. Cả hai xong sẽ tiếp tục.
+[tutorial part3 message 21]
+Công trình nâng cấp thường phục vụ nhiều globule hơn hoặc huấn luyện tốt hơn. Chẳng hạn Quán trọ cấp 2 có 7 chỗ ăn và cho ăn nhanh hơn quán cơ bản.
+[tutorial part3 message 22]
+Địch ở gần. Hãy chuẩn bị đón đánh.
+[tutorial part3 message 23]
+Tháp bắn địch trong tầm, tường giúp bảo vệ tháp. Ta dùng cả hai giữ lối hẹp vào thuộc địa.
+[tutorial part3 message 24]
+Đặt tháp thành cặp nếu đủ chỗ. Tường bảo vệ ba mặt nhưng chừa đường cho công nhân mang đạn đá.
+[tutorial part3 message 25]
+Nhìn phía đông Hồ bơi, phía bắc các cây ăn quả khác. Lối vượt hẹp dẫn sang đảo khác, thích hợp phòng thủ.
+[tutorial part3 message 26]
+Dự tính chỗ cho 2 tháp giữa cây và bờ. Chừa đường tiếp đá phía sau, chỗ đặt tường các phía khác. Đừng dùng tường chặn công nhân.
+[tutorial part3 message 27]
+Xây 2 tháp tại đó. Giao 2 hoặc 3 người mỗi công trường tùy số người sẵn có trên giao diện.
+[tutorial part3 message 28]
+Dùng điều khiển xây dựng đặt các đoạn tường quanh ba mặt ngoài tháp. Giữ mặt hướng về thuộc địa mở cho công nhân.
+[tutorial part3 message 29]
+Mỗi đoạn tường tạo một việc xây và cần 1 đá. Nếu không đủ người làm mọi việc cùng lúc, họ có thể hoàn thành lần lượt.
+[tutorial part3 message 30]
+Chờ cả hai tháp và vài đoạn tường xây xong. Tháp cần cả đạn đá; mỏ xa làm giao hàng chậm. Nếu có người rảnh, tăng mục tiêu công nhân của tháp.
+[tutorial part4 message 1]
+Thuộc địa có thức ăn, huấn luyện và phòng thủ. Công trình còn có thể lên cấp 3, cho huấn luyện tốt và sức chứa lớn hơn. Tiếp tục cải thiện khi tài nguyên và kỹ năng cho phép.
+[tutorial part4 message 2]
+Tìm thuộc địa địch ở tây bắc căn cứ. Chuyển tầm nhìn tới đó ngay.
+[tutorial part4 message 3]
+Đất đã khám phá vẫn có thể bị sương chiến tranh che. Cần nhà thám hiểm gần đó để thấy hoạt động hiện tại của địch.
+[tutorial part4 message 4]
+Mở Cờ. Cờ và vùng giúp chỉ đạo đơn vị mà không cần điều khiển từng globule riêng.
+[tutorial part4 message 5]
+Chọn Cờ thám hiểm có hình cánh diều. Có thể đặt cờ trên đất, nước, tài nguyên và vùng chưa khám phá.
+[tutorial part4 message 6]
+Đặt Cờ thám hiểm trên nơi nghi là căn cứ địch. Vị trí gần đúng đủ để bắt đầu trinh sát. Nhấp phải thoát chế độ đặt hoặc hoàn tất bằng điều khiển cảm ứng.
+[tutorial part4 message 7]
+Đường viền quanh cờ là bán kính hoạt động. Nhà thám hiểm được giao sẽ khảo sát vùng đó. Nếu không ai tới, kiểm tra số lượng và tạo thêm tại Tổ nếu cần. Khi họ đến, nhấn Phím cách hoặc Đồng ý.
+[tutorial part4 message 8]
+Địch có nhiều công nhân và quân đội tập trung. Chuẩn bị phòng thủ trước khi chúng đánh.
+[tutorial part4 message 9]
+Mở Cờ và chọn vùng Canh gác màu xanh. Dùng chế độ thêm đất vào vùng, không phải bớt. Trên cảm ứng chọn Vẽ thay vì Xóa.
+[tutorial part4 message 10]
+Chọn hình dạng và cỡ cọ. Hình vuông lớn hữu ích để tô khu phòng thủ gọn.
+[tutorial part4 message 11]
+Tô vùng Canh gác ngay sau tháp, nơi địch có thể tới. Nhấp hoặc chạm tô một chỗ, kéo để phủ rộng hơn. Trên cảm ứng dùng Di chuyển khi cần đổi tầm nhìn trong lúc tô.
+[tutorial part4 message 12]
+Chiến binh sẵn có sẽ tới vùng Canh gác. Vùng cần đủ rộng cho quân phòng thủ, nhưng đủ nhỏ để giữ họ tập trung tại lối vượt. Chờ địch tấn công.
+[tutorial part4 message 13]
+Địch đang tới lối vượt!
+[tutorial part4 message 14]
+Ta bị tấn công. Xem chiến binh được huấn luyện và tháp giữ vị trí.
+[tutorial part4 message 15]
+Bạn sống sót! Mở Cờ, chọn Cờ chiến đấu có gai rồi đặt lên Tổ địch để chỉ đạo tấn công.
+[tutorial part4 message 16]
+Thoát chế độ đặt và chọn Cờ chiến đấu. Giao hơn 1 chiến binh rồi giảm bán kính, tập trung đòn đánh quanh Tổ địch. Chờ quân tới.
+[tutorial part4 message 17]
+Tấn công bắt đầu. Chiến binh phải vượt tháp địch để tới Tổ.
+[tutorial part4 message 18]
+Chiến binh đã tới căn cứ địch. Tiếp tục tập trung đánh Tổ.
+[tutorial part4 message 19]
+Bạn phá hủy Tổ địch. Chúc mừng! Bạn hoàn tất hướng dẫn và học cơ bản về tiếp tế thức ăn, phân công, huấn luyện, nâng cấp, trinh sát và chiến đấu.
+[tutorial mission basics]
+Giới thiệu và cơ bản
+[tutorial mission development]
+Công trình và trường học
+[tutorial mission training]
+Chiến binh, huấn luyện và nâng cấp
+[tutorial mission flags]
+Cờ và hoàn tất
+[library  Could not restore the previous library: %0]
+ Không thể khôi phục thư viện trước đó: %0
+[library  The previous library is retained.]
+ Thư viện trước đó được giữ lại.
+[library  · Installed]
+ · Đã cài
+[library  · Update available]
+ · Có bản cập nhật
+[library A different release is installed. Install the selected release to update explicitly.]
+Đã cài một bản phát hành khác. Cài bản đã chọn để chủ động cập nhật.
+[library All engines]
+Mọi bộ máy trò chơi
+[library All generators]
+Mọi bộ tạo
+[library Available families]
+Các họ hiện có
+[library Back]
+Quay lại
+[library Building families]
+Họ công trình
+[library Building library]
+Thư viện công trình
+[library Checking building release]
+Đang kiểm tra bản phát hành công trình
+[library Choose an online instance before opening a family link.]
+Chọn máy chủ trực tuyến trước khi mở liên kết họ công trình.
+[library Compatible with this engine]
+Tương thích với bộ máy này
+[library Confirm replacement]
+Xác nhận thay thế
+[library Create in Building Studio]
+Tạo trong Building Studio
+[library Downloading generator…]
+Đang tải bộ tạo…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Mỗi địa hình được hiển thị dưới dạng bản đồ thật với kích thước và số thuộc địa bên dưới; bạn có thể đổi chúng tại đây. Chọn một để chơi bản đồ đang hiển thị.
+[library Editor tool: generates terrain for the map editor.]
+Công cụ biên tập: tạo địa hình cho trình biên tập bản đồ.
+[library Editor tools]
+Công cụ biên tập
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Bật các họ đã cài bên dưới. Lựa chọn lưu trong hồ sơ cục bộ; bản đồ và bản lưu hiện có vẫn giữ công trình riêng. Để chơi trực tuyến, tạo bản đồ với các họ này, đăng lên thư viện bản đồ rồi chọn trong phòng.
+[library Enter a building family ID or a link to its family page.]
+Nhập ID họ công trình hoặc liên kết tới trang của họ đó.
+[library Family link or ID]
+Liên kết hoặc ID họ
+[library Family links must be at most 1024 characters.]
+Liên kết họ tối đa 1024 ký tự.
+[library Family removed.]
+Đã gỡ họ công trình.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Họ công trình không khả dụng. Họ riêng tư yêu cầu đăng nhập qua Trực tuyến bằng tài khoản có quyền truy cập.
+[library Generator file hash mismatch]
+Mã băm tệp bộ tạo không khớp
+[library Generator installed. Future selections use this release.]
+Đã cài bộ tạo. Các lựa chọn sau sẽ dùng bản phát hành này.
+[library Generator package identity mismatch]
+Thông tin định danh gói bộ tạo không khớp
+[library Generators]
+Bộ tạo
+[library Install compatible release]
+Cài bản tương thích
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Cài công trình riêng lẻ hoặc họ nâng cấp bên cạnh công trình mặc định. Lựa chọn chỉ áp dụng cho bản đồ mới tạo.
+[library Install selected release]
+Cài bản đã chọn
+[library Installed]
+Đã cài
+[library Installed families]
+Họ đã cài
+[library Installed. Enable the family below for new maps.]
+Đã cài. Bật họ bên dưới cho bản đồ mới.
+[library Invalid building family ID.]
+ID họ công trình không hợp lệ.
+[library Invalid building library response]
+Phản hồi thư viện công trình không hợp lệ
+[library Invalid library cursor]
+Con trỏ phân trang thư viện không hợp lệ
+[library Invalid release identity]
+Thông tin định danh bản phát hành không hợp lệ
+[library Load more]
+Tải thêm
+[library Load more families]
+Tải thêm họ
+[library Loading building families]
+Đang tải họ công trình
+[library Loading…]
+Đang tải…
+[library Map generators]
+Bộ tạo bản đồ
+[library Maps]
+Bản đồ
+[library Most downloaded]
+Tải xuống nhiều nhất
+[library Most liked]
+Được thích nhiều nhất
+[library My generators]
+Bộ tạo của tôi
+[library Newest]
+Mới nhất
+[library No building families installed.]
+Chưa cài họ công trình nào.
+[library No public building families yet]
+Chưa có họ công trình công khai
+[library No validated release for this game version.]
+Không có bản phát hành đã xác thực cho phiên bản trò chơi này.
+[library Online server changed during download]
+Máy chủ trực tuyến đã đổi trong lúc tải
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Mở họ không niêm yết bằng liên kết hoặc ID. Với họ riêng tư, hãy đăng nhập qua Trực tuyến trước.
+[library Open family]
+Mở họ
+[library Opened family. Install its compatible release below.]
+Đã mở họ. Cài bản tương thích bên dưới.
+[library Opening building family]
+Đang mở họ công trình
+[library Playable]
+Có thể chơi
+[library Playable generator]
+Bộ tạo bản đồ chơi được
+[library Privacy policy]
+Chính sách quyền riêng tư
+[library Public library]
+Thư viện công khai
+[library Recently updated]
+Mới cập nhật
+[library Refresh library]
+Làm mới thư viện
+[library Release identity changed during installation]
+Thông tin định danh bản phát hành đã đổi trong lúc cài
+[library Reroll]
+Tạo lại
+[library Reroll seed]
+Đổi hạt giống
+[library Saving generator library…]
+Đang lưu thư viện bộ tạo…
+[library Search]
+Tìm kiếm
+[library Seed]
+Hạt giống
+[library Selection saved for new maps.]
+Đã lưu lựa chọn cho bản đồ mới.
+[library Storage failed.]
+Lưu trữ thất bại.
+[library Storage persistence unavailable]
+Lưu trữ lâu dài không khả dụng
+[library Tags]
+Thẻ
+[library Technical checks passed for this engine. Balance is not certified.]
+Đã qua kiểm tra kỹ thuật cho bộ máy này. Chưa chứng nhận tính cân bằng.
+[library The server returned a different family.]
+Máy chủ trả về một họ khác.
+[library This link is from another instance. Switch to that instance in Online first.]
+Liên kết thuộc máy chủ khác. Hãy chuyển sang máy chủ đó trong Trực tuyến trước.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+ID gói này đã được cài. Xác nhận thay thế để dùng bản đã chọn.
+[library This release has no passing checks for this engine.]
+Bản phát hành này chưa có kết quả kiểm tra đạt yêu cầu cho bộ máy này.
+[library This release is installed.]
+Bản phát hành này đã được cài.
+[library Update installed family]
+Cập nhật họ đã cài
+[library Use in a room]
+Dùng trong phòng
+[library By %0]
+Tác giả: %0
+[library Installed release %0]
+Bản phát hành đã cài %0
+[library Release %0]
+Bản phát hành %0
+[library Remove %0]
+Gỡ %0
+[library Seed: %0]
+Hạt giống: %0
+[library %0 · revision %1]
+%0 · bản sửa đổi %1
+[library Fit]
+Vừa khung
 [Sound or silence?]
 
 [Silence]
@@ -6144,5 +6642,5 @@ Quy tắc kịch bản đã quyết định kết quả.
 
 [audio choices description]
 
-[Destroy this building?]
-Phá hủy công trình này?
+[library GL only]
+Chỉ GL

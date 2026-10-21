@@ -1,3 +1,4 @@
+#include "ui/TutorialText.h"
 #include "render/ResourceSprites.h"
 #include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -520,7 +521,7 @@ ViewRect GameGUITouch::tutorialRect() const
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.drawnScene().panels.hud.state().legacyScriptText;
+	std::string text = Glob2UI::tutorialText(gui.drawnScene().panels.hud.state().legacyScriptText, gui.legacyTutorialScript);
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())

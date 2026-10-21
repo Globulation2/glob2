@@ -14,24 +14,31 @@ one upgrade (range 7). Towers prioritise units but can also target buildings.
 Colonies receive the standard swarm and workers; no military buildings, schools
 or trained military units are granted.
 
-Mainland farming ribbons follow the outer coast, retaining broad uninterrupted
-banks against the sea. Higher initial wheat coverage supplies a stronger opening
-within those existing fields. Sand caps, cross aisles, and
-separate wheat/wood compartments contain their future spread. The mainland has
-stone and mixed fruit. Forward peninsulas retain building ground and sand supply
-lanes; their primary reward is military position rather than exclusive resources. Paths stop short of the noses to leave
-whole forward footprints clear.
-Normal growth rules apply everywhere. Each wheat plot starts with a small grass
-clearing beside compact guaranteed grain, so an inn can establish a feeding edge.
-Those farm clearings can regrow; the sand-protected mainland and forward building
-ground are the permanent construction reserve.
+Mainland crop patches follow the outer coast with irregular grass margins and no
+sand frames or dividers. Higher initial wheat coverage supplies a stronger opening.
+Wheat and wood can spread and compete along these fertile banks under ordinary
+growth rules. Each wheat patch retains an initial grass clearing beside compact
+guaranteed grain so an inn can establish a feeding edge; those clearings can regrow.
+Town sites sit beyond the exact natural crop-growth reach, including the final dry
+tile a fertile plant can seed. The mainland has stone and mixed fruit. Forward
+peninsulas retain building ground and sand supply lanes; their primary reward is
+military position rather than exclusive resources. Paths stop short of the noses
+to leave whole forward footprints clear.
 
 Broader irregular sandy clearings and occasional wood pockets break up the interior.
-Small separated wheat tufts line the central wave-shaped inlet, directly beside
-water. They add no sand enclosure, leave gaps for gathering and forward buildings,
-and scale with wheat abundance. Their future spread follows fertile shores; the
-mainland construction belt and both end routes remain protected. Short dry paths
-across the inlet mouths stop crops spreading around the outer sea coast.
+Frequent small wheat and tree clumps line both banks of the central wave-shaped
+inlet, including steep bends and wider bays. Compared with revision 5's sparse
+wheat-only tufts, revision 6 targets roughly three to four times the initial inlet
+crop coverage at default abundance. Clumps occupy two of every six longitudinal
+tiles within three grid steps of pure inlet water, or five steps on the longer
+512-tile combs. Three quarters of the patch bands favour wheat and one quarter
+wood, alternating by bank. Actual counts
+vary with coast geometry and the seed. Both layers follow their own abundance
+control, with no guaranteed inlet crops at zero and physical capacity reached at
+100%. Grass gaps leave gathering faces and landings, without sand enclosures.
+Their future spread follows fertile shores; dry mainland construction ground and
+both end routes remain protected. Short dry paths across the inlet mouths stop
+crops spreading around the outer sea coast.
 
 The long dimension determines coastline orientation; square maps choose either
 orientation from the seed. The inhabited landmass has a bounded transverse span
@@ -52,9 +59,9 @@ on the longer sizes.
 - **Peninsulas per shore:** 2–4, default 3. More peninsulas create more fronts and
   divide the inlet into narrower landforms.
 - **Wheat, wood, stone, algae, fruit:** 0–300%, steps of 25, default 100%.
-  Crop compartments retain a starting floor (48 wheat or 12 wood tiles per
-  compartment, limited by legal plot capacity); stone retains a mainland floor.
-  Amount controls scale additional deposits inside their reserved ground.
+  Coastal crop patches retain a starting floor (48 wheat or 12 wood tiles per
+  patch, limited by legal plot capacity); stone retains a mainland floor.
+  Amount controls scale additional deposits inside their planting ground.
   Fruit and algae have no floor. Wheat above 100% interpolates from the default
   density to full planting capacity at 300%, keeping the last slider steps useful.
   The initial inn clearings stay unplanted even at 300%.
@@ -62,7 +69,7 @@ on the longer sizes.
 
 ## Playtest limitations
 
-Interlocking shores make cross-channel positions and contained farms central to play. Compare actual supply and approaches for both roles; aggregate resource symmetry is not a balance measurement.
+Interlocking shores make cross-channel positions and naturally growing coastal farms central to play. Compare actual supply and approaches for both roles; aggregate resource symmetry is not a balance measurement.
 
 ## Verification
 

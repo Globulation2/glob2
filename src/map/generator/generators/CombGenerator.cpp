@@ -28,21 +28,22 @@ using namespace MapGeneration;
 
 // Two productive mainland shores, joined around both ends of a winding inlet. Its bends
 // form broad interlocking peninsulas: near by water, far by foot. Main farms follow the
-// outer coast; small wheat tufts share the inlet banks with forward buildings and landings.
+// outer coast; wheat and tree clumps share the inlet banks with forward buildings and landings.
 // Mid-tier towers threaten the opposing waterfront; units have priority over buildings.
 namespace
 {
 constexpr double kChannelRadius = 1.75;
 constexpr int kFoodFloor = 48, kWoodFloor = 12;
+constexpr int kShorePatchPeriod = 6, kShorePatchWidth = 2;
 struct Layout
 {
-	std::vector<int> shoreWheat;
+	std::vector<int> shoreWheat, shoreWood;
 	Torus t{1, 1};
 	bool horizontal = true;
 	int length = 0, breadth = 0, first = 0, last = 0;
 	TerrainSketch terrain;
 	std::vector<int> side, plot, kind, scrubKind;
-	std::vector<unsigned char> scrub, wheatland;
+	std::vector<unsigned char> scrub, wheatland, cropReach;
 	std::vector<std::vector<int>> fields;
 	std::vector<unsigned char> town, roads, ends[2];
 	std::vector<ShapePoint> tips;
@@ -185,8 +186,9 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		const auto control = L.point(extremum + 10 * std::sin(k + phase), (rootV + tipV) * 0.5);
 		strokePath(L.roads, t, bezierPath(a, control, b, 0.65, 0.65, 24));
 	}
-	// Contained, coast-following farm ribbons. Cross aisles and the wood/wheat divider
-	// partition crops without invisible growth flags; no fertile decorative timber escapes.
+	// Coast-following crop patches have open grass margins. Their planting labels
+	// separate wheat and wood initially; ordinary fertility limits their later spread.
+	GenerationNoise farmEdges(GenerationContext::deriveSeed(r.seed, "comb-farm-edges"));
 	const int fieldStart = 38, fieldEnd = U - 38, plots = std::max(1, (fieldEnd - fieldStart) / 32);
 	L.fields.resize(4 * plots);
 	L.kind.resize(4 * plots);
@@ -213,13 +215,10 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			const double z = double(u - fieldStart) * plots / (fieldEnd - fieldStart);
 			const int p = std::min(plots - 1, int(z));
 			const double f = z - p;
-			if (d <= 15)
-			{
-				if (d >= 14 || f < 0.045 || f > 0.95 || (f > 0.66 && f < 0.71))
-					L.terrain[i] = SAND;
-				else if (d >= 2)
-					L.plot[i] = bank * 2 * plots + 2 * p + (f >= 0.71);
-			}
+			const double edge = farmEdges.Noise(u * 0.12f, bank * 19.0f);
+			if (d >= 2 && d <= 13 + 2 * edge && f >= 0.045 && f <= 0.95 &&
+				!(f > 0.66 && f < 0.71))
+				L.plot[i] = bank * 2 * plots + 2 * p + (f >= 0.71);
 		}
 	for (int i = 0; i < n; ++i)
 		if (L.roads[i] && L.terrain[i] == GRASS)
@@ -279,9 +278,16 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	c.telemetry.measure("comb.scatter.sand-corners", sandCorners);
 	layBeaches(L.terrain, t);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
+	const auto shoreGrowth = cropGrowthField(L.terrain, t);
+	std::vector<unsigned char> fertile(n, 0);
+	for (int i = 0; i < n; ++i)
+		fertile[i] = grass[i] && shoreGrowth.at(t.remainderX(i), i / t.w) > 0;
+	// A fertile crop can seed one final dry neighbour. Town sites start beyond
+	// that reach, rather than depending on artificial fences around the fields.
+	L.cropReach = dilate(t, fertile, 1);
 	for (int i = 0; i < n; ++i)
 	{
-		L.town[i] &= grass[i];
+		L.town[i] &= grass[i] && !L.cropReach[i];
 		const int p = L.plot[i];
 		if (p >= 0)
 		{
@@ -291,7 +297,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			{
 				// Leave an initial farm-side clearing for an inn and its upgrades. It
 				// belongs to the renewable plot, so normal crop growth may reclaim it;
-				// permanent mainland and forward room remain behind the sand cap.
+				// permanent mainland room is selected beyond the natural growth reach.
 				const double z = double(L.u(i) - fieldStart) * plots / (fieldEnd - fieldStart);
 				const double f = z - int(z);
 				const int bank = L.v(i) < V / 2 ? 0 : 1;
@@ -304,22 +310,28 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 				L.plot[i] = -1;
 		}
 	}
-	// Small tufts follow the central inlet itself. Gaps between them leave
-	// gathering faces and forward building sites; no artificial sand enclosures.
-	const auto waterDistance = stepsFrom(t, pureTiles(L.terrain, t, WATER));
-	const auto shoreGrowth = cropGrowthField(L.terrain, t);
-	const int shorePhase = c.bounded("comb-shore-tufts", 16);
+	// Frequent small clumps follow both banks of the actual inlet, including its
+	// steep bends and wider bays. Grass gaps leave gathering faces and landings.
+	auto inlet = pureTiles(L.terrain, t, WATER);
+	for (int i = 0; i < n; ++i)
+		inlet[i] &= L.side[i] >= 0;
+	const auto waterDistance = stepsFrom(t, inlet);
+	// Long combs have gentler bends and room for deeper clumps.
+	const int shoreDepth = L.length == 512 ? 5 : 3;
+	const int shorePhase = c.bounded("comb-shore-tufts", kShorePatchPeriod);
 	for (int i = 0; i < n; ++i)
 	{
-		const int u = L.u(i), v = L.v(i);
+		const int u = L.u(i);
+		const int patch = (u + shorePhase) / kShorePatchPeriod;
 		bool clear = grass[i] && !L.town[i] && !L.roads[i] && L.plot[i] < 0 &&
 			!L.ends[0][i] && !L.ends[1][i] && !L.scrub[i] &&
-			u > L.first && u < L.last && std::abs(v - L.line[u]) < 10 &&
-			waterDistance[i] <= 4 && (u + shorePhase) % 16 < 5 &&
+			u > L.first && u < L.last && waterDistance[i] <= shoreDepth &&
+			(u + shorePhase) % kShorePatchPeriod < kShorePatchWidth &&
 			shoreGrowth.at(t.remainderX(i), i / t.w) >= Fertility::kScale / 64;
 		for (const auto &tip : L.tips)
 			clear &= t.dist2(t.remainderX(i), i / t.w, int(tip.x), int(tip.y)) >= 100;
-		if (clear) L.shoreWheat.push_back(i);
+		if (clear)
+			((patch + L.side[i]) % 4 == 0 ? L.shoreWood : L.shoreWheat).push_back(i);
 	}
 	c.telemetry.measure("comb.peninsulas.actual", L.tips.size());
 	c.telemetry.measure("comb.channel.radius", kChannelRadius);
@@ -387,10 +399,13 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			game.map.setResourceByIndex(t.remainderX(seeds[k]), seeds[k] / t.w, type, 1);
 		c.telemetry.measure("comb.scatter.crop-seeds", count, type);
 	}
-	// Fertile tufts follow the central inlet, without changing its banks.
+	// Fertile wheat and tree clumps follow the inlet, without changing its banks.
 	const int grainCount = plantFieldInteriors(game.map, t, L.shoreWheat, WHEAT,
 		scaledCount(int(L.shoreWheat.size()), o.wheat));
 	c.telemetry.measure("comb.shore.wheat", grainCount);
+	const int treeCount = plantFieldInteriors(game.map, t, L.shoreWood, WOOD,
+		scaledCount(int(L.shoreWood.size()), o.wood));
+	c.telemetry.measure("comb.shore.wood", treeCount);
 	// All quarries and fruit remain on the mainland, away from town and supply roads.
 	std::vector<int> stones, fruits, algae;
 	for (int i = 0; i < t.size(); ++i)
@@ -458,15 +473,10 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 
 	const auto fertility = cropGrowthField(L.terrain, t);
 	const auto spread = fertileCropEnvelope(map, fertility);
-	std::vector<unsigned char> inlet(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		inlet[i] = terrainProvidesFertility(map.terrainPropertiesAt(t.remainderX(i), i / t.w)) && L.side[i] >= 0;
-	const auto inletFringe = dilate(t, inlet, kCropProbeReach + 1);
 	const auto foodWalk = supplyWalk(map, t, WHEAT), stoneWalk = supplyWalk(map, t, STONE),
 			   woodWalk = supplyWalk(map, t, WOOD);
 	for (int i = 0; i < t.size(); ++i)
-		if (spread[i] && !L.scrub[i] &&
-			(L.town[i] || (!inletFringe[i] && std::min(L.v(i) - L.coast[0][L.u(i)], L.coast[1][L.u(i)] - L.v(i)) > 15)))
+		if (spread[i] && (L.town[i] || (!L.cropReach[i] && !L.scrub[i])))
 			return "The Comb's crops can spread into construction ground.";
 	// Close the complete end regions, not just a nominal road. Eight-neighbour torus
 	// floods catch both diagonal channel leaks and accidental routes over a map seam.
@@ -734,7 +744,8 @@ GeneratorDefinition combDefinition()
 		"comb",
 		62,
 		"The Comb",
-		5,
+		// Revision 6: fuller mixed inlet planting and open, naturally edged coastal farms.
+		6,
 		false,
 		{GeneratorControl{"peninsulas", "Peninsulas per shore", 2, 4, 1, 3, ControlGroup::Layout}
 			 .withSearchRange(2, 4),

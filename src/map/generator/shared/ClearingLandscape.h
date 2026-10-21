@@ -12,7 +12,7 @@ struct ClearingLandscapeOptions
 {
 	int homeSize, homePools, lakes, lakeSize;
 	const char *telemetryPrefix = "old-growth";
-	bool repairCrowdedLattice = false; // opt-in vacancy layout; Old Growth keeps its historic sites
+	bool repairCrowdedLattice = false; // opt-in vacancy layout for awkward colony counts
 };
 struct ClearingLandscape
 {

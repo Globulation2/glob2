@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+#include "ui/LibraryText.h"
 #include "NewMapScreen.h"
 #include "GeneratorText.h"
 #include "GUIMapPreview.h"
@@ -119,7 +120,7 @@ Element NewMapScreen::build(const Presentation &p)
 												  invalidatePreview();
 											  })));
 	if (screens)
-		fields.push_back(fe::button("newmap/buildings", "Building families",
+		fields.push_back(fe::button("newmap/buildings", Glob2UI::libraryText("Building families"),
 									[this]
 									{
 										screens->push(std::make_unique<BuildingLibraryScreen>(),

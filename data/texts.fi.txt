@@ -6,34 +6,6 @@ Selaimesi ei avautunut. Avaa kirjautumissivu jatkaaksesi.
 Jos sivu kysyy, tarkista että siinä näkyy %0.
 [hub code copied]
 Koodi kopioitu
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Viimeistele selaimessasi. Peli jatkaa automaattisesti.
 [music set]
@@ -6039,97 +6011,623 @@ Aikaraja saavutettu.
 [outcome reason probability]
 Voittotodennäköisyyden kynnysarvo saavutettu.
 [Discord community]
-
+Discord-yhteisö
 [Globulation 2 Discord]
-
+Globulation 2:n Discord
 [discord community intro]
-
+Etsi vastustajia, pyydä apua ja jaa karttojasi Globulation 2 -yhteisössä.
 [discord opens externally]
-
+Liity Discord-palvelimellemme. Tämä avaa Discordin tai selaimesi.
 [Join Discord]
-
+Liity Discordiin
 [Copy link]
-
+Kopioi linkki
 [discord opened]
-
+Discord avattu. Voit palata peliin milloin tahansa.
 [discord open failed]
-
+Discordia ei voitu avata. Kopioi kutsulinkki ja avaa se selaimessasi.
 [discord link copied]
-
+Kutsulinkki kopioitu.
 [settings CPU automatic]
-
+Automaattinen CPU
 [settings Scalar]
-
+Skalaari
 [settings Unavailable]
-
+Ei käytettävissä
 [settings Initializing]
-
+Alustetaan
 [settings Gradient backend]
-
+Gradienttilaskennan taustajärjestelmä
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Tulee voimaan seuraavalla simulaation päivitysrajalla. Toiminnot, joita ei tueta, käyttävät automaattista CPU-valintaa. Piirtäminen toimii erikseen.
 [settings Gradient algorithm]
-
+Gradienttialgoritmi
 [settings All choices compute the same exact field.]
-
+Kaikki vaihtoehdot laskevat täsmälleen saman kentän.
 [settings Bucket propagation]
-
+Eteneminen lokeroittain
 [settings Verify gradient results]
-
+Tarkista gradienttitulokset
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Vertaa GPU:n tuloksia skalaariseen CPU-laskentaan ennen käyttöönottoa. Lisää laskentaa ja pysäyttää pelin, jos tulokset eroavat.
 [settings Gradient computation]
-
+Gradienttilaskenta
 [settings CPU fallback]
-
+CPU-varatila
 [settings GPU fields]
-
+GPU-kentät
 [settings CPU fallbacks]
-
+CPU-varatilaan siirtymiset
 [settings MCP server]
-
+MCP-palvelin
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+MCP-palvelimen käyttöönotto antaa paikallisille asiakasohjelmille oikeuden nähdä ja ohjata peliä.
 [settings Enable MCP server]
-
+Ota MCP-palvelin käyttöön
 [settings Port]
-
+Portti
 [settings Current controller: %0]
-
+Nykyinen ohjaaja: %0
 [settings Copy endpoint]
-
+Kopioi yhteysosoite
 [settings Retry listener]
-
+Yritä kuuntelua uudelleen
 [settings Revoke control]
-
+Peru ohjausoikeus
 [settings MCP server unavailable in this application]
-
+MCP-palvelin ei ole käytettävissä tässä sovelluksessa
 [settings Disabled]
-
+Poissa käytöstä
 [settings Running]
-
+Käynnissä
 [settings Error: %0]
-
+Virhe: %0
 [settings None]
-
+Ei mitään
 [settings Starting]
-
+Käynnistetään
 [Which hand holds your phone?]
-
+Vasen vai oikea käsi?
 [hand preference explanation]
-
+Pidä puhelinta luontevasti. Napauta kättä, jolla pelaat.
 [hand silhouettes description]
-
+Puhelimen ääriviivat ja niiden päällä vasen ja oikea käsi. Valitse puoli painamalla jompaakumpaa viistoreunaista peukalopainiketta.
 [hand preference change later]
-
+Voit vaihtaa puolta myöhemmin asetuksista.
 [hand preference save failed]
-
+Valintaasi ei voitu tallentaa. Yritä uudelleen.
 [Left hand]
-
+Vasen käsi
 [Right hand]
-
+Oikea käsi
 [discord copy failed]
-
+Linkkiä ei voitu kopioida. Valitse yllä oleva kutsu ja kopioi se käsin.
+[Destroy this building?]
+Tuhotaanko tämä rakennus?
+[stat ground movement]
+Maayksiköiden liikkuminen
+[stat ground movement about]
+Elävät maayksiköt likimääräisen nopeussuhteen mukaan. ”Uinti 2×” tarkoittaa uimista kaksi kertaa juoksemista nopeammin. Lentävät ja liikkumattomat yksiköt eivät ole mukana.
+[stat view by movement]
+Liikkumisen mukaan
+[stat band land only]
+Vain maalla
+[stat band swim twice run]
+Uinti 2×
+[stat band swim faster run]
+Uinti 1,4×
+[stat band swim equals run]
+Yhtä nopeat
+[stat band run faster swim]
+Juoksu 1,3×
+[stat band run twice swim]
+Juoksu 2×
+[stat band run triple swim]
+Juoksu 3×
+[stat band water only]
+Vain vedessä
+[settings Browse shared generators]
+Selaa jaettuja generaattoreita
+[settings Apply artwork on the next game or editor load.]
+Ota grafiikka käyttöön seuraavan pelin tai editorin latauksen yhteydessä.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Vaatii tekstuurien suodatusta tukevan piirtäjän. Tallennettu valintasi säilytetään.
+[settings Automatically show the torus overview while moving around the map.]
+Näytä toruskartan yleiskuva automaattisesti kartalla liikuttaessa.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Vaatii torustukea tarjoavan piirtäjän. Tallennettu valintasi säilytetään.
+[settings Move and animate units between game ticks.]
+Liikuta ja animoi yksiköitä pelin päivitysaskelten välillä.
+[settings Renderer unavailable]
+Piirtäjä ei ole käytettävissä
+[settings Apply at the next completed frame. Your game stays running.]
+Tulee voimaan seuraavan valmistuneen kuvan jälkeen. Peli jatkuu keskeytyksettä.
+[settings Active renderer: %0]
+Käytössä oleva piirtäjä: %0
+[settings Changing renderer…]
+Vaihdetaan piirtäjää…
+[settings Menu scroll wheel enabled]
+Hiiren rullalla vieritys valikoissa käytössä
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Ohjaa rullavieritystä valikoissa. Rulla lähentää ja loitontaa aina pelin ja editorin karttoja.
+[settings Gesture scrolling]
+Elevieritys
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Kosketus- ja Mac-elevieritys. 0 poistaa tehosteen käytöstä; kosketuksen oletusarvo on 50.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Kuinka pitkään luettelot ja paneelit jatkavat vieritystä kosketuspyyhkäisyn jälkeen. Mac-eleet käyttävät järjestelmän vieritysinertiaa; nolla poistaa niiden liukumisen käytöstä.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Kuinka paljon luettelot ja paneelit venyvät reunojensa yli ja ponnahtavat takaisin. Mac-eleiden venytys on pehmeämpi.
+[hive stopping]
+Pysäytetään…
+[hive stopped]
+Pysäytetty
+[hive stop failed]
+Pysäytys epäonnistui; kokeile pysäytyksen pikanäppäintä uudelleen
+[hive updating]
+Päivitetään…
+[hive requested]
+Pyydetty
+[hive update failed]
+Päivitys epäonnistui; yritä uudelleen
+[hive give order]
+Anna käsky
+[hive less]
+Vähemmän
+[hive reports and details]
+Raportit / tiedot
+[hive needs fresh order]
+Tarvitsee uuden käskyn
+[hive active]
+Aktiivinen
+[hive resume]
+Jatka
+[recordings]
+Tallenteet
+[recording delete confirm]
+Poistetaanko tallenne?
+[recording delete warning]
+Tallenne ja sen metatiedot poistetaan.
+[recording delete]
+Poista
+[recording working]
+Käsitellään…
+[recording none]
+Ei vielä tallenteita.
+[recording interrupted]
+Keskeytynyt tallenne
+[recording recover]
+Palauta
+[recording export video]
+Vie video
+[recording export metadata]
+Vie metatiedot
+[recording export events]
+Vie tapahtumat
+[recording export failed]
+Tallennetta ei voitu viedä.
+[recording delete action]
+Poista tallenne
+[recording refresh]
+Päivitä
+[tutorial part1 message 1]
+Tervetuloa Globulation 2:een! Tässä opetellaan siirtokunnan hallintaa neljässä tehtävässä. Voit tallentaa etenemisen pelivalikosta ja ladata sen myöhemmin päävalikosta. Jatka välilyönnillä tai kosketusnäytön OK-painikkeella. Osa viesteistä katoaa jatkettaessa; ne voi lukea uudelleen viestihistoriasta.
+[tutorial part1 message 2]
+Aluksi sinulla on pesä ja yksi työläinen. Katsotaan niiden yhteistyötä.
+[tutorial part1 message 3]
+Työläinen korjaa vehnää ja kantaa sen pesään. Pesä käyttää vehnää uusien yksiköiden tuottamiseen, joten se on siirtokunnalle välttämätön.
+[tutorial part1 message 4]
+Valitse globulisi eli liikkuva yksikkö vasemmalla napsautuksella tai napautuksella.
+[tutorial part1 message 5]
+Yksikön tiedoissa näkyy ravinnon vähenevän ajan myötä. Globulille tulee nälkä. Kun ravintopalkit ovat näkyvissä, yksikön alla oleva sininen palkki näyttää jäljellä olevan ravinnon.
+[tutorial part1 message 6]
+Globulit syövät majataloissa. Poista valinta oikealla napsautuksella tai napauttamalla tyhjää maata kosketusnäytöllä.
+[tutorial part1 message 7]
+Avaa rakennusvalinnat, valitse majatalo ja sijoita se vehnän lähelle. Jos vehnää ei näy, seuraa työläisen korjuureittiä. Kosketusnäytöllä käytä rakentamista ja vahvista kelvollinen paikka. Lopuksi poistu sijoitustilasta oikealla napsautuksella tai kosketusnäytön peruutuspainikkeella.
+[tutorial part1 message 8]
+Hyvä! Majatalon rakennuspaikka on asetettu.
+[tutorial part1 message 9]
+Pesän työläinen voi nyt rakentaa majatalon. Se kerää puuta läheisistä puista ja tuo sen työmaalle. Odota valmistumista.
+[tutorial part1 message 10]
+Valmis majatalo tarvitsee vehnää. Tehtävään määrätty työläinen kerää sitä kuten pesää huoltava työläinen.
+[tutorial part1 message 11]
+Majatalon keltainen resurssipalkki kasvaa vehnän saapuessa. Se näyttää varastossa olevan vehnän määrän.
+[tutorial part1 message 12]
+Opetellaan seuraavaksi töiden jakamista.
+[tutorial part1 message 13]
+Yksi työläinen huoltaa pesää ja toinen majataloa. Kumpikin voi pitää ruokatauon majatalossa. Se on normaalia.
+[tutorial part1 message 14]
+Valitse pesä ja etsi työläisten määräasetus. Työpöydällä sen nimi on Työskentelemässä; kosketusnäytöllä käytä määrättyjen työläisten ja tavoitteen säädintä. Tavoite kertoo, montako työläistä haluat tähän rakennukseen.
+[tutorial part1 message 15]
+Aseta pesän työläistavoitteeksi 0. Valitse sitten majatalo ja aseta senkin tavoitteeksi 0.
+[tutorial part1 message 16]
+Työläiset ovat nyt vapaina, mutta tarvitsevat edelleen ruokaa. Ilman työläisiä majatalon vehnä loppuu aikanaan.
+[tutorial part1 message 17]
+Jos globuli ei löydä ruokaa, sen terveys heikkenee ja se voi kuolla. Sairaala parantaa loukkaantuneita, mutta majatalojen huoltokin on pidettävä kunnossa.
+[tutorial part1 message 18]
+Rakenna sairaala rakennusvalinnoista. Se ei tarvitse vehnää, joten sijoita se puun lähelle tai keskeiselle paikalle pesän lähelle.
+[tutorial part1 message 19]
+Valitse sairaalan työmaa ja aseta työläistavoitteeksi 2. Kaksi työläistä saa sen nopeammin valmiiksi.
+[tutorial part1 message 20]
+Sairaala on valmis. Loukkaantuneet globulit voivat käydä siellä palauttamassa terveytensä.
+[tutorial part1 message 21]
+Mustat alueet ovat tutkimattomia. Liikkuvat yksiköt paljastavat lähiympäristöä. Työläiset seuraavat töitään, joten tiedustelu on niillä hankalaa. Tutkijat on tarkoitettu siihen.
+[tutorial part1 message 22]
+Valitse pesä ja etsi työläisten, tutkijoiden ja sotureiden tuotantosuhteet. Nosta tutkijoiden suhteeksi 1.
+[tutorial part1 message 23]
+Kun työläisten ja tutkijoiden suhde on kummallakin 1, pesä tuottaa ajan myötä yhtä monta kumpaakin. Aseta työläisten suhteeksi 0, jotta nyt syntyy vain tutkijoita.
+[tutorial part1 message 24]
+Palauta pesän työläistavoitteeksi 1, jotta työläinen voi tuoda sinne vehnää.
+[tutorial part1 message 25]
+Valitse majatalo ja aseta senkin työläistavoitteeksi 1. Kasvava siirtokunta tarvitsee tasaisen ruokahuollon.
+[tutorial part1 message 26]
+Odota nyt, että pesä tuottaa tutkijan.
+[tutorial part1 message 27]
+Tutkija lentää siirtokunnan ympärillä ja paljastaa lisää maastoa. Anna pesän tuottaa toinenkin tutkija ennen jatkamista.
+[tutorial part1 message 28]
+Valitse pesä uudelleen. Aseta tutkijoiden suhteeksi 0 ja työläisten suhteeksi 1, jotta työläisten tuotanto jatkuu.
+[tutorial part2 message 1]
+Tukikohdan itäpuolella on kiveä. Muista paikka, sillä tarvitset sitä myöhemmin.
+[tutorial part2 message 2]
+Kivien eteläpuoliset puut ovat appelsiinipuita. Valitse ne nähdäksesi resurssitiedot. Palaamme hedelmiin myöhemmin; keskity nyt pesään.
+[tutorial part2 message 3]
+Aseta pesä tuottamaan vain työläisiä: työläisten suhde 1, tutkijoiden ja sotureiden 0.
+[tutorial part2 message 4]
+Nopeutetaan kasvua. Valitse pesä ja aseta työläistavoitteeksi 6. Sinulla ei ehkä vielä ole kuutta työläistä, mutta uudet voivat täyttää vapaat työt syntyessään.
+[tutorial part2 message 5]
+Jatkamme seuraaviin töihin, kun työläisiä on 8. Huolla pesää ja majataloa väestön kasvaessa.
+[tutorial part2 message 6]
+Pesää huoltaa nyt useita työläisiä. Enemmän vehnätoimituksia tarkoittaa nopeampaa yksiköiden tuotantoa.
+[tutorial part2 message 7]
+Uusi työläinen maksaa 5 vehnää. Kuljettaminen kaukaiselta pellolta vie aikaa, joten pesä tarvitsee usein useampia huoltajia kuin majatalo. Sijoita ravinnosta riippuvat rakennukset mahdollisuuksien mukaan vehnän lähelle.
+[tutorial part2 message 8]
+Työläisiä on nyt vähintään 8. Valitse pesä ja laske työläistavoite arvoon 1, jotta väestönkasvu hidastuu rakentamisen ajaksi.
+[tutorial part2 message 9]
+Siirtokunta tarvitsee lisää ruokailupaikkoja. Rakenna toinen majatalo nykyisen pohjoispuolelle.
+[tutorial part2 message 10]
+Määrää vapaita työläisiä uuden majatalon työmaalle. Se tarvitsee vain 3 puuta, joten yli 3 rakentajasta ei ole paljon lisähyötyä.
+[tutorial part2 message 11]
+Valmis majatalo palaa käytön aikaiseen työläistavoitteeseen, joka on yleensä 1. Rakentamisella ja tavallisella huollolla on erilliset tavoitteet.
+[tutorial part2 message 12]
+Työläiset voivat oppia liikkumaan nopeammin. Kilparata tarjoaa tämän koulutuksen.
+[tutorial part2 message 13]
+Avaa rakennusvalinnat ja etsi kilparata. Työpöydällä vie osoitin kuvakkeen päälle nähdäksesi kuvauksen ja hinnan. Kosketusnäytöllä valitse se rakentamisvalikosta sijoitettavaksi. Älä vielä sijoita sitä.
+[tutorial part2 message 14]
+Kilparata tarvitsee paljon puuta ja hieman kiveä. Valitse keskeinen paikka, johon yksiköt pääsevät helposti.
+[tutorial part2 message 15]
+Rakenna kilparata vaikkapa pesän eteläpuolelle. Jätä ympärille tilaa: koulutusrakennusten on voitava laajentua parannettaessa.
+[tutorial part2 message 16]
+Aseta kilparadan työmaan työläistavoitteeksi 5–7. Rakennusmateriaaleja tarvitaan yhteensä 7.
+[tutorial part2 message 17]
+Valmis kilparata kouluttaa siellä käyviä yksiköitä ilman jatkuvaa rakennusmateriaalien tai vehnän toimitusta.
+[tutorial part2 message 18]
+Globulit menevät kilparadalle harjoittelemaan. Koulutuksen jälkeen ne juoksevat nopeammin.
+[tutorial part2 message 19]
+Valitse kilparata nähdäksesi koulutuksen etenemisen. Ilmaisimet näyttävät, kuinka lähellä sisällä olevat yksiköt ovat valmistumista.
+[tutorial part2 message 20]
+Koulutetut työläiset kulkevat nopeammin ja toimittavat resurssit aiemmin. Seuraa ruokavarastoja kasvun aikana; nopeat toimitukset auttavat vain, jos riittävästi majataloja saa vehnää.
+[tutorial part2 message 21]
+Etsi pelinäkymän työläislaskuri. Kokonaismäärä näyttää väestön, ja vapaiden työläisten luku auttaa havaitsemaan ylimääräiset tekijät tai täyttämättömät työt. Käytä vapaat työläiset, mutta älä määrää enemmän töitä kuin siirtokunta kestää.
+[tutorial part2 message 22]
+Näkymä näyttää myös tutkijoiden ja sotureiden määrät. Tarkista ne suunnitellessasi tuotantoa tai määrätessäsi yksiköitä lipuille.
+[tutorial part2 message 23]
+Sinulla on 2 majataloa. Perusmajatalossa voi syödä 4 yksikköä kerrallaan, joten paikkoja on yhteensä 8. Nälkäisiä voi olla enemmän kuin 8, joten varaa kapasiteettia jonoja varten.
+[tutorial part2 message 24]
+Kaksi majataloa ei elätä kasvavaa siirtokuntaa loputtomiin. Lisää ruokailutilaa ennen kuin puute muuttuu nälänhädäksi.
+[tutorial part2 message 25]
+Rakenna vielä 3 majataloa vehnän lähelle. Nälkäiset työläiset lopettavat työnteon, ja pitkittynyt nälkä tappaa. Määrää vapaat rakentamaan mutta pidä nykyinen ruokahuolto toiminnassa.
+[tutorial part2 message 26]
+Rakenna 3 uutta majataloa valmiiksi, jolloin niitä on yhteensä 5.
+[tutorial part2 message 27]
+Uudet majatalot käyttävät valmistuttuaan käytön aikaisia tavoitteita, yleensä yhtä työläistä kukin. Tarkista huoltajat ja vehnän riittävyys.
+[tutorial part2 message 28]
+Kilparata paransi maalla liikkumista. Opetetaan seuraavaksi siirtokunta uimaan.
+[tutorial part2 message 29]
+Uima-allas opettaa yksiköt uimaan ja tarvitsee rakentamiseen puuta. Sijoita se suurelle aukiolle tukikohdan koillispuolella, kivien pohjoispuolelle. Jätä tilaa parannuksille ja resurssien kasvulle sekä määrää vapaita työläisiä rakentamaan.
+[tutorial part2 message 30]
+Uima-allas opettaa yksiköt uimaan ja tarvitsee rakentamiseen puuta. Sijoita se suurelle aukiolle tukikohdan koillispuolella, kivien pohjoispuolelle. Jätä tilaa parannuksille ja resurssien kasvulle sekä määrää vapaita työläisiä rakentamaan.
+[tutorial part2 message 31]
+Uima-allas on valmis. Globulit voivat mennä sinne opettelemaan uimista.
+[tutorial part2 message 32]
+Valitse uima-allas nähdäksesi koulutuksen etenemisen. Perusallas kouluttaa 2 globulia kerrallaan kuten peruskilparatakin.
+[tutorial part2 message 33]
+Koulutetut globulit osaavat nyt uida. Pian annamme niille työn, jossa on ylitettävä vettä.
+[tutorial part2 message 34]
+Opittavaa on lisää. Jos tarvitset tauon, tallenna pelivalikosta ja palaa myöhemmin.
+[tutorial part2 message 35]
+Siirtokunnalla on ruokaa ja fyysistä koulutusta. Koulu opettaa työläisille parempiin rakennuksiin tarvittavat taidot.
+[tutorial part2 message 36]
+Koulu parantaa korjuu- ja rakennustaitoja. Sen rakentamiseen tarvitaan vedessä kasvavaa levää. Uimataitoiset työläiset voivat kerätä sitä.
+[tutorial part2 message 37]
+Suojaa tärkeät koulutusrakennukset. Koulun ei tarvitse olla veden vieressä; suojainen sisämaan paikka voi turvata sen hyökkäyksiltä.
+[tutorial part2 message 38]
+Rakenna koulu suojaisaan paikkaan, esimerkiksi altaan taakse tai pesän lounaispuolelle kilparadan viereen. Määrää vapaat työläiset rakentamaan.
+[tutorial part2 message 39]
+Valitse rakennus nähdäksesi sille määrätyt työläiset. Työpöydällä muokattava yksikköpolkujen näyttötoiminto voi näyttää viivat yksiköistä määränpäihin; katso nykyinen pikanäppäin kohdasta Asetukset, Ohjaus. Odota koulun valmistumista.
+[tutorial part3 message 1]
+Siirtokunnalla on nyt majataloja, sairaala, kilparata, uima-allas ja koulu. On aika valmistella puolustus.
+[tutorial part3 message 2]
+Emme ole vielä tuottaneet sotureita. Ilman niitä siirtokunta on huonosti suojattu hyökkäyksiltä.
+[tutorial part3 message 3]
+Valitse pesä ja aseta sotureiden tuotantosuhteeksi 2. Jätä työläisten suhteeksi 1, jotta niitäkin syntyy lisää.
+[tutorial part3 message 4]
+Pesä tuottaa nyt noin 2 soturia jokaista työläistä kohti. Määrää enemmän työläisiä huoltamaan sitä, jos haluat nopeuttaa tuotantoa.
+[tutorial part3 message 5]
+Ensimmäinen soturi on valmis ja aloittaa koulutuksen. Odota toista ennen jatkamista.
+[tutorial part3 message 6]
+Soturitkin käyttävät kilparataa ja uima-allasta. Ne voivat lisäksi harjoitella hyökkäystaitoja parakissa.
+[tutorial part3 message 7]
+Parakki kehittää hyökkäysvoimaa ja -nopeutta. Voima kasvattaa osuman vahinkoa ja nopeus hyökkäystiheyttä. Hyvin koulutetut soturit voivat kukistaa paljon suuremman kouluttamattoman joukon.
+[tutorial part3 message 8]
+Rakenna parakki puun lähelle, sillä rakentamiseen tarvitaan puuta.
+[tutorial part3 message 9]
+Määrää vapaita työläisiä parakin työmaalle. Jätä riittävästi ruokahuoltoon äläkä luo enemmän töitä kuin tekijät ehtivät hoitaa.
+[tutorial part3 message 10]
+Parakki on valmis. Soturit voivat nyt kouluttaa hyökkäystaitojaan siellä.
+[tutorial part3 message 11]
+Rakennusten parantaminen vahvistaa siirtokuntaa.
+[tutorial part3 message 12]
+Koulussa oppineet työläiset voivat rakentaa parannuksia. Valitse sopiva rakennus ja etsi rakennusvalinnoista parannustoiminto. Vaurioitunut rakennus voi tarvita ensin korjauksen.
+[tutorial part3 message 13]
+Päätetään ensimmäinen parannuskohde. Majataloissa on vielä tilaa, joten ne voivat odottaa.
+[tutorial part3 message 14]
+Sairaalassakin on tilaa. Voimme keskittyä kouluun, kilparataan, altaaseen tai parakkiin.
+[tutorial part3 message 15]
+Paranna ensin kilparataa, jotta yksiköt oppivat liikkumaan vielä nopeammin.
+[tutorial part3 message 16]
+Valitse kilparata ja sen rakennusvalinnoista parantaminen. Sisällä olevien yksiköiden on poistuttava ennen rakentamista, joten muutos ei ehkä ala heti.
+[tutorial part3 message 17]
+Määrää vapaat työläiset parantamaan kilparataa. Vain tarvittavan koulutuksen saaneet voivat rakentaa tason 2 työmaata.
+[tutorial part3 message 18]
+Odota kilparadan parannuksen valmistumista. Korkeamman tason rakennukset vaativat enemmän resursseja ja aikaa.
+[tutorial part3 message 19]
+Tason 2 kilparata on valmis. Se vie aiempaa enemmän maata, minkä vuoksi jätimme välin. Ilman laajentumistilaa rakennusta ei voi parantaa.
+[tutorial part3 message 20]
+Paranna nyt parakki ja uima-allas tasolle 2. Jatkamme, kun molemmat ovat valmiit.
+[tutorial part3 message 21]
+Parannetut rakennukset palvelevat yleensä useampia globuleita tai tarjoavat parempaa koulutusta. Esimerkiksi tason 2 majatalossa on 7 ruokailupaikkaa ja ruokailu on perusmajataloa nopeampaa.
+[tutorial part3 message 22]
+Vihollinen on lähellä. Valmistaudutaan hyökkäykseen.
+[tutorial part3 message 23]
+Tornit ampuvat kantamalla olevia vihollisia, ja muurit suojaavat torneja. Puolustamme niillä kapeaa reittiä siirtokuntaan.
+[tutorial part3 message 24]
+Sijoita tornit pareittain, jos tilaa on. Muurit voivat suojata kolmea sivua, mutta jätä työläisille reitti kiviammusten kuljettamiseen.
+[tutorial part3 message 25]
+Katso altaasta itään, muiden hedelmäpuiden pohjoispuolelle. Kapea ylityspaikka vie toiselle saarelle ja sopii puolustettavaksi.
+[tutorial part3 message 26]
+Suunnittele 2 tornin paikat puiden ja rannan väliin. Jätä taakse kuljetusreitti kivelle ja muille sivuille tilaa muureille. Älä sulje työläisiä ulos.
+[tutorial part3 message 27]
+Rakenna sinne 2 tornia. Määrää kummallekin työmaalle 2 tai 3 työläistä sen mukaan, paljonko vapaita näkyy laskureissa.
+[tutorial part3 message 28]
+Aseta rakennusvalinnoilla muuriosia tornien kolmelle ulospäin suuntautuvalle sivulle. Jätä siirtokunnan puoli avoimeksi työläisille.
+[tutorial part3 message 29]
+Jokainen muuriosa luo rakennustyön ja vaatii 1 kiven. Jos tekijät eivät riitä kaikkiin töihin yhtä aikaa, osat voidaan tehdä vuorotellen.
+[tutorial part3 message 30]
+Odota molempien tornien ja usean muuriosan valmistumista. Tornit tarvitsevat myös kiviammuksia; kaukainen louhos hidastaa toimituksia. Nosta työläistavoitteita, jos vapaita on.
+[tutorial part4 message 1]
+Siirtokunnalla on ruokaa, koulutusta ja puolustus. Rakennukset voi vielä nostaa tasolle 3, jolloin koulutus ja kapasiteetti paranevat. Jatka kehittämistä resurssien ja työläisten taitojen salliessa.
+[tutorial part4 message 2]
+Etsi vihollisen siirtokuntaa tukikohdan luoteispuolelta. Siirrä näkymä sinne nyt.
+[tutorial part4 message 3]
+Tutkittukin maa voi jäädä sodan sumuun. Vihollisen nykyisten toimien näkemiseen tarvitaan tutkija lähelle.
+[tutorial part4 message 4]
+Avaa liput. Lippujen ja alueiden avulla ohjaat joukkoja hallitsematta jokaista globulia erikseen.
+[tutorial part4 message 5]
+Valitse leijan muotoinen tiedustelulippu. Lipun voi asettaa maalle, veteen, resurssien tai tutkimattoman maan päälle.
+[tutorial part4 message 6]
+Aseta tiedustelulippu oletetun vihollistukikohdan päälle. Suuntaa-antava paikka riittää tiedustelun alkuun. Poistu sijoitustilasta oikealla napsautuksella tai viimeistele kosketusohjaimilla.
+[tutorial part4 message 7]
+Lipun ääriviiva näyttää toimintasäteen. Määrätty tutkija tutkii alueen. Jos kukaan ei saavu, tarkista tutkijamäärä ja tuota tarvittaessa uusi pesässä. Jatka välilyönnillä tai OK:lla tutkijan saavuttua.
+[tutorial part4 message 8]
+Vihollisella on paljon työläisiä ja koottu armeija. Valmistellaan puolustus ennen hyökkäystä.
+[tutorial part4 message 9]
+Avaa liput ja valitse sininen vartioalue. Käytä maata lisäävää tilaa, älä poistavaa. Kosketusnäytöllä valitse maalaus pyyhkimisen sijaan.
+[tutorial part4 message 10]
+Valitse siveltimen muoto ja koko. Iso neliö sopii tiiviin puolustusalueen maalaamiseen.
+[tutorial part4 message 11]
+Maalaa vartioalue heti tornien taakse, mistä vihollinen todennäköisesti lähestyy. Napsauta tai napauta yhtä kohtaa tai vedä laajempi alue. Kosketusnäytöllä siirrä näkymää maalaamisen aikana Siirrä-toiminnolla.
+[tutorial part4 message 12]
+Vapaat soturit siirtyvät vartioalueelle. Tee siitä riittävän suuri puolustajille mutta niin pieni, että ne keskittyvät ylityspaikalle. Odota hyökkäystä.
+[tutorial part4 message 13]
+Vihollinen lähestyy ylityspaikkaa!
+[tutorial part4 message 14]
+Meitä vastaan hyökätään. Katso, kuinka koulutetut soturit ja tornit puolustavat asemaa.
+[tutorial part4 message 15]
+Selvisit! Avaa liput ja valitse piikikäs sotalippu. Aseta se vihollispesän päälle ohjaamaan hyökkäystä sinne.
+[tutorial part4 message 16]
+Poistu sijoitustilasta ja valitse sotalippu. Määrää enemmän kuin 1 soturi ja pienennä sädettä keskittääksesi hyökkäyksen pesän ympärille. Odota sotureiden saapumista.
+[tutorial part4 message 17]
+Hyökkäys on alkanut. Sotureiden on ohitettava vihollistornit päästäkseen pesälle.
+[tutorial part4 message 18]
+Soturit ovat päässeet vihollistukikohtaan. Pidä hyökkäys pesään keskitettynä.
+[tutorial part4 message 19]
+Tuhosit vihollisen pesän. Onnittelut! Suoritit opastuksen ja opit ruokahuollon, työjaon, koulutuksen, parannusten, tiedustelun ja taistelun perusteet.
+[tutorial mission basics]
+Johdanto ja perusteet
+[tutorial mission development]
+Rakennukset ja koulut
+[tutorial mission training]
+Soturit, koulutus ja parannukset
+[tutorial mission flags]
+Liput ja päätös
+[library  Could not restore the previous library: %0]
+ Edellistä kirjastoa ei voitu palauttaa: %0
+[library  The previous library is retained.]
+ Edellinen kirjasto säilytetään.
+[library  · Installed]
+ · Asennettu
+[library  · Update available]
+ · Päivitys saatavilla
+[library A different release is installed. Install the selected release to update explicitly.]
+Toinen julkaisu on asennettu. Päivitä asentamalla valittu julkaisu erikseen.
+[library All engines]
+Kaikki pelimoottorit
+[library All generators]
+Kaikki generaattorit
+[library Available families]
+Saatavilla olevat rakennusperheet
+[library Back]
+Takaisin
+[library Building families]
+Rakennusperheet
+[library Building library]
+Rakennuskirjasto
+[library Checking building release]
+Tarkistetaan rakennusjulkaisua
+[library Choose an online instance before opening a family link.]
+Valitse verkkopalvelu ennen rakennusperheen linkin avaamista.
+[library Compatible with this engine]
+Yhteensopiva tämän pelimoottorin kanssa
+[library Confirm replacement]
+Vahvista korvaaminen
+[library Create in Building Studio]
+Luo Building Studiossa
+[library Downloading generator…]
+Ladataan generaattoria…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Jokainen maisema näytetään oikeana karttana alla määritetyllä koolla ja siirtokuntamäärällä. Voit muuttaa niitä tässä. Valitse maisema pelataksesi näytetyllä kartalla.
+[library Editor tool: generates terrain for the map editor.]
+Editorityökalu: luo maastoa karttaeditoriin.
+[library Editor tools]
+Editorityökalut
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Ota asennetut rakennusperheet käyttöön alla. Valinta tallennetaan paikalliseen profiiliin; nykyiset kartat ja tallennukset säilyttävät rakennuksensa. Verkkopeliä varten luo kartta näillä perheillä, julkaise karttakirjastossa ja valitse se huoneessasi.
+[library Enter a building family ID or a link to its family page.]
+Anna rakennusperheen tunnus tai linkki sen sivulle.
+[library Family link or ID]
+Rakennusperheen linkki tai tunnus
+[library Family links must be at most 1024 characters.]
+Rakennusperheen linkki saa olla enintään 1024 merkkiä.
+[library Family removed.]
+Rakennusperhe poistettu.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Rakennusperhe ei ole saatavilla. Yksityiset perheet vaativat kirjautumisen verkkopelin kautta tilillä, jolla on käyttöoikeus.
+[library Generator file hash mismatch]
+Generaattoritiedoston tiiviste ei täsmää
+[library Generator installed. Future selections use this release.]
+Generaattori asennettu. Tulevat valinnat käyttävät tätä julkaisua.
+[library Generator package identity mismatch]
+Generaattoripaketin tunniste ei täsmää
+[library Generators]
+Generaattorit
+[library Install compatible release]
+Asenna yhteensopiva julkaisu
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Asenna yksittäisiä rakennuksia tai parannusperheitä vakiorakennusten rinnalle. Valinta koskee vain uusia luotavia karttoja.
+[library Install selected release]
+Asenna valittu julkaisu
+[library Installed]
+Asennettu
+[library Installed families]
+Asennetut rakennusperheet
+[library Installed. Enable the family below for new maps.]
+Asennettu. Ota perhe alla käyttöön uusia karttoja varten.
+[library Invalid building family ID.]
+Virheellinen rakennusperheen tunnus.
+[library Invalid building library response]
+Virheellinen rakennuskirjaston vastaus
+[library Invalid library cursor]
+Virheellinen kirjaston sivutusosoitin
+[library Invalid release identity]
+Virheellinen julkaisun tunniste
+[library Load more]
+Lataa lisää
+[library Load more families]
+Lataa lisää perheitä
+[library Loading building families]
+Ladataan rakennusperheitä
+[library Loading…]
+Ladataan…
+[library Map generators]
+Karttageneraattorit
+[library Maps]
+Kartat
+[library Most downloaded]
+Ladatuimmat
+[library Most liked]
+Pidetyimmät
+[library My generators]
+Omat generaattorit
+[library Newest]
+Uusimmat
+[library No building families installed.]
+Rakennusperheitä ei ole asennettu.
+[library No public building families yet]
+Ei vielä julkisia rakennusperheitä
+[library No validated release for this game version.]
+Tälle peliversiolle ei ole tarkistettua julkaisua.
+[library Online server changed during download]
+Verkkopalvelin vaihtui latauksen aikana
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Avaa listaamaton rakennusperhe linkillä tai tunnuksella. Yksityisiä varten kirjaudu ensin verkkopelin kautta.
+[library Open family]
+Avaa perhe
+[library Opened family. Install its compatible release below.]
+Perhe avattu. Asenna yhteensopiva julkaisu alta.
+[library Opening building family]
+Avataan rakennusperhettä
+[library Playable]
+Pelattava
+[library Playable generator]
+Pelattava generaattori
+[library Privacy policy]
+Tietosuojakäytäntö
+[library Public library]
+Julkinen kirjasto
+[library Recently updated]
+Äskettäin päivitetyt
+[library Refresh library]
+Päivitä kirjasto
+[library Release identity changed during installation]
+Julkaisun tunniste muuttui asennuksen aikana
+[library Reroll]
+Arvo uusi
+[library Reroll seed]
+Arvo uusi siemen
+[library Saving generator library…]
+Tallennetaan generaattorikirjastoa…
+[library Search]
+Haku
+[library Seed]
+Siemen
+[library Selection saved for new maps.]
+Valinta tallennettu uusia karttoja varten.
+[library Storage failed.]
+Tallennus epäonnistui.
+[library Storage persistence unavailable]
+Pysyvä tallennus ei ole käytettävissä
+[library Tags]
+Tunnisteet
+[library Technical checks passed for this engine. Balance is not certified.]
+Tekniset tarkistukset läpäisty tälle pelimoottorille. Tasapainoa ei ole varmennettu.
+[library The server returned a different family.]
+Palvelin palautti eri rakennusperheen.
+[library This link is from another instance. Switch to that instance in Online first.]
+Linkki on toisesta verkkopalvelusta. Vaihda ensin siihen verkkopeliasetuksissa.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Tämä pakettitunnus on jo asennettu. Vahvista korvaaminen käyttääksesi valittua julkaisua.
+[library This release has no passing checks for this engine.]
+Tämä julkaisu ei ole läpäissyt tarkistuksia tällä pelimoottorilla.
+[library This release is installed.]
+Tämä julkaisu on asennettu.
+[library Update installed family]
+Päivitä asennettu perhe
+[library Use in a room]
+Käytä huoneessa
+[library By %0]
+Tekijä: %0
+[library Installed release %0]
+Asennettu julkaisu %0
+[library Release %0]
+Julkaisu %0
+[library Remove %0]
+Poista %0
+[library Seed: %0]
+Siemen: %0
+[library %0 · revision %1]
+%0 · muutosversio %1
+[library Fit]
+Sovita
 [Sound or silence?]
 
 [Silence]
@@ -6144,5 +6642,5 @@ Voittotodennäköisyyden kynnysarvo saavutettu.
 
 [audio choices description]
 
-[Destroy this building?]
-Tuhotaanko tämä rakennus?
+[library GL only]
+Vain GL

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+#include "ui/LibraryText.h"
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
 #include "ui/ThemeCatalog.h"
@@ -184,7 +185,7 @@ Element MainMenuScreen::build(const Presentation &p)
 			content.push_back(action("[credits]", CREDITS, rowStyle));
 			content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
-			content.push_back(button("menu/privacy", "Privacy policy", [] {
+			content.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
 				GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
 #else
@@ -242,7 +243,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
 								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
-	utilities.push_back(button("menu/privacy", "Privacy policy", [] {
+	utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
 		GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
 #else

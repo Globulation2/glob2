@@ -132,6 +132,53 @@ void contracts()
 	}
 	puts("PASS Comb full-save repeatability, telemetry, save/load, food-loss and invalid requests");
 }
+void naturalShores(int wDec, int hDec)
+{
+	for (const auto amounts : {std::array{100, 100}, std::array{0, 100}, std::array{100, 0}})
+	{
+		auto r = request();
+		r.wDec = wDec;
+		r.hDec = hDec;
+		r.nbTeams = wDec == 9 && hDec == 9 ? 8 : 4;
+		r.options["wheat-amount"] = amounts[0];
+		r.options["wood-amount"] = amounts[1];
+		Game world(nullptr);
+		auto result = GenerationService().generate(world, r, true);
+		require(bool(result), result.diagnostic());
+		int wheat = -1, wood = -1;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "comb.shore.wheat")
+				wheat = int(std::get<std::int64_t>(record.value));
+			if (record.key == "comb.shore.wood")
+				wood = int(std::get<std::int64_t>(record.value));
+		}
+		require((amounts[0] ? wheat > 0 : wheat == 0) &&
+				(amounts[1] ? wood > 0 : wood == 0), "inlet crops follow their own abundance controls");
+		if (amounts[0] && amounts[1])
+		{
+			// Revision 5 planted 101 inlet tiles on the short comb and 544 on
+			// long combs at this seed, all wheat. Allow geometry/rounding headroom.
+			const int previous = std::max(wDec, hDec) == 9 ? 544 : 101;
+			require(wheat + wood >= 3 * previous && wheat + wood <= 5 * previous,
+					"substantially fuller mixed inlet on every supported map shape");
+		}
+		const Torus t(world.map);
+		TerrainSketch terrain(t.size());
+		for (int i = 0; i < t.size(); ++i)
+			terrain[i] = TerrainType(world.map.vertexTerrainAt(i % t.w, i / t.w));
+		const auto unbounded = cropSpreadEnvelope(world.map);
+		const auto actual = fertileCropEnvelope(world.map, cropGrowthField(terrain, t));
+		for (const auto &units : unitTilesByTeam(world.map, r.nbTeams))
+		{
+			require(!units.empty(), "town has starting workers");
+			const int home = units.front();
+			require(unbounded.steps[home] >= 0, "coastal crops have open grass margins into the mainland");
+			require(!actual[home], "natural fertility keeps crop growth outside the town");
+		}
+	}
+	puts("PASS mixed inlet planting, independent crop controls, open farm margins and dry towns");
+}
 void feedingCourts()
 {
 	for (unsigned seed : {7u, 29u, 401u})
@@ -316,6 +363,12 @@ TEST_SUITE("CombGenerator")
 {
 	TEST_CASE("contracts") { glob2test::HeadlessGlobals globals; contracts(); }
 	TEST_CASE("feeding courts") { glob2test::HeadlessGlobals globals; feedingCourts(); }
+	TEST_CASE("natural shores")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (const auto shape : {std::array{8, 8}, std::array{8, 9}, std::array{9, 8}, std::array{9, 9}})
+			naturalShores(shape[0], shape[1]);
+	}
 	TEST_CASE("cross-channel firing [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;

@@ -6,34 +6,6 @@ Il browser non si è aperto. Apri la pagina di accesso per continuare.
 Se la pagina lo richiede, verifica che mostri %0.
 [hub code copied]
 Codice copiato
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Completa nel browser. Il gioco prosegue automaticamente.
 [music set]
@@ -6039,97 +6011,623 @@ Limite di tempo raggiunto.
 [outcome reason probability]
 Soglia di probabilità di vittoria raggiunta.
 [Discord community]
-
+Comunità Discord
 [Globulation 2 Discord]
-
+Discord di Globulation 2
 [discord community intro]
-
+Trova avversari, chiedi aiuto e condividi le tue mappe con la comunità di Globulation 2.
 [discord opens externally]
-
+Unisciti al nostro server Discord. Si aprirà Discord o il tuo browser.
 [Join Discord]
-
+Unisciti a Discord
 [Copy link]
-
+Copia collegamento
 [discord opened]
-
+Discord aperto. Puoi tornare al gioco in qualsiasi momento.
 [discord open failed]
-
+Impossibile aprire Discord. Copia il collegamento d'invito e aprilo nel browser.
 [discord link copied]
-
+Collegamento d'invito copiato.
 [settings CPU automatic]
-
+CPU automatica
 [settings Scalar]
-
+Scalare
 [settings Unavailable]
-
+Non disponibile
 [settings Initializing]
-
+Inizializzazione
 [settings Gradient backend]
-
+Motore dei gradienti
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Si applica al prossimo punto di sincronizzazione della simulazione. Le operazioni non supportate usano la CPU automatica; il rendering è indipendente.
 [settings Gradient algorithm]
-
+Algoritmo dei gradienti
 [settings All choices compute the same exact field.]
-
+Tutte le opzioni calcolano esattamente lo stesso campo.
 [settings Bucket propagation]
-
+Propagazione per bucket
 [settings Verify gradient results]
-
+Verifica i risultati dei gradienti
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Confronta i risultati GPU con quelli della CPU scalare prima di renderli disponibili. Richiede calcoli aggiuntivi e arresta il gioco in caso di divergenza.
 [settings Gradient computation]
-
+Calcolo dei gradienti
 [settings CPU fallback]
-
+Ripiego su CPU
 [settings GPU fields]
-
+Campi GPU
 [settings CPU fallbacks]
-
+Ripieghi su CPU
 [settings MCP server]
-
+Server MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Abilitando il server MCP, i client locali possono osservare e controllare il gioco.
 [settings Enable MCP server]
-
+Abilita server MCP
 [settings Port]
-
+Porta
 [settings Current controller: %0]
-
+Client al controllo: %0
 [settings Copy endpoint]
-
+Copia indirizzo di connessione
 [settings Retry listener]
-
+Riprova ascolto
 [settings Revoke control]
-
+Revoca controllo
 [settings MCP server unavailable in this application]
-
+Server MCP non disponibile in questa applicazione
 [settings Disabled]
-
+Disabilitato
 [settings Running]
-
+In esecuzione
 [settings Error: %0]
-
+Errore: %0
 [settings None]
-
+Nessuno
 [settings Starting]
-
+Avvio
 [Which hand holds your phone?]
-
+Mano sinistra o destra?
 [hand preference explanation]
-
+Tieni il telefono in modo naturale. Tocca la mano con cui giochi.
 [hand silhouettes description]
-
+Sagoma di un telefono con le mani sinistra e destra sopra. Premi uno dei due pulsanti in rilievo per il pollice per scegliere quel lato.
 [hand preference change later]
-
+Puoi cambiare lato in seguito nelle Impostazioni.
 [hand preference save failed]
-
+Impossibile salvare la scelta. Riprova.
 [Left hand]
-
+Mano sinistra
 [Right hand]
-
+Mano destra
 [discord copy failed]
-
+Impossibile copiare il collegamento. Seleziona l'invito qui sopra per copiarlo manualmente.
+[Destroy this building?]
+Distruggere questo edificio?
+[stat ground movement]
+Movimento a terra
+[stat ground movement about]
+Unità terrestri vive per rapporto approssimativo di velocità. «Nuoto 2x» significa nuotare al doppio della velocità di corsa. Escluse le unità volanti e immobili.
+[stat view by movement]
+Per movimento
+[stat band land only]
+Solo terra
+[stat band swim twice run]
+Nuoto 2x
+[stat band swim faster run]
+Nuoto 1,4x
+[stat band swim equals run]
+Uguali
+[stat band run faster swim]
+Corsa 1,3x
+[stat band run twice swim]
+Corsa 2x
+[stat band run triple swim]
+Corsa 3x
+[stat band water only]
+Solo acqua
+[settings Browse shared generators]
+Sfoglia generatori condivisi
+[settings Apply artwork on the next game or editor load.]
+Applica la grafica al prossimo caricamento di una partita o dell'editor.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Richiede un renderer con filtraggio delle texture. La scelta salvata viene conservata.
+[settings Automatically show the torus overview while moving around the map.]
+Mostra automaticamente la panoramica toroidale durante gli spostamenti sulla mappa.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Richiede un renderer con supporto toroidale. La scelta salvata viene conservata.
+[settings Move and animate units between game ticks.]
+Muovi e anima le unità tra i tick di gioco.
+[settings Renderer unavailable]
+Renderer non disponibile
+[settings Apply at the next completed frame. Your game stays running.]
+Applica al prossimo fotogramma completato. La partita prosegue.
+[settings Active renderer: %0]
+Renderer attivo: %0
+[settings Changing renderer…]
+Cambio del renderer…
+[settings Menu scroll wheel enabled]
+Rotella di scorrimento nei menu abilitata
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Controlla lo scorrimento con la rotella nei menu. Sulle mappe di gioco e dell'editor, la rotella modifica sempre lo zoom.
+[settings Gesture scrolling]
+Scorrimento tramite gesti
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Scorrimento tramite tocco e gesti Mac. 0 disattiva un effetto; 50 è il valore predefinito per il tocco.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Quanto a lungo elenchi e pannelli continuano a scorrere dopo un rapido gesto tattile. I gesti Mac usano l'inerzia di sistema; zero disattiva lo scorrimento inerziale.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Quanto elenchi e pannelli si estendono oltre i bordi prima di tornare indietro. I gesti Mac usano un'estensione più lieve.
+[hive stopping]
+Arresto…
+[hive stopped]
+Arrestato
+[hive stop failed]
+Arresto non riuscito; riprova la scorciatoia di arresto
+[hive updating]
+Aggiornamento…
+[hive requested]
+Richiesto
+[hive update failed]
+Aggiornamento non riuscito; riprova
+[hive give order]
+Impartisci ordine
+[hive less]
+Meno
+[hive reports and details]
+Rapporti / dettagli
+[hive needs fresh order]
+Serve un nuovo ordine
+[hive active]
+Attivo
+[hive resume]
+Riprendi
+[recordings]
+Registrazioni
+[recording delete confirm]
+Eliminare la registrazione?
+[recording delete warning]
+La registrazione e i relativi metadati verranno rimossi.
+[recording delete]
+Elimina
+[recording working]
+Operazione in corso…
+[recording none]
+Nessuna registrazione.
+[recording interrupted]
+Registrazione interrotta
+[recording recover]
+Recupera
+[recording export video]
+Esporta video
+[recording export metadata]
+Esporta metadati
+[recording export events]
+Esporta eventi
+[recording export failed]
+Impossibile esportare la registrazione.
+[recording delete action]
+Elimina registrazione
+[recording refresh]
+Aggiorna
+[tutorial part1 message 1]
+Benvenuto in Globulation 2! Questo tutorial insegna a gestire una colonia in quattro missioni. Puoi salvare dal menu di gioco e caricare in seguito dal menu principale. Premi Spazio per continuare, oppure tocca Ok su uno schermo tattile. Alcuni messaggi scompaiono quando prosegui; puoi rileggerli nella Cronologia messaggi.
+[tutorial part1 message 2]
+Inizi con uno Sciame e un lavoratore. Vediamo come collaborano.
+[tutorial part1 message 3]
+Il lavoratore raccoglie grano e lo porta allo Sciame. Lo Sciame usa il grano per produrre nuove unità: è essenziale per la colonia.
+[tutorial part1 message 4]
+Seleziona il tuo globulo, l'unità in movimento, con un clic sinistro o un tocco.
+[tutorial part1 message 5]
+Le informazioni dell'unità mostrano che le sue riserve di cibo diminuiscono. Il globulo ha fame. Quando le barre del cibo sono visibili, la barra blu sotto l'unità mostra il cibo rimanente.
+[tutorial part1 message 6]
+I globuli mangiano nelle Mense. Annulla la selezione con un clic destro, oppure tocca terreno libero su uno schermo tattile.
+[tutorial part1 message 7]
+Apri i comandi degli edifici, scegli Mensa e collocala vicino al grano. Se non trovi il grano, segui il percorso del lavoratore. Su schermi tattili usa Costruisci e conferma una posizione valida. Poi esci dalla modalità di posizionamento con un clic destro o il comando tattile Annulla.
+[tutorial part1 message 8]
+Bene! Il cantiere della Mensa è pronto.
+[tutorial part1 message 9]
+Un lavoratore dello Sciame può ora costruire la Mensa. Raccoglie legno dagli alberi vicini e lo porta al cantiere. Attendi che finisca.
+[tutorial part1 message 10]
+La Mensa completata ha bisogno di grano. Un lavoratore assegnato lo raccoglierà, come avviene per lo Sciame.
+[tutorial part1 message 11]
+La barra gialla delle risorse della Mensa sale quando arriva grano. Mostra quanto grano è disponibile.
+[tutorial part1 message 12]
+Ora impariamo ad assegnare il lavoro.
+[tutorial part1 message 13]
+Un lavoratore rifornisce lo Sciame e un altro la Mensa. Entrambi possono fermarsi per mangiare alla Mensa. È normale.
+[tutorial part1 message 14]
+Seleziona lo Sciame e cerca il comando di assegnazione dei lavoratori. Su desktop è indicato come «Al lavoro»; su schermi tattili usa il comando dei lavoratori assegnati e dell'obiettivo. L'obiettivo è il numero di lavoratori desiderato nell'edificio.
+[tutorial part1 message 15]
+Imposta l'obiettivo dei lavoratori dello Sciame a 0. Poi seleziona la Mensa e imposta a 0 anche il suo obiettivo.
+[tutorial part1 message 16]
+I lavoratori sono inattivi, ma hanno ancora bisogno di cibo. Una Mensa senza lavoratori assegnati finirà per esaurire il grano.
+[tutorial part1 message 17]
+Un globulo che non trova cibo perde salute e può morire. Un Ospedale può curare i globuli feriti, ma devi anche rifornire le Mense.
+[tutorial part1 message 18]
+Costruisci un Ospedale tramite i comandi degli edifici. Non richiede grano: collocalo vicino al legno o in un punto centrale presso lo Sciame.
+[tutorial part1 message 19]
+Seleziona il cantiere dell'Ospedale e imposta l'obiettivo dei lavoratori a 2. Due lavoratori lo completeranno più rapidamente.
+[tutorial part1 message 20]
+L'Ospedale è pronto. I globuli feriti possono entrarvi per recuperare salute.
+[tutorial part1 message 21]
+Le aree nere sono inesplorate. Le unità rivelano il terreno vicino mentre si muovono. I lavoratori seguono il proprio lavoro e sono poco adatti alla ricognizione. Gli esploratori sono fatti apposta.
+[tutorial part1 message 22]
+Seleziona lo Sciame e cerca le proporzioni di produzione di lavoratori, esploratori e guerrieri. Porta la proporzione degli esploratori a 1.
+[tutorial part1 message 23]
+Con entrambe le proporzioni a 1, nel tempo lo Sciame produce lo stesso numero di lavoratori ed esploratori. Porta quella dei lavoratori a 0 per produrre solo esploratori per ora.
+[tutorial part1 message 24]
+Riporta a 1 l'obiettivo dei lavoratori assegnati allo Sciame, così un lavoratore potrà portargli grano.
+[tutorial part1 message 25]
+Seleziona la Mensa e porta a 1 anche il suo obiettivo dei lavoratori. Una colonia in crescita richiede cibo costante.
+[tutorial part1 message 26]
+Ora attendi che lo Sciame produca un esploratore.
+[tutorial part1 message 27]
+L'esploratore vola attorno alla colonia e rivela altro terreno. Lascia che lo Sciame produca un secondo esploratore prima di proseguire.
+[tutorial part1 message 28]
+Seleziona nuovamente lo Sciame. Porta la proporzione degli esploratori a 0 e quella dei lavoratori a 1 per riprendere a produrre lavoratori.
+[tutorial part2 message 1]
+A est della base c'è della pietra. Ricorda il luogo: servirà più avanti.
+[tutorial part2 message 2]
+Gli alberi a sud della pietra sono aranci. Selezionali per consultarne le risorse. Torneremo alla frutta più avanti; ora concentrati sullo Sciame.
+[tutorial part2 message 3]
+Imposta lo Sciame perché produca solo lavoratori: proporzione lavoratori 1, esploratori e guerrieri 0.
+[tutorial part2 message 4]
+Facciamo crescere più rapidamente la colonia. Seleziona lo Sciame e porta l'obiettivo dei lavoratori a 6. Potresti non averne ancora sei; i nuovi lavoratori occuperanno i posti liberi appena disponibili.
+[tutorial part2 message 5]
+Le prossime attività inizieranno quando avrai 8 lavoratori. Mantieni riforniti Sciame e Mensa mentre aumenta la popolazione.
+[tutorial part2 message 6]
+Diversi lavoratori riforniscono ora lo Sciame. Più consegne di grano gli consentono di produrre unità più rapidamente.
+[tutorial part2 message 7]
+Un nuovo lavoratore costa 5 unità di grano. Trasportarlo da un campo lontano richiede tempo, quindi spesso uno Sciame necessita di più fornitori di una Mensa. Se possibile, costruisci gli edifici che dipendono dal cibo vicino al grano.
+[tutorial part2 message 8]
+Hai almeno 8 lavoratori. Seleziona lo Sciame e riduci l'obiettivo dei lavoratori a 1 per rallentare la crescita mentre costruiamo.
+[tutorial part2 message 9]
+La colonia ha bisogno di più posti per mangiare. Costruisci una seconda Mensa a nord di quella esistente.
+[tutorial part2 message 10]
+Assegna lavoratori liberi al cantiere della nuova Mensa. Servono solo 3 unità di legno: più di 3 costruttori aiuterebbero poco.
+[tutorial part2 message 11]
+La Mensa completata torna all'obiettivo operativo dei lavoratori, normalmente 1. Costruzione e rifornimento quotidiano hanno obiettivi separati.
+[tutorial part2 message 12]
+I lavoratori possono imparare a muoversi più velocemente. Il Circuito offre questo addestramento.
+[tutorial part2 message 13]
+Apri i comandi degli edifici e trova Circuito. Su desktop passa sull'icona per vederne descrizione e costo. Su schermi tattili selezionalo in Costruisci per prepararne il posizionamento. Non collocarlo ancora.
+[tutorial part2 message 14]
+Il Circuito richiede molto legno e un po' di pietra. Scegli una posizione centrale, facilmente raggiungibile.
+[tutorial part2 message 15]
+Costruisci un Circuito, per esempio a sud dello Sciame. Lascia spazio libero attorno: gli edifici di addestramento si espandono quando vengono migliorati.
+[tutorial part2 message 16]
+Imposta l'obiettivo dei lavoratori del cantiere del Circuito tra 5 e 7. Richiede 7 materiali da costruzione in totale.
+[tutorial part2 message 17]
+Una volta completato, il Circuito addestra le unità in visita senza rifornimenti continui di materiali o grano.
+[tutorial part2 message 18]
+I globuli entrano nel Circuito per allenarsi. Dopo l'addestramento correranno più velocemente.
+[tutorial part2 message 19]
+Seleziona il Circuito per controllare l'addestramento. Gli indicatori mostrano quanto manca alle unità all'interno per completarlo.
+[tutorial part2 message 20]
+I lavoratori addestrati viaggiano più velocemente e consegnano prima le risorse. Controlla le scorte alimentari mentre cresce la colonia: consegne rapide aiutano solo se abbastanza Mense sono rifornite.
+[tutorial part2 message 21]
+Trova il contatore dei lavoratori nell'interfaccia di gioco. Il totale indica la popolazione; i lavoratori disponibili aiutano a individuare manodopera libera o posti vacanti. Usa i lavoratori liberi senza creare più incarichi di quanti la colonia possa sostenere.
+[tutorial part2 message 22]
+L'interfaccia mostra anche il numero di esploratori e guerrieri. Controllalo quando pianifichi la produzione o assegni unità alle bandiere.
+[tutorial part2 message 23]
+Hai 2 Mense. Ogni Mensa base nutre 4 unità alla volta: insieme offrono 8 posti. Più di 8 unità possono avere fame, quindi mantieni capacità sufficiente per le code.
+[tutorial part2 message 24]
+Due Mense non sosterranno per sempre una colonia in crescita. Aggiungi posti prima che le carenze causino fame.
+[tutorial part2 message 25]
+Costruisci altre 3 Mense vicino al grano. I lavoratori affamati smettono di lavorare e la fame prolungata li uccide. Assegna lavoratori disponibili alla costruzione senza interrompere i rifornimenti esistenti.
+[tutorial part2 message 26]
+Completa altre 3 Mense per arrivare a 5 in totale.
+[tutorial part2 message 27]
+Dopo la costruzione, le nuove Mense usano l'obiettivo operativo, normalmente 1 lavoratore ciascuna. Controlla che abbiano fornitori e grano sufficiente.
+[tutorial part2 message 28]
+Il Circuito ha migliorato gli spostamenti sulla terra. Ora insegniamo alla colonia a nuotare.
+[tutorial part2 message 29]
+La Piscina insegna alle unità a nuotare e richiede legno per essere costruita. Collocane una nella grande radura a nord-est della base, a nord della pietra. Lascia spazio attorno per miglioramenti e crescita delle risorse, e assegna lavoratori disponibili alla costruzione.
+[tutorial part2 message 30]
+La Piscina insegna alle unità a nuotare e richiede legno per essere costruita. Collocane una nella grande radura a nord-est della base, a nord della pietra. Lascia spazio attorno per miglioramenti e crescita delle risorse, e assegna lavoratori disponibili alla costruzione.
+[tutorial part2 message 31]
+La Piscina è pronta. I globuli possono entrare e imparare a nuotare.
+[tutorial part2 message 32]
+Seleziona la Piscina per controllare l'addestramento. Una Piscina base addestra 2 globuli alla volta, come un Circuito base.
+[tutorial part2 message 33]
+I globuli addestrati possono ora nuotare. Presto daremo loro un lavoro che richiede di attraversare l'acqua.
+[tutorial part2 message 34]
+C'è ancora da imparare. Se vuoi fare una pausa, salva dal menu di gioco e torna più tardi.
+[tutorial part2 message 35]
+La colonia ha cibo e addestramento fisico. La Scuola insegnerà ai lavoratori le competenze necessarie per edifici migliori.
+[tutorial part2 message 36]
+La Scuola migliora la raccolta e la costruzione dei lavoratori. Per costruirla servono alghe, che crescono nell'acqua. I lavoratori che sanno nuotare possono raccoglierle.
+[tutorial part2 message 37]
+Proteggi gli edifici di addestramento importanti. La Scuola non deve necessariamente stare vicino all'acqua: un luogo riparato nell'entroterra può proteggerla dagli attacchi.
+[tutorial part2 message 38]
+Costruisci una Scuola in un luogo protetto, per esempio dietro la Piscina o a sud-ovest dello Sciame, accanto al Circuito. Assegna lavoratori disponibili alla costruzione.
+[tutorial part2 message 39]
+Seleziona un edificio per vedere i lavoratori assegnati. Su desktop, l'azione configurabile Mostra/nascondi percorsi delle unità visualizza anche le linee verso le destinazioni; cerca la scorciatoia attuale in Impostazioni, Controlli. Attendi che la Scuola sia pronta.
+[tutorial part3 message 1]
+La colonia dispone ora di Mense, Ospedale, Circuito, Piscina e Scuola. È il momento di preparare le difese.
+[tutorial part3 message 2]
+Non abbiamo ancora prodotto guerrieri. Senza di loro la colonia è poco protetta dagli attacchi.
+[tutorial part3 message 3]
+Seleziona lo Sciame e porta la proporzione dei guerrieri a 2. Lascia quella dei lavoratori a 1 per continuare a produrre anche loro.
+[tutorial part3 message 4]
+Lo Sciame produrrà circa 2 guerrieri per ogni lavoratore. Assegna più lavoratori al rifornimento se vuoi una produzione più rapida.
+[tutorial part3 message 5]
+Il primo guerriero è pronto e inizierà ad addestrarsi. Attendi un secondo guerriero prima di continuare.
+[tutorial part3 message 6]
+Anche i guerrieri usano Circuito e Piscina. Possono inoltre allenare le capacità d'attacco nella Caserma.
+[tutorial part3 message 7]
+La Caserma migliora forza e velocità d'attacco. La forza aumenta i danni per colpo; la velocità aumenta la frequenza degli attacchi. Guerrieri ben addestrati possono sconfiggere gruppi molto più numerosi di nemici inesperti.
+[tutorial part3 message 8]
+Costruisci una Caserma vicino al legno necessario per costruirla.
+[tutorial part3 message 9]
+Assegna lavoratori disponibili al cantiere della Caserma. Mantienine abbastanza sui rifornimenti alimentari e non creare più incarichi di quanti possano svolgere.
+[tutorial part3 message 10]
+La Caserma è pronta. I guerrieri possono allenarvi le capacità d'attacco.
+[tutorial part3 message 11]
+La colonia può rafforzarsi migliorando gli edifici.
+[tutorial part3 message 12]
+I lavoratori addestrati alla Scuola possono costruire i miglioramenti. Seleziona un edificio idoneo e cerca Migliora nei suoi comandi. Gli edifici danneggiati potrebbero richiedere prima Ripara.
+[tutorial part3 message 13]
+Decidiamo cosa migliorare per primo. Le Mense hanno ancora posti liberi e possono aspettare.
+[tutorial part3 message 14]
+Anche l'Ospedale ha spazio. Possiamo concentrarci su Scuola, Circuito, Piscina o Caserma.
+[tutorial part3 message 15]
+Migliora prima il Circuito, così le unità impareranno a muoversi ancora più velocemente.
+[tutorial part3 message 16]
+Seleziona il Circuito e scegli Migliora nei suoi comandi. Le unità all'interno devono uscire prima dell'inizio dei lavori, quindi il cambiamento potrebbe non essere immediato.
+[tutorial part3 message 17]
+Assegna lavoratori disponibili al miglioramento del Circuito. Solo quelli con l'addestramento scolastico richiesto possono lavorare in un cantiere di livello 2.
+[tutorial part3 message 18]
+Attendi il completamento del miglioramento del Circuito. Gli edifici di livello superiore richiedono più risorse e tempo.
+[tutorial part3 message 19]
+Il Circuito di livello 2 è pronto. Occupa più terreno: ecco perché abbiamo lasciato spazio. Un edificio non può essere migliorato senza spazio sufficiente per espandersi.
+[tutorial part3 message 20]
+Ora migliora Caserma e Piscina al livello 2. Continueremo quando entrambe saranno pronte.
+[tutorial part3 message 21]
+Gli edifici migliorati in genere servono più globuli o offrono addestramento migliore. Per esempio, una Mensa di livello 2 ha 7 posti e nutre le unità più rapidamente di una base.
+[tutorial part3 message 22]
+Il nemico è vicino. Prepariamoci all'attacco.
+[tutorial part3 message 23]
+Le torri colpiscono i nemici a portata. Le mura le proteggono. Useremo entrambe per difendere uno stretto accesso alla colonia.
+[tutorial part3 message 24]
+Se c'è spazio, costruisci le torri a coppie. Le mura possono proteggerle su tre lati, ma lascia un accesso per i lavoratori che consegnano pietra per le munizioni.
+[tutorial part3 message 25]
+Guarda a est della Piscina, a nord degli altri alberi da frutto. Uno stretto passaggio conduce a un'altra isola. È un buon punto da difendere.
+[tutorial part3 message 26]
+Prevedi spazio per 2 torri tra gli alberi e la riva. Lascia accesso sul retro per la pietra e spazio sugli altri lati per le mura. Non bloccare i lavoratori fuori.
+[tutorial part3 message 27]
+Costruisci lì 2 torri. Assegna 2 o 3 lavoratori a ciascun cantiere, secondo quanti ne risultano disponibili nei contatori.
+[tutorial part3 message 28]
+Usa i comandi degli edifici per collocare mura sui tre lati esterni delle torri. Lascia aperto il lato verso la colonia per i lavoratori.
+[tutorial part3 message 29]
+Ogni tratto di muro crea un incarico di costruzione e richiede 1 pietra. Se i lavoratori non possono occuparli tutti insieme, completeranno i tratti a turno.
+[tutorial part3 message 30]
+Attendi il completamento delle due torri e di diversi tratti di muro. Le torri richiedono anche pietra per le munizioni; la cava lontana rallenta le consegne. Aumenta i loro obiettivi di lavoratori se ne hai di liberi.
+[tutorial part4 message 1]
+La colonia ha cibo, addestramento e difese. Gli edifici possono avanzare ancora al livello 3, offrendo più capacità e addestramento migliore. Continua a migliorarli quando risorse e competenze lo permettono.
+[tutorial part4 message 2]
+Cerca la colonia nemica a nord-ovest della base. Sposta lì la visuale.
+[tutorial part4 message 3]
+La nebbia di guerra può nascondere anche il terreno esplorato. Per vedere le attività attuali del nemico serve un esploratore nelle vicinanze.
+[tutorial part4 message 4]
+Apri Bandiere. Qui trovi bandiere e zone per dirigere le unità senza controllare ogni globulo.
+[tutorial part4 message 5]
+Scegli la Bandiera di esplorazione, con il simbolo a forma di aquilone. Puoi collocare bandiere su terra, acqua, risorse e terreno inesplorato.
+[tutorial part4 message 6]
+Colloca una Bandiera di esplorazione sulla presunta base nemica. Una posizione approssimativa basta per iniziare la ricognizione. Esci dalla modalità con un clic destro, oppure termina usando i comandi tattili.
+[tutorial part4 message 7]
+Il contorno della bandiera indica il raggio operativo. Un esploratore assegnato esplorerà quell'area. Se non arriva nessuno, controlla il numero di esploratori e producine uno allo Sciame se serve. Premi Spazio o tocca Ok quando l'esploratore raggiunge l'area.
+[tutorial part4 message 8]
+Il nemico ha molti lavoratori e un esercito radunato. Prepariamo le difese prima che attacchi.
+[tutorial part4 message 9]
+Apri Bandiere e scegli l'Area di pattuglia blu. Usa la modalità per aggiungere terreno alla zona, non per rimuoverlo. Su schermi tattili scegli Dipingi invece di Cancella.
+[tutorial part4 message 10]
+Scegli forma e dimensione del pennello. Il quadrato grande è utile per una zona difensiva compatta.
+[tutorial part4 message 11]
+Dipingi un'Area di pattuglia subito dietro le torri, dove probabilmente arriverà il nemico. Fai clic o tocca per dipingere un punto, oppure trascina per coprire più terreno. Su schermi tattili usa Sposta per muovere la visuale mentre dipingi.
+[tutorial part4 message 12]
+I guerrieri disponibili entreranno nell'Area di pattuglia. Rendila abbastanza grande per i difensori ma abbastanza piccola da tenerli concentrati al passaggio. Ora attendi l'attacco.
+[tutorial part4 message 13]
+Il nemico si avvicina al passaggio!
+[tutorial part4 message 14]
+Siamo sotto attacco. Osserva come i guerrieri addestrati e le torri difendono la posizione.
+[tutorial part4 message 15]
+Sei sopravvissuto! Ora apri Bandiere e scegli la Bandiera di attacco con le punte. Collocala sullo Sciame nemico per dirigere lì l'attacco.
+[tutorial part4 message 16]
+Esci dalla modalità di posizionamento e seleziona la Bandiera di attacco. Assegna più di 1 guerriero e riduci il raggio per concentrare l'attacco attorno allo Sciame nemico. Attendi l'arrivo dei guerrieri.
+[tutorial part4 message 17]
+L'attacco è iniziato. I guerrieri devono superare le torri nemiche per raggiungere lo Sciame.
+[tutorial part4 message 18]
+I guerrieri hanno raggiunto la base nemica. Mantieni l'attacco concentrato sullo Sciame.
+[tutorial part4 message 19]
+Hai distrutto lo Sciame nemico. Congratulazioni! Hai completato il tutorial e imparato le basi di rifornimenti alimentari, assegnazioni, addestramento, miglioramenti, ricognizione e combattimento.
+[tutorial mission basics]
+Introduzione e nozioni di base
+[tutorial mission development]
+Edifici e scuole
+[tutorial mission training]
+Guerrieri, addestramento e miglioramenti
+[tutorial mission flags]
+Bandiere e conclusione
+[library  Could not restore the previous library: %0]
+ Impossibile ripristinare la libreria precedente: %0
+[library  The previous library is retained.]
+ La libreria precedente viene conservata.
+[library  · Installed]
+ · Installato
+[library  · Update available]
+ · Aggiornamento disponibile
+[library A different release is installed. Install the selected release to update explicitly.]
+È installata una versione diversa. Installa la versione selezionata per aggiornare esplicitamente.
+[library All engines]
+Tutti i motori
+[library All generators]
+Tutti i generatori
+[library Available families]
+Famiglie disponibili
+[library Back]
+Indietro
+[library Building families]
+Famiglie di edifici
+[library Building library]
+Libreria degli edifici
+[library Checking building release]
+Verifica della versione dell'edificio
+[library Choose an online instance before opening a family link.]
+Scegli un'istanza online prima di aprire un collegamento a una famiglia.
+[library Compatible with this engine]
+Compatibile con questo motore
+[library Confirm replacement]
+Conferma sostituzione
+[library Create in Building Studio]
+Crea nello Studio edifici
+[library Downloading generator…]
+Download del generatore…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Ogni paesaggio è mostrato come una mappa reale con le dimensioni e il numero di colonie indicati sotto, modificabili qui. Usane uno per giocare sulla mappa mostrata.
+[library Editor tool: generates terrain for the map editor.]
+Strumento dell'editor: genera terreno per l'editor delle mappe.
+[library Editor tools]
+Strumenti dell'editor
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Abilita sotto le famiglie installate. La selezione viene salvata nel profilo locale; mappe e salvataggi esistenti conservano i propri edifici. Per giocare online, genera una mappa con queste famiglie, pubblicala nella libreria delle mappe e poi sceglila nella stanza.
+[library Enter a building family ID or a link to its family page.]
+Inserisci l'ID di una famiglia di edifici o un collegamento alla sua pagina.
+[library Family link or ID]
+Collegamento o ID famiglia
+[library Family links must be at most 1024 characters.]
+I collegamenti alle famiglie possono contenere al massimo 1024 caratteri.
+[library Family removed.]
+Famiglia rimossa.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Famiglia non disponibile. Per le famiglie private, accedi tramite Online con un account autorizzato.
+[library Generator file hash mismatch]
+Hash del file del generatore non corrispondente
+[library Generator installed. Future selections use this release.]
+Generatore installato. Le selezioni future useranno questa versione.
+[library Generator package identity mismatch]
+Identità del pacchetto del generatore non corrispondente
+[library Generators]
+Generatori
+[library Install compatible release]
+Installa versione compatibile
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Installa singoli edifici o famiglie di miglioramenti accanto agli edifici standard. La selezione si applica solo alle nuove mappe generate.
+[library Install selected release]
+Installa versione selezionata
+[library Installed]
+Installato
+[library Installed families]
+Famiglie installate
+[library Installed. Enable the family below for new maps.]
+Installato. Abilita sotto la famiglia per le nuove mappe.
+[library Invalid building family ID.]
+ID della famiglia di edifici non valido.
+[library Invalid building library response]
+Risposta della libreria degli edifici non valida
+[library Invalid library cursor]
+Cursore della libreria non valido
+[library Invalid release identity]
+Identità della versione non valida
+[library Load more]
+Carica altro
+[library Load more families]
+Carica altre famiglie
+[library Loading building families]
+Caricamento delle famiglie di edifici
+[library Loading…]
+Caricamento…
+[library Map generators]
+Generatori di mappe
+[library Maps]
+Mappe
+[library Most downloaded]
+Più scaricati
+[library Most liked]
+Più apprezzati
+[library My generators]
+I miei generatori
+[library Newest]
+Più recenti
+[library No building families installed.]
+Nessuna famiglia di edifici installata.
+[library No public building families yet]
+Non ci sono ancora famiglie di edifici pubbliche
+[library No validated release for this game version.]
+Nessuna versione convalidata per questa versione del gioco.
+[library Online server changed during download]
+Il server online è cambiato durante il download
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Apri una famiglia non elencata tramite collegamento o ID. Per le famiglie private, accedi prima tramite Online.
+[library Open family]
+Apri famiglia
+[library Opened family. Install its compatible release below.]
+Famiglia aperta. Installa sotto la versione compatibile.
+[library Opening building family]
+Apertura della famiglia di edifici
+[library Playable]
+Giocabile
+[library Playable generator]
+Generatore giocabile
+[library Privacy policy]
+Informativa sulla privacy
+[library Public library]
+Libreria pubblica
+[library Recently updated]
+Aggiornati di recente
+[library Refresh library]
+Aggiorna libreria
+[library Release identity changed during installation]
+L'identità della versione è cambiata durante l'installazione
+[library Reroll]
+Rigenera
+[library Reroll seed]
+Nuovo seme casuale
+[library Saving generator library…]
+Salvataggio della libreria dei generatori…
+[library Search]
+Cerca
+[library Seed]
+Seme
+[library Selection saved for new maps.]
+Selezione salvata per le nuove mappe.
+[library Storage failed.]
+Salvataggio non riuscito.
+[library Storage persistence unavailable]
+Archiviazione persistente non disponibile
+[library Tags]
+Etichette
+[library Technical checks passed for this engine. Balance is not certified.]
+Controlli tecnici superati per questo motore. Il bilanciamento non è certificato.
+[library The server returned a different family.]
+Il server ha restituito una famiglia diversa.
+[library This link is from another instance. Switch to that instance in Online first.]
+Questo collegamento proviene da un'altra istanza. Passa prima a quell'istanza in Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Questo ID pacchetto è installato. Conferma la sostituzione per usare la versione selezionata.
+[library This release has no passing checks for this engine.]
+Questa versione non ha controlli superati per questo motore.
+[library This release is installed.]
+Questa versione è installata.
+[library Update installed family]
+Aggiorna famiglia installata
+[library Use in a room]
+Usa in una stanza
+[library By %0]
+Di %0
+[library Installed release %0]
+Versione installata %0
+[library Release %0]
+Versione %0
+[library Remove %0]
+Rimuovi %0
+[library Seed: %0]
+Seme: %0
+[library %0 · revision %1]
+%0 · revisione %1
+[library Fit]
+Adatta
 [Sound or silence?]
 
 [Silence]
@@ -6144,5 +6642,5 @@ Soglia di probabilità di vittoria raggiunta.
 
 [audio choices description]
 
-[Destroy this building?]
-Distruggere questo edificio?
+[library GL only]
+Solo GL

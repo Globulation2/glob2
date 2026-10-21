@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveDialog.h"
+#include <utility>
 namespace Hive
 {
 using namespace Glob2UI;
@@ -46,6 +47,21 @@ bool Dialog::handle(const SDL_Event &e)
 		captured = false;
 	return true;
 }
+namespace
+{
+// Client status tokens also drive controls; translate only at the display boundary.
+std::string controlStatusText(const std::string &status)
+{
+    for (const auto &entry : {std::pair{"Stopping…", "[hive stopping]"},
+             {"Stopped", "[hive stopped]"},
+             {"Stop failed; retry the stop shortcut", "[hive stop failed]"},
+             {"Updating…", "[hive updating]"},
+             {"Requested", "[hive requested]"},
+             {"Update failed; try again", "[hive update failed]"}})
+        if (status == entry.first) return tr(entry.second);
+    return status;
+}
+}
 Element Dialog::build(const Presentation &p)
 {
 	ButtonOptions small;
@@ -55,7 +71,7 @@ Element Dialog::build(const Presentation &p)
 	compact.padding = p.pt(8);
 	std::vector<Element> cards;
 	cards.push_back(row({button(
-							 "hive/compose", "Give order",
+							 "hive/compose", tr("[hive give order]"),
 							 [this]
 							 {
 								 if (compose)
@@ -63,7 +79,7 @@ Element Dialog::build(const Presentation &p)
 							 },
 							 small),
 						 button(
-							 "hive/details", expanded ? "Less" : "Reports / details",
+							 "hive/details", expanded ? tr("[hive less]") : tr("[hive reports and details]"),
 							 [this]
 							 {
 								 expanded = !expanded;
@@ -75,7 +91,7 @@ Element Dialog::build(const Presentation &p)
 	const auto stopping = client->controlStatus.find("commander");
 	stop.enabled = stopping == client->controlStatus.end() || stopping->second != "Stopping…";
 	cards.push_back(button(
-		"hive/stop", "Stop commander",
+		"hive/stop", tr("[stop commander]"),
 		[this]
 		{
 			client->stop();
@@ -83,7 +99,7 @@ Element Dialog::build(const Presentation &p)
 		},
 		stop));
 	if (stopping != client->controlStatus.end())
-		cards.push_back(caption(stopping->second));
+		cards.push_back(caption(controlStatusText(stopping->second)));
 	// Trim at a UTF-8 boundary so a compact report never splits a character.
 	auto preview = [](const std::string &text, std::size_t limit)
 	{
@@ -101,23 +117,23 @@ Element Dialog::build(const Presentation &p)
 		const auto count = std::min<std::size_t>(10, client->reports.size());
 		for (std::size_t i = 0; i < count; ++i)
 			cards.push_back(card(
-				paragraph(client->reports[client->reports.size() - 1 - i], {FontRole::Caption}),
+				paragraph(controlStatusText(client->reports[client->reports.size() - 1 - i]), {FontRole::Caption}),
 				compact));
 	}
 	else if (client->progress.empty() && !client->reports.empty())
 		cards.push_back(
-			card(paragraph(preview(client->reports.back(), 180), {FontRole::Caption}), compact));
+			card(paragraph(preview(controlStatusText(client->reports.back()), 180), {FontRole::Caption}), compact));
 	for (auto &order : client->standingOrders())
 	{
 		const std::string id = order.at("id"), name = order.at("name"),
 						  status = order.value("controlStatus", std::string());
 		const bool paused = order.at("paused"), missing = order.value("missingCheckpoint", false),
 				   pending = status == "Updating…" || status == "Requested";
-		std::vector<Element> body{label(name), caption(missing  ? "Needs a fresh order"
-													   : paused ? "Paused"
-																: "Active")};
+		std::vector<Element> body{label(name), caption(missing  ? tr("[hive needs fresh order]")
+													   : paused ? tr("[Paused]")
+																: tr("[hive active]"))};
 		if (!status.empty())
-			body.push_back(caption(status));
+			body.push_back(caption(controlStatusText(status)));
 		if (expanded)
 			body.push_back(
 				paragraph(order.at("description").get<std::string>(), {FontRole::Caption}));
@@ -126,7 +142,7 @@ Element Dialog::build(const Presentation &p)
 		auto cancel = small;
 		cancel.enabled = !pending;
 		body.push_back(row({button(
-								"hive/toggle/" + id, paused ? "Resume" : "Pause",
+								"hive/toggle/" + id, paused ? tr("[hive resume]") : tr("[Pause]"),
 								[this, id, paused]
 								{
 									client->change(id, paused ? "resume" : "pause");
@@ -134,7 +150,7 @@ Element Dialog::build(const Presentation &p)
 								},
 								toggle),
 							button(
-								"hive/cancel/" + id, "Cancel",
+								"hive/cancel/" + id, tr("[Cancel]"),
 								[this, id]
 								{
 									client->change(id, "remove");

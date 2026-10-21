@@ -116,3 +116,70 @@ export function sourceErrors(
   }
   return errors;
 }
+
+/** The pre-game browser launcher uses the same catalogs as the online app. */
+export function browserSourceErrors(
+  english: Record<string, unknown>,
+  html = readFileSync(new URL('../../../../browser/shell.html', import.meta.url), 'utf8'),
+): string[] {
+  const errors: string[] = [];
+  const requireKey = (text: string, offset: number) => {
+    if (!Object.hasOwn(english, text)) {
+      const line = html.slice(0, offset).split('\n').length;
+      errors.push(`browser/shell.html:${line}: missing browser catalog key: ${text}`);
+    }
+  };
+  // These attributes are literal HTML bindings. Decode the entities allowed in them.
+  const entities: Record<string, string> = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>' };
+  const uncommented = html.replace(
+    /<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,
+    (text) => (text.startsWith('<!--') ? text.replace(/[^\n]/g, ' ') : text),
+  );
+  const markup = uncommented.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, (text) =>
+    text.replace(/[^\n]/g, ' '),
+  );
+  for (const match of markup.matchAll(/\bdata-i18n(?:-aria)?\s*=\s*(["'])(.*?)\1/g)) {
+    const source = match[2]!.replace(
+      /&(#x[\da-f]+|#\d+|amp|quot|apos|lt|gt);/gi,
+      (whole, entity: string) => {
+        if (!entity.startsWith('#')) return entities[entity] ?? whole;
+        const code =
+          entity[1]?.toLowerCase() === 'x'
+            ? parseInt(entity.slice(2), 16)
+            : Number(entity.slice(1));
+        return String.fromCodePoint(code);
+      },
+    );
+    requireKey(source, match.index!);
+  }
+  for (const script of uncommented.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)) {
+    const source = script[1]!;
+    const offset = script.index! + script[0].indexOf('>') + 1;
+    const tree = ts.createSourceFile(
+      'launcher.js',
+      source,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.JS,
+    );
+    const checkArgument = (node: ts.Node): void => {
+      if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
+        requireKey(node.text, offset + node.getStart(tree));
+      else if (ts.isConditionalExpression(node)) {
+        checkArgument(node.whenTrue);
+        checkArgument(node.whenFalse);
+      } else if (ts.isParenthesizedExpression(node)) checkArgument(node.expression);
+    };
+    const visit = (node: ts.Node) => {
+      if (
+        ts.isCallExpression(node) &&
+        node.expression.getText(tree) === 'browserText' &&
+        node.arguments[0]
+      )
+        checkArgument(node.arguments[0]);
+      ts.forEachChild(node, visit);
+    };
+    visit(tree);
+  }
+  return errors;
+}

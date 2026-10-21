@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
+#include "ui/LibraryText.h"
 #include "RoomScreen.h"
 #include "AINames.h"
 #include "CustomGameOtherOptions.h"
@@ -758,9 +759,9 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 	{
 		const auto descriptor = nlohmann::json::parse(*scripted);
 		facts.push_back(
-			field("Seed", label(std::to_string(descriptor.at("seed").get<std::uint32_t>()))));
+			field(Glob2UI::libraryText("Seed"), label(std::to_string(descriptor.at("seed").get<std::uint32_t>()))));
 		if (room->canEditSetup())
-			facts.push_back(button("map/reroll-generator", "Reroll",
+			facts.push_back(button("map/reroll-generator", Glob2UI::libraryText("Reroll"),
 								   [online] { online->rerollScriptGenerator(); }));
 	}
 	if (haveDraft && generated)

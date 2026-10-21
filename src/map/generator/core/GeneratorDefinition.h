@@ -34,4 +34,7 @@ struct GeneratorDefinition
 	std::string packageHash;
 	unsigned apiVersion = 0;
 	std::function<std::string(std::string_view, std::string_view)> translate;
+	// Detached starting settlements can each receive the shared starting-worker count.
+	// Their generator validator must also verify the workforce at each settlement.
+	bool workersPerStartingSwarm = false;
 };

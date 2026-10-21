@@ -6,7 +6,11 @@ direction. There is no other water but a few lakes far from
 every home, so almost none of the forest ever grows back: what a colony cuts stays cut, the map opens as
 the game goes on, and contact happens only where someone has cut through.
 
-- **Homes.** Radius `home-size` (12-24, 20) with `home-pools` (0-8, 5) pools of radius 2.5 on a ring
+- **Homes.** Home centres start on a roomy lattice, then move independently by up to one-sixth
+  of its spacing per axis, so the clearing arrangement is irregular. Moves retain at least 75%
+  of the original nearest-neighbour distance and enough separation for the unchanged home
+  radius and intervening forest. Crowded layouts reject more moves rather than shrinking homes
+  further. The seed determines the offsets and colony assignment. Radius `home-size` (12-30, 24) with `home-pools` (0-8, 5) pools of radius 2.5 on a ring
   at 60% of it, so the whole clearing is within the growth probe's reach of water; two wheat patches
   and a quarry by the central pond and 12 wheat on every pool's shore, and no wood inside (first play:
   "clearing the wood hurts workers"; the forest edge is the woodlot, within the crop guarantee's 32

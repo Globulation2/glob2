@@ -8,8 +8,11 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <Toolkit.h>
 #include <TrueTypeFont.h>
+#include <BidiText.h>
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -73,10 +76,80 @@ int advance(TTF_Font *font, Uint32 ch)
 	GLOB2_REQUIRE(TTF_GetGlyphMetrics(font, ch, &minx, &maxx, &miny, &maxy, &value), SDL_GetError());
 	return value;
 }
+
+bool samePixels(SDL_Surface *first, SDL_Surface *second)
+{
+	if (first->w != second->w || first->h != second->h) return false;
+	using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+	Surface a(SDL_ConvertSurface(first, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+	Surface b(SDL_ConvertSurface(second, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+	GLOB2_REQUIRE(a && b, SDL_GetError());
+	for (int y = 0; y < a->h; ++y)
+		if (std::memcmp(static_cast<const Uint8 *>(a->pixels) + y * a->pitch,
+			static_cast<const Uint8 *>(b->pixels) + y * b->pitch, a->w * 4) != 0) return false;
+	return true;
+}
 } // namespace
 
 TEST_SUITE("FontKerning")
 {
+	TEST_CASE("Arabic and Persian visual-order text is not reordered again by SDL_ttf")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		struct FontProbe : TrueTypeFont
+		{
+			using TrueTypeFont::TrueTypeFont;
+			using TrueTypeFont::font;
+			using TrueTypeFont::rasterFonts;
+		};
+		FontProbe font("data/fonts/sans.ttf", 20);
+		font.setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 255, 255, 255));
+		// Logical Arabic, existing presentation-form Arabic, and Persian. Latin
+		// and digits must retain their own order inside the RTL paragraph.
+		const std::string samples[] = {"التمرير Mac 50", "ﺍﻟﺘﻤﺮﻳﺮ Mac 50", "پیمایش Mac 50"};
+		for (bool reopened : {false, true})
+		{
+			if (reopened) REQUIRE(font.reload());
+			CHECK(TTF_GetFontDirection(font.font) == TTF_DIRECTION_LTR);
+			for (float scale : {1.f, 2.f, 1.5f})
+				for (const auto &logical : samples)
+				{
+					CAPTURE(logical);
+					CAPTURE(scale);
+					CAPTURE(reopened);
+					const auto visual = GAGCore::visualOrder(logical);
+					REQUIRE(visual.find("Mac 50") != std::string::npos);
+					TTF_Font *reference = TTF_OpenFont(fontPath().c_str(), 20 * scale);
+					GLOB2_REQUIRE(reference, SDL_GetError());
+					REQUIRE(TTF_SetFontDirection(reference, TTF_DIRECTION_LTR));
+					TTF_SetFontKerning(reference, TTF_GetFontKerning(font.font));
+					SDL_Surface *expected = TTF_RenderText_Blended(reference, visual.c_str(), 0, {255,255,255,255});
+					GLOB2_REQUIRE(expected, SDL_GetError());
+					auto actual = font.rasterizeString(logical, scale);
+					REQUIRE(actual);
+					CHECK(samePixels(actual->getSDLSurface(), expected));
+					// With HarfBuzz this is the broken behavior: taking already
+					// visual-order text as RTL produces visibly different pixels.
+					int major = 0;
+					TTF_GetHarfBuzzVersion(&major, nullptr, nullptr);
+					if (major > 0)
+					{
+						REQUIRE(TTF_SetFontDirection(reference, TTF_DIRECTION_RTL));
+						SDL_Surface *twice = TTF_RenderText_Blended(reference, visual.c_str(), 0, {255,255,255,255});
+						GLOB2_REQUIRE(twice, SDL_GetError());
+						CHECK_FALSE(samePixels(twice, expected));
+						SDL_DestroySurface(twice);
+					}
+					SDL_DestroySurface(expected);
+					TTF_CloseFont(reference);
+				}
+			for (const auto &[size, raster] : font.rasterFonts)
+				CHECK(TTF_GetFontDirection(raster) == TTF_DIRECTION_LTR);
+		}
+	}
+
 	TEST_CASE("the bundled SDL3_ttf moves the pen for kerned pairs")
 	{
 		// Guards scons/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch in every build that

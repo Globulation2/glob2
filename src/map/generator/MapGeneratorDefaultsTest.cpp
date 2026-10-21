@@ -1,5 +1,8 @@
 #include <nlohmann/json.hpp>
 #include "StartingLayout.h"
+#include "ClearingLandscape.h"
+#include "Homes.h"
+#include "Orbits.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
@@ -51,6 +54,7 @@
 #include <cstdio>
 #include <cstring>
 #include <set>
+#include <map>
 #include <tuple>
 #include <utility>
 
@@ -139,9 +143,12 @@ class MapGeneratorDefaultsTest
 			int lava = 0;
 			for (int y = 0; y < repeat.map.getH(); ++y)
 				for (int x = 0; x < repeat.map.getW(); ++x)
+				{
+					REQUIRE(repeat.map.vertexTerrainAt(x, y) != VOID_HOLE);
 					if (repeat.map.vertexTerrainAt(x, y) == LAVA ||
 						repeat.map.vertexTerrainAt(x, y) == EMBER_FIELD)
 						++lava;
+				}
 			REQUIRE(lava > 0);
 			REQUIRE(repeat.map.requiredTerrainExperiments().has(ExperimentId::LavaTerrain));
 			for (int y = 0; y < repeat.map.getH(); ++y)
@@ -789,7 +796,7 @@ TEST_SUITE("MapGeneratorDefaults")
 		REQUIRE(!failed.randomizeControls(42));
 		REQUIRE(failed.options == impossible.options);
 	}
-	TEST_CASE("Random design defaults resolve reproducibly without changing explicit enums")
+	TEST_CASE("Design defaults and explicit Random resolve reproducibly without changing enums")
 	{
 		for (const std::string id :
 			 {"maze", "canals", "honeycomb-isle", "fingerprint", "caravanserai"})
@@ -814,7 +821,16 @@ TEST_SUITE("MapGeneratorDefaults")
 									: id == "caravanserai" ? "desert"
 														   : "block-shape";
 			const int count = id == "fingerprint" || id == "caravanserai" ? 3 : 2;
-			REQUIRE(r.option(key) == count);
+			REQUIRE(r.option(key) == (id == "honeycomb-isle" ? 1 : count));
+			if (id == "honeycomb-isle")
+			{
+				for (unsigned seed = 1; seed <= 32; ++seed)
+				{
+					r.seed = seed;
+					REQUIRE(resolved(r) == 1);
+				}
+				r.options[key] = count; // Random remains an explicit choice.
+			}
 			for (unsigned seed = 1; seed <= 32; ++seed)
 			{
 				r.seed = seed;
@@ -945,6 +961,8 @@ TEST_SUITE("MapGeneratorDefaults")
 					random.wDec = size.first;
 					random.hDec = size.second;
 					random.seed = seed;
+					if (id == "honeycomb-isle")
+						random.options["block-shape"] = 2;
 					D concrete = random;
 					if (id == "maze")
 						concrete.options["cell-shape"] = MazeOptions(random).cellShape;
@@ -1025,12 +1043,13 @@ TEST_SUITE("MapGeneratorDefaults")
 			int value;
 			std::uint64_t hash;
 		};
+		// Honeycomb revision 4 intentionally removes the historical stone outlines;
+		// its new layout is covered by its contracts and revisioned generator goldens.
 		for (const auto original :
 			 {Original{"maze", "cell-shape", 0, 6132248727033081699ULL},
 			  Original{"fingerprint", "pattern", 0, fingerprint},
 			  Original{"canals", "block-shape", 0, 16622643961647829752ULL},
-			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL},
-			  Original{"honeycomb-isle", "block-shape", 1, 5908701397362810997ULL}})
+			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL}})
 		{
 			D request;
 			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(original.id));
@@ -1087,6 +1106,427 @@ TEST_SUITE("MapGeneratorDefaults")
         }
 #endif
     }
+	TEST_CASE("Shattered Coast stocks expansion clumps with resource controls")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		for (int amount : {0, 100, 300})
+		{
+			D request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf("shattered-coast"));
+			request.seed = 7;
+			for (const char *key : {"wheat-amount", "wood-amount", "stone-amount", "algae-amount"})
+				request.options[key] = amount;
+			Game world(nullptr);
+			const auto result = GenerationService().generate(world, request, true);
+			REQUIRE_MESSAGE(bool(result), result.diagnostic());
+			for (int type : {WHEAT, WOOD, STONE, ALGA})
+			{
+				const std::string prefix = "shattered-coast.expansion." + std::to_string(type);
+				int patches = -1, tiles = -1;
+				for (const auto &record : result.telemetry.records())
+				{
+					if (record.key == prefix + ".clumps")
+						patches = int(std::get<std::int64_t>(record.value));
+					if (record.key == prefix + ".tiles")
+						tiles = int(std::get<std::int64_t>(record.value));
+				}
+				CHECK((patches > 0) == (amount > 0));
+				CHECK(tiles >= 8 * patches);
+				if (!amount)
+					CHECK(tiles == 0);
+			}
+			if (amount == 100)
+				if (const char *baseline = std::getenv("GLOB2_SHATTERED_BASELINE_MAP"))
+				{
+					GAGCore::BinaryInputStream input(GAGCore::openInflatingFileStreamBackend(baseline));
+					Game previous(nullptr);
+					REQUIRE(previous.load(&input));
+					REQUIRE(previous.map.getW() == world.map.getW());
+					REQUIRE(previous.map.getH() == world.map.getH());
+					const MapGeneration::Torus t(world.map);
+					bool sameTerrain = true, retainedDeposits = true, sameHomes = true;
+					int additions = 0;
+					for (int i = 0; i < t.size(); ++i)
+					{
+						const int x = t.remainderX(i), y = i / t.w;
+						sameTerrain &= previous.map.vertexTerrainAt(x, y) == world.map.vertexTerrainAt(x, y);
+						const auto before = previous.map.getResource(i), after = world.map.getResource(i);
+						retainedDeposits &= before.type == NO_RES_TYPE || before == after;
+						if (before == after)
+							continue;
+						++additions;
+						for (int team = 0; team < request.nbTeams; ++team)
+						{
+							const auto *home = previous.teams[team]->myBuildings[0];
+							for (int dy = 0; dy < 4; ++dy)
+								for (int dx = 0; dx < 4; ++dx)
+									sameHomes &= t.chebyshev(x, y, home->posX + dx, home->posY + dy) > 32;
+						}
+					}
+					CHECK(sameTerrain);
+					CHECK(retainedDeposits);
+					CHECK(sameHomes);
+					CHECK(additions > 1000);
+				}
+			if (amount == 100)
+			{
+				for (int tick = 0; tick < 2048; ++tick)
+					world.map.growResources();
+				CHECK(MapGeneration::startingFloorFailure(world.map, request.nbTeams).empty());
+			}
+		}
+	}
+	TEST_CASE("Braided Delta uses coherent fields quarries and mixed orchards")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("braided-delta"));
+		for (int variant = 0; variant < 4; ++variant)
+		{
+			D request;
+			request.setMethodDefaults(definition.legacyId);
+			request.seed = 7;
+			if (variant == 3)
+			{
+				request.wDec = request.hDec = 7;
+				request.options["rejoining-frequency"] = 3;
+			}
+			const int amount = variant == 1 ? 0 : variant >= 2 ? 300 : 100;
+			for (const auto &control : definition.controls)
+				if (control.group == ControlGroup::Resources)
+					request.options[control.id] = amount;
+			Game world(nullptr);
+			const auto result = GenerationService().generate(world, request, true);
+			REQUIRE_MESSAGE(bool(result), result.diagnostic());
+			int islands = 0;
+			for (const auto &record : result.telemetry.records())
+				if (record.key == "braided-delta.islands")
+					islands = int(std::get<std::int64_t>(record.value));
+			const MapGeneration::Torus t(world.map);
+			const auto walk = MapGeneration::walkFromFirstColony(world.map, request.nbTeams, "delta resources", "over the fords");
+			REQUIRE(walk.error.empty());
+			for (const int type : {STONE, CHERRY, ORANGE, PRUNE})
+			{
+				std::vector<unsigned char> mask(t.size(), 0);
+				int count = 0;
+				for (int i = 0; i < t.size(); ++i)
+					count += mask[i] = world.map.getResource(i).type == type;
+				const auto components = MapGeneration::connectedRegions(mask, t.w, t.h, true, MapGeneration::GridNeighbors::Cardinal);
+				const int groups = *std::max_element(components.begin(), components.end()) + 1;
+				CHECK(groups == (amount ? islands : 0));
+				if (type != STONE)
+					CHECK(count == islands * (amount ? std::max(1, 3 * amount / 100) : 0));
+				std::vector<unsigned char> reachable(groups, 0);
+				for (int i = 0; i < t.size(); ++i)
+					if (mask[i])
+						for (const auto &[dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
+							reachable[components[i]] |= walk.steps[t.at(t.remainderX(i) + dx, i / t.w + dy)] >= 0;
+				for (int reached : reachable)
+					CHECK(reached); // Actual finished gathering faces, after every later layer and repair.
+			}
+			CHECK(MapGeneration::startingAccessFailure(world.map, request.nbTeams,
+				{{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}).empty());
+			GenerationContext check(request);
+			REQUIRE(definition.validateWorld(world, check).empty());
+			if (variant == 0)
+			{
+				for (int tick = 0; tick < 2048; ++tick)
+					world.map.growResources();
+				CHECK(definition.validateWorld(world, check).empty());
+				std::vector<std::pair<int, Resource>> oranges;
+				for (int i = 0; i < t.size(); ++i)
+					if (world.map.getResource(i).type == ORANGE)
+					{
+						oranges.emplace_back(i, world.map.getResource(i));
+						world.map.replaceResource(t.remainderX(i), i / t.w, Resource{});
+					}
+				CHECK(definition.validateWorld(world, check).find("fruit groups") != std::string::npos);
+				for (const auto &[tile, resource] : oranges)
+					world.map.replaceResource(t.remainderX(tile), tile / t.w, resource);
+				CHECK(definition.validateWorld(world, check).empty());
+			}
+		}
+	}
+	TEST_CASE("Braided Delta retained generation and overgrowth contracts")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::braidedDeltaChecks();
+	}
+	TEST_CASE("Glacis waterfront crops preserve gates and bare ground")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("glacis"));
+		for (int variant = 0; variant < 5; ++variant)
+		{
+			D request;
+			request.setMethodDefaults(definition.legacyId);
+			request.seed = 7;
+			request.options["bastions"] = 1 + variant % 3;
+			request.options["gates"] = variant == 1 ? 1 : 4;
+			if (variant == 1)
+				request.options["fort-size"] = 32;
+			if (variant == 2)
+				request.options["wheat-amount"] = request.options["wood-amount"] = 300;
+			if (variant == 3)
+				request.options["wheat-amount"] = 0;
+			if (variant == 4)
+				request.options["wood-amount"] = 0;
+			Game world(nullptr);
+			const auto result = GenerationService().generate(world, request, true);
+			REQUIRE_MESSAGE(bool(result), result.diagnostic());
+			std::array<std::map<int, int>, 2> moat;
+			std::array<int, 2> rivers{};
+			int bankWidth = 0;
+			for (const auto &record : result.telemetry.records())
+			{
+				if (record.key == "glacis.moat.bank-width")
+					bankWidth = int(std::get<std::int64_t>(record.value));
+				for (int crop = 0; crop < 2; ++crop)
+				{
+					if (record.key == (crop ? "glacis.moat.wood-planted" : "glacis.moat.wheat-planted"))
+						moat[crop][record.subject] = int(std::get<std::int64_t>(record.value));
+					if (record.key == (crop ? "glacis.rivers.wood-planted" : "glacis.rivers.wheat-planted"))
+						rivers[crop] = int(std::get<std::int64_t>(record.value));
+				}
+			}
+			CHECK(bankWidth == (variant == 1 ? 3 : 5));
+			for (int crop = 0; crop < 2; ++crop)
+			{
+				REQUIRE(moat[crop].size() == size_t(request.nbTeams));
+				const bool enabled = request.options[crop ? "wood-amount" : "wheat-amount"] > 0;
+				for (int team = 0; team < request.nbTeams; ++team)
+				{
+					CHECK((moat[crop][team] > 0) == enabled);
+					CHECK(moat[crop][team] == moat[crop][0]);
+				}
+				CHECK((rivers[crop] > 0) == enabled);
+			}
+			GenerationContext check(request);
+			REQUIRE(definition.validateWorld(world, check).empty());
+			if (variant == 0)
+			{
+				for (int tick = 0; tick < 2048; ++tick)
+					world.map.growResources();
+				CHECK(definition.validateWorld(world, check).empty());
+				std::vector<std::pair<int, Resource>> timber;
+				for (int i = 0; i < world.map.getW() * world.map.getH(); ++i)
+					if (world.map.getResource(i).type == WOOD)
+					{
+						timber.emplace_back(i, world.map.getResource(i));
+						world.map.replaceResource(i % world.map.getW(), i / world.map.getW(), Resource{});
+					}
+				CHECK(definition.validateWorld(world, check).find("moat bank has lost") != std::string::npos);
+				for (const auto &[tile, resource] : timber)
+					world.map.replaceResource(tile % world.map.getW(), tile / world.map.getW(), resource);
+				CHECK(definition.validateWorld(world, check).empty());
+			}
+		}
+	}
+	TEST_CASE("Locust finite food remains dry after home jitter")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::locustFoodChecks();
+	}
+	TEST_CASE("Clearing landscape homes jitter independently while preserving their room")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		for (const auto shape : {std::pair{8, 8}, std::pair{8, 7}, std::pair{7, 8}})
+			for (int teams : {3, 4, 8})
+				for (int seed : {1, 7})
+				{
+					D request;
+					request.setMethodDefaults(GeneratorRegistry::builtins().idOf("old-growth"));
+					request.wDec = shape.first;
+					request.hDec = shape.second;
+					request.nbTeams = teams;
+					request.seed = seed;
+					GenerationContext context(request);
+					const MapGeneration::ClearingLandscapeOptions options{24, 5, 1, 90};
+					const auto layout = MapGeneration::clearingLandscape(request, context, options);
+					REQUIRE_MESSAGE(layout.failure.empty(), layout.failure);
+					const auto lattice = MapGeneration::latticeSites(layout.t.w, layout.t.h, teams, 0, 0).sites;
+					const double originalSpacing = MapGeneration::nearestSiteDistance(layout.t, lattice);
+					CHECK(layout.homeRadius == std::min(24.0, std::floor(originalSpacing / 3 - 5)));
+					CHECK(layout.spacing >= std::max(0.75 * originalSpacing, 3 * (layout.homeRadius + 5)));
+					for (const auto home : layout.homes)
+					{
+						CHECK(home.x >= 0);
+						CHECK(home.x < layout.t.w);
+						CHECK(home.y >= 0);
+						CHECK(home.y < layout.t.h);
+					}
+					if (shape == std::pair{8, 8} && teams == 4 && seed == 7)
+					{
+						const auto pairDistances = [&](const auto &sites)
+						{
+							std::vector<std::int64_t> result;
+							for (size_t a = 0; a < sites.size(); ++a)
+								for (size_t b = a + 1; b < sites.size(); ++b)
+									result.push_back(layout.t.dist2(int(sites[a].x), int(sites[a].y), int(sites[b].x), int(sites[b].y)));
+							std::sort(result.begin(), result.end());
+							return result;
+						};
+						// A global shift or team shuffle leaves these distances unchanged.
+						CHECK(pairDistances(layout.homes) != pairDistances(lattice));
+						GenerationContext repeatContext(request);
+						const auto repeat = MapGeneration::clearingLandscape(request, repeatContext, options);
+						for (int team = 0; team < teams; ++team)
+						{
+							CHECK(layout.homes[team].x == repeat.homes[team].x);
+							CHECK(layout.homes[team].y == repeat.homes[team].y);
+						}
+					}
+				}
+	}
+	TEST_CASE("Plantations populate every owned island with the starting workers")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("plantations"));
+		REQUIRE(definition.workersPerStartingSwarm);
+		for (int id : GeneratorRegistry::builtins().methods())
+			CHECK(GeneratorRegistry::builtins().at(id).workersPerStartingSwarm == (id == definition.legacyId));
+		for (int workers : {1, 4, 8})
+			for (int islands : {1, 3, 4})
+				for (int causeways : {0, 1})
+				{
+					D request;
+					request.setMethodDefaults(definition.legacyId);
+					request.wDec = request.hDec = 8;
+					request.nbWorkers = workers;
+					request.seed = 7;
+					request.options["islands-per-colony"] = islands;
+					request.options["causeways"] = causeways;
+					request.options["outpost-inns"] = causeways;
+					Game world(nullptr);
+					const auto result = GenerationService().generate(world, request, true);
+					REQUIRE_MESSAGE(bool(result), result.diagnostic());
+					for (int team = 0; team < request.nbTeams; ++team)
+					{
+						int swarms = 0, totalWorkers = 0;
+						for (const auto *unit : world.teams[team]->liveUnits.entries())
+							if (unit && unit->typeNum == WORKER)
+								++totalWorkers;
+						for (const auto *building : world.teams[team]->liveBuildings.entries())
+							if (building && building->typeNum == world.buildingsTypes.getStartingBuildingTypeNum())
+							{
+								++swarms;
+								int nearby = 0;
+								for (const auto *unit : world.teams[team]->liveUnits.entries())
+									if (unit && unit->typeNum == WORKER &&
+										MapGeneration::touchesStartingFootprint(unit->posX, unit->posY,
+											building->posX, building->posY, building->type->width, building->type->height,
+											world.map.getMaskW(), world.map.getMaskH()))
+										++nearby;
+								CHECK(nearby == workers);
+							}
+						CHECK(swarms == islands);
+						CHECK(totalWorkers == workers * swarms);
+					}
+					GenerationContext check(request);
+					REQUIRE(definition.validateWorld(world, check).empty());
+					const auto tiles = MapGeneration::unitTilesByTeam(world.map, request.nbTeams);
+					const int tile = tiles[0].back(), x = tile % world.map.getW(), y = tile / world.map.getW();
+					const auto id = world.map.getGroundUnit(x, y);
+					world.map.setGroundUnit(x, y, NOGUID);
+					CHECK(definition.validateWorld(world, check).find("starting workers") != std::string::npos);
+					world.map.setGroundUnit(x, y, id);
+					CHECK(definition.validateWorld(world, check).empty());
+					// The ordinary per-colony contract still rejects the multiplied population.
+					auto ordinary = definition;
+					ordinary.workersPerStartingSwarm = false;
+					CHECK(validateGeneratedWorld(world, request, ordinary).empty() == (islands == 1));
+				}
+	}
+	TEST_CASE("Coral expansion courts have sealed grass and usable building room")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("coral"));
+		for (const auto shape : {std::pair{8, 8}, std::pair{9, 8}, std::pair{8, 9}})
+			for (int roads : {0, 1})
+			{
+				D request;
+				request.setMethodDefaults(definition.legacyId);
+				request.wDec = shape.first;
+				request.hDec = shape.second;
+				request.seed = 7;
+				request.options["sand-roads"] = roads;
+				for (const auto &control : definition.controls)
+					if (control.group == ControlGroup::Resources)
+						request.options[control.id] = control.maximum;
+				Game world(nullptr);
+				const auto result = GenerationService().generate(world, request, true);
+				REQUIRE_MESSAGE(bool(result), result.diagnostic());
+				std::map<int, std::pair<int, int>> courts;
+				for (const auto &record : result.telemetry.records())
+				{
+					if (record.key == "coral.expansion.actual-per-fan")
+						REQUIRE(std::get<std::int64_t>(record.value) == 2);
+					if (record.key == "coral.expansion.x")
+						courts[record.subject].first = int(std::get<std::int64_t>(record.value));
+					if (record.key == "coral.expansion.y")
+						courts[record.subject].second = int(std::get<std::int64_t>(record.value));
+				}
+				REQUIRE(courts.size() == size_t(2 * request.nbTeams));
+				const auto emptyCourts = [&]()
+				{
+					for (const auto &[id, centre] : courts)
+						for (int dy = -4; dy < 4; ++dy)
+							for (int dx = -4; dx < 4; ++dx)
+								if (dx * dx + dy * dy < 16 && (dx + 1) * (dx + 1) + dy * dy < 16 &&
+									dx * dx + (dy + 1) * (dy + 1) < 16 &&
+									(dx + 1) * (dx + 1) + (dy + 1) * (dy + 1) < 16)
+								{
+									const int x = centre.first + dx, y = centre.second + dy;
+									REQUIRE(world.map.isGrass(x, y));
+									REQUIRE(world.map.getResource(x, y).type == NO_RES_TYPE);
+									REQUIRE(world.map.canResourcesGrow(x, y));
+								}
+				};
+				emptyCourts();
+				GenerationContext check(request);
+				const auto [x, y] = courts.begin()->second;
+				world.map.setResourceByIndex(x, y, WHEAT, 1);
+				REQUIRE(definition.validateWorld(world, check).find("clear grass interior") != std::string::npos);
+				world.map.setNoResource(x, y, 1);
+				REQUIRE(world.map.vertexTerrainAt(x + 4, y) == SAND);
+				world.map.setVertexTerrain(x + 4, y, GRASS);
+				REQUIRE(definition.validateWorld(world, check).find("broken sand ring") != std::string::npos);
+				world.map.setVertexTerrain(x + 4, y, SAND);
+				REQUIRE(definition.validateWorld(world, check).empty());
+				if (shape == std::pair{8, 8} && roads == 1)
+				{
+					for (int tick = 0; tick < 4096; ++tick)
+						world.map.growResources();
+					emptyCourts();
+				}
+			}
+		D off;
+		off.setMethodDefaults(definition.legacyId);
+		off.options["expansion-nodes"] = 0;
+		Game unchanged(nullptr);
+		const auto result = GenerationService().generate(unchanged, off, true);
+		REQUIRE_MESSAGE(bool(result), result.diagnostic());
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "coral.expansion.actual-per-fan")
+				REQUIRE(std::get<std::int64_t>(record.value) == 0);
+			REQUIRE(record.key != "coral.expansion.x");
+		}
+
+	}
+	TEST_CASE("Honeycomb isle contracts [slow]")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::honeycombIsleContracts();
+	}
     TEST_CASE("Bastion Keys contracts")
 	{
 		DefaultsFixture fixture;
@@ -1143,6 +1583,58 @@ TEST_SUITE("MapGeneratorDefaults")
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::faultedCityContracts();
+	}
+	TEST_CASE("Portage Lakes wheat opens into neighboring meadows")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("portage-lakes"));
+		for (int variant = 0; variant < 4; ++variant)
+		{
+			D request;
+			request.setMethodDefaults(definition.legacyId);
+			request.seed = 7;
+			request.options["wheat-amount"] = variant == 1 ? 0 : variant == 2 ? 300 : 100;
+			if (variant == 3)
+			{
+				request.wDec = request.hDec = 6;
+				request.nbTeams = 2;
+			}
+			Game world(nullptr);
+			const auto result = GenerationService().generate(world, request, true);
+			REQUIRE_MESSAGE(bool(result), result.diagnostic());
+			const MapGeneration::Torus t(world.map);
+			std::vector<unsigned char> grass(t.size());
+			int sand = 0;
+			for (int i = 0; i < t.size(); ++i)
+			{
+				grass[i] = world.map.isGrass(t.remainderX(i), i / t.w);
+				sand += world.map.isSand(t.remainderX(i), i / t.w);
+			}
+			const auto groups = MapGeneration::connectedRegions(grass, t.w, t.h, true, MapGeneration::GridNeighbors::Eight);
+			std::map<int, int> area, wheat;
+			for (int i = 0; i < t.size(); ++i)
+				if (groups[i] >= 0)
+				{
+					++area[groups[i]];
+					wheat[groups[i]] += world.map.getResource(i).type == WHEAT;
+				}
+			bool open = false;
+			for (const auto &[group, count] : wheat)
+				open |= count > 0 && area[group] >= (variant == 3 ? 300 : 1000);
+			CHECK(open);
+			CHECK(sand > 0);
+			GenerationContext context(request);
+			CHECK(definition.validateWorld(world, context).empty());
+			if (variant == 0)
+			{
+				setSyncRandSeed(4211);
+				for (int tick = 0; tick < 4096; ++tick)
+					world.map.growResources();
+				const auto error = definition.validateWorld(world, context);
+				CHECK_MESSAGE(error.empty(), error);
+			}
+		}
 	}
 	TEST_CASE("Portage Lakes contracts [slow]")
 	{

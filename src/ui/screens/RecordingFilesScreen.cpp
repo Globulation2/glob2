@@ -15,18 +15,18 @@ Element RecordingFilesScreen::build(const Presentation &p)
 {
 	if (!deleting.empty())
 	{
-		return page("Delete recording?",paragraph("The recording and its metadata will be removed."),
-			actions({{"cancel","Cancel",[this] { deleting.clear(); invalidate(); }},
-				{"delete","Delete",[this] { Recording::deleteFile(deleting); deleting.clear(); invalidate(); }}},p),p);
+		return page(tr("[recording delete confirm]"),paragraph(tr("[recording delete warning]")),
+			actions({{"cancel",tr("[Cancel]"),[this] { deleting.clear(); invalidate(); }},
+				{"delete",tr("[recording delete]"),[this] { Recording::deleteFile(deleting); deleting.clear(); invalidate(); }}},p),p);
 	}
 	const auto files = Recording::filesStatus();
 	const auto recording = Recording::recorder().status();
 	const bool idle = recording.state != Recording::State::Starting && recording.state != Recording::State::Recording && recording.state != Recording::State::Finalizing;
 	std::vector<Element> items;
-	if (files.busy) items.push_back(paragraph("Working…"));
+	if (files.busy) items.push_back(paragraph(tr("[recording working]")));
 	if (!files.error.empty()) items.push_back(paragraph(files.error));
 	if (!error.empty()) items.push_back(paragraph(error));
-	if (files.files.empty() && !files.busy) items.push_back(paragraph("No recordings yet."));
+	if (files.files.empty() && !files.busy) items.push_back(paragraph(tr("[recording none]")));
 	for (const auto &file : files.files)
 	{
 		auto value = std::filesystem::u8path(file.path).filename().u8string();
@@ -35,23 +35,23 @@ Element RecordingFilesScreen::build(const Presentation &p)
 		ButtonOptions enabled; enabled.enabled = !files.busy;
 		if (file.recoverable)
 		{
-			entry.push_back(paragraph("Interrupted recording")); enabled.enabled &= idle;
-			entry.push_back(button("recover/"+file.path,"Recover",[this,path=file.path] { Recording::recoverFile(path); invalidate(); },enabled));
+			entry.push_back(paragraph(tr("[recording interrupted]"))); enabled.enabled &= idle;
+			entry.push_back(button("recover/"+file.path,tr("[recording recover]"),[this,path=file.path] { Recording::recoverFile(path); invalidate(); },enabled));
 		}
 		else
 		{
-			for (const auto &[suffix,label] : {std::pair{"","Export video"},std::pair{".json","Export metadata"},std::pair{".events.jsonl","Export events"}})
-				entry.push_back(button("export/"+file.path+suffix,label,[this,path=file.path+suffix]
+			for (const auto &[suffix,label] : {std::pair{"","[recording export video]"},std::pair{".json","[recording export metadata]"},std::pair{".events.jsonl","[recording export events]"}})
+				entry.push_back(button("export/"+file.path+suffix,tr(label),[this,path=file.path+suffix]
 				{
-					if (!GAGCore::ApplicationHost::exportFilePath(path)) error = "Could not export recording.";
+					if (!GAGCore::ApplicationHost::exportFilePath(path)) error = tr("[recording export failed]");
 					invalidate();
 				},enabled));
 		}
 		enabled.enabled &= idle;
-		entry.push_back(button("delete/"+file.path,"Delete recording",[this,path=file.path] { deleting=path; invalidate(); },enabled));
+		entry.push_back(button("delete/"+file.path,tr("[recording delete action]"),[this,path=file.path] { deleting=path; invalidate(); },enabled));
 		items.push_back(card(column(std::move(entry),{p.pt(6)})));
 	}
-	return page("Recordings",scroll("recordings/files",column(std::move(items),{p.pt(12)})),
-		actions({{"refresh","Refresh",[this] { Recording::refreshFiles(); invalidate(); },!files.busy},
-			{"done",tr("[done]"),[this] { endExecute(0); }}},p),p);
+	return page(tr("[recordings]"),scroll("recordings/files",column(std::move(items),{p.pt(12)})),
+		actions({{"refresh",tr("[recording refresh]"),[this] { Recording::refreshFiles(); invalidate(); },!files.busy},
+			{"done",tr("[Done]"),[this] { endExecute(0); }}},p),p);
 }

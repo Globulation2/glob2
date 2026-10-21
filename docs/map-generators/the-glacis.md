@@ -2,7 +2,7 @@
 
 Star forts in open country. Every colony starts, with an ordinary swarm and the lobby's workers, in
 the courtyard of a bastioned star fort: an angular stone trace of arrowhead bastions, a water moat
-following every salient and re-entrant, a pale covered way, and the glacis itself - a broad ring
+following every salient and re-entrant, a crop-lined outer bank, a pale covered way, and the glacis itself - a broad ring
 of bare, cleared grass with a sand foot - standing out against the woods that crowd up to it.
 Sand tracks leave four gates over causeways; between the forts run meandering streams, crossed by
 the country roads at contested fords.
@@ -13,7 +13,7 @@ the country roads at contested fords.
   `bastions` (Mixed, Four-pointed, Five-pointed, Six-pointed; Mixed draws one per map) chooses the
   trace, whose curtain radius is 0.62 to 0.68 of the tip (a slender 0.56 trace read best but left a
   courtyard too small to grow a town in). Outwards from the trace: a wall 2.2 tiles thick, a berm
-  of 2.5 (the moat's beach never reaches a wall tile), three water corners of moat, two sand
+  of 2.5 (the moat's beach never reaches a wall tile), three water corners of moat, up to five corners of grass bank, two sand
   corners of covered way, `glacis-width` (4-14, 10) tiles of glacis and one sand corner of foot.
   `gates` (1-4, 4) open in the curtains facing front, back and the flanks, each a three-tile gap,
   a five-corner causeway and a three-corner track to the foot. `starting-towers` (0-3, 0) raises
@@ -30,6 +30,14 @@ the country roads at contested fords.
   Cisterns stay at the back so they do not interrupt the contiguous wheat rectangle
   nearest the swarm: Numbi's `estimateFood` scans that rectangle rather than the
   entire food inventory, making patch continuity and orientation relevant.
+- **Moat banks.** Where the original layout leaves room, an outer grass bank follows the moat,
+  with wheat and wood in clumps across 65% of its plantable ground at default amounts. The
+  same noise pattern repeats in each fort's frame, giving every colony the same frontage.
+  Gate causeways remain sand through the bank; the covered way outside it prevents crops from
+  reaching the bare glacis. The bank uses only spare space after normal fort/glacis sizing:
+  it narrows from five corners when needed and is omitted below three. Existing courtyards
+  and the minimum country gap are preserved. Wheat and wood amounts scale these crops; zero
+  disables the corresponding moat crop without removing the ordinary starter garden floors.
 - **The country.** Every tile belongs to its nearest fort; along every boundary of more than 24
   tiles between two forts' country runs a stream, the boundary walk displaced by two sine waves of
   wavelength and phase drawn per stream and tapered to nothing at its ends, three corners wide.
@@ -38,15 +46,18 @@ the country roads at contested fords.
   within eight tiles of a glacis foot). A pond per 1,800 country tiles, grown irregular round a
   noise key, waters fields out in the country. Forest covers 30% of the country (scaled by wood),
   densest against the glacis foot; `furnishGround` lays fields, outcrops and groves; every ford
-  has three fruit groves and a quarry on both banks.
+  has three fruit groves and a quarry on both banks. Extra wheat and wood clumps cover 30%
+  of the remaining fertile ground within seven tiles of actual streams, split between the two
+  crops and scaled by their amounts. These patches keep off roads, forts and existing prizes;
+  moats and country ponds do not count as streams.
 - **Negotiation.** When the lattice is too tight for two forts' zones and 16 tiles of country the
   glacis narrows by two down to 4, then the fort by two down to 20, then the map is refused;
   garden floors scale with the fort (never below 0.3 of the default's). Supported: 256x256 up to
   6 colonies, 512x512 up to 12, 128x128 up to 2, rectangles in proportion.
 - **Checked, not assumed.** Every wall tile stone and every gate open (`wallStanding`); no way
   into a courtyard but its gates (`pieceLeak`); nothing planted on a glacis and no pure grass
-  joining a glacis to grass a crop could spread from; the gardens sealed from the town (a flood of
-  the finished grass); every colony with the same number of towers; every colony walkable from the
+  joining a glacis to grass a crop could spread from; the gardens sealed from the town and moat banks sealed from other grass (floods of
+  the finished grass); both crops present on every planted moat bank when their amounts are nonzero; every colony with the same number of towers; every colony walkable from the
   first; wheat within 24 and wood within 32 of every colony (`startingAccessFailure`).
 
 ## Implementation source

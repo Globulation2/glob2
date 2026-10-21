@@ -25,14 +25,13 @@ Map dimensions use the shared 64–512 power-of-two controls, including rectangl
 must fit the shared clearing geometry; excessive counts receive an explicit rejection. The
 vacancy fallback rescues some awkward seven- and eleven-colony rectangles but cannot fit
 colonies onto genuinely cramped 64-tile shapes. Seed
-variation changes the fields, shorelines, lake placement and assignment of colonies to homes.
+variation changes home positions, fields, shorelines, lake placement and assignment of colonies to homes.
 Asymmetric layouts are not claimed to be exactly fair. The candidate scorer gives fertility
 zero weight because renewable food is deliberately absent.
 
 ## Implementation
 
-`ClearingLandscape` shares Old Growth's layout construction, preserving its arithmetic, seed
-streams and traversal order for already playable requests. Locust opts into a vacancy
+`ClearingLandscape` shares Old Growth's layout construction, sharing its clearing and lake geometry. Revision 6 adds independent home-position jitter to both maps. Locust opts into a vacancy
 fallback only when the ordinary clearing geometry cannot fit; Old Growth does not. Locust
 has its own furnishing and final validation. Common crop
 repairs are deliberately avoided because they could insert renewable wheat; trail and room
@@ -47,9 +46,13 @@ amounts lengthen that deadline. Human play is needed to judge that pacing.
 
 ### Shared geometry numbers
 
-Homes use Old Growth's roomiest lattice, dealt randomly to team indices. Their effective radius
-is the smaller of the requested radius and `floor(spacing / 3 - 3 - 2)`: one-third of spacing,
-minus a three-tile clearing margin and two-tile sand containment ring. If the shared pond/swarm
+Homes use Old Growth's roomiest lattice as a spacing budget. Their effective radius
+is the smaller of the requested radius and `floor(originalSpacing / 3 - 3 - 2)`: one-third of spacing,
+minus a three-tile clearing margin and two-tile sand containment ring. After sizing, each home
+gets an independent seed-based offset of up to one-sixth of the lattice spacing on each axis,
+then sites are dealt to team indices. A move must keep at least 75% of the original nearest
+spacing and three times the sum of the effective home radius and its five-tile clearing/sand margin. This preserves home size
+and separating fields; crowded maps reject unsafe offsets. If the shared pond/swarm
 room test fails, Locust alone tries the opt-in vacancy lattice before rejecting. The fallback
 compares the ordinary team-count lattice with grids of one to four extra sites. At each removal,
 it picks the site whose omission gives the largest minimum wrapped whole-tile separation;
@@ -61,13 +64,13 @@ The sand ring prevents shoreline wood from spreading
 across the entire home boundary into the exterior fields.
 
 The home outline uses 15% radial variation; its central pond uses 30%. Their shape and placement
-are identical to the existing shared Old Growth design. Optional distant lakes keep 20 tiles
+follow the same shared Old Growth design around the jittered centres. Optional distant lakes keep 20 tiles
 from settled clearings and other lake shores: this separates the lake's 15-tile irrigation reach
 from homes and makes lakes read as distinct landmarks. Lake count scales with area/16384
 (128×128), rounded to the nearest integer. A seed is chosen at greatest remaining clearance;
 water grows by distance priority in thousandths of a tile, perturbed by up to 2.5 tiles of
 periodic noise. The noise priority uses `2500 / 65536` because its samples span 0–65535.
-Existing arithmetic and stream names are preserved for Old Growth compatibility.
+Home offsets use the separate `growth-home-jitter` stream; the outline and pool streams remain independent.
 
 ### Fallback and error policy
 
@@ -103,8 +106,8 @@ Existing arithmetic and stream names are preserved for Old Growth compatibility.
   floods from actual workers with the engine's non-swimmer predicate and reports the first
   unmet rule with colony and observed distance/site count. It never plants a repair resource.
 
-Existing callers retain their existing repair behavior. Only Old Growth is redirected through
-an extracted implementation, so its golden fingerprints must remain unchanged.
+Existing callers retain their existing repair behavior. Old Growth and Locust share
+the layout, so clearing-position changes are versioned in both generators.
 
 ### Tuning from retained failures
 

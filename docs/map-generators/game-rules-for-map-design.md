@@ -360,7 +360,7 @@ it rests on, each verified in the source:
   (`isFreeForGroundUnit`, or `isFreeForAirUnit` for an explorer); `level` (0 to 3) applies to
   every ability. A team holds 1024 units and 1024 buildings.
 - **The structural check counts only WORKER units**, against the lobby's "Starting workers";
-  granted warriors and explorers pass freely.
+  Plantations applies that count per starting swarm. Granted warriors and explorers pass freely.
 - **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
   move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
   included: a map that forces long detours round rows, walls or crops can starve an army on its way

@@ -45,10 +45,11 @@ were counts of their own until that audit and are percentages since.
 | Carousel | Every home's ambient fields, the farms' wheat and woodlots, the courts' and the plaza orchard's fruit, and the lagoon's algae; the walls' stone and the starting towers are unscaled (homes have no separate kit) | Sand roads (on): off, the corridors and spokes are grass from wall to wall |
 | Amphitheatre | Every territory's ambient fields and grove, the arena's groves and terrace outcrops, and the bays' algae; every home's kit, the walls' stone and the starting towers are unscaled | None |
 | Switchbacks | Every home's ambient fields and grove, the farms' wheat and woodlots, the plateau's orchard, and the algae; the mountains' stone and the starting towers are unscaled (homes have no separate kit) | Sand roads (on): off, the trails are grass from wall to wall |
-| The Glacis | The wadi banks' wheat and wood, the plain's outcrops, the groves beside the fords and the wadis' algae; every compound's well-side kit, quarry, walls, stock and starting towers are unscaled | Garrison (on): off, a compound starts with its colonists only |
+| The Glacis | Garden coverage above starter floors, moat and riverbank wheat/wood, country woodland/fields/outcrops, ford groves and algae; garden starter floors and structural walls are unscaled | Starting tower level (off by default): matching towers inside each fort |
 | Allotments | The field lots' wheat and wood, the woodlots, the quarry and grove lots and the ditches' algae; every city's sites, wood stacks, stock and home fields are unscaled | Garrison (on) |
 | Caravanserai | The outposts' quarry, orchard and algae; every capital's fields, stock and towers, and the oases' and outposts' wheat, are unscaled | Garrison (on) |
 | Continents | Every kind of land's kit (`scaledBiome`): its farmland's wheat and wood shares, its dry reserve, its outcrops, its groves, and its cover (wood over forest, stone over the ranges); the shallows' algae; the islets' prizes are drawn unscaled and every colony's kit is unscaled. `oases` (0-200) scales the pond dug for a colony that starts with no water in reach | Mountain ranges (on): off, a range is savanna; Great rivers (on); Islets (on) |
+| Braided Delta | Two wheat-field and two woodland target reaches per island, compact mixed orchards, island quarries and algae; starter wheat/wood budgets remain at zero | Resource amounts scale coherent groups; towns and sand ford approaches remain clear |
 | Braided river | Every bar's farmland and the terraces' thin bank-strip farmland, the dry terraces' woodlots and outcrops, the deep bars' fruit groves and the channels' algae; every home's kit, every promised bar's wheat and wood, the bluffs and the moraine are unscaled | Moraine hummocks (on): off, the terrace edges are open bank. Dry patches (12): the share of the terraces' inland grass turned to sand patches, 0 for the plain sheet of grass |
 
 `scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
@@ -211,7 +212,28 @@ or touches the menu's live colony. Named generation streams remain request-owned
 
 The structural check after generation (`validateGeneratedWorld`) requires every colony to hold a
 swarm and exactly as many WORKER units as the lobby's shared "Starting workers" control (1 to 8).
-Grant additional non-worker units only when the landscape explicitly requires
-them; the shared worker count remains authoritative.
+Plantations applies that count to each starting swarm instead, giving every owned island
+its own workforce; its validator also checks the count on each island. Generators opt into
+this through `GeneratorDefinition::workersPerStartingSwarm`. Grant additional non-worker
+units only when the landscape explicitly requires them.
 
 Related: [map generators](README.md).
+
+### Shattered Coast expansion resources
+
+Shattered Coast revision 7 retains the directional home deposits and all opening
+repairs, then stocks the rest of the coastline with connected wheat, wood, stone
+and algae clumps. Every new tile stays outside a 32-tile buffer around each 4×4
+starting swarm. Neither terrain nor existing deposits are replaced. Crop clumps
+require positive fertility; isolated pockets with fewer than eight eligible tiles
+are skipped. Anchors are at least 12 tiles apart, with a maximum clump radius of
+five tiles, leaving open ground between destinations.
+
+At 100%, the expansion target is one wheat clump per 700 available grass tiles,
+one wood clump per 900, one quarry per 2,200 and one algae clump per 1,600 available
+water tiles. Their tile budgets are 40, 32, 12 and 12 respectively; coastlines can
+limit actual size. Existing resource controls scale the number of clumps, with
+zero disabling that expansion layer. Telemetry reports targets, placed clumps,
+tiles and space-limited shortfalls. Ordinary crop growth remains enabled: these
+are initial expansion destinations, not permanent clearings or promised equal
+shares between colonies.

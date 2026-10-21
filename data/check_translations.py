@@ -21,7 +21,173 @@ OPTIONAL_BLANKS = {
 }
 KEY = re.compile(r'\[[^\r\n]+\]\Z')
 PLACEHOLDER = re.compile(r'%[0-9]+')
-LITERAL_LOOKUP = re.compile(r'getString(?:InLang)?\s*\(\s*"(\[[^"\n]*\])"')
+# Tokenize comments, literals and punctuation together so comments and quoted
+# examples cannot masquerade as code. Adjacent C++ string literals are joined.
+CPP_TOKEN = re.compile(
+    r'//[^\n]*|/\*.*?\*/|R"(?P<delimiter>[^ ()\\\t\r\n]{0,16})\(.*?\)(?P=delimiter)"'
+    r'|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[A-Za-z_][A-Za-z_0-9]*|[^\s]', re.S)
+
+
+def cpp_tokens(text):
+    tokens = []
+    line, previous_end = 1, 0
+    for match in CPP_TOKEN.finditer(text):
+        line += text.count("\n", previous_end, match.start())
+        previous_end = match.start()
+        token = match.group()
+        if token.startswith(('//', '/*')):
+            continue
+        value = None
+        if token.startswith('R"'):
+            value = token[token.index('(') + 1:-(len(match['delimiter']) + 2)]
+        elif token.startswith('"'):
+            # Translation keys use plain UTF-8 with occasional escaped quotes.
+            value = re.sub(r'\\(["\\])', r'\1', token[1:-1])
+        if value is not None and tokens and tokens[-1][1] is not None:
+            previous = tokens.pop()
+            tokens.append((previous[0] + token, previous[1] + value, previous[2]))
+        else:
+            tokens.append((token, value, line))
+    return tokens
+
+
+def argument_groups(tokens, start):
+    """Return top-level arguments of a call or aggregate initializer."""
+    pairs = {'(': ')', '{': '}', '[': ']'}
+    stack = [pairs[tokens[start][0]]]
+    groups, group = [], []
+    for token in tokens[start + 1:]:
+        spelling = token[0]
+        if spelling == stack[-1]:
+            stack.pop()
+            if not stack:
+                return groups + [group]
+        elif spelling in pairs:
+            stack.append(pairs[spelling])
+        if spelling == ',' and len(stack) == 1:
+            groups.append(group)
+            group = []
+        else:
+            group.append(token)
+    return []
+
+
+def expression_literals(tokens):
+    """Literal branches at expression level, excluding nested call arguments."""
+    depth = 0
+    for spelling, value, line in tokens:
+        if spelling in ('(', '{', '['):
+            depth += 1
+        elif spelling in (')', '}', ']'):
+            depth -= 1
+        elif depth == 0 and value is not None:
+            yield value, line
+
+
+def source_keys(path):
+    """Find literal keys, including tables/wrappers, and settings conventions.
+
+    This is deliberately a lexical contract, not a C++ evaluator. Computed IDs,
+    authored content and hard-coded UI prose still need contextual review.
+    """
+    tokens = cpp_tokens(path.read_text(encoding='utf-8'))
+    found = {(value, line) for _, value, line in tokens
+             if value is not None and KEY.fullmatch(value)}
+    for index, (name, _, _) in enumerate(tokens[:-1]):
+        prefix = {'musicText': 'music ', 'customAIText': '', 'libraryText': 'library '}.get(name)
+        if prefix is None or tokens[index + 1][0] != '(':
+            continue
+        args = argument_groups(tokens, index + 1)
+        if args:
+            for value, line in expression_literals(args[0]):
+                if value and not any(c in value for c in '[]'):
+                    found.add(('[' + prefix + value + ']', line))
+    if path.name.startswith('SettingsScreen') and 'settings' in path.parts:
+        # These helpers translate label/help through SettingsScreen::tr.
+        positions = {'tr': (0,), 'section': (0,), 'toggle': (1, 2),
+                     'choice': (1, 2), 'effect': (1, 2),
+                     'appearance': (1, 2, 4, 5), 'themeChoice': (1, 2),
+                     'ScrollSlider': (1, 2)}
+        for index, (name, _, _) in enumerate(tokens[:-1]):
+            if name not in positions or tokens[index + 1][0] not in ('(', '{'):
+                continue
+            if index and tokens[index - 1][0] == ':':
+                continue  # Glob2UI::tr takes complete keys, not settings prose.
+            args = argument_groups(tokens, index + 1)
+            for position in positions[name]:
+                if position < len(args):
+                    for value, line in expression_literals(args[position]):
+                        if value and not any(c in value for c in '[]'):
+                            found.add(('[settings ' + value + ']', line))
+        # Category names are translated by indexing this fixed array.
+        for index, (name, _, _) in enumerate(tokens[:-4]):
+            if name == 'names' and [t[0] for t in tokens[index + 1:index + 5]] == ['[', ']', '=', '{']:
+                for group in argument_groups(tokens, index + 4):
+                    for _, value, line in group:
+                        if value:
+                            found.add(('[settings ' + value + ']', line))
+    if path.name == 'MetricCatalog.cpp':
+        for index, token in enumerate(tokens[:-3]):
+            if token[0] == '.' and tokens[index + 1][0] == 'id' and tokens[index + 2][0] == '=':
+                _, value, line = tokens[index + 3]
+                if value:
+                    found.update((('[stat ' + value + suffix + ']', line)
+                                  for suffix in ('', ' about')))
+    if path.name == 'ExperimentalFeatures.cpp':
+        for index, token in enumerate(tokens[:-6]):
+            if token[0] == '{' and tokens[index + 1][0] == 'ExperimentId':
+                # {ExperimentId::Name, "stable-id", "label", "help"}
+                args = argument_groups(tokens, index)
+                if len(args) >= 4 and len(args[1]) == 1 and args[1][0][1]:
+                    _, value, line = args[1][0]
+                    found.update((('[experiment ' + value + suffix + ']', line)
+                                  for suffix in ('', ' help')))
+    return sorted(found, key=lambda item: (item[1], item[0]))
+
+
+
+def source_ui_literals(path):
+    """Find direct prose in frontend controls, action tables and map overlays.
+
+    These argument positions belong to the frontend helpers. Other subsystems
+    can have unrelated functions with the same names, so scope them explicitly.
+    """
+    if not any(part in path.parts for part in ('ui', 'hud', 'hive', 'screens', 'overlay')):
+        return []
+    positions = {'button': 1, 'paragraph': 0, 'caption': 0, 'label': 0,
+                 'page': 0, 'heading': 0, 'field': 0, 'drawString': 3}
+    technical = {'.opus', 'CC0-1.0', 'CC-BY-4.0', 'CC-BY-SA-4.0'}
+    tokens = cpp_tokens(path.read_text(encoding='utf-8'))
+    found = set()
+
+    def inspect(expression):
+        for value, line in expression_literals(expression):
+            plain = re.sub(r'\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})', '', value)
+            if value not in technical and re.search(r'[A-Za-z]{2}', plain) and not value.startswith('['):
+                found.add((value, line))
+
+    for index, (name, _, _) in enumerate(tokens[:-2]):
+        if name == 'actions':
+            start = index + 1
+            if tokens[start][0] in ('(', '='):
+                start += 1
+            if tokens[start][0] == '{':
+                for entry in argument_groups(tokens, start):
+                    if entry and entry[0][0] == '{':
+                        args = argument_groups(entry, 0)
+                        if len(args) > 1:
+                            inspect(args[1])
+        if tokens[index + 1][0] != '(':
+            continue
+        if name not in positions and name != 'choice':
+            continue
+        args = argument_groups(tokens, index + 1)
+        if name == 'choice':
+            if len(args) > 1 and args[1] and args[1][0][0] == '{':
+                inspect(args[1][1:-1])
+        elif positions[name] < len(args):
+            inspect(args[positions[name]])
+    return sorted(found, key=lambda item: (item[1], item[0]))
 
 
 def read_lines(path):
@@ -127,18 +293,33 @@ def audit(root=ROOT):
         for name in incomplete:
             if not name.startswith('*') and languages.get(name, {}).get('untranslated'):
                 errors.append(f'{name}: incomplete language is marked complete')
-    # Catch literal lookups; dynamically composed building/event keys need
-    # contextual review and are deliberately not guessed by this scanner.
+    source_files = source_references = 0
+    # Full literal tokens catch keys passed through wrappers, arrays, ternaries,
+    # multiline calls and adjacent literals as well as direct getString calls.
     for directory in ('src', 'libgag'):
         for path in sorted((root / directory).rglob('*')):
-            if path.suffix not in ('.cpp', '.h'):
+            if path.suffix not in ('.cpp', '.h', '.hpp', '.cc', '.cxx'):
                 continue
-            for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
-                if line.lstrip().startswith('//'):
-                    continue
-                for key in LITERAL_LOOKUP.findall(line):
-                    if key not in key_set:
-                        errors.append(f'{path.relative_to(root)}:{number}: unknown translation key {key}')
+            if 'Test' in path.stem or 'Harness' in path.stem:
+                continue
+            references = source_keys(path)
+            for text, number in source_ui_literals(path):
+                errors.append(f'{path.relative_to(root)}:{number}: unlocalized UI text {text!r}')
+            source_files += 1
+            source_references += len(references)
+            for key, number in references:
+                if key not in key_set:
+                    errors.append(f'{path.relative_to(root)}:{number}: unknown translation key {key}')
+    themes = root / 'data/themes/index.json'
+    if themes.exists():
+        try:
+            theme_ids = json.loads(themes.read_text(encoding='utf-8'))['themes']
+            for theme in theme_ids:
+                key = '[theme ' + theme + ']'
+                if key not in key_set:
+                    errors.append(f'data/themes/index.json: unknown translation key {key}')
+        except (ValueError, KeyError, TypeError) as error:
+            errors.append(f'data/themes/index.json: {error}')
     # Ruleset names and descriptions are keys looked up at runtime from the data file.
     rulesets = root / 'data' / 'rulesets.json'
     if rulesets.exists():
@@ -155,7 +336,39 @@ def audit(root=ROOT):
                 key = entry.get(field)
                 if key not in key_set:
                     errors.append(f'rulesets.json: unknown translation key {key!r} ({field} of {entry.get("id")!r})')
-    return {'errors': errors, 'languages': languages}
+    tutorials = {}
+    # SGSL is a separate authored-content localization system. Inventory it
+    # explicitly; catalog completeness must never imply tutorial completeness.
+    for path in sorted((root / 'scripts').glob('tutorial_part*.sgsl')):
+        counts = Counter()
+        for line in path.read_text(encoding='utf-8').splitlines():
+            match = re.match(r'\s*show\(".*"\s*(?:,\s*([a-z-]+))?\s*\)', line)
+            if match:
+                counts[match[1] or 'en'] += 1
+        tutorials[str(path.relative_to(root))] = {
+            'message_counts': dict(sorted(counts.items())),
+            'legacy_languages_without_messages': sorted(codes - counts.keys()),
+            'display_catalog_gaps': {name: [f'[tutorial part{path.stem.removeprefix("tutorial_part")} message {i}]'
+                for i in range(1, counts['en'] + 1)
+                if not table.get(f'[tutorial part{path.stem.removeprefix("tutorial_part")} message {i}]', '').strip()]
+                for name, table in tables.items()},
+        }
+    coverage = {
+        'native_source_files': source_files,
+        'native_key_references': source_references,
+        'checked_key_families': ['literal bracketed C++ keys', 'settings helpers and categories',
+            'musicText', 'customAIText', 'libraryText', 'statistics metrics', 'experiments',
+            'shipped theme IDs', 'ruleset names and descriptions', 'direct frontend UI prose'],
+        'tutorials': tutorials,
+        'limits': [
+            'Lexical scanning does not prove every rendered string is translated; hard-coded prose and new wrappers require UI review.',
+            'Computed generator, building, resource and keyboard names require contextual review.',
+            'Online/platform locales and browser shell bindings use the platform i18n checker.',
+            'Legacy tutorial script counts describe authored sources; display_catalog_gaps describes current presentation translations. Alias generation checks cover shipped map copies; linguistic freshness still needs review.',
+            'Font coverage, text fitting and visual layout require rendered language checks.',
+        ],
+    }
+    return {'errors': errors, 'languages': languages, 'coverage': coverage}
 
 
 def main():
@@ -176,6 +389,7 @@ def main():
         for error in result['errors']:
             print(f'ERROR: {error}')
         print(f"{len(result['errors'])} structural errors")
+        print('Coverage limits (including tutorial languages): use --json for the full inventory.')
     incomplete = any(set(r['untranslated']) - set(r['pending']) for r in result['languages'].values())
     return int(bool(result['errors']) or (args.strict and incomplete))
 

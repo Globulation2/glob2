@@ -6,34 +6,6 @@
 Ако страница затражи, проверите да приказује %0.
 [hub code copied]
 Код је копиран
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Довршите у прегледачу. Игра ће се аутоматски наставити.
 [music set]
@@ -6039,97 +6011,623 @@ FFmpeg није доступан, па је снимање искључено. �
 [outcome reason probability]
 Праг вероватноће победе је достигнут.
 [Discord community]
-
+Дискорд заједница
 [Globulation 2 Discord]
-
+Дискорд за Globulation 2
 [discord community intro]
-
+Пронађите противнике, затражите помоћ и поделите своје мапе са заједницом игре Globulation 2.
 [discord opens externally]
-
+Придружите се нашем Дискорд серверу. Отвориће се Дискорд или ваш прегледач.
 [Join Discord]
-
+Придружи се Дискорду
 [Copy link]
-
+Копирај везу
 [discord opened]
-
+Дискорд је отворен. Можете се вратити у игру у било ком тренутку.
 [discord open failed]
-
+Није могуће отворити Дискорд. Копирајте везу са позивницом и отворите је у прегледачу.
 [discord link copied]
-
+Веза са позивницом је копирана.
 [settings CPU automatic]
-
+Аутоматски CPU
 [settings Scalar]
-
+Скаларни
 [settings Unavailable]
-
+Недоступно
 [settings Initializing]
-
+Иницијализација
 [settings Gradient backend]
-
+Механизам за градијенте
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Примењује се на следећој тачки синхронизације симулације. Неподржани задаци користе аутоматски режим CPU; исцртавање је независно.
 [settings Gradient algorithm]
-
+Алгоритам градијената
 [settings All choices compute the same exact field.]
-
+Све опције израчунавају потпуно исто поље.
 [settings Bucket propagation]
-
+Простирање по групама
 [settings Verify gradient results]
-
+Проверавај резултате градијената
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Пореди резултате GPU са резултатима скаларних израчунавања на CPU пре него што постану доступни. Захтева додатно рачунање и зауставља игру при неслагању.
 [settings Gradient computation]
-
+Израчунавање градијената
 [settings CPU fallback]
-
+Прелазак на CPU
 [settings GPU fields]
-
+GPU поља
 [settings CPU fallbacks]
-
+Преласци на CPU
 [settings MCP server]
-
+MCP сервер
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Укључивање MCP сервера омогућава локалним клијентима да посматрају игру и управљају њоме.
 [settings Enable MCP server]
-
+Укључи MCP сервер
 [settings Port]
-
+Порт
 [settings Current controller: %0]
-
+Тренутни управљач: %0
 [settings Copy endpoint]
-
+Копирај адресу приступа
 [settings Retry listener]
-
+Понови ослушкивање
 [settings Revoke control]
-
+Опозови управљање
 [settings MCP server unavailable in this application]
-
+MCP сервер није доступан у овој апликацији
 [settings Disabled]
-
+Искључено
 [settings Running]
-
+Ради
 [settings Error: %0]
-
+Грешка: %0
 [settings None]
-
+Нема
 [settings Starting]
-
+Покретање
 [Which hand holds your phone?]
-
+Лева или десна рука?
 [hand preference explanation]
-
+Држите телефон природно. Додирните руку којом играте.
 [hand silhouettes description]
-
+Обрис телефона са левом и десном руком изнад. Притисните једно од закошених дугмади за палац да бисте изабрали страну.
 [hand preference change later]
-
+Страну можете касније променити у Подешавањима.
 [hand preference save failed]
-
+Није могуће сачувати ваш избор. Покушајте поново.
 [Left hand]
-
+Лева рука
 [Right hand]
-
+Десна рука
 [discord copy failed]
-
+Није могуће копирати везу. Означите позивницу изнад да бисте је ручно копирали.
+[Destroy this building?]
+Уништити ову зграду?
+[stat ground movement]
+Кретање по земљи
+[stat ground movement about]
+Живе копнене јединице према приближном односу брзина. „Пливање 2x“ значи пливање двоструко брже од трчања. Летеће и непокретне јединице нису укључене.
+[stat view by movement]
+Према кретању
+[stat band land only]
+Само копно
+[stat band swim twice run]
+Пливање 2x
+[stat band swim faster run]
+Пливање 1,4x
+[stat band swim equals run]
+Једнако
+[stat band run faster swim]
+Трчање 1,3x
+[stat band run twice swim]
+Трчање 2x
+[stat band run triple swim]
+Трчање 3x
+[stat band water only]
+Само вода
+[settings Browse shared generators]
+Прегледај дељене генераторе
+[settings Apply artwork on the next game or editor load.]
+Примени графику при следећем учитавању игре или уређивача.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Захтева исцртавач са филтрирањем текстура. Сачувани избор се задржава.
+[settings Automatically show the torus overview while moving around the map.]
+Аутоматски приказуј торусни преглед при кретању по мапи.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Захтева исцртавач са подршком за торус. Сачувани избор се задржава.
+[settings Move and animate units between game ticks.]
+Померај и анимирај јединице између корака игре.
+[settings Renderer unavailable]
+Исцртавач није доступан
+[settings Apply at the next completed frame. Your game stays running.]
+Примени после следећег завршеног кадра. Игра наставља да ради.
+[settings Active renderer: %0]
+Активни исцртавач: %0
+[settings Changing renderer…]
+Промена исцртавача…
+[settings Menu scroll wheel enabled]
+Померање точкићем у менијима укључено
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Управља померањем точкићем у менијима. На мапама игре и уређивача точкић увек мења увећање.
+[settings Gesture scrolling]
+Померање покретима
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Померање додиром и Mac покретима. 0 искључује ефекат; 50 је подразумевано за додир.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Колико се листе и панели померају после брзог превлачења прстом. Mac покрети користе системску инерцију; нула искључује даље клизање.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Колико се листе и панели растежу преко својих крајева пре него што се врате. Mac покрети користе блаже растезање.
+[hive stopping]
+Заустављање…
+[hive stopped]
+Заустављено
+[hive stop failed]
+Заустављање није успело; поновите пречицу за заустављање
+[hive updating]
+Ажурирање…
+[hive requested]
+Затражено
+[hive update failed]
+Ажурирање није успело; покушајте поново
+[hive give order]
+Издај наредбу
+[hive less]
+Мање
+[hive reports and details]
+Извештаји / детаљи
+[hive needs fresh order]
+Потребна је нова наредба
+[hive active]
+Активно
+[hive resume]
+Настави
+[recordings]
+Снимци
+[recording delete confirm]
+Обрисати снимак?
+[recording delete warning]
+Снимак и његови метаподаци биће уклоњени.
+[recording delete]
+Обриши
+[recording working]
+Обрада…
+[recording none]
+Још нема снимака.
+[recording interrupted]
+Прекинути снимак
+[recording recover]
+Опорави
+[recording export video]
+Извези видео
+[recording export metadata]
+Извези метаподатке
+[recording export events]
+Извези догађаје
+[recording export failed]
+Није могуће извести снимак.
+[recording delete action]
+Обриши снимак
+[recording refresh]
+Освежи
+[tutorial part1 message 1]
+Добро дошли у Globulation 2! Овај водич вас кроз четири мисије учи управљању колонијом. Напредак можете сачувати у менију игре и касније учитати из главног менија. За наставак притисните размакницу или додирните У реду на екрану осетљивом на додир. Неке поруке потом нестају; поново их прочитајте у историји порука.
+[tutorial part1 message 2]
+Почињете са Ројем и једним радником. Погледајмо како сарађују.
+[tutorial part1 message 3]
+Радник жање пшеницу и носи је у Рој. Рој троши пшеницу за нове јединице, па је неопходан за колонију.
+[tutorial part1 message 4]
+Изаберите свог глобула, покретну јединицу, левим кликом или додиром.
+[tutorial part1 message 5]
+Подаци јединице показују да јој храна временом опада. Глобул постаје гладан. Када су траке хране видљиве, плава трака испод јединице показује остатак хране.
+[tutorial part1 message 6]
+Глобули једу у Гостионицама. Поништите избор десним кликом или додирните празно тло на екрану осетљивом на додир.
+[tutorial part1 message 7]
+Отворите команде за градњу, изаберите Гостионицу и поставите је близу пшенице. Ако не видите пшеницу, пратите радников пут. На додир користите Градња и потврдите важеће место. Потом изађите из постављања десним кликом или командом Откажи.
+[tutorial part1 message 8]
+Добро! Градилиште Гостионице је постављено.
+[tutorial part1 message 9]
+Радник из Роја сада може изградити Гостионицу. Сакупља дрво са оближњих стабала и доноси га на градилиште. Сачекајте завршетак.
+[tutorial part1 message 10]
+Готовој Гостионици треба пшеница. Додељени радник ће је сакупљати, као што снабдева Рој.
+[tutorial part1 message 11]
+Жута трака ресурса Гостионице расте када стиже пшеница. Показује њену залиху.
+[tutorial part1 message 12]
+Сада научимо додељивање посла.
+[tutorial part1 message 13]
+Један радник снабдева Рој, други Гостионицу. Обојица могу стати да једу у Гостионици. То је нормално.
+[tutorial part1 message 14]
+Изаберите Рој и пронађите доделу радника. На рачунару је означена као Раде; на додир користите додељене раднике и циљну вредност. Циљ је жељени број радника код зграде.
+[tutorial part1 message 15]
+Поставите циљ радника Роја на 0. Потом изаберите Гостионицу и такође поставите 0.
+[tutorial part1 message 16]
+Радници сада мирују, али им је и даље потребна храна. Гостионица без додељених радника на крају остаје без пшенице.
+[tutorial part1 message 17]
+Глобул који не нађе храну губи здравље и може умрети. Болница лечи повређене глобуле, али морате снабдевати и Гостионице.
+[tutorial part1 message 18]
+Изградите Болницу командама за градњу. Не треба јој пшеница, па је поставите близу дрвета или на средишњем месту уз Рој.
+[tutorial part1 message 19]
+Изаберите градилиште Болнице и поставите циљ на 2 радника. Двојица је могу завршити брже.
+[tutorial part1 message 20]
+Болница је спремна. Повређени глобули могу долазити да обнове здравље.
+[tutorial part1 message 21]
+Црне области су неистражене. Јединице у покрету откривају оближње тло. Радници прате посао, па су незгодни за извиђање. За то служе истраживачи.
+[tutorial part1 message 22]
+Изаберите Рој и пронађите размере производње радника, истраживача и ратника. Повећајте размеру истраживача на 1.
+[tutorial part1 message 23]
+Када су обе размере 1, Рој временом производи једнак број радника и истраживача. Раднике поставите на 0 да за сада производи само истраживаче.
+[tutorial part1 message 24]
+Вратите циљ додељених радника Роја на 1, како би радник доносио пшеницу.
+[tutorial part1 message 25]
+Изаберите Гостионицу и поставите и њен циљ на 1. Растућој колонији треба стална храна.
+[tutorial part1 message 26]
+Сада сачекајте да Рој произведе истраживача.
+[tutorial part1 message 27]
+Истраживач лети око колоније и открива тло. Пре наставка сачекајте да Рој произведе другог истраживача.
+[tutorial part1 message 28]
+Поново изаберите Рој. Поставите истраживаче на 0, а раднике на 1 да поново производи раднике.
+[tutorial part2 message 1]
+Источно од базе налази се камен. Запамтите место; требаће вам касније.
+[tutorial part2 message 2]
+Стабла јужно од камена су поморанџе. Изаберите их за податке о ресурсима. Воћу ћемо се вратити касније; сада се усредсредите на Рој.
+[tutorial part2 message 3]
+Подесите Рој само за раднике: размера радника 1, истраживача и ратника 0.
+[tutorial part2 message 4]
+Убрзајмо раст колоније. Изаберите Рој и поставите циљ радника на 6. Можда их још немате шест; нови радници попуниће слободна места када буду доступни.
+[tutorial part2 message 5]
+Следеће задатке почињемо када имате 8 радника. Снабдевајте Рој и Гостионицу док становништво расте.
+[tutorial part2 message 6]
+Више радника сада снабдева Рој. Више испорука пшенице омогућава бржу производњу јединица.
+[tutorial part2 message 7]
+Нов радник кошта 5 јединица пшенице. Ношење са далеког поља траје, па Роју често треба више снабдевача него Гостионици. Зграде зависне од хране постављајте близу пшенице кад можете.
+[tutorial part2 message 8]
+Имате најмање 8 радника. Изаберите Рој и смањите циљ на 1 да успорите раст током градње.
+[tutorial part2 message 9]
+Колонији треба више места за јело. Изградите другу Гостионицу северно од постојеће.
+[tutorial part2 message 10]
+Доделите слободне раднике новом градилишту. Потребне су само 3 јединице дрвета, па више од 3 градитеља неће много помоћи.
+[tutorial part2 message 11]
+Готова Гостионица враћа се на радни циљ, обично 1 радника. Градња и свакодневно снабдевање имају одвојене циљеве.
+[tutorial part2 message 12]
+Радници могу научити брже кретање. То учи Стадион.
+[tutorial part2 message 13]
+Отворите команде за градњу и пронађите Стадион. На рачунару пређите показивачем преко иконе за опис и цену. На додир га изаберите у Градњи за припрему постављања. Још га не постављајте.
+[tutorial part2 message 14]
+Стадиону треба много дрвета и мало камена. Изаберите средишње, лако доступно место.
+[tutorial part2 message 15]
+Изградите Стадион, можда јужно од Роја. Оставите простор око њега: зграде за обуку се шире при надоградњи.
+[tutorial part2 message 16]
+На градилишту Стадиона поставите жељени број радника од 5 до 7. Укупно је потребно 7 јединица грађевинског материјала.
+[tutorial part2 message 17]
+Готов Стадион обучава посетиоце без сталне допреме материјала или пшенице.
+[tutorial part2 message 18]
+Глобули улазе у Стадион да вежбају. После обуке могу трчати брже.
+[tutorial part2 message 19]
+Изаберите Стадион за преглед обуке. Показатељи приказују колико јединицама унутра остаје до краја.
+[tutorial part2 message 20]
+Обучени радници брже путују и испоручују ресурсе. Пратите храну док колонија расте: брза достава помаже само ако је довољно Гостионица снабдевено.
+[tutorial part2 message 21]
+У интерфејсу игре пронађите бројач радника. Збир показује становништво; доступни радници помажу да уочите слободне људе или непопуњене послове. Користите их без више задатака него што колонија може поднети.
+[tutorial part2 message 22]
+Интерфејс показује и истраживаче и ратнике. Проверавајте бројеве при планирању производње и додељивању јединица заставама.
+[tutorial part2 message 23]
+Имате 2 Гостионице. Свака основна храни 4 јединице одједном, укупно 8 места. Више од 8 јединица може огладнети, па оставите капацитет за редове.
+[tutorial part2 message 24]
+Две Гостионице неће заувек подржавати растућу колонију. Додајте места пре него што несташице постану гладовање.
+[tutorial part2 message 25]
+Изградите још 3 Гостионице близу пшенице. Гладни радници престају да раде, а дуготрајно гладовање их убија. Доступне раднике доделите градњи уз очување постојеће доставе хране.
+[tutorial part2 message 26]
+Завршите још 3 Гостионице, за укупно 5.
+[tutorial part2 message 27]
+Нове Гостионице после градње користе радне циљеве, обично по 1 радника. Проверите снабдеваче и довољно пшенице.
+[tutorial part2 message 28]
+Стадион је побољшао путовање копном. Сада научимо колонију да плива.
+[tutorial part2 message 29]
+Пливалиште учи јединице пливању и гради се од дрвета. Поставите га на велику чистину североисточно од базе, северно од камена. Оставите простор за надоградње и раст ресурса и доделите доступне раднике.
+[tutorial part2 message 30]
+Пливалиште учи јединице пливању и гради се од дрвета. Поставите га на велику чистину североисточно од базе, северно од камена. Оставите простор за надоградње и раст ресурса и доделите доступне раднике.
+[tutorial part2 message 31]
+Пливалиште је спремно. Глобули могу ући да науче пливање.
+[tutorial part2 message 32]
+Изаберите Пливалиште за преглед обуке. Основно Пливалиште обучава 2 глобула одједном, као и основни Стадион.
+[tutorial part2 message 33]
+Обучени глобули сада пливају. Ускоро ће добити посао који захтева прелазак воде.
+[tutorial part2 message 34]
+Још има шта да се научи. Ако желите паузу, сачувајте напредак у менију игре и вратите се касније.
+[tutorial part2 message 35]
+Колонија има храну и физичку обуку. Школа ће раднике научити вештинама за боље зграде.
+[tutorial part2 message 36]
+Школа побољшава жетву и градњу. За њену изградњу потребне су алге које расту у води. Радници који умеју да пливају могу их сакупити.
+[tutorial part2 message 37]
+Штитите важне зграде за обуку. Школа не мора стајати уз воду; заклоњено место у унутрашњости може бити безбедније од напада.
+[tutorial part2 message 38]
+Изградите Школу на заштићеном месту, на пример иза Пливалишта или југозападно од Роја уз Стадион. Доделите доступне раднике.
+[tutorial part2 message 39]
+Изаберите зграду да видите додељене раднике. На рачунару подесива радња приказа путања јединица показује и линије ка одредиштима; тренутну пречицу видите у Подешавањима, Управљање. Сачекајте Школу.
+[tutorial part3 message 1]
+Колонија сада има Гостионице, Болницу, Стадион, Пливалиште и Школу. Време је за припрему одбране.
+[tutorial part3 message 2]
+Још нисмо произвели ратнике. Без њих је колонија слабо заштићена од напада.
+[tutorial part3 message 3]
+Изаберите Рој и поставите размеру ратника на 2. Раднике оставите на 1 да се и даље производе.
+[tutorial part3 message 4]
+Рој ће сада производити приближно 2 ратника на радника. За бржу производњу доделите више радника снабдевању.
+[tutorial part3 message 5]
+Први ратник је спреман и почеће обуку. Сачекајте другог пре наставка.
+[tutorial part3 message 6]
+Ратници користе и Стадион и Пливалиште. Напад могу вежбати у Касарни.
+[tutorial part3 message 7]
+Касарна побољшава снагу и брзину напада. Снага повећава штету ударца, брзина учесталост напада. Добро обучени ратници побеђују знатно веће групе необучених непријатеља.
+[tutorial part3 message 8]
+Изградите Касарну близу дрвета потребног за градњу.
+[tutorial part3 message 9]
+Доделите доступне раднике градилишту Касарне. Оставите довољно на храни и не стварајте више послова него што могу попунити.
+[tutorial part3 message 10]
+Касарна је спремна. Ратници сада могу вежбати напад у њој.
+[tutorial part3 message 11]
+Колонија може ојачати надоградњом зграда.
+[tutorial part3 message 12]
+Радници обучени у Школи могу градити надоградње. Изаберите одговарајућу зграду и пронађите команду Надогради. За оштећене зграде можда прво треба изабрати команду «Поправи».
+[tutorial part3 message 13]
+Одлучимо шта прво надограђујемо. Гостионице још имају слободан капацитет и могу чекати.
+[tutorial part3 message 14]
+И Болница има места. Можемо се усредсредити на Школу, Стадион, Пливалиште или Касарну.
+[tutorial part3 message 15]
+Прво надоградите Стадион да јединице науче још брже кретање.
+[tutorial part3 message 16]
+Изаберите Стадион и Надогради. Јединице унутра морају изаћи пре градње, па промена можда неће бити тренутна.
+[tutorial part3 message 17]
+Доделите доступне раднике надоградњи Стадиона. На градилишту нивоа 2 могу градити само радници са потребном школском обуком.
+[tutorial part3 message 18]
+Сачекајте надоградњу Стадиона. Зграде вишег нивоа траже више ресурса и времена.
+[tutorial part3 message 19]
+Стадион нивоа 2 је готов. Заузима више тла, зато смо оставили размак. Без места за ширење зграда се не може надоградити.
+[tutorial part3 message 20]
+Сада надоградите Касарну и Пливалиште на ниво 2. Настављамо кад оба објекта буду готова.
+[tutorial part3 message 21]
+Надограђене зграде обично служе више глобула или нуде бољу обуку. Гостионица нивоа 2, на пример, има 7 места и храни брже од основне.
+[tutorial part3 message 22]
+Непријатељ је близу. Припремимо се за напад.
+[tutorial part3 message 23]
+Куле гађају непријатеље у домету. Зидови их штите. Обоје ћемо користити за одбрану уског прилаза колонији.
+[tutorial part3 message 24]
+Ако има места, постављајте Куле у паровима. Зидови могу штитити три стране, али оставите пут радницима који носе камен за муницију.
+[tutorial part3 message 25]
+Погледајте источно од Пливалишта, северно од осталих воћака. Узак прелаз води на друго острво. То је добро место за одбрану.
+[tutorial part3 message 26]
+Планирајте место за 2 Куле између дрвећа и обале. Позади оставите приступ за камен, са осталих страна место за Зидове. Не затворите раднике напољу.
+[tutorial part3 message 27]
+Изградите ту 2 Куле. Доделите 2 или 3 радника сваком градилишту према доступности у бројачима интерфејса.
+[tutorial part3 message 28]
+Командама за градњу поставите Зидове око три спољне стране Кула. Страну ка колонији оставите отворену за раднике.
+[tutorial part3 message 29]
+Сваки део Зида ствара грађевински посао и захтева 1 јединицу камена. Ако нема радника за све послове одједном, могу их завршити редом.
+[tutorial part3 message 30]
+Сачекајте обе Куле и неколико делова Зида. Кулама треба и камена муниција; удаљени каменолом успорава испоруке. Ако имате слободне раднике, повећајте циљеве.
+[tutorial part4 message 1]
+Колонија има храну, обуку и одбрану. Зграде могу напредовати још до нивоа 3, са бољом обуком и већим капацитетом. Наставите надоградње кад ресурси и вештине радника то дозволе.
+[tutorial part4 message 2]
+Пронађите непријатељску колонију северозападно од базе. Померите поглед тамо.
+[tutorial part4 message 3]
+И истражено тло може скривати ратна магла. За текућу непријатељску активност треба нам истраживач у близини.
+[tutorial part4 message 4]
+Отворите Заставе. Заставе и зоне усмеравају јединице без појединачног управљања сваким глобулом.
+[tutorial part4 message 5]
+Изаберите Истраживачку заставу са знаком папирног змаја. Заставе можете ставити на копно, воду, ресурсе и неистражено тло.
+[tutorial part4 message 6]
+Поставите Истраживачку заставу изнад претпостављене непријатељске базе. Приближан положај довољан је за почетак. Изађите десним кликом или завршите додирним командама.
+[tutorial part4 message 7]
+Обрис заставе показује радни полупречник. Додељени истраживач ће испитати област. Ако нико не дође, проверите број истраживача и по потреби направите новог у Роју. Када стигне, притисните размакницу или У реду.
+[tutorial part4 message 8]
+Непријатељ има много радника и окупљену војску. Припремимо одбрану пре него што нападне.
+[tutorial part4 message 9]
+Отворите Заставе и изаберите плаву зону Страже. Користите додавање тла у зону, не уклањање. На додир изаберите Цртај уместо Бриши.
+[tutorial part4 message 10]
+Изаберите облик и величину четкице. Велики квадрат је добар за компактну одбрамбену област.
+[tutorial part4 message 11]
+Обојите зону Страже одмах иза Кула, где очекујете непријатеља. Клик или додир боји тачку, превлачење већи простор. На додир користите Померај за кретање погледа током бојења.
+[tutorial part4 message 12]
+Доступни ратници ће ући у зону Страже. Нека буде довољно велика за браниоце, али мала да остану окупљени на прелазу. Сада чекајте напад.
+[tutorial part4 message 13]
+Непријатељ се приближава прелазу!
+[tutorial part4 message 14]
+Нападнути смо. Гледајте како обучени ратници и Куле бране положај.
+[tutorial part4 message 15]
+Преживели сте! Отворите Заставе и изаберите шиљату Ратну заставу. Поставите је над непријатељски Рој да усмерите напад тамо.
+[tutorial part4 message 16]
+Изађите из постављања и изаберите Ратну заставу. Доделите више од 1 ратника, па смањите полупречник ради усредсређивања напада око непријатељског Роја. Сачекајте ратнике.
+[tutorial part4 message 17]
+Напад је почео. Ратници морају проћи непријатељске Куле да стигну до Роја.
+[tutorial part4 message 18]
+Ратници су стигли у непријатељску базу. Усмеравајте напад на Рој.
+[tutorial part4 message 19]
+Уништили сте непријатељски Рој. Честитамо! Завршили сте водич и научили основе снабдевања храном, додељивања, обуке, надоградњи, истраживања и борбе.
+[tutorial mission basics]
+Увод и основе
+[tutorial mission development]
+Зграде и школе
+[tutorial mission training]
+Ратници, обука и надоградње
+[tutorial mission flags]
+Заставе и завршетак
+[library  Could not restore the previous library: %0]
+ Није могуће вратити претходну библиотеку: %0
+[library  The previous library is retained.]
+ Претходна библиотека је сачувана.
+[library  · Installed]
+ · Инсталирано
+[library  · Update available]
+ · Доступно ажурирање
+[library A different release is installed. Install the selected release to update explicitly.]
+Инсталирано је друго издање. Ако желите да га ажурирате, инсталирајте изабрано издање.
+[library All engines]
+Сви покретачи игре
+[library All generators]
+Сви генератори
+[library Available families]
+Доступне породице
+[library Back]
+Назад
+[library Building families]
+Породице зграда
+[library Building library]
+Библиотека зграда
+[library Checking building release]
+Провера издања зграда
+[library Choose an online instance before opening a family link.]
+Изаберите мрежни сервер пре отварања везе породице.
+[library Compatible with this engine]
+Компатибилно са овим покретачем
+[library Confirm replacement]
+Потврди замену
+[library Create in Building Studio]
+Направи у Building Studio
+[library Downloading generator…]
+Преузимање генератора…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Сваки предео је приказан као стварна мапа са величином и бројем колонија наведеним испод, које овде можете променити. Изаберите један да играте на приказаној мапи.
+[library Editor tool: generates terrain for the map editor.]
+Алат уређивача: прави терен за уређивач мапа.
+[library Editor tools]
+Алати уређивача
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Укључите инсталиране породице испод. Избор се чува у локалном профилу; постојеће мапе и сачуване игре задржавају своје зграде. За мрежну игру направите мапу са овим породицама, објавите је у библиотеци мапа и изаберите у својој соби.
+[library Enter a building family ID or a link to its family page.]
+Унесите ИД породице зграда или везу ка њеној страници.
+[library Family link or ID]
+Веза или ИД породице
+[library Family links must be at most 1024 characters.]
+Везе породица могу имати највише 1024 знака.
+[library Family removed.]
+Породица је уклоњена.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Породица није доступна. За приватне породице пријавите се преко мрежне игре налогом који има приступ.
+[library Generator file hash mismatch]
+Хеш датотеке генератора се не подудара
+[library Generator installed. Future selections use this release.]
+Генератор је инсталиран. Следећи избори користе ово издање.
+[library Generator package identity mismatch]
+Идентитет пакета генератора се не подудара
+[library Generators]
+Генератори
+[library Install compatible release]
+Инсталирај компатибилно издање
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Инсталирајте појединачне зграде или породице надоградњи уз стандардне зграде. Избор важи само за новонаправљене мапе.
+[library Install selected release]
+Инсталирај изабрано издање
+[library Installed]
+Инсталирано
+[library Installed families]
+Инсталиране породице
+[library Installed. Enable the family below for new maps.]
+Инсталирано. Укључите породицу испод за нове мапе.
+[library Invalid building family ID.]
+Неисправан ИД породице зграда.
+[library Invalid building library response]
+Неисправан одговор библиотеке зграда
+[library Invalid library cursor]
+Неисправан курсор страница библиотеке
+[library Invalid release identity]
+Неисправан идентитет издања
+[library Load more]
+Учитај још
+[library Load more families]
+Учитај још породица
+[library Loading building families]
+Учитавање породица зграда
+[library Loading…]
+Учитавање…
+[library Map generators]
+Генератори мапа
+[library Maps]
+Мапе
+[library Most downloaded]
+Највише преузимано
+[library Most liked]
+Највише свиђања
+[library My generators]
+Моји генератори
+[library Newest]
+Најновије
+[library No building families installed.]
+Нема инсталираних породица зграда.
+[library No public building families yet]
+Још нема јавних породица зграда
+[library No validated release for this game version.]
+Нема провереног издања за ову верзију игре.
+[library Online server changed during download]
+Мрежни сервер се променио током преузимања
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Породицу која није на листи отворите везом или ИД-ом. За приватне породице прво се пријавите преко мрежне игре.
+[library Open family]
+Отвори породицу
+[library Opened family. Install its compatible release below.]
+Породица је отворена. Испод инсталирајте компатибилно издање.
+[library Opening building family]
+Отварање породице зграда
+[library Playable]
+Може се играти
+[library Playable generator]
+Генератор за играње
+[library Privacy policy]
+Политика приватности
+[library Public library]
+Јавна библиотека
+[library Recently updated]
+Недавно ажурирано
+[library Refresh library]
+Освежи библиотеку
+[library Release identity changed during installation]
+Идентитет издања се променио током инсталације
+[library Reroll]
+Поново насумично
+[library Reroll seed]
+Ново насумично семе
+[library Saving generator library…]
+Чување библиотеке генератора…
+[library Search]
+Претрага
+[library Seed]
+Семе
+[library Selection saved for new maps.]
+Избор је сачуван за нове мапе.
+[library Storage failed.]
+Чување није успело.
+[library Storage persistence unavailable]
+Трајно чување није доступно
+[library Tags]
+Ознаке
+[library Technical checks passed for this engine. Balance is not certified.]
+Техничке провере су прошле за овај покретач. Баланс није потврђен.
+[library The server returned a different family.]
+Сервер је вратио другу породицу.
+[library This link is from another instance. Switch to that instance in Online first.]
+Веза је са другог сервера. Прво пређите на њега преко мрежне игре.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Пакет са овим ИД-ом је већ инсталиран. Потврдите замену да бисте користили изабрано издање.
+[library This release has no passing checks for this engine.]
+Ово издање нема успешне провере за овај покретач.
+[library This release is installed.]
+Ово издање је инсталирано.
+[library Update installed family]
+Ажурирај инсталирану породицу
+[library Use in a room]
+Користи у соби
+[library By %0]
+Аутор: %0
+[library Installed release %0]
+Инсталирано издање %0
+[library Release %0]
+Издање %0
+[library Remove %0]
+Уклони %0
+[library Seed: %0]
+Семе: %0
+[library %0 · revision %1]
+%0 · ревизија %1
+[library Fit]
+Уклопи
 [Sound or silence?]
 
 [Silence]
@@ -6144,5 +6642,5 @@ FFmpeg није доступан, па је снимање искључено. �
 
 [audio choices description]
 
-[Destroy this building?]
-Уништити ову зграду?
+[library GL only]
+Само GL

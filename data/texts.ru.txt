@@ -6,34 +6,6 @@
 Если страница попросит, убедитесь, что на ней показан код %0.
 [hub code copied]
 Код скопирован
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Завершите действие в браузере. Игра продолжится автоматически.
 [music set]
@@ -6039,97 +6011,623 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [outcome reason probability]
 Порог вероятности победы достигнут.
 [Discord community]
-
+Сообщество Discord
 [Globulation 2 Discord]
-
+Discord Globulation 2
 [discord community intro]
-
+Находите соперников, обращайтесь за помощью и делитесь картами с сообществом Globulation 2.
 [discord opens externally]
-
+Присоединяйтесь к нашему серверу Discord. Откроется Discord или браузер.
 [Join Discord]
-
+Присоединиться к Discord
 [Copy link]
-
+Скопировать ссылку
 [discord opened]
-
+Discord открыт. Вы можете вернуться в игру в любой момент.
 [discord open failed]
-
+Не удалось открыть Discord. Скопируйте ссылку-приглашение и откройте её в браузере.
 [discord link copied]
-
+Ссылка-приглашение скопирована.
 [settings CPU automatic]
-
+Автовыбор CPU
 [settings Scalar]
-
+Скалярный
 [settings Unavailable]
-
+Недоступно
 [settings Initializing]
-
+Инициализация
 [settings Gradient backend]
-
+Вычислитель градиентов
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Применяется на следующей точке синхронизации симуляции. Неподдерживаемые операции используют автовыбор CPU; отрисовка работает независимо.
 [settings Gradient algorithm]
-
+Алгоритм градиентов
 [settings All choices compute the same exact field.]
-
+Все варианты вычисляют в точности одинаковое поле.
 [settings Bucket propagation]
-
+Распространение по группам
 [settings Verify gradient results]
-
+Проверять результаты градиентов
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Сравнивает результаты GPU с результатами скалярных вычислений CPU перед их использованием. Требует дополнительных вычислений и останавливает игру при несовпадении.
 [settings Gradient computation]
-
+Вычисление градиентов
 [settings CPU fallback]
-
+Переход на CPU
 [settings GPU fields]
-
+Поля GPU
 [settings CPU fallbacks]
-
+Переходы на CPU
 [settings MCP server]
-
+Сервер MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Включение сервера MCP позволяет локальным клиентам наблюдать за игрой и управлять ею.
 [settings Enable MCP server]
-
+Включить сервер MCP
 [settings Port]
-
+Порт
 [settings Current controller: %0]
-
+Текущий контроллер: %0
 [settings Copy endpoint]
-
+Скопировать адрес подключения
 [settings Retry listener]
-
+Повторить запуск слушателя
 [settings Revoke control]
-
+Отозвать управление
 [settings MCP server unavailable in this application]
-
+Сервер MCP недоступен в этом приложении
 [settings Disabled]
-
+Отключено
 [settings Running]
-
+Работает
 [settings Error: %0]
-
+Ошибка: %0
 [settings None]
-
+Нет
 [settings Starting]
-
+Запуск
 [Which hand holds your phone?]
-
+Левая или правая рука?
 [hand preference explanation]
-
+Возьмите телефон как обычно. Нажмите на руку, которой играете.
 [hand silhouettes description]
-
+Контур телефона, над которым расположены левая и правая руки. Нажмите на одну из объёмных кнопок под большой палец, чтобы выбрать сторону.
 [hand preference change later]
-
+Сторону можно изменить позже в настройках.
 [hand preference save failed]
-
+Не удалось сохранить выбор. Попробуйте ещё раз.
 [Left hand]
-
+Левая рука
 [Right hand]
-
+Правая рука
 [discord copy failed]
-
+Не удалось скопировать ссылку. Выделите приглашение выше и скопируйте его вручную.
+[Destroy this building?]
+Уничтожить это здание?
+[stat ground movement]
+Наземное передвижение
+[stat ground movement about]
+Живые наземные юниты по примерному соотношению скоростей. «Плавание 2x» означает плавание вдвое быстрее бега. Летающие и неподвижные юниты не учитываются.
+[stat view by movement]
+По передвижению
+[stat band land only]
+Только суша
+[stat band swim twice run]
+Плавание 2x
+[stat band swim faster run]
+Плавание 1,4x
+[stat band swim equals run]
+Равная скорость
+[stat band run faster swim]
+Бег 1,3x
+[stat band run twice swim]
+Бег 2x
+[stat band run triple swim]
+Бег 3x
+[stat band water only]
+Только вода
+[settings Browse shared generators]
+Просмотреть общие генераторы
+[settings Apply artwork on the next game or editor load.]
+Применить графику при следующей загрузке игры или редактора.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Требуется средство отрисовки с фильтрацией текстур. Ваш выбор остаётся сохранённым.
+[settings Automatically show the torus overview while moving around the map.]
+Автоматически показывать обзор тора при перемещении по карте.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Требуется средство отрисовки с поддержкой тора. Ваш выбор остаётся сохранённым.
+[settings Move and animate units between game ticks.]
+Перемещать и анимировать юниты между тактами игры.
+[settings Renderer unavailable]
+Средство отрисовки недоступно
+[settings Apply at the next completed frame. Your game stays running.]
+Применить после завершения следующего кадра. Игра продолжит работать.
+[settings Active renderer: %0]
+Активное средство отрисовки: %0
+[settings Changing renderer…]
+Смена средства отрисовки…
+[settings Menu scroll wheel enabled]
+Прокрутка колёсиком в меню включена
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Управляет прокруткой колёсиком в меню. На картах игры и редактора колёсико всегда меняет масштаб.
+[settings Gesture scrolling]
+Прокрутка жестами
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Прокрутка касанием и жестами Mac. 0 отключает эффект; 50 — значение по умолчанию для касаний.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Как далеко списки и панели продолжают прокручиваться после резкого движения пальцем. Жесты Mac используют системную инерцию; ноль отключает скольжение.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Насколько списки и панели растягиваются за пределами границ и возвращаются обратно. Жесты Mac используют более мягкое растяжение.
+[hive stopping]
+Остановка…
+[hive stopped]
+Остановлено
+[hive stop failed]
+Не удалось остановить; повторите сочетание клавиш остановки
+[hive updating]
+Обновление…
+[hive requested]
+Запрошено
+[hive update failed]
+Не удалось обновить; попробуйте ещё раз
+[hive give order]
+Отдать приказ
+[hive less]
+Меньше
+[hive reports and details]
+Отчёты / подробности
+[hive needs fresh order]
+Нужен новый приказ
+[hive active]
+Активно
+[hive resume]
+Возобновить
+[recordings]
+Записи
+[recording delete confirm]
+Удалить запись?
+[recording delete warning]
+Запись и её метаданные будут удалены.
+[recording delete]
+Удалить
+[recording working]
+Обработка…
+[recording none]
+Записей пока нет.
+[recording interrupted]
+Прерванная запись
+[recording recover]
+Восстановить
+[recording export video]
+Экспорт видео
+[recording export metadata]
+Экспорт метаданных
+[recording export events]
+Экспорт событий
+[recording export failed]
+Не удалось экспортировать запись.
+[recording delete action]
+Удалить запись
+[recording refresh]
+Обновить
+[tutorial part1 message 1]
+Добро пожаловать в Globulation 2! В четырёх миссиях вы научитесь управлять колонией. Прогресс можно сохранить через игровое меню и позже загрузить из главного меню. Для продолжения нажмите Пробел или коснитесь ОК на сенсорном экране. Некоторые сообщения после этого исчезают; перечитать их можно в истории сообщений.
+[tutorial part1 message 2]
+Вы начинаете с Роя и одного рабочего. Посмотрим, как они взаимодействуют.
+[tutorial part1 message 3]
+Рабочий собирает пшеницу и несёт её в Рой. Рой расходует пшеницу на создание новых юнитов и потому крайне важен для колонии.
+[tutorial part1 message 4]
+Выберите своего глобула, движущегося юнита, щелчком левой кнопки или касанием.
+[tutorial part1 message 5]
+В сведениях о юните видно, как со временем уменьшается запас пищи. Ваш глобул голодает. Если полосы пищи включены, синяя полоса под юнитом показывает остаток пищи.
+[tutorial part1 message 6]
+Глобулы едят в Кабаках. Снимите выделение правой кнопкой или коснитесь пустой земли на сенсорном экране.
+[tutorial part1 message 7]
+Откройте управление постройками, выберите Кабак и разместите его рядом с пшеницей. Если не видите её, проследите путь рабочего. На сенсорном экране используйте «Стройка» и подтвердите допустимое место. Затем выйдите из размещения правой кнопкой или сенсорной кнопкой Отмена.
+[tutorial part1 message 8]
+Хорошо! Стройплощадка Кабака размещена.
+[tutorial part1 message 9]
+Рабочий из Роя теперь может построить Кабак. Он собирает древесину с ближайших деревьев и несёт её на стройку. Дождитесь завершения.
+[tutorial part1 message 10]
+Готовому Кабаку нужна пшеница. Назначенный рабочий будет собирать её, как и при снабжении Роя.
+[tutorial part1 message 11]
+Жёлтая полоса ресурсов Кабака растёт с поступлением пшеницы. Она показывает её запас.
+[tutorial part1 message 12]
+Теперь научимся назначать работу.
+[tutorial part1 message 13]
+Один рабочий снабжает Рой, другой — Кабак. Оба могут прерваться, чтобы поесть в Кабаке. Это нормально.
+[tutorial part1 message 14]
+Выберите Рой и найдите настройку назначения рабочих. На компьютере она обозначена как «Работает»; на сенсорном экране используйте число назначенных рабочих и целевое значение. Цель — желаемое число рабочих у здания.
+[tutorial part1 message 15]
+Установите желаемое число рабочих Роя на 0. Затем выберите Кабак и тоже установите число рабочих на 0.
+[tutorial part1 message 16]
+Теперь рабочие бездействуют, но всё ещё нуждаются в еде. У Кабака без назначенных рабочих рано или поздно закончится пшеница.
+[tutorial part1 message 17]
+Глобул, не находящий еду, теряет здоровье и может погибнуть. Госпиталь лечит раненых глобулов, но Кабаки тоже нужно снабжать.
+[tutorial part1 message 18]
+Постройте Госпиталь через управление постройками. Ему не нужна пшеница, поэтому разместите его рядом с древесиной или в центральном месте возле Роя.
+[tutorial part1 message 19]
+Выберите стройплощадку Госпиталя и задайте желаемое число рабочих 2. Двое рабочих закончат строительство быстрее.
+[tutorial part1 message 20]
+Госпиталь готов. Раненые глобулы могут приходить туда восстанавливать здоровье.
+[tutorial part1 message 21]
+Чёрные области ещё не исследованы. При движении юниты открывают соседнюю землю. Рабочие следуют своим заданиям и плохо подходят для разведки. Для этого предназначены исследователи.
+[tutorial part1 message 22]
+Выберите Рой и найдите пропорции производства рабочих, исследователей и воинов. Увеличьте долю исследователей до 1.
+[tutorial part1 message 23]
+При долях рабочих и исследователей по 1 Рой со временем производит поровну тех и других. Установите долю рабочих в 0, чтобы пока создавать только исследователей.
+[tutorial part1 message 24]
+Верните желаемое число рабочих Роя к 1, чтобы рабочий мог приносить ему пшеницу.
+[tutorial part1 message 25]
+Выберите Кабак и тоже задайте желаемое число рабочих 1. Растущей колонии нужен постоянный приток пищи.
+[tutorial part1 message 26]
+Теперь дождитесь, пока Рой создаст исследователя.
+[tutorial part1 message 27]
+Исследователь летает вокруг колонии и открывает новую землю. Прежде чем продолжить, дождитесь второго исследователя.
+[tutorial part1 message 28]
+Снова выберите Рой. Установите долю исследователей в 0, а рабочих в 1, чтобы возобновить производство рабочих.
+[tutorial part2 message 1]
+К востоку от базы есть камень. Запомните это место: позже он понадобится.
+[tutorial part2 message 2]
+Деревья к югу от камня — апельсиновые. Выберите их, чтобы посмотреть сведения о ресурсах. К фруктам вернёмся позже; сейчас займёмся Роем.
+[tutorial part2 message 3]
+Настройте Рой на производство только рабочих: доля рабочих 1, исследователей и воинов 0.
+[tutorial part2 message 4]
+Ускорим рост колонии. Выберите Рой и задайте желаемое число рабочих 6. Возможно, шести рабочих ещё нет; новые смогут занять свободные места по мере появления.
+[tutorial part2 message 5]
+Следующие задания начнутся, когда у вас будет 8 рабочих. Поддерживайте снабжение Роя и Кабака, пока растёт население.
+[tutorial part2 message 6]
+Теперь Рой снабжают несколько рабочих. Больше поставок пшеницы позволяет быстрее создавать юнитов.
+[tutorial part2 message 7]
+Новый рабочий стоит 5 единиц пшеницы. Доставка с далёкого поля занимает время, поэтому Рою часто нужно больше снабженцев, чем Кабаку. По возможности размещайте зависимые от пищи здания рядом с пшеницей.
+[tutorial part2 message 8]
+У вас уже не менее 8 рабочих. Выберите Рой и уменьшите желаемое число рабочих до 1, чтобы замедлить рост населения на время строительства.
+[tutorial part2 message 9]
+Колонии нужно больше мест для питания. Постройте второй Кабак к северу от первого.
+[tutorial part2 message 10]
+Назначьте свободных рабочих на стройку нового Кабака. Ему нужно всего 3 единицы древесины, поэтому больше 3 строителей мало помогут.
+[tutorial part2 message 11]
+В готовом Кабаке снова действует число рабочих для снабжения, обычно 1. Для строительства и повседневного снабжения число рабочих задаётся отдельно.
+[tutorial part2 message 12]
+Рабочие могут научиться двигаться быстрее. Для этого служит Стадион.
+[tutorial part2 message 13]
+Откройте управление постройками и найдите Стадион. На компьютере наведите указатель на значок, чтобы увидеть описание и стоимость. На сенсорном экране выберите его в разделе «Стройка» для подготовки размещения. Пока не размещайте.
+[tutorial part2 message 14]
+Стадиону нужно много древесины и немного камня. Выберите центральное место, куда юнитам легко добраться.
+[tutorial part2 message 15]
+Постройте Стадион, например к югу от Роя. Оставьте вокруг свободное место: учебные здания расширяются при улучшении.
+[tutorial part2 message 16]
+Задайте желаемое число рабочих на стройплощадке Стадиона от 5 до 7. Всего ему нужно 7 единиц строительных материалов.
+[tutorial part2 message 17]
+Готовый Стадион обучает приходящих юнитов без постоянных поставок стройматериалов или пшеницы.
+[tutorial part2 message 18]
+Глобулы входят в Стадион для тренировки. После обучения они смогут бегать быстрее.
+[tutorial part2 message 19]
+Выберите Стадион, чтобы посмотреть ход обучения. Индикаторы показывают, сколько осталось обучающимся внутри юнитам.
+[tutorial part2 message 20]
+Обученные рабочие быстрее передвигаются и доставляют ресурсы. Следите за пищей при росте колонии: быстрые доставки помогают лишь при достаточном числе снабжаемых Кабаков.
+[tutorial part2 message 21]
+Найдите счётчик рабочих в игровом интерфейсе. Общее число показывает население; доступные рабочие помогают заметить свободную рабочую силу или незанятые задания. Используйте свободных рабочих, не назначая больше работ, чем колония способна выполнить.
+[tutorial part2 message 22]
+Интерфейс также показывает число исследователей и воинов. Учитывайте его при планировании производства и назначении юнитов к флагам.
+[tutorial part2 message 23]
+У вас 2 Кабака. Каждый базовый Кабак кормит 4 юнита одновременно: вместе это 8 мест. Проголодаться могут больше 8 юнитов, поэтому предусмотрите запас для очередей.
+[tutorial part2 message 24]
+Два Кабака не смогут поддерживать растущую колонию вечно. Добавляйте места для питания до того, как нехватка перейдёт в голод.
+[tutorial part2 message 25]
+Постройте ещё 3 Кабака рядом с пшеницей. Голодные рабочие перестают работать, а длительный голод их убивает. Назначайте свободных рабочих на стройки, сохраняя существующее снабжение пищей.
+[tutorial part2 message 26]
+Завершите ещё 3 Кабака, доведя общее число до 5.
+[tutorial part2 message 27]
+После строительства в новых Кабаках действует число рабочих для снабжения, обычно по 1 рабочему. Проверьте, есть ли снабженцы и достаточно ли пшеницы.
+[tutorial part2 message 28]
+Стадион улучшил передвижение по суше. Теперь научим колонию плавать.
+[tutorial part2 message 29]
+Бассейн учит юнитов плавать и строится из древесины. Разместите его на большой поляне к северо-востоку от базы, севернее камня. Оставьте вокруг место для улучшений и роста ресурсов, назначьте доступных рабочих на стройку.
+[tutorial part2 message 30]
+Бассейн учит юнитов плавать и строится из древесины. Разместите его на большой поляне к северо-востоку от базы, севернее камня. Оставьте вокруг место для улучшений и роста ресурсов, назначьте доступных рабочих на стройку.
+[tutorial part2 message 31]
+Бассейн готов. Теперь глобулы могут входить и учиться плавать.
+[tutorial part2 message 32]
+Выберите Бассейн для просмотра обучения. Базовый Бассейн обучает 2 глобулов одновременно, как и базовый Стадион.
+[tutorial part2 message 33]
+Ваши обученные глобулы теперь плавают. Скоро мы дадим им работу, требующую пересечь воду.
+[tutorial part2 message 34]
+Предстоит узнать ещё многое. Если нужен перерыв, сохранитесь через игровое меню и вернитесь позже.
+[tutorial part2 message 35]
+У колонии есть пища и физическая подготовка. Школа научит рабочих навыкам для лучших зданий.
+[tutorial part2 message 36]
+Школа улучшает сбор ресурсов и строительство. Для её постройки нужны водоросли, растущие в воде. Рабочие, умеющие плавать, могут их собрать.
+[tutorial part2 message 37]
+Защищайте важные учебные здания. Школе не обязательно стоять у воды: защищённое место в глубине острова может уберечь её от нападения.
+[tutorial part2 message 38]
+Постройте Школу в защищённом месте, например за Бассейном или к юго-западу от Роя рядом со Стадионом. Назначьте доступных рабочих на стройку.
+[tutorial part2 message 39]
+Выберите здание, чтобы увидеть назначенных рабочих. На компьютере настраиваемое действие показа путей юнитов также выводит линии к их целям; текущую клавишу смотрите в Настройках, Управление. Дождитесь завершения Школы.
+[tutorial part3 message 1]
+У колонии теперь есть Кабаки, Госпиталь, Стадион, Бассейн и Школа. Пора готовить оборону.
+[tutorial part3 message 2]
+Мы ещё не произвели ни одного воина. Без них колония почти не защищена от нападения.
+[tutorial part3 message 3]
+Выберите Рой и установите долю воинов в 2. Долю рабочих оставьте на 1, чтобы продолжать производить и их.
+[tutorial part3 message 4]
+Теперь Рой будет создавать примерно двух воинов на каждого рабочего. Для ускорения производства назначьте больше рабочих на снабжение.
+[tutorial part3 message 5]
+Первый воин готов и приступит к тренировкам. Перед продолжением дождитесь второго.
+[tutorial part3 message 6]
+Воины тоже пользуются Стадионом и Бассейном. Кроме того, они тренируют атаку в Казармах.
+[tutorial part3 message 7]
+Казармы улучшают силу и скорость атаки. Сила повышает урон за удар, скорость — частоту ударов. Хорошо обученные воины могут победить значительно более многочисленных необученных врагов.
+[tutorial part3 message 8]
+Постройте Казармы рядом с древесиной, необходимой для стройки.
+[tutorial part3 message 9]
+Назначьте свободных рабочих на стройплощадку Казарм. Оставьте достаточно рабочих на снабжении пищей и не создавайте больше заданий, чем они смогут выполнить.
+[tutorial part3 message 10]
+Казармы готовы. Теперь воины могут тренировать там атаку.
+[tutorial part3 message 11]
+Колония может стать сильнее благодаря улучшению зданий.
+[tutorial part3 message 12]
+Обученные в Школе рабочие могут строить улучшения. Выберите подходящее здание и найдите «Улучшение» в его управлении. Повреждённым зданиям сначала может понадобиться Ремонт.
+[tutorial part3 message 13]
+Решим, что улучшать первым. В Кабаках ещё есть свободные места, поэтому они могут подождать.
+[tutorial part3 message 14]
+В Госпитале тоже есть место. Можно заняться Школой, Стадионом, Бассейном или Казармами.
+[tutorial part3 message 15]
+Сначала улучшите Стадион, чтобы юниты научились двигаться ещё быстрее.
+[tutorial part3 message 16]
+Выберите Стадион и команду «Улучшение». Перед началом стройки все юниты внутри должны выйти, поэтому изменения могут начаться не сразу.
+[tutorial part3 message 17]
+Назначьте доступных рабочих на улучшение Стадиона. На стройплощадке уровня 2 могут работать только рабочие с необходимым обучением в Школе.
+[tutorial part3 message 18]
+Дождитесь завершения улучшения Стадиона. Здания более высокого уровня требуют больше ресурсов и времени.
+[tutorial part3 message 19]
+Стадион уровня 2 готов. Он занимает больше земли, поэтому мы оставили промежуток. Без места для расширения улучшение здания невозможно.
+[tutorial part3 message 20]
+Теперь улучшите Казармы и Бассейн до уровня 2. Продолжим, когда оба будут готовы.
+[tutorial part3 message 21]
+Улучшенные здания обычно обслуживают больше глобулов или лучше обучают. Например, Кабак уровня 2 имеет 7 мест и кормит быстрее базового.
+[tutorial part3 message 22]
+Враг рядом. Подготовимся к нападению.
+[tutorial part3 message 23]
+Башни стреляют по врагам в пределах дальности. Стены помогают их защищать. Используем и то и другое для обороны узкого подхода к колонии.
+[tutorial part3 message 24]
+Если хватает места, ставьте башни парами. Стены могут закрыть три стороны, но оставьте путь для рабочих, доставляющих камень для боеприпасов.
+[tutorial part3 message 25]
+Посмотрите к востоку от Бассейна, севернее остальных фруктовых деревьев. Узкая переправа ведёт к другому острову. Это хорошее место для обороны.
+[tutorial part3 message 26]
+Предусмотрите место для 2 башен между деревьями и берегом. Позади оставьте доступ для доставки камня, с других сторон — место для стен. Не отгородите рабочих.
+[tutorial part3 message 27]
+Постройте там 2 башни. Назначьте по 2 или 3 рабочих на каждую стройку в зависимости от доступного числа в счётчиках интерфейса.
+[tutorial part3 message 28]
+Через управление постройками разместите стены с трёх наружных сторон башен. Сторону к колонии оставьте открытой для рабочих.
+[tutorial part3 message 29]
+Каждый участок стены создаёт строительную работу и требует 1 камень. Если рабочих не хватает на все задания сразу, они завершат участки по очереди.
+[tutorial part3 message 30]
+Дождитесь завершения обеих башен и нескольких участков стены. Башням также нужны каменные боеприпасы; далёкий карьер замедляет доставку. Увеличьте желаемое число рабочих у башен, если есть свободные.
+[tutorial part4 message 1]
+У колонии есть пища, обучение и оборона. Здания можно ещё раз улучшить до уровня 3, получив лучшее обучение и вместимость. Продолжайте улучшать их по мере наличия ресурсов и навыков рабочих.
+[tutorial part4 message 2]
+Найдите вражескую колонию к северо-западу от базы. Переместите туда обзор.
+[tutorial part4 message 3]
+Даже исследованную землю может скрывать туман войны. Чтобы видеть текущие действия врага, нужен исследователь поблизости.
+[tutorial part4 message 4]
+Откройте Флаги. Здесь доступны флаги и зоны для направления юнитов без отдельного управления каждым глобулом.
+[tutorial part4 message 5]
+Выберите Флаг разведки со значком в форме воздушного змея. Флаги можно ставить на суше, воде, ресурсах и неисследованной земле.
+[tutorial part4 message 6]
+Поставьте Флаг разведки над предполагаемой базой врага. Для начала разведки достаточно примерного места. Выйдите из размещения правой кнопкой или завершите его сенсорными элементами управления.
+[tutorial part4 message 7]
+Контур вокруг флага показывает рабочий радиус. Назначенный исследователь осмотрит эту область. Если никто не прибывает, проверьте число исследователей и при необходимости создайте нового в Рое. Нажмите Пробел или коснитесь ОК, когда исследователь достигнет области.
+[tutorial part4 message 8]
+У врага много рабочих и собранная армия. Подготовим оборону до нападения.
+[tutorial part4 message 9]
+Откройте Флаги и выберите синюю зону Охраны. Используйте режим добавления земли в зону, а не удаления. На сенсорном экране выберите Рисовать вместо Стирать.
+[tutorial part4 message 10]
+Выберите форму и размер кисти. Большой квадрат удобен для компактной оборонительной области.
+[tutorial part4 message 11]
+Нарисуйте зону Охраны сразу за башнями, где ожидается враг. Щёлкните или коснитесь для одной точки либо протяните для большей площади. На сенсорном экране используйте Перемещать, когда нужно сдвинуть обзор во время рисования.
+[tutorial part4 message 12]
+Доступные воины войдут в зону Охраны. Сделайте её достаточно большой для защитников, но достаточно маленькой, чтобы они держались вместе у переправы. Теперь ждите нападения.
+[tutorial part4 message 13]
+Враг приближается к переправе!
+[tutorial part4 message 14]
+Нас атакуют. Наблюдайте, как обученные воины и башни защищают позицию.
+[tutorial part4 message 15]
+Вы выстояли! Откройте Флаги и выберите шипастый Флаг войны. Разместите его над вражеским Роем, чтобы направить туда атаку.
+[tutorial part4 message 16]
+Выйдите из размещения и выберите Флаг войны. Назначьте больше 1 воина, затем уменьшите радиус для сосредоточения атаки вокруг вражеского Роя. Дождитесь прибытия воинов.
+[tutorial part4 message 17]
+Атака началась. Вашим воинам нужно пройти мимо башен врага, чтобы добраться до его Роя.
+[tutorial part4 message 18]
+Воины достигли вражеской базы. Сосредоточьтесь на атаке Роя.
+[tutorial part4 message 19]
+Вы уничтожили вражеский Рой. Поздравляем! Вы прошли обучение и освоили основы снабжения пищей, назначения работ, тренировок, улучшений, разведки и боя.
+[tutorial mission basics]
+Введение и основы
+[tutorial mission development]
+Здания и школы
+[tutorial mission training]
+Воины, тренировки и улучшения
+[tutorial mission flags]
+Флаги и завершение
+[library  Could not restore the previous library: %0]
+ Не удалось восстановить предыдущую библиотеку: %0
+[library  The previous library is retained.]
+ Предыдущая библиотека сохранена.
+[library  · Installed]
+ · Установлено
+[library  · Update available]
+ · Доступно обновление
+[library A different release is installed. Install the selected release to update explicitly.]
+Установлена другая версия. Если хотите обновить её, установите выбранную версию.
+[library All engines]
+Все движки
+[library All generators]
+Все генераторы
+[library Available families]
+Доступные семейства
+[library Back]
+Назад
+[library Building families]
+Семейства зданий
+[library Building library]
+Библиотека зданий
+[library Checking building release]
+Проверка версии здания
+[library Choose an online instance before opening a family link.]
+Перед открытием ссылки на семейство выберите онлайн-сервер.
+[library Compatible with this engine]
+Совместимо с этим движком
+[library Confirm replacement]
+Подтвердить замену
+[library Create in Building Studio]
+Создать в студии зданий
+[library Downloading generator…]
+Загрузка генератора…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Каждый ландшафт показан как настоящая карта с указанными ниже размером и числом колоний, которые можно изменить здесь. Выберите его, чтобы играть на показанной карте.
+[library Editor tool: generates terrain for the map editor.]
+Инструмент редактора: создаёт ландшафт для редактора карт.
+[library Editor tools]
+Инструменты редактора
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Включите установленные семейства ниже. Выбор сохраняется в локальном профиле; существующие карты и сохранения оставляют свои здания. Для сетевой игры создайте карту с этими семействами, опубликуйте её в библиотеке карт и выберите в комнате.
+[library Enter a building family ID or a link to its family page.]
+Введите ID семейства зданий или ссылку на его страницу.
+[library Family link or ID]
+Ссылка или ID семейства
+[library Family links must be at most 1024 characters.]
+Ссылки на семейства могут содержать не более 1024 символов.
+[library Family removed.]
+Семейство удалено.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Семейство недоступно. Для частных семейств войдите через раздел Онлайн с учётной записью, имеющей доступ.
+[library Generator file hash mismatch]
+Хеш файла генератора не совпадает
+[library Generator installed. Future selections use this release.]
+Генератор установлен. Последующие выборы используют эту версию.
+[library Generator package identity mismatch]
+Идентификатор пакета генератора не совпадает
+[library Generators]
+Генераторы
+[library Install compatible release]
+Установить совместимую версию
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Устанавливайте отдельные здания или семейства улучшений вместе со стандартными зданиями. Выбор применяется только к вновь создаваемым картам.
+[library Install selected release]
+Установить выбранную версию
+[library Installed]
+Установлено
+[library Installed families]
+Установленные семейства
+[library Installed. Enable the family below for new maps.]
+Установлено. Включите семейство ниже для новых карт.
+[library Invalid building family ID.]
+Недопустимый ID семейства зданий.
+[library Invalid building library response]
+Недопустимый ответ библиотеки зданий
+[library Invalid library cursor]
+Недопустимый курсор библиотеки
+[library Invalid release identity]
+Недопустимый идентификатор версии
+[library Load more]
+Загрузить ещё
+[library Load more families]
+Загрузить больше семейств
+[library Loading building families]
+Загрузка семейств зданий
+[library Loading…]
+Загрузка…
+[library Map generators]
+Генераторы карт
+[library Maps]
+Карты
+[library Most downloaded]
+Популярные по загрузкам
+[library Most liked]
+Популярные по отметкам
+[library My generators]
+Мои генераторы
+[library Newest]
+Новые
+[library No building families installed.]
+Нет установленных семейств зданий.
+[library No public building families yet]
+Открытых семейств зданий пока нет
+[library No validated release for this game version.]
+Нет проверенного выпуска для этой версии игры.
+[library Online server changed during download]
+Онлайн-сервер изменился во время загрузки
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Откройте не указанное в списке семейство по ссылке или ID. Для частных семейств сначала войдите через раздел Онлайн.
+[library Open family]
+Открыть семейство
+[library Opened family. Install its compatible release below.]
+Семейство открыто. Установите совместимую версию ниже.
+[library Opening building family]
+Открытие семейства зданий
+[library Playable]
+Для игры
+[library Playable generator]
+Игровой генератор
+[library Privacy policy]
+Политика конфиденциальности
+[library Public library]
+Открытая библиотека
+[library Recently updated]
+Недавно обновлённые
+[library Refresh library]
+Обновить библиотеку
+[library Release identity changed during installation]
+Идентификатор версии изменился во время установки
+[library Reroll]
+Пересоздать
+[library Reroll seed]
+Случайное зерно
+[library Saving generator library…]
+Сохранение библиотеки генераторов…
+[library Search]
+Поиск
+[library Seed]
+Зерно
+[library Selection saved for new maps.]
+Выбор сохранён для новых карт.
+[library Storage failed.]
+Не удалось сохранить.
+[library Storage persistence unavailable]
+Постоянное хранилище недоступно
+[library Tags]
+Метки
+[library Technical checks passed for this engine. Balance is not certified.]
+Технические проверки для этого движка пройдены. Игровой баланс не сертифицирован.
+[library The server returned a different family.]
+Сервер вернул другое семейство.
+[library This link is from another instance. Switch to that instance in Online first.]
+Ссылка относится к другому серверу. Сначала переключитесь на него в разделе Онлайн.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Пакет с этим ID уже установлен. Подтвердите замену, чтобы использовать выбранную версию.
+[library This release has no passing checks for this engine.]
+Этот выпуск не имеет пройденных проверок для этого движка.
+[library This release is installed.]
+Эта версия установлена.
+[library Update installed family]
+Обновить установленное семейство
+[library Use in a room]
+Использовать в комнате
+[library By %0]
+Автор: %0
+[library Installed release %0]
+Установленная версия %0
+[library Release %0]
+Версия %0
+[library Remove %0]
+Удалить %0
+[library Seed: %0]
+Зерно: %0
+[library %0 · revision %1]
+%0 · редакция %1
+[library Fit]
+Вписать
 [Sound or silence?]
 
 [Silence]
@@ -6144,5 +6642,5 @@ FFmpeg недоступен, поэтому запись отключена. У�
 
 [audio choices description]
 
-[Destroy this building?]
-Уничтожить это здание?
+[library GL only]
+Лишь GL
