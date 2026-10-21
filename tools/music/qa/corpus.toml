@@ -54,12 +54,6 @@ path = "data/zik/glass-garden"
 why = "Approved (ships as glass-garden)."
 
 [[set]]
-id = "orchestral-dawn"
-verdict = "good"
-path = "data/zik/orchestral-dawn"
-why = "Approved (ACE-Step 1.5 + Demucs, ships as orchestral-dawn)."
-
-[[set]]
 id = "codex-seedling"
 verdict = "bad"
 git_ref = "270ccc38f21702757dd18e770a51a63173774f03"

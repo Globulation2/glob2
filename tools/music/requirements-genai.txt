@@ -1,6 +1,6 @@
-# Generated sets (glob2music/genai/acestep.py): ACE-Step 1.5, used by orchestral-dawn.
+# Generated sets (glob2music/genai/acestep.py): ACE-Step 1.5, for experimental sets.
 #
-# Not needed to *build* orchestral-dawn from its cached generation: that path only
+# Not needed to build a set from its cached generation: that path only
 # needs requirements-separation.txt (Demucs). These pins matter only to regenerate the
 # source audio, which needs a CUDA GPU (8 GB worked: RTX 2070 SUPER, DiT + offload on
 # one card, the 1.7B LM on a second card) and about 25 GB of disk.
