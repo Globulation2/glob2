@@ -46,6 +46,11 @@ the exact signed package without rebuilding it.
 Interactive tutorial, audio, editor, updates and online play still require
 separate qualification; this workflow does not publish or deploy anything.
 Android emulator checks use the reviewed mirror smoke driver to complete audio and hand-preference setup through real input before testing the main menu and lifecycle. The APK build and its assets still come from the immutable public tag.
+When restarting all-platform staging after the selected tag has already reached
+Google Play internal testing, verify that successful upload job and select
+`play_preflight_only` on `github-release.yml` to check Play access without trying
+to upload the same version code again. Retain the original upload run as release
+evidence; this option does not attest to a new upload or production availability.
 Each channel retains a separate manual workflow for retries; no publication
 workflow runs on ordinary pushes or pull requests.
 Each publication workflow skips every job unless it is manually dispatched
