@@ -219,6 +219,42 @@ for(const mode of ['serial','threaded']) {
   // per host frame. Serial switches need a larger total functional budget.
   const switchTimeout=mode==='serial'?720000:360000;
   const mediaTimeout=mode==='serial'?960000:480000;
+  test(`${mode}: saved Software starts when the launcher initially selects GPU`,async({page},info)=>{
+    test.setTimeout(switchTimeout);
+    await start(page,mode);
+    if(mode==='threaded')
+      test.skip(Boolean(await page.evaluate(()=>Glob2BrowserLoader.threadingSupport('webgl2'))),
+        'Browser has no worker WebGL transport for the accelerated launcher case');
+    await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
+    // Persist through the real settings path, then restart without a renderer
+    // override. Existing switch tests always override Software on every load.
+    for(const label of ['Automatic','Software']) {
+      await clickControl(page,'graphics.renderer');await clickByLabel(page,/popup/,label);
+      await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label)).toContain(label);
+      await settingsPersisted(page);
+    }
+    await expect.poll(()=>page.evaluate(()=>FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'})))
+      .toMatch(/^rendererBackend=software$/m);
+    await settingsPersisted(page);
+    const url=new URL(page.url());url.searchParams.delete('renderer');
+    // Exercise an accelerated launch even on CI's software-backed WebGL driver.
+    // Only the launcher policy is forced; canvas transfer and GL stay real.
+    await page.route(url.href,async route=>{
+      const response=await route.fetch();const body=await response.text();
+      const policy="renderer: chooseRenderer() ? 'webgl2' : 'software',";
+      expect(body).toContain(policy);
+      await route.fulfill({response,body:body.replace(policy,"renderer: 'webgl2',")});
+    });
+    const errors=[];page.on('pageerror',error=>errors.push(String(error)));
+    await page.goto(url.href);await screen(page,'MainMenuScreen');
+    expect((await state(page)).executionMode).toBe(mode);
+    await expect.poll(()=>page.evaluate(()=>Module.renderer),{timeout:120000}).toBe('software');
+    await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
+    await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label)).toContain('Software');
+    expect(await generation(page)).toBe(0); // Correct ownership needs no replacement at startup.
+    await page.screenshot({path:info.outputPath('saved-software-startup.png')});
+    expect(errors).toEqual([]);
+  });
   test(`${mode}: Automatic resolving to the active Software renderer completes without replacing the surface`,async({page},info)=>{
     test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);await openOverlay(page);
     // direct0 keeps Software as its initial automatic policy. Capture the actual

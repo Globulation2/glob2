@@ -289,6 +289,18 @@ const watchReplay = (() => {
   });
   return state;
 })();
+function browserStartupRenderer(preferences, requested, automatic) {
+  // Match Settings::load's renderer preference and legacy screenFlags migration.
+  // Decide ownership before Launcher.cpp transfers the canvas to its pthread.
+  const saved = /^rendererBackend=([^\r\n;]*)/m.exec(preferences || '');
+  const flags = /^screenFlags=(\d+)/m.exec(preferences || '');
+  const backend = requested || (saved ? saved[1] : flags ?
+    ((Number(flags[1]) & (1 | 32)) ? 'legacy-gl' : 'software') : 'auto'); // USEGPU | PORTABLEGPU
+  if (backend === 'software') return 'software';
+  if (['legacy-gl','gpu','webgl2','opengl','programmable-gl','portable-sdl','sdl'].includes(backend)) return 'webgl2';
+  return automatic;
+}
+// End browser startup renderer.
 function chooseRenderer() {
     const requested = new URLSearchParams(location.search).get('renderer');
     const accelerated = () => {
@@ -434,16 +446,14 @@ var Module = {
     canvas.height = height;
     fitCanvas();
     canvas.focus();
-    // WebGL2 is the default when the browser accelerates it. Emulated WebGL2, such as
-    // SwiftShader, costs several CPU cores where software rendering needs a fraction of
-    // one, so it counts as unavailable unless ?renderer=webgl2 asks for it.
-    const gpu = Module.renderer === 'webgl2';
     // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['online', 'join', join, '--instance', location.origin] : [];
     const roomMap = browserMapLaunchArguments(location.search, location.origin);
     const requestedBackend = new URLSearchParams(location.search).get('renderer');
+    const preferences = FS.analyzePath(preferencesPath).exists ? FS.readFile(preferencesPath, {encoding:'utf8'}) : null;
+    Module.renderer = browserStartupRenderer(preferences, requestedBackend, Module.renderer);
     const graphics = ['--window-size', width + 'x' + height, '--no-fullscreen', '--no-custom-cursor', ...(requestedBackend ? ['--renderer', requestedBackend] : [])];
     const launch = watchReplay && watchReplay.status === 'ready' ? ['replay', watchReplay.path] : roomMap.length ? roomMap : invite.length ? invite : ['play'];
     const args = [...launch, ...graphics];

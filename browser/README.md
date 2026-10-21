@@ -76,8 +76,10 @@ two-minute startup timeout. It removes the startup watcher when the application
 is ready; errors in an already running game do not restart it.
 The threaded application owns simulation and worker pools on an application worker; the DOM
 thread stays available for input, filesystem proxying and software presentation.
-WebGL transfers its canvas to the application worker. Engine thread policies
-remain shared with native builds.
+WebGL transfers its canvas to the application worker. Before launching that worker, the
+shell reconciles its canvas transport with the restored renderer preference
+(and any URL override), so saved software rendering keeps the canvas on the DOM
+thread. Engine thread policies remain shared with native builds.
 
 Hosting must send `Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`. The local server above and the
