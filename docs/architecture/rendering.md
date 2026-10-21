@@ -299,8 +299,8 @@ also remains the headless default and the equivalence reference.
 
 ### Smooth unit motion
 
-The experimental **Smooth unit motion** graphics setting (`Settings::unitInterpolation`,
-off by default) draws units between ticks, so threaded play at display rate uses all
+The **Smooth unit motion** graphics setting (`Settings::unitInterpolation`,
+on by default on all platforms) draws units between ticks, so threaded play at display rate uses all
 32 animation frames per direction instead of repeating one pose per tick.
 
 - A unit's drawn position and animation frame follow `delta`, which the simulation

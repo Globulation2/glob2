@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-// Smooth unit motion (the experimental unitInterpolation graphics setting).
+// Smooth unit motion (the unitInterpolation graphics setting).
 // The simulation advances a unit's delta by stepSpeed once per tick, and the
 // drawn position and the animation frame (delta >> 3, 32 frames) follow delta.
 // Between ticks, drawing can advance delta by the fraction of the tick interval
