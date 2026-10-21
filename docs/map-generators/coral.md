@@ -34,13 +34,22 @@ further it is from home.
   shrink down to 7 until neighbouring pads keep six tiles of sea. A bigger pad is more room for the
   first economy; it also brings the trunk's root in, so at large sizes the fan has less room. Maps
   under 128 tiles across are refused, as are layouts whose trunk cannot clear its pad.
+- **Expansion nodes.** By default, up to two neutral building courts widen junctions within
+  each colony's branching fan. The same sites repeat for every colony, at different network
+  depths where space allows. Each court has a circular grass interior of radius 4 and a complete
+  one-corner sand perimeter. Ordinary crops cannot cross that perimeter; the court starts empty
+  and can fit one 4×4 building with access around it. Roads meet the sand ring
+  rather than cutting through the building ground. Nodes remain reachable from their colony,
+  including when sand roads are disabled. The **Expansion nodes** control requests 0–3 per fan
+  (default 2); crowded layouts omit nodes that would overlap homes, another node or a rival fan's
+  water strait. These are construction sites, without starter buildings or resource kits.
 - **Resources.** Each pad has an unscaled kit of 40 wheat and 30 wood in front of the swarm and a
   quarry behind it. Remoteness is the walk along the coral from the nearest pad: 40% of forks
   carry stone growing from 3 to 9 tiles with it, and every tip a fruit grove from 3 to 12 tiles. The
   branches' wheat and wood are ranked by `PeriodicNoise` sampled in the wedge frame, leaning
   towards home: 30% of their grass under wheat and 21% under wood, since the branches are all the
   land there is. A few dry sand patches (8% of the branches' inland grass, three or more tiles from
-  water, never on a pad, bud or bridge) decorate the wider branches. Algae is counted over the
+  water, never on a pad, bud, bridge or expansion court) decorate the wider branches. Algae is counted over the
   shallows up to ten tiles out, one clump per 35 tiles, and seeded on each colony's best-growing 30%
   of that water, the same number of clumps in every wedge.
 - **Routes opened and checked.** After `secureStartingCrops`, an `openRoad` from every colony to
@@ -48,12 +57,14 @@ further it is from home.
   the way. `validateWorld` rebuilds the design and requires every trunk's centre line to be land,
   every colony able to walk to its first fork and, with bridges, every colony reachable on foot
   from colony 0.
-  middle of every branch that forks on and every bridge, off the pads and buds; dead-end tips get
+  With **Sand roads** enabled, a one-corner sand line runs down the
+  middle of every branch that forks on and every bridge, off the pads, buds and expansion courts; dead-end tips get
   none, since they carry no traffic and their narrow land would be left without fields. Every tile
   touching the sand loses the pure grass a deposit or a building needs, so nothing can grow or be
   built across the road. Branches never taper below about eight tiles (`branch-width` 7–17, 11 by
   default, is the trunk's), so grass remains either side of the road.
-- **Rectangular maps.** The fan is designed in a circle on the map's shorter side and placed on the
+- **Rectangular maps.** The fan is designed in a circle on the map's shorter side and stretched
+  along the longer side. Expansion courts retain their circular shape and building capacity.
 
 ## Implementation source
 

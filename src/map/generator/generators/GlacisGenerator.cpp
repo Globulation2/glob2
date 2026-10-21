@@ -93,6 +93,10 @@ TraceShape traceShape(int bastions)
 // tile, since stone stands on pure grass only), the moat's water, the covered way's sand, then the
 // glacis of `glacis-width` tiles and its one-tile sand foot.
 constexpr double kWall = 2.2, kBerm = 2.5, kMoat = 3, kCovered = 2, kFoot = 1;
+// An irrigated outer bank, inside the sand covered way. Beaches consume its inner
+// edge, so widths below three leave too little pure grass and are omitted.
+constexpr int kMoatBank = 5, kLeastMoatBank = 3, kMoatCoverPercent = 65;
+constexpr int kRiverBankReach = 7, kRiverCoverPercent = 30;
 // Tiles beyond the foot that belong to the fort's zone: no stream, road or deposit, so a track
 // meets the foot square and the country's crops start a few tiles out.
 constexpr double kZoneMargin = 2;
@@ -149,6 +153,7 @@ enum TileKind : signed char
 	kGateTile,
 	kBermTile,
 	kMoatTile,
+	kMoatBankTile,
 	kCoveredTile,
 	kGlacisTile,
 	kFootTile
@@ -186,7 +191,7 @@ struct FortStencil
 	int index(int dx, int dy) const { return (dy + extent) * side() + dx + extent; }
 };
 
-FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
+FortStencil buildStencil(int bastions, double tip, double glacis, int gates, int moatBank)
 {
 	FortStencil s;
 	s.bastions = bastions;
@@ -275,7 +280,8 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
 				  backFrame(0.7 * court, -0.4 * court)};
 	s.swarm = {0.35 * court, 0};
 
-	const double glacisFrom = kBerm + kMoat + kCovered, footTo = glacisFrom + glacis + kFoot;
+	const double bankTo = kBerm + kMoat + moatBank;
+	const double glacisFrom = bankTo + kCovered, footTo = glacisFrom + glacis + kFoot;
 	s.extent = int(std::ceil(tip + footTo + kZoneMargin)) + 2;
 	const int side = s.side();
 	s.vertex.assign(size_t(side) * side, GRASS);
@@ -323,7 +329,9 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
 				unsigned char terrain = GRASS;
 				if (d > kBerm && d <= kBerm + kMoat)
 					terrain = nearGate(px, py, kCausewayHalf) ? SAND : WATER;
-				else if (d > kBerm + kMoat && d <= glacisFrom)
+				else if (d > kBerm + kMoat && d <= bankTo)
+					terrain = nearGate(px, py, kCausewayHalf) ? SAND : GRASS;
+				else if (d > bankTo && d <= glacisFrom)
 					terrain = SAND;
 				else if (d > glacisFrom && d <= footTo - kFoot)
 					terrain = nearGate(px, py, kTrackHalf) ? SAND : GRASS;
@@ -368,6 +376,8 @@ FortStencil buildStencil(int bastions, double tip, double glacis, int gates)
 					kind = kBermTile;
 				else if (d <= kBerm + kMoat)
 					kind = kMoatTile;
+				else if (d <= bankTo)
+					kind = kMoatBankTile;
 				else if (d <= glacisFrom)
 					kind = kCoveredTile;
 				else if (d <= footTo - kFoot)
@@ -501,7 +511,7 @@ struct Layout
 	std::vector<signed char> kind;
 	std::vector<int> fortOf;    // colony of every tile in a fort's zone, else -1
 	std::vector<int> gardenOf;  // colony * 3 + garden for garden tiles, else -1
-	std::vector<unsigned char> core, zone, wall, gate, glacis, roads;
+	std::vector<unsigned char> core, zone, wall, gate, glacis, roads, river;
 	std::vector<Ford> fords;
 	int streams = 0;
 	std::string failure;
@@ -560,7 +570,15 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	context.telemetry.measure("glacis.fort.tip", tip);
 	context.telemetry.measure("glacis.glacis.width", glacis);
-	L.stencil = buildStencil(bastions, tip, glacis, o.gates);
+	// Spend only the space left after the ordinary fort/glacis negotiation.
+	// Optional outer farmland must not shrink an existing courtyard or crowd a stream.
+	int moatBank = std::min(kMoatBank, int(std::floor((nearest - kCountryBetween) / 2 - reach())));
+	if (moatBank < kLeastMoatBank)
+		moatBank = 0;
+	context.telemetry.measure("glacis.moat.bank-width", moatBank);
+	if (moatBank < kMoatBank)
+		context.telemetry.fallback("glacis.moat.bank-reduced", "Limited spare room outside the moat");
+	L.stencil = buildStencil(bastions, tip, glacis, o.gates, moatBank);
 	context.telemetry.measure("glacis.garden.wheat-tiles",
 							  L.stencil.gardenTiles[0] + L.stencil.gardenTiles[2]);
 	context.telemetry.measure("glacis.garden.wood-tiles", L.stencil.gardenTiles[1]);
@@ -588,6 +606,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.gate.assign(n, 0);
 	L.glacis.assign(n, 0);
 	L.roads.assign(n, 0);
+	L.river.assign(n, 0);
 	for (int k = 0; k < teams; ++k)
 	{
 		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
@@ -733,7 +752,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			strokePath(stream, t, course);
 			for (int i = 0; i < n; ++i)
 				if (stream[i] && (fromZone[i] < 0 || fromZone[i] > 2))
-					water[i] = 1;
+					water[i] = L.river[i] = 1;
 			++L.streams;
 			const int mid = m / 2;
 			const double ax = tangent[mid].x, ay = tangent[mid].y, len = 1;
@@ -989,6 +1008,38 @@ bool generate(Game &game, GenerationContext &context)
 		}
 	}
 
+	// Moat-side farms use one noise pattern in the fort's own frame, so every
+	// colony gets identical frontage. The covered way and gate causeways stay sand.
+	context.stage = "glacis moat crops";
+	const PeriodicNoise moatKinds(t.w, t.h, 8, context.stream("glacis-moat-kinds"));
+	const PeriodicNoise moatCover(t.w, t.h, 5, context.stream("glacis-moat-cover"));
+	std::vector<int> moatRank(n, 0);
+	for (int k = 0; k < teams; ++k)
+	{
+		std::array<std::vector<int>, 2> candidates;
+		const int cx = int(std::lround(L.homes[k].x)), cy = int(std::lround(L.homes[k].y));
+		for (int dy = -s.extent; dy < s.extent; ++dy)
+			for (int dx = -s.extent; dx < s.extent; ++dx)
+			{
+				if (s.kind[s.index(dx, dy)] != kMoatBankTile)
+					continue;
+				const auto [tx, ty] = turnStencilTile(L.facings[k], dx, dy);
+				const int i = t.at(cx + tx, cy + ty);
+				if (!map.isGrass(t.remainderX(i), i / t.w) ||
+					!clearGround(map, t.remainderX(i), i / t.w) || reserved[i])
+					continue;
+				candidates[moatKinds.at(dx, dy) >= 0.5].push_back(i);
+				moatRank[i] = int(65536 * moatCover.at(dx, dy));
+			}
+		for (int crop = 0; crop < 2; ++crop)
+		{
+			const int placed = plantCoverShare(map, t, candidates[crop], crop ? WOOD : WHEAT,
+				int(scaledCount(kMoatCoverPercent, crop ? o.wood : o.wheat)),
+				[&](int i) { return moatRank[i]; });
+			context.telemetry.measure(crop ? "glacis.moat.wood-planted" : "glacis.moat.wheat-planted", placed, k);
+		}
+	}
+
 	context.stage = "glacis country";
 	const Fertility::Field fertility = cropGrowthField(terrain, t);
 	const std::vector<int> woods = fractalNoise(t.w, t.h, 48, 3, context.stream("glacis-woods"));
@@ -1037,6 +1088,23 @@ bool generate(Game &game, GenerationContext &context)
 				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(quarry), quarry / t.w), STONE,
 								   1);
 		}
+	}
+	// Extra compact patches on the actual stream banks, after the ford prizes.
+	// Moats and country ponds are deliberately excluded from this mask.
+	const auto riverDistance = stepsFrom(t, L.river);
+	const PeriodicNoise riverKinds(t.w, t.h, 10, context.stream("glacis-river-kinds"));
+	const PeriodicNoise riverCover(t.w, t.h, 5, context.stream("glacis-river-cover"));
+	std::array<std::vector<int>, 2> riverCandidates;
+	for (int i = 0; i < n; ++i)
+		if (riverDistance[i] > 0 && riverDistance[i] <= kRiverBankReach && country(i) &&
+			fertility.values()[i] > 0)
+			riverCandidates[riverKinds.at(t.remainderX(i), i / t.w) >= 0.5].push_back(i);
+	for (int crop = 0; crop < 2; ++crop)
+	{
+		const int placed = plantCoverShare(map, t, riverCandidates[crop], crop ? WOOD : WHEAT,
+			int(scaledCount(kRiverCoverPercent, crop ? o.wood : o.wheat)),
+			[&](int i) { return int(65536 * riverCover.at(t.remainderX(i), i / t.w)); });
+		context.telemetry.measure(crop ? "glacis.rivers.wood-planted" : "glacis.rivers.wheat-planted", placed);
 	}
 	furnishGround(
 		map, t, context, fertility, country, [&](int i) { return fields.at(t.remainderX(i), i / t.w); },
@@ -1116,6 +1184,27 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			if (reach[i] >= 0 && !gardens[i])
 				return "A fort's gardens are open to its courtyard.";
 	}
+	// Moat-bank grass is physically contained by the moat, sand-covered way and causeways.
+	std::vector<unsigned char> moatBanks(n, 0);
+	std::vector<std::array<int, 2>> moatCrops(teams);
+	std::vector<int> moatRoom(teams, 0);
+	for (int i = 0; i < n; ++i)
+		if (L.kind[i] == kMoatBankTile && map.isGrass(t.remainderX(i), i / t.w))
+		{
+			moatBanks[i] = 1;
+			const int owner = L.fortOf[i];
+			++moatRoom[owner];
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
+			if (type == WHEAT || type == WOOD)
+				++moatCrops[owner][type == WOOD];
+		}
+	const auto fromMoat = grassReach(map, t, moatBanks);
+	for (int i = 0; i < n; ++i)
+		if (fromMoat[i] >= 0 && !moatBanks[i])
+			return "A moat bank is open to grass outside its sand boundary.";
+	for (int k = 0; k < teams; ++k)
+		if (moatRoom[k] && ((o.wheat > 0 && !moatCrops[k][0]) || (o.wood > 0 && !moatCrops[k][1])))
+			return "A moat bank has lost its wheat or wood.";
 	int fewest = INT_MAX, most = 0;
 	for (int k = 0; k < teams; ++k)
 	{
@@ -1150,7 +1239,7 @@ GeneratorDefinition glacisDefinition()
 		"glacis",
 		39,
 		"The Glacis",
-		4,
+		5,
 		false,
 		// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
 		// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of

@@ -256,8 +256,10 @@ inline void braidedDeltaChecks()
 		// its fords have no permanent approaches through the bank crops.
 		const MapGeneration::Torus torus(game.map);
 		const auto overgrown = MapGeneration::cropSpreadEnvelope(game.map);
+		// Growth fills empty ground; it cannot replace existing woods, fruit or stone.
 		for (int i : overgrown.visited)
-			if (game.map.isResourceAllowed(i % torus.w, i / torus.w, WHEAT))
+			if (!game.map.isResource(i % torus.w, i / torus.w) &&
+				game.map.isResourceAllowed(i % torus.w, i / torus.w, WHEAT))
 				game.map.setResourceByIndex(i % torus.w, i / torus.w, WHEAT, 1);
 		assert(MapGeneration::walkFromFirstColony(game.map, request.nbTeams, "the overgrown delta",
 												  "over its ford approaches")
@@ -706,8 +708,8 @@ inline void rebuiltLandscapeContracts()
 	for (const char *id : {"glacis", "allotments", "caravanserai"})
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
-		// Glacis fort fixes and Caravanserai seeded desert defaults use revision 3.
-		assert(definition.revision == (std::string(id) == "allotments" ? 3 : 4));
+		// Current versions of the rebuilt landscapes.
+		assert(definition.revision == (std::string(id) == "allotments" ? 3 : std::string(id) == "glacis" ? 5 : 4));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -820,13 +822,11 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 3);
+	assert(definition.legacyId == 53 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("block-shape") == 2 && request.option("river-width") == 12 &&
+	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
 		   request.option("blocks-per-colony") == 11 && request.option("crater-gardens") == 1);
-	request.options["block-shape"] =
-		1; // The following layout contract exercises explicit hexagons.
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -856,21 +856,50 @@ inline void honeycombIsleContracts()
 		assert(service.generate(g, make(7, 7, 8, 5)).error == GenerationError::InvalidRequest);
 		assert(g.teamsCount() == 0);
 	}
-	std::set<std::string> homeDesigns, landmarks;
+	std::set<std::string> homeDesigns;
 	for (unsigned seed = 1; seed <= 12; ++seed)
 	{
 		Game g(nullptr);
 		const auto result = service.generate(g, make(8, 8, 4, seed), true);
 		assert(result);
+		std::vector<unsigned char> grass(g.map.getW() * g.map.getH(), 0);
+		for (int y = 0; y < g.map.getH(); ++y)
+			for (int x = 0; x < g.map.getW(); ++x)
+				grass[y * g.map.getW() + x] = g.map.isGrass(x, y);
+		const auto cells = connectedRegions(grass, g.map.getW(), g.map.getH(), true,
+										   GridNeighbors::Eight);
+		std::set<int> fruitCells;
+		for (int i = 0; i < int(grass.size()); ++i)
+		{
+			const int type = g.map.getResource(i % g.map.getW(), i / g.map.getW()).type;
+			if (type == CHERRY || type == ORANGE || type == PRUNE)
+				fruitCells.insert(cells[i]);
+		}
+		assert(!fruitCells.empty());
+		for (int i = 0; i < int(grass.size()); ++i)
+			if (g.map.getResource(i % g.map.getW(), i / g.map.getW()).type == STONE)
+				assert(!fruitCells.count(cells[i]));
 		for (const auto &record : result.telemetry.records())
 		{
 			if (record.key == "honeycomb-isle.home-design")
 				homeDesigns.insert(std::get<std::string>(record.value));
-			if (record.key == "honeycomb-isle.landmark-design")
-				landmarks.insert(std::get<std::string>(record.value));
 		}
 	}
-	assert(homeDesigns.size() == 3 && landmarks.size() == 3);
+	assert(homeDesigns.size() == 2);
+	// Every remaining stone deposit is optional masonry/statue stock. At zero
+	// stone, no home border or orchard enclosure may remain on either tiling.
+	for (int shape : {0, 1})
+		for (unsigned seed : {1u, 7u, 29u})
+		{
+			auto bare = make(8, 8, 4, seed);
+			bare.options["block-shape"] = shape;
+			bare.options["stone-amount"] = 0;
+			Game g(nullptr);
+			assert(service.generate(g, bare));
+			for (int y = 0; y < g.map.getH(); ++y)
+				for (int x = 0; x < g.map.getW(); ++x)
+					assert(g.map.getResource(x, y).type != STONE);
+		}
 	{
 		// The design is cached between the request check, generation and validation. Generating a map,
 		// another map, then the first again must give the same map and the same telemetry.
@@ -1811,7 +1840,7 @@ inline void portageLakesContracts()
 	Game repeated(nullptr);
 	assert(service.generate(repeated, r, false));
 	assert(mapFingerprint(repeated) == fingerprint);
-	// Regrowth cannot invade the terrain-contained farms or refill a dry portage.
+	// Open wheat may spread into meadows; timber stays contained and dry portages cannot refill.
 	setSyncRandSeed(4211);
 	for (int tick = 0; tick < 4096; ++tick)
 		first.map.growResources();
@@ -1935,7 +1964,7 @@ inline void portageLakesContracts()
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 		assert(result);
 	}
-	puts("PASS Portage Lakes: compact/full, repeatability, growth containment, missing portage, "
+	puts("PASS Portage Lakes: compact/full, repeatability, open wheat growth, missing portage, "
 		 "abundance extremes");
 }
 inline void drownedForestContracts()

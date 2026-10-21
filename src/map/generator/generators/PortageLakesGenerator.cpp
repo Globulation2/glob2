@@ -29,7 +29,7 @@ using namespace MapGeneration;
 // Cutting a ridge opens a public shortcut; swimming opens a different connection.
 // The landscape is asymmetric. Complete settlement proposals are compared, but the
 // start score is a heuristic, never a claim of exact fairness. Structural wood is
-// dry on the FINAL terrain; renewable crops live in sand-contained shore plots.
+// dry on the FINAL terrain; open wheat fields follow the shore, with contained timber plots.
 namespace
 {
 struct Plot
@@ -359,14 +359,26 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 		return true;
 	}
 	auto original = L.terrain;
-	auto tiles = stampContainedPlot(L.terrain, t, corners, shoreDistance ? 1 : 2);
+	std::vector<int> tiles;
+	if (kind == WHEAT)
+	{
+		// Keep the shore-shaped field interior, without carving a sand fence around it.
+		// The surrounding meadow remains ordinary grass; actual trails are reserved later.
+		const auto inside = tileMask(t, corners);
+		for (int i : corners)
+			if (inside[t.at(t.remainderX(i) + 1, i / t.w)] &&
+				inside[t.at(t.remainderX(i), i / t.w + 1)] &&
+				inside[t.at(t.remainderX(i) + 1, i / t.w + 1)])
+				tiles.push_back(i);
+	}
+	else
+		tiles = stampContainedPlot(L.terrain, t, corners, shoreDistance ? 1 : 2);
 	int court = -1;
 	std::vector<int> access;
 	if (minimum > 0 || kind == WHEAT)
 	{
 		BayGrowth fertility(L.terrain, t, centre, int(std::ceil(radius * std::sqrt(5.))));
-		// Leave opening room for a farmhouse/inn INSIDE the crop boundary.
-		// Outside grass cannot adjoin the crop across its sand containment.
+		// Leave opening room for a farmhouse/inn within the initial field footprint.
 		if (kind == WHEAT)
 		{
 			auto inside = tileMask(t, tiles);
@@ -406,7 +418,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 				return false;
 			}
 			// An empty pocket surrounded by grain is not initially accessible.
-			// Leave the shortest unseeded notch through this field to its sand rim.
+			// Leave the shortest unseeded notch through this field to its open edge.
 			std::map<int, int> parent;
 			std::vector<int> queue;
 			for (int y = 0; y < 4; ++y)
@@ -1223,6 +1235,33 @@ int farmServiceSites(const Map &map, const Torus &t, const Plot &plot)
 	return std::min(sites[0], sites[1]);
 }
 
+// Wheat is intentionally free to spread through neighboring meadows. Renewable timber
+// remains contained, keeping the faster-growing wood off the open fields and trails.
+std::string timberPlotsMismatch(const Map &map, const Layout &L, const Fertility::Field &growth)
+{
+	const auto &t = L.t;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		generationCheckpoint();
+		const int x = t.remainderX(i), y = i / t.w, plot = L.plotOf[i];
+		const bool timber = plot >= 0 && L.plots[plot].kind == WOOD;
+		if (map.getResource(i).type == WOOD && growth.at(x, y) > 0 && !timber)
+			return "Renewable Portage Lakes timber has escaped its shore plot.";
+		if (!timber)
+			continue;
+		if (!map.isGrass(x, y))
+			return "A Portage Lakes timber plot has lost its grass.";
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int next = t.at(x + dx, y + dy);
+				if (map.isGrass(t.remainderX(next), next / t.w) && L.plotOf[next] != plot)
+					return "A Portage Lakes timber plot has a grass growth connection across its margin.";
+			}
+	}
+	return "";
+}
+
 bool materialize(Game &game, GenerationContext &c, const Layout &L)
 {
 	if (!L.failure.empty())
@@ -1375,7 +1414,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		if (seed >= 0)
 			growPatch(game.map, t, seed, CHERRY + int(k % 3), scaledCount(3, o.fruit), eligible);
 	}
-	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &growth); !e.empty())
+	if (auto e = timberPlotsMismatch(game.map, L, growth); !e.empty())
 	{
 		c.detail = e;
 		return false;
@@ -1467,7 +1506,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	const auto &t = L.t;
 	const auto &map = game.map;
 	auto growth = Fertility::forMap(map, false);
-	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &growth); !e.empty())
+	if (auto e = timberPlotsMismatch(map, L, growth); !e.empty())
 		return e;
 
 	for (const auto &crossing : L.portages)
@@ -1500,7 +1539,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			5,
+			6,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

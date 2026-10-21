@@ -17,9 +17,14 @@ The ordinary swarm and requested workers must have renewable food, timber,
 quarry access and building room. Portages belong to expansion ground rather
 than the opening town.
 
-Wheat and renewable timber occupy irregular sand-contained shore plots. Full-size
+Wheat occupies irregular open shore fields; renewable timber retains compact
+sand-contained plots. Wheat fields blend into neighboring meadows without a sand
+perimeter. The connecting sand trails and natural beaches remain, so routes and
+lake shores stay readable while farming ground can spread naturally. Full-size
 wheat fields are larger than compact fields; crowded maps use an intermediate
-size. Their footprints stay fixed while sowing uses more of the available ground. Candidate fields must meet seed and productive-fertility floors before being accepted.
+size. Their initial footprints stay fixed while sowing uses more of the available
+ground. Candidate fields must meet seed and productive-fertility floors before
+being accepted.
 Each substantial lake also receives additional shore wheat fields: two where
 space permits on full maps, with at least one per lake; compact maps receive one.
 Full maps budget the first field after home farms; additional fields fit around
@@ -43,8 +48,9 @@ margin between grain and water. They use smooth shore-aligned outlines, never
 per-tile random thinning. Accepted fields must have at least six productive tiles
 within three steps of pure water and two tile-equivalents of exact growth
 potential outside their inn court and entrance. Dry scattered wheat is not used
-as a substitute for renewable farmland. Trails, landings and portage plugs remain
-protected.
+as a substitute for renewable farmland. Trails, landings and portage plugs retain
+their existing reservations. Wheat can grow beyond its initial footprint; unused
+grass courts and clearings may grow over.
 Algae occupies separate small pools, so the main swimming lakes remain clear.
 Stone outcrops shape some woodland crossings without enclosing every clearing.
 Full maps guarantee two designated portages; the largest maps target up to four
@@ -64,8 +70,9 @@ may contain more than 70% of their water.
   instead offer optional approaches to neutral shoreline bays. Coarse steps avoid
   false precision when the settlement graph has only a few spare connections.
 - **Resource amounts:** standard 0–300% controls. Starting supplies, structural
-  woodland and structural rock are independent guarantees. Renewable plots
-  saturate at their available fertile area without invading roads or towns.
+  woodland and structural rock are independent guarantees. Initial sowing
+  saturates at the plots’ available fertile area, leaving roads and home reservations
+  untouched. Wheat may subsequently spread through connected meadows.
   Wheat keeps 20 starter tiles per compact colony or 32 per full-size colony,
   plus up to 96 compact or 128 full-size scaled tiles at 100%. Timber keeps 12 starter tiles plus 12
   scaled tiles. High algae settings can saturate their isolated pools; small stone

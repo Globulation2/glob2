@@ -109,11 +109,6 @@ constexpr int kCrustReach = 3, kScreeReach = 3, kAshReach = 4;
 // The upper slopes, from the lava roots a third of the way to the coast, are ash where a 9-tile
 // noise exceeds a threshold rising from kAshFrom at the roots to 1 at the band's foot.
 constexpr double kAshSlope = 0.35, kAshFrom = 0.45;
-// The crater: a lava lake fringed with ember, one to three void vents near its middle, ash
-// between the lake and the rim circuit, and volcanic loam (with moss) on the rim beyond the
-// circuit, the contested prize.
-constexpr int kMostVents = 3;
-constexpr double kVentRadius = 1.5;
 // Open sea about this many steps from any land is deep water: slow to swim, no algae. Noise moves
 // the edge up to kDeepSwing steps either way, so neither the island nor an islet sits in a ruled
 // ring or box of shallows. The rim's loam reaches kRimSwing tiles either side of the lava roots.
@@ -395,33 +390,15 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 				around(i, [&](int j) { return !cooled[j] && drawn[j] != LAVA; }))
 				L.terrain[i] = GRAVEL;
 	}
-	// Vents: small void holes in the middle of the lava lake.
-	auto &ventStream = context.stream("lava-vents");
-	const int vents = 1 + int(ventStream() % kMostVents);
-	for (int v = 0; v < vents; ++v)
-	{
-		const double a = 2 * kPi * (ventStream() / 4294967296.0);
-		const double r = L.lakeRadius * 0.45 * (ventStream() / 4294967296.0);
-		const ShapePoint c = L.stretch.apply(L.cx, L.cy, polarPoint(L.cx, L.cy, r, a));
-		const int span = int(std::ceil(kVentRadius));
-		for (int dy = -span; dy <= span; ++dy)
-			for (int dx = -span; dx <= span; ++dx)
-			{
-				const int i = t.at(int(std::floor(c.x)) + dx, int(std::floor(c.y)) + dy);
-				if (L.lake[i] && std::hypot(dx, dy) <= kVentRadius)
-					L.terrain[i] = VOID_HOLE;
-			}
-	}
 	// Ember fringes every lava vertex that touches anything but lava.
 	{
 		const TerrainSketch drawn = L.terrain;
 		for (int i = 0; i < t.size(); ++i)
-			if (drawn[i] == LAVA &&
-				around(i, [&](int j) { return drawn[j] != LAVA && drawn[j] != VOID_HOLE; }))
+			if (drawn[i] == LAVA && around(i, [&](int j) { return drawn[j] != LAVA; }))
 				L.terrain[i] = EMBER_FIELD;
 	}
 	const auto isHot = [&](int i)
-	{ return L.terrain[i] == LAVA || L.terrain[i] == EMBER_FIELD || L.terrain[i] == VOID_HOLE; };
+	{ return L.terrain[i] == LAVA || L.terrain[i] == EMBER_FIELD; };
 	// The crater wall inside the circuit is ash; the rim outside it is volcanic loam. The
 	// margins along the flows wait for the towns (furnishMargins).
 	L.flowEdge.assign(t.size(), 0);
@@ -499,7 +476,6 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		lavaVertices += live[i] && isHot(i);
 	context.telemetry.measure("lava-shield.lava.vertices", lavaVertices);
 	context.telemetry.measure("lava-shield.lava.fords", L.fordTiles.size());
-	context.telemetry.measure("lava-shield.lava.vents", vents);
 	context.telemetry.measure("lava-shield.crater.ash", craterAsh);
 	context.telemetry.measure("lava-shield.ground.loam", loam);
 	context.telemetry.measure("lava-shield.ground.deep-water", deep);
@@ -1202,7 +1178,8 @@ GeneratorDefinition lavaShieldDefinition()
 			// long tongue, the crater is a lava lake with vents, branches are cooled scree and
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
-			6,
+			// Revision 7: the crater is uninterrupted lava, without void vents.
+			7,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

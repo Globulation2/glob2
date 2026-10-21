@@ -44,7 +44,7 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 	L.homeRadius = std::min<double>(
 		o.homeSize, ::MapGeneration::Numeric::floor(L.spacing / 3 - kClearingMargin - kSandRing));
 	// Only a failing layout gets the vacancy search. This keeps successful maps, their
-	// seed streams, and every Old Growth layout byte-for-byte stable. A composite lattice
+	// eligibility and home sizes before jitter. A composite lattice
 	// with empty sites can rescue awkward prime counts on rectangles; it cannot force a
 	// genuinely overcrowded shape to fit. The original first site's coordinates anchor
 	// all alternatives without another random draw.
@@ -67,7 +67,28 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 									  roomy.vacancies);
 		}
 	}
+	// Loosen the lattice without shrinking any home or eating into its separation budget.
+	// A default four-colony256 map can move each centre21 tiles per axis; cramped maps
+	// reject proposals that would close the forest/field gap. The private stream leaves
+	// home outlines and pool designs independent of the number of accepted moves.
+	if (teams > 1 && homeHasRoom(L.homeRadius))
+	{
+		const int radius = std::max(1, int(::MapGeneration::Numeric::floor(L.spacing / 6)));
+		const double minimumSpacing = std::max(0.75 * L.spacing,
+			3 * (L.homeRadius + kClearingMargin + kSandRing));
+		const int accepted = jitterSites(t, L.homes, context, "growth-home-jitter", radius, minimumSpacing);
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.lattice-spacing", L.spacing);
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.jitter-radius", radius);
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.jitter-accepted", accepted);
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.minimum-spacing", minimumSpacing);
+		L.spacing = nearestSiteDistance(t, L.homes);
+	}
 	dealStarts(context, L.homes); // which colony gets which site is a draw, not the order
+	for (int team = 0; team < teams; ++team)
+	{
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.x", L.homes[team].x, team);
+		context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.y", L.homes[team].y, team);
+	}
 	context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.spacing", L.spacing);
 	context.telemetry.measure(std::string(o.telemetryPrefix) + ".homes.actual-radius",
 							  L.homeRadius);
