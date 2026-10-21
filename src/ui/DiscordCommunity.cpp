@@ -7,7 +7,7 @@ namespace Glob2UI
 namespace
 {
 // One invitation shared by every community entry point.
-constexpr const char *inviteUrl = "https://discord.gg/UyeqP55KpV";
+constexpr const char *inviteUrl = "https://discord.gg/rQn3Br6AFA";
 } // namespace
 
 Element DiscordCommunity::build(const Presentation &p, std::function<void()> changed)
