@@ -6,34 +6,6 @@ Peramban Anda tidak terbuka. Buka halaman masuk untuk melanjutkan.
 Jika diminta, pastikan halaman menampilkan %0.
 [hub code copied]
 Kode disalin
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Selesaikan di peramban Anda. Permainan akan berlanjut otomatis.
 [music set]
@@ -6039,96 +6011,622 @@ Batas waktu tercapai.
 [outcome reason probability]
 Ambang probabilitas kemenangan tercapai.
 [Discord community]
-
+Komunitas Discord
 [Globulation 2 Discord]
-
+Discord untuk Globulation 2
 [discord community intro]
-
+Cari lawan, minta bantuan, dan bagikan peta Anda dengan komunitas Globulation 2.
 [discord opens externally]
-
+Bergabunglah dengan server Discord kami. Discord atau peramban Anda akan terbuka.
 [Join Discord]
-
+Gabung Discord
 [Copy link]
-
+Salin tautan
 [discord opened]
-
+Discord telah dibuka. Anda dapat kembali ke permainan kapan saja.
 [discord open failed]
-
+Tidak dapat membuka Discord. Salin tautan undangan dan buka di peramban Anda.
 [discord link copied]
-
+Tautan undangan disalin.
 [settings CPU automatic]
-
+CPU otomatis
 [settings Scalar]
-
+Skalar
 [settings Unavailable]
-
+Tidak tersedia
 [settings Initializing]
-
+Menginisialisasi
 [settings Gradient backend]
-
+Backend gradien
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Diterapkan pada batas simulasi berikutnya. Pekerjaan yang tidak didukung menggunakan CPU otomatis; perenderan berjalan secara terpisah.
 [settings Gradient algorithm]
-
+Algoritma gradien
 [settings All choices compute the same exact field.]
-
+Semua pilihan menghitung medan yang persis sama.
 [settings Bucket propagation]
-
+Propagasi berbasis bucket
 [settings Verify gradient results]
-
+Verifikasi hasil gradien
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Bandingkan hasil GPU dengan perhitungan CPU skalar sebelum digunakan. Menambah beban komputasi dan menghentikan permainan jika hasilnya berbeda.
 [settings Gradient computation]
-
+Perhitungan gradien
 [settings CPU fallback]
-
+Mode cadangan CPU
 [settings GPU fields]
-
+Medan GPU
 [settings CPU fallbacks]
-
+Peralihan ke CPU
 [settings MCP server]
-
+Server MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Mengaktifkan server MCP memungkinkan klien lokal melihat dan mengendalikan permainan.
 [settings Enable MCP server]
-
+Aktifkan server MCP
 [settings Port]
-
+Porta
 [settings Current controller: %0]
-
+Pengendali saat ini: %0
 [settings Copy endpoint]
-
+Salin alamat endpoint
 [settings Retry listener]
-
+Coba terima koneksi lagi
 [settings Revoke control]
-
+Cabut kendali
 [settings MCP server unavailable in this application]
-
+Server MCP tidak tersedia dalam aplikasi ini
 [settings Disabled]
-
+Dinonaktifkan
 [settings Running]
-
+Berjalan
 [settings Error: %0]
-
+Kesalahan: %0
 [settings None]
-
+Tidak ada
 [settings Starting]
-
+Memulai
 [Which hand holds your phone?]
-
+Tangan kiri atau kanan?
 [hand preference explanation]
-
+Pegang ponsel secara alami. Ketuk tangan yang Anda gunakan untuk bermain.
 [hand silhouettes description]
-
+Garis luar ponsel dengan tangan kiri dan kanan di atasnya. Tekan salah satu sasaran ibu jari bertepi miring untuk memilih sisi tersebut.
 [hand preference change later]
-
+Anda dapat mengganti sisi nanti di Pengaturan.
 [hand preference save failed]
-
+Tidak dapat menyimpan pilihan Anda. Silakan coba lagi.
 [Left hand]
-
+Tangan kiri
 [Right hand]
-
+Tangan kanan
 [discord copy failed]
-
+Tidak dapat menyalin tautan. Pilih tautan undangan di atas untuk menyalinnya secara manual.
 [Destroy this building?]
 Hancurkan bangunan ini?
+[stat ground movement]
+Pergerakan darat
+[stat ground movement about]
+Unit darat yang masih hidup menurut perkiraan rasio kecepatan. “Renang 2×” berarti berenang dua kali lebih cepat daripada berlari. Unit terbang dan yang tidak dapat bergerak tidak disertakan.
+[stat view by movement]
+Menurut pergerakan
+[stat band land only]
+Hanya darat
+[stat band swim twice run]
+Renang 2×
+[stat band swim faster run]
+Renang 1,4×
+[stat band swim equals run]
+Sama
+[stat band run faster swim]
+Lari 1,3×
+[stat band run twice swim]
+Lari 2×
+[stat band run triple swim]
+Lari 3×
+[stat band water only]
+Hanya air
+[settings Browse shared generators]
+Jelajahi generator bersama
+[settings Apply artwork on the next game or editor load.]
+Terapkan grafis saat permainan atau editor dimuat berikutnya.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Memerlukan perender dengan pemfilteran tekstur. Pilihan tersimpan Anda tetap dipertahankan.
+[settings Automatically show the torus overview while moving around the map.]
+Tampilkan ikhtisar torus secara otomatis saat bergerak di peta.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Memerlukan perender dengan dukungan torus. Pilihan tersimpan Anda tetap dipertahankan.
+[settings Move and animate units between game ticks.]
+Gerakkan dan animasikan unit di antara tik permainan.
+[settings Renderer unavailable]
+Perender tidak tersedia
+[settings Apply at the next completed frame. Your game stays running.]
+Diterapkan pada bingkai berikutnya yang selesai. Permainan tetap berjalan.
+[settings Active renderer: %0]
+Perender aktif: %0
+[settings Changing renderer…]
+Mengganti perender…
+[settings Menu scroll wheel enabled]
+Gulir roda tetikus pada menu diaktifkan
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Mengatur pengguliran dengan roda pada menu. Roda selalu mengubah zoom peta permainan dan editor.
+[settings Gesture scrolling]
+Gulir gestur
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Pengguliran sentuh dan gestur Mac. 0 mematikan efek; 50 adalah nilai bawaan untuk sentuhan.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Seberapa jauh daftar dan panel terus bergulir setelah sapuan sentuh. Gestur Mac menggunakan momentum sistem; nol menonaktifkan luncurannya.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Seberapa jauh daftar dan panel meregang melewati ujungnya lalu memantul kembali. Gestur Mac menggunakan regangan yang lebih lembut.
+[hive stopping]
+Menghentikan…
+[hive stopped]
+Dihentikan
+[hive stop failed]
+Gagal berhenti; coba lagi pintasan berhenti
+[hive updating]
+Memperbarui…
+[hive requested]
+Telah diminta
+[hive update failed]
+Pembaruan gagal; coba lagi
+[hive give order]
+Beri perintah
+[hive less]
+Ringkas
+[hive reports and details]
+Laporan / detail
+[hive needs fresh order]
+Memerlukan perintah baru
+[hive active]
+Aktif
+[hive resume]
+Lanjutkan
+[recordings]
+Rekaman
+[recording delete confirm]
+Hapus rekaman?
+[recording delete warning]
+Rekaman dan metadatanya akan dihapus.
+[recording delete]
+Hapus
+[recording working]
+Memproses…
+[recording none]
+Belum ada rekaman.
+[recording interrupted]
+Rekaman terputus
+[recording recover]
+Pulihkan
+[recording export video]
+Ekspor video
+[recording export metadata]
+Ekspor metadata
+[recording export events]
+Ekspor peristiwa
+[recording export failed]
+Tidak dapat mengekspor rekaman.
+[recording delete action]
+Hapus rekaman
+[recording refresh]
+Muat ulang
+[tutorial part1 message 1]
+Selamat datang di Globulation 2! Empat misi ini mengajarkan pengelolaan koloni. Simpan kemajuan melalui menu permainan dan muat kembali nanti dari menu utama. Tekan Spasi atau ketuk Oke pada layar sentuh untuk melanjutkan. Pesan yang menghilang dapat dibaca lagi melalui Riwayat pesan.
+[tutorial part1 message 2]
+Anda mulai dengan Sarang dan satu pekerja. Mari lihat cara mereka bekerja sama.
+[tutorial part1 message 3]
+Pekerja memanen gandum dan membawanya ke Sarang. Sarang memakai gandum untuk menghasilkan unit baru, sehingga sangat penting bagi koloni.
+[tutorial part1 message 4]
+Pilih globul Anda, yaitu unit bergerak, dengan klik kiri atau ketukan.
+[tutorial part1 message 5]
+Informasi unit menunjukkan persediaan makanan berkurang seiring waktu. Globul mulai lapar. Saat batang makanan ditampilkan, batang biru di bawah unit menunjukkan makanan yang tersisa.
+[tutorial part1 message 6]
+Globul makan di Penginapan. Batalkan pilihan dengan klik kanan, atau ketuk tanah kosong pada layar sentuh.
+[tutorial part1 message 7]
+Buka kontrol bangunan, pilih Penginapan, lalu tempatkan dekat gandum. Ikuti rute panen pekerja jika gandum sulit ditemukan. Pada layar sentuh gunakan Bangun dan konfirmasikan lokasi yang valid. Setelah selesai, keluar dari mode penempatan dengan klik kanan atau kontrol Batal.
+[tutorial part1 message 8]
+Bagus! Lokasi pembangunan Penginapan sudah ditempatkan.
+[tutorial part1 message 9]
+Pekerja dari Sarang kini dapat membangun Penginapan. Ia mengumpulkan kayu dari pohon terdekat dan membawanya ke lokasi. Tunggu hingga selesai.
+[tutorial part1 message 10]
+Penginapan yang selesai membutuhkan gandum. Pekerja yang ditugaskan akan mengumpulkannya, seperti pekerja pemasok Sarang.
+[tutorial part1 message 11]
+Batang sumber daya kuning Penginapan naik saat gandum tiba. Batang ini menunjukkan stok gandumnya.
+[tutorial part1 message 12]
+Sekarang kita pelajari penugasan pekerjaan.
+[tutorial part1 message 13]
+Satu pekerja memasok Sarang dan satu lagi Penginapan. Keduanya dapat berhenti sejenak untuk makan di Penginapan. Itu normal.
+[tutorial part1 message 14]
+Pilih Sarang dan cari kontrol penugasan pekerja. Pada desktop namanya Bekerja; pada layar sentuh gunakan pekerja yang ditugaskan dan kontrol target. Target adalah jumlah pekerja yang Anda inginkan di bangunan ini.
+[tutorial part1 message 15]
+Atur target pekerja Sarang menjadi 0. Lalu pilih Penginapan dan atur targetnya juga menjadi 0.
+[tutorial part1 message 16]
+Pekerja kini menganggur, tetapi tetap perlu makan. Penginapan tanpa pekerja pemasok akhirnya kehabisan gandum.
+[tutorial part1 message 17]
+Globul yang tidak menemukan makanan kehilangan kesehatan dan dapat mati. Rumah Sakit menyembuhkan globul terluka, tetapi Penginapan juga harus tetap dipasok.
+[tutorial part1 message 18]
+Bangun Rumah Sakit melalui kontrol bangunan. Tidak perlu gandum, jadi tempatkan dekat kayu atau di lokasi pusat dekat Sarang.
+[tutorial part1 message 19]
+Pilih lokasi pembangunan Rumah Sakit dan tetapkan target 2 pekerja. Dua pekerja menyelesaikannya lebih cepat.
+[tutorial part1 message 20]
+Rumah Sakit siap. Globul terluka dapat mengunjunginya untuk memulihkan kesehatan.
+[tutorial part1 message 21]
+Daerah hitam belum dijelajahi. Unit mengungkap tanah sekitar saat bergerak. Pekerja mengikuti pekerjaannya, sehingga sulit dipakai mengintai. Penjelajah dirancang untuk tugas itu.
+[tutorial part1 message 22]
+Pilih Sarang dan cari rasio produksi pekerja, penjelajah, dan prajurit. Naikkan rasio penjelajah ke 1.
+[tutorial part1 message 23]
+Jika rasio pekerja dan penjelajah masing-masing 1, Sarang menghasilkan jumlah yang sama dalam jangka waktu tertentu. Atur rasio pekerja ke 0 agar sementara hanya penjelajah yang diproduksi.
+[tutorial part1 message 24]
+Kembalikan target penugasan pekerja Sarang ke 1 agar seorang pekerja membawa gandum.
+[tutorial part1 message 25]
+Pilih Penginapan dan atur target pekerjanya juga ke 1. Koloni yang tumbuh memerlukan pasokan makanan stabil.
+[tutorial part1 message 26]
+Tunggu Sarang menghasilkan penjelajah.
+[tutorial part1 message 27]
+Penjelajah terbang mengitari koloni dan membuka lebih banyak tanah. Biarkan Sarang menghasilkan penjelajah kedua sebelum melanjutkan.
+[tutorial part1 message 28]
+Pilih Sarang lagi. Atur rasio penjelajah ke 0 dan pekerja ke 1 untuk melanjutkan produksi pekerja.
+[tutorial part2 message 1]
+Ada batu di sebelah timur pangkalan. Ingat lokasinya; nanti Anda memerlukannya.
+[tutorial part2 message 2]
+Pohon di selatan batu adalah pohon jeruk. Pilih untuk melihat informasi sumber dayanya. Kita akan membahas buah nanti; sekarang fokus pada Sarang.
+[tutorial part2 message 3]
+Atur Sarang agar hanya memproduksi pekerja: rasio pekerja 1, penjelajah dan prajurit 0.
+[tutorial part2 message 4]
+Mari percepat pertumbuhan. Pilih Sarang dan atur target pekerja ke 6. Meski belum ada enam pekerja, pekerja baru dapat mengisi pekerjaan kosong saat tersedia.
+[tutorial part2 message 5]
+Tugas berikutnya dimulai setelah ada 8 pekerja. Terus pasok Sarang dan Penginapan selama populasi tumbuh.
+[tutorial part2 message 6]
+Beberapa pekerja kini memasok Sarang. Lebih banyak kiriman gandum mempercepat produksi unit.
+[tutorial part2 message 7]
+Pekerja baru membutuhkan 5 gandum. Pengangkutan dari ladang jauh memakan waktu, sehingga Sarang sering memerlukan pemasok lebih banyak daripada Penginapan. Bila mungkin, tempatkan bangunan pemakai makanan dekat gandum.
+[tutorial part2 message 8]
+Anda memiliki setidaknya 8 pekerja. Turunkan target penugasan Sarang ke 1 untuk memperlambat pertumbuhan selama pembangunan.
+[tutorial part2 message 9]
+Koloni memerlukan kapasitas makan tambahan. Bangun Penginapan kedua di utara yang sudah ada.
+[tutorial part2 message 10]
+Tugaskan pekerja bebas ke lokasi Penginapan baru. Hanya perlu 3 kayu, jadi lebih dari 3 pembangun tidak banyak membantu.
+[tutorial part2 message 11]
+Setelah selesai dibangun, Penginapan kembali memakai target pekerja operasional, biasanya 1. Pembangunan dan pasokan sehari-hari memakai target terpisah.
+[tutorial part2 message 12]
+Pekerja dapat belajar bergerak lebih cepat. Lintasan Lari menyediakan latihan itu.
+[tutorial part2 message 13]
+Buka kontrol bangunan dan cari Lintasan Lari. Pada desktop, arahkan penunjuk ke ikon untuk melihat deskripsi dan biaya. Pada layar sentuh, pilih di Bangun untuk menyiapkan penempatan. Jangan tempatkan dulu.
+[tutorial part2 message 14]
+Lintasan Lari memerlukan banyak kayu dan sedikit batu. Pilih lokasi pusat yang mudah dijangkau unit.
+[tutorial part2 message 15]
+Bangun Lintasan Lari, misalnya di selatan Sarang. Sisakan ruang sekitar: bangunan latihan perlu meluas saat ditingkatkan.
+[tutorial part2 message 16]
+Tetapkan target lokasi Lintasan Lari antara 5 dan 7 pekerja. Totalnya membutuhkan 7 bahan bangunan.
+[tutorial part2 message 17]
+Setelah selesai, Lintasan Lari melatih pengunjung tanpa pasokan bahan bangunan atau gandum terus-menerus.
+[tutorial part2 message 18]
+Globul masuk ke Lintasan Lari untuk berlatih. Setelahnya mereka dapat berlari lebih cepat.
+[tutorial part2 message 19]
+Pilih Lintasan Lari untuk melihat kemajuan latihan. Indikator menunjukkan seberapa dekat unit di dalam menyelesaikannya.
+[tutorial part2 message 20]
+Pekerja terlatih berjalan dan mengirim sumber daya lebih cepat. Pantau stok makanan saat koloni tumbuh; pengiriman cepat hanya membantu bila cukup Penginapan tetap dipasok.
+[tutorial part2 message 21]
+Cari penghitung populasi pekerja pada antarmuka permainan. Total menunjukkan populasi; angka pekerja tersedia membantu menemukan tenaga bebas atau pekerjaan kosong. Gunakan pekerja bebas tanpa menugaskan lebih banyak pekerjaan daripada kemampuan koloni.
+[tutorial part2 message 22]
+Antarmuka juga menunjukkan jumlah penjelajah dan prajurit. Periksa saat merencanakan produksi atau menugaskan unit ke bendera.
+[tutorial part2 message 23]
+Anda memiliki 2 Penginapan. Masing-masing Penginapan dasar memberi makan 4 unit sekaligus, total 8 tempat. Lebih dari 8 unit dapat lapar, jadi sediakan kapasitas untuk antrean.
+[tutorial part2 message 24]
+Dua Penginapan tidak selamanya cukup bagi koloni yang tumbuh. Tambah kapasitas sebelum kekurangan menjadi kelaparan.
+[tutorial part2 message 25]
+Bangun 3 Penginapan lagi dekat gandum. Pekerja lapar berhenti bekerja, dan kelaparan lama membunuh mereka. Tugaskan pekerja tersedia ke pembangunan sambil menjaga pasokan makanan yang ada.
+[tutorial part2 message 26]
+Selesaikan 3 Penginapan tambahan hingga total menjadi 5.
+[tutorial part2 message 27]
+Penginapan baru memakai target operasional setelah dibangun, biasanya 1 pekerja masing-masing. Pastikan ada pemasok dan cukup gandum.
+[tutorial part2 message 28]
+Lintasan Lari memperbaiki perjalanan di darat. Sekarang ajari koloni berenang.
+[tutorial part2 message 29]
+Kolam Renang mengajarkan unit berenang dan memerlukan kayu untuk dibangun. Tempatkan di lahan terbuka besar di timur laut pangkalan, sebelah utara batu. Sisakan ruang untuk peningkatan dan pertumbuhan sumber daya, lalu tugaskan pekerja tersedia untuk membangunnya.
+[tutorial part2 message 30]
+Kolam Renang mengajarkan unit berenang dan memerlukan kayu untuk dibangun. Tempatkan di lahan terbuka besar di timur laut pangkalan, sebelah utara batu. Sisakan ruang untuk peningkatan dan pertumbuhan sumber daya, lalu tugaskan pekerja tersedia untuk membangunnya.
+[tutorial part2 message 31]
+Kolam Renang siap. Globul dapat masuk dan belajar berenang.
+[tutorial part2 message 32]
+Pilih Kolam Renang untuk melihat latihan. Kolam dasar melatih 2 globul sekaligus, sama seperti Lintasan Lari dasar.
+[tutorial part2 message 33]
+Globul terlatih kini bisa berenang. Segera kita beri pekerjaan yang perlu menyeberangi air.
+[tutorial part2 message 34]
+Masih ada yang perlu dipelajari. Untuk beristirahat, simpan melalui menu permainan dan kembali nanti.
+[tutorial part2 message 35]
+Koloni memiliki makanan dan latihan fisik. Sekolah mengajarkan keterampilan untuk bangunan lebih baik.
+[tutorial part2 message 36]
+Sekolah meningkatkan keterampilan memanen dan membangun. Pembangunannya memerlukan alga yang tumbuh di air. Pekerja yang bisa berenang dapat mengambilnya.
+[tutorial part2 message 37]
+Lindungi bangunan latihan penting. Sekolah tidak harus di tepi air; lokasi terlindung di pedalaman lebih aman dari serangan.
+[tutorial part2 message 38]
+Bangun Sekolah di tempat terlindung, misalnya belakang Kolam Renang atau barat daya Sarang di samping Lintasan Lari. Tugaskan pekerja tersedia.
+[tutorial part2 message 39]
+Pilih bangunan untuk melihat pekerja yang ditugaskan. Pada desktop, tindakan tampilan jalur unit yang dapat dikonfigurasi juga menampilkan garis ke tujuan; lihat Pengaturan, Kontrol permainan untuk pintasannya. Tunggu Sekolah selesai.
+[tutorial part3 message 1]
+Koloni kini memiliki Penginapan, Rumah Sakit, Lintasan Lari, Kolam Renang, dan Sekolah. Saatnya menyiapkan pertahanan.
+[tutorial part3 message 2]
+Kita belum memproduksi prajurit. Tanpanya koloni hanya sedikit terlindung dari serangan.
+[tutorial part3 message 3]
+Pilih Sarang dan atur rasio produksi prajurit ke 2. Biarkan pekerja di 1 agar tetap diproduksi.
+[tutorial part3 message 4]
+Sarang kini menghasilkan sekitar 2 prajurit untuk setiap pekerja. Tambah pekerja pemasok bila ingin produksi lebih cepat.
+[tutorial part3 message 5]
+Prajurit pertama siap dan mulai berlatih. Tunggu prajurit kedua sebelum melanjutkan.
+[tutorial part3 message 6]
+Prajurit juga memakai Lintasan Lari dan Kolam Renang. Mereka dapat melatih serangan di Barak.
+[tutorial part3 message 7]
+Barak meningkatkan kekuatan dan kecepatan serangan. Kekuatan menambah kerusakan per pukulan; kecepatan menambah frekuensi. Prajurit terlatih dapat mengalahkan kelompok musuh tak terlatih yang jauh lebih besar.
+[tutorial part3 message 8]
+Bangun Barak dekat kayu yang diperlukan untuk pembangunan.
+[tutorial part3 message 9]
+Tugaskan pekerja tersedia ke lokasi Barak. Sisakan cukup untuk makanan dan jangan buat pekerjaan melebihi tenaga yang ada.
+[tutorial part3 message 10]
+Barak siap. Prajurit kini dapat berlatih keterampilan serangan di sana.
+[tutorial part3 message 11]
+Meningkatkan bangunan membuat koloni lebih kuat.
+[tutorial part3 message 12]
+Pekerja lulusan Sekolah dapat membangun peningkatan. Pilih bangunan yang memenuhi syarat lalu cari Tingkatkan pada kontrolnya. Bangunan rusak mungkin perlu Perbaiki dahulu.
+[tutorial part3 message 13]
+Tentukan peningkatan pertama. Penginapan masih memiliki kapasitas kosong, jadi dapat menunggu.
+[tutorial part3 message 14]
+Rumah Sakit juga masih lapang. Kita dapat fokus pada Sekolah, Lintasan Lari, Kolam Renang, atau Barak.
+[tutorial part3 message 15]
+Tingkatkan Lintasan Lari dulu agar unit belajar bergerak lebih cepat lagi.
+[tutorial part3 message 16]
+Pilih Lintasan Lari lalu Tingkatkan pada kontrol bangunannya. Unit di dalam harus keluar sebelum pembangunan, sehingga perubahan mungkin tidak langsung dimulai.
+[tutorial part3 message 17]
+Tugaskan pekerja tersedia ke peningkatan Lintasan Lari. Hanya yang telah mendapat pelatihan Sekolah yang diperlukan dapat membangun lokasi tingkat 2.
+[tutorial part3 message 18]
+Tunggu peningkatan Lintasan Lari selesai. Bangunan tingkat tinggi memerlukan lebih banyak sumber daya dan waktu.
+[tutorial part3 message 19]
+Lintasan Lari tingkat 2 selesai. Lahannya lebih luas dari sebelumnya; itulah alasan menyisakan celah. Tanpa ruang perluasan, bangunan tidak dapat ditingkatkan.
+[tutorial part3 message 20]
+Tingkatkan Barak dan Kolam Renang ke tingkat 2. Kita lanjut setelah keduanya selesai.
+[tutorial part3 message 21]
+Bangunan yang ditingkatkan umumnya melayani lebih banyak globul atau memberikan latihan lebih baik. Penginapan tingkat 2, misalnya, memiliki 7 tempat makan dan memberi makan lebih cepat daripada yang dasar.
+[tutorial part3 message 22]
+Musuh dekat. Mari bersiap menghadapi serangan.
+[tutorial part3 message 23]
+Menara menembaki musuh dalam jangkauan, dan tembok melindunginya. Kita memakai keduanya untuk menjaga jalan sempit menuju koloni.
+[tutorial part3 message 24]
+Letakkan menara berpasangan jika muat. Tembok dapat melindungi tiga sisi, tetapi sisakan jalur pekerja mengirim amunisi batu.
+[tutorial part3 message 25]
+Lihat timur Kolam Renang, sebelah utara pohon buah lainnya. Ada penyeberangan sempit ke pulau lain yang cocok dipertahankan.
+[tutorial part3 message 26]
+Rencanakan tempat untuk 2 menara antara pohon dan pantai. Sisakan akses pengiriman batu di belakang dan ruang tembok di sisi lain. Jangan menutup jalan pekerja.
+[tutorial part3 message 27]
+Bangun 2 menara di sana. Tugaskan 2 atau 3 pekerja per lokasi sesuai jumlah tersedia pada penghitung antarmuka.
+[tutorial part3 message 28]
+Gunakan kontrol bangunan untuk menaruh ruas tembok di tiga sisi luar menara. Biarkan sisi menuju koloni terbuka untuk pekerja.
+[tutorial part3 message 29]
+Setiap ruas menciptakan pekerjaan pembangunan dan perlu 1 batu. Jika pekerja tidak cukup untuk semuanya sekaligus, mereka dapat menyelesaikan secara bergiliran.
+[tutorial part3 message 30]
+Tunggu kedua menara dan beberapa ruas tembok selesai. Menara juga membutuhkan amunisi batu; tambang jauh memperlambat pengiriman. Naikkan target pekerja jika ada yang bebas.
+[tutorial part4 message 1]
+Koloni memiliki makanan, latihan, dan pertahanan. Bangunan dapat ditingkatkan sekali lagi ke tingkat 3 untuk latihan dan kapasitas lebih baik. Terus tingkatkan sesuai sumber daya dan keterampilan pekerja.
+[tutorial part4 message 2]
+Cari koloni musuh di barat laut pangkalan. Pindahkan pandangan ke sana sekarang.
+[tutorial part4 message 3]
+Tanah yang dijelajahi masih dapat tertutup kabut perang. Untuk melihat kegiatan musuh terkini, perlu penjelajah di dekatnya.
+[tutorial part4 message 4]
+Buka Bendera. Bendera dan zona mengarahkan unit tanpa mengendalikan setiap globul sendiri-sendiri.
+[tutorial part4 message 5]
+Pilih Bendera Penjelajahan bersimbol layang-layang. Bendera dapat diletakkan di darat, air, sumber daya, dan tanah belum dijelajahi.
+[tutorial part4 message 6]
+Letakkan Bendera Penjelajahan di perkiraan pangkalan musuh. Posisi kira-kira cukup untuk mulai mengintai. Keluar penempatan dengan klik kanan atau selesaikan melalui kontrol sentuh.
+[tutorial part4 message 7]
+Garis di sekitar bendera menunjukkan radius kerja. Penjelajah yang ditugaskan mengintai di dalamnya. Jika tak ada yang datang, periksa jumlah dan produksi lagi di Sarang bila perlu. Tekan Spasi atau Oke setelah penjelajah tiba.
+[tutorial part4 message 8]
+Musuh memiliki banyak pekerja dan pasukan berkumpul. Siapkan pertahanan sebelum mereka menyerang.
+[tutorial part4 message 9]
+Buka Bendera dan pilih zona Jaga berwarna biru. Gunakan mode untuk menambahkan area ke zona, bukan menghapusnya. Pada layar sentuh pilih Lukis, bukan Hapus.
+[tutorial part4 message 10]
+Pilih bentuk dan ukuran kuas. Persegi besar cocok untuk daerah pertahanan rapat.
+[tutorial part4 message 11]
+Lukis zona Jaga tepat di belakang menara, tempat musuh kemungkinan datang. Klik atau ketuk untuk satu titik, atau seret untuk area luas. Pada layar sentuh gunakan Geser saat perlu memindahkan pandangan selagi melukis.
+[tutorial part4 message 12]
+Prajurit yang tersedia akan menuju zona Jaga. Buat cukup luas untuk para penjaga, tetapi cukup kecil agar mereka terkumpul di penyeberangan. Tunggu serangan musuh.
+[tutorial part4 message 13]
+Musuh mendekati penyeberangan!
+[tutorial part4 message 14]
+Kita diserang. Perhatikan prajurit terlatih dan menara mempertahankan posisi.
+[tutorial part4 message 15]
+Anda bertahan! Buka Bendera, pilih Bendera Perang berduri, lalu letakkan pada Sarang musuh untuk mengarahkan serangan ke sana.
+[tutorial part4 message 16]
+Keluar penempatan dan pilih Bendera Perang. Tugaskan lebih dari 1 prajurit, lalu kurangi radius agar serangan terpusat di Sarang musuh. Tunggu mereka tiba.
+[tutorial part4 message 17]
+Serangan dimulai. Prajurit harus melewati menara musuh untuk mencapai Sarang.
+[tutorial part4 message 18]
+Prajurit mencapai pangkalan musuh. Tetap pusatkan serangan ke Sarang.
+[tutorial part4 message 19]
+Anda menghancurkan Sarang musuh. Selamat! Tutorial selesai dan Anda telah belajar dasar pasokan makanan, penugasan, latihan, peningkatan, pengintaian, serta pertempuran.
+[tutorial mission basics]
+Pengantar dan dasar
+[tutorial mission development]
+Bangunan dan sekolah
+[tutorial mission training]
+Prajurit, latihan, dan peningkatan
+[tutorial mission flags]
+Bendera dan penyelesaian
+[library  Could not restore the previous library: %0]
+ Tidak dapat memulihkan pustaka sebelumnya: %0
+[library  The previous library is retained.]
+ Pustaka sebelumnya dipertahankan.
+[library  · Installed]
+ · Terpasang
+[library  · Update available]
+ · Pembaruan tersedia
+[library A different release is installed. Install the selected release to update explicitly.]
+Rilis lain sudah terpasang. Pasang rilis yang dipilih jika Anda ingin memperbarui ke rilis tersebut.
+[library All engines]
+Semua mesin permainan
+[library All generators]
+Semua generator
+[library Available families]
+Keluarga tersedia
+[library Back]
+Kembali
+[library Building families]
+Keluarga bangunan
+[library Building library]
+Pustaka bangunan
+[library Checking building release]
+Memeriksa rilis bangunan
+[library Choose an online instance before opening a family link.]
+Pilih instans daring sebelum membuka tautan keluarga.
+[library Compatible with this engine]
+Kompatibel dengan mesin ini
+[library Confirm replacement]
+Konfirmasi penggantian
+[library Create in Building Studio]
+Buat di Building Studio
+[library Downloading generator…]
+Mengunduh generator…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Setiap lanskap ditampilkan sebagai peta nyata dengan ukuran dan jumlah koloni di bawah, yang dapat diubah di sini. Pilih salah satu untuk memainkan peta yang ditampilkan.
+[library Editor tool: generates terrain for the map editor.]
+Alat editor: menghasilkan medan untuk editor peta.
+[library Editor tools]
+Alat editor
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Aktifkan keluarga terpasang di bawah. Pilihan disimpan dalam profil lokal; peta dan simpanan yang ada tetap memakai bangunannya sendiri. Untuk bermain daring, buat peta dengan keluarga ini, terbitkan di pustaka peta, lalu pilih di ruangan Anda.
+[library Enter a building family ID or a link to its family page.]
+Masukkan ID keluarga bangunan atau tautan ke halaman keluarganya.
+[library Family link or ID]
+Tautan atau ID keluarga
+[library Family links must be at most 1024 characters.]
+Tautan keluarga maksimal 1024 karakter.
+[library Family removed.]
+Keluarga dihapus.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Keluarga tidak tersedia. Keluarga privat memerlukan masuk melalui Daring dengan akun yang memiliki akses.
+[library Generator file hash mismatch]
+Hash berkas generator tidak cocok
+[library Generator installed. Future selections use this release.]
+Generator terpasang. Pilihan berikutnya memakai rilis ini.
+[library Generator package identity mismatch]
+Identitas paket generator tidak cocok
+[library Generators]
+Generator peta
+[library Install compatible release]
+Pasang rilis kompatibel
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Pasang bangunan tunggal atau keluarga peningkatan bersama bangunan bawaan. Pilihan hanya berlaku untuk peta baru yang dihasilkan.
+[library Install selected release]
+Pasang rilis terpilih
+[library Installed]
+Terpasang
+[library Installed families]
+Keluarga terpasang
+[library Installed. Enable the family below for new maps.]
+Terpasang. Aktifkan keluarga di bawah untuk peta baru.
+[library Invalid building family ID.]
+ID keluarga bangunan tidak valid.
+[library Invalid building library response]
+Respons pustaka bangunan tidak valid
+[library Invalid library cursor]
+Kursor halaman pustaka tidak valid
+[library Invalid release identity]
+Identitas rilis tidak valid
+[library Load more]
+Muat lebih banyak
+[library Load more families]
+Muat keluarga lain
+[library Loading building families]
+Memuat keluarga bangunan
+[library Loading…]
+Memuat…
+[library Map generators]
+Generator peta
+[library Maps]
+Peta
+[library Most downloaded]
+Paling banyak diunduh
+[library Most liked]
+Paling disukai
+[library My generators]
+Generator saya
+[library Newest]
+Terbaru
+[library No building families installed.]
+Tidak ada keluarga bangunan terpasang.
+[library No public building families yet]
+Belum ada keluarga bangunan publik
+[library No validated release for this game version.]
+Tidak ada rilis tervalidasi untuk versi permainan ini.
+[library Online server changed during download]
+Server daring berubah saat pengunduhan
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Buka keluarga yang tidak ditampilkan dalam daftar dengan tautan atau ID. Untuk keluarga privat, masuk melalui Daring dahulu.
+[library Open family]
+Buka keluarga
+[library Opened family. Install its compatible release below.]
+Keluarga dibuka. Pasang rilis kompatibelnya di bawah.
+[library Opening building family]
+Membuka keluarga bangunan
+[library Playable]
+Dapat dimainkan
+[library Playable generator]
+Generator yang dapat dimainkan
+[library Privacy policy]
+Kebijakan privasi
+[library Public library]
+Pustaka publik
+[library Recently updated]
+Baru diperbarui
+[library Refresh library]
+Segarkan pustaka
+[library Release identity changed during installation]
+Identitas rilis berubah saat pemasangan
+[library Reroll]
+Acak ulang
+[library Reroll seed]
+Acak ulang benih
+[library Saving generator library…]
+Menyimpan pustaka generator…
+[library Search]
+Cari
+[library Seed]
+Benih
+[library Selection saved for new maps.]
+Pilihan disimpan untuk peta baru.
+[library Storage failed.]
+Penyimpanan gagal.
+[library Storage persistence unavailable]
+Penyimpanan permanen tidak tersedia
+[library Tags]
+Tag
+[library Technical checks passed for this engine. Balance is not certified.]
+Pemeriksaan teknis lulus untuk mesin ini. Keseimbangan tidak disertifikasi.
+[library The server returned a different family.]
+Server mengembalikan keluarga lain.
+[library This link is from another instance. Switch to that instance in Online first.]
+Tautan ini dari instans lain. Beralih ke instans itu melalui Daring dahulu.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+ID paket ini sudah terpasang. Konfirmasikan penggantian untuk memakai rilis terpilih.
+[library This release has no passing checks for this engine.]
+Rilis ini belum memiliki hasil pemeriksaan yang lulus untuk mesin ini.
+[library This release is installed.]
+Rilis ini terpasang.
+[library Update installed family]
+Perbarui keluarga terpasang
+[library Use in a room]
+Gunakan di ruangan
+[library By %0]
+Oleh %0
+[library Installed release %0]
+Rilis terpasang %0
+[library Release %0]
+Rilis %0
+[library Remove %0]
+Hapus %0
+[library Seed: %0]
+Benih: %0
+[library %0 · revision %1]
+%0 · revisi %1
+[library Fit]
+Tampilkan seluruh peta
+[library GL only]
+Hanya GL

@@ -6,34 +6,6 @@
 페이지에서 확인을 요청하면 %0이 표시되는지 확인하세요.
 [hub code copied]
 코드 복사됨
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 브라우저에서 완료하세요. 게임이 자동으로 계속됩니다.
 [music set]
@@ -6039,96 +6011,622 @@ AI 생성 아님
 [outcome reason probability]
 승리 확률이 기준값에 도달했습니다.
 [Discord community]
-
+Discord 커뮤니티
 [Globulation 2 Discord]
-
+Globulation 2의 Discord
 [discord community intro]
-
+Globulation 2 커뮤니티에서 대전 상대를 찾고, 도움을 요청하고, 지도를 공유하세요.
 [discord opens externally]
-
+Discord 서버에 참여합니다. Discord 또는 브라우저가 열립니다.
 [Join Discord]
-
+Discord 참여
 [Copy link]
-
+링크 복사
 [discord opened]
-
+Discord를 열었습니다. 언제든 게임으로 돌아올 수 있습니다.
 [discord open failed]
-
+Discord를 열 수 없습니다. 초대 링크를 복사하여 브라우저에서 여세요.
 [discord link copied]
-
+초대 링크를 복사했습니다.
 [settings CPU automatic]
-
+CPU 자동 선택
 [settings Scalar]
-
+스칼라
 [settings Unavailable]
-
+사용 불가
 [settings Initializing]
-
+초기화 중
 [settings Gradient backend]
-
+기울기 계산 백엔드
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+다음 시뮬레이션 단계 경계에서 적용합니다. 지원되지 않는 작업은 CPU 자동 선택을 사용하며, 렌더링은 독립적으로 작동합니다.
 [settings Gradient algorithm]
-
+기울기 알고리즘
 [settings All choices compute the same exact field.]
-
+모든 선택지는 정확히 같은 필드를 계산합니다.
 [settings Bucket propagation]
-
+버킷 전파
 [settings Verify gradient results]
-
+기울기 결과 검증
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+결과를 사용하기 전에 GPU 결과를 스칼라 CPU 계산과 비교합니다. 계산량이 늘어나며 결과가 다르면 게임을 중지합니다.
 [settings Gradient computation]
-
+기울기 계산
 [settings CPU fallback]
-
+CPU 대체 처리
 [settings GPU fields]
-
+GPU 필드
 [settings CPU fallbacks]
-
+CPU 대체 처리 횟수
 [settings MCP server]
-
+MCP 서버
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+MCP 서버를 활성화하면 로컬 클라이언트가 게임을 보고 조작할 수 있습니다.
 [settings Enable MCP server]
-
+MCP 서버 활성화
 [settings Port]
-
+포트
 [settings Current controller: %0]
-
+현재 제어 클라이언트: %0
 [settings Copy endpoint]
-
+엔드포인트 복사
 [settings Retry listener]
-
+수신 대기 재시도
 [settings Revoke control]
-
+제어 권한 취소
 [settings MCP server unavailable in this application]
-
+이 애플리케이션에서는 MCP 서버를 사용할 수 없습니다
 [settings Disabled]
-
+비활성화됨
 [settings Running]
-
+실행 중
 [settings Error: %0]
-
+오류: %0
 [settings None]
-
+없음
 [settings Starting]
-
+시작 중
 [Which hand holds your phone?]
-
+왼손인가요, 오른손인가요?
 [hand preference explanation]
-
+평소처럼 휴대전화를 잡으세요. 플레이할 때 쓰는 손을 누르세요.
 [hand silhouettes description]
-
+휴대전화 윤곽 위에 왼손과 오른손이 있습니다. 경사진 테두리가 있는 엄지손가락 버튼 중 하나를 눌러 해당 쪽을 선택하세요.
 [hand preference change later]
-
+나중에 설정에서 방향을 바꿀 수 있습니다.
 [hand preference save failed]
-
+선택을 저장할 수 없습니다. 다시 시도하세요.
 [Left hand]
-
+왼손
 [Right hand]
-
+오른손
 [discord copy failed]
-
+링크를 복사할 수 없습니다. 위의 초대 링크를 선택하여 직접 복사하세요.
 [Destroy this building?]
 이 건물을 파괴하시겠습니까?
+[stat ground movement]
+지상 이동
+[stat ground movement about]
+살아 있는 지상 유닛을 대략적인 속도 비율로 분류합니다. ‘수영 2×’는 달리기보다 두 배 빠르게 수영한다는 뜻입니다. 비행 유닛과 움직일 수 없는 유닛은 제외합니다.
+[stat view by movement]
+이동 방식별
+[stat band land only]
+육지만
+[stat band swim twice run]
+수영 2×
+[stat band swim faster run]
+수영 1.4×
+[stat band swim equals run]
+동일
+[stat band run faster swim]
+달리기 1.3×
+[stat band run twice swim]
+달리기 2×
+[stat band run triple swim]
+달리기 3×
+[stat band water only]
+수중만
+[settings Browse shared generators]
+공유된 생성기 찾아보기
+[settings Apply artwork on the next game or editor load.]
+다음에 게임이나 편집기를 불러올 때 그래픽을 적용합니다.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+텍스처 필터링을 지원하는 렌더러가 필요합니다. 저장한 선택은 유지됩니다.
+[settings Automatically show the torus overview while moving around the map.]
+지도에서 이동할 때 토러스 전체 보기를 자동으로 표시합니다.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+토러스를 지원하는 렌더러가 필요합니다. 저장한 선택은 유지됩니다.
+[settings Move and animate units between game ticks.]
+게임 틱 사이에도 유닛을 이동시키고 애니메이션을 표시합니다.
+[settings Renderer unavailable]
+렌더러를 사용할 수 없습니다
+[settings Apply at the next completed frame. Your game stays running.]
+다음 프레임이 완료될 때 적용합니다. 게임은 계속 실행됩니다.
+[settings Active renderer: %0]
+사용 중인 렌더러: %0
+[settings Changing renderer…]
+렌더러 변경 중…
+[settings Menu scroll wheel enabled]
+메뉴에서 휠 스크롤 활성화
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+메뉴의 휠 스크롤을 제어합니다. 게임과 편집기 지도에서는 휠이 항상 확대와 축소에 사용됩니다.
+[settings Gesture scrolling]
+제스처 스크롤
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+터치 및 Mac 제스처 스크롤입니다. 0은 효과를 끄며, 터치의 기본값은 50입니다.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+빠르게 쓸어 넘긴 뒤 목록과 패널이 계속 스크롤되는 거리입니다. Mac 제스처는 시스템 관성을 사용하며, 0으로 설정하면 미끄러지는 동작을 끕니다.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+목록과 패널이 끝을 넘어 늘어났다가 튕겨 돌아오는 정도입니다. Mac 제스처는 더 부드럽게 늘어납니다.
+[hive stopping]
+중지 중…
+[hive stopped]
+중지됨
+[hive stop failed]
+중지하지 못했습니다. 중지 단축키를 다시 실행하세요
+[hive updating]
+업데이트 중…
+[hive requested]
+요청됨
+[hive update failed]
+업데이트하지 못했습니다. 다시 시도하세요
+[hive give order]
+명령 내리기
+[hive less]
+접기
+[hive reports and details]
+보고서 / 세부 정보
+[hive needs fresh order]
+새 명령 필요
+[hive active]
+활성
+[hive resume]
+재개
+[recordings]
+녹화
+[recording delete confirm]
+녹화를 삭제할까요?
+[recording delete warning]
+녹화와 해당 메타데이터가 삭제됩니다.
+[recording delete]
+삭제
+[recording working]
+처리 중…
+[recording none]
+아직 녹화가 없습니다.
+[recording interrupted]
+중단된 녹화
+[recording recover]
+복구
+[recording export video]
+동영상 내보내기
+[recording export metadata]
+메타데이터 내보내기
+[recording export events]
+이벤트 내보내기
+[recording export failed]
+녹화를 내보낼 수 없습니다.
+[recording delete action]
+녹화 삭제
+[recording refresh]
+새로 고침
+[tutorial part1 message 1]
+Globulation 2에 오신 것을 환영합니다! 네 임무를 통해 식민지 운영을 배웁니다. 게임 메뉴에서 진행 상황을 저장하고 나중에 주 메뉴에서 불러올 수 있습니다. Space 키나 터치 화면의 확인을 눌러 계속하세요. 계속하면 사라지는 메시지는 메시지 기록에서 다시 읽을 수 있습니다.
+[tutorial part1 message 2]
+처음에는 둥지와 일꾼 한 명이 있습니다. 둘이 어떻게 협력하는지 살펴봅시다.
+[tutorial part1 message 3]
+일꾼은 밀을 수확해 둥지로 운반합니다. 둥지는 밀로 새 유닛을 생산하므로 식민지에 꼭 필요합니다.
+[tutorial part1 message 4]
+움직이는 유닛인 글로뷸을 왼쪽 클릭하거나 터치해 선택하세요.
+[tutorial part1 message 5]
+유닛 정보에서 식량이 시간이 지날수록 줄어듭니다. 글로뷸이 배고파지고 있습니다. 식량 막대가 표시될 때 유닛 아래 파란 막대가 남은 식량을 나타냅니다.
+[tutorial part1 message 6]
+글로뷸은 여관에서 먹습니다. 오른쪽 클릭으로 선택을 해제하거나 터치 화면에서 빈 땅을 누르세요.
+[tutorial part1 message 7]
+건물 조작 메뉴에서 여관을 골라 밀 근처에 놓으세요. 밀을 못 찾겠으면 일꾼의 수확 경로를 따라가세요. 터치 화면에서는 건설을 사용해 유효한 위치를 확정합니다. 끝나면 오른쪽 클릭이나 터치 취소 버튼으로 배치 모드를 나가세요.
+[tutorial part1 message 8]
+좋습니다! 여관 건설 현장을 배치했습니다.
+[tutorial part1 message 9]
+둥지의 일꾼이 여관을 지을 수 있습니다. 근처 나무에서 목재를 모아 현장으로 운반합니다. 완공을 기다리세요.
+[tutorial part1 message 10]
+완성된 여관에는 밀이 필요합니다. 배정된 일꾼이 둥지에 공급하듯 밀을 모아 운반합니다.
+[tutorial part1 message 11]
+밀이 도착하면 여관의 노란 자원 막대가 올라갑니다. 여관에 비축된 밀의 양입니다.
+[tutorial part1 message 12]
+이제 일을 배정하는 법을 배워 봅시다.
+[tutorial part1 message 13]
+일꾼 한 명은 둥지에, 다른 한 명은 여관에 공급합니다. 둘 다 여관에서 먹으려고 일을 잠시 멈출 수 있습니다. 정상입니다.
+[tutorial part1 message 14]
+둥지를 선택해 일꾼 배정 조작을 찾으세요. 데스크톱에서는 작업 중이라는 이름이며, 터치 화면에서는 배정된 일꾼과 목표 조작을 사용합니다. 목표는 해당 건물에서 일하기를 원하는 일꾼 수입니다.
+[tutorial part1 message 15]
+둥지의 일꾼 목표를 0으로 설정하세요. 다음으로 여관을 선택해 그 목표도 0으로 설정합니다.
+[tutorial part1 message 16]
+일꾼은 이제 쉬지만 여전히 식량이 필요합니다. 배정된 일꾼이 없는 여관은 결국 밀이 떨어집니다.
+[tutorial part1 message 17]
+먹을 것을 찾지 못한 글로뷸은 체력을 잃고 죽을 수 있습니다. 병원에서 다친 글로뷸을 치료할 수 있지만 여관 공급도 유지해야 합니다.
+[tutorial part1 message 18]
+건물 조작으로 병원을 지으세요. 밀은 필요 없으므로 목재 근처나 둥지 부근 중심에 놓으세요.
+[tutorial part1 message 19]
+병원 건설 현장을 선택해 일꾼 목표를 2로 설정하세요. 두 명이면 더 빨리 완성합니다.
+[tutorial part1 message 20]
+병원이 완성되었습니다. 다친 글로뷸은 이제 병원에서 체력을 회복할 수 있습니다.
+[tutorial part1 message 21]
+검은 지역은 미탐험 지역입니다. 유닛이 이동하며 주변 땅을 밝힙니다. 일꾼은 일을 따라 움직여 정찰에 쓰기 어렵습니다. 탐험가가 그 일을 전문으로 합니다.
+[tutorial part1 message 22]
+둥지를 선택하고 일꾼, 탐험가, 전사의 생산 비율을 찾으세요. 탐험가 비율을 1로 높이세요.
+[tutorial part1 message 23]
+일꾼과 탐험가 비율이 모두 1이면 시간이 지남에 따라 같은 수를 생산합니다. 일꾼 비율을 0으로 해 당분간 탐험가만 생산하세요.
+[tutorial part1 message 24]
+둥지의 일꾼 배정 목표를 다시 1로 설정해 밀을 가져오게 하세요.
+[tutorial part1 message 25]
+여관도 선택해 일꾼 목표를 1로 설정하세요. 성장하는 식민지는 꾸준한 식량 공급이 필요합니다.
+[tutorial part1 message 26]
+이제 둥지에서 탐험가가 나올 때까지 기다리세요.
+[tutorial part1 message 27]
+탐험가가 식민지 주변을 날며 더 많은 땅을 밝힙니다. 계속하기 전에 둥지가 두 번째 탐험가를 생산하도록 기다리세요.
+[tutorial part1 message 28]
+둥지를 다시 선택하세요. 탐험가 비율을 0, 일꾼 비율을 1로 설정해 일꾼 생산을 재개합니다.
+[tutorial part2 message 1]
+기지 동쪽에 돌이 있습니다. 나중에 필요하니 위치를 기억하세요.
+[tutorial part2 message 2]
+돌 남쪽 나무들은 오렌지나무입니다. 선택하면 자원 정보를 볼 수 있습니다. 과일은 나중에 다룰 테니 지금은 둥지에 집중하세요.
+[tutorial part2 message 3]
+둥지가 일꾼만 생산하도록 일꾼 비율은 1, 탐험가와 전사는 0으로 설정하세요.
+[tutorial part2 message 4]
+식민지를 더 빨리 키워 봅시다. 둥지를 선택해 일꾼 배정 목표를 6으로 설정하세요. 아직 여섯 명이 없어도 새로 생기는 일꾼이 빈자리를 채울 수 있습니다.
+[tutorial part2 message 5]
+일꾼이 8명이 되면 다음 작업을 시작합니다. 인구가 늘어나는 동안 둥지와 여관에 계속 공급하세요.
+[tutorial part2 message 6]
+이제 여러 일꾼이 둥지에 공급합니다. 밀이 더 많이 도착하면 유닛도 더 빨리 생산됩니다.
+[tutorial part2 message 7]
+새 일꾼 한 명에는 밀 5가 듭니다. 먼 밭에서 운반하는 데 시간이 걸려 둥지는 보통 여관보다 공급 일꾼이 더 필요합니다. 가능하면 식량이 필요한 건물을 밀 근처에 놓으세요.
+[tutorial part2 message 8]
+일꾼이 최소 8명이 되었습니다. 건설하는 동안 인구 증가를 늦추도록 둥지의 일꾼 배정 목표를 1로 줄이세요.
+[tutorial part2 message 9]
+식민지에 식사 공간이 더 필요합니다. 기존 여관 북쪽에 두 번째 여관을 지으세요.
+[tutorial part2 message 10]
+쉬는 일꾼을 새 여관 현장에 배정하세요. 목재 3만 필요하므로 건설 일꾼이 3명보다 많아도 큰 도움이 되지 않습니다.
+[tutorial part2 message 11]
+완성된 여관은 운영 일꾼 목표로 돌아가며 보통 1명입니다. 건설과 일상 공급은 각각 별도 배정 목표를 사용합니다.
+[tutorial part2 message 12]
+일꾼은 더 빠르게 움직이는 법을 배울 수 있습니다. 달리기 훈련장이 그 훈련을 제공합니다.
+[tutorial part2 message 13]
+건물 조작에서 달리기 훈련장을 찾으세요. 데스크톱에서는 아이콘에 마우스를 올려 설명과 비용을 봅니다. 터치 화면에서는 건설에서 선택해 배치를 준비합니다. 아직 놓지는 마세요.
+[tutorial part2 message 14]
+달리기 훈련장은 많은 목재와 약간의 돌이 필요합니다. 유닛이 쉽게 접근할 수 있는 중심 위치를 고르세요.
+[tutorial part2 message 15]
+둥지 남쪽 같은 곳에 달리기 훈련장을 지으세요. 훈련 건물은 업그레이드할 때 확장하므로 주변에 빈 공간을 남기세요.
+[tutorial part2 message 16]
+달리기 훈련장 현장의 일꾼 목표를 5~7로 설정하세요. 건설 자재는 총 7이 필요합니다.
+[tutorial part2 message 17]
+완공된 달리기 훈련장은 건설 자재나 밀을 계속 공급하지 않아도 방문 유닛을 훈련합니다.
+[tutorial part2 message 18]
+글로뷸들이 훈련장에 들어가 훈련하고 있습니다. 마치면 더 빨리 달릴 수 있습니다.
+[tutorial part2 message 19]
+달리기 훈련장을 선택해 진행 상황을 확인하세요. 진행 표시가 내부 유닛의 훈련이 얼마나 남았는지 보여 줍니다.
+[tutorial part2 message 20]
+훈련된 일꾼은 더 빨리 이동하고 자원을 일찍 배달합니다. 식민지가 성장하는 동안 식량 비축량을 살피세요. 충분한 여관에 공급이 유지되어야 빠른 배달도 도움이 됩니다.
+[tutorial part2 message 21]
+게임 화면에서 일꾼 인구 수치를 찾으세요. 총수는 인구를 나타내고, 가용 일꾼 수는 남는 인력이나 채워지지 않은 일을 파악하는 데 유용합니다. 쉬는 일꾼을 활용하되 감당할 수 있는 것보다 많은 일을 배정하지 마세요.
+[tutorial part2 message 22]
+화면에는 탐험가와 전사 수도 표시됩니다. 생산 계획을 세우거나 깃발에 유닛을 배정할 때 확인하세요.
+[tutorial part2 message 23]
+여관이 2개입니다. 기본 여관은 각각 4명에게 동시에 음식을 제공하므로 총 8자리입니다. 배고픈 유닛은 8명보다 많을 수 있으니 대기 줄에 대비해 여유를 두세요.
+[tutorial part2 message 24]
+성장하는 식민지를 여관 두 개로 영원히 지탱할 수는 없습니다. 부족이 굶주림으로 이어지기 전에 식사 용량을 늘리세요.
+[tutorial part2 message 25]
+밀 근처에 여관 3개를 더 지으세요. 배고픈 일꾼은 일을 멈추고 오래 굶으면 죽습니다. 기존 식량 공급을 유지하면서 가용 일꾼을 건설에 배정하세요.
+[tutorial part2 message 26]
+여관 3개를 더 완성해 총 5개로 만드세요.
+[tutorial part2 message 27]
+새 여관은 완공 후 운영 배정 목표를 쓰며 보통 각 1명입니다. 공급 일꾼과 충분한 밀이 있는지 확인하세요.
+[tutorial part2 message 28]
+달리기 훈련장으로 육상 이동이 개선되었습니다. 이제 수영을 가르쳐 봅시다.
+[tutorial part2 message 29]
+수영장은 유닛에게 수영을 가르치며 건설에 목재가 필요합니다. 기지 북동쪽, 돌 북쪽의 넓은 빈터에 놓으세요. 주변에 업그레이드와 자원 성장에 필요한 공간을 남기고 가용 일꾼을 건설에 배정하세요.
+[tutorial part2 message 30]
+수영장은 유닛에게 수영을 가르치며 건설에 목재가 필요합니다. 기지 북동쪽, 돌 북쪽의 넓은 빈터에 놓으세요. 주변에 업그레이드와 자원 성장에 필요한 공간을 남기고 가용 일꾼을 건설에 배정하세요.
+[tutorial part2 message 31]
+수영장이 완성되었습니다. 글로뷸이 들어가 수영을 배울 수 있습니다.
+[tutorial part2 message 32]
+수영장을 선택해 훈련 진행 상황을 확인하세요. 기본 수영장은 기본 달리기 훈련장처럼 한 번에 글로뷸 2명을 훈련합니다.
+[tutorial part2 message 33]
+훈련된 글로뷸은 이제 수영할 수 있습니다. 곧 물을 건너야 하는 일을 맡길 것입니다.
+[tutorial part2 message 34]
+배울 것이 더 있습니다. 쉬고 싶다면 게임 메뉴에서 진행 상황을 저장하고 나중에 돌아오세요.
+[tutorial part2 message 35]
+식민지에 식량과 체력 훈련이 갖춰졌습니다. 학교는 더 좋은 건물에 필요한 기술을 일꾼에게 가르칩니다.
+[tutorial part2 message 36]
+학교는 수확과 건설 기술을 높입니다. 학교를 짓는 데에는 물속에서 자라는 해조류가 필요하며 수영을 배운 일꾼이 채집할 수 있습니다.
+[tutorial part2 message 37]
+중요한 훈련 건물을 지키세요. 학교가 물가에 있을 필요는 없습니다. 보호받는 내륙에 놓으면 공격에서 더 안전할 수 있습니다.
+[tutorial part2 message 38]
+수영장 뒤나 둥지 남서쪽 달리기 훈련장 옆처럼 보호된 곳에 학교를 지으세요. 가용 일꾼을 건설에 배정합니다.
+[tutorial part2 message 39]
+건물을 선택하면 배정된 일꾼을 볼 수 있습니다. 데스크톱에서는 설정 가능한 유닛 경로 표시 전환 동작으로 목적지까지의 선도 표시할 수 있습니다. 현재 단축키는 설정의 게임 컨트롤 항목을 보세요. 학교 완공을 기다리세요.
+[tutorial part3 message 1]
+식민지에 여관, 병원, 달리기 훈련장, 수영장, 학교가 있습니다. 방어를 준비할 때입니다.
+[tutorial part3 message 2]
+아직 전사를 생산하지 않았습니다. 전사가 없으면 식민지가 공격에 취약합니다.
+[tutorial part3 message 3]
+둥지를 선택해 전사 생산 비율을 2로 설정하세요. 일꾼도 계속 생산하도록 일꾼 비율은 1로 유지합니다.
+[tutorial part3 message 4]
+둥지는 이제 일꾼 한 명당 전사 약 2명을 생산합니다. 더 빠른 생산을 원하면 공급 일꾼을 늘리세요.
+[tutorial part3 message 5]
+첫 전사가 준비되었고 훈련을 시작합니다. 계속하기 전에 두 번째 전사를 기다리세요.
+[tutorial part3 message 6]
+전사도 달리기 훈련장과 수영장을 이용합니다. 병영에서는 공격 기술도 훈련합니다.
+[tutorial part3 message 7]
+병영은 공격력과 공격 속도를 높입니다. 공격력은 타격당 피해를, 속도는 공격 빈도를 높입니다. 잘 훈련된 전사는 훨씬 많은 미훈련 적도 이길 수 있습니다.
+[tutorial part3 message 8]
+건설에 목재가 필요하므로 목재 근처에 병영을 지으세요.
+[tutorial part3 message 9]
+가용 일꾼을 병영 현장에 배정하세요. 식량 공급에 충분한 인원을 남기고 채울 수 있는 것보다 많은 일을 만들지 마세요.
+[tutorial part3 message 10]
+병영이 완성되었습니다. 전사는 이제 그곳에서 공격 기술을 훈련할 수 있습니다.
+[tutorial part3 message 11]
+건물 업그레이드로 식민지를 더 강하게 만들 수 있습니다.
+[tutorial part3 message 12]
+학교에서 훈련된 일꾼은 업그레이드 공사를 합니다. 가능한 건물을 선택해 건물 조작에서 업그레이드를 찾으세요. 손상된 건물은 먼저 수리가 필요할 수 있습니다.
+[tutorial part3 message 13]
+무엇을 먼저 업그레이드할지 정합시다. 여관에는 아직 여유가 있으니 나중으로 미뤄도 됩니다.
+[tutorial part3 message 14]
+병원에도 여유가 있습니다. 학교, 달리기 훈련장, 수영장, 병영에 집중할 수 있습니다.
+[tutorial part3 message 15]
+먼저 달리기 훈련장을 업그레이드해 더 빠른 이동을 배우게 하세요.
+[tutorial part3 message 16]
+달리기 훈련장을 선택해 건물 조작에서 업그레이드를 고르세요. 내부 유닛이 나간 뒤에 공사가 시작되므로 바로 바뀌지 않을 수 있습니다.
+[tutorial part3 message 17]
+가용 일꾼을 달리기 훈련장 업그레이드에 배정하세요. 필요한 학교 훈련을 받은 일꾼만 2단계 건설 현장을 지을 수 있습니다.
+[tutorial part3 message 18]
+달리기 훈련장 업그레이드 완료를 기다리세요. 높은 단계의 건물일수록 더 많은 자원과 시간이 필요합니다.
+[tutorial part3 message 19]
+2단계 달리기 훈련장이 완성되었습니다. 전보다 넓어져서 미리 틈을 남긴 것입니다. 확장 공간이 충분하지 않으면 업그레이드할 수 없습니다.
+[tutorial part3 message 20]
+이제 병영과 수영장을 2단계로 업그레이드하세요. 둘 다 완성되면 계속합니다.
+[tutorial part3 message 21]
+업그레이드한 건물은 보통 더 많은 글로뷸을 수용하거나 더 나은 훈련을 제공합니다. 예를 들어 2단계 여관은 7자리가 있고 기본 여관보다 빨리 식사를 제공합니다.
+[tutorial part3 message 22]
+적이 근처에 있습니다. 공격에 대비합시다.
+[tutorial part3 message 23]
+탑은 사거리 안의 적을 쏘고 벽은 탑을 보호합니다. 둘을 이용해 식민지로 오는 좁은 길을 지키겠습니다.
+[tutorial part3 message 24]
+공간이 되면 탑을 둘씩 배치하세요. 벽으로 세 면을 보호하되 일꾼이 돌 탄약을 배달할 길은 남기세요.
+[tutorial part3 message 25]
+수영장 동쪽, 다른 과일나무 북쪽을 보세요. 다른 섬으로 이어지는 좁은 길이 있어 방어하기 좋습니다.
+[tutorial part3 message 26]
+나무와 해안 사이에 탑 2개를 놓을 공간을 계획하세요. 뒤에는 돌 배달 통로, 다른 면에는 벽 공간을 남기세요. 벽으로 일꾼을 막지 마세요.
+[tutorial part3 message 27]
+그곳에 탑 2개를 지으세요. 화면의 가용 일꾼 수를 보고 각 현장에 2~3명을 배정하세요.
+[tutorial part3 message 28]
+건물 조작으로 탑의 바깥을 향한 세 면에 벽을 놓으세요. 식민지 쪽 면은 일꾼을 위해 열어 두세요.
+[tutorial part3 message 29]
+벽 한 칸마다 건설 작업이 생기고 돌 1이 필요합니다. 일꾼이 모든 일을 동시에 맡지 못하면 차례대로 완성할 수 있습니다.
+[tutorial part3 message 30]
+두 탑과 벽 여러 칸의 완공을 기다리세요. 탑에는 돌 탄약도 필요하지만 채석장이 멀어 배달이 느립니다. 일꾼이 남으면 탑의 일꾼 목표를 늘리세요.
+[tutorial part4 message 1]
+식민지에 식량, 훈련, 방어가 갖춰졌습니다. 건물을 한 번 더 3단계로 올리면 더 좋은 훈련과 큰 수용량을 얻습니다. 자원과 일꾼 기술이 허용하는 대로 계속 개선하세요.
+[tutorial part4 message 2]
+기지 북서쪽에서 적 식민지를 찾으세요. 지금 그곳으로 시점을 옮기세요.
+[tutorial part4 message 3]
+탐험한 땅도 전장의 안개에 가려질 수 있습니다. 적의 현재 활동을 보려면 근처에 탐험가가 필요합니다.
+[tutorial part4 message 4]
+깃발을 여세요. 깃발과 구역으로 각 글로뷸을 일일이 조작하지 않고도 유닛을 지휘할 수 있습니다.
+[tutorial part4 message 5]
+연 모양 표시의 탐험 깃발을 고르세요. 깃발은 땅, 물, 자원, 미탐험 지역 위에도 놓을 수 있습니다.
+[tutorial part4 message 6]
+적 기지로 의심되는 곳에 탐험 깃발을 놓으세요. 대략적인 위치로도 정찰을 시작할 수 있습니다. 오른쪽 클릭으로 배치 모드를 나가거나 터치 조작으로 배치를 마치세요.
+[tutorial part4 message 7]
+깃발 주변 윤곽은 활동 반경입니다. 배정된 탐험가가 그 안을 정찰합니다. 아무도 오지 않으면 탐험가 수를 확인하고 필요할 때 둥지에서 더 생산하세요. 도착하면 Space나 확인을 누르세요.
+[tutorial part4 message 8]
+적은 많은 일꾼과 집결한 군대를 보유하고 있습니다. 적이 공격해 오기 전에 방어를 준비합시다.
+[tutorial part4 message 9]
+깃발에서 파란 경계 구역을 고르세요. 지우는 대신 땅을 추가하는 모드를 사용합니다. 터치 화면에서는 지우기 대신 그리기를 고르세요.
+[tutorial part4 message 10]
+붓 모양과 크기를 고르세요. 큰 정사각형은 밀집된 방어 구역을 칠하기 좋습니다.
+[tutorial part4 message 11]
+적이 접근할 만한 탑 바로 뒤에 경계 구역을 칠하세요. 클릭이나 터치로 한 곳을, 드래그로 넓게 칠합니다. 터치 화면에서 칠하는 도중 시점을 옮기려면 이동 모드를 쓰세요.
+[tutorial part4 message 12]
+가용 전사는 경계 구역으로 이동합니다. 방어 병력을 수용하되 좁은 통로에 집중할 만큼 작게 만드세요. 이제 공격을 기다립니다.
+[tutorial part4 message 13]
+적이 좁은 길로 접근합니다!
+[tutorial part4 message 14]
+공격받고 있습니다. 훈련된 전사와 탑이 진지를 지키는 모습을 보세요.
+[tutorial part4 message 15]
+살아남았습니다! 깃발에서 가시 모양 전투 깃발을 골라 적 둥지 위에 놓으세요. 그곳으로 공격을 지시합니다.
+[tutorial part4 message 16]
+배치 모드를 나가 전투 깃발을 선택하세요. 전사를 2명 이상 배정하고 반경을 줄여 적 둥지 주변으로 공격을 집중시키세요. 전사의 도착을 기다립니다.
+[tutorial part4 message 17]
+공격이 시작되었습니다. 적 둥지에 가려면 적 탑을 돌파해야 합니다.
+[tutorial part4 message 18]
+전사가 적 기지에 도착했습니다. 둥지에 계속 공격을 집중하세요.
+[tutorial part4 message 19]
+적 둥지를 파괴했습니다. 축하합니다! 튜토리얼을 마치고 식량 공급, 배정, 훈련, 업그레이드, 정찰, 전투의 기초를 배웠습니다.
+[tutorial mission basics]
+소개와 기초
+[tutorial mission development]
+건물과 학교
+[tutorial mission training]
+전사, 훈련과 업그레이드
+[tutorial mission flags]
+깃발과 마무리
+[library  Could not restore the previous library: %0]
+ 이전 라이브러리를 복원할 수 없습니다: %0
+[library  The previous library is retained.]
+ 이전 라이브러리를 유지합니다.
+[library  · Installed]
+ · 설치됨
+[library  · Update available]
+ · 업데이트 가능
+[library A different release is installed. Install the selected release to update explicitly.]
+다른 릴리스가 설치되어 있습니다. 직접 업데이트하려면 선택한 릴리스를 설치하세요.
+[library All engines]
+모든 엔진
+[library All generators]
+모든 생성기
+[library Available families]
+사용 가능한 계열
+[library Back]
+뒤로
+[library Building families]
+건물 계열
+[library Building library]
+건물 라이브러리
+[library Checking building release]
+건물 릴리스 확인 중
+[library Choose an online instance before opening a family link.]
+계열 링크를 열기 전에 온라인 서버를 선택하세요.
+[library Compatible with this engine]
+이 엔진과 호환됨
+[library Confirm replacement]
+교체 확인
+[library Create in Building Studio]
+Building Studio에서 만들기
+[library Downloading generator…]
+생성기 다운로드 중…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+각 지형은 아래의 크기와 식민지 수를 적용한 실제 지도로 표시되며 여기서 변경할 수 있습니다. 하나를 선택하면 표시된 지도에서 플레이합니다.
+[library Editor tool: generates terrain for the map editor.]
+편집기 도구: 지도 편집기용 지형을 생성합니다.
+[library Editor tools]
+편집기 도구
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+아래에서 설치된 계열을 활성화하세요. 선택은 로컬 프로필에 저장되며 기존 지도와 저장 파일은 각자의 건물을 유지합니다. 온라인에서는 이 계열로 지도를 생성하고 지도 라이브러리에 게시한 다음 방에서 선택하세요.
+[library Enter a building family ID or a link to its family page.]
+건물 계열 ID나 계열 페이지 링크를 입력하세요.
+[library Family link or ID]
+계열 링크 또는 ID
+[library Family links must be at most 1024 characters.]
+계열 링크는 최대 1024자입니다.
+[library Family removed.]
+계열을 제거했습니다.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+계열을 사용할 수 없습니다. 비공개 계열은 접근 권한이 있는 계정으로 온라인에서 로그인해야 합니다.
+[library Generator file hash mismatch]
+생성기 파일 해시 불일치
+[library Generator installed. Future selections use this release.]
+생성기를 설치했습니다. 이후 선택에는 이 릴리스를 사용합니다.
+[library Generator package identity mismatch]
+생성기 패키지 식별 정보 불일치
+[library Generators]
+생성기
+[library Install compatible release]
+호환 릴리스 설치
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+기본 건물과 함께 개별 건물이나 업그레이드 계열을 설치합니다. 선택은 새로 생성하는 지도에만 적용됩니다.
+[library Install selected release]
+선택한 릴리스 설치
+[library Installed]
+설치됨
+[library Installed families]
+설치된 계열
+[library Installed. Enable the family below for new maps.]
+설치했습니다. 새 지도에 쓰려면 아래에서 계열을 활성화하세요.
+[library Invalid building family ID.]
+잘못된 건물 계열 ID입니다.
+[library Invalid building library response]
+잘못된 건물 라이브러리 응답
+[library Invalid library cursor]
+잘못된 라이브러리 페이지 커서
+[library Invalid release identity]
+잘못된 릴리스 식별 정보
+[library Load more]
+더 불러오기
+[library Load more families]
+계열 더 불러오기
+[library Loading building families]
+건물 계열 불러오는 중
+[library Loading…]
+불러오는 중…
+[library Map generators]
+지도 생성기
+[library Maps]
+지도
+[library Most downloaded]
+다운로드 많은 순
+[library Most liked]
+좋아요 많은 순
+[library My generators]
+내 생성기
+[library Newest]
+최신순
+[library No building families installed.]
+설치된 건물 계열이 없습니다.
+[library No public building families yet]
+아직 공개 건물 계열이 없습니다
+[library No validated release for this game version.]
+이 게임 버전용으로 검증된 릴리스가 없습니다.
+[library Online server changed during download]
+다운로드 중 온라인 서버가 변경되었습니다
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+목록에 없는 계열은 링크나 ID로 여세요. 비공개 계열은 먼저 온라인에서 로그인하세요.
+[library Open family]
+계열 열기
+[library Opened family. Install its compatible release below.]
+계열을 열었습니다. 아래에서 호환 릴리스를 설치하세요.
+[library Opening building family]
+건물 계열 여는 중
+[library Playable]
+플레이 가능
+[library Playable generator]
+플레이 가능한 생성기
+[library Privacy policy]
+개인정보 처리방침
+[library Public library]
+공개 라이브러리
+[library Recently updated]
+최근 업데이트순
+[library Refresh library]
+라이브러리 새로 고침
+[library Release identity changed during installation]
+설치 중 릴리스 식별 정보가 변경되었습니다
+[library Reroll]
+다시 생성
+[library Reroll seed]
+시드 변경
+[library Saving generator library…]
+생성기 라이브러리 저장 중…
+[library Search]
+검색
+[library Seed]
+시드
+[library Selection saved for new maps.]
+새 지도에 사용할 선택을 저장했습니다.
+[library Storage failed.]
+저장하지 못했습니다.
+[library Storage persistence unavailable]
+영구 저장소를 사용할 수 없습니다
+[library Tags]
+태그
+[library Technical checks passed for this engine. Balance is not certified.]
+이 엔진의 기술 검사를 통과했습니다. 밸런스는 인증되지 않았습니다.
+[library The server returned a different family.]
+서버가 다른 계열을 반환했습니다.
+[library This link is from another instance. Switch to that instance in Online first.]
+다른 서버의 링크입니다. 먼저 온라인에서 해당 서버로 전환하세요.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+이 패키지 ID가 설치되어 있습니다. 선택한 릴리스를 쓰려면 교체를 확인하세요.
+[library This release has no passing checks for this engine.]
+이 릴리스는 이 엔진에 대한 검사 통과 기록이 없습니다.
+[library This release is installed.]
+이 릴리스가 설치되어 있습니다.
+[library Update installed family]
+설치된 계열 업데이트
+[library Use in a room]
+방에서 사용
+[library By %0]
+제작: %0
+[library Installed release %0]
+설치된 릴리스 %0
+[library Release %0]
+릴리스 %0
+[library Remove %0]
+%0 제거
+[library Seed: %0]
+시드: %0
+[library %0 · revision %1]
+%0 · 리비전 %1
+[library Fit]
+전체 보기
+[library GL only]
+GL 전용

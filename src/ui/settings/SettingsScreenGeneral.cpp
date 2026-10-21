@@ -218,7 +218,7 @@ void SettingsScreen::buildGeneral()
             for (const auto &entry : availability) {
                 backends.push_back(entry.backend);
                 auto label = std::string(rendererBackendLabel(entry.backend));
-                if (!entry.available) label += " (unavailable)";
+                if (!entry.available) label += " (" + tr("Renderer unavailable") + ")";
                 labels.push_back(std::move(label));
             }
             const auto &status = gfx->backendSwitchStatus();
@@ -229,7 +229,7 @@ void SettingsScreen::buildGeneral()
                         globalContainer->gfx->requestBackendSwitch(backends[v]);
                     invalidate();
                 });
-            info("Active renderer: " + std::string(rendererBackendLabel(status.active)));
+            info(std::string(GAGCore::FormattableString(tr("Active renderer: %0")).arg(rendererBackendLabel(status.active))));
             if (status.phase == RendererSwitchPhase::Queued || status.phase == RendererSwitchPhase::Preparing ||
                 status.phase == RendererSwitchPhase::Presenting) info(tr("Changing renderer…"));
             if (!status.reason.empty()) info(status.reason);

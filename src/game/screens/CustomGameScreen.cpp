@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
 #include "OnlineServices.h"
 #include "BuildingLibraryScreen.h"
@@ -1310,7 +1311,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 	// Room generators run on the server and cannot consult this profile's selection.
 	// A locally generated map can still be shared through the map library.
 	if (!forRoom)
-		left.push_back(fe::button("map/buildings", "Building families",
+		left.push_back(fe::button("map/buildings", Glob2UI::libraryText("Building families"),
 								  [this]
 								  {
 									  screens.push(std::make_unique<BuildingLibraryScreen>(),

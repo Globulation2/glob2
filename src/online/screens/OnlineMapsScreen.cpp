@@ -1,3 +1,4 @@
+#include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -808,9 +809,9 @@ Element OnlineMapsScreen::mineBody(const Presentation &p, bool phone)
 Element OnlineMapsScreen::build(const Presentation &p)
 {
 	const bool phone = p.touch && p.compact();
-	std::vector<Element> libraryTabs{button("library/maps", "Maps", [] {})};
+	std::vector<Element> libraryTabs{button("library/maps", Glob2UI::libraryText("Maps"), [] {})};
 	if constexpr (ClientFeatures::CommunityGenerators)
-		libraryTabs.push_back(button("library/generators", "Generators",
+		libraryTabs.push_back(button("library/generators", Glob2UI::libraryText("Generators"),
 					[this]
 					{
 						screens.push(std::make_unique<OnlineGeneratorsScreen>(screens),

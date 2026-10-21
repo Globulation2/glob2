@@ -6,34 +6,6 @@ Browserul nu s-a deschis. Deschide pagina de autentificare pentru a continua.
 Dacă pagina solicită, verifică dacă afișează %0.
 [hub code copied]
 Cod copiat
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Finalizează în browser. Jocul va continua automat.
 [music set]
@@ -6039,96 +6011,622 @@ Limita de timp a fost atinsă.
 [outcome reason probability]
 Pragul probabilității de victorie a fost atins.
 [Discord community]
-
+Comunitatea Discord
 [Globulation 2 Discord]
-
+Discord Globulation 2
 [discord community intro]
-
+Găsește adversari, cere ajutor și distribuie hărțile tale comunității Globulation 2.
 [discord opens externally]
-
+Alătură-te serverului nostru Discord. Se va deschide Discord sau browserul.
 [Join Discord]
-
+Alătură-te pe Discord
 [Copy link]
-
+Copiază legătura
 [discord opened]
-
+Discord a fost deschis. Poți reveni oricând la joc.
 [discord open failed]
-
+Nu s-a putut deschide Discord. Copiază legătura de invitație și deschide-o în browser.
 [discord link copied]
-
+Legătura de invitație a fost copiată.
 [settings CPU automatic]
-
+CPU (automat)
 [settings Scalar]
-
+Scalar
 [settings Unavailable]
-
+Indisponibil
 [settings Initializing]
-
+Se inițializează
 [settings Gradient backend]
-
+Motor de gradienți
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Se aplică la următorul punct de sincronizare a simulării. Operațiile neacceptate folosesc modul CPU automat; randarea este independentă.
 [settings Gradient algorithm]
-
+Algoritm de gradienți
 [settings All choices compute the same exact field.]
-
+Toate opțiunile calculează exact același câmp.
 [settings Bucket propagation]
-
+Propagare pe grupe
 [settings Verify gradient results]
-
+Verifică rezultatele gradienților
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Compară rezultatele GPU cu rezultatele calculelor scalare pe CPU înainte de a le face disponibile. Necesită calcule suplimentare și oprește jocul dacă apar diferențe.
 [settings Gradient computation]
-
+Calculul gradienților
 [settings CPU fallback]
-
+Revenire la CPU
 [settings GPU fields]
-
+Câmpuri GPU
 [settings CPU fallbacks]
-
+Reveniri la CPU
 [settings MCP server]
-
+Server MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Activarea serverului MCP permite clienților locali să vadă și să controleze jocul.
 [settings Enable MCP server]
-
+Activează serverul MCP
 [settings Port]
-
+Port
 [settings Current controller: %0]
-
+Controlor curent: %0
 [settings Copy endpoint]
-
+Copiază adresa de acces
 [settings Retry listener]
-
+Reîncearcă ascultarea
 [settings Revoke control]
-
+Revocă controlul
 [settings MCP server unavailable in this application]
-
+Serverul MCP nu este disponibil în această aplicație
 [settings Disabled]
-
+Dezactivat
 [settings Running]
-
+În execuție
 [settings Error: %0]
-
+Eroare: %0
 [settings None]
-
+Niciunul
 [settings Starting]
-
+Se pornește
 [Which hand holds your phone?]
-
+Mâna stângă sau dreaptă?
 [hand preference explanation]
-
+Ține telefonul firesc. Atinge mâna cu care joci.
 [hand silhouettes description]
-
+Conturul unui telefon cu mâinile stângă și dreaptă deasupra. Apasă unul dintre butoanele teșite pentru degetul mare pentru a alege acea parte.
 [hand preference change later]
-
+Poți schimba partea mai târziu din Setări.
 [hand preference save failed]
-
+Nu s-a putut salva alegerea. Încearcă din nou.
 [Left hand]
-
+Mâna stângă
 [Right hand]
-
+Mâna dreaptă
 [discord copy failed]
-
+Nu s-a putut copia legătura. Selectează invitația de mai sus pentru a o copia manual.
 [Destroy this building?]
 Distrugi această clădire?
+[stat ground movement]
+Deplasare la sol
+[stat ground movement about]
+Unități terestre în viață, după raportul aproximativ al vitezelor. „Înot 2x” înseamnă înot de două ori mai rapid decât alergarea. Nu include unitățile zburătoare sau imobile.
+[stat view by movement]
+După deplasare
+[stat band land only]
+Doar uscat
+[stat band swim twice run]
+Înot 2x
+[stat band swim faster run]
+Înot 1,4x
+[stat band swim equals run]
+Egale
+[stat band run faster swim]
+Alergare 1,3x
+[stat band run twice swim]
+Alergare 2x
+[stat band run triple swim]
+Alergare 3x
+[stat band water only]
+Doar apă
+[settings Browse shared generators]
+Răsfoiește generatoarele partajate
+[settings Apply artwork on the next game or editor load.]
+Aplică grafica la următoarea încărcare a unei partide sau a editorului.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Necesită un motor de randare cu filtrarea texturilor. Alegerea salvată este păstrată.
+[settings Automatically show the torus overview while moving around the map.]
+Afișează automat vederea toroidală la deplasarea pe hartă.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Necesită un motor de randare cu suport toroidal. Alegerea salvată este păstrată.
+[settings Move and animate units between game ticks.]
+Deplasează și animă unitățile între pașii jocului.
+[settings Renderer unavailable]
+Motor de randare indisponibil
+[settings Apply at the next completed frame. Your game stays running.]
+Aplică după următorul cadru finalizat. Jocul continuă să ruleze.
+[settings Active renderer: %0]
+Motor de randare activ: %0
+[settings Changing renderer…]
+Se schimbă motorul de randare…
+[settings Menu scroll wheel enabled]
+Rotiță de derulare în meniuri activată
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Controlează derularea cu rotița în meniuri. Pe hărțile jocului și editorului, rotița modifică întotdeauna mărirea.
+[settings Gesture scrolling]
+Derulare prin gesturi
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Derulare tactilă și prin gesturi Mac. 0 dezactivează un efect; 50 este valoarea implicită pentru atingere.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Cât continuă listele și panourile să deruleze după o glisare rapidă. Gesturile Mac folosesc inerția sistemului; zero dezactivează alunecarea.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Cât se întind listele și panourile dincolo de capete înainte să revină. Gesturile Mac folosesc o întindere mai redusă.
+[hive stopping]
+Se oprește…
+[hive stopped]
+Oprit
+[hive stop failed]
+Oprirea a eșuat; încearcă din nou scurtătura de oprire
+[hive updating]
+Se actualizează…
+[hive requested]
+Solicitat
+[hive update failed]
+Actualizarea a eșuat; încearcă din nou
+[hive give order]
+Dă un ordin
+[hive less]
+Mai puțin
+[hive reports and details]
+Rapoarte / detalii
+[hive needs fresh order]
+Este necesar un ordin nou
+[hive active]
+Activ
+[hive resume]
+Reia
+[recordings]
+Înregistrări
+[recording delete confirm]
+Ștergi înregistrarea?
+[recording delete warning]
+Înregistrarea și metadatele sale vor fi eliminate.
+[recording delete]
+Șterge
+[recording working]
+Se lucrează…
+[recording none]
+Încă nu există înregistrări.
+[recording interrupted]
+Înregistrare întreruptă
+[recording recover]
+Recuperează
+[recording export video]
+Exportă videoclipul
+[recording export metadata]
+Exportă metadatele
+[recording export events]
+Exportă evenimentele
+[recording export failed]
+Nu s-a putut exporta înregistrarea.
+[recording delete action]
+Șterge înregistrarea
+[recording refresh]
+Reîmprospătează
+[tutorial part1 message 1]
+Bun venit în Globulation 2! Acest tutorial te învață să gestionezi colonia în patru misiuni. Poți salva progresul din meniul jocului și îl poți încărca ulterior din meniul principal. Apasă Spațiu pentru a continua sau atinge OK pe un ecran tactil. Unele mesaje dispar după continuare; le poți reciti în istoricul mesajelor.
+[tutorial part1 message 2]
+Începi cu un Stup și un muncitor. Să vedem cum lucrează împreună.
+[tutorial part1 message 3]
+Muncitorul recoltează grâu și îl duce la Stup. Stupul consumă grâu pentru a produce unități noi, fiind esențial pentru colonie.
+[tutorial part1 message 4]
+Selectează globulul, unitatea în mișcare, prin clic stânga sau atingere.
+[tutorial part1 message 5]
+Informațiile unității arată că hrana scade în timp. Globulului i se face foame. Când barele de hrană sunt vizibile, bara albastră de sub unitate arată hrana rămasă.
+[tutorial part1 message 6]
+Globulii mănâncă la Popasuri. Anulează selecția prin clic dreapta sau atinge teren gol pe ecranul tactil.
+[tutorial part1 message 7]
+Deschide comenzile de construire, alege Popas și amplasează-l lângă grâu. Urmărește traseul muncitorului dacă nu găsești grâul. Pe ecran tactil folosește «Construcție» și confirmă un loc valid. Apoi ieși din amplasare prin clic dreapta sau comanda tactilă Anulează.
+[tutorial part1 message 8]
+Bine! Șantierul Popasului este amplasat.
+[tutorial part1 message 9]
+Un muncitor de la Stup poate construi acum Popasul. Adună lemn din copacii apropiați și îl duce la șantier. Așteaptă finalizarea.
+[tutorial part1 message 10]
+Popasul terminat are nevoie de grâu. Un muncitor alocat îl va strânge, la fel ca la aprovizionarea Stupului.
+[tutorial part1 message 11]
+Bara galbenă de resurse a Popasului crește când sosește grâul. Arată cantitatea din stoc.
+[tutorial part1 message 12]
+Acum să învățăm alocarea muncii.
+[tutorial part1 message 13]
+Un muncitor aprovizionează Stupul și altul Popasul. Oricare se poate opri să mănânce la Popas. Este normal.
+[tutorial part1 message 14]
+Selectează Stupul și găsește alocarea muncitorilor. Pe calculator este etichetată Lucrează; pe ecran tactil folosește muncitorii alocați și ținta. Ținta este numărul dorit de muncitori la clădire.
+[tutorial part1 message 15]
+Setează ținta muncitorilor Stupului la 0. Apoi selectează Popasul și setează și ținta lui la 0.
+[tutorial part1 message 16]
+Muncitorii sunt inactivi, dar tot au nevoie de hrană. Un Popas fără muncitori alocați va rămâne în cele din urmă fără grâu.
+[tutorial part1 message 17]
+Un globul care nu găsește hrană pierde sănătate și poate muri. Un Spital vindecă globulii răniți, dar trebuie să menții și Popasurile aprovizionate.
+[tutorial part1 message 18]
+Construiește un Spital folosind comenzile de construire. Nu are nevoie de grâu, deci pune-l lângă lemn sau într-un loc central lângă Stup.
+[tutorial part1 message 19]
+Selectează șantierul Spitalului și setează ținta muncitorilor la 2. Doi muncitori îl pot termina mai repede.
+[tutorial part1 message 20]
+Spitalul este gata. Globulii răniți îl pot vizita pentru a-și reface sănătatea.
+[tutorial part1 message 21]
+Zonele negre sunt neexplorate. Unitățile dezvăluie terenul apropiat în mișcare. Muncitorii își urmează sarcinile și sunt greu de folosit pentru cercetare. Exploratorii sunt destinați acestei sarcini.
+[tutorial part1 message 22]
+Selectează Stupul și găsește proporțiile de producție pentru muncitori, exploratori și războinici. Crește proporția exploratorilor la 1.
+[tutorial part1 message 23]
+Cu ambele proporții la 1, Stupul produce în timp numere egale de muncitori și exploratori. Setează muncitorii la 0 pentru a produce deocamdată numai exploratori.
+[tutorial part1 message 24]
+Readu ținta muncitorilor alocați Stupului la 1, ca un muncitor să îi poată aduce grâu.
+[tutorial part1 message 25]
+Selectează Popasul și setează și ținta lui la 1. Colonia în creștere are nevoie de hrană constantă.
+[tutorial part1 message 26]
+Acum așteaptă ca Stupul să producă un explorator.
+[tutorial part1 message 27]
+Exploratorul zboară în jurul coloniei și dezvăluie teren. Lasă Stupul să producă un al doilea explorator înainte de a continua.
+[tutorial part1 message 28]
+Selectează din nou Stupul. Setează exploratorii la 0 și muncitorii la 1 pentru a relua producția de muncitori.
+[tutorial part2 message 1]
+La est de bază există piatră. Reține locul; vei avea nevoie de ea mai târziu.
+[tutorial part2 message 2]
+Copacii de la sud de piatră sunt portocali. Selectează-i pentru informații despre resurse. Revenim la fructe mai târziu; acum concentrează-te pe Stup.
+[tutorial part2 message 3]
+Setează Stupul să producă numai muncitori: proporția muncitorilor 1, a exploratorilor și războinicilor 0.
+[tutorial part2 message 4]
+Să dezvoltăm colonia mai repede. Selectează Stupul și setează ținta muncitorilor la 6. Poate nu ai încă șase; muncitorii noi vor ocupa locurile libere când devin disponibili.
+[tutorial part2 message 5]
+Sarcinile următoare încep când ai 8 muncitori. Menține Stupul și Popasul aprovizionate în timp ce crește populația.
+[tutorial part2 message 6]
+Acum mai mulți muncitori aprovizionează Stupul. Mai mult grâu permite producerea mai rapidă a unităților.
+[tutorial part2 message 7]
+Un muncitor nou costă 5 unități de grâu. Transportul de la un câmp îndepărtat durează, deci Stupul are adesea nevoie de mai mulți furnizori decât un Popas. Amplasează clădirile dependente de hrană aproape de grâu când este posibil.
+[tutorial part2 message 8]
+Ai cel puțin 8 muncitori. Selectează Stupul și redu ținta muncitorilor la 1 pentru a încetini creșterea populației cât construim.
+[tutorial part2 message 9]
+Colonia are nevoie de mai multe locuri pentru masă. Construiește un al doilea Popas la nord de cel existent.
+[tutorial part2 message 10]
+Alocă muncitori liberi noului șantier. Necesită numai 3 unități de lemn, deci mai mult de 3 constructori nu vor ajuta prea mult.
+[tutorial part2 message 11]
+Popasul terminat revine la ținta de funcționare, de obicei 1 muncitor. Construirea și aprovizionarea zilnică au ținte separate.
+[tutorial part2 message 12]
+Muncitorii pot învăța să se deplaseze mai repede. Pista de alergare oferă acest antrenament.
+[tutorial part2 message 13]
+Deschide comenzile de construire și găsește Pista de alergare. Pe calculator, treci peste pictogramă pentru descriere și cost. Pe ecran tactil selecteaz-o în «Construcție» pentru pregătirea amplasării. Nu o amplasa încă.
+[tutorial part2 message 14]
+Pista de alergare necesită mult lemn și puțină piatră. Alege un loc central, ușor accesibil unităților.
+[tutorial part2 message 15]
+Construiește o Pistă de alergare, poate la sud de Stup. Lasă spațiu în jur: clădirile de antrenament se extind la îmbunătățire.
+[tutorial part2 message 16]
+Setează numărul dorit de muncitori pe șantierul Pistei între 5 și 7. Necesită 7 unități de materiale de construcție în total.
+[tutorial part2 message 17]
+O Pistă terminată antrenează unitățile vizitatoare fără aprovizionare continuă cu materiale sau grâu.
+[tutorial part2 message 18]
+Globulii intră în Pistă pentru antrenament. După aceea vor alerga mai repede.
+[tutorial part2 message 19]
+Selectează Pista pentru a vedea progresul. Indicatoarele arată cât mai au unitățile dinăuntru până la finalizare.
+[tutorial part2 message 20]
+Muncitorii antrenați călătoresc mai repede și livrează resurse mai devreme. Urmărește hrana în timp ce colonia crește: livrările rapide ajută doar dacă există suficiente Popasuri aprovizionate.
+[tutorial part2 message 21]
+Găsește contorul muncitorilor în interfața jocului. Totalul arată populația; numărul disponibil ajută la identificarea muncitorilor liberi sau a sarcinilor neocupate. Folosește-i fără a aloca mai multă muncă decât poate susține colonia.
+[tutorial part2 message 22]
+Interfața arată și numărul exploratorilor și războinicilor. Verifică-l când planifici producția sau aloci unități steagurilor.
+[tutorial part2 message 23]
+Ai 2 Popasuri. Fiecare Popas de bază hrănește 4 unități simultan: împreună au 8 locuri. Mai mult de 8 unități pot flămânzi, deci păstrează capacitate pentru cozi.
+[tutorial part2 message 24]
+Două Popasuri nu susțin la nesfârșit o colonie în creștere. Construiește locuri suplimentare înainte ca lipsurile să provoace foamete.
+[tutorial part2 message 25]
+Construiește încă 3 Popasuri lângă grâu. Muncitorii flămânzi nu mai lucrează, iar foamea prelungită îi ucide. Alocă muncitori disponibili la construcții, păstrând aprovizionarea existentă.
+[tutorial part2 message 26]
+Termină încă 3 Popasuri pentru a ajunge la 5 în total.
+[tutorial part2 message 27]
+Noile Popasuri folosesc după construire țintele de funcționare, de obicei câte 1 muncitor. Verifică să aibă furnizori și suficient grâu.
+[tutorial part2 message 28]
+Pista a îmbunătățit deplasarea pe uscat. Acum să învățăm colonia să înoate.
+[tutorial part2 message 29]
+Piscina învață unitățile să înoate și necesită lemn pentru construire. Amplaseaz-o în poiana mare la nord-est de bază, la nord de piatră. Lasă spațiu pentru îmbunătățiri și creșterea resurselor și alocă muncitori disponibili.
+[tutorial part2 message 30]
+Piscina învață unitățile să înoate și necesită lemn pentru construire. Amplaseaz-o în poiana mare la nord-est de bază, la nord de piatră. Lasă spațiu pentru îmbunătățiri și creșterea resurselor și alocă muncitori disponibili.
+[tutorial part2 message 31]
+Piscina este gata. Globulii pot intra să învețe înotul.
+[tutorial part2 message 32]
+Selectează Piscina pentru progresul antrenamentului. O Piscină de bază antrenează 2 globuli simultan, la fel ca o Pistă de bază.
+[tutorial part2 message 33]
+Globulii antrenați pot înota. În curând le vom da o sarcină care cere traversarea apei.
+[tutorial part2 message 34]
+Mai sunt multe de învățat. Dacă vrei o pauză, salvează progresul din meniul jocului și revino mai târziu.
+[tutorial part2 message 35]
+Colonia are hrană și antrenament fizic. Școala îi va învăța pe muncitori competențele necesare clădirilor mai bune.
+[tutorial part2 message 36]
+Școala îmbunătățește recoltarea și construirea. Construcția necesită alge, care cresc în apă. Muncitorii înotători le pot aduna.
+[tutorial part2 message 37]
+Protejează clădirile importante de antrenament. Școala nu trebuie să stea lângă apă; un loc adăpostit în interiorul insulei o poate proteja mai bine de atac.
+[tutorial part2 message 38]
+Construiește o Școală într-un loc protejat, de exemplu în spatele Piscinei sau la sud-vest de Stup, lângă Pistă. Alocă muncitori disponibili.
+[tutorial part2 message 39]
+Selectează o clădire pentru a vedea muncitorii alocați. Pe calculator, acțiunea configurabilă de afișare a traseelor unităților arată și linii spre destinații; vezi scurtătura actuală în Setări, Comenzi. Așteaptă terminarea Școlii.
+[tutorial part3 message 1]
+Colonia are acum Popasuri, un Spital, o Pistă, o Piscină și o Școală. Este timpul să pregătim apărarea.
+[tutorial part3 message 2]
+Nu am produs încă războinici. Fără ei colonia este slab protejată împotriva atacurilor.
+[tutorial part3 message 3]
+Selectează Stupul și setează proporția războinicilor la 2. Lasă muncitorii la 1 ca să fie produși în continuare.
+[tutorial part3 message 4]
+Stupul va produce aproximativ 2 războinici pentru fiecare muncitor. Alocă mai mulți muncitori la aprovizionare pentru o producție mai rapidă.
+[tutorial part3 message 5]
+Primul războinic este gata și va începe antrenamentul. Așteaptă un al doilea înainte de continuare.
+[tutorial part3 message 6]
+Războinicii folosesc și Pista, și Piscina. Își pot antrena atacul și în Câmpul de antrenament.
+[tutorial part3 message 7]
+Câmpul de antrenament îmbunătățește forța și viteza atacului. Forța crește daunele fiecărei lovituri; viteza crește frecvența atacurilor. Războinicii bine antrenați pot învinge grupuri mult mai mari de inamici neantrenați.
+[tutorial part3 message 8]
+Construiește un Câmp de antrenament aproape de lemnul necesar construcției.
+[tutorial part3 message 9]
+Alocă muncitori disponibili șantierului Câmpului de antrenament. Păstrează destui la hrană și nu crea mai multe sarcini decât pot ocupa.
+[tutorial part3 message 10]
+Câmpul de antrenament este gata. Războinicii își pot antrena acum atacul acolo.
+[tutorial part3 message 11]
+Colonia poate deveni mai puternică prin îmbunătățirea clădirilor.
+[tutorial part3 message 12]
+Muncitorii instruiți la Școală pot construi îmbunătățiri. Selectează o clădire eligibilă și caută «Modernizează» în comenzi. Clădirile avariate pot necesita întâi Repară.
+[tutorial part3 message 13]
+Să alegem ce îmbunătățim întâi. Popasurile au încă locuri libere și pot aștepta.
+[tutorial part3 message 14]
+Și Spitalul are loc. Ne putem concentra pe Școală, Pistă, Piscină sau Câmpul de antrenament.
+[tutorial part3 message 15]
+Îmbunătățește întâi Pista, ca unitățile să învețe să se deplaseze și mai repede.
+[tutorial part3 message 16]
+Selectează Pista și alege «Modernizează». Unitățile dinăuntru trebuie să iasă înainte de construcție, deci schimbarea poate întârzia.
+[tutorial part3 message 17]
+Alocă muncitori disponibili la îmbunătățirea Pistei. Numai cei cu instruirea școlară necesară pot construi un șantier de nivel 2.
+[tutorial part3 message 18]
+Așteaptă finalizarea îmbunătățirii Pistei. Clădirile de nivel superior necesită mai multe resurse și timp.
+[tutorial part3 message 19]
+Pista de nivel 2 este gata. Ocupă mai mult teren, de aceea am lăsat spațiu. O clădire nu se poate îmbunătăți fără loc pentru extindere.
+[tutorial part3 message 20]
+Acum îmbunătățește Câmpul de antrenament și Piscina la nivel 2. Continuăm când ambele sunt gata.
+[tutorial part3 message 21]
+Clădirile îmbunătățite servesc în general mai mulți globuli sau oferă instruire mai bună. De exemplu, un Popas de nivel 2 are 7 locuri și hrănește mai repede decât unul de bază.
+[tutorial part3 message 22]
+Inamicul este aproape. Să pregătim apărarea.
+[tutorial part3 message 23]
+Turnurile trag în inamicii din rază. Zidurile le protejează. Le vom folosi pe amândouă pentru a apăra un acces îngust spre colonie.
+[tutorial part3 message 24]
+Pune Turnurile în perechi dacă este loc. Zidurile pot proteja trei laturi, dar lasă o cale pentru muncitorii care livrează piatră pentru muniție.
+[tutorial part3 message 25]
+Privește la est de Piscină, la nord de ceilalți pomi fructiferi. O trecere îngustă duce spre altă insulă. Este un loc bun de apărat.
+[tutorial part3 message 26]
+Planifică loc pentru 2 Turnuri între copaci și mal. Lasă acces în spate pentru piatră și spațiu pe celelalte laturi pentru Ziduri. Nu bloca muncitorii afară.
+[tutorial part3 message 27]
+Construiește acolo 2 Turnuri. Alocă 2 sau 3 muncitori fiecărui șantier, după disponibilitatea din contoarele interfeței.
+[tutorial part3 message 28]
+Folosește comenzile de construire pentru a pune Ziduri pe cele trei laturi exterioare ale Turnurilor. Lasă deschisă latura spre colonie pentru muncitori.
+[tutorial part3 message 29]
+Fiecare segment de Zid creează o sarcină și cere 1 piatră. Dacă muncitorii nu pot ocupa toate sarcinile simultan, pot termina segmentele pe rând.
+[tutorial part3 message 30]
+Așteaptă terminarea ambelor Turnuri și a câtorva segmente de Zid. Turnurile necesită și muniție de piatră; cariera îndepărtată încetinește livrarea. Mărește țintele de muncitori dacă ai oameni liberi.
+[tutorial part4 message 1]
+Colonia are hrană, antrenament și apărare. Clădirile pot avansa încă o dată, la nivel 3, cu instruire mai bună și capacitate sporită. Continuă îmbunătățirile când permit resursele și competențele muncitorilor.
+[tutorial part4 message 2]
+Caută colonia inamică la nord-vest de bază. Mută acum vederea acolo.
+[tutorial part4 message 3]
+Chiar și terenul explorat poate fi ascuns de ceața războiului. Pentru a vedea activitatea actuală a inamicului avem nevoie de un explorator în apropiere.
+[tutorial part4 message 4]
+Deschide Steaguri. Aici ai steaguri și zone pentru dirijarea unităților fără controlarea fiecărui globul.
+[tutorial part4 message 5]
+Alege Steagul de explorare, cu simbol în formă de zmeu. Steagurile pot fi puse pe uscat, apă, resurse și teren neexplorat.
+[tutorial part4 message 6]
+Pune un Steag de explorare peste presupusa bază inamică. O poziție aproximativă ajunge pentru început. Ieși din amplasare prin clic dreapta sau încheie folosind comenzile tactile.
+[tutorial part4 message 7]
+Conturul steagului arată raza de lucru. Un explorator alocat va cerceta zona. Dacă nu vine niciunul, verifică numărul exploratorilor și produce altul la Stup dacă trebuie. Apasă Spațiu sau atinge OK când ajunge în zonă.
+[tutorial part4 message 8]
+Inamicul are mulți muncitori și o armată adunată. Să pregătim apărarea înainte să atace.
+[tutorial part4 message 9]
+Deschide Steaguri și alege zona albastră de Pază. Folosește modul de adăugare a terenului, nu de eliminare. Pe ecran tactil alege Pictează în loc de Șterge.
+[tutorial part4 message 10]
+Alege forma și dimensiunea pensulei. Pătratul mare ajută la pictarea unei zone defensive compacte.
+[tutorial part4 message 11]
+Pictează o zonă de Pază chiar în spatele Turnurilor, unde probabil va veni inamicul. Fă clic sau atinge pentru un punct, ori trage pentru mai mult teren. Pe ecran tactil folosește «Deplasează» pentru a muta vederea în timpul pictării.
+[tutorial part4 message 12]
+Războinicii disponibili vor intra în zona de Pază. Fă-o suficient de mare pentru apărători, dar suficient de mică pentru a-i ține grupați la trecere. Acum așteaptă atacul.
+[tutorial part4 message 13]
+Inamicul se apropie de trecere!
+[tutorial part4 message 14]
+Suntem atacați. Urmărește cum războinicii instruiți și Turnurile apără poziția.
+[tutorial part4 message 15]
+Ai supraviețuit! Deschide Steaguri și alege Steagul de luptă cu țepi. Pune-l peste Stupul inamic pentru a dirija atacul acolo.
+[tutorial part4 message 16]
+Ieși din amplasare și selectează Steagul de luptă. Alocă mai mult de 1 războinic, apoi redu raza pentru a concentra atacul în jurul Stupului inamic. Așteaptă sosirea războinicilor.
+[tutorial part4 message 17]
+Atacul a început. Războinicii trebuie să treacă de Turnurile inamice pentru a ajunge la Stup.
+[tutorial part4 message 18]
+Războinicii au ajuns la baza inamică. Menține atacul concentrat asupra Stupului.
+[tutorial part4 message 19]
+Ai distrus Stupul inamic. Felicitări! Ai terminat tutorialul și ai învățat bazele aprovizionării, alocării, instruirii, îmbunătățirii, explorării și luptei.
+[tutorial mission basics]
+Introducere și noțiuni de bază
+[tutorial mission development]
+Clădiri și școli
+[tutorial mission training]
+Războinici, instruire și îmbunătățiri
+[tutorial mission flags]
+Steaguri și încheiere
+[library  Could not restore the previous library: %0]
+ Nu s-a putut restabili biblioteca anterioară: %0
+[library  The previous library is retained.]
+ Biblioteca anterioară este păstrată.
+[library  · Installed]
+ · Instalat
+[library  · Update available]
+ · Actualizare disponibilă
+[library A different release is installed. Install the selected release to update explicitly.]
+Este instalată o altă versiune. Dacă dorești să actualizezi, instalează versiunea selectată.
+[library All engines]
+Toate motoarele
+[library All generators]
+Toate generatoarele
+[library Available families]
+Familii disponibile
+[library Back]
+Înapoi
+[library Building families]
+Familii de clădiri
+[library Building library]
+Biblioteca de clădiri
+[library Checking building release]
+Se verifică versiunea clădirii
+[library Choose an online instance before opening a family link.]
+Alege o instanță online înainte de a deschide legătura unei familii.
+[library Compatible with this engine]
+Compatibil cu acest motor
+[library Confirm replacement]
+Confirmă înlocuirea
+[library Create in Building Studio]
+Creează în studioul de clădiri
+[library Downloading generator…]
+Se descarcă generatorul…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Fiecare peisaj este prezentat ca o hartă reală la dimensiunea și numărul de colonii de mai jos, pe care le poți modifica aici. Folosește unul pentru a juca pe harta prezentată.
+[library Editor tool: generates terrain for the map editor.]
+Instrument al editorului: generează teren pentru editorul de hărți.
+[library Editor tools]
+Instrumentele editorului
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Activează mai jos familiile instalate. Selecția este salvată în profilul local; hărțile și salvările existente își păstrează clădirile. Pentru joc online, generează o hartă cu aceste familii, public-o în biblioteca de hărți și alege-o în cameră.
+[library Enter a building family ID or a link to its family page.]
+Introdu ID-ul unei familii de clădiri sau o legătură către pagina ei.
+[library Family link or ID]
+Legătura sau ID-ul familiei
+[library Family links must be at most 1024 characters.]
+Legăturile familiilor pot avea cel mult 1024 de caractere.
+[library Family removed.]
+Familie eliminată.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Familie indisponibilă. Familiile private cer autentificare prin Online cu un cont autorizat.
+[library Generator file hash mismatch]
+Amprenta fișierului generatorului nu corespunde
+[library Generator installed. Future selections use this release.]
+Generator instalat. Selecțiile viitoare folosesc această versiune.
+[library Generator package identity mismatch]
+Identitatea pachetului generatorului nu corespunde
+[library Generators]
+Generatoare
+[library Install compatible release]
+Instalează versiunea compatibilă
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Instalează clădiri individuale sau familii de îmbunătățiri alături de clădirile standard. Selecția se aplică numai hărților nou generate.
+[library Install selected release]
+Instalează versiunea selectată
+[library Installed]
+Instalat
+[library Installed families]
+Familii instalate
+[library Installed. Enable the family below for new maps.]
+Instalat. Activează familia mai jos pentru hărți noi.
+[library Invalid building family ID.]
+ID de familie de clădiri nevalid.
+[library Invalid building library response]
+Răspuns nevalid al bibliotecii de clădiri
+[library Invalid library cursor]
+Cursor nevalid al bibliotecii
+[library Invalid release identity]
+Identitate nevalidă a versiunii
+[library Load more]
+Încarcă mai multe
+[library Load more families]
+Încarcă mai multe familii
+[library Loading building families]
+Se încarcă familiile de clădiri
+[library Loading…]
+Se încarcă…
+[library Map generators]
+Generatoare de hărți
+[library Maps]
+Hărți
+[library Most downloaded]
+Cele mai descărcate
+[library Most liked]
+Cele mai apreciate
+[library My generators]
+Generatoarele mele
+[library Newest]
+Cele mai noi
+[library No building families installed.]
+Nu sunt instalate familii de clădiri.
+[library No public building families yet]
+Încă nu există familii de clădiri publice
+[library No validated release for this game version.]
+Nu există o ediție validată pentru această versiune a jocului.
+[library Online server changed during download]
+Serverul online s-a schimbat în timpul descărcării
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Deschide o familie nelistată prin legătura sau ID-ul ei. Pentru familii private, autentifică-te întâi prin Online.
+[library Open family]
+Deschide familia
+[library Opened family. Install its compatible release below.]
+Familie deschisă. Instalează mai jos versiunea compatibilă.
+[library Opening building family]
+Se deschide familia de clădiri
+[library Playable]
+Jucabil
+[library Playable generator]
+Generator jucabil
+[library Privacy policy]
+Politica de confidențialitate
+[library Public library]
+Biblioteca publică
+[library Recently updated]
+Actualizate recent
+[library Refresh library]
+Reîmprospătează biblioteca
+[library Release identity changed during installation]
+Identitatea versiunii s-a schimbat în timpul instalării
+[library Reroll]
+Generează din nou
+[library Reroll seed]
+Alege sămânță aleatorie
+[library Saving generator library…]
+Se salvează biblioteca de generatoare…
+[library Search]
+Caută
+[library Seed]
+Sămânță
+[library Selection saved for new maps.]
+Selecție salvată pentru hărți noi.
+[library Storage failed.]
+Salvarea a eșuat.
+[library Storage persistence unavailable]
+Stocarea persistentă nu este disponibilă
+[library Tags]
+Etichete
+[library Technical checks passed for this engine. Balance is not certified.]
+Verificările tehnice au trecut pentru acest motor. Echilibrul jocului nu este certificat.
+[library The server returned a different family.]
+Serverul a returnat o altă familie.
+[library This link is from another instance. Switch to that instance in Online first.]
+Legătura provine din altă instanță. Treci întâi la acea instanță în Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Un pachet cu acest ID este deja instalat. Confirmă înlocuirea pentru a folosi versiunea selectată.
+[library This release has no passing checks for this engine.]
+Această versiune nu are verificări trecute pentru acest motor.
+[library This release is installed.]
+Această versiune este instalată.
+[library Update installed family]
+Actualizează familia instalată
+[library Use in a room]
+Folosește într-o cameră
+[library By %0]
+De %0
+[library Installed release %0]
+Versiune instalată %0
+[library Release %0]
+Versiune %0
+[library Remove %0]
+Elimină %0
+[library Seed: %0]
+Sămânță: %0
+[library %0 · revision %1]
+%0 · revizia %1
+[library Fit]
+Încadr.
+[library GL only]
+Doar GL

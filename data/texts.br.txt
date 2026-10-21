@@ -6,34 +6,6 @@ O navegador não abriu. Abra a página de acesso para continuar.
 Se a página pedir, confira se ela mostra %0.
 [hub code copied]
 Código copiado
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Termine pelo navegador. O jogo continua automaticamente.
 [music set]
@@ -6039,96 +6011,622 @@ Limite de tempo atingido.
 [outcome reason probability]
 Limiar de probabilidade de vitória atingido.
 [Discord community]
-
+Comunidade no Discord
 [Globulation 2 Discord]
-
+Discord do Globulation 2
 [discord community intro]
-
+Encontre adversários, peça ajuda e compartilhe seus mapas com a comunidade do Globulation 2.
 [discord opens externally]
-
+Entre no nosso servidor do Discord. Isso abre o Discord ou seu navegador.
 [Join Discord]
-
+Entrar no Discord
 [Copy link]
-
+Copiar link
 [discord opened]
-
+Discord aberto. Você pode voltar ao jogo a qualquer momento.
 [discord open failed]
-
+Não foi possível abrir o Discord. Copie o link de convite e abra-o no navegador.
 [discord link copied]
-
+Link de convite copiado.
 [settings CPU automatic]
-
+CPU automático
 [settings Scalar]
-
+Escalar
 [settings Unavailable]
-
+Indisponível
 [settings Initializing]
-
+Inicializando
 [settings Gradient backend]
-
+Mecanismo de cálculo de gradientes
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Aplicado no próximo ponto de sincronização da simulação. Cálculos sem suporte usam CPU automático; a renderização é independente.
 [settings Gradient algorithm]
-
+Algoritmo de gradientes
 [settings All choices compute the same exact field.]
-
+Todas as opções calculam exatamente o mesmo campo.
 [settings Bucket propagation]
-
+Propagação por compartimentos
 [settings Verify gradient results]
-
+Verificar resultados de gradientes
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Comparar os resultados da GPU com os da CPU escalar antes de disponibilizá-los. Adiciona cálculos e interrompe o jogo se houver divergência.
 [settings Gradient computation]
-
+Cálculo de gradientes
 [settings CPU fallback]
-
+Alternativa por CPU
 [settings GPU fields]
-
+Campos na GPU
 [settings CPU fallbacks]
-
+Alternativas por CPU
 [settings MCP server]
-
+Servidor MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Ativar o servidor MCP permite que clientes locais vejam e controlem o jogo.
 [settings Enable MCP server]
-
+Ativar servidor MCP
 [settings Port]
-
+Porta
 [settings Current controller: %0]
-
+Controlador atual: %0
 [settings Copy endpoint]
-
+Copiar endereço de conexão
 [settings Retry listener]
-
+Reiniciar escuta
 [settings Revoke control]
-
+Revogar controle
 [settings MCP server unavailable in this application]
-
+Servidor MCP indisponível neste aplicativo
 [settings Disabled]
-
+Desativado
 [settings Running]
-
+Em execução
 [settings Error: %0]
-
+Erro: %0
 [settings None]
-
+Nenhum
 [settings Starting]
-
+Iniciando
 [Which hand holds your phone?]
-
+Mão esquerda ou direita?
 [hand preference explanation]
-
+Segure o celular naturalmente. Toque na mão com a qual você joga.
 [hand silhouettes description]
-
+Contorno de um celular com as mãos esquerda e direita sobre ele. Toque em uma das áreas chanfradas dos polegares para escolher esse lado.
 [hand preference change later]
-
+Você pode mudar de lado depois nas configurações.
 [hand preference save failed]
-
+Não foi possível salvar sua escolha. Tente novamente.
 [Left hand]
-
+Mão esquerda
 [Right hand]
-
+Mão direita
 [discord copy failed]
-
+Não foi possível copiar o link. Selecione o convite acima para copiá-lo manualmente.
 [Destroy this building?]
 Destruir este edifício?
+[stat ground movement]
+Movimentação terrestre
+[stat ground movement about]
+Unidades terrestres vivas por proporção aproximada de velocidade. “Nadar 2×” significa nadar duas vezes mais rápido do que correr. Unidades voadoras e imóveis são excluídas.
+[stat view by movement]
+Por movimentação
+[stat band land only]
+Só em terra
+[stat band swim twice run]
+Nadar 2×
+[stat band swim faster run]
+Nadar 1,4×
+[stat band swim equals run]
+Igual
+[stat band run faster swim]
+Correr 1,3×
+[stat band run twice swim]
+Correr 2×
+[stat band run triple swim]
+Correr 3×
+[stat band water only]
+Só na água
+[settings Browse shared generators]
+Explorar geradores compartilhados
+[settings Apply artwork on the next game or editor load.]
+Aplicar a arte na próxima abertura de uma partida ou do editor.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Requer um renderizador com filtragem de texturas. Sua escolha salva será mantida.
+[settings Automatically show the torus overview while moving around the map.]
+Mostrar automaticamente a visão do toro ao se mover pelo mapa.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Requer um renderizador com suporte a toro. Sua escolha salva será mantida.
+[settings Move and animate units between game ticks.]
+Mover e animar unidades entre os passos da simulação.
+[settings Renderer unavailable]
+Renderizador indisponível
+[settings Apply at the next completed frame. Your game stays running.]
+Aplicar ao concluir o próximo quadro. Sua partida continua.
+[settings Active renderer: %0]
+Renderizador ativo: %0
+[settings Changing renderer…]
+Alterando renderizador…
+[settings Menu scroll wheel enabled]
+Ativar roda de rolagem nos menus
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Controla a rolagem com a roda nos menus. Nos mapas do jogo e do editor, a roda sempre controla o zoom.
+[settings Gesture scrolling]
+Rolagem por gestos
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Rolagem por toque e gestos do Mac. 0 desativa um efeito; 50 é o padrão para toque.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Quanto as listas e os painéis continuam rolando após um deslize rápido. Gestos do Mac usam a inércia do sistema; zero desativa seu deslizamento.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Quanto as listas e os painéis se esticam além dos limites e voltam. Gestos do Mac usam um esticamento mais suave.
+[hive stopping]
+Parando…
+[hive stopped]
+Parado
+[hive stop failed]
+Falha ao parar; tente novamente o atalho de parada
+[hive updating]
+Atualizando…
+[hive requested]
+Solicitado
+[hive update failed]
+Falha na atualização; tente novamente
+[hive give order]
+Dar ordem
+[hive less]
+Menos
+[hive reports and details]
+Relatórios / detalhes
+[hive needs fresh order]
+Precisa de uma nova ordem
+[hive active]
+Ativo
+[hive resume]
+Retomar
+[recordings]
+Gravações
+[recording delete confirm]
+Excluir gravação?
+[recording delete warning]
+A gravação e seus metadados serão removidos.
+[recording delete]
+Excluir
+[recording working]
+Processando…
+[recording none]
+Ainda não há gravações.
+[recording interrupted]
+Gravação interrompida
+[recording recover]
+Recuperar
+[recording export video]
+Exportar vídeo
+[recording export metadata]
+Exportar metadados
+[recording export events]
+Exportar eventos
+[recording export failed]
+Não foi possível exportar a gravação.
+[recording delete action]
+Excluir gravação
+[recording refresh]
+Atualizar
+[tutorial part1 message 1]
+Boas-vindas ao Globulation 2! Estas quatro missões ensinam a gerenciar uma colônia. Salve pelo menu do jogo e continue depois pelo menu principal. Pressione Espaço ou toque em OK para avançar. Consulte mensagens anteriores no Histórico de mensagens.
+[tutorial part1 message 2]
+Você começa com uma Colmeia e um trabalhador. Vamos observar como trabalham juntos.
+[tutorial part1 message 3]
+O trabalhador colhe trigo e o leva à Colmeia. Ela consome trigo para produzir novas unidades e é essencial à colônia.
+[tutorial part1 message 4]
+Selecione seu glóbulo, a unidade móvel, com um clique esquerdo ou um toque.
+[tutorial part1 message 5]
+As informações da unidade mostram a reserva de alimento diminuindo: ela está ficando com fome. Quando as barras de alimento estão visíveis, a azul sob a unidade mostra a reserva.
+[tutorial part1 message 6]
+Glóbulos comem nas Tavernas. Limpe a seleção com um clique direito ou tocando em terreno vazio na tela sensível ao toque.
+[tutorial part1 message 7]
+Abra os controles de construção, escolha Taverna e coloque-a perto do trigo. Siga o trajeto de coleta do trabalhador se não o encontrar. Na tela de toque, use Construir e confirme um local válido. Saia da colocação com um clique direito ou Cancelar.
+[tutorial part1 message 8]
+Ótimo! O canteiro da Taverna está colocado.
+[tutorial part1 message 9]
+Um trabalhador da Colmeia pode construir a Taverna. Ele coleta madeira de árvores próximas e a leva ao canteiro. Espere a conclusão.
+[tutorial part1 message 10]
+A Taverna pronta precisa de trigo. Um trabalhador designado faz a coleta, assim como para a Colmeia.
+[tutorial part1 message 11]
+A barra amarela da Taverna sobe quando chega trigo. Ela mostra o estoque.
+[tutorial part1 message 12]
+Agora vamos aprender a distribuir o trabalho.
+[tutorial part1 message 13]
+Um trabalhador abastece a Colmeia e outro a Taverna. Eles podem interromper o trabalho para comer. Isso é normal.
+[tutorial part1 message 14]
+Selecione a Colmeia e encontre a designação de trabalhadores: Trabalhando no computador, ou designados e meta na tela de toque. A meta indica quantos trabalhadores você quer no edifício.
+[tutorial part1 message 15]
+Defina a meta de trabalhadores da Colmeia como 0. Depois selecione a Taverna e faça o mesmo.
+[tutorial part1 message 16]
+Seus trabalhadores estão ociosos, mas continuam comendo. Sem trabalhadores designados, a Taverna acabará ficando sem trigo.
+[tutorial part1 message 17]
+Um glóbulo sem comida perde saúde e pode morrer. Um Hospital cura ferimentos, mas você também precisa abastecer as Tavernas.
+[tutorial part1 message 18]
+Construa um Hospital. Ele não precisa de trigo, então coloque-o perto de madeira ou em um ponto central, próximo à Colmeia.
+[tutorial part1 message 19]
+Selecione o canteiro do Hospital e defina a meta como 2 trabalhadores para terminar mais rápido.
+[tutorial part1 message 20]
+O Hospital está pronto. Glóbulos feridos podem recuperar a saúde nele.
+[tutorial part1 message 21]
+Áreas pretas ainda não foram exploradas. As unidades revelam o terreno próximo ao se moverem. Trabalhadores seguem suas tarefas; exploradores são mais adequados para descobrir o mapa.
+[tutorial part1 message 22]
+Selecione a Colmeia e encontre as proporções de produção de trabalhadores, exploradores e guerreiros. Aumente a dos exploradores para 1.
+[tutorial part1 message 23]
+Com trabalhadores e exploradores em 1, a Colmeia produz quantidades iguais ao longo do tempo. Defina trabalhadores como 0 para produzir só exploradores por enquanto.
+[tutorial part1 message 24]
+Volte a meta de trabalhadores designados à Colmeia para 1, para abastecê-la com trigo.
+[tutorial part1 message 25]
+Defina também a meta da Taverna como 1 trabalhador. A colônia precisa de comida regularmente.
+[tutorial part1 message 26]
+Espere a Colmeia produzir um explorador.
+[tutorial part1 message 27]
+Seu explorador voa pela colônia e revela o terreno. Deixe a Colmeia produzir um segundo antes de continuar.
+[tutorial part1 message 28]
+Selecione a Colmeia. Defina a proporção de exploradores como 0 e a de trabalhadores como 1 para voltar a produzir trabalhadores.
+[tutorial part2 message 1]
+Há pedra a leste da base. Lembre-se do local: ela será necessária depois.
+[tutorial part2 message 2]
+As árvores ao sul da pedra são laranjeiras. Selecione-as para ver seus recursos. Voltaremos às frutas depois; agora concentre-se na Colmeia.
+[tutorial part2 message 3]
+Configure a Colmeia para produzir apenas trabalhadores: trabalhadores 1, exploradores e guerreiros 0.
+[tutorial part2 message 4]
+Vamos acelerar o crescimento. Defina a meta da Colmeia como 6 trabalhadores. Novos trabalhadores ocuparão as vagas disponíveis conforme nascerem.
+[tutorial part2 message 5]
+Começaremos as próximas tarefas quando houver 8 trabalhadores. Mantenha a Colmeia e a Taverna abastecidas enquanto espera.
+[tutorial part2 message 6]
+Vários trabalhadores abastecem a Colmeia. Mais entregas de trigo permitem produzir unidades mais rápido.
+[tutorial part2 message 7]
+Cada trabalhador custa 5 de trigo. Transportar trigo de longe leva tempo; a Colmeia costuma precisar de mais fornecedores que uma Taverna. Construa perto do trigo quando possível.
+[tutorial part2 message 8]
+Você tem pelo menos 8 trabalhadores. Reduza a meta da Colmeia para 1 para desacelerar o crescimento enquanto construímos.
+[tutorial part2 message 9]
+A colônia precisa de mais lugares para comer. Construa outra Taverna ao norte da primeira.
+[tutorial part2 message 10]
+Designe trabalhadores livres ao novo canteiro. Ele precisa só de 3 unidades de madeira; mais de 3 construtores ajudarão pouco.
+[tutorial part2 message 11]
+A Taverna pronta volta à meta de funcionamento, normalmente 1 trabalhador. As metas de construção e abastecimento são separadas.
+[tutorial part2 message 12]
+Trabalhadores aprendem a correr mais rápido na Pista de corrida.
+[tutorial part2 message 13]
+Encontre a Pista de corrida nos controles de construção. No computador, passe o ponteiro sobre o ícone para ver descrição e custo. Na tela de toque, selecione-a em Construir. Ainda não a coloque.
+[tutorial part2 message 14]
+A Pista de corrida exige muita madeira e um pouco de pedra. Escolha um local central e acessível.
+[tutorial part2 message 15]
+Construa uma Pista de corrida, por exemplo ao sul da Colmeia. Deixe espaço ao redor para futuras ampliações.
+[tutorial part2 message 16]
+Designe entre 5 e 7 trabalhadores ao canteiro da Pista. Ela precisa de 7 materiais no total.
+[tutorial part2 message 17]
+A Pista pronta treina unidades sem precisar de entregas contínuas de materiais ou trigo.
+[tutorial part2 message 18]
+Glóbulos entram na Pista de corrida. Ao terminar o treinamento, correrão mais rápido.
+[tutorial part2 message 19]
+Selecione a Pista para acompanhar o treinamento. Os indicadores mostram quanto falta para as unidades terminarem.
+[tutorial part2 message 20]
+Os trabalhadores treinados entregam recursos mais rápido. Continue acompanhando os estoques de comida e mantenha Tavernas suficientes abastecidas.
+[tutorial part2 message 21]
+Encontre o contador de trabalhadores na interface. O total indica a população; a disponibilidade revela trabalhadores livres ou vagas não preenchidas. Evite designar mais trabalho do que a colônia pode atender.
+[tutorial part2 message 22]
+A interface também mostra exploradores e guerreiros. Consulte os contadores ao planejar produção ou designações a bandeiras.
+[tutorial part2 message 23]
+Você tem 2 Tavernas básicas, com 4 lugares cada: 8 ao todo. Mais de 8 unidades podem ficar com fome, então reserve capacidade para as filas.
+[tutorial part2 message 24]
+Duas Tavernas não bastarão para sempre. Amplie a capacidade antes que a escassez cause fome.
+[tutorial part2 message 25]
+Construa mais 3 Tavernas perto do trigo. Trabalhadores famintos param de trabalhar e podem morrer. Use trabalhadores livres sem descuidar do abastecimento existente.
+[tutorial part2 message 26]
+Termine mais 3 Tavernas, chegando a 5 no total.
+[tutorial part2 message 27]
+As novas Tavernas adotam suas metas de funcionamento, normalmente 1 trabalhador cada. Confira fornecedores e estoques de trigo.
+[tutorial part2 message 28]
+A Pista melhora o deslocamento em terra. Agora vamos aprender a nadar.
+[tutorial part2 message 29]
+A Piscina ensina unidades a nadar e exige madeira. Construa uma na grande clareira a nordeste da base, ao norte da pedra. Deixe espaço para melhorias e crescimento dos recursos e designe trabalhadores livres.
+[tutorial part2 message 30]
+A Piscina ensina unidades a nadar e exige madeira. Construa uma na grande clareira a nordeste da base, ao norte da pedra. Deixe espaço para melhorias e crescimento dos recursos e designe trabalhadores livres.
+[tutorial part2 message 31]
+A Piscina está pronta. Os glóbulos podem aprender a nadar nela.
+[tutorial part2 message 32]
+Selecione a Piscina para acompanhar o treinamento. Uma Piscina básica treina 2 glóbulos por vez, assim como uma Pista básica.
+[tutorial part2 message 33]
+Os glóbulos treinados sabem nadar. Em breve terão uma tarefa que exige atravessar água.
+[tutorial part2 message 34]
+Ainda há mais a aprender. Se precisar de uma pausa, salve o progresso pelo menu do jogo.
+[tutorial part2 message 35]
+Sua colônia tem comida e treinamento físico. Uma Escola ensinará aos trabalhadores as habilidades necessárias para edifícios melhores.
+[tutorial part2 message 36]
+A Escola melhora a coleta e a construção. Sua obra exige algas, que crescem na água. Trabalhadores que sabem nadar podem coletá-las.
+[tutorial part2 message 37]
+Proteja os edifícios de treinamento. A Escola não precisa ficar junto à água; um local protegido no interior é mais seguro.
+[tutorial part2 message 38]
+Construa a Escola em um local protegido, atrás da Piscina ou a sudoeste da Colmeia junto à Pista. Designe trabalhadores disponíveis.
+[tutorial part2 message 39]
+Selecione um edifício para ver seus trabalhadores. No computador, a ação configurável de mostrar trajetos liga unidades a seus destinos. Consulte o atalho atual em Ajustes, Controles do jogo. Espere a Escola ficar pronta.
+[tutorial part3 message 1]
+Sua colônia tem Tavernas, Hospital, Pista, Piscina e Escola. Agora vamos preparar as defesas.
+[tutorial part3 message 2]
+Ainda não produzimos guerreiros. Sem eles, a colônia tem pouca proteção contra ataques.
+[tutorial part3 message 3]
+Selecione a Colmeia e defina a proporção de guerreiros como 2. Mantenha trabalhadores em 1 para continuar produzindo-os.
+[tutorial part3 message 4]
+A Colmeia produzirá cerca de 2 guerreiros por trabalhador. Designe mais fornecedores para acelerar a produção.
+[tutorial part3 message 5]
+Seu primeiro guerreiro está pronto e começará a treinar. Espere o segundo antes de continuar.
+[tutorial part3 message 6]
+Guerreiros também usam a Pista e a Piscina. Além disso, treinam ataques no Quartel.
+[tutorial part3 message 7]
+O Quartel melhora força e velocidade de ataque: dano por golpe e frequência de golpes. Guerreiros bem treinados podem vencer grupos sem treinamento muito maiores.
+[tutorial part3 message 8]
+Construa um Quartel perto da madeira necessária à construção.
+[tutorial part3 message 9]
+Designe trabalhadores disponíveis ao canteiro do Quartel. Preserve o abastecimento de comida e evite criar vagas demais.
+[tutorial part3 message 10]
+O Quartel está pronto. Os guerreiros podem treinar seus ataques lá.
+[tutorial part3 message 11]
+Melhorar edifícios também fortalece a colônia.
+[tutorial part3 message 12]
+Trabalhadores formados na Escola podem construir melhorias. Selecione um edifício adequado e escolha Melhorar. Se estiver danificado, talvez precise de reparo antes.
+[tutorial part3 message 13]
+O que melhorar primeiro? As Tavernas ainda têm vagas e podem esperar.
+[tutorial part3 message 14]
+O Hospital também tem espaço. Podemos focar na Escola, Pista, Piscina ou Quartel.
+[tutorial part3 message 15]
+Melhore a Pista primeiro para ensinar as unidades a correr ainda mais rápido.
+[tutorial part3 message 16]
+Selecione a Pista e escolha Melhorar. As unidades dentro precisam sair antes da obra, então a mudança pode demorar um pouco.
+[tutorial part3 message 17]
+Designe trabalhadores disponíveis à melhoria da Pista. Só quem tem a formação escolar necessária trabalha em obras de nível 2.
+[tutorial part3 message 18]
+Espere a melhoria terminar. Edifícios avançados exigem mais recursos e tempo.
+[tutorial part3 message 19]
+A Pista de nível 2 está pronta e ocupa mais terreno. Por isso deixamos espaço: sem área para ampliar, não se pode melhorar.
+[tutorial part3 message 20]
+Agora melhore o Quartel e a Piscina para o nível 2. Continuaremos quando ambos estiverem prontos.
+[tutorial part3 message 21]
+Edifícios melhorados costumam atender mais glóbulos ou oferecer treinamento melhor. Uma Taverna de nível 2 tem 7 lugares e alimenta mais rápido.
+[tutorial part3 message 22]
+O inimigo está perto. Vamos nos preparar para um ataque.
+[tutorial part3 message 23]
+Torres de defesa atiram em inimigos ao alcance. Muros protegem as Torres. Vamos combinar ambos em uma passagem estreita.
+[tutorial part3 message 24]
+Coloque Torres em pares se houver espaço. Muros podem proteger três lados, mas deixe acesso para trabalhadores entregarem munição de pedra.
+[tutorial part3 message 25]
+A leste da Piscina, ao norte das outras árvores frutíferas, há uma passagem estreita para outra ilha. Defenda esse local.
+[tutorial part3 message 26]
+Planeje 2 Torres entre as árvores e a praia. Deixe acesso atrás para pedra e espaço nos outros lados para Muros. Não bloqueie os trabalhadores.
+[tutorial part3 message 27]
+Construa 2 Torres ali. Designe 2 ou 3 trabalhadores a cada obra, conforme a disponibilidade indicada.
+[tutorial part3 message 28]
+Coloque Muros nos três lados externos das Torres. Deixe aberto o lado voltado à colônia.
+[tutorial part3 message 29]
+Cada trecho de Muro cria uma tarefa e precisa de 1 pedra. Se faltarem trabalhadores, eles podem concluir os trechos em sequência.
+[tutorial part3 message 30]
+Espere as duas Torres e vários Muros ficarem prontos. As Torres precisam de munição de pedra; a pedreira distante atrasa as entregas. Aumente as metas se houver trabalhadores livres.
+[tutorial part4 message 1]
+Sua colônia tem comida, treinamento e defesas. Os edifícios podem chegar ao nível 3 para aumentar capacidade e treinamento. Continue melhorando conforme os recursos e as habilidades permitirem.
+[tutorial part4 message 2]
+Procure a colônia inimiga a noroeste da sua base. Mova a visão para lá.
+[tutorial part4 message 3]
+A névoa de guerra pode ocultar terreno explorado. Um explorador próximo revelará a atividade atual do inimigo.
+[tutorial part4 message 4]
+Abra Bandeiras. Bandeiras e zonas dirigem as unidades sem controlar cada glóbulo individualmente.
+[tutorial part4 message 5]
+Escolha a Bandeira de exploração, com símbolo de pipa. Ela pode ser colocada sobre terra, água, recursos e terreno inexplorado.
+[tutorial part4 message 6]
+Coloque-a onde suspeita estar a base inimiga. Uma posição aproximada basta. Saia da colocação com um clique direito ou os controles de toque.
+[tutorial part4 message 7]
+O contorno mostra o raio da bandeira. Um explorador designado investigará a área. Se nenhum chegar, confira a quantidade e produza outro na Colmeia se necessário. Pressione Espaço ou toque em OK quando ele chegar.
+[tutorial part4 message 8]
+O inimigo tem muitos trabalhadores e um exército reunido. Vamos preparar as defesas.
+[tutorial part4 message 9]
+Abra Bandeiras e escolha a Área de guarda azul. Use o modo de adicionar terreno, não de remover. Na tela de toque, escolha Pintar em vez de Apagar.
+[tutorial part4 message 10]
+Escolha formato e tamanho do pincel. O quadrado grande serve para criar uma defesa compacta.
+[tutorial part4 message 11]
+Pinte uma Área de guarda atrás das Torres, na rota provável do inimigo. Clique ou toque para um ponto, ou arraste para cobrir mais terreno. Na tela de toque, use Deslocar para deslocar a visão enquanto pinta.
+[tutorial part4 message 12]
+Os guerreiros disponíveis ocuparão a zona. Deixe espaço suficiente, mas mantenha os defensores concentrados na passagem. Espere o ataque.
+[tutorial part4 message 13]
+O inimigo está se aproximando da passagem!
+[tutorial part4 message 14]
+Estamos sob ataque. Observe como os guerreiros treinados e as Torres defendem a posição.
+[tutorial part4 message 15]
+Você sobreviveu! Abra Bandeiras e escolha a Bandeira de guerra com pontas. Coloque-a sobre a Colmeia inimiga para direcionar o ataque.
+[tutorial part4 message 16]
+Saia da colocação e selecione a Bandeira de guerra. Designe mais de 1 guerreiro e reduza o raio para concentrar o ataque na Colmeia. Espere a chegada deles.
+[tutorial part4 message 17]
+O ataque começou. Seus guerreiros precisam passar pelas Torres inimigas para chegar à Colmeia.
+[tutorial part4 message 18]
+Seus guerreiros chegaram à base inimiga. Mantenha o ataque concentrado na Colmeia.
+[tutorial part4 message 19]
+Você destruiu a Colmeia inimiga! Concluiu o tutorial e aprendeu as bases de alimentação, designação, treinamento, melhorias, exploração e combate.
+[tutorial mission basics]
+Introdução e conceitos básicos
+[tutorial mission development]
+Edifícios e escolas
+[tutorial mission training]
+Guerreiros, treinamento e melhorias
+[tutorial mission flags]
+Bandeiras e conclusão
+[library  Could not restore the previous library: %0]
+ Não foi possível restaurar a biblioteca anterior: %0
+[library  The previous library is retained.]
+ A biblioteca anterior será mantida.
+[library  · Installed]
+ · Instalado
+[library  · Update available]
+ · Atualização disponível
+[library A different release is installed. Install the selected release to update explicitly.]
+Outra versão está instalada. Instale a versão selecionada para atualizar explicitamente.
+[library All engines]
+Todos os motores
+[library All generators]
+Todos os geradores
+[library Available families]
+Famílias disponíveis
+[library Back]
+Voltar
+[library Building families]
+Famílias de edifícios
+[library Building library]
+Biblioteca de edifícios
+[library Checking building release]
+Verificando versão do edifício
+[library Choose an online instance before opening a family link.]
+Escolha uma instância online antes de abrir um link de família.
+[library Compatible with this engine]
+Compatível com este motor
+[library Confirm replacement]
+Confirmar substituição
+[library Create in Building Studio]
+Criar no Building Studio
+[library Downloading generator…]
+Baixando gerador…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Cada paisagem aparece como um mapa real com o tamanho e o número de colônias ajustáveis abaixo. Use uma para jogar no mapa mostrado.
+[library Editor tool: generates terrain for the map editor.]
+Ferramenta do editor: gera terreno para o editor de mapas.
+[library Editor tools]
+Ferramentas do editor
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Ative as famílias instaladas abaixo. A seleção fica neste perfil local; mapas e partidas existentes mantêm seus edifícios. Para jogar online, gere um mapa com essas famílias, publique-o na biblioteca de mapas e selecione-o na sua sala.
+[library Enter a building family ID or a link to its family page.]
+Digite o identificador de uma família de edifícios ou o link da página dela.
+[library Family link or ID]
+Link ou identificador da família
+[library Family links must be at most 1024 characters.]
+Links de família devem ter no máximo 1024 caracteres.
+[library Family removed.]
+Família removida.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Família indisponível. Para famílias privadas, entre pela seção Online com uma conta que tenha acesso.
+[library Generator file hash mismatch]
+O hash do arquivo do gerador não confere
+[library Generator installed. Future selections use this release.]
+Gerador instalado. As próximas seleções usarão esta versão.
+[library Generator package identity mismatch]
+A identidade do pacote do gerador não confere
+[library Generators]
+Geradores
+[library Install compatible release]
+Instalar versão compatível
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Instale edifícios individuais ou famílias de melhorias junto aos edifícios originais. A seleção só se aplica a mapas recém-gerados.
+[library Install selected release]
+Instalar versão selecionada
+[library Installed]
+Instalado
+[library Installed families]
+Famílias instaladas
+[library Installed. Enable the family below for new maps.]
+Instalado. Ative a família abaixo para mapas novos.
+[library Invalid building family ID.]
+Identificador de família de edifícios inválido.
+[library Invalid building library response]
+Resposta inválida da biblioteca de edifícios
+[library Invalid library cursor]
+Cursor de biblioteca inválido
+[library Invalid release identity]
+Identidade de versão inválida
+[library Load more]
+Carregar mais
+[library Load more families]
+Carregar mais famílias
+[library Loading building families]
+Carregando famílias de edifícios
+[library Loading…]
+Carregando…
+[library Map generators]
+Geradores de mapas
+[library Maps]
+Mapas
+[library Most downloaded]
+Mais baixados
+[library Most liked]
+Mais curtidos
+[library My generators]
+Meus geradores
+[library Newest]
+Mais recentes
+[library No building families installed.]
+Nenhuma família de edifícios instalada.
+[library No public building families yet]
+Ainda não há famílias de edifícios públicas
+[library No validated release for this game version.]
+Nenhuma versão validada para esta versão do jogo.
+[library Online server changed during download]
+O servidor online mudou durante o download
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Abra uma família não listada pelo link ou identificador. Para famílias privadas, entre primeiro pela seção Online.
+[library Open family]
+Abrir família
+[library Opened family. Install its compatible release below.]
+Família aberta. Instale a versão compatível abaixo.
+[library Opening building family]
+Abrindo família de edifícios
+[library Playable]
+Jogável
+[library Playable generator]
+Gerador jogável
+[library Privacy policy]
+Política de privacidade
+[library Public library]
+Biblioteca pública
+[library Recently updated]
+Atualizados recentemente
+[library Refresh library]
+Atualizar biblioteca
+[library Release identity changed during installation]
+A identidade da versão mudou durante a instalação
+[library Reroll]
+Gerar novamente
+[library Reroll seed]
+Sortear semente
+[library Saving generator library…]
+Salvando biblioteca de geradores…
+[library Search]
+Pesquisar
+[library Seed]
+Semente
+[library Selection saved for new maps.]
+Seleção salva para mapas novos.
+[library Storage failed.]
+Falha ao salvar.
+[library Storage persistence unavailable]
+Armazenamento persistente indisponível
+[library Tags]
+Etiquetas
+[library Technical checks passed for this engine. Balance is not certified.]
+Verificações técnicas aprovadas para este motor. O equilíbrio do jogo não é certificado.
+[library The server returned a different family.]
+O servidor retornou outra família.
+[library This link is from another instance. Switch to that instance in Online first.]
+Este link é de outra instância. Mude primeiro para essa instância na seção Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Este identificador de pacote está instalado. Confirme a substituição para usar a versão selecionada.
+[library This release has no passing checks for this engine.]
+Esta versão não tem verificações aprovadas para este motor.
+[library This release is installed.]
+Esta versão está instalada.
+[library Update installed family]
+Atualizar família instalada
+[library Use in a room]
+Usar em uma sala
+[library By %0]
+Por %0
+[library Installed release %0]
+Versão instalada %0
+[library Release %0]
+Versão %0
+[library Remove %0]
+Remover %0
+[library Seed: %0]
+Semente: %0
+[library %0 · revision %1]
+%0 · revisão %1
+[library Fit]
+Ajustar
+[library GL only]
+Só GL

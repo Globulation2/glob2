@@ -6,34 +6,6 @@ Prohlížeč se neotevřel. Pokračujte otevřením přihlašovací stránky.
 Pokud vás stránka vyzve, ověřte, že zobrazuje %0.
 [hub code copied]
 Kód zkopírován
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Dokončete akci v prohlížeči. Hra bude automaticky pokračovat.
 [music set]
@@ -6039,96 +6011,622 @@ Pravidla scénáře rozhodla o výsledku.
 [outcome reason probability]
 Prahová hodnota pravděpodobnosti vítězství byla dosažena.
 [Discord community]
-
+Komunita na Discordu
 [Globulation 2 Discord]
-
+Discord hry Globulation 2
 [discord community intro]
-
+Najděte soupeře, požádejte o pomoc a sdílejte své mapy s komunitou hry Globulation 2.
 [discord opens externally]
-
+Připojte se k našemu serveru na Discordu. Otevře se Discord nebo váš prohlížeč.
 [Join Discord]
-
+Připojit se na Discord
 [Copy link]
-
+Kopírovat odkaz
 [discord opened]
-
+Discord byl otevřen. Ke hře se můžete kdykoli vrátit.
 [discord open failed]
-
+Discord se nepodařilo otevřít. Zkopírujte odkaz s pozvánkou a otevřete jej v prohlížeči.
 [discord link copied]
-
+Odkaz s pozvánkou byl zkopírován.
 [settings CPU automatic]
-
+CPU automaticky
 [settings Scalar]
-
+Skalární
 [settings Unavailable]
-
+Nedostupné
 [settings Initializing]
-
+Inicializace
 [settings Gradient backend]
-
+Výpočetní rozhraní gradientů
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Použije se v příštím synchronizačním bodě simulace. Nepodporované výpočty používají automatický režim CPU; vykreslování je nezávislé.
 [settings Gradient algorithm]
-
+Algoritmus gradientů
 [settings All choices compute the same exact field.]
-
+Všechny možnosti vypočítávají přesně stejné pole.
 [settings Bucket propagation]
-
+Šíření pomocí přihrádek
 [settings Verify gradient results]
-
+Ověřovat výsledky gradientů
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Před zpřístupněním porovnat výsledky GPU se skalárním výpočtem CPU. Přidává výpočty a při neshodě zastaví hru.
 [settings Gradient computation]
-
+Výpočet gradientů
 [settings CPU fallback]
-
+Náhradní výpočet CPU
 [settings GPU fields]
-
+Pole na GPU
 [settings CPU fallbacks]
-
+Náhradní výpočty CPU
 [settings MCP server]
-
+Server MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Zapnutí serveru MCP umožní místním klientům sledovat a ovládat hru.
 [settings Enable MCP server]
-
+Zapnout server MCP
 [settings Port]
-
+Port
 [settings Current controller: %0]
-
+Aktuální ovládající klient: %0
 [settings Copy endpoint]
-
+Kopírovat adresu připojení
 [settings Retry listener]
-
+Znovu spustit naslouchání
 [settings Revoke control]
-
+Odebrat ovládání
 [settings MCP server unavailable in this application]
-
+Server MCP není v této aplikaci dostupný
 [settings Disabled]
-
+Vypnuto
 [settings Running]
-
+Běží
 [settings Error: %0]
-
+Chyba: %0
 [settings None]
-
+Žádný
 [settings Starting]
-
+Spouštění
 [Which hand holds your phone?]
-
+Levá, nebo pravá ruka?
 [hand preference explanation]
-
+Držte telefon přirozeně. Klepněte na ruku, kterou hrajete.
 [hand silhouettes description]
-
+Obrys telefonu s levou a pravou rukou nahoře. Stisknutím jedné ze zkosených ploch pro palec vyberete danou stranu.
 [hand preference change later]
-
+Stranu můžete později změnit v nastavení.
 [hand preference save failed]
-
+Vaši volbu se nepodařilo uložit. Zkuste to znovu.
 [Left hand]
-
+Levá ruka
 [Right hand]
-
+Pravá ruka
 [discord copy failed]
-
+Odkaz se nepodařilo zkopírovat. Vyberte pozvánku nahoře a zkopírujte ji ručně.
 [Destroy this building?]
 Zničit tuto budovu?
+[stat ground movement]
+Pohyb po zemi
+[stat ground movement about]
+Živé pozemní jednotky podle přibližného poměru rychlostí. „Plavání 2×“ znamená plavání dvakrát rychlejší než běh. Létající a nehybné jednotky nejsou zahrnuty.
+[stat view by movement]
+Podle pohybu
+[stat band land only]
+Pouze souš
+[stat band swim twice run]
+Plavání 2×
+[stat band swim faster run]
+Plavání 1,4×
+[stat band swim equals run]
+Stejné
+[stat band run faster swim]
+Běh 1,3×
+[stat band run twice swim]
+Běh 2×
+[stat band run triple swim]
+Běh 3×
+[stat band water only]
+Pouze voda
+[settings Browse shared generators]
+Procházet sdílené generátory
+[settings Apply artwork on the next game or editor load.]
+Použít grafiku při příštím načtení hry nebo editoru.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Vyžaduje vykreslovač s filtrováním textur. Uložená volba zůstane zachována.
+[settings Automatically show the torus overview while moving around the map.]
+Při pohybu po mapě automaticky zobrazovat přehled toru.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Vyžaduje vykreslovač s podporou toru. Uložená volba zůstane zachována.
+[settings Move and animate units between game ticks.]
+Pohybovat a animovat jednotky mezi kroky simulace.
+[settings Renderer unavailable]
+Vykreslovač není dostupný
+[settings Apply at the next completed frame. Your game stays running.]
+Použít po dokončení příštího snímku. Hra bude dál běžet.
+[settings Active renderer: %0]
+Aktivní vykreslovač: %0
+[settings Changing renderer…]
+Změna vykreslovače…
+[settings Menu scroll wheel enabled]
+Zapnout kolečko myši v nabídkách
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Ovládá posouvání kolečkem v nabídkách. Na mapách ve hře a editoru kolečko vždy ovládá přiblížení.
+[settings Gesture scrolling]
+Posouvání gesty
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Posouvání dotykem a gesty na Macu. 0 vypíná efekt; 50 je výchozí hodnota pro dotyk.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Jak daleko se seznamy a panely posunují po rychlém přejetí prstem. Gesta na Macu používají systémovou setrvačnost; nula vypne jejich dojezd.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Jak moc se seznamy a panely natáhnou za okraje a vrátí zpět. Gesta na Macu používají jemnější natažení.
+[hive stopping]
+Zastavování…
+[hive stopped]
+Zastaveno
+[hive stop failed]
+Zastavení selhalo; zkuste znovu zkratku pro zastavení
+[hive updating]
+Aktualizace…
+[hive requested]
+Vyžádáno
+[hive update failed]
+Aktualizace selhala; zkuste to znovu
+[hive give order]
+Zadat rozkaz
+[hive less]
+Méně
+[hive reports and details]
+Hlášení / podrobnosti
+[hive needs fresh order]
+Potřebuje nový rozkaz
+[hive active]
+Aktivní
+[hive resume]
+Pokračovat
+[recordings]
+Nahrávky
+[recording delete confirm]
+Smazat nahrávku?
+[recording delete warning]
+Nahrávka a její metadata budou odstraněny.
+[recording delete]
+Smazat
+[recording working]
+Zpracovávání…
+[recording none]
+Zatím žádné nahrávky.
+[recording interrupted]
+Přerušená nahrávka
+[recording recover]
+Obnovit
+[recording export video]
+Exportovat video
+[recording export metadata]
+Exportovat metadata
+[recording export events]
+Exportovat události
+[recording export failed]
+Nahrávku se nepodařilo exportovat.
+[recording delete action]
+Smazat nahrávku
+[recording refresh]
+Obnovit seznam
+[library Fit]
+Přizp.
+[library GL only]
+Pouze GL
+[tutorial part1 message 1]
+Vítejte v Globulation 2! Čtyři mise vás naučí spravovat kolonii. Postup uložte v herní nabídce a později jej načtěte z hlavní nabídky. Pokračujte mezerníkem nebo klepnutím na OK. Starší zprávy najdete v historii zpráv.
+[tutorial part1 message 2]
+Začínáte s Úlem a jedním dělníkem. Podívejme se, jak spolupracují.
+[tutorial part1 message 3]
+Dělník sklízí obilí a nosí je do Úlu. Úl obilí spotřebovává na tvorbu nových jednotek a je pro kolonii zásadní.
+[tutorial part1 message 4]
+Vyberte svou globuli, pohyblivou jednotku, levým kliknutím nebo klepnutím.
+[tutorial part1 message 5]
+Informace o jednotce ukazují klesající zásobu jídla: globule dostává hlad. Jsou-li ukazatele jídla zobrazeny, modrý proužek pod jednotkou značí zbývající zásobu.
+[tutorial part1 message 6]
+Globule jedí v Hospodách. Zrušte výběr pravým kliknutím nebo klepnutím na prázdné místo na dotykové obrazovce.
+[tutorial part1 message 7]
+Otevřete ovládání stavby, vyberte Hospodu a umístěte ji blízko obilí. Pokud je nevidíte, sledujte cestu dělníka. Na dotykové obrazovce použijte Stavba a potvrďte platné místo. Režim umisťování ukončete pravým kliknutím nebo dotykovým tlačítkem Zrušit.
+[tutorial part1 message 8]
+Dobře! Staveniště Hospody je umístěno.
+[tutorial part1 message 9]
+Dělník z Úlu může Hospodu postavit. Sklidí dřevo z okolních stromů a donese je na staveniště. Počkejte na dokončení.
+[tutorial part1 message 10]
+Hotová Hospoda potřebuje obilí. Přidělený dělník je sklízí stejně jako pro Úl.
+[tutorial part1 message 11]
+Žlutý ukazatel Hospody roste s dodávkami obilí. Zobrazuje jeho zásobu.
+[tutorial part1 message 12]
+Teď se naučíme přidělovat práci.
+[tutorial part1 message 13]
+Jeden dělník zásobuje Úl, druhý Hospodu. Oba mohou práci přerušit kvůli jídlu. To je normální.
+[tutorial part1 message 14]
+Vyberte Úl a najděte přidělování dělníků. Na počítači má popisek Pracují; na dotykové obrazovce použijte přidělené dělníky a cílový počet. Cíl určuje požadovaný počet dělníků u budovy.
+[tutorial part1 message 15]
+Nastavte cílový počet dělníků Úlu na 0. Potom vyberte Hospodu a nastavte jej také na 0.
+[tutorial part1 message 16]
+Dělníci jsou nečinní, ale stále potřebují jídlo. Hospodě bez přidělených dělníků časem dojde obilí.
+[tutorial part1 message 17]
+Globule bez jídla ztrácí zdraví a může zemřít. Nemocnice léčí zranění, ale zároveň musíte zásobovat Hospody.
+[tutorial part1 message 18]
+Postavte Nemocnici. Obilí nepotřebuje, takže ji umístěte blízko dřeva nebo doprostřed kolonie poblíž Úlu.
+[tutorial part1 message 19]
+Vyberte staveniště Nemocnice a nastavte cíl na 2 dělníky. Dva dělníci ji dokončí rychleji.
+[tutorial part1 message 20]
+Nemocnice je hotová. Zraněné globule se v ní mohou uzdravit.
+[tutorial part1 message 21]
+Černé oblasti nejsou prozkoumané. Jednotky odhalují okolní terén při pohybu. Dělníci sledují své úkoly; k průzkumu se lépe hodí průzkumníci.
+[tutorial part1 message 22]
+Vyberte Úl a najděte poměry tvorby dělníků, průzkumníků a válečníků. Zvyšte poměr průzkumníků na 1.
+[tutorial part1 message 23]
+Při poměrech dělníků i průzkumníků 1 vytváří Úl dlouhodobě stejné počty obou. Nastavte dělníky na 0, aby zatím vznikali jen průzkumníci.
+[tutorial part1 message 24]
+Vraťte cílový počet dělníků Úlu na 1, aby mu někdo nosil obilí.
+[tutorial part1 message 25]
+Vyberte Hospodu a nastavte její cíl také na 1 dělníka. Rostoucí kolonie potřebuje pravidelné jídlo.
+[tutorial part1 message 26]
+Počkejte, až Úl vytvoří průzkumníka.
+[tutorial part1 message 27]
+Průzkumník létá kolem kolonie a odhaluje terén. Nechte Úl vytvořit druhého, než budete pokračovat.
+[tutorial part1 message 28]
+Vyberte Úl. Nastavte poměr průzkumníků na 0 a dělníků na 1, aby znovu vznikali dělníci.
+[tutorial part2 message 1]
+Východně od základny je kámen. Zapamatujte si místo, později ho využijete.
+[tutorial part2 message 2]
+Stromy jižně od kamene jsou pomerančovníky. Vyberte je pro informace o zdrojích. K ovoci se vrátíme později; nyní se soustřeďte na Úl.
+[tutorial part2 message 3]
+Nastavte Úl pouze na dělníky: dělníci 1, průzkumníci a válečníci 0.
+[tutorial part2 message 4]
+Urychleme růst. Nastavte cílový počet dělníků Úlu na 6. Noví dělníci postupně obsadí volná místa.
+[tutorial part2 message 5]
+Další úkoly začnou při 8 dělnících. Zatím udržujte zásobování Úlu a Hospody.
+[tutorial part2 message 6]
+Úl nyní zásobuje několik dělníků. Více obilí umožňuje rychlejší tvorbu jednotek.
+[tutorial part2 message 7]
+Nový dělník stojí 5 obilí. Doprava ze vzdáleného pole trvá, takže Úl často potřebuje více zásobovačů než Hospoda. Budovy závislé na obilí stavte pokud možno u polí.
+[tutorial part2 message 8]
+Máte nejméně 8 dělníků. Snižte cílový počet Úlu na 1, aby se během stavění zpomalil růst populace.
+[tutorial part2 message 9]
+Kolonie potřebuje více míst k jídlu. Postavte druhou Hospodu severně od první.
+[tutorial part2 message 10]
+Přidělte volné dělníky na nové staveniště. Potřebuje jen 3 dřeva, takže více než 3 stavitelé příliš nepomohou.
+[tutorial part2 message 11]
+Hotová Hospoda přejde na provozní cílový počet, obvykle 1 dělníka. Stavba a běžné zásobování mají oddělené cíle.
+[tutorial part2 message 12]
+Dělníci se mohou naučit běhat rychleji na Závodní dráze.
+[tutorial part2 message 13]
+Najděte Závodní dráhu v ovládání stavby. Na počítači ukažte na ikonu pro popis a cenu. Na dotykové obrazovce ji vyberte ve Stavbě. Ještě ji neumisťujte.
+[tutorial part2 message 14]
+Závodní dráha potřebuje hodně dřeva a trochu kamene. Vyberte centrální a snadno dostupné místo.
+[tutorial part2 message 15]
+Postavte Závodní dráhu, třeba jižně od Úlu. Nechte kolem ní volno pro budoucí rozšíření.
+[tutorial part2 message 16]
+Nastavte staveništi dráhy cíl 5 až 7 dělníků. Potřebuje celkem 7 stavebních materiálů.
+[tutorial part2 message 17]
+Hotová Závodní dráha cvičí jednotky bez průběžných dodávek stavebních materiálů nebo obilí.
+[tutorial part2 message 18]
+Globule vstupují na Závodní dráhu. Po výcviku budou běhat rychleji.
+[tutorial part2 message 19]
+Vyberte Závodní dráhu a sledujte výcvik. Ukazatele zobrazují, jak blízko jsou jednotky uvnitř k dokončení.
+[tutorial part2 message 20]
+Vycvičení dělníci dodávají zdroje rychleji. Dál sledujte zásoby jídla a udržujte dostatečný počet zásobených Hospod.
+[tutorial part2 message 21]
+Najděte počítadlo dělníků v herním rozhraní. Celkový počet značí populaci; dostupnost ukazuje volné dělníky nebo neobsazenou práci. Nepřidělujte více úkolů, než kolonie zvládne.
+[tutorial part2 message 22]
+Rozhraní ukazuje také průzkumníky a válečníky. Kontrolujte počty při plánování výroby a přidělování k praporům.
+[tutorial part2 message 23]
+Máte 2 základní Hospody, každou se 4 místy, celkem tedy 8. Hlad může dostat více než 8 jednotek; počítejte i s frontami.
+[tutorial part2 message 24]
+Dvě Hospody rostoucí kolonii nevystačí navždy. Zvětšete kapacitu dřív, než nedostatek přeroste v hladomor.
+[tutorial part2 message 25]
+Postavte další 3 Hospody u obilí. Hladoví dělníci přestanou pracovat a při dlouhém hladovění zemřou. Využijte volné dělníky, ale zachovejte zásobování jídlem.
+[tutorial part2 message 26]
+Dokončete další 3 Hospody, abyste jich měli celkem 5.
+[tutorial part2 message 27]
+Nové Hospody po stavbě používají provozní cíle, obvykle po 1 dělníkovi. Zkontrolujte zásobovače a zásoby obilí.
+[tutorial part2 message 28]
+Závodní dráha zlepšila pohyb po souši. Nyní se naučíme plavat.
+[tutorial part2 message 29]
+Koupaliště učí jednotky plavat a staví se ze dřeva. Umístěte je na velkou mýtinu severovýchodně od základny, severně od kamene. Nechte prostor na vylepšení a růst zdrojů a přidělte volné dělníky.
+[tutorial part2 message 30]
+Koupaliště učí jednotky plavat a staví se ze dřeva. Umístěte je na velkou mýtinu severovýchodně od základny, severně od kamene. Nechte prostor na vylepšení a růst zdrojů a přidělte volné dělníky.
+[tutorial part2 message 31]
+Koupaliště je hotové. Globule se v něm nyní mohou učit plavat.
+[tutorial part2 message 32]
+Vyberte Koupaliště a sledujte výcvik. Základní Koupaliště cvičí 2 globule současně, stejně jako základní Závodní dráha.
+[tutorial part2 message 33]
+Vycvičené globule už umějí plavat. Brzy dostanou úkol vyžadující překonání vody.
+[tutorial part2 message 34]
+Ještě se máme co učit. Potřebujete-li přestávku, uložte postup v herní nabídce.
+[tutorial part2 message 35]
+Kolonie má jídlo a tělesný výcvik. Škola naučí dělníky dovednosti potřebné pro lepší budovy.
+[tutorial part2 message 36]
+Škola zlepšuje sklizeň a stavění. Její stavba potřebuje řasy rostoucí ve vodě. Dělníci, kteří umějí plavat, je mohou sklízet.
+[tutorial part2 message 37]
+Chraňte důležité výcvikové budovy. Škola nemusí stát u vody; chráněné místo ve vnitrozemí je bezpečnější.
+[tutorial part2 message 38]
+Postavte Školu chráněně, třeba za Koupalištěm nebo jihozápadně od Úlu vedle Závodní dráhy. Přidělte dostupné dělníky.
+[tutorial part2 message 39]
+Vyberte budovu a uvidíte její dělníky. Na počítači lze nastavit akci pro zobrazení tras jednotek k cílům; aktuální zkratku najdete v Nastavení, Ovládání hry. Počkejte na dokončení Školy.
+[tutorial part3 message 1]
+Kolonie má Hospody, Nemocnici, Závodní dráhu, Koupaliště a Školu. Je čas připravit obranu.
+[tutorial part3 message 2]
+Ještě jsme nevytvořili válečníky. Bez nich je kolonie proti útoku málo chráněná.
+[tutorial part3 message 3]
+Vyberte Úl a nastavte poměr válečníků na 2. Dělníky nechte na 1, aby nadále vznikali.
+[tutorial part3 message 4]
+Úl vytvoří přibližně 2 válečníky na každého dělníka. Více zásobujících dělníků může tvorbu urychlit.
+[tutorial part3 message 5]
+První válečník je připraven a začne cvičit. Než budete pokračovat, počkejte na druhého.
+[tutorial part3 message 6]
+Válečníci také používají dráhu a Koupaliště. Útok se učí na Cvičišti.
+[tutorial part3 message 7]
+Cvičiště zlepšuje sílu a rychlost útoku: poškození jedním úderem a četnost úderů. Dobře vycvičení válečníci mohou porazit mnohem početnější nevycvičené skupiny.
+[tutorial part3 message 8]
+Postavte Cvičiště poblíž dřeva potřebného na stavbu.
+[tutorial part3 message 9]
+Přidělte dostupné dělníky na Cvičiště. Zachovejte dost zásobovačů jídla a nevytvářejte příliš mnoho práce.
+[tutorial part3 message 10]
+Cvičiště je hotové. Válečníci se na něm mohou učit útočit.
+[tutorial part3 message 11]
+Kolonii posílíme také vylepšováním budov.
+[tutorial part3 message 12]
+Dělníci vyškolení ve Škole umějí stavět vylepšení. Vyberte vhodnou budovu a Vylepšit v jejím ovládání. Poškozenou budovu může být nutné nejprve opravit.
+[tutorial part3 message 13]
+Co vylepšíme první? Hospody mají stále volná místa, takže mohou počkat.
+[tutorial part3 message 14]
+Také Nemocnice má prostor. Zaměřme se na Školu, Závodní dráhu, Koupaliště nebo Cvičiště.
+[tutorial part3 message 15]
+Nejprve vylepšete Závodní dráhu, aby se jednotky naučily pohybovat ještě rychleji.
+[tutorial part3 message 16]
+Vyberte Závodní dráhu a Vylepšit. Jednotky uvnitř musí nejprve odejít, takže práce nemusí začít okamžitě.
+[tutorial part3 message 17]
+Přidělte dostupné dělníky na vylepšení dráhy. Na stavbě úrovně 2 mohou pracovat jen dělníci s potřebným školním výcvikem.
+[tutorial part3 message 18]
+Počkejte na dokončení vylepšení Závodní dráhy. Budovy vyšších úrovní vyžadují více zdrojů a času.
+[tutorial part3 message 19]
+Závodní dráha úrovně 2 je hotová a větší. Proto jsme nechali mezeru: bez prostoru pro rozšíření nelze budovu vylepšit.
+[tutorial part3 message 20]
+Nyní vylepšete Cvičiště a Koupaliště na úroveň 2. Pokračovat budeme po dokončení obou.
+[tutorial part3 message 21]
+Vylepšené budovy obvykle obslouží více globulí nebo nabídnou lepší výcvik. Hospoda úrovně 2 má například 7 míst a krmí rychleji.
+[tutorial part3 message 22]
+Nepřítel je blízko. Připravme se na útok.
+[tutorial part3 message 23]
+Obranné věže střílejí po nepřátelích v dosahu. Hradby je chrání. Využijeme obojí k obraně úzkého přístupu.
+[tutorial part3 message 24]
+Je-li místo, stavte věže v párech. Hradby mohou chránit tři strany; ponechte cestu dělníkům dodávajícím kamennou munici.
+[tutorial part3 message 25]
+Východně od Koupaliště, severně od dalších ovocných stromů, vede úzký přechod na jiný ostrov. Toto místo braňte.
+[tutorial part3 message 26]
+Naplánujte 2 věže mezi stromy a břehem. Nechte za nimi přístup pro kámen a jinde prostor pro hradby. Nezablokujte dělníky.
+[tutorial part3 message 27]
+Postavte tam 2 věže. Přidělte každému staveništi 2 nebo 3 dělníky podle dostupnosti v počítadlech.
+[tutorial part3 message 28]
+Umístěte hradby na tři vnější strany věží. Stranu ke kolonii nechte otevřenou pro dělníky.
+[tutorial part3 message 29]
+Každý díl hradby vytvoří stavební práci a potřebuje 1 kámen. Pokud chybějí dělníci, mohou díly dokončovat postupně.
+[tutorial part3 message 30]
+Počkejte na dokončení obou věží a několika dílů hradeb. Věže potřebují kamennou munici; dodávky ze vzdáleného lomu trvají. Máte-li volné dělníky, zvyšte požadovaný počet dělníků u věží.
+[tutorial part4 message 1]
+Kolonie má jídlo, výcvik a obranu. Budovy mohou dosáhnout úrovně 3, s větší kapacitou a lepším výcvikem. Vylepšujte je podle zdrojů a dovedností dělníků.
+[tutorial part4 message 2]
+Najděte nepřátelskou kolonii severozápadně od základny. Přesuňte tam pohled.
+[tutorial part4 message 3]
+I prozkoumaný terén může zakrývat válečná mlha. Současnou činnost nepřítele odhalí průzkumník v blízkosti.
+[tutorial part4 message 4]
+Otevřete Prapory. Prapory a oblasti směrují jednotky bez ovládání každé globule zvlášť.
+[tutorial part4 message 5]
+Vyberte Průzkumný prapor se symbolem draka. Lze jej umístit nad souš, vodu, zdroje i neprozkoumanou půdu.
+[tutorial part4 message 6]
+Umístěte jej nad předpokládanou nepřátelskou základnu. Přibližná poloha stačí. Ukončete umisťování pravým kliknutím nebo dotykovými ovladači.
+[tutorial part4 message 7]
+Obrys značí pracovní dosah praporu. Přidělený průzkumník oblast prozkoumá. Pokud žádný nepřichází, zkontrolujte počet a případně vytvořte nového v Úlu. Po příchodu stiskněte mezerník nebo OK.
+[tutorial part4 message 8]
+Nepřítel má mnoho dělníků a shromážděnou armádu. Připravme obranu.
+[tutorial part4 message 9]
+Otevřete Prapory a vyberte modrou strážní oblast. Použijte přidávání půdy, ne odebírání. Na dotykové obrazovce zvolte Malovat místo Mazat.
+[tutorial part4 message 10]
+Vyberte tvar a velikost štětce. Velký čtverec se hodí pro kompaktní obranu.
+[tutorial part4 message 11]
+Namalujte strážní oblast za věžemi na pravděpodobné trase nepřítele. Kliknutí či klepnutí maluje bod, tažení větší plochu. Na dotykové obrazovce přesouvejte pohled pomocí Posouvat.
+[tutorial part4 message 12]
+Dostupní válečníci obsadí oblast. Dejte jim prostor, ale držte obránce soustředěné u přechodu. Počkejte na útok.
+[tutorial part4 message 13]
+Nepřítel se blíží k přechodu!
+[tutorial part4 message 14]
+Jsme pod útokem. Sledujte, jak vycvičení válečníci a věže brání pozici.
+[tutorial part4 message 15]
+Přežili jste! Otevřete Prapory a vyberte ostnatý Válečný prapor. Umístěte jej na nepřátelský Úl a naveďte tam útok.
+[tutorial part4 message 16]
+Ukončete umisťování a vyberte Válečný prapor. Přidělte více než 1 válečníka a zmenšete dosah, aby se útok soustředil na Úl. Počkejte na jejich příchod.
+[tutorial part4 message 17]
+Útok začal. Válečníci se musejí dostat kolem nepřátelských věží k Úlu.
+[tutorial part4 message 18]
+Válečníci dosáhli nepřátelské základny. Udržujte útok zaměřený na Úl.
+[tutorial part4 message 19]
+Zničili jste nepřátelský Úl! Dokončili jste výuku a naučili se základy zásobování, přidělování, výcviku, vylepšení, průzkumu a boje.
+[tutorial mission basics]
+Úvod a základy
+[tutorial mission development]
+Budovy a školy
+[tutorial mission training]
+Válečníci, výcvik a vylepšení
+[tutorial mission flags]
+Prapory a dokončení
+[library  Could not restore the previous library: %0]
+ Předchozí knihovnu se nepodařilo obnovit: %0
+[library  The previous library is retained.]
+ Předchozí knihovna zůstává zachována.
+[library  · Installed]
+ · Nainstalováno
+[library  · Update available]
+ · Dostupná aktualizace
+[library A different release is installed. Install the selected release to update explicitly.]
+Je nainstalována jiná verze. Pokud chcete aktualizovat, nainstalujte vybranou verzi.
+[library All engines]
+Všechny enginy
+[library All generators]
+Všechny generátory
+[library Available families]
+Dostupné rodiny
+[library Back]
+Zpět
+[library Building families]
+Rodiny budov
+[library Building library]
+Knihovna budov
+[library Checking building release]
+Kontrola verze budovy
+[library Choose an online instance before opening a family link.]
+Před otevřením odkazu na rodinu vyberte online instanci.
+[library Compatible with this engine]
+Kompatibilní s tímto enginem
+[library Confirm replacement]
+Potvrdit nahrazení
+[library Create in Building Studio]
+Vytvořit v Building Studio
+[library Downloading generator…]
+Stahování generátoru…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Každá krajina se zobrazuje jako skutečná mapa s velikostí a počtem kolonií nastavitelnými níže. Použijte ji pro hru na zobrazené mapě.
+[library Editor tool: generates terrain for the map editor.]
+Nástroj editoru: generuje terén pro editor map.
+[library Editor tools]
+Nástroje editoru
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Níže zapněte nainstalované rodiny. Výběr se ukládá do tohoto místního profilu; existující mapy a uložené hry si zachovají své budovy. Pro online hru vygenerujte mapu s těmito rodinami, zveřejněte ji v knihovně map a vyberte ji ve své místnosti.
+[library Enter a building family ID or a link to its family page.]
+Zadejte ID rodiny budov nebo odkaz na její stránku.
+[library Family link or ID]
+Odkaz nebo ID rodiny
+[library Family links must be at most 1024 characters.]
+Odkazy na rodiny mohou mít nejvýše 1024 znaků.
+[library Family removed.]
+Rodina odstraněna.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Rodina není dostupná. Pro soukromé rodiny se přihlaste přes Online účtem, který k nim má přístup.
+[library Generator file hash mismatch]
+Kontrolní součet souboru generátoru nesouhlasí
+[library Generator installed. Future selections use this release.]
+Generátor nainstalován. Příští výběry použijí tuto verzi.
+[library Generator package identity mismatch]
+Identita balíčku generátoru nesouhlasí
+[library Generators]
+Generátory
+[library Install compatible release]
+Nainstalovat kompatibilní verzi
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Nainstalujte jednotlivé budovy nebo rodiny vylepšení vedle základních budov. Výběr platí jen pro nově vygenerované mapy.
+[library Install selected release]
+Nainstalovat vybranou verzi
+[library Installed]
+Nainstalováno
+[library Installed families]
+Nainstalované rodiny
+[library Installed. Enable the family below for new maps.]
+Nainstalováno. Níže zapněte rodinu pro nové mapy.
+[library Invalid building family ID.]
+Neplatné ID rodiny budov.
+[library Invalid building library response]
+Neplatná odpověď knihovny budov
+[library Invalid library cursor]
+Neplatný kurzor knihovny
+[library Invalid release identity]
+Neplatná identita verze
+[library Load more]
+Načíst další
+[library Load more families]
+Načíst další rodiny
+[library Loading building families]
+Načítání rodin budov
+[library Loading…]
+Načítání…
+[library Map generators]
+Generátory map
+[library Maps]
+Mapy
+[library Most downloaded]
+Nejstahovanější
+[library Most liked]
+Nejoblíbenější
+[library My generators]
+Moje generátory
+[library Newest]
+Nejnovější
+[library No building families installed.]
+Nejsou nainstalovány žádné rodiny budov.
+[library No public building families yet]
+Zatím žádné veřejné rodiny budov
+[library No validated release for this game version.]
+Pro tuto verzi hry není ověřená verze obsahu.
+[library Online server changed during download]
+Online server se během stahování změnil
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Otevřete rodinu nezařazenou do seznamu odkazem nebo ID. Pro soukromé rodiny se nejprve přihlaste přes Online.
+[library Open family]
+Otevřít rodinu
+[library Opened family. Install its compatible release below.]
+Rodina otevřena. Níže nainstalujte její kompatibilní verzi.
+[library Opening building family]
+Otevírání rodiny budov
+[library Playable]
+Hratelné
+[library Playable generator]
+Hratelný generátor
+[library Privacy policy]
+Zásady ochrany soukromí
+[library Public library]
+Veřejná knihovna
+[library Recently updated]
+Nedávno aktualizované
+[library Refresh library]
+Obnovit knihovnu
+[library Release identity changed during installation]
+Identita verze se během instalace změnila
+[library Reroll]
+Vygenerovat znovu
+[library Reroll seed]
+Náhodné semínko
+[library Saving generator library…]
+Ukládání knihovny generátorů…
+[library Search]
+Hledat
+[library Seed]
+Semínko
+[library Selection saved for new maps.]
+Výběr uložen pro nové mapy.
+[library Storage failed.]
+Uložení selhalo.
+[library Storage persistence unavailable]
+Trvalé úložiště není dostupné
+[library Tags]
+Štítky
+[library Technical checks passed for this engine. Balance is not certified.]
+Technické kontroly pro tento engine úspěšné. Herní vyváženost není zaručena.
+[library The server returned a different family.]
+Server vrátil jinou rodinu.
+[library This link is from another instance. Switch to that instance in Online first.]
+Odkaz pochází z jiné instance. Nejprve na ni přepněte v Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Balíček s tímto ID je již nainstalován. Chcete-li použít vybranou verzi, potvrďte nahrazení.
+[library This release has no passing checks for this engine.]
+Tato verze nemá úspěšné kontroly pro tento engine.
+[library This release is installed.]
+Tato verze je nainstalovaná.
+[library Update installed family]
+Aktualizovat nainstalovanou rodinu
+[library Use in a room]
+Použít v místnosti
+[library By %0]
+Autor: %0
+[library Installed release %0]
+Nainstalovaná verze %0
+[library Release %0]
+Verze %0
+[library Remove %0]
+Odstranit %0
+[library Seed: %0]
+Semínko: %0
+[library %0 · revision %1]
+%0 · revize %1

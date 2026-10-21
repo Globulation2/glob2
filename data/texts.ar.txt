@@ -6,34 +6,6 @@
 إذا طلبت الصفحة ذلك، تحقق من أنها تعرض %0.
 [hub code copied]
 تم نسخ الرمز
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 أكمل العملية في متصفحك. ستتابع اللعبة تلقائيًا.
 [music set]
@@ -6039,96 +6011,622 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [outcome reason probability]
 تم بلوغ عتبة احتمال الفوز.
 [Discord community]
-
+مجتمع Discord
 [Globulation 2 Discord]
-
+Globulation 2 على Discord
 [discord community intro]
-
+اعثر على منافسين واطلب المساعدة وشارك خرائطك مع مجتمع Globulation 2.
 [discord opens externally]
-
+انضم إلى خادمنا على Discord. سيفتح هذا Discord أو متصفحك.
 [Join Discord]
-
+الانضمام إلى Discord
 [Copy link]
-
+نسخ الرابط
 [discord opened]
-
+تم فتح Discord. يمكنك العودة إلى اللعبة في أي وقت.
 [discord open failed]
-
+تعذر فتح Discord. انسخ رابط الدعوة وافتحه في متصفحك.
 [discord link copied]
-
+تم نسخ رابط الدعوة.
 [settings CPU automatic]
-
+معالج مركزي تلقائي
 [settings Scalar]
-
+عددي
 [settings Unavailable]
-
+غير متاح
 [settings Initializing]
-
+جارٍ التهيئة
 [settings Gradient backend]
-
+محرك حساب التدرجات
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+يُطبّق عند نقطة المزامنة التالية للمحاكاة. تستخدم الحسابات غير المدعومة وضع المعالج المركزي التلقائي؛ والعرض مستقل عنه.
 [settings Gradient algorithm]
-
+خوارزمية التدرجات
 [settings All choices compute the same exact field.]
-
+تحسب جميع الخيارات الحقل نفسه بدقة تامة.
 [settings Bucket propagation]
-
+الانتشار بالحاويات
 [settings Verify gradient results]
-
+التحقق من نتائج التدرجات
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+مقارنة نتائج المعالج الرسومي بنتائج المعالج المركزي العددي قبل إتاحتها. يضيف حسابات ويوقف اللعبة عند وجود اختلاف.
 [settings Gradient computation]
-
+حساب التدرجات
 [settings CPU fallback]
-
+الحساب البديل بالمعالج المركزي
 [settings GPU fields]
-
+حقول المعالج الرسومي
 [settings CPU fallbacks]
-
+عدد مرات الرجوع إلى المعالج المركزي
 [settings MCP server]
-
+خادم MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+يتيح تفعيل خادم MCP للعملاء المحليين الاطلاع على اللعبة والتحكم فيها.
 [settings Enable MCP server]
-
+تفعيل خادم MCP
 [settings Port]
-
+المنفذ
 [settings Current controller: %0]
-
+المتحكم الحالي: %0
 [settings Copy endpoint]
-
+نسخ عنوان الاتصال
 [settings Retry listener]
-
+إعادة تشغيل الاستماع
 [settings Revoke control]
-
+سحب التحكم
 [settings MCP server unavailable in this application]
-
+خادم MCP غير متاح في هذا التطبيق
 [settings Disabled]
-
+معطّل
 [settings Running]
-
+قيد التشغيل
 [settings Error: %0]
-
+خطأ: %0
 [settings None]
-
+لا أحد
 [settings Starting]
-
+جارٍ البدء
 [Which hand holds your phone?]
-
+اليد اليسرى أم اليمنى؟
 [hand preference explanation]
-
+أمسك هاتفك بشكل طبيعي. اضغط على اليد التي تلعب بها.
 [hand silhouettes description]
-
+مخطط هاتف تعلوه اليدان اليسرى واليمنى. اضغط على إحدى منطقتي الإبهام المشطوفتين لاختيار ذلك الجانب.
 [hand preference change later]
-
+يمكنك تغيير الجانب لاحقًا في الإعدادات.
 [hand preference save failed]
-
+تعذر حفظ اختيارك. يرجى المحاولة مجددًا.
 [Left hand]
-
+اليد اليسرى
 [Right hand]
-
+اليد اليمنى
 [discord copy failed]
-
+تعذر نسخ الرابط. حدد رابط الدعوة أعلاه لنسخه يدويًا.
 [Destroy this building?]
 هل تريد تدمير هذا المبنى؟
+[stat ground movement]
+الحركة الأرضية
+[stat ground movement about]
+الوحدات الأرضية الحية حسب النسبة التقريبية للسرعة. تعني «سباحة 2×» أن السباحة أسرع بمرتين من الركض. تُستثنى الوحدات الطائرة والثابتة.
+[stat view by movement]
+حسب الحركة
+[stat band land only]
+اليابسة فقط
+[stat band swim twice run]
+سباحة 2×
+[stat band swim faster run]
+سباحة 1.4×
+[stat band swim equals run]
+متساويتان
+[stat band run faster swim]
+ركض 1.3×
+[stat band run twice swim]
+ركض 2×
+[stat band run triple swim]
+ركض 3×
+[stat band water only]
+الماء فقط
+[settings Browse shared generators]
+استعراض المولدات المشتركة
+[settings Apply artwork on the next game or editor load.]
+تطبيق الرسومات عند تحميل اللعبة أو المحرر في المرة القادمة.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+يتطلب محرك عرض يدعم ترشيح القوام. سيُحتفظ باختيارك المحفوظ.
+[settings Automatically show the torus overview while moving around the map.]
+إظهار نظرة عامة على السطح الحلقي تلقائيًا أثناء التنقل في الخريطة.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+يتطلب محرك عرض يدعم السطح الحلقي. سيُحتفظ باختيارك المحفوظ.
+[settings Move and animate units between game ticks.]
+تحريك الوحدات وعرض حركاتها بين خطوات المحاكاة.
+[settings Renderer unavailable]
+محرك العرض غير متاح
+[settings Apply at the next completed frame. Your game stays running.]
+التطبيق عند اكتمال الإطار التالي. ستستمر اللعبة في العمل.
+[settings Active renderer: %0]
+محرك العرض النشط: %0
+[settings Changing renderer…]
+جارٍ تغيير محرك العرض…
+[settings Menu scroll wheel enabled]
+تفعيل عجلة التمرير في القوائم
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+يتحكم في التمرير بالعجلة في القوائم. تكبّر العجلة خرائط اللعبة والمحرر وتصغّرها دائمًا.
+[settings Gesture scrolling]
+التمرير بالإيماءات
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+التمرير باللمس وإيماءات Mac. يعطّل 0 التأثير؛ و50 هو الافتراضي للمس.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+مدى استمرار تمرير القوائم واللوحات بعد سحب سريع باللمس. تستخدم إيماءات Mac زخم النظام؛ ويعطّل الصفر انزلاقها.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+مدى تمدد القوائم واللوحات بعد تجاوز أطرافها ثم ارتدادها. تستخدم إيماءات Mac تمددًا ألطف.
+[hive stopping]
+جارٍ الإيقاف…
+[hive stopped]
+متوقف
+[hive stop failed]
+فشل الإيقاف؛ أعد محاولة اختصار الإيقاف
+[hive updating]
+جارٍ التحديث…
+[hive requested]
+تم الطلب
+[hive update failed]
+فشل التحديث؛ حاول مجددًا
+[hive give order]
+إعطاء أمر
+[hive less]
+طيّ التفاصيل
+[hive reports and details]
+تقارير / تفاصيل
+[hive needs fresh order]
+بحاجة إلى أمر جديد
+[hive active]
+نشط
+[hive resume]
+استئناف
+[recordings]
+التسجيلات
+[recording delete confirm]
+حذف التسجيل؟
+[recording delete warning]
+سيُحذف التسجيل وبياناته الوصفية.
+[recording delete]
+حذف
+[recording working]
+جارٍ العمل…
+[recording none]
+لا توجد تسجيلات بعد.
+[recording interrupted]
+تسجيل منقطع
+[recording recover]
+استعادة
+[recording export video]
+تصدير الفيديو
+[recording export metadata]
+تصدير البيانات الوصفية
+[recording export events]
+تصدير الأحداث
+[recording export failed]
+تعذر تصدير التسجيل.
+[recording delete action]
+حذف التسجيل
+[recording refresh]
+تحديث
+[library Fit]
+ملاءمة
+[library GL only]
+GL فقط
+[tutorial part1 message 1]
+مرحبًا بك في Globulation 2! تعلّمك هذه المهمات الأربع إدارة مستعمرة. احفظ تقدمك من قائمة اللعبة وحمّله لاحقًا من القائمة الرئيسية. اضغط المسافة أو المس «موافق» للمتابعة. تجد الرسائل السابقة في سجل الرسائل.
+[tutorial part1 message 2]
+تبدأ بوكر وعامل واحد. لنشاهد كيف يعملان معًا.
+[tutorial part1 message 3]
+يحصد العامل القمح ويحمله إلى الوكر. يستهلك الوكر القمح لإنتاج وحدات جديدة، لذا فهو أساسي لمستعمرتك.
+[tutorial part1 message 4]
+حدد وحدتك المتحركة بنقرة بزر الفأرة الأيسر أو بلمسة.
+[tutorial part1 message 5]
+تُظهر معلومات الوحدة تناقص طعامها مع الوقت؛ إنها تجوع. عند إظهار أشرطة الطعام، يبيّن الشريط الأزرق تحت الوحدة ما تبقى لديها.
+[tutorial part1 message 6]
+تأكل الوحدات في النُزل. ألغِ التحديد بنقرة بزر الفأرة الأيمن، أو المس أرضًا خالية على شاشة اللمس.
+[tutorial part1 message 7]
+افتح أدوات البناء واختر نُزلًا وضعه قرب القمح. اتبع مسار حصاد العامل إن لم تجد القمح. على شاشة اللمس، استخدم «البناء» وأكّد موقعًا صالحًا. غادر وضع البناء بنقرة يمنى أو بزر «ألغِ» اللمسي.
+[tutorial part1 message 8]
+جيد! تم تحديد موقع بناء النُزل.
+[tutorial part1 message 9]
+يمكن لعامل من الوكر بناء النُزل. يجمع الخشب من الأشجار القريبة ويحمله إلى الموقع. انتظر اكتمال البناء.
+[tutorial part1 message 10]
+يحتاج النُزل المكتمل إلى القمح. يجمعه عامل مكلّف، كما يفعل عامل إمداد الوكر.
+[tutorial part1 message 11]
+يرتفع شريط موارد النُزل الأصفر مع وصول القمح. ويبيّن كمية القمح المخزنة.
+[tutorial part1 message 12]
+لنتعلّم الآن إسناد العمل.
+[tutorial part1 message 13]
+يمدّ عامل الوكر بالطعام ويمدّ آخر النُزل. قد يتوقف أي منهما ليأكل. هذا طبيعي.
+[tutorial part1 message 14]
+حدد الوكر وابحث عن التحكم في تكليف العمال. على الحاسوب اسمه «العاملون»؛ وعلى شاشة اللمس استخدم عدد العمال المكلّفين والعدد المستهدف. الهدف هو عدد العمال المطلوب في المبنى.
+[tutorial part1 message 15]
+اضبط هدف عمال الوكر على 0. ثم حدد النُزل واضبط هدفه أيضًا على 0.
+[tutorial part1 message 16]
+عمالك عاطلون الآن، لكنهم يحتاجون إلى الطعام. سينفد القمح في النهاية من النُزل الذي لا عمال له.
+[tutorial part1 message 17]
+تفقد الوحدة التي لا تجد طعامًا صحتها وقد تموت. يعالج المستشفى الإصابات، لكن عليك أيضًا إبقاء النُزل مزودة بالطعام.
+[tutorial part1 message 18]
+ابنِ مستشفى. لا يحتاج إلى القمح، لذا ضعه قرب الخشب أو في موقع مركزي بجوار الوكر.
+[tutorial part1 message 19]
+حدد موقع بناء المستشفى واضبط الهدف على عاملين. سينهيان البناء أسرع.
+[tutorial part1 message 20]
+المستشفى جاهز. يمكن للوحدات المصابة زيارته لاستعادة صحتها.
+[tutorial part1 message 21]
+المناطق السوداء غير مستكشفة. تكشف الوحدات الأرض القريبة أثناء حركتها. يتبع العمال مهامهم، أما المستكشفون فهم أنسب للاستطلاع.
+[tutorial part1 message 22]
+حدد الوكر وابحث عن نسب إنتاج العمال والمستكشفين والمحاربين. ارفع نسبة المستكشفين إلى 1.
+[tutorial part1 message 23]
+عندما تكون نسبتا العمال والمستكشفين 1، ينتج الوكر أعدادًا متساوية منهما مع الوقت. اضبط العمال على 0 لإنتاج المستكشفين فقط حاليًا.
+[tutorial part1 message 24]
+أعد هدف العمال المكلّفين بالوكر إلى 1 ليحصل على القمح.
+[tutorial part1 message 25]
+حدد النُزل واضبط هدفه أيضًا على عامل واحد. تحتاج المستعمرة النامية إلى إمداد ثابت بالطعام.
+[tutorial part1 message 26]
+انتظر حتى ينتج الوكر مستكشفًا.
+[tutorial part1 message 27]
+يطير المستكشف حول المستعمرة ويكشف الأرض. دع الوكر ينتج مستكشفًا ثانيًا قبل المتابعة.
+[tutorial part1 message 28]
+حدد الوكر. اضبط نسبة المستكشفين على 0 والعمال على 1 لاستئناف إنتاج العمال.
+[tutorial part2 message 1]
+يوجد حجر شرق قاعدتك. تذكّر هذا الموقع؛ ستحتاج إليه لاحقًا.
+[tutorial part2 message 2]
+الأشجار جنوب الحجر هي أشجار برتقال. حددها لرؤية معلومات الموارد. سنعود إلى الفاكهة لاحقًا؛ ركّز الآن على الوكر.
+[tutorial part2 message 3]
+اضبط الوكر لإنتاج العمال فقط: العمال 1، والمستكشفون والمحاربون 0.
+[tutorial part2 message 4]
+لنسرّع النمو. اضبط هدف الوكر على 6 عمال. سيملأ العمال الجدد الوظائف الشاغرة عند ظهورهم.
+[tutorial part2 message 5]
+سنبدأ المهام التالية عند امتلاك 8 عمال. أبقِ الوكر والنُزل مزودين بالقمح أثناء الانتظار.
+[tutorial part2 message 6]
+يزود عدة عمال الوكر الآن. وصول قمح أكثر يتيح إنتاج الوحدات أسرع.
+[tutorial part2 message 7]
+يكلف العامل الجديد 5 من القمح. النقل من حقل بعيد يستغرق وقتًا، لذا يحتاج الوكر عادة إلى مورّدين أكثر من النُزل. ابنِ المباني المعتمدة على القمح قربه إن أمكن.
+[tutorial part2 message 8]
+لديك 8 عمال على الأقل. اخفض هدف الوكر إلى 1 لإبطاء النمو أثناء البناء.
+[tutorial part2 message 9]
+تحتاج المستعمرة إلى أماكن إضافية للأكل. ابنِ نُزلًا ثانيًا شمال الأول.
+[tutorial part2 message 10]
+كلّف عمالًا متاحين بموقع النُزل الجديد. يحتاج إلى 3 أخشاب فقط، لذا لن يفيد أكثر من 3 بنّائين كثيرًا.
+[tutorial part2 message 11]
+يعود النُزل المكتمل إلى هدف التشغيل، وعادة هو عامل واحد. للبناء والتزويد اليومي هدفان منفصلان.
+[tutorial part2 message 12]
+يمكن للعمال تعلّم الجري أسرع في ميدان السباق.
+[tutorial part2 message 13]
+ابحث عن ميدان السباق في أدوات البناء. على الحاسوب، مرّر المؤشر فوق رمزه لرؤية الوصف والتكلفة. على شاشة اللمس، حدده ضمن «البناء». لا تضعه بعد.
+[tutorial part2 message 14]
+يحتاج ميدان السباق إلى خشب كثير وقليل من الحجر. اختر موقعًا مركزيًا يسهل الوصول إليه.
+[tutorial part2 message 15]
+ابنِ ميدان سباق، مثلًا جنوب الوكر. اترك فراغًا حوله لتوسيعه عند ترقيته.
+[tutorial part2 message 16]
+اضبط هدف موقع بناء الميدان بين 5 و7 عمال. يحتاج إجمالًا إلى 7 مواد بناء.
+[tutorial part2 message 17]
+يدرّب ميدان السباق المكتمل الوحدات دون إمداد مستمر بمواد البناء أو القمح.
+[tutorial part2 message 18]
+تدخل الوحدات ميدان السباق للتدريب. بعده ستجري أسرع.
+[tutorial part2 message 19]
+حدد ميدان السباق لمتابعة التدريب. تبيّن المؤشرات مدى اقتراب الوحدات داخله من الانتهاء.
+[tutorial part2 message 20]
+ينقل العمال المتدرّبون الموارد أسرع. واصل مراقبة مخزون الطعام ووفّر نُزلًا كافية مزودة بالقمح أثناء نمو المستعمرة.
+[tutorial part2 message 21]
+ابحث عن عداد العمال في واجهة اللعبة. الإجمالي يبيّن السكان، والمتاح يبيّن العمال الفائضين أو الوظائف الشاغرة. لا تسند عملًا أكثر مما تستطيع المستعمرة إنجازه.
+[tutorial part2 message 22]
+تُظهر الواجهة أيضًا أعداد المستكشفين والمحاربين. راجعها عند التخطيط للإنتاج أو تكليف الوحدات بالأعلام.
+[tutorial part2 message 23]
+لديك نُزلان أساسيان، بكل منهما 4 أماكن للأكل في الوقت نفسه؛ أي 8 إجمالًا. قد تجوع أكثر من 8 وحدات، لذا وفّر سعة إضافية لتقليل الانتظار.
+[tutorial part2 message 24]
+لن يكفي نُزلان مستعمرة نامية إلى الأبد. زد السعة قبل أن يتحول النقص إلى مجاعة.
+[tutorial part2 message 25]
+ابنِ 3 نُزل إضافية قرب القمح. يتوقف العمال الجائعون عن العمل وقد يموتون. استخدم العمال المتاحين مع الحفاظ على إمدادات الطعام الحالية.
+[tutorial part2 message 26]
+أكمل 3 نُزل إضافية ليصبح الإجمالي 5.
+[tutorial part2 message 27]
+تستخدم النُزل الجديدة أهداف التشغيل بعد البناء، وعادة عاملًا واحدًا لكل نُزل. تأكد من وجود مورّدين وقمح كافٍ.
+[tutorial part2 message 28]
+حسّن ميدان السباق الحركة على اليابسة. لنتعلّم السباحة الآن.
+[tutorial part2 message 29]
+تُعلِّم بركة السباحة الوحدات السباحة وتحتاج إلى الخشب لبنائها. ضع واحدة في الفسحة الكبيرة شمال شرق القاعدة، شمال الحجر. اترك فراغًا للترقيات ونمو الموارد وكلّف العمال المتاحين بالبناء.
+[tutorial part2 message 30]
+تُعلِّم بركة السباحة الوحدات السباحة وتحتاج إلى الخشب لبنائها. ضع واحدة في الفسحة الكبيرة شمال شرق القاعدة، شمال الحجر. اترك فراغًا للترقيات ونمو الموارد وكلّف العمال المتاحين بالبناء.
+[tutorial part2 message 31]
+بركة السباحة جاهزة. يمكن للوحدات دخولها لتعلّم السباحة.
+[tutorial part2 message 32]
+حدد البركة لمتابعة التدريب. تدرّب البركة الأساسية وحدتين معًا، مثل ميدان السباق الأساسي.
+[tutorial part2 message 33]
+تستطيع الوحدات المتدرّبة السباحة الآن. سنعطيها قريبًا مهمة تتطلب عبور الماء.
+[tutorial part2 message 34]
+لا يزال هناك ما نتعلّمه. إن احتجت إلى استراحة، فاحفظ تقدمك من قائمة اللعبة.
+[tutorial part2 message 35]
+تملك المستعمرة الطعام والتدريب البدني. ستعلّم المدرسة العمال مهارات بناء مبانٍ أفضل.
+[tutorial part2 message 36]
+تحسّن المدرسة مهارات الحصاد والبناء. تحتاج إلى الطحالب، التي تنمو في الماء. يستطيع العمال السابحون جمعها.
+[tutorial part2 message 37]
+احمِ مباني التدريب المهمة. لا يلزم وضع المدرسة قرب الماء؛ فالموقع المحمي داخل اليابسة أكثر أمانًا.
+[tutorial part2 message 38]
+ابنِ المدرسة في موقع محمي، خلف البركة أو جنوب غرب الوكر بجوار الميدان. كلّف العمال المتاحين بها.
+[tutorial part2 message 39]
+حدد مبنى لرؤية عماله. على الحاسوب، يمكن لإجراء إظهار مسارات الوحدات القابل للتخصيص رسم خطوط نحو وجهاتها. راجع اختصاره الحالي في الإعدادات، التحكم. انتظر اكتمال المدرسة.
+[tutorial part3 message 1]
+تملك المستعمرة نُزلًا ومستشفى وميدان سباق وبركة ومدرسة. حان إعداد الدفاعات.
+[tutorial part3 message 2]
+لم ننتج محاربين بعد. من دونهم، حماية المستعمرة من الهجوم ضعيفة.
+[tutorial part3 message 3]
+حدد الوكر واضبط نسبة المحاربين على 2. اترك العمال على 1 لمواصلة إنتاجهم أيضًا.
+[tutorial part3 message 4]
+سينتج الوكر نحو محاربين لكل عامل. كلّف مورّدين أكثر إن أردت تسريع الإنتاج.
+[tutorial part3 message 5]
+محاربك الأول جاهز وسيبدأ التدريب. انتظر محاربًا ثانيًا قبل المتابعة.
+[tutorial part3 message 6]
+يستخدم المحاربون الميدان والبركة أيضًا. ويتدرّبون على الهجوم في الثكنة.
+[tutorial part3 message 7]
+تحسّن الثكنة قوة الهجوم وسرعته: الضرر بكل ضربة وتكرار الضربات. يمكن للمحاربين المدرّبين هزيمة مجموعات غير مدرّبة أكبر بكثير.
+[tutorial part3 message 8]
+ابنِ ثكنة قرب الخشب اللازم لبنائها.
+[tutorial part3 message 9]
+كلّف العمال المتاحين بموقع الثكنة. أبقِ عددًا كافيًا لتزويد الطعام ولا تنشئ وظائف أكثر مما يمكن ملؤه.
+[tutorial part3 message 10]
+الثكنة جاهزة. يمكن للمحاربين التدريب على الهجوم فيها.
+[tutorial part3 message 11]
+يمكن تقوية المستعمرة أيضًا بترقية المباني.
+[tutorial part3 message 12]
+يستطيع العمال المتعلمون في المدرسة بناء الترقيات. حدد مبنى مؤهلًا واختر «رقِّ» من أدواته. قد تحتاج المباني المتضررة إلى «رمِّم» أولًا.
+[tutorial part3 message 13]
+ماذا نرقّي أولًا؟ لا تزال بالنُزل أماكن خالية، لذا يمكنها الانتظار.
+[tutorial part3 message 14]
+المستشفى لديه سعة أيضًا. يمكن التركيز على المدرسة أو الميدان أو البركة أو الثكنة.
+[tutorial part3 message 15]
+رقِّ ميدان السباق أولًا لتتعلّم الوحدات الجري أسرع.
+[tutorial part3 message 16]
+حدد الميدان واختر «رقِّ». يجب أن تخرج الوحدات قبل بدء العمل، لذا قد لا يبدأ فورًا.
+[tutorial part3 message 17]
+كلّف عمالًا متاحين بترقية الميدان. وحدهم العمال ذوو التدريب المدرسي المطلوب يعملون في بناء المستوى 2.
+[tutorial part3 message 18]
+انتظر اكتمال الترقية. تتطلب المباني الأعلى مستوى موارد ووقتًا أكثر.
+[tutorial part3 message 19]
+اكتمل ميدان المستوى 2 وأصبح أكبر. لهذا تركنا الفراغ: لا يمكن ترقية مبنى دون مساحة للتوسع.
+[tutorial part3 message 20]
+رقِّ الثكنة والبركة الآن إلى المستوى 2. سنتابع عند اكتمالهما.
+[tutorial part3 message 21]
+تخدم المباني المطورة عادة وحدات أكثر أو توفر تدريبًا أفضل. للنُزل من المستوى 2 مثلًا 7 أماكن، ويطعم الوحدات أسرع.
+[tutorial part3 message 22]
+العدو قريب. لنستعد لهجوم.
+[tutorial part3 message 23]
+تطلق أبراج الدفاع النار على الأعداء ضمن مداها. تحميها الحوائط. سنستخدم الاثنين للدفاع عن مدخل ضيق.
+[tutorial part3 message 24]
+ضع الأبراج أزواجًا إن سمحت المساحة. احمِ ثلاثة جوانب بالحوائط، واترك طريقًا للعمال لتوصيل الذخيرة الحجرية.
+[tutorial part3 message 25]
+شرق البركة، شمال أشجار الفاكهة الأخرى، ممر ضيق يؤدي إلى جزيرة أخرى. دافع عن هذا المكان.
+[tutorial part3 message 26]
+خطط لبرجين بين الأشجار والشاطئ. اترك مدخلًا خلفهما للحجر ومساحة في الجوانب الأخرى للحوائط. لا تعزل العمال.
+[tutorial part3 message 27]
+ابنِ برجين هناك. كلّف كل موقع بعاملين أو ثلاثة حسب العدد المتاح في العدادات.
+[tutorial part3 message 28]
+ضع حوائط على الجوانب الثلاثة الخارجية للأبراج. أبقِ الجانب المتجه إلى المستعمرة مفتوحًا للعمال.
+[tutorial part3 message 29]
+كل جزء من الحائط ينشئ مهمة بناء ويحتاج إلى حجر واحد. إن لم يكفِ العمال لجميع الأجزاء معًا، يمكنهم إكمالها بالتتابع.
+[tutorial part3 message 30]
+انتظر اكتمال البرجين وعدة أجزاء من الحائط. تحتاج الأبراج إلى ذخيرة حجرية، والمحجر بعيد فيبطئ التسليم. زد أهداف العمال إن كان لديك عمال متاحون.
+[tutorial part4 message 1]
+تملك المستعمرة الطعام والتدريب والدفاعات. يمكن للمباني بلوغ المستوى 3 لسعة وتدريب أفضل. واصل الترقيات حسب الموارد ومهارات العمال.
+[tutorial part4 message 2]
+ابحث عن مستعمرة العدو شمال غرب قاعدتك. انقل المشهد إليها.
+[tutorial part4 message 3]
+قد يخفي ضباب الحرب أرضًا مستكشفة. لرؤية نشاط العدو الحالي، نحتاج إلى مستكشف قريب.
+[tutorial part4 message 4]
+افتح «أعلام». توجّه الأعلام والمناطق الوحدات دون التحكم بكل وحدة منفردة.
+[tutorial part4 message 5]
+اختر علم الاستكشاف ذا رمز الطائرة الورقية. يمكن وضع الأعلام فوق اليابسة والماء والموارد والأرض غير المستكشفة.
+[tutorial part4 message 6]
+ضعه فوق الموقع المتوقع لقاعدة العدو. يكفي موقع تقريبي. أنهِ الوضع بنقرة يمنى أو بأدوات اللمس.
+[tutorial part4 message 7]
+يبيّن الخط حول العلم نصف قطر عمله. سيستطلع مستكشف مكلّف المنطقة. إن لم يصل أحد، راجع عدد المستكشفين وأنتج آخر في الوكر عند الحاجة. اضغط المسافة أو «موافق» عند وصوله.
+[tutorial part4 message 8]
+لدى العدو عمال كثيرون وجيش متجمع. لنجهّز الدفاعات قبل هجومه.
+[tutorial part4 message 9]
+افتح «أعلام» واختر منطقة «حراسة» الزرقاء. استخدم وضع إضافة الأرض لا إزالتها. على شاشة اللمس، اختر «رسم» بدل «محو».
+[tutorial part4 message 10]
+اختر شكل الفرشاة وحجمها. المربع الكبير مناسب لمنطقة دفاع متماسكة.
+[tutorial part4 message 11]
+ارسم منطقة حراسة خلف الأبراج في طريق العدو المتوقع. انقر أو المس لرسم نقطة، أو اسحب لتغطية مساحة أكبر. على شاشة اللمس، استخدم «تحريك» لنقل المشهد أثناء الرسم.
+[tutorial part4 message 12]
+سيدخل المحاربون المتاحون المنطقة. اجعلها كافية لهم، لكن صغيرة بما يبقيهم متجمعين عند الممر. انتظر الهجوم.
+[tutorial part4 message 13]
+العدو يقترب من الممر!
+[tutorial part4 message 14]
+نتعرض للهجوم. شاهد كيف يدافع المحاربون المدرّبون والأبراج عن الموقع.
+[tutorial part4 message 15]
+نجوت! افتح «أعلام» واختر علم الحرب ذا الأشواك. ضعه فوق وكر العدو لتوجيه الهجوم إليه.
+[tutorial part4 message 16]
+أنهِ الوضع وحدد علم الحرب. كلّفه بأكثر من محارب واحد وقلّص نصف قطره لتركيز الهجوم على الوكر. انتظر وصول المحاربين.
+[tutorial part4 message 17]
+بدأ الهجوم. يجب أن يتجاوز محاربوك أبراج العدو للوصول إلى الوكر.
+[tutorial part4 message 18]
+وصل محاربوك إلى قاعدة العدو. أبقِ الهجوم مركزًا على الوكر.
+[tutorial part4 message 19]
+دمرت وكر العدو! أكملت التدريب وتعلمت أساسيات الطعام والتكليف والتدريب والترقية والاستطلاع والقتال.
+[tutorial mission basics]
+المقدمة والأساسيات
+[tutorial mission development]
+المباني والمدارس
+[tutorial mission training]
+المحاربون والتدريب والترقيات
+[tutorial mission flags]
+الأعلام وإكمال التدريب
+[library  Could not restore the previous library: %0]
+ تعذرت استعادة المكتبة السابقة: %0
+[library  The previous library is retained.]
+ سيُحتفظ بالمكتبة السابقة.
+[library  · Installed]
+ · مثبّت
+[library  · Update available]
+ · تحديث متاح
+[library A different release is installed. Install the selected release to update explicitly.]
+إصدار آخر مثبّت. ثبّت الإصدار المحدد إذا أردت التحديث إليه.
+[library All engines]
+كل المحركات
+[library All generators]
+كل المولدات
+[library Available families]
+العائلات المتاحة
+[library Back]
+رجوع
+[library Building families]
+عائلات المباني
+[library Building library]
+مكتبة المباني
+[library Checking building release]
+جارٍ فحص إصدار المبنى
+[library Choose an online instance before opening a family link.]
+اختر خادمًا للعب عبر الإنترنت قبل فتح رابط عائلة.
+[library Compatible with this engine]
+متوافق مع هذا المحرك
+[library Confirm replacement]
+تأكيد الاستبدال
+[library Create in Building Studio]
+إنشاء في Building Studio
+[library Downloading generator…]
+جارٍ تنزيل المولد…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+يُعرض كل مشهد طبيعي كخريطة فعلية بالحجم وعدد المستعمرات القابلين للتغيير أدناه. استخدمه للعب في الخريطة المعروضة.
+[library Editor tool: generates terrain for the map editor.]
+أداة محرر: تولّد تضاريس لمحرر الخرائط.
+[library Editor tools]
+أدوات المحرر
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+فعّل العائلات المثبّتة أدناه. يُحفظ الاختيار في هذا الملف المحلي؛ تحتفظ الخرائط والملفات المحفوظة السابقة بمبانيها. للعب عبر الإنترنت، ولّد خريطة بهذه العائلات وانشرها في مكتبة الخرائط ثم اخترها في غرفتك.
+[library Enter a building family ID or a link to its family page.]
+أدخل معرّف عائلة مبانٍ أو رابط صفحتها.
+[library Family link or ID]
+رابط العائلة أو معرّفها
+[library Family links must be at most 1024 characters.]
+يجب ألا تتجاوز روابط العائلات 1024 محرفًا.
+[library Family removed.]
+أُزيلت العائلة.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+العائلة غير متاحة. للعائلات الخاصة، سجّل الدخول عبر قسم اللعب عبر الإنترنت بحساب يملك حق الوصول إليها.
+[library Generator file hash mismatch]
+بصمة ملف المولد غير مطابقة
+[library Generator installed. Future selections use this release.]
+ثُبّت المولد. ستستخدم الاختيارات اللاحقة هذا الإصدار.
+[library Generator package identity mismatch]
+هوية حزمة المولد غير مطابقة
+[library Generators]
+المولدات
+[library Install compatible release]
+تثبيت إصدار متوافق
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+ثبّت مباني منفردة أو عائلات ترقيات إلى جانب المباني الأساسية. ينطبق الاختيار على الخرائط المولّدة حديثًا فقط.
+[library Install selected release]
+تثبيت الإصدار المحدد
+[library Installed]
+مثبّت
+[library Installed families]
+العائلات المثبّتة
+[library Installed. Enable the family below for new maps.]
+تم التثبيت. فعّل العائلة أدناه للخرائط الجديدة.
+[library Invalid building family ID.]
+معرّف عائلة المباني غير صالح.
+[library Invalid building library response]
+استجابة مكتبة المباني غير صالحة
+[library Invalid library cursor]
+مؤشر تصفح المكتبة غير صالح
+[library Invalid release identity]
+هوية الإصدار غير صالحة
+[library Load more]
+تحميل المزيد
+[library Load more families]
+تحميل عائلات إضافية
+[library Loading building families]
+جارٍ تحميل عائلات المباني
+[library Loading…]
+جارٍ التحميل…
+[library Map generators]
+مولدات الخرائط
+[library Maps]
+الخرائط
+[library Most downloaded]
+الأكثر تنزيلًا
+[library Most liked]
+الأكثر إعجابًا
+[library My generators]
+مولداتي
+[library Newest]
+الأحدث
+[library No building families installed.]
+لا توجد عائلات مبانٍ مثبّتة.
+[library No public building families yet]
+لا توجد عائلات مبانٍ عامة بعد
+[library No validated release for this game version.]
+لا يوجد إصدار معتمد لهذه النسخة من اللعبة.
+[library Online server changed during download]
+تغيّر خادم اللعب عبر الإنترنت أثناء التنزيل
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+افتح عائلة غير مدرجة باستخدام رابطها أو معرّفها. للعائلات الخاصة، سجّل الدخول أولًا عبر قسم اللعب عبر الإنترنت.
+[library Open family]
+فتح عائلة
+[library Opened family. Install its compatible release below.]
+فُتحت العائلة. ثبّت إصدارها المتوافق أدناه.
+[library Opening building family]
+جارٍ فتح عائلة المباني
+[library Playable]
+قابل للعب
+[library Playable generator]
+مولد قابل للعب
+[library Privacy policy]
+سياسة الخصوصية
+[library Public library]
+المكتبة العامة
+[library Recently updated]
+المحدّثة مؤخرًا
+[library Refresh library]
+تحديث المكتبة
+[library Release identity changed during installation]
+تغيّرت هوية الإصدار أثناء التثبيت
+[library Reroll]
+إعادة التوليد
+[library Reroll seed]
+تغيير البذرة
+[library Saving generator library…]
+جارٍ حفظ مكتبة المولدات…
+[library Search]
+بحث
+[library Seed]
+البذرة
+[library Selection saved for new maps.]
+حُفظ الاختيار للخرائط الجديدة.
+[library Storage failed.]
+فشل الحفظ.
+[library Storage persistence unavailable]
+التخزين الدائم غير متاح
+[library Tags]
+الوسوم
+[library Technical checks passed for this engine. Balance is not certified.]
+نجحت الفحوص التقنية لهذا المحرك. توازن اللعب غير معتمد.
+[library The server returned a different family.]
+أعاد الخادم عائلة مختلفة.
+[library This link is from another instance. Switch to that instance in Online first.]
+هذا الرابط من خادم آخر. انتقل أولًا إلى ذلك الخادم في قسم اللعب عبر الإنترنت.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+معرّف الحزمة هذا مثبّت. أكّد الاستبدال لاستخدام الإصدار المحدد.
+[library This release has no passing checks for this engine.]
+لم يجتز هذا الإصدار أي فحوص لهذا المحرك.
+[library This release is installed.]
+هذا الإصدار مثبّت.
+[library Update installed family]
+تحديث العائلة المثبّتة
+[library Use in a room]
+استخدام في غرفة
+[library By %0]
+بواسطة %0
+[library Installed release %0]
+الإصدار المثبّت %0
+[library Release %0]
+الإصدار %0
+[library Remove %0]
+إزالة %0
+[library Seed: %0]
+البذرة: %0
+[library %0 · revision %1]
+%0 · المراجعة %1

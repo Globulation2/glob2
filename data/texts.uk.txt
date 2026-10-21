@@ -6,34 +6,6 @@
 Якщо сторінка попросить, переконайтеся, що на ній показано код %0.
 [hub code copied]
 Код скопійовано
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Завершіть дію в браузері. Гра продовжиться автоматично.
 [music set]
@@ -6039,96 +6011,622 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [outcome reason probability]
 Поріг імовірності перемоги досягнуто.
 [Discord community]
-
+Спільнота Discord
 [Globulation 2 Discord]
-
+Discord гри Globulation 2
 [discord community intro]
-
+Знаходьте суперників, просіть про допомогу й діліться своїми картами зі спільнотою Globulation 2.
 [discord opens externally]
-
+Приєднуйтеся до нашого сервера Discord. Відкриється Discord або ваш браузер.
 [Join Discord]
-
+Приєднатися до Discord
 [Copy link]
-
+Копіювати посилання
 [discord opened]
-
+Discord відкрито. Ви можете повернутися до гри будь-коли.
 [discord open failed]
-
+Не вдалося відкрити Discord. Скопіюйте посилання-запрошення та відкрийте його в браузері.
 [discord link copied]
-
+Посилання-запрошення скопійовано.
 [settings CPU automatic]
-
+Автовибір CPU
 [settings Scalar]
-
+Скалярний
 [settings Unavailable]
-
+Недоступно
 [settings Initializing]
-
+Ініціалізація
 [settings Gradient backend]
-
+Рушій обчислення градієнтів
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Застосовується на наступній межі симуляції. Для непідтримуваних обчислень використовується автовибір CPU; відтворення графіки працює незалежно.
 [settings Gradient algorithm]
-
+Алгоритм градієнтів
 [settings All choices compute the same exact field.]
-
+Усі варіанти обчислюють те саме точне поле.
 [settings Bucket propagation]
-
+Поширення за кошиками
 [settings Verify gradient results]
-
+Перевіряти результати градієнтів
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Порівнювати результати GPU зі скалярними обчисленнями CPU перед використанням. Збільшує обсяг обчислень і зупиняє гру в разі розбіжності.
 [settings Gradient computation]
-
+Обчислення градієнтів
 [settings CPU fallback]
-
+Резервний режим CPU
 [settings GPU fields]
-
+Поля GPU
 [settings CPU fallbacks]
-
+Переходи в резервний режим CPU
 [settings MCP server]
-
+Сервер MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Увімкнення сервера MCP дає локальним клієнтам змогу бачити гру та керувати нею.
 [settings Enable MCP server]
-
+Увімкнути сервер MCP
 [settings Port]
-
+Порт
 [settings Current controller: %0]
-
+Поточний клієнт керування: %0
 [settings Copy endpoint]
-
+Копіювати адресу підключення
 [settings Retry listener]
-
+Повторити запуск прослуховування
 [settings Revoke control]
-
+Відкликати керування
 [settings MCP server unavailable in this application]
-
+Сервер MCP недоступний у цьому застосунку
 [settings Disabled]
-
+Вимкнено
 [settings Running]
-
+Працює
 [settings Error: %0]
-
+Помилка: %0
 [settings None]
-
+Немає
 [settings Starting]
-
+Запуск
 [Which hand holds your phone?]
-
+Ліва чи права рука?
 [hand preference explanation]
-
+Тримайте телефон як зазвичай. Торкніться руки, якою граєте.
 [hand silhouettes description]
-
+Контур телефона з лівою та правою руками зверху. Натисніть одну з опуклих ділянок для великого пальця, щоб вибрати цей бік.
 [hand preference change later]
-
+Пізніше бік можна змінити в налаштуваннях.
 [hand preference save failed]
-
+Не вдалося зберегти ваш вибір. Спробуйте ще раз.
 [Left hand]
-
+Ліва рука
 [Right hand]
-
+Права рука
 [discord copy failed]
-
+Не вдалося скопіювати посилання. Виділіть запрошення вище, щоб скопіювати його вручну.
 [Destroy this building?]
 Знищити цю будівлю?
+[stat ground movement]
+Рух наземних юнітів
+[stat ground movement about]
+Живі наземні юніти за приблизним співвідношенням швидкостей. «Плавання 2×» означає плавання вдвічі швидше за біг. Летючих і нерухомих юнітів не враховано.
+[stat view by movement]
+За рухом
+[stat band land only]
+Лише суходіл
+[stat band swim twice run]
+Плавання 2×
+[stat band swim faster run]
+Плавання 1,4×
+[stat band swim equals run]
+Однаково
+[stat band run faster swim]
+Біг 1,3×
+[stat band run twice swim]
+Біг 2×
+[stat band run triple swim]
+Біг 3×
+[stat band water only]
+Лише вода
+[settings Browse shared generators]
+Переглянути спільні генератори
+[settings Apply artwork on the next game or editor load.]
+Застосувати оформлення під час наступного завантаження гри або редактора.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Потрібен засіб відтворення з фільтруванням текстур. Ваш збережений вибір не буде втрачено.
+[settings Automatically show the torus overview while moving around the map.]
+Автоматично показувати огляд тора під час пересування картою.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Потрібен засіб відтворення з підтримкою тора. Ваш збережений вибір не буде втрачено.
+[settings Move and animate units between game ticks.]
+Переміщувати й анімувати юнітів між тактами гри.
+[settings Renderer unavailable]
+Засіб відтворення недоступний
+[settings Apply at the next completed frame. Your game stays running.]
+Застосовується після завершення наступного кадру. Гра продовжує працювати.
+[settings Active renderer: %0]
+Активний засіб відтворення: %0
+[settings Changing renderer…]
+Зміна засобу відтворення…
+[settings Menu scroll wheel enabled]
+Прокручування коліщатком у меню ввімкнено
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Керує прокручуванням коліщатком у меню. На картах гри й редактора коліщатко завжди змінює масштаб.
+[settings Gesture scrolling]
+Прокручування жестами
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Прокручування дотиком і жестами Mac. 0 вимикає ефект; 50 — типове значення для дотику.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Наскільки далеко списки й панелі прокручуються після швидкого змахування. Жести Mac використовують системну інерцію; нуль вимикає їх ковзання.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Наскільки списки й панелі розтягуються за свої межі та пружинять назад. Для жестів Mac розтягування м'якше.
+[hive stopping]
+Зупинення…
+[hive stopped]
+Зупинено
+[hive stop failed]
+Не вдалося зупинити; повторіть комбінацію клавіш зупинення
+[hive updating]
+Оновлення…
+[hive requested]
+Запит надіслано
+[hive update failed]
+Не вдалося оновити; спробуйте ще раз
+[hive give order]
+Віддати наказ
+[hive less]
+Менше
+[hive reports and details]
+Звіти / подробиці
+[hive needs fresh order]
+Потрібен новий наказ
+[hive active]
+Активний
+[hive resume]
+Продовжити
+[recordings]
+Записи
+[recording delete confirm]
+Видалити запис?
+[recording delete warning]
+Запис і його метадані буде видалено.
+[recording delete]
+Видалити
+[recording working]
+Обробка…
+[recording none]
+Записів ще немає.
+[recording interrupted]
+Перерваний запис
+[recording recover]
+Відновити
+[recording export video]
+Експортувати відео
+[recording export metadata]
+Експортувати метадані
+[recording export events]
+Експортувати події
+[recording export failed]
+Не вдалося експортувати запис.
+[recording delete action]
+Видалити запис
+[recording refresh]
+Оновити
+[tutorial part1 message 1]
+Вітаємо у Globulation 2! Чотири місії навчать керувати колонією. Зберігайте поступ у меню гри та завантажуйте пізніше з головного меню. Натисніть пробіл або «Гаразд» на сенсорному екрані, щоб продовжити. Деякі повідомлення зникнуть; їх можна перечитати в історії повідомлень.
+[tutorial part1 message 2]
+Спочатку у вас є Рій і один робітник. Подивімося, як вони співпрацюють.
+[tutorial part1 message 3]
+Робітник збирає пшеницю та несе до Рою. Рій витрачає її на нових юнітів, тому життєво важливий для колонії.
+[tutorial part1 message 4]
+Виберіть свого глобуля — рухомого юніта — лівою кнопкою миші або дотиком.
+[tutorial part1 message 5]
+Відомості про юніта показують, як із часом зменшується запас їжі. Ваш глобуль голодніє. Коли смужки їжі ввімкнені, синя смужка під юнітом показує залишок.
+[tutorial part1 message 6]
+Глобулі їдять у їдальнях. Скасуйте вибір правою кнопкою миші або торкніться порожньої землі на сенсорному екрані.
+[tutorial part1 message 7]
+Відкрийте керування будівництвом, виберіть їдальню та розмістіть біля пшениці. Не бачите пшениці — простежте маршрут робітника. На сенсорному екрані скористайтеся будівництвом і підтвердьте придатне місце. Завершивши, вийдіть із розміщення правою кнопкою або сенсорним скасуванням.
+[tutorial part1 message 8]
+Чудово! Майданчик їдальні розміщено.
+[tutorial part1 message 9]
+Робітник із Рою тепер може будувати їдальню. Він збирає деревину з сусідніх дерев і несе на майданчик. Дочекайтеся завершення.
+[tutorial part1 message 10]
+Готовій їдальні потрібна пшениця. Призначений робітник збиратиме її так само, як постачальник Рою.
+[tutorial part1 message 11]
+Коли надходить пшениця, жовта смужка ресурсів їдальні зростає. Вона показує запас пшениці.
+[tutorial part1 message 12]
+Тепер навчімося призначати роботу.
+[tutorial part1 message 13]
+Один робітник постачає Рій, інший — їдальню. Кожен може перерватися, щоб поїсти. Це нормально.
+[tutorial part1 message 14]
+Виберіть Рій і знайдіть призначення робітників. На комп'ютері воно позначене як «Працює»; на сенсорному екрані використовуйте призначених робітників і ціль. Ціль — бажана кількість робітників у будівлі.
+[tutorial part1 message 15]
+Установіть бажану кількість робітників Рою на 0. Потім виберіть їдальню й теж установіть 0.
+[tutorial part1 message 16]
+Робітники тепер вільні, але їжа потрібна й далі. Їдальня без призначених робітників зрештою вичерпає пшеницю.
+[tutorial part1 message 17]
+Глобуль без їжі втрачає здоров'я і може загинути. Лікарня лікує поранених, але їдальні також мають отримувати постачання.
+[tutorial part1 message 18]
+Побудуйте лікарню через керування будівництвом. Їй не потрібна пшениця, тому оберіть місце біля деревини або центральне місце поряд із Роєм.
+[tutorial part1 message 19]
+Виберіть майданчик лікарні й установіть бажану кількість робітників на 2. Удвох вони завершать будівництво швидше.
+[tutorial part1 message 20]
+Лікарня готова. Поранені глобулі можуть відвідувати її для відновлення здоров'я.
+[tutorial part1 message 21]
+Чорні ділянки не досліджені. Рухаючись, юніти відкривають землю поруч. Робітники йдуть за роботою, тож розвідувати ними незручно. Для цього призначені дослідники.
+[tutorial part1 message 22]
+Виберіть Рій і знайдіть пропорції виробництва робітників, дослідників та воїнів. Підніміть пропорцію дослідників до 1.
+[tutorial part1 message 23]
+Коли пропорції робітників і дослідників обидві 1, Рій із часом виробляє їх порівну. Задайте робітникам 0, щоб поки виробляти лише дослідників.
+[tutorial part1 message 24]
+Поверніть бажану кількість робітників Рою до 1, щоб робітник приносив пшеницю.
+[tutorial part1 message 25]
+Виберіть їдальню і теж задайте бажану кількість робітників 1. Колонії, що зростає, потрібне стабільне харчування.
+[tutorial part1 message 26]
+Дочекайтеся, поки Рій виробить дослідника.
+[tutorial part1 message 27]
+Дослідник літає довкола колонії та відкриває місцевість. Перш ніж продовжити, дочекайтеся другого дослідника.
+[tutorial part1 message 28]
+Знову виберіть Рій. Задайте дослідникам пропорцію 0, а робітникам 1, щоб відновити виробництво робітників.
+[tutorial part2 message 1]
+На схід від бази є камінь. Запам'ятайте місце: він знадобиться пізніше.
+[tutorial part2 message 2]
+Дерева на південь від каменю — апельсинові. Виберіть їх, щоб побачити відомості про ресурс. До фруктів повернемося пізніше, а зараз зосередьмося на Рої.
+[tutorial part2 message 3]
+Нехай Рій виробляє тільки робітників: їхня пропорція 1, дослідників і воїнів — 0.
+[tutorial part2 message 4]
+Прискоримо зростання колонії. Виберіть Рій і задайте бажану кількість робітників 6. Якщо шістьох ще немає, нові займуть вільні місця, щойно з’являться.
+[tutorial part2 message 5]
+До наступних завдань перейдемо, коли буде 8 робітників. Під час зростання населення постачайте Рій та їдальню.
+[tutorial part2 message 6]
+Тепер Рій постачають кілька робітників. Більше доставок пшениці прискорює виробництво юнітів.
+[tutorial part2 message 7]
+Новий робітник коштує 5 пшениці. Доставка з далекого поля займає час, тому Рою часто потрібно більше постачальників, ніж їдальні. За можливості ставте залежні від їжі будівлі біля пшениці.
+[tutorial part2 message 8]
+У вас щонайменше 8 робітників. Виберіть Рій і зменште бажану кількість робітників до 1, щоб уповільнити зростання населення на час будівництва.
+[tutorial part2 message 9]
+Колонії потрібно більше місць для їжі. Побудуйте другу їдальню на північ від наявної.
+[tutorial part2 message 10]
+Призначте вільних робітників на новий майданчик. Потрібно лише 3 деревини, тож понад 3 будівельники мало допоможуть.
+[tutorial part2 message 11]
+У готовій їдальні знову діє кількість робітників для постачання, зазвичай 1. Для будівництва та щоденного постачання бажану кількість робітників задають окремо.
+[tutorial part2 message 12]
+Робітники можуть навчитися швидше рухатися. Для цього потрібна бігова доріжка.
+[tutorial part2 message 13]
+Знайдіть бігову доріжку в керуванні будівництвом. На комп'ютері наведіть вказівник на значок для опису й вартості. На сенсорному екрані виберіть її в будівництві для підготовки розміщення. Ще не ставте.
+[tutorial part2 message 14]
+Біговій доріжці потрібно багато деревини й трохи каменю. Виберіть центральне місце, куди юнітам легко дістатися.
+[tutorial part2 message 15]
+Побудуйте бігову доріжку, наприклад на південь від Рою. Залиште простір довкола: навчальні будівлі розширюються під час поліпшення.
+[tutorial part2 message 16]
+Задайте бажану кількість робітників на майданчику доріжки від 5 до 7. Загалом потрібно 7 одиниць будівельних матеріалів.
+[tutorial part2 message 17]
+Готова доріжка тренує відвідувачів без постійного постачання матеріалів чи пшениці.
+[tutorial part2 message 18]
+Глобулі заходять на доріжку тренуватися. Після навчання бігатимуть швидше.
+[tutorial part2 message 19]
+Виберіть доріжку, щоб оглянути навчання. Індикатори показують, наскільки близькі юніти всередині до завершення.
+[tutorial part2 message 20]
+Навчені робітники швидше рухаються й доставляють ресурси. Стежте за запасами їжі під час зростання: швидша доставка допомагає лише за достатнього постачання їдалень.
+[tutorial part2 message 21]
+Знайдіть лічильник робітників в інтерфейсі. Загальне число показує населення; доступні робітники допомагають помітити вільних працівників або незаповнені роботи. Залучайте вільних, але не призначайте більше роботи, ніж колонія здатна виконати.
+[tutorial part2 message 22]
+Інтерфейс також показує кількість дослідників і воїнів. Перевіряйте її, плануючи виробництво чи призначення до прапорів.
+[tutorial part2 message 23]
+У вас 2 їдальні. Кожна базова годує 4 юнітів одночасно, разом це 8 місць. Зголодніти може більше ніж 8 юнітів, тож залишайте місткість для черг.
+[tutorial part2 message 24]
+Дві їдальні не зможуть вічно підтримувати зростання. Додавайте місця для їжі, перш ніж нестача перетвориться на голод.
+[tutorial part2 message 25]
+Побудуйте ще 3 їдальні біля пшениці. Голодні робітники припиняють працювати, а тривалий голод убиває їх. Призначайте вільних на будівництво, зберігаючи чинне постачання їжі.
+[tutorial part2 message 26]
+Завершіть ще 3 їдальні, щоб загалом їх стало 5.
+[tutorial part2 message 27]
+Після будівництва в нових їдальнях діє кількість робітників для постачання, зазвичай по 1 робітнику. Перевірте, чи є постачальники та достатній запас пшениці.
+[tutorial part2 message 28]
+Доріжка поліпшила рух суходолом. Тепер навчімо колонію плавати.
+[tutorial part2 message 29]
+Басейн навчає юнітів плавати й потребує деревини для будівництва. Розмістіть його на великій галявині на північний схід від бази, на північ від каменю. Залиште місце для поліпшень і розростання ресурсів та призначте вільних робітників на будівництво.
+[tutorial part2 message 30]
+Басейн навчає юнітів плавати й потребує деревини для будівництва. Розмістіть його на великій галявині на північний схід від бази, на північ від каменю. Залиште місце для поліпшень і розростання ресурсів та призначте вільних робітників на будівництво.
+[tutorial part2 message 31]
+Басейн готовий. Глобулі можуть заходити й учитися плавати.
+[tutorial part2 message 32]
+Виберіть басейн, щоб оглянути навчання. Базовий басейн навчає 2 глобулів одночасно, як і базова доріжка.
+[tutorial part2 message 33]
+Навчені глобулі тепер плавають. Незабаром дамо їм роботу, для якої треба перетнути воду.
+[tutorial part2 message 34]
+Попереду ще багато цікавого. Для перерви збережіть поступ у меню гри та поверніться пізніше.
+[tutorial part2 message 35]
+Колонія має їжу й фізичну підготовку. Школа навчить робітників навичок для кращих будівель.
+[tutorial part2 message 36]
+Школа поліпшує збирання та будівництво. Для її зведення потрібні водорості, які ростуть у воді. Робітники-плавці можуть їх зібрати.
+[tutorial part2 message 37]
+Захищайте важливі навчальні будівлі. Школі не обов'язково стояти біля води: захищене місце вглибині суходолу безпечніше від нападу.
+[tutorial part2 message 38]
+Побудуйте школу в захищеному місці: за басейном або на південний захід від Рою поряд із доріжкою. Призначте вільних робітників.
+[tutorial part2 message 39]
+Виберіть будівлю, щоб побачити призначених робітників. На комп'ютері настроювана дія перемикання шляхів юнітів також показує лінії до їхніх цілей; поточну клавішу дивіться в налаштуваннях керування. Дочекайтеся школи.
+[tutorial part3 message 1]
+Колонія має їдальні, лікарню, доріжку, басейн і школу. Час готувати оборону.
+[tutorial part3 message 2]
+Ми ще не виробляли воїнів. Без них колонія погано захищена від нападу.
+[tutorial part3 message 3]
+Виберіть Рій і задайте пропорцію воїнів 2. Робітникам залиште 1, щоб вони теж з'являлися.
+[tutorial part3 message 4]
+Тепер Рій виробляє приблизно 2 воїнів на кожного робітника. Для швидшого виробництва призначте більше постачальників.
+[tutorial part3 message 5]
+Перший воїн готовий і починає навчання. Дочекайтеся другого, перш ніж продовжити.
+[tutorial part3 message 6]
+Воїни теж користуються доріжкою та басейном. Також вони тренують атаку в казармі.
+[tutorial part3 message 7]
+Казарма поліпшує силу й швидкість атаки. Сила збільшує шкоду від удару, швидкість — частоту ударів. Добре навчені воїни здатні перемогти значно більші групи ненавчених ворогів.
+[tutorial part3 message 8]
+Побудуйте казарму біля деревини, потрібної для будівництва.
+[tutorial part3 message 9]
+Призначте вільних робітників на майданчик казарми. Залиште досить робітників для постачання їжі й не створюйте більше завдань, ніж вони здатні виконати.
+[tutorial part3 message 10]
+Казарма готова. Воїни можуть тренувати там бойові навички.
+[tutorial part3 message 11]
+Поліпшуючи будівлі, ми зміцнюємо колонію.
+[tutorial part3 message 12]
+Навчені в школі робітники можуть зводити поліпшення. Виберіть придатну будівлю та знайдіть поліпшення в її керуванні. Пошкодженій будівлі спершу може знадобитися ремонт.
+[tutorial part3 message 13]
+Визначмо перше поліпшення. У їдальнях ще є місця, тож вони зачекають.
+[tutorial part3 message 14]
+У лікарні теж є місце. Зосередимося на школі, доріжці, басейні або казармі.
+[tutorial part3 message 15]
+Спочатку поліпшіть доріжку, щоб юніти навчилися рухатися ще швидше.
+[tutorial part3 message 16]
+Виберіть доріжку та поліпшення в її керуванні. Юніти всередині мають вийти перед будівництвом, тому зміна може початися не відразу.
+[tutorial part3 message 17]
+Призначте вільних робітників на поліпшення доріжки. Майданчик рівня 2 можуть будувати тільки робітники з потрібною шкільною підготовкою.
+[tutorial part3 message 18]
+Дочекайтеся поліпшення доріжки. Будівлі вищого рівня потребують більше ресурсів і часу.
+[tutorial part3 message 19]
+Доріжка рівня 2 готова. Вона займає більше землі, саме тому ми лишали проміжок. Без місця для розширення будівлю не поліпшити.
+[tutorial part3 message 20]
+Тепер поліпшіть казарму й басейн до рівня 2. Продовжимо, коли обидва завершаться.
+[tutorial part3 message 21]
+Поліпшені будівлі зазвичай приймають більше глобулів або краще навчають. Наприклад, їдальня рівня 2 має 7 місць і годує швидше за базову.
+[tutorial part3 message 22]
+Ворог поруч. Підготуємося до нападу.
+[tutorial part3 message 23]
+Вежі стріляють у ворогів у межах досяжності, а стіни їх захищають. Обома засобами оборонятимемо вузький підхід до колонії.
+[tutorial part3 message 24]
+Якщо є місце, ставте вежі парами. Стіни можуть прикрити три боки, але залиште шлях для доставки кам'яних боєприпасів.
+[tutorial part3 message 25]
+Погляньте на схід від басейну, на північ від інших фруктових дерев. Вузький перехід веде на інший острів і добре підходить для оборони.
+[tutorial part3 message 26]
+Заплануйте місце для 2 веж між деревами й берегом. Позаду залиште підхід для каменю, з інших боків — для стін. Не відгородіть робітників.
+[tutorial part3 message 27]
+Побудуйте там 2 вежі. Призначте по 2 або 3 робітники на майданчик відповідно до доступної кількості в інтерфейсі.
+[tutorial part3 message 28]
+Через керування будівництвом поставте секції стін уздовж трьох зовнішніх боків веж. Бік до колонії залиште відкритим для робітників.
+[tutorial part3 message 29]
+Кожна секція створює будівельну роботу й потребує 1 каменю. Якщо робітників на все відразу бракує, вони завершать секції по черзі.
+[tutorial part3 message 30]
+Дочекайтеся завершення обох веж і кількох секцій стіни. Вежам також потрібні кам’яні боєприпаси; далекий кар’єр уповільнює доставку. Збільшуйте бажану кількість робітників біля веж, якщо маєте вільних.
+[tutorial part4 message 1]
+Колонія має їжу, навчання й оборону. Будівлі можна ще раз підняти до рівня 3 для кращої підготовки й місткості. Продовжуйте поліпшення за наявності ресурсів і навичок.
+[tutorial part4 message 2]
+Шукайте ворожу колонію на північний захід від бази. Перемістіть туди огляд.
+[tutorial part4 message 3]
+Навіть досліджена земля може ховатися в тумані війни. Щоб бачити теперішні дії ворога, потрібен дослідник поблизу.
+[tutorial part4 message 4]
+Відкрийте прапори. Прапори й зони дозволяють спрямовувати юнітів, не керуючи кожним глобулем окремо.
+[tutorial part4 message 5]
+Виберіть прапор розвідки зі значком повітряного змія. Прапори ставляться на суходолі, воді, ресурсах і недослідженій землі.
+[tutorial part4 message 6]
+Поставте прапор розвідки над імовірною ворожою базою. Приблизного місця досить для початку розвідки. Вийдіть із розміщення правою кнопкою або завершіть сенсорним керуванням.
+[tutorial part4 message 7]
+Контур навколо прапора показує робочий радіус. Призначений дослідник оглядатиме цю зону. Якщо ніхто не приходить, перевірте кількість і за потреби виробіть ще одного в Рої. Коли він прибуде, натисніть пробіл або «Гаразд».
+[tutorial part4 message 8]
+У ворога багато робітників і зібрана армія. Підготуємо оборону перед їхнім нападом.
+[tutorial part4 message 9]
+У прапорах виберіть синю зону охорони. Використовуйте додавання землі до зони, а не вилучення. На сенсорному екрані оберіть малювання замість стирання.
+[tutorial part4 message 10]
+Виберіть форму й розмір пензля. Великий квадрат зручний для компактної оборонної ділянки.
+[tutorial part4 message 11]
+Намалюйте зону охорони відразу за вежами, де очікуєте ворога. Клацніть чи торкніться для однієї точки або тягніть для більшої площі. На сенсорному екрані використовуйте панорамування, коли треба пересунути огляд під час малювання.
+[tutorial part4 message 12]
+Доступні воїни підуть у зону охорони. Вона має вміщувати оборонців, але бути досить малою, щоб тримати їх разом біля переходу. Чекайте нападу.
+[tutorial part4 message 13]
+Ворог наближається до переходу!
+[tutorial part4 message 14]
+На нас напали. Спостерігайте, як навчені воїни й вежі обороняють позицію.
+[tutorial part4 message 15]
+Ви вистояли! У прапорах виберіть шипований бойовий прапор і поставте над ворожим Роєм, щоб спрямувати туди атаку.
+[tutorial part4 message 16]
+Вийдіть із розміщення й виберіть бойовий прапор. Призначте більше ніж 1 воїна, потім зменште радіус, зосередивши атаку біля ворожого Рою. Дочекайтеся прибуття.
+[tutorial part4 message 17]
+Атака почалася. Щоб дістатися Рою, воїнам треба пройти ворожі вежі.
+[tutorial part4 message 18]
+Воїни дісталися ворожої бази. Продовжуйте зосереджувати атаку на Рої.
+[tutorial part4 message 19]
+Ви знищили ворожий Рій. Вітаємо! Навчання завершено: ви опанували основи харчування, призначень, підготовки, поліпшень, розвідки й бою.
+[tutorial mission basics]
+Вступ і основи
+[tutorial mission development]
+Будівлі та школи
+[tutorial mission training]
+Воїни, навчання й поліпшення
+[tutorial mission flags]
+Прапори та завершення
+[library  Could not restore the previous library: %0]
+ Не вдалося відновити попередню бібліотеку: %0
+[library  The previous library is retained.]
+ Попередню бібліотеку збережено.
+[library  · Installed]
+ · Установлено
+[library  · Update available]
+ · Є оновлення
+[library A different release is installed. Install the selected release to update explicitly.]
+Установлено інший випуск. Якщо хочете оновити його, установіть вибраний випуск.
+[library All engines]
+Усі рушії
+[library All generators]
+Усі генератори
+[library Available families]
+Доступні сімейства
+[library Back]
+Назад
+[library Building families]
+Сімейства будівель
+[library Building library]
+Бібліотека будівель
+[library Checking building release]
+Перевірка випуску будівель
+[library Choose an online instance before opening a family link.]
+Перед відкриттям посилання виберіть онлайн-сервер.
+[library Compatible with this engine]
+Сумісно з цим рушієм
+[library Confirm replacement]
+Підтвердити заміну
+[library Create in Building Studio]
+Створити у Building Studio
+[library Downloading generator…]
+Завантаження генератора…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Кожен ландшафт показано як справжню карту із зазначеними нижче розміром і кількістю колоній, які тут можна змінити. Виберіть ландшафт, щоб грати на показаній карті.
+[library Editor tool: generates terrain for the map editor.]
+Інструмент редактора: створює місцевість для редактора карт.
+[library Editor tools]
+Інструменти редактора
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Увімкніть установлені сімейства нижче. Вибір зберігається в локальному профілі; наявні карти й збереження лишають власні будівлі. Для онлайн-гри створіть карту з цими сімействами, опублікуйте в бібліотеці карт і виберіть у кімнаті.
+[library Enter a building family ID or a link to its family page.]
+Уведіть ID сімейства будівель або посилання на його сторінку.
+[library Family link or ID]
+Посилання чи ID сімейства
+[library Family links must be at most 1024 characters.]
+Посилання сімейства має містити не більше 1024 символів.
+[library Family removed.]
+Сімейство вилучено.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Сімейство недоступне. Для приватних сімейств увійдіть через розділ онлайн-гри обліковим записом із правом доступу.
+[library Generator file hash mismatch]
+Хеш файлу генератора не збігається
+[library Generator installed. Future selections use this release.]
+Генератор установлено. Наступні вибори використовуватимуть цей випуск.
+[library Generator package identity mismatch]
+Ідентифікатор пакета генератора не збігається
+[library Generators]
+Генератори
+[library Install compatible release]
+Установити сумісний випуск
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Установлюйте окремі будівлі чи сімейства поліпшень поряд зі стандартними будівлями. Вибір діє лише на нові створювані карти.
+[library Install selected release]
+Установити вибраний випуск
+[library Installed]
+Установлено
+[library Installed families]
+Установлені сімейства
+[library Installed. Enable the family below for new maps.]
+Установлено. Увімкніть сімейство нижче для нових карт.
+[library Invalid building family ID.]
+Некоректний ID сімейства будівель.
+[library Invalid building library response]
+Некоректна відповідь бібліотеки будівель
+[library Invalid library cursor]
+Некоректний курсор сторінок бібліотеки
+[library Invalid release identity]
+Некоректний ідентифікатор випуску
+[library Load more]
+Завантажити ще
+[library Load more families]
+Завантажити більше сімейств
+[library Loading building families]
+Завантаження сімейств будівель
+[library Loading…]
+Завантаження…
+[library Map generators]
+Генератори карт
+[library Maps]
+Карти
+[library Most downloaded]
+Найчастіше завантажувані
+[library Most liked]
+Найбільш уподобані
+[library My generators]
+Мої генератори
+[library Newest]
+Найновіші
+[library No building families installed.]
+Немає встановлених сімейств будівель.
+[library No public building families yet]
+Публічних сімейств будівель ще немає
+[library No validated release for this game version.]
+Немає перевіреного випуску для цієї версії гри.
+[library Online server changed during download]
+Онлайн-сервер змінився під час завантаження
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Відкрийте відсутнє в переліку сімейство за посиланням чи ID. Для приватних спершу ввійдіть через онлайн-гру.
+[library Open family]
+Відкрити сімейство
+[library Opened family. Install its compatible release below.]
+Сімейство відкрито. Установіть сумісний випуск нижче.
+[library Opening building family]
+Відкриття сімейства будівель
+[library Playable]
+Придатний до гри
+[library Playable generator]
+Ігровий генератор
+[library Privacy policy]
+Політика конфіденційності
+[library Public library]
+Публічна бібліотека
+[library Recently updated]
+Нещодавно оновлені
+[library Refresh library]
+Оновити бібліотеку
+[library Release identity changed during installation]
+Ідентифікатор випуску змінився під час установлення
+[library Reroll]
+Переобрати випадково
+[library Reroll seed]
+Нове випадкове зерно
+[library Saving generator library…]
+Збереження бібліотеки генераторів…
+[library Search]
+Пошук
+[library Seed]
+Зерно
+[library Selection saved for new maps.]
+Вибір збережено для нових карт.
+[library Storage failed.]
+Не вдалося зберегти.
+[library Storage persistence unavailable]
+Постійне зберігання недоступне
+[library Tags]
+Мітки
+[library Technical checks passed for this engine. Balance is not certified.]
+Технічні перевірки для цього рушія пройдено. Баланс не підтверджено.
+[library The server returned a different family.]
+Сервер повернув інше сімейство.
+[library This link is from another instance. Switch to that instance in Online first.]
+Це посилання з іншого сервера. Спершу перейдіть на нього в онлайн-грі.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Пакет із цим ID уже встановлено. Підтвердьте заміну, щоб використовувати вибрану версію.
+[library This release has no passing checks for this engine.]
+Цей випуск не має успішних перевірок для цього рушія.
+[library This release is installed.]
+Цей випуск установлено.
+[library Update installed family]
+Оновити встановлене сімейство
+[library Use in a room]
+Використати в кімнаті
+[library By %0]
+Автор: %0
+[library Installed release %0]
+Установлений випуск %0
+[library Release %0]
+Випуск %0
+[library Remove %0]
+Вилучити %0
+[library Seed: %0]
+Зерно: %0
+[library %0 · revision %1]
+%0 · редакція %1
+[library Fit]
+Умістити
+[library GL only]
+Лише GL

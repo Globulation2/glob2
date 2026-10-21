@@ -6,34 +6,6 @@ Je browser is niet geopend. Open de aanmeldpagina om verder te gaan.
 Controleer als de pagina erom vraagt of deze %0 toont.
 [hub code copied]
 Code gekopieerd
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Voltooi in je browser. Het spel gaat vanzelf verder.
 [music set]
@@ -6039,96 +6011,622 @@ Tijdslimiet bereikt.
 [outcome reason probability]
 Drempel voor de winstkans bereikt.
 [Discord community]
-
+Discord-gemeenschap
 [Globulation 2 Discord]
-
+Globulation 2 op Discord
 [discord community intro]
-
+Vind tegenstanders, vraag om hulp en deel je kaarten met de Globulation 2-gemeenschap.
 [discord opens externally]
-
+Word lid van onze Discord-server. Hiermee open je Discord of je browser.
 [Join Discord]
-
+Word lid op Discord
 [Copy link]
-
+Link kopiëren
 [discord opened]
-
+Discord geopend. Je kunt op elk moment terugkeren naar het spel.
 [discord open failed]
-
+Kan Discord niet openen. Kopieer de uitnodigingslink en open deze in je browser.
 [discord link copied]
-
+Uitnodigingslink gekopieerd.
 [settings CPU automatic]
-
+CPU automatisch
 [settings Scalar]
-
+Scalair
 [settings Unavailable]
-
+Niet beschikbaar
 [settings Initializing]
-
+Initialiseren
 [settings Gradient backend]
-
+Gradientbackend
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Wordt toegepast bij het volgende synchronisatiepunt van de simulatie. Niet-ondersteunde taken gebruiken CPU automatisch; weergave staat hier los van.
 [settings Gradient algorithm]
-
+Gradientalgoritme
 [settings All choices compute the same exact field.]
-
+Alle opties berekenen exact hetzelfde veld.
 [settings Bucket propagation]
-
+Bucketpropagatie
 [settings Verify gradient results]
-
+Gradientresultaten controleren
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Vergelijk GPU-resultaten met de scalaire CPU voordat ze beschikbaar worden. Dit vergt extra berekeningen en stopt het spel bij een verschil.
 [settings Gradient computation]
-
+Gradientberekening
 [settings CPU fallback]
-
+Terugval op CPU
 [settings GPU fields]
-
+GPU-velden
 [settings CPU fallbacks]
-
+CPU-terugvallen
 [settings MCP server]
-
+MCP-server
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Met de MCP-server kunnen lokale clients het spel bekijken en bedienen.
 [settings Enable MCP server]
-
+MCP-server inschakelen
 [settings Port]
-
+Poort
 [settings Current controller: %0]
-
+Besturende client: %0
 [settings Copy endpoint]
-
+Verbindingsadres kopiëren
 [settings Retry listener]
-
+Opnieuw luisteren
 [settings Revoke control]
-
+Besturing intrekken
 [settings MCP server unavailable in this application]
-
+MCP-server niet beschikbaar in deze toepassing
 [settings Disabled]
-
+Uitgeschakeld
 [settings Running]
-
+Actief
 [settings Error: %0]
-
+Fout: %0
 [settings None]
-
+Geen
 [settings Starting]
-
+Starten
 [Which hand holds your phone?]
-
+Linker- of rechterhand?
 [hand preference explanation]
-
+Houd je telefoon zoals je gewend bent. Tik op de hand waarmee je speelt.
 [hand silhouettes description]
-
+Een telefoonomtrek met links en rechts een hand erboven. Druk op een van de afgeschuinde duimknoppen om die kant te kiezen.
 [hand preference change later]
-
+Je kunt later van kant wisselen in Instellingen.
 [hand preference save failed]
-
+Kan je keuze niet opslaan. Probeer het opnieuw.
 [Left hand]
-
+Linkerhand
 [Right hand]
-
+Rechterhand
 [discord copy failed]
-
+Kan de link niet kopiëren. Selecteer de uitnodiging hierboven om deze handmatig te kopiëren.
 [Destroy this building?]
 Dit gebouw vernietigen?
+[stat ground movement]
+Beweging op de grond
+[stat ground movement about]
+Levende grondeenheden naar benaderde snelheidsverhouding. 'Zwemmen 2x' betekent twee keer zo snel zwemmen als rennen. Vliegende en onbeweeglijke eenheden tellen niet mee.
+[stat view by movement]
+Op beweging
+[stat band land only]
+Alleen land
+[stat band swim twice run]
+Zwemmen 2x
+[stat band swim faster run]
+Zwemmen 1,4x
+[stat band swim equals run]
+Gelijk
+[stat band run faster swim]
+Rennen 1,3x
+[stat band run twice swim]
+Rennen 2x
+[stat band run triple swim]
+Rennen 3x
+[stat band water only]
+Alleen water
+[settings Browse shared generators]
+Gedeelde generatoren bekijken
+[settings Apply artwork on the next game or editor load.]
+Pas de afbeeldingen toe wanneer de volgende partij of de editor wordt geladen.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Vereist een renderer met textuurfiltering. Je opgeslagen keuze blijft behouden.
+[settings Automatically show the torus overview while moving around the map.]
+Toon automatisch het torusoverzicht tijdens het verplaatsen over de kaart.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Vereist een renderer met torusondersteuning. Je opgeslagen keuze blijft behouden.
+[settings Move and animate units between game ticks.]
+Verplaats en animeer eenheden tussen speltikken.
+[settings Renderer unavailable]
+Renderer niet beschikbaar
+[settings Apply at the next completed frame. Your game stays running.]
+Pas toe na het volgende voltooide beeld. Je spel blijft doorgaan.
+[settings Active renderer: %0]
+Actieve renderer: %0
+[settings Changing renderer…]
+Renderer wijzigen…
+[settings Menu scroll wheel enabled]
+Scrollwiel in menu's ingeschakeld
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Regelt scrollen met het muiswiel in menu's. Op spel- en editorkaarten zoomt het wiel altijd.
+[settings Gesture scrolling]
+Scrollen met gebaren
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Scrollen via aanraking en Mac-gebaren. 0 schakelt een effect uit; 50 is de standaard voor aanraking.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Hoe ver lijsten en panelen blijven scrollen na een veeg. Mac-gebaren gebruiken de door het systeem geregelde scrollinertie; nul schakelt het doorglijden uit.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Hoe ver lijsten en panelen voorbij hun uiteinden rekken en terugveren. Mac-gebaren rekken minder ver.
+[hive stopping]
+Stoppen…
+[hive stopped]
+Gestopt
+[hive stop failed]
+Stoppen mislukt; probeer de stopsneltoets opnieuw
+[hive updating]
+Bijwerken…
+[hive requested]
+Aangevraagd
+[hive update failed]
+Bijwerken mislukt; probeer het opnieuw
+[hive give order]
+Opdracht geven
+[hive less]
+Minder
+[hive reports and details]
+Verslagen / details
+[hive needs fresh order]
+Nieuwe opdracht nodig
+[hive active]
+Actief
+[hive resume]
+Hervatten
+[recordings]
+Opnamen
+[recording delete confirm]
+Opname verwijderen?
+[recording delete warning]
+De opname en de bijbehorende metadata worden verwijderd.
+[recording delete]
+Verwijderen
+[recording working]
+Bezig…
+[recording none]
+Nog geen opnamen.
+[recording interrupted]
+Onderbroken opname
+[recording recover]
+Herstellen
+[recording export video]
+Video exporteren
+[recording export metadata]
+Metadata exporteren
+[recording export events]
+Gebeurtenissen exporteren
+[recording export failed]
+Kan de opname niet exporteren.
+[recording delete action]
+Opname verwijderen
+[recording refresh]
+Vernieuwen
+[tutorial part1 message 1]
+Welkom bij Globulation 2! Deze handleiding leert je koloniebeheer in vier missies. Je kunt je voortgang opslaan via het spelmenu en later laden vanuit het hoofdmenu. Druk op Spatie om verder te gaan, of tik op Ok op een aanraakscherm. Sommige berichten verdwijnen daarna; je kunt ze teruglezen in de berichtengeschiedenis.
+[tutorial part1 message 2]
+Je begint met een Zwerm en één werker. Laten we zien hoe ze samenwerken.
+[tutorial part1 message 3]
+Je werker oogst tarwe en brengt die naar de Zwerm. De Zwerm gebruikt tarwe om nieuwe eenheden te maken en is dus onmisbaar voor je kolonie.
+[tutorial part1 message 4]
+Selecteer je globule, de bewegende eenheid, met een linkerklik of een tik.
+[tutorial part1 message 5]
+De eenheidsinformatie toont dat de voedselvoorraad geleidelijk daalt. Je globule krijgt honger. Wanneer voedselbalken zichtbaar zijn, toont de blauwe balk onder de eenheid hoeveel voedsel over is.
+[tutorial part1 message 6]
+Globules eten in Herbergen. Hef de selectie op met een rechterklik, of tik op lege grond op een aanraakscherm.
+[tutorial part1 message 7]
+Open de bouwbediening, kies Herberg en plaats deze bij tarwe. Volg de oogstroute van je werker als je de tarwe niet ziet. Gebruik op aanraakschermen Bouwen en bevestig een geldige plek. Verlaat daarna de plaatsingsmodus met een rechterklik of de aanraakknop Annuleren.
+[tutorial part1 message 8]
+Goed! De bouwplaats van de Herberg ligt klaar.
+[tutorial part1 message 9]
+Een werker van de Zwerm kan nu de Herberg bouwen. De werker haalt hout bij bomen in de buurt en brengt het naar de bouwplaats. Wacht tot de bouw klaar is.
+[tutorial part1 message 10]
+De voltooide Herberg heeft tarwe nodig. Een toegewezen werker haalt die, net als bij de bevoorrading van de Zwerm.
+[tutorial part1 message 11]
+De gele grondstoffenbalk van de Herberg stijgt wanneer tarwe aankomt. Deze toont hoeveel tarwe op voorraad is.
+[tutorial part1 message 12]
+Nu leren we hoe je werk toewijst.
+[tutorial part1 message 13]
+Eén werker bevoorraadt de Zwerm en een andere de Herberg. Beiden kunnen pauzeren om in de Herberg te eten. Dat is normaal.
+[tutorial part1 message 14]
+Selecteer de Zwerm en zoek de werkertoewijzing. Op de computer heet deze Werkend; op aanraakschermen gebruik je de toegewezen werkers en de doelinstelling. Het doel is hoeveel werkers je bij dit gebouw wilt.
+[tutorial part1 message 15]
+Stel het werkersdoel van de Zwerm in op 0. Selecteer daarna de Herberg en zet ook daar het doel op 0.
+[tutorial part1 message 16]
+Je werkers hebben nu niets te doen, maar hebben nog voedsel nodig. Een Herberg zonder toegewezen werkers raakt uiteindelijk door zijn tarwe heen.
+[tutorial part1 message 17]
+Een globule die geen voedsel vindt, verliest gezondheid en kan sterven. Een Ziekenhuis kan gewonde globules genezen, maar je moet ook de Herbergen blijven bevoorraden.
+[tutorial part1 message 18]
+Bouw een Ziekenhuis via de bouwbediening. Het heeft geen tarwe nodig, dus plaats het bij hout of op een centrale plek nabij je Zwerm.
+[tutorial part1 message 19]
+Selecteer de bouwplaats van het Ziekenhuis en stel het werkersdoel in op 2. Twee werkers kunnen het sneller afmaken.
+[tutorial part1 message 20]
+Het Ziekenhuis is klaar. Gewonde globules kunnen er nu hun gezondheid herstellen.
+[tutorial part1 message 21]
+De zwarte gebieden zijn onverkend. Eenheden onthullen nabijgelegen grond terwijl ze bewegen. Werkers volgen hun taken en zijn lastig als verkenners te gebruiken. Verkenners zijn juist voor die taak bedoeld.
+[tutorial part1 message 22]
+Selecteer de Zwerm en zoek de productieverhoudingen voor werkers, verkenners en krijgers. Verhoog de verhouding voor verkenners naar 1.
+[tutorial part1 message 23]
+Met beide verhoudingen op 1 maakt de Zwerm na verloop van tijd evenveel werkers als verkenners. Zet de werkersverhouding op 0 om voorlopig alleen verkenners te maken.
+[tutorial part1 message 24]
+Zet het doel voor toegewezen werkers van de Zwerm terug op 1, zodat een werker tarwe kan brengen.
+[tutorial part1 message 25]
+Selecteer de Herberg en zet ook daar het werkersdoel op 1. Je groeiende kolonie heeft een gestage voedseltoevoer nodig.
+[tutorial part1 message 26]
+Wacht nu tot de Zwerm een verkenner maakt.
+[tutorial part1 message 27]
+Je verkenner vliegt rond de kolonie en onthult meer grond. Laat de Zwerm een tweede verkenner maken voordat je doorgaat.
+[tutorial part1 message 28]
+Selecteer de Zwerm opnieuw. Zet de verkennersverhouding op 0 en de werkersverhouding op 1 om weer werkers te maken.
+[tutorial part2 message 1]
+Ten oosten van je basis ligt steen. Onthoud deze plek; later heb je steen nodig.
+[tutorial part2 message 2]
+De bomen ten zuiden van de steen zijn sinaasappelbomen. Selecteer ze om hun grondstoffeninformatie te zien. We komen later op fruit terug; richt je nu op de Zwerm.
+[tutorial part2 message 3]
+Laat de Zwerm alleen werkers maken: werkersverhouding 1, verkenners- en krijgersverhouding 0.
+[tutorial part2 message 4]
+Laat de kolonie sneller groeien. Selecteer de Zwerm en stel het werkersdoel in op 6. Misschien heb je nog geen zes werkers; nieuwe werkers kunnen de open plaatsen invullen zodra ze beschikbaar zijn.
+[tutorial part2 message 5]
+De volgende taken beginnen wanneer je 8 werkers hebt. Houd de Zwerm en de Herberg bevoorraad terwijl de bevolking groeit.
+[tutorial part2 message 6]
+Meerdere werkers bevoorraden nu de Zwerm. Met meer tarwe kan deze sneller eenheden maken.
+[tutorial part2 message 7]
+Een nieuwe werker kost 5 tarwe. Tarwe van een ver veld dragen kost tijd, dus een Zwerm heeft vaak meer bevoorraders nodig dan een Herberg. Plaats gebouwen die voedsel nodig hebben zo mogelijk dicht bij tarwe.
+[tutorial part2 message 8]
+Je hebt nu minstens 8 werkers. Selecteer de Zwerm en verlaag het werkersdoel naar 1 om de groei tijdens het bouwen af te remmen.
+[tutorial part2 message 9]
+Je kolonie heeft meer eetplaatsen nodig. Bouw een tweede Herberg ten noorden van de bestaande.
+[tutorial part2 message 10]
+Wijs vrije werkers toe aan de nieuwe bouwplaats. Er is maar 3 hout nodig, dus meer dan 3 bouwers helpen weinig.
+[tutorial part2 message 11]
+De voltooide Herberg keert terug naar het normale werkersdoel, meestal 1. Voor bouwen en dagelijkse bevoorrading gelden afzonderlijke doelen.
+[tutorial part2 message 12]
+Werkers kunnen leren sneller te bewegen. De Racebaan biedt die training.
+[tutorial part2 message 13]
+Open de bouwbediening en zoek Racebaan. Houd op de computer de muis boven het pictogram om beschrijving en kosten te zien. Selecteer deze op aanraakschermen in Bouwen om de plaatsing voor te bereiden. Plaats hem nog niet.
+[tutorial part2 message 14]
+Een Racebaan heeft veel hout en een beetje steen nodig. Kies een centrale plek die eenheden makkelijk kunnen bereiken.
+[tutorial part2 message 15]
+Bouw een Racebaan, bijvoorbeeld ten zuiden van de Zwerm. Laat ruimte eromheen: trainingsgebouwen moeten bij een verbetering kunnen uitbreiden.
+[tutorial part2 message 16]
+Stel het werkersdoel voor de bouwplaats van de Racebaan in tussen 5 en 7. In totaal zijn 7 bouwmaterialen nodig.
+[tutorial part2 message 17]
+Een voltooide Racebaan traint bezoekende eenheden zonder een voortdurende aanvoer van bouwmaterialen of tarwe.
+[tutorial part2 message 18]
+Globules gaan de Racebaan in om te trainen. Daarna kunnen ze sneller rennen.
+[tutorial part2 message 19]
+Selecteer de Racebaan om de training te bekijken. De voortgangsbalken tonen hoever de eenheden binnen zijn.
+[tutorial part2 message 20]
+Je getrainde werkers reizen sneller en leveren grondstoffen eerder af. Blijf de voedselvoorraad volgen terwijl de kolonie groeit: snellere leveringen helpen alleen als genoeg Herbergen bevoorraad blijven.
+[tutorial part2 message 21]
+Zoek de werkerteller in de spelinterface. Het totaal toont je bevolking; het aantal beschikbare werkers helpt om vrije werkers en open taken te vinden. Gebruik vrije werkers zonder meer taken toe te wijzen dan de kolonie aankan.
+[tutorial part2 message 22]
+De interface toont ook aantallen verkenners en krijgers. Bekijk die bij het plannen van productie of het toewijzen van eenheden aan vlaggen.
+[tutorial part2 message 23]
+Je hebt 2 Herbergen. Elke eenvoudige Herberg kan 4 eenheden tegelijk voeden: samen zijn dat 8 eetplaatsen. Meer dan 8 eenheden kunnen honger krijgen, dus houd genoeg ruimte voor wachtrijen.
+[tutorial part2 message 24]
+Twee Herbergen zijn niet voor altijd genoeg voor een groeiende kolonie. Bouw extra eetplaatsen voordat tekorten tot verhongering leiden.
+[tutorial part2 message 25]
+Bouw nog 3 Herbergen bij tarwe. Hongerige werkers stoppen met werken en langdurige honger doodt ze. Laat beschikbare werkers bouwen terwijl de bestaande voedseltoevoer blijft werken.
+[tutorial part2 message 26]
+Voltooi nog 3 Herbergen, zodat je er in totaal 5 hebt.
+[tutorial part2 message 27]
+Na de bouw gebruiken de nieuwe Herbergen hun normale werkersdoel, meestal 1 werker per gebouw. Controleer of ze bevoorraders en genoeg tarwe hebben.
+[tutorial part2 message 28]
+De Racebaan heeft het reizen over land verbeterd. Nu leren we de kolonie zwemmen.
+[tutorial part2 message 29]
+Een Zwembad leert eenheden zwemmen en kost hout om te bouwen. Plaats er een op de grote open plek ten noordoosten van de basis, ten noorden van de steen. Laat ruimte voor verbeteringen en groei van grondstoffen, en wijs beschikbare werkers toe aan de bouw.
+[tutorial part2 message 30]
+Een Zwembad leert eenheden zwemmen en kost hout om te bouwen. Plaats er een op de grote open plek ten noordoosten van de basis, ten noorden van de steen. Laat ruimte voor verbeteringen en groei van grondstoffen, en wijs beschikbare werkers toe aan de bouw.
+[tutorial part2 message 31]
+Het Zwembad is klaar. Globules kunnen er nu leren zwemmen.
+[tutorial part2 message 32]
+Selecteer het Zwembad om de training te bekijken. Een eenvoudig Zwembad traint 2 globules tegelijk, net als een eenvoudige Racebaan.
+[tutorial part2 message 33]
+Je getrainde globules kunnen nu zwemmen. Straks geven we ze werk waarvoor ze water moeten oversteken.
+[tutorial part2 message 34]
+Er valt nog meer te leren. Als je pauze wilt, sla je voortgang dan op via het spelmenu en kom later terug.
+[tutorial part2 message 35]
+Je kolonie heeft voedsel en lichamelijke training. Een School leert werkers de vaardigheden voor betere gebouwen.
+[tutorial part2 message 36]
+Een School verbetert de oogst- en bouwvaardigheden van werkers. Voor de bouw zijn algen nodig, die in water groeien. Je zwemmende werkers kunnen ze verzamelen.
+[tutorial part2 message 37]
+Bescherm belangrijke trainingsgebouwen. Een School hoeft niet naast water te staan; een beschutte plek landinwaarts kan veiliger zijn tegen aanvallen.
+[tutorial part2 message 38]
+Bouw een School op een veilige plek, bijvoorbeeld achter het Zwembad of ten zuidwesten van de Zwerm, naast de Racebaan. Wijs beschikbare werkers toe aan de bouw.
+[tutorial part2 message 39]
+Selecteer een gebouw om de toegewezen werkers te zien. Op de computer kan de instelbare actie Eenheidspaden tonen/verbergen ook lijnen naar hun bestemming tonen; bekijk de huidige sneltoets onder Instellingen, Besturing. Wacht tot de School klaar is.
+[tutorial part3 message 1]
+Je kolonie heeft nu Herbergen, een Ziekenhuis, Racebaan, Zwembad en School. Tijd om de verdediging voor te bereiden.
+[tutorial part3 message 2]
+We hebben nog geen krijgers gemaakt. Zonder hen is de kolonie nauwelijks beschermd tegen aanvallen.
+[tutorial part3 message 3]
+Selecteer de Zwerm en zet de krijgersverhouding op 2. Laat de werkersverhouding op 1 staan om ook werkers te blijven maken.
+[tutorial part3 message 4]
+De Zwerm maakt nu ongeveer 2 krijgers voor elke werker. Wijs meer werkers toe voor bevoorrading als je snellere productie wilt.
+[tutorial part3 message 5]
+Je eerste krijger is klaar en gaat trainen. Wacht op een tweede krijger voordat je doorgaat.
+[tutorial part3 message 6]
+Krijgers gebruiken ook de Racebaan en het Zwembad. Ze kunnen daarnaast hun aanval trainen in een Kazerne.
+[tutorial part3 message 7]
+Kazernes verbeteren aanvalskracht en aanvalssnelheid. Kracht verhoogt de schade per slag; snelheid bepaalt hoe vaak een krijger aanvalt. Goed getrainde krijgers kunnen veel grotere groepen ongetrainde vijanden verslaan.
+[tutorial part3 message 8]
+Bouw een Kazerne bij hout, dat voor de bouw nodig is.
+[tutorial part3 message 9]
+Wijs beschikbare werkers toe aan de bouwplaats van de Kazerne. Houd genoeg werkers op de voedseltoevoer en maak niet meer taken dan ze kunnen uitvoeren.
+[tutorial part3 message 10]
+De Kazerne is klaar. Krijgers kunnen er nu hun aanval trainen.
+[tutorial part3 message 11]
+Onze kolonie kan sterker worden door gebouwen te verbeteren.
+[tutorial part3 message 12]
+Werkers die op School zijn getraind, kunnen verbeteringen bouwen. Selecteer een geschikt gebouw en zoek de knop «Verbeter» in de bediening. Beschadigde gebouwen moeten mogelijk eerst worden gerepareerd via «Repareren».
+[tutorial part3 message 13]
+Laten we kiezen wat we eerst verbeteren. Onze Herbergen hebben nog vrije plaatsen en kunnen wachten.
+[tutorial part3 message 14]
+Het Ziekenhuis heeft ook nog ruimte. We kunnen ons richten op de School, Racebaan, het Zwembad of de Kazerne.
+[tutorial part3 message 15]
+Verbeter eerst de Racebaan zodat eenheden nog sneller leren bewegen.
+[tutorial part3 message 16]
+Selecteer de Racebaan en kies «Verbeter». De eenheden binnen moeten vertrekken voordat de bouw begint, dus de verandering kan even duren.
+[tutorial part3 message 17]
+Wijs beschikbare werkers toe aan de verbetering van de Racebaan. Alleen werkers met de vereiste schoolopleiding kunnen bouwen op een bouwplaats van niveau 2.
+[tutorial part3 message 18]
+Wacht tot de Racebaan verbeterd is. Gebouwen van hoger niveau kosten meer grondstoffen en bouwtijd.
+[tutorial part3 message 19]
+Je Racebaan van niveau 2 is klaar. Hij neemt meer grond in, daarom lieten we ruimte vrij. Een gebouw kan niet verbeteren zonder ruimte om uit te breiden.
+[tutorial part3 message 20]
+Verbeter nu de Kazerne en het Zwembad naar niveau 2. We gaan verder zodra beide klaar zijn.
+[tutorial part3 message 21]
+Verbeterde gebouwen kunnen meestal meer globules bedienen of betere training geven. Een Herberg van niveau 2 heeft bijvoorbeeld 7 eetplaatsen en voedt sneller dan een eenvoudige Herberg.
+[tutorial part3 message 22]
+De vijand is dichtbij. Laten we ons op een aanval voorbereiden.
+[tutorial part3 message 23]
+Torens schieten op vijanden binnen bereik. Muren helpen ze beschermen. We gebruiken beide om een nauwe toegangsweg naar de kolonie te verdedigen.
+[tutorial part3 message 24]
+Plaats torens in paren als er ruimte is. Muren kunnen drie kanten beschermen, maar laat een route open zodat werkers steen als munitie kunnen brengen.
+[tutorial part3 message 25]
+Kijk ten oosten van het Zwembad, ten noorden van de andere fruitbomen. Een smalle oversteek leidt naar een ander eiland. Dit is een goede verdedigingsplek.
+[tutorial part3 message 26]
+Plan ruimte voor 2 torens tussen de bomen en de oever. Laat achteraan toegang voor steenleveringen en aan de andere kanten ruimte voor muren. Sluit de werkers niet buiten.
+[tutorial part3 message 27]
+Bouw daar 2 torens. Wijs 2 of 3 werkers toe aan elke bouwplaats, afhankelijk van het beschikbare aantal in de tellers.
+[tutorial part3 message 28]
+Plaats via de bouwbediening muren rond de drie buitenzijden van de torens. Houd de kant naar je kolonie open voor werkers.
+[tutorial part3 message 29]
+Elk muurstuk maakt een bouwtaak en kost 1 steen. Als niet alle taken tegelijk bezet kunnen worden, maken de werkers de stukken om de beurt af.
+[tutorial part3 message 30]
+Wacht tot beide torens en meerdere muurstukken klaar zijn. De torens hebben ook steen als munitie nodig; de verre groeve maakt leveringen langzaam. Verhoog hun werkersdoel als je werkers over hebt.
+[tutorial part4 message 1]
+Je kolonie heeft voedsel, training en verdediging. Gebouwen kunnen nog verder naar niveau 3, voor betere training en meer capaciteit. Blijf ze verbeteren wanneer grondstoffen en vaardigheden het toelaten.
+[tutorial part4 message 2]
+Zoek ten noordwesten van je basis naar de vijandelijke kolonie. Verplaats het beeld daarheen.
+[tutorial part4 message 3]
+Verkende grond kan nog steeds door oorlogsmist verborgen zijn. Om de huidige activiteit van de vijand te zien, hebben we een verkenner dichtbij nodig.
+[tutorial part4 message 4]
+Open Vlaggen. Daarmee kun je vlaggen en zones gebruiken om eenheden te sturen zonder elke globule apart te besturen.
+[tutorial part4 message 5]
+Kies de Verkenningsvlag met het vliegervormige symbool. Vlaggen kunnen op land, water, grondstoffen en onverkende grond worden geplaatst.
+[tutorial part4 message 6]
+Plaats een Verkenningsvlag boven de vermoedelijke vijandelijke basis. Een geschatte plek is genoeg om te beginnen. Verlaat de plaatsingsmodus met een rechterklik of rond de plaatsing af met de aanraakbediening.
+[tutorial part4 message 7]
+De omtrek rond de vlag toont het werkgebied. Een toegewezen verkenner verkent dat gebied. Controleer je verkennersaantal als niemand komt en maak zo nodig een nieuwe bij de Zwerm. Druk op Spatie of tik op Ok zodra de verkenner aankomt.
+[tutorial part4 message 8]
+De vijand heeft veel werkers en een verzameld leger. Laten we onze verdediging voorbereiden voordat hij aanvalt.
+[tutorial part4 message 9]
+Open Vlaggen en kies de blauwe Verdedigingszone. Gebruik de modus om grond toe te voegen, niet om die te verwijderen. Kies op aanraakschermen Schilderen in plaats van Wissen.
+[tutorial part4 message 10]
+Kies een penseelvorm en -grootte. Het grote vierkant is handig voor een compact verdedigingsgebied.
+[tutorial part4 message 11]
+Schilder een Verdedigingszone vlak achter je torens, waar de vijand waarschijnlijk nadert. Klik of tik om één plek te schilderen, of sleep voor een groter gebied. Gebruik op aanraakschermen Verschuiven om tijdens het schilderen het beeld te verplaatsen.
+[tutorial part4 message 12]
+Beschikbare krijgers gaan naar de Verdedigingszone. Maak deze groot genoeg voor de verdedigers, maar klein genoeg om ze bij de oversteek bijeen te houden. Wacht nu op de aanval.
+[tutorial part4 message 13]
+De vijand nadert de oversteek!
+[tutorial part4 message 14]
+We worden aangevallen. Kijk hoe je getrainde krijgers en torens de positie verdedigen.
+[tutorial part4 message 15]
+Je hebt het overleefd! Open nu Vlaggen en kies de puntige Oorlogsvlag. Plaats deze boven de vijandelijke Zwerm om daar een aanval te richten.
+[tutorial part4 message 16]
+Verlaat de plaatsingsmodus en selecteer de Oorlogsvlag. Wijs meer dan 1 krijger toe en verklein de straal om de aanval rond de vijandelijke Zwerm te concentreren. Wacht tot je krijgers aankomen.
+[tutorial part4 message 17]
+De aanval is begonnen. Je krijgers moeten langs de vijandelijke torens om de Zwerm te bereiken.
+[tutorial part4 message 18]
+Je krijgers hebben de vijandelijke basis bereikt. Houd de aanval gericht op de Zwerm.
+[tutorial part4 message 19]
+Je hebt de vijandelijke Zwerm vernietigd. Gefeliciteerd! Je hebt de handleiding voltooid en de basis geleerd van voedseltoevoer, toewijzingen, training, verbeteringen, verkenning en gevechten.
+[tutorial mission basics]
+Inleiding en basiskennis
+[tutorial mission development]
+Gebouwen en scholen
+[tutorial mission training]
+Krijgers, training en verbeteringen
+[tutorial mission flags]
+Vlaggen en afronding
+[library  Could not restore the previous library: %0]
+ Kan de vorige bibliotheek niet herstellen: %0
+[library  The previous library is retained.]
+ De vorige bibliotheek blijft behouden.
+[library  · Installed]
+ · Geïnstalleerd
+[library  · Update available]
+ · Update beschikbaar
+[library A different release is installed. Install the selected release to update explicitly.]
+Een andere versie is geïnstalleerd. Installeer de geselecteerde versie om bewust bij te werken.
+[library All engines]
+Alle engines
+[library All generators]
+Alle generatoren
+[library Available families]
+Beschikbare families
+[library Back]
+Terug
+[library Building families]
+Gebouwfamilies
+[library Building library]
+Gebouwenbibliotheek
+[library Checking building release]
+Gebouwversie controleren
+[library Choose an online instance before opening a family link.]
+Kies een online instantie voordat je een familielink opent.
+[library Compatible with this engine]
+Compatibel met deze engine
+[library Confirm replacement]
+Vervanging bevestigen
+[library Create in Building Studio]
+Maken in de gebouwenstudio
+[library Downloading generator…]
+Generator downloaden…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Elk landschap wordt als echte kaart getoond met de grootte en het aantal kolonies hieronder. Je kunt die hier wijzigen. Gebruik er een om op de getoonde kaart te spelen.
+[library Editor tool: generates terrain for the map editor.]
+Editorgereedschap: maakt terrein voor de kaarteditor.
+[library Editor tools]
+Editorgereedschap
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Schakel hieronder geïnstalleerde families in. De keuze wordt in dit lokale profiel bewaard; bestaande kaarten en opgeslagen spellen houden hun eigen gebouwen. Voor online spelen maak je een kaart met deze families, publiceer je deze in de kaartenbibliotheek en kies je die kaart in je kamer.
+[library Enter a building family ID or a link to its family page.]
+Voer een gebouwfamilie-ID of een link naar de familiepagina in.
+[library Family link or ID]
+Familielink of ID
+[library Family links must be at most 1024 characters.]
+Familielinks mogen maximaal 1024 tekens bevatten.
+[library Family removed.]
+Familie verwijderd.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Familie niet beschikbaar. Meld je voor privéfamilies via Online aan met een account dat toegang heeft.
+[library Generator file hash mismatch]
+Hash van generatorbestand komt niet overeen
+[library Generator installed. Future selections use this release.]
+Generator geïnstalleerd. Toekomstige keuzes gebruiken deze versie.
+[library Generator package identity mismatch]
+Identiteit van generatorpakket komt niet overeen
+[library Generators]
+Generatoren
+[library Install compatible release]
+Compatibele versie installeren
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Installeer losse gebouwen of verbeteringsfamilies naast de standaardgebouwen. De keuze geldt alleen voor nieuw gemaakte kaarten.
+[library Install selected release]
+Geselecteerde versie installeren
+[library Installed]
+Geïnstalleerd
+[library Installed families]
+Geïnstalleerde families
+[library Installed. Enable the family below for new maps.]
+Geïnstalleerd. Schakel de familie hieronder in voor nieuwe kaarten.
+[library Invalid building family ID.]
+Ongeldig gebouwfamilie-ID.
+[library Invalid building library response]
+Ongeldig antwoord van de gebouwenbibliotheek
+[library Invalid library cursor]
+Ongeldige bibliotheekcursor
+[library Invalid release identity]
+Ongeldige versie-identiteit
+[library Load more]
+Meer laden
+[library Load more families]
+Meer families laden
+[library Loading building families]
+Gebouwfamilies laden
+[library Loading…]
+Laden…
+[library Map generators]
+Kaartgeneratoren
+[library Maps]
+Kaarten
+[library Most downloaded]
+Meest gedownload
+[library Most liked]
+Meest gewaardeerd
+[library My generators]
+Mijn generatoren
+[library Newest]
+Nieuwste
+[library No building families installed.]
+Geen gebouwfamilies geïnstalleerd.
+[library No public building families yet]
+Nog geen openbare gebouwfamilies
+[library No validated release for this game version.]
+Geen gevalideerde uitgave voor deze spelversie.
+[library Online server changed during download]
+Online server gewijzigd tijdens downloaden
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Open een niet-vermelde familie met een link of ID. Meld je voor privéfamilies eerst aan via Online.
+[library Open family]
+Familie openen
+[library Opened family. Install its compatible release below.]
+Familie geopend. Installeer hieronder de compatibele versie.
+[library Opening building family]
+Gebouwfamilie openen
+[library Playable]
+Speelbaar
+[library Playable generator]
+Speelbare generator
+[library Privacy policy]
+Privacybeleid
+[library Public library]
+Openbare bibliotheek
+[library Recently updated]
+Recent bijgewerkt
+[library Refresh library]
+Bibliotheek vernieuwen
+[library Release identity changed during installation]
+Versie-identiteit gewijzigd tijdens installatie
+[library Reroll]
+Opnieuw loten
+[library Reroll seed]
+Nieuw willekeurig zaad
+[library Saving generator library…]
+Generatorbibliotheek opslaan…
+[library Search]
+Zoeken
+[library Seed]
+Zaad
+[library Selection saved for new maps.]
+Keuze opgeslagen voor nieuwe kaarten.
+[library Storage failed.]
+Opslaan mislukt.
+[library Storage persistence unavailable]
+Blijvende opslag niet beschikbaar
+[library Tags]
+Labels
+[library Technical checks passed for this engine. Balance is not certified.]
+Technische controles voor deze engine geslaagd. Spelbalans is niet gecertificeerd.
+[library The server returned a different family.]
+De server stuurde een andere familie terug.
+[library This link is from another instance. Switch to that instance in Online first.]
+Deze link is van een andere instantie. Schakel daar eerst naar over in Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Dit pakket-ID is geïnstalleerd. Bevestig vervanging om de geselecteerde versie te gebruiken.
+[library This release has no passing checks for this engine.]
+Deze versie heeft geen geslaagde controles voor deze engine.
+[library This release is installed.]
+Deze versie is geïnstalleerd.
+[library Update installed family]
+Geïnstalleerde familie bijwerken
+[library Use in a room]
+In een kamer gebruiken
+[library By %0]
+Door %0
+[library Installed release %0]
+Geïnstalleerde versie %0
+[library Release %0]
+Versie %0
+[library Remove %0]
+%0 verwijderen
+[library Seed: %0]
+Zaad: %0
+[library %0 · revision %1]
+%0 · revisie %1
+[library Fit]
+Passend
+[library GL only]
+Alleen GL

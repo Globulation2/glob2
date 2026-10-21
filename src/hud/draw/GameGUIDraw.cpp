@@ -1,3 +1,4 @@
+#include "ui/TutorialText.h"
 #include "hive/HiveDialog.h"
 #include "render/scene/SceneExtract.h"
 #include "render/UnitMotion.h"
@@ -550,7 +551,7 @@ void GameGUI::drawOverlayInfos(void)
 		if (hud.state().legacyScriptTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
-			setMultiLine(hud.state().legacyScriptText, &lines);
+			setMultiLine(Glob2UI::tutorialText(hud.state().legacyScriptText, legacyTutorialScript), &lines);
 			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{

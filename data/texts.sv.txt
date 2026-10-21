@@ -6,34 +6,6 @@ Din webbläsare öppnades inte. Öppna inloggningssidan för att fortsätta.
 Om sidan frågar, kontrollera att den visar %0.
 [hub code copied]
 Koden kopierad
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Slutför i din webbläsare. Spelet fortsätter automatiskt.
 [music set]
@@ -6039,96 +6011,622 @@ Tidsgränsen är nådd.
 [outcome reason probability]
 Tröskeln för vinstsannolikhet är uppnådd.
 [Discord community]
-
+Discord-gemenskap
 [Globulation 2 Discord]
-
+Globulation 2 på Discord
 [discord community intro]
-
+Hitta motståndare, be om hjälp och dela dina kartor med Globulation 2-gemenskapen.
 [discord opens externally]
-
+Gå med på vår Discord-server. Discord eller din webbläsare öppnas.
 [Join Discord]
-
+Gå med på Discord
 [Copy link]
-
+Kopiera länk
 [discord opened]
-
+Discord har öppnats. Du kan återvända till spelet när du vill.
 [discord open failed]
-
+Det gick inte att öppna Discord. Kopiera inbjudningslänken och öppna den i webbläsaren.
 [discord link copied]
-
+Inbjudningslänken kopierad.
 [settings CPU automatic]
-
+Automatiskt CPU-val
 [settings Scalar]
-
+Skalär
 [settings Unavailable]
-
+Ej tillgänglig
 [settings Initializing]
-
+Initierar
 [settings Gradient backend]
-
+Beräkningsmotor för gradienter
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Gäller från nästa simuleringsgräns. Funktioner som saknar stöd använder automatiskt CPU-val; renderingen är oberoende.
 [settings Gradient algorithm]
-
+Gradientalgoritm
 [settings All choices compute the same exact field.]
-
+Alla alternativ beräknar exakt samma fält.
 [settings Bucket propagation]
-
+Spridning i nivågrupper
 [settings Verify gradient results]
-
+Kontrollera gradientresultat
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Jämför GPU-resultaten med skalär CPU-beräkning innan de används. Ökar beräkningsarbetet och stoppar spelet om resultaten skiljer sig.
 [settings Gradient computation]
-
+Gradientberäkning
 [settings CPU fallback]
-
+CPU-reservläge
 [settings GPU fields]
-
+GPU-fält
 [settings CPU fallbacks]
-
+Växlingar till CPU-reservläge
 [settings MCP server]
-
+MCP-server
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Om du aktiverar MCP-servern kan lokala klienter se och styra spelet.
 [settings Enable MCP server]
-
+Aktivera MCP-server
 [settings Port]
-
+Portnummer
 [settings Current controller: %0]
-
+Styrande klient: %0
 [settings Copy endpoint]
-
+Kopiera anslutningsadress
 [settings Retry listener]
-
+Försök lyssna igen
 [settings Revoke control]
-
+Återkalla styrning
 [settings MCP server unavailable in this application]
-
+MCP-servern är inte tillgänglig i denna applikation
 [settings Disabled]
-
+Inaktiverad
 [settings Running]
-
+Körs
 [settings Error: %0]
-
+Fel: %0
 [settings None]
-
+Ingen
 [settings Starting]
-
+Startar
 [Which hand holds your phone?]
-
+Vänster eller höger hand?
 [hand preference explanation]
-
+Håll telefonen som vanligt. Tryck på handen du spelar med.
 [hand silhouettes description]
-
+En telefonkontur med vänster och höger hand ovanpå. Tryck på någon av de fasade tumknapparna för att välja sida.
 [hand preference change later]
-
+Du kan byta sida senare i Inställningar.
 [hand preference save failed]
-
+Det gick inte att spara ditt val. Försök igen.
 [Left hand]
-
+Vänster hand
 [Right hand]
-
+Höger hand
 [discord copy failed]
-
+Det gick inte att kopiera länken. Markera inbjudan ovan och kopiera den manuellt.
 [Destroy this building?]
 Förstöra den här byggnaden?
+[stat ground movement]
+Markförflyttning
+[stat ground movement about]
+Levande markenheter efter ungefärligt hastighetsförhållande. ”Simning 2×” betyder att de simmar dubbelt så fort som de springer. Flygande och orörliga enheter ingår inte.
+[stat view by movement]
+Efter förflyttning
+[stat band land only]
+Endast land
+[stat band swim twice run]
+Simning 2×
+[stat band swim faster run]
+Simning 1,4×
+[stat band swim equals run]
+Lika snabbt
+[stat band run faster swim]
+Löpning 1,3×
+[stat band run twice swim]
+Löpning 2×
+[stat band run triple swim]
+Löpning 3×
+[stat band water only]
+Endast vatten
+[settings Browse shared generators]
+Bläddra bland delade generatorer
+[settings Apply artwork on the next game or editor load.]
+Använd grafiken nästa gång ett spel eller redigeraren laddas.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Kräver en renderare med texturfiltrering. Ditt sparade val behålls.
+[settings Automatically show the torus overview while moving around the map.]
+Visa torusöversikten automatiskt när du rör dig på kartan.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Kräver en renderare med torusstöd. Ditt sparade val behålls.
+[settings Move and animate units between game ticks.]
+Flytta och animera enheter mellan spelets tick.
+[settings Renderer unavailable]
+Renderaren är inte tillgänglig
+[settings Apply at the next completed frame. Your game stays running.]
+Gäller efter nästa färdiga bildruta. Spelet fortsätter att köras.
+[settings Active renderer: %0]
+Aktiv renderare: %0
+[settings Changing renderer…]
+Byter renderare…
+[settings Menu scroll wheel enabled]
+Rullhjul i menyer aktiverat
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Styr rullning med rullhjul i menyer. Hjulet zoomar alltid på spel- och redigerarkartor.
+[settings Gesture scrolling]
+Gestrullning
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Rullning med pekgester och Mac-gester. 0 stänger av en effekt; 50 är standard för pekskärmar.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Hur långt listor och paneler fortsätter rulla efter ett svep. Mac-gester använder systemets tröghet; noll stänger av deras glidning.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Hur mycket listor och paneler sträcks förbi kanterna och fjädrar tillbaka. Mac-gester använder en mjukare sträckning.
+[hive stopping]
+Stoppar…
+[hive stopped]
+Stoppad
+[hive stop failed]
+Stoppet misslyckades; försök med stoppkortkommandot igen
+[hive updating]
+Uppdaterar…
+[hive requested]
+Begärd
+[hive update failed]
+Uppdateringen misslyckades; försök igen
+[hive give order]
+Ge order
+[hive less]
+Mindre
+[hive reports and details]
+Rapporter / detaljer
+[hive needs fresh order]
+Behöver en ny order
+[hive active]
+Aktiv
+[hive resume]
+Återuppta
+[recordings]
+Inspelningar
+[recording delete confirm]
+Ta bort inspelningen?
+[recording delete warning]
+Inspelningen och dess metadata tas bort.
+[recording delete]
+Ta bort
+[recording working]
+Arbetar…
+[recording none]
+Inga inspelningar ännu.
+[recording interrupted]
+Avbruten inspelning
+[recording recover]
+Återställ
+[recording export video]
+Exportera video
+[recording export metadata]
+Exportera metadata
+[recording export events]
+Exportera händelser
+[recording export failed]
+Det gick inte att exportera inspelningen.
+[recording delete action]
+Ta bort inspelning
+[recording refresh]
+Uppdatera
+[tutorial part1 message 1]
+Välkommen till Globulation 2! Fyra uppdrag lär dig sköta en koloni. Spara i spelmenyn och läs in senare från huvudmenyn. Fortsätt med mellanslag eller OK på pekskärm. Vissa meddelanden försvinner när du fortsätter; läs dem igen i meddelandehistoriken.
+[tutorial part1 message 2]
+Du börjar med en svärm och en arbetare. Vi ska se hur de samarbetar.
+[tutorial part1 message 3]
+Arbetaren skördar vete och bär det till svärmen. Svärmen använder vete för att producera nya enheter och är därför viktig för kolonin.
+[tutorial part1 message 4]
+Välj din globul, den rörliga enheten, med vänsterklick eller ett tryck.
+[tutorial part1 message 5]
+Enhetsinformationen visar att matnivån sjunker med tiden. Globulen blir hungrig. När matstaplar visas anger den blå stapeln under enheten hur mycket mat som återstår.
+[tutorial part1 message 6]
+Globuler äter på värdshus. Avmarkera med högerklick eller tryck på tom mark på pekskärm.
+[tutorial part1 message 7]
+Öppna byggkontrollerna, välj Värdshus och placera det nära vete. Följ arbetarens skörderutt om du inte hittar vetet. På pekskärm använder du Bygg och bekräftar en giltig plats. Avsluta med högerklick eller pekskärmens Avbryt.
+[tutorial part1 message 8]
+Bra! Värdshusets byggplats är utplacerad.
+[tutorial part1 message 9]
+En arbetare från svärmen kan nu bygga värdshuset. Arbetaren samlar trä från närliggande träd och bär det till platsen. Vänta tills bygget är klart.
+[tutorial part1 message 10]
+Det färdiga värdshuset behöver vete. En tilldelad arbetare samlar det, precis som vid försörjningen av svärmen.
+[tutorial part1 message 11]
+Värdshusets gula resursstapel växer när vete kommer fram. Den visar lagrat vete.
+[tutorial part1 message 12]
+Nu lär vi oss fördela arbete.
+[tutorial part1 message 13]
+En arbetare försörjer svärmen och en annan värdshuset. Båda kan ta en matpaus på värdshuset. Det är normalt.
+[tutorial part1 message 14]
+Välj svärmen och hitta arbetartilldelningen. På dator heter den Arbetar; på pekskärm används tilldelade arbetare och mål. Målet anger hur många arbetare du vill ha vid byggnaden.
+[tutorial part1 message 15]
+Sätt svärmens arbetarmål till 0. Välj sedan värdshuset och sätt även dess mål till 0.
+[tutorial part1 message 16]
+Arbetarna är lediga men behöver fortfarande mat. Ett värdshus utan arbetare får så småningom slut på vete.
+[tutorial part1 message 17]
+En globul utan mat förlorar hälsa och kan dö. Ett sjukhus kan läka skador, men värdshusen måste också försörjas.
+[tutorial part1 message 18]
+Bygg ett sjukhus via byggkontrollerna. Det behöver inte vete, så placera det nära trä eller centralt nära svärmen.
+[tutorial part1 message 19]
+Välj sjukhusets byggplats och sätt arbetarmålet till 2. Två arbetare blir klara snabbare.
+[tutorial part1 message 20]
+Sjukhuset är klart. Skadade globuler kan nu besöka det och återfå hälsa.
+[tutorial part1 message 21]
+Svarta områden är outforskade. Enheter avslöjar närliggande mark när de rör sig. Arbetare följer sina jobb och är svåra att använda för spaning. Utforskare är avsedda för uppgiften.
+[tutorial part1 message 22]
+Välj svärmen och hitta produktionsandelarna för arbetare, utforskare och krigare. Höj utforskarnas andel till 1.
+[tutorial part1 message 23]
+Med både arbetar- och utforskarandel på 1 producerar svärmen lika många av varje över tid. Sätt arbetarandelen till 0 för att bara producera utforskare just nu.
+[tutorial part1 message 24]
+Återställ svärmens arbetarmål till 1 så att en arbetare kan leverera vete.
+[tutorial part1 message 25]
+Välj värdshuset och sätt även dess arbetarmål till 1. En växande koloni behöver jämn matförsörjning.
+[tutorial part1 message 26]
+Vänta nu på att svärmen producerar en utforskare.
+[tutorial part1 message 27]
+Utforskaren flyger runt kolonin och avslöjar mer mark. Låt svärmen producera en andra utforskare innan du fortsätter.
+[tutorial part1 message 28]
+Välj svärmen igen. Sätt utforskarandelen till 0 och arbetarandelen till 1 för att återuppta arbetarproduktionen.
+[tutorial part2 message 1]
+Öster om basen finns sten. Kom ihåg platsen; stenen behövs senare.
+[tutorial part2 message 2]
+Träden söder om stenen är apelsinträd. Välj dem för att se resursinformationen. Vi återkommer till frukt; fokusera nu på svärmen.
+[tutorial part2 message 3]
+Låt svärmen enbart producera arbetare: arbetarandel 1, utforskar- och krigarandel 0.
+[tutorial part2 message 4]
+Vi skyndar på tillväxten. Välj svärmen och sätt arbetarmålet till 6. Du kanske inte har sex arbetare än, men nya kan fylla jobben när de blir tillgängliga.
+[tutorial part2 message 5]
+Nästa uppgifter börjar när du har 8 arbetare. Håll svärmen och värdshuset försörjda medan befolkningen växer.
+[tutorial part2 message 6]
+Flera arbetare försörjer nu svärmen. Fler veteleveranser ger snabbare enhetsproduktion.
+[tutorial part2 message 7]
+En ny arbetare kostar 5 vete. Transport från avlägsna åkrar tar tid, så svärmen behöver ofta fler leverantörer än ett värdshus. Placera matberoende byggnader nära vete när det går.
+[tutorial part2 message 8]
+Du har minst 8 arbetare. Välj svärmen och sänk arbetarmålet till 1 för att bromsa tillväxten medan vi bygger.
+[tutorial part2 message 9]
+Kolonin behöver fler matplatser. Bygg ett andra värdshus norr om det befintliga.
+[tutorial part2 message 10]
+Tilldela lediga arbetare till den nya byggplatsen. Bara 3 trä behövs, så fler än 3 byggare gör liten nytta.
+[tutorial part2 message 11]
+Det färdiga värdshuset återgår till sitt driftsmål, normalt 1 arbetare. Byggande och daglig försörjning använder separata mål.
+[tutorial part2 message 12]
+Arbetare kan lära sig röra sig snabbare. Löparbanan ger den träningen.
+[tutorial part2 message 13]
+Öppna byggkontrollerna och hitta Löparbana. På dator kan du hålla pekaren över ikonen för beskrivning och kostnad. På pekskärm väljer du den i Bygg för att förbereda placering. Placera den inte ännu.
+[tutorial part2 message 14]
+En löparbana kräver mycket trä och lite sten. Välj en central plats som enheterna lätt når.
+[tutorial part2 message 15]
+Bygg en löparbana, kanske söder om svärmen. Lämna fri mark runt den: träningsbyggnader behöver expansionsutrymme vid uppgradering.
+[tutorial part2 message 16]
+Sätt byggplatsens arbetarmål mellan 5 och 7. Totalt behövs 7 byggmaterial.
+[tutorial part2 message 17]
+En färdig löparbana tränar besökande enheter utan fortsatta leveranser av byggmaterial eller vete.
+[tutorial part2 message 18]
+Globuler går in på löparbanan för att träna. Efteråt kan de springa snabbare.
+[tutorial part2 message 19]
+Välj löparbanan för att se träningen. Förloppsvisarna visar hur nära enheterna där inne är att bli klara.
+[tutorial part2 message 20]
+Tränade arbetare färdas snabbare och levererar resurser tidigare. Bevaka matlagren när kolonin växer; snabbare leveranser hjälper bara om tillräckligt många värdshus försörjs.
+[tutorial part2 message 21]
+Hitta arbetarräknaren i spelvyn. Totalen visar befolkningen; tillgängliga arbetare hjälper dig upptäcka ledig personal eller obesatta jobb. Använd lediga arbetare utan att tilldela fler jobb än kolonin klarar.
+[tutorial part2 message 22]
+Spelvyn visar också utforskare och krigare. Kontrollera antalen när du planerar produktion eller tilldelar enheter till flaggor.
+[tutorial part2 message 23]
+Du har 2 värdshus. Varje grundvärdshus matar 4 enheter samtidigt, totalt 8 matplatser. Fler än 8 kan bli hungriga, så lämna kapacitet för köer.
+[tutorial part2 message 24]
+Två värdshus räcker inte för en växande koloni för alltid. Utöka matkapaciteten innan brist blir svält.
+[tutorial part2 message 25]
+Bygg ytterligare 3 värdshus nära vete. Hungriga arbetare slutar arbeta och långvarig svält dödar dem. Tilldela lediga arbetare till byggen utan att avbryta befintlig matförsörjning.
+[tutorial part2 message 26]
+Bygg klart 3 nya värdshus, så att du har totalt 5.
+[tutorial part2 message 27]
+Nya värdshus använder driftsmålet efter bygget, normalt 1 arbetare vardera. Kontrollera leverantörer och tillräckligt med vete.
+[tutorial part2 message 28]
+Löparbanan förbättrade resorna på land. Nu ska kolonin lära sig simma.
+[tutorial part2 message 29]
+En simbassäng lär enheter simma och kräver trä att bygga. Placera den i den stora gläntan nordost om basen, norr om stenen. Lämna utrymme för uppgraderingar och växande resurser och tilldela lediga arbetare till bygget.
+[tutorial part2 message 30]
+En simbassäng lär enheter simma och kräver trä att bygga. Placera den i den stora gläntan nordost om basen, norr om stenen. Lämna utrymme för uppgraderingar och växande resurser och tilldela lediga arbetare till bygget.
+[tutorial part2 message 31]
+Simbassängen är klar. Globuler kan gå in och lära sig simma.
+[tutorial part2 message 32]
+Välj simbassängen för att se träningen. En grundbassäng tränar 2 globuler åt gången, liksom en grundlöparbana.
+[tutorial part2 message 33]
+Tränade globuler kan nu simma. Snart får de ett jobb där de måste korsa vatten.
+[tutorial part2 message 34]
+Det finns mer att lära. Behöver du paus kan du spara via spelmenyn och återvända senare.
+[tutorial part2 message 35]
+Kolonin har mat och fysisk träning. En skola lär arbetarna färdigheter för bättre byggnader.
+[tutorial part2 message 36]
+Skolan förbättrar skörde- och byggfärdigheter. Bygget kräver alger som växer i vatten. Simkunniga arbetare kan samla dem.
+[tutorial part2 message 37]
+Skydda viktiga träningsbyggnader. Skolan behöver inte ligga vid vatten; en skyddad plats inåt land kan vara säkrare mot angrepp.
+[tutorial part2 message 38]
+Bygg skolan skyddat, till exempel bakom bassängen eller sydväst om svärmen intill löparbanan. Tilldela lediga arbetare till bygget.
+[tutorial part2 message 39]
+Välj en byggnad för att se tilldelade arbetare. På dator kan den konfigurerbara åtgärden för att växla enhetsvägar visa linjer till enheternas mål; se Inställningar, Spelkontroller för aktuell tangent. Vänta tills skolan är klar.
+[tutorial part3 message 1]
+Kolonin har nu värdshus, sjukhus, löparbana, simbassäng och skola. Dags att förbereda försvaret.
+[tutorial part3 message 2]
+Vi har inte producerat krigare än. Utan dem är kolonin dåligt skyddad mot angrepp.
+[tutorial part3 message 3]
+Välj svärmen och sätt krigarandelen till 2. Låt arbetarandelen vara 1 så att fler arbetare produceras också.
+[tutorial part3 message 4]
+Svärmen producerar nu ungefär 2 krigare per arbetare. Tilldela fler arbetare till försörjningen om du vill öka produktionen.
+[tutorial part3 message 5]
+Första krigaren är klar och börjar träna. Vänta på den andra innan du fortsätter.
+[tutorial part3 message 6]
+Krigare använder också löparbanan och simbassängen. De kan dessutom träna anfall i kasernen.
+[tutorial part3 message 7]
+Kasernen förbättrar anfallsstyrka och anfallshastighet. Styrka ökar skadan per träff och hastighet ökar anfallsfrekvensen. Vältränade krigare kan besegra mycket större otränade grupper.
+[tutorial part3 message 8]
+Bygg en kasern nära trä, som behövs för bygget.
+[tutorial part3 message 9]
+Tilldela lediga arbetare till kasernens byggplats. Behåll tillräckligt många på matförsörjningen och skapa inte fler jobb än de kan fylla.
+[tutorial part3 message 10]
+Kasernen är klar. Krigare kan nu träna sina anfallsfärdigheter där.
+[tutorial part3 message 11]
+Byggnadsuppgraderingar gör kolonin starkare.
+[tutorial part3 message 12]
+Skoltränade arbetare kan bygga uppgraderingar. Välj en lämplig byggnad och hitta Uppgradera i byggkontrollerna. Skadade byggnader kan behöva Reparera först.
+[tutorial part3 message 13]
+Vi väljer första uppgraderingen. Värdshusen har ledig kapacitet och kan vänta.
+[tutorial part3 message 14]
+Sjukhuset har också plats. Vi kan fokusera på skolan, löparbanan, simbassängen eller kasernen.
+[tutorial part3 message 15]
+Uppgradera löparbanan först så att enheterna kan lära sig röra sig ännu snabbare.
+[tutorial part3 message 16]
+Välj löparbanan och Uppgradera i byggkontrollerna. Enheterna där inne måste gå ut innan bygget börjar, så ändringen kan dröja.
+[tutorial part3 message 17]
+Tilldela lediga arbetare till uppgraderingen. Bara arbetare med rätt skolträning kan bygga på en byggplats för nivå 2.
+[tutorial part3 message 18]
+Vänta tills löparbanan är uppgraderad. Högre byggnadsnivåer kräver mer resurser och byggtid.
+[tutorial part3 message 19]
+Löparbanan på nivå 2 är klar. Den upptar mer mark än tidigare, därför lämnade vi en lucka. Utan expansionsutrymme går det inte att uppgradera.
+[tutorial part3 message 20]
+Uppgradera nu kasernen och simbassängen till nivå 2. Vi fortsätter när båda är klara.
+[tutorial part3 message 21]
+Uppgraderade byggnader kan oftast ta emot fler globuler eller ge bättre träning. Ett värdshus på nivå 2 har exempelvis 7 matplatser och matar snabbare än ett grundvärdshus.
+[tutorial part3 message 22]
+Fienden är nära. Vi förbereder oss för ett angrepp.
+[tutorial part3 message 23]
+Torn skjuter på fiender inom räckhåll och murar skyddar tornen. Vi använder båda för att försvara en smal väg in till kolonin.
+[tutorial part3 message 24]
+Placera tornen parvis om det finns plats. Murar kan skydda tre sidor, men lämna en väg för arbetarnas stenammunition.
+[tutorial part3 message 25]
+Titta öster om bassängen, norr om de andra fruktträden. En smal passage leder till en annan ö och passar att försvara.
+[tutorial part3 message 26]
+Planera plats för 2 torn mellan träden och stranden. Lämna tillfart bakom dem för sten och utrymme för murar på övriga sidor. Stäng inte ute arbetarna.
+[tutorial part3 message 27]
+Bygg 2 torn där. Tilldela 2 eller 3 arbetare per byggplats beroende på tillgängliga arbetare i spelvyn.
+[tutorial part3 message 28]
+Använd byggkontrollerna för muravsnitt runt tornens tre utåtvända sidor. Håll sidan mot kolonin öppen för arbetarna.
+[tutorial part3 message 29]
+Varje muravsnitt skapar ett byggjobb och kräver 1 sten. Om alla jobb inte kan fyllas samtidigt kan arbetarna färdigställa dem i turordning.
+[tutorial part3 message 30]
+Vänta tills båda tornen och flera muravsnitt är klara. Tornen behöver också stenammunition; stenbrottet ligger långt bort och leveranser tar tid. Höj arbetarmålen om du har lediga arbetare.
+[tutorial part4 message 1]
+Kolonin har mat, träning och försvar. Byggnader kan uppgraderas ännu en gång till nivå 3 för bättre träning och större kapacitet. Fortsätt förbättra när resurser och arbetarnas färdigheter tillåter.
+[tutorial part4 message 2]
+Leta nordväst om basen efter fiendekolonin. Flytta vyn dit nu.
+[tutorial part4 message 3]
+Utforskad mark kan fortfarande döljas av krigsdimma. För att se fiendens aktuella aktivitet behövs en utforskare i närheten.
+[tutorial part4 message 4]
+Öppna Flaggor. Med flaggor och zoner styr du enheterna utan att kontrollera varje globul enskilt.
+[tutorial part4 message 5]
+Välj utforskningsflaggan med draksymbol. Flaggor kan placeras på land, vatten, resurser och outforskad mark.
+[tutorial part4 message 6]
+Placera en utforskningsflagga över den misstänkta fiendebasen. En ungefärlig plats räcker för att börja spana. Avsluta placeringen med högerklick eller pekkontrollerna.
+[tutorial part4 message 7]
+Konturen runt flaggan visar arbetsradien. En tilldelad utforskare spanar där. Kommer ingen, kontrollera antalet utforskare och producera en till vid behov. Tryck mellanslag eller OK när utforskaren når området.
+[tutorial part4 message 8]
+Fienden har många arbetare och en samlad armé. Förbered försvaret innan den anfaller.
+[tutorial part4 message 9]
+Öppna Flaggor och välj det blå vaktområdet. Använd läget för att lägga till mark, inte ta bort. På pekskärm väljer du Måla i stället för Radera.
+[tutorial part4 message 10]
+Välj penselform och storlek. Den stora kvadraten passar för ett samlat försvarsområde.
+[tutorial part4 message 11]
+Måla ett vaktområde strax bakom tornen, där fienden sannolikt kommer. Klicka eller tryck för en punkt, eller dra över mer mark. På pekskärm använder du Panorera för att flytta vyn medan du målar.
+[tutorial part4 message 12]
+Lediga krigare går till vaktområdet. Gör det stort nog för försvararna men litet nog för att hålla dem samlade vid passagen. Vänta nu på anfallet.
+[tutorial part4 message 13]
+Fienden närmar sig passagen!
+[tutorial part4 message 14]
+Vi blir anfallna. Se hur tränade krigare och torn försvarar platsen.
+[tutorial part4 message 15]
+Du överlevde! Öppna Flaggor och välj den spetsiga krigsflaggan. Placera den på fiendens svärm för att rikta anfallet dit.
+[tutorial part4 message 16]
+Lämna placeringsläget och välj krigsflaggan. Tilldela fler än 1 krigare och minska radien för att samla anfallet runt fiendens svärm. Vänta på krigarna.
+[tutorial part4 message 17]
+Anfallet har börjat. Krigarna måste ta sig förbi fiendetornen för att nå svärmen.
+[tutorial part4 message 18]
+Krigarna har nått fiendebasen. Fortsätt rikta anfallet mot svärmen.
+[tutorial part4 message 19]
+Du förstörde fiendens svärm. Grattis! Du har avslutat handledningen och lärt dig grunderna i matförsörjning, tilldelning, träning, uppgraderingar, spaning och strid.
+[tutorial mission basics]
+Introduktion och grunder
+[tutorial mission development]
+Byggnader och skolor
+[tutorial mission training]
+Krigare, träning och uppgraderingar
+[tutorial mission flags]
+Flaggor och avslutning
+[library  Could not restore the previous library: %0]
+ Kunde inte återställa föregående bibliotek: %0
+[library  The previous library is retained.]
+ Föregående bibliotek behålls.
+[library  · Installed]
+ · Installerad
+[library  · Update available]
+ · Uppdatering finns
+[library A different release is installed. Install the selected release to update explicitly.]
+En annan utgåva är installerad. Installera den valda utgåvan för att uttryckligen uppdatera.
+[library All engines]
+Alla spelmotorer
+[library All generators]
+Alla generatorer
+[library Available families]
+Tillgängliga familjer
+[library Back]
+Tillbaka
+[library Building families]
+Byggnadsfamiljer
+[library Building library]
+Byggnadsbibliotek
+[library Checking building release]
+Kontrollerar byggnadsutgåva
+[library Choose an online instance before opening a family link.]
+Välj en onlinetjänst innan du öppnar en familjelänk.
+[library Compatible with this engine]
+Kompatibel med denna spelmotor
+[library Confirm replacement]
+Bekräfta ersättning
+[library Create in Building Studio]
+Skapa i Building Studio
+[library Downloading generator…]
+Hämtar generator…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Varje landskap visas som en riktig karta med storleken och koloniantalet nedan, som du kan ändra här. Välj ett för att spela kartan som visas.
+[library Editor tool: generates terrain for the map editor.]
+Redigeringsverktyg: skapar terräng för kartredigeraren.
+[library Editor tools]
+Redigeringsverktyg
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Aktivera installerade familjer nedan. Valet sparas i denna lokala profil; befintliga kartor och sparfiler behåller sina byggnader. För onlinespel skapar du en karta med familjerna, publicerar den i kartbiblioteket och väljer den i rummet.
+[library Enter a building family ID or a link to its family page.]
+Ange en byggnadsfamiljs ID eller länk till dess sida.
+[library Family link or ID]
+Familjelänk eller ID
+[library Family links must be at most 1024 characters.]
+Familjelänkar får vara högst 1024 tecken.
+[library Family removed.]
+Familjen borttagen.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Familjen är inte tillgänglig. Privata familjer kräver inloggning via Online med ett konto som har åtkomst.
+[library Generator file hash mismatch]
+Generatorfilens kontrollsumma stämmer inte
+[library Generator installed. Future selections use this release.]
+Generator installerad. Framtida val använder denna utgåva.
+[library Generator package identity mismatch]
+Generatorpaketets identitet stämmer inte
+[library Generators]
+Generatorer
+[library Install compatible release]
+Installera kompatibel utgåva
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Installera enskilda byggnader eller uppgraderingsfamiljer bredvid standardbyggnaderna. Valet gäller bara nyskapade kartor.
+[library Install selected release]
+Installera vald utgåva
+[library Installed]
+Installerad
+[library Installed families]
+Installerade familjer
+[library Installed. Enable the family below for new maps.]
+Installerad. Aktivera familjen nedan för nya kartor.
+[library Invalid building family ID.]
+Ogiltigt byggnadsfamiljs-ID.
+[library Invalid building library response]
+Ogiltigt svar från byggnadsbiblioteket
+[library Invalid library cursor]
+Ogiltig sidmarkör för biblioteket
+[library Invalid release identity]
+Ogiltig utgåveidentitet
+[library Load more]
+Hämta fler
+[library Load more families]
+Hämta fler familjer
+[library Loading building families]
+Hämtar byggnadsfamiljer
+[library Loading…]
+Hämtar…
+[library Map generators]
+Kartgeneratorer
+[library Maps]
+Kartor
+[library Most downloaded]
+Mest hämtade
+[library Most liked]
+Mest gillade
+[library My generators]
+Mina generatorer
+[library Newest]
+Nyaste
+[library No building families installed.]
+Inga byggnadsfamiljer installerade.
+[library No public building families yet]
+Inga offentliga byggnadsfamiljer ännu
+[library No validated release for this game version.]
+Ingen verifierad utgåva för denna spelversion.
+[library Online server changed during download]
+Onlineservern ändrades under hämtningen
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Öppna en olistad familj med länk eller ID. För privata familjer, logga först in via Online.
+[library Open family]
+Öppna familj
+[library Opened family. Install its compatible release below.]
+Familjen öppnad. Installera kompatibel utgåva nedan.
+[library Opening building family]
+Öppnar byggnadsfamilj
+[library Playable]
+Spelbar
+[library Playable generator]
+Spelbar generator
+[library Privacy policy]
+Integritetspolicy
+[library Public library]
+Offentligt bibliotek
+[library Recently updated]
+Nyligen uppdaterade
+[library Refresh library]
+Uppdatera bibliotek
+[library Release identity changed during installation]
+Utgåveidentiteten ändrades under installationen
+[library Reroll]
+Slumpa om
+[library Reroll seed]
+Slumpa nytt frö
+[library Saving generator library…]
+Sparar generatorbibliotek…
+[library Search]
+Sök
+[library Seed]
+Slumpfrö
+[library Selection saved for new maps.]
+Valet har sparats för nya kartor.
+[library Storage failed.]
+Lagringen misslyckades.
+[library Storage persistence unavailable]
+Beständig lagring är inte tillgänglig
+[library Tags]
+Taggar
+[library Technical checks passed for this engine. Balance is not certified.]
+Tekniska kontroller godkända för denna spelmotor. Balansen är inte certifierad.
+[library The server returned a different family.]
+Servern returnerade en annan familj.
+[library This link is from another instance. Switch to that instance in Online first.]
+Länken kommer från en annan tjänstinstans. Byt till den via Online först.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Detta paket-ID är installerat. Bekräfta ersättning för att använda vald utgåva.
+[library This release has no passing checks for this engine.]
+Denna utgåva har inga godkända kontroller för spelmotorn.
+[library This release is installed.]
+Denna utgåva är installerad.
+[library Update installed family]
+Uppdatera installerad familj
+[library Use in a room]
+Använd i ett rum
+[library By %0]
+Av %0
+[library Installed release %0]
+Installerad utgåva %0
+[library Release %0]
+Utgåva %0
+[library Remove %0]
+Ta bort %0
+[library Seed: %0]
+Slumpfrö: %0
+[library %0 · revision %1]
+%0 · revision %1
+[library Fit]
+Anpassa
+[library GL only]
+Bara GL

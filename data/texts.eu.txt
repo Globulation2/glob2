@@ -6,34 +6,6 @@ Arakatzailea ez da ireki. Ireki saioa hasteko orria jarraitzeko.
 Orriak eskatzen badu, egiaztatu %0 erakusten duela.
 [hub code copied]
 Kodea kopiatuta
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Amaitu arakatzailean. Jokoak automatikoki jarraituko du.
 [music set]
@@ -6039,96 +6011,622 @@ Denbora agortu da.
 [outcome reason probability]
 Irabazteko probabilitatearen atalasea lortu da.
 [Discord community]
-
+Discord komunitatea
 [Globulation 2 Discord]
-
+Globulation 2ren Discord
 [discord community intro]
-
+Bilatu aurkariak, eskatu laguntza eta partekatu zure mapak Globulation 2ren komunitatearekin.
 [discord opens externally]
-
+Sartu gure Discord zerbitzarian. Discord edo arakatzailea irekiko da.
 [Join Discord]
-
+Sartu Discorden
 [Copy link]
-
+Kopiatu esteka
 [discord opened]
-
+Discord ireki da. Edonoiz itzul zaitezke jokora.
 [discord open failed]
-
+Ezin izan da Discord ireki. Kopiatu gonbidapenaren esteka eta ireki arakatzailean.
 [discord link copied]
-
+Gonbidapenaren esteka kopiatu da.
 [settings CPU automatic]
-
+CPU automatikoa
 [settings Scalar]
-
+Eskalarra
 [settings Unavailable]
-
+Ez dago erabilgarri
 [settings Initializing]
-
+Hasieratzen
 [settings Gradient backend]
-
+Gradienteen kalkulu-motorra
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Simulazioaren hurrengo sinkronizazio-puntuan aplikatuko da. Onartzen ez diren kalkuluek CPU automatikoa erabiltzen dute; errendatzea independentea da.
 [settings Gradient algorithm]
-
+Gradienteen algoritmoa
 [settings All choices compute the same exact field.]
-
+Aukera guztiek eremu bera kalkulatzen dute zehatz-mehatz.
 [settings Bucket propagation]
-
+Hedapena ontzien bidez
 [settings Verify gradient results]
-
+Egiaztatu gradienteen emaitzak
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Alderatu GPUaren emaitzak CPU eskalarrarenekin erabili aurretik. Kalkulu gehiago egiten ditu eta jokoa gelditzen du bat ez badatoz.
 [settings Gradient computation]
-
+Gradienteen kalkulua
 [settings CPU fallback]
-
+Ordezko kalkulua CPUan
 [settings GPU fields]
-
+GPUko eremuak
 [settings CPU fallbacks]
-
+Ordezko kalkuluak CPUan
 [settings MCP server]
-
+MCP zerbitzaria
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+MCP zerbitzaria gaituz gero, bezero lokalek jokoa ikusi eta kontrolatu ahal izango dute.
 [settings Enable MCP server]
-
+Gaitu MCP zerbitzaria
 [settings Port]
-
+Ataka
 [settings Current controller: %0]
-
+Uneko kontrolatzailea: %0
 [settings Copy endpoint]
-
+Kopiatu konexio-helbidea
 [settings Retry listener]
-
+Berrabiarazi entzutea
 [settings Revoke control]
-
+Kendu kontrola
 [settings MCP server unavailable in this application]
-
+MCP zerbitzaria ez dago erabilgarri aplikazio honetan
 [settings Disabled]
-
+Desgaituta
 [settings Running]
-
+Martxan
 [settings Error: %0]
-
+Errorea: %0
 [settings None]
-
+Bat ere ez
 [settings Starting]
-
+Abiarazten
 [Which hand holds your phone?]
-
+Ezkerreko ala eskuineko eskua?
 [hand preference explanation]
-
+Eutsi telefonoari ohi bezala. Sakatu jolasteko erabiltzen duzun eskua.
 [hand silhouettes description]
-
+Telefono baten silueta, ezkerreko eta eskuineko eskuak gainean dituela. Sakatu erpuruentzako eremu alakatutako bat alde hori hautatzeko.
 [hand preference change later]
-
+Geroago alda dezakezu aldea ezarpenetan.
 [hand preference save failed]
-
+Ezin izan da zure aukera gorde. Saiatu berriro.
 [Left hand]
-
+Ezkerreko eskua
 [Right hand]
-
+Eskuineko eskua
 [discord copy failed]
-
+Ezin izan da esteka kopiatu. Hautatu goiko gonbidapena eskuz kopiatzeko.
 [Destroy this building?]
 Eraikin hau suntsitu?
+[stat ground movement]
+Lurreko mugimendua
+[stat ground movement about]
+Lurreko unitate biziak, abiaduren gutxi gorabeherako erlazioaren arabera. «Igeri 2×» esateak igeri korrika baino bi aldiz azkarrago egitea esan nahi du. Unitate hegalariak eta mugiezinak ez dira sartzen.
+[stat view by movement]
+Mugimenduaren arabera
+[stat band land only]
+Lurrean soilik
+[stat band swim twice run]
+Igeri 2×
+[stat band swim faster run]
+Igeri 1,4×
+[stat band swim equals run]
+Berdin
+[stat band run faster swim]
+Korrika 1,3×
+[stat band run twice swim]
+Korrika 2×
+[stat band run triple swim]
+Korrika 3×
+[stat band water only]
+Uretan soilik
+[settings Browse shared generators]
+Arakatu partekatutako sortzaileak
+[settings Apply artwork on the next game or editor load.]
+Aplikatu irudiak hurrengo partida edo editorea kargatzean.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Testuren iragazketa duen errendatzailea behar du. Gordetako aukera mantenduko da.
+[settings Automatically show the torus overview while moving around the map.]
+Erakutsi automatikoki toroaren ikuspegi orokorra mapan mugitzean.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Toroa onartzen duen errendatzailea behar du. Gordetako aukera mantenduko da.
+[settings Move and animate units between game ticks.]
+Mugitu eta animatu unitateak simulazio-pausoen artean.
+[settings Renderer unavailable]
+Errendatzailea ez dago erabilgarri
+[settings Apply at the next completed frame. Your game stays running.]
+Aplikatu hurrengo fotograma amaitzean. Zure partidak martxan jarraituko du.
+[settings Active renderer: %0]
+Errendatzaile aktiboa: %0
+[settings Changing renderer…]
+Errendatzailea aldatzen…
+[settings Menu scroll wheel enabled]
+Gaitu korritze-gurpila menuetan
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Menuetan gurpilarekin korritzea kontrolatzen du. Gurpilak zooma egiten du beti jokoaren eta editorearen mapetan.
+[settings Gesture scrolling]
+Keinu bidezko korritzea
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Ukipen bidezko eta Mac-eko keinu bidezko korritzea. 0k efektua desaktibatzen du; 50 da ukipenaren balio lehenetsia.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Zerrendek eta panelek zenbat jarraitzen duten korritzen hatzarekin azkar irristatu ondoren. Mac-eko keinuek sistemaren inertzia erabiltzen dute; zerok haien irristatzea desgaitzen du.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Zerrendak eta panelak zenbat luzatzen diren mugetatik harago, atzera itzuli aurretik. Mac-eko keinuek luzatze leunagoa erabiltzen dute.
+[hive stopping]
+Gelditzen…
+[hive stopped]
+Geldituta
+[hive stop failed]
+Ezin izan da gelditu; saiatu berriro gelditzeko lasterbidearekin
+[hive updating]
+Eguneratzen…
+[hive requested]
+Eskatuta
+[hive update failed]
+Ezin izan da eguneratu; saiatu berriro
+[hive give order]
+Eman agindua
+[hive less]
+Gutxiago
+[hive reports and details]
+Txostenak / xehetasunak
+[hive needs fresh order]
+Agindu berri bat behar du
+[hive active]
+Aktibo
+[hive resume]
+Jarraitu
+[recordings]
+Grabazioak
+[recording delete confirm]
+Ezabatu grabazioa?
+[recording delete warning]
+Grabazioa eta haren metadatuak kenduko dira.
+[recording delete]
+Ezabatu
+[recording working]
+Lanean…
+[recording none]
+Oraindik ez dago grabaziorik.
+[recording interrupted]
+Etendako grabazioa
+[recording recover]
+Berreskuratu
+[recording export video]
+Esportatu bideoa
+[recording export metadata]
+Esportatu metadatuak
+[recording export events]
+Esportatu gertaerak
+[recording export failed]
+Ezin izan da grabazioa esportatu.
+[recording delete action]
+Ezabatu grabazioa
+[recording refresh]
+Freskatu
+[library Fit]
+Egokitu
+[library GL only]
+GL soilik
+[tutorial part1 message 1]
+Ongi etorri Globulation 2ra! Lau misio hauetan kolonia kudeatzen ikasiko duzu. Gorde aurrerapena jokoaren menuan eta kargatu gero menu nagusitik. Sakatu Zuriunea edo ukipen-pantailako Ados jarraitzeko. Aurreko testuak mezuen historian dituzu.
+[tutorial part1 message 2]
+Kofoin batekin eta langile batekin hasten zara. Ikus dezagun nola egiten duten lan elkarrekin.
+[tutorial part1 message 3]
+Langileak garia biltzen du eta Kofoinera eramaten du. Kofoinak garia erabiltzen du unitate berriak sortzeko; funtsezkoa da koloniarentzat.
+[tutorial part1 message 4]
+Hautatu zure globulua, mugitzen den unitatea, ezkerreko klik batekin edo ukitu batekin.
+[tutorial part1 message 5]
+Unitatearen informazioak janari-erreserba gutxitzen dela erakusten du: gose da. Janari-barrak ikusgai daudenean, unitatearen azpiko barra urdinak geratzen zaion janaria adierazten du.
+[tutorial part1 message 6]
+Globuluek Ostatuetan jaten dute. Kendu hautapena eskuineko klik batekin edo ukipen-pantailan lur huts bat ukituz.
+[tutorial part1 message 7]
+Ireki eraikuntza-kontrolak, hautatu Ostatua eta jarri gariaren ondoan. Garia aurkitzen ez baduzu, jarraitu langilearen bideari. Ukipen-pantailan, erabili Eraiki eta baieztatu baliozko kokalekua. Amaitzeko, egin eskuineko klik edo sakatu Utzi.
+[tutorial part1 message 8]
+Ondo! Ostatuaren orubea jarrita dago.
+[tutorial part1 message 9]
+Kofoineko langile batek Ostatua eraiki dezake. Inguruko zuhaitzetatik egurra bildu eta orubera eramango du. Itxaron eraikuntza amaitu arte.
+[tutorial part1 message 10]
+Amaitutako Ostatuak garia behar du. Esleitutako langile batek bilduko du, Kofoinerako bezala.
+[tutorial part1 message 11]
+Ostatuaren barra horia igo egiten da garia iristean. Gari-erreserba erakusten du.
+[tutorial part1 message 12]
+Orain lana esleitzen ikasiko dugu.
+[tutorial part1 message 13]
+Langile batek Kofoina hornitzen du, eta besteak Ostatua. Biek eten dezakete lana jateko. Normala da.
+[tutorial part1 message 14]
+Hautatu Kofoina eta bilatu langileak esleitzeko kontrola. Ordenagailuan Lanean du izena; ukipen-pantailan, erabili esleitutako langileen eta helburuaren kontrola. Helburua nahi duzun langile kopurua da.
+[tutorial part1 message 15]
+Jarri Kofoinaren langile-helburua 0an. Ondoren hautatu Ostatua eta jarri haren helburua ere 0an.
+[tutorial part1 message 16]
+Langileak geldirik daude, baina janaria behar dute oraindik. Langilerik esleitu gabeko Ostatua garirik gabe geratuko da azkenean.
+[tutorial part1 message 17]
+Janaririk aurkitzen ez duen globuluak osasuna galtzen du eta hil daiteke. Ospitaleak zauriak sendatzen ditu, baina Ostatuak ere hornitu behar dituzu.
+[tutorial part1 message 18]
+Eraiki Ospitale bat. Ez du garirik behar; jarri egurraren ondoan edo kokaleku zentral batean, Kofoinaren inguruan.
+[tutorial part1 message 19]
+Hautatu Ospitalearen orubea eta ezarri 2 langileko helburua. Bi langilek azkarrago amaituko dute.
+[tutorial part1 message 20]
+Ospitalea prest dago. Zauritutako globuluak bertara joan daitezke sendatzera.
+[tutorial part1 message 21]
+Eremu beltzak esploratu gabe daude. Unitateek inguruko lurra erakusten dute mugitzean. Langileek beren zereginak jarraitzen dituzte; miatzaileak egokiagoak dira lurrak miatzeko.
+[tutorial part1 message 22]
+Hautatu Kofoina eta bilatu langileen, miatzaileen eta gerlarien ekoizpen-proportzioak. Igo miatzaileena 1era.
+[tutorial part1 message 23]
+Langileen eta miatzaileen proportzioak 1 direnean, Kofoinak bien kopuru bera sortzen du denborarekin. Jarri langileena 0an, oraingoz miatzaileak soilik sortzeko.
+[tutorial part1 message 24]
+Jarri Kofoinari esleitutako langileen helburua berriro 1ean, garia jaso dezan.
+[tutorial part1 message 25]
+Hautatu Ostatua eta jarri haren helburua ere langile 1ean. Hazten ari den koloniak janari-hornidura egonkorra behar du.
+[tutorial part1 message 26]
+Itxaron Kofoinak miatzaile bat sortu arte.
+[tutorial part1 message 27]
+Miatzaileak koloniaren inguruan hegan egiten du eta lurra erakusten du. Utzi Kofoinari bigarren bat sortzen, jarraitu aurretik.
+[tutorial part1 message 28]
+Hautatu Kofoina. Jarri miatzaileen proportzioa 0an eta langileena 1ean, langileak berriro sortzeko.
+[tutorial part2 message 1]
+Harria dago oinarriaren ekialdean. Gogoratu lekua; gero beharko duzu.
+[tutorial part2 message 2]
+Harriaren hegoaldeko zuhaitzak laranjondoak dira. Hautatu baliabideen informazioa ikusteko. Fruituetara gero itzuliko gara; orain arreta Kofoinean jarri.
+[tutorial part2 message 3]
+Ezarri Kofoina langileak soilik sortzeko: langileak 1, miatzaileak eta gerlariak 0.
+[tutorial part2 message 4]
+Bizkortu dezagun hazkundea. Ezarri Kofoinaren helburua 6 langiletan. Langile berriek hutsik dauden lanpostuak beteko dituzte sortu ahala.
+[tutorial part2 message 5]
+8 langile izatean hasiko ditugu hurrengo zereginak. Bitartean mantendu Kofoina eta Ostatua hornituta.
+[tutorial part2 message 6]
+Hainbat langilek Kofoina hornitzen dute orain. Gari gehiago iristeak unitateak azkarrago sortzea ahalbidetzen du.
+[tutorial part2 message 7]
+Langile berri batek 5 gari balio du. Urruneko soro batetik garia ekartzeak denbora behar du; Kofoinak Ostatuak baino hornitzaile gehiago behar izaten ditu. Eraiki gariaren ondoan ahal denean.
+[tutorial part2 message 8]
+Gutxienez 8 langile dituzu. Jaitsi Kofoinaren langile-helburua 1era, eraikitzen dugun bitartean hazkundea moteltzeko.
+[tutorial part2 message 9]
+Koloniak jateko leku gehiago behar ditu. Eraiki bigarren Ostatua lehenengoaren iparraldean.
+[tutorial part2 message 10]
+Esleitu langile libreak orube berrira. 3 egur soilik behar ditu; 3 eraikitzaile baino gehiagok gutxi lagunduko dute.
+[tutorial part2 message 11]
+Amaitutako Ostatua funtzionamenduko helburura itzultzen da, normalean langile 1era. Eraikuntzak eta hornidurak helburu desberdinak dituzte.
+[tutorial part2 message 12]
+Langileek azkarrago korrika egiten ikas dezakete Zirkuituan.
+[tutorial part2 message 13]
+Bilatu Zirkuitua eraikuntza-kontroletan. Ordenagailuan, jarri erakuslea ikonoaren gainean deskribapena eta kostua ikusteko. Ukipen-pantailan, hautatu Eraiki atalean. Ez jarri oraindik.
+[tutorial part2 message 14]
+Zirkuituak egur asko eta harri pixka bat behar ditu. Aukeratu kokaleku zentral eta irisgarria.
+[tutorial part2 message 15]
+Eraiki Zirkuitu bat, adibidez Kofoinaren hegoaldean. Utzi leku librea inguruan, etorkizunean handitzeko.
+[tutorial part2 message 16]
+Ezarri Zirkuituaren orubearen helburua 5 eta 7 langile artean. Guztira 7 eraikuntza-material behar ditu.
+[tutorial part2 message 17]
+Amaitutako Zirkuituak unitateak entrenatzen ditu, eraikuntza-materialen edo gariaren etengabeko hornidurarik gabe.
+[tutorial part2 message 18]
+Globuluak Zirkuitura sartzen ari dira. Entrenamendua amaitzean azkarrago egingo dute korrika.
+[tutorial part2 message 19]
+Hautatu Zirkuitua entrenamenduaren aurrerapena ikusteko. Adierazleek barruko unitateei zenbat falta zaien erakusten dute.
+[tutorial part2 message 20]
+Entrenatutako langileek baliabideak lehenago entregatzen dituzte. Jarraitu janari-erreserbak zaintzen eta mantendu nahikoa Ostatu hornituta.
+[tutorial part2 message 21]
+Bilatu langileen kontagailua interfazean. Guztizkoak biztanleria erakusten du; erabilgarritasunak langile libreak edo bete gabeko lanak adierazten ditu. Ez esleitu koloniak bete dezakeena baino lan gehiago.
+[tutorial part2 message 22]
+Interfazeak miatzaileak eta gerlariak ere zenbatzen ditu. Begiratu ekoizpena planifikatzean edo unitateak banderetara esleitzean.
+[tutorial part2 message 23]
+2 Ostatu dituzu, bakoitza jateko 4 lekurekin: 8 guztira. 8 unitate baino gehiago egon daitezke gose; aurreikusi leku nahikoa ilaretarako.
+[tutorial part2 message 24]
+Bi Ostatu ez dira betiko nahikoa izango. Handitu edukiera eskasia gosete bihurtu aurretik.
+[tutorial part2 message 25]
+Eraiki beste 3 Ostatu gariaren ondoan. Langile goseek lan egiteari uzten diote eta hil daitezke. Erabili langile libreak, lehengo janari-hornidura mantenduz.
+[tutorial part2 message 26]
+Amaitu beste 3 Ostatu, guztira 5 izateko.
+[tutorial part2 message 27]
+Ostatu berriek funtzionamenduko helburuak hartzen dituzte amaitzean, normalean langile 1 bakoitzak. Egiaztatu hornitzaileak eta gari-erreserbak.
+[tutorial part2 message 28]
+Zirkuituak lurreko bidaiak hobetu ditu. Orain igeri egiten ikasiko dugu.
+[tutorial part2 message 29]
+Igerilekuak unitateei igeri egiten irakasten die eta egurra behar du. Eraiki bat oinarriaren ipar-ekialdeko soilgune handian, harriaren iparraldean. Utzi lekua hobekuntzetarako eta baliabideen hazkunderako, eta esleitu langile libreak.
+[tutorial part2 message 30]
+Igerilekuak unitateei igeri egiten irakasten die eta egurra behar du. Eraiki bat oinarriaren ipar-ekialdeko soilgune handian, harriaren iparraldean. Utzi lekua hobekuntzetarako eta baliabideen hazkunderako, eta esleitu langile libreak.
+[tutorial part2 message 31]
+Igerilekua prest dago. Globuluak sartzen has daitezke igeri egiten ikasteko.
+[tutorial part2 message 32]
+Hautatu Igerilekua entrenamendua ikusteko. Oinarrizko Igerilekuak 2 globulu entrenatzen ditu aldi berean, oinarrizko Zirkuituak bezala.
+[tutorial part2 message 33]
+Entrenatutako globuluek igeri egin dezakete. Laster ura zeharkatzea eskatzen duen zeregina emango diegu.
+[tutorial part2 message 34]
+Gehiago dago ikasteko. Atsedena behar baduzu, gorde aurrerapena jokoaren menuan.
+[tutorial part2 message 35]
+Koloniak janaria eta entrenamendu fisikoa ditu. Eskolak eraikin hobeetarako behar diren trebetasunak irakatsiko dizkie langileei.
+[tutorial part2 message 36]
+Eskolak bilketa eta eraikuntza hobetzen ditu. Eraikitzeko algak behar ditu, uretan hazten direnak. Igeri dakiten langileek bil ditzakete.
+[tutorial part2 message 37]
+Babestu entrenamendu-eraikin garrantzitsuak. Eskolak ez du uraren ondoan egon behar; barrualdeko leku babestu bat seguruagoa da.
+[tutorial part2 message 38]
+Eraiki Eskola leku babestu batean, Igerilekuaren atzean edo Kofoinaren hego-mendebaldean, Zirkuituaren ondoan. Esleitu langile erabilgarriak.
+[tutorial part2 message 39]
+Hautatu eraikin bat haren langileak ikusteko. Ordenagailuan, unitateen bideak erakusteko ekintza konfiguragarriak helmugarako lerroak erakusten ditu. Ikusi uneko lasterbidea Ezarpenak, Kontrolak atalean. Itxaron Eskola amaitu arte.
+[tutorial part3 message 1]
+Koloniak Ostatuak, Ospitalea, Zirkuitua, Igerilekua eta Eskola ditu. Prestatu dezagun defentsa.
+[tutorial part3 message 2]
+Ez dugu gerlaririk sortu oraindik. Haiek gabe, koloniak babes gutxi du erasoen aurrean.
+[tutorial part3 message 3]
+Hautatu Kofoina eta jarri gerlarien proportzioa 2an. Utzi langileena 1ean, langile gehiago ere sortzeko.
+[tutorial part3 message 4]
+Kofoinak 2 gerlari inguru sortuko ditu langile bakoitzeko. Esleitu hornitzaile gehiago ekoizpena bizkortzeko.
+[tutorial part3 message 5]
+Lehen gerlaria prest dago eta entrenatzen hasiko da. Itxaron bigarren bati jarraitu aurretik.
+[tutorial part3 message 6]
+Gerlariek Zirkuitua eta Igerilekua ere erabiltzen dituzte. Barrakoian erasoa ere entrenatu dezakete.
+[tutorial part3 message 7]
+Barrakoiak eraso-indarra eta eraso-abiadura hobetzen ditu: kolpe bakoitzeko kaltea eta kolpeen maiztasuna. Gerlari trebatuek trebatu gabeko talde askoz handiagoak garaitu ditzakete.
+[tutorial part3 message 8]
+Eraiki Barrakoi bat eraikuntzarako behar duen egurraren ondoan.
+[tutorial part3 message 9]
+Esleitu langile erabilgarriak Barrakoiaren orubera. Mantendu nahikoa langile janari-horniduran eta ez sortu lanpostu gehiegi.
+[tutorial part3 message 10]
+Barrakoia prest dago. Gerlariek erasoak entrenatu ditzakete bertan.
+[tutorial part3 message 11]
+Eraikinak hobetzeak ere kolonia indartzen du.
+[tutorial part3 message 12]
+Eskolan ikasitako langileek hobekuntzak eraiki ditzakete. Hautatu eraikin egokia eta aukeratu Hobetu. Kaltetuta badago, konpondu behar izatea gerta daiteke lehenik.
+[tutorial part3 message 13]
+Zer hobetuko dugu lehenik? Ostatuek leku libreak dituzte oraindik, beraz itxaron dezakete.
+[tutorial part3 message 14]
+Ospitalean ere badago lekua. Eskola, Zirkuitua, Igerilekua edo Barrakoia hobetu ditzakegu.
+[tutorial part3 message 15]
+Hobetu Zirkuitua lehenik, unitateek are azkarrago korrika egiten ikasteko.
+[tutorial part3 message 16]
+Hautatu Zirkuitua eta aukeratu Hobetu. Barruko unitateek atera behar dute obrak hasi aurretik; baliteke aldaketa berehalakoa ez izatea.
+[tutorial part3 message 17]
+Esleitu langile erabilgarriak Zirkuituaren hobekuntzara. Eskolako beharrezko prestakuntza dutenek soilik lan egin dezakete 2. mailako obretan.
+[tutorial part3 message 18]
+Itxaron hobekuntza amaitu arte. Maila altuagoko eraikinek baliabide eta denbora gehiago behar dute.
+[tutorial part3 message 19]
+2. mailako Zirkuitua amaituta dago eta lur gehiago hartzen du. Horregatik utzi genuen tartea: handitzeko lekurik gabe ezin da hobetu.
+[tutorial part3 message 20]
+Hobetu orain Barrakoia eta Igerilekua 2. mailara. Biak amaitzean jarraituko dugu.
+[tutorial part3 message 21]
+Hobetutako eraikinek globulu gehiago artatzen dituzte edo entrenamendu hobea ematen dute. 2. mailako Ostatuak, adibidez, 7 leku ditu eta azkarrago ematen du jaten.
+[tutorial part3 message 22]
+Etsaia gertu dago. Prestatu gaitezen eraso baterako.
+[tutorial part3 message 23]
+Babes-dorreek irismeneko etsaiei tiro egiten diete. Hormek dorreak babesten dituzte. Biak erabiliko ditugu sarbide estu bat defendatzeko.
+[tutorial part3 message 24]
+Jarri dorreak binaka, lekua badago. Hormek hiru alde babes ditzakete, baina utzi bide bat harrizko munizioa entregatzen duten langileentzat.
+[tutorial part3 message 25]
+Igerilekuaren ekialdean, beste fruta-arbolen iparraldean, pasabide estu batek beste uharte batera darama. Babestu puntu hori.
+[tutorial part3 message 26]
+Aurreikusi 2 dorre zuhaitzen eta kostaldearen artean. Utzi atzeko sarbidea harria eramateko eta beste aldeetan hormetarako lekua. Ez blokeatu langileak.
+[tutorial part3 message 27]
+Eraiki 2 dorre bertan. Esleitu 2 edo 3 langile orube bakoitzera, kontagailuetako erabilgarritasunaren arabera.
+[tutorial part3 message 28]
+Jarri hormak dorreen kanpoaldera begirako hiru aldeetan. Utzi koloniara begirako aldea irekita langileentzat.
+[tutorial part3 message 29]
+Horma-zati bakoitzak eraikuntza-lan bat sortzen du eta harri 1 behar du. Langileek ezin badituzte lan guztiak batera bete, zatiak txandaka amaituko dituzte.
+[tutorial part3 message 30]
+Itxaron bi dorreak eta hainbat horma-zati amaitu arte. Dorreek harrizko munizioa behar dute; urruneko harrobiak entregak moteltzen ditu. Igo langile-helburuak langile libreak badituzu.
+[tutorial part4 message 1]
+Koloniak janaria, entrenamendua eta defentsak ditu. Eraikinak 3. mailara igo daitezke, edukiera eta entrenamendua hobetzeko. Jarraitu hobetzen baliabideek eta trebetasunek uzten duten heinean.
+[tutorial part4 message 2]
+Bilatu etsaiaren kolonia oinarriaren ipar-mendebaldean. Mugitu ikuspegia bertara.
+[tutorial part4 message 3]
+Gerrako lainoak esploratutako lurra ezkuta dezake. Etsaiaren uneko jarduera ikusteko, miatzaile bat behar da inguruan.
+[tutorial part4 message 4]
+Ireki Banderak. Banderek eta zonek unitateak gidatzen dituzte, globulu bakoitza banaka kontrolatu gabe.
+[tutorial part4 message 5]
+Hautatu Miatze-bandera, kometa itxurako ikonoa duena. Lurrean, uretan, baliabideen gainean eta esploratu gabeko lurretan jar daiteke.
+[tutorial part4 message 6]
+Jarri ustezko etsaiaren oinarriaren gainean. Gutxi gorabeherako kokalekua nahikoa da. Amaitu kokapena eskuineko klik batekin edo ukipen-kontrolekin.
+[tutorial part4 message 7]
+Inguruko marrak banderaren ekintza-erradioa erakusten du. Esleitutako miatzaile batek zona miatuko du. Inor ez badator, egiaztatu kopurua eta sortu beste bat Kofoinean behar izanez gero. Sakatu Zuriunea edo Ados iristean.
+[tutorial part4 message 8]
+Etsaiak langile asko eta armada bildua ditu. Prestatu dezagun defentsa.
+[tutorial part4 message 9]
+Ireki Banderak eta aukeratu Babes zonalde urdina. Erabili lurra gehitzeko modua, ez kentzekoa. Ukipen-pantailan, aukeratu Margotu, ez Ezabatu.
+[tutorial part4 message 10]
+Hautatu pintzelaren forma eta tamaina. Karratu handia egokia da defentsa trinkoa margotzeko.
+[tutorial part4 message 11]
+Margotu Babes zonaldea dorreen atzean, etsaiaren balizko bidean. Egin klik edo ukitu puntu bat, edo arrastatu eremu handiagoa margotzeko. Ukipen-pantailan, erabili Mugitu ikuspegia mugitzeko margotzen ari zaren bitartean.
+[tutorial part4 message 12]
+Gerlariek zona okupatuko dute. Utzi nahikoa leku, baina mantendu defendatzaileak pasabidean bilduta. Itxaron erasoari.
+[tutorial part4 message 13]
+Etsaia pasabidera hurbiltzen ari da!
+[tutorial part4 message 14]
+Erasopean gaude. Ikusi gerlari trebatuek eta dorreek nola defendatzen duten kokalekua.
+[tutorial part4 message 15]
+Bizirik atera zara! Ireki Banderak eta hautatu puntadun Gerra-bandera. Jarri etsaiaren Kofoinaren gainean erasoa hara gidatzeko.
+[tutorial part4 message 16]
+Amaitu kokapena eta hautatu Gerra-bandera. Esleitu gerlari 1 baino gehiago eta txikitu erradioa erasoa Kofoinean biltzeko. Itxaron gerlariak iritsi arte.
+[tutorial part4 message 17]
+Erasoa hasi da. Gerlariek etsaiaren dorreak gainditu behar dituzte Kofoinera iristeko.
+[tutorial part4 message 18]
+Gerlariak etsaiaren oinarrira iritsi dira. Mantendu erasoa Kofoinean bilduta.
+[tutorial part4 message 19]
+Etsaiaren Kofoina suntsitu duzu! Tutoriala amaitu duzu, eta janari-horniduraren, esleipenen, entrenamenduaren, hobekuntzen, esplorazioaren eta borrokaren oinarriak ikasi dituzu.
+[tutorial mission basics]
+Sarrera eta oinarriak
+[tutorial mission development]
+Eraikinak eta eskolak
+[tutorial mission training]
+Gerlariak, entrenamendua eta hobekuntzak
+[tutorial mission flags]
+Banderak eta amaiera
+[library  Could not restore the previous library: %0]
+ Ezin izan da aurreko liburutegia berrezarri: %0
+[library  The previous library is retained.]
+ Aurreko liburutegia mantenduko da.
+[library  · Installed]
+ · Instalatuta
+[library  · Update available]
+ · Eguneratzea erabilgarri
+[library A different release is installed. Install the selected release to update explicitly.]
+Beste bertsio bat dago instalatuta. Instalatu hautatutako bertsioa berariaz eguneratzeko.
+[library All engines]
+Motor guztiak
+[library All generators]
+Sortzaile guztiak
+[library Available families]
+Familia erabilgarriak
+[library Back]
+Atzera
+[library Building families]
+Eraikin-familiak
+[library Building library]
+Eraikin-liburutegia
+[library Checking building release]
+Eraikinaren bertsioa egiaztatzen
+[library Choose an online instance before opening a family link.]
+Aukeratu lineako instantzia bat familia baten esteka ireki aurretik.
+[library Compatible with this engine]
+Motor honekin bateragarria
+[library Confirm replacement]
+Baieztatu ordezkapena
+[library Create in Building Studio]
+Sortu Building Studio-n
+[library Downloading generator…]
+Sortzailea deskargatzen…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Paisaia bakoitza benetako mapa gisa agertzen da, behean alda ditzakezun tamaina eta kolonia kopuruarekin. Erabili bat erakutsitako mapan jolasteko.
+[library Editor tool: generates terrain for the map editor.]
+Editore-tresna: mapa-editorearentzako lurra sortzen du.
+[library Editor tools]
+Editore-tresnak
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Gaitu behean instalatutako familiak. Hautapena profil lokal honetan gordetzen da; lehendik dauden mapek eta gordetako partidek beren eraikinak mantentzen dituzte. Linean jolasteko, sortu mapa bat familia hauekin, argitaratu mapa-liburutegian eta aukeratu zure gelan.
+[library Enter a building family ID or a link to its family page.]
+Sartu eraikin-familiaren IDa edo haren orrirako esteka.
+[library Family link or ID]
+Familiaren esteka edo IDa
+[library Family links must be at most 1024 characters.]
+Familien estekek gehienez 1024 karaktere izan ditzakete.
+[library Family removed.]
+Familia kendu da.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Familia ez dago erabilgarri. Familia pribatuetarako, hasi saioa Sarean atalean, sarbidea duen kontu batekin.
+[library Generator file hash mismatch]
+Sortzailearen fitxategiaren kontrol-batura ez dator bat
+[library Generator installed. Future selections use this release.]
+Sortzailea instalatuta. Hurrengo hautapenek bertsio hau erabiliko dute.
+[library Generator package identity mismatch]
+Sortzailearen paketearen identitatea ez dator bat
+[library Generators]
+Sortzaileak
+[library Install compatible release]
+Instalatu bertsio bateragarria
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Instalatu eraikin indibidualak edo hobekuntza-familiak oinarrizko eraikinekin batera. Hautapena mapa sortu berriei soilik aplikatzen zaie.
+[library Install selected release]
+Instalatu hautatutako bertsioa
+[library Installed]
+Instalatuta
+[library Installed families]
+Instalatutako familiak
+[library Installed. Enable the family below for new maps.]
+Instalatuta. Gaitu familia behean mapa berrietarako.
+[library Invalid building family ID.]
+Eraikin-familiaren ID baliogabea.
+[library Invalid building library response]
+Eraikin-liburutegiaren erantzun baliogabea
+[library Invalid library cursor]
+Liburutegi-kurtsore baliogabea
+[library Invalid release identity]
+Bertsioaren identitate baliogabea
+[library Load more]
+Kargatu gehiago
+[library Load more families]
+Kargatu familia gehiago
+[library Loading building families]
+Eraikin-familiak kargatzen
+[library Loading…]
+Kargatzen…
+[library Map generators]
+Mapa-sortzaileak
+[library Maps]
+Mapak
+[library Most downloaded]
+Deskargatuenak
+[library Most liked]
+Gustukoenak
+[library My generators]
+Nire sortzaileak
+[library Newest]
+Berrienak
+[library No building families installed.]
+Ez dago eraikin-familiarik instalatuta.
+[library No public building families yet]
+Oraindik ez dago eraikin-familia publikorik
+[library No validated release for this game version.]
+Ez dago jokoaren bertsio honetarako baliozkotutako argitalpenik.
+[library Online server changed during download]
+Lineako zerbitzaria aldatu da deskargatzean
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Ireki zerrendatu gabeko familia bat haren estekarekin edo IDarekin. Familia pribatuetarako, hasi saioa lehenik Sarean atalean.
+[library Open family]
+Ireki familia
+[library Opened family. Install its compatible release below.]
+Familia irekita. Instalatu haren bertsio bateragarria behean.
+[library Opening building family]
+Eraikin-familia irekitzen
+[library Playable]
+Jokagarria
+[library Playable generator]
+Sortzaile jokagarria
+[library Privacy policy]
+Pribatutasun-politika
+[library Public library]
+Liburutegi publikoa
+[library Recently updated]
+Duela gutxi eguneratuak
+[library Refresh library]
+Freskatu liburutegia
+[library Release identity changed during installation]
+Bertsioaren identitatea aldatu da instalazioan
+[library Reroll]
+Sortu berriro
+[library Reroll seed]
+Aukeratu ausazko hazia
+[library Saving generator library…]
+Sortzaileen liburutegia gordetzen…
+[library Search]
+Bilatu
+[library Seed]
+Hazia
+[library Selection saved for new maps.]
+Hautapena gordeta mapa berrietarako.
+[library Storage failed.]
+Ezin izan da gorde.
+[library Storage persistence unavailable]
+Biltegiratze iraunkorra ez dago erabilgarri
+[library Tags]
+Etiketak
+[library Technical checks passed for this engine. Balance is not certified.]
+Motor honetarako egiaztapen teknikoak gaindituta. Jokoaren oreka ez dago ziurtatuta.
+[library The server returned a different family.]
+Zerbitzariak beste familia bat itzuli du.
+[library This link is from another instance. Switch to that instance in Online first.]
+Esteka beste instantzia batekoa da. Aldatu lehenik instantzia horretara Sarean atalean.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Paketearen ID hau instalatuta dago. Baieztatu ordezkapena hautatutako bertsioa erabiltzeko.
+[library This release has no passing checks for this engine.]
+Bertsio honek ez du motor honetarako gainditutako egiaztapenik.
+[library This release is installed.]
+Bertsio hau instalatuta dago.
+[library Update installed family]
+Eguneratu instalatutako familia
+[library Use in a room]
+Erabili gela batean
+[library By %0]
+Egilea: %0
+[library Installed release %0]
+Instalatutako bertsioa: %0
+[library Release %0]
+%0 bertsioa
+[library Remove %0]
+Kendu %0
+[library Seed: %0]
+Hazia: %0
+[library %0 · revision %1]
+%0 · %1 berrikuspena

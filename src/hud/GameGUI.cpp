@@ -1,3 +1,4 @@
+#include <ui/TextLayout.h>
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -173,6 +174,7 @@ void GameGUI::init()
 
 
 	campaign=NULL;
+	legacyTutorialScript = false;
 	missionName="";
 
 
@@ -265,47 +267,23 @@ std::shared_ptr<Order> GameGUI::getOrder(void)
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent)
 {
-	unsigned pos = 0;
-	int length = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64;
-
-	std::string lastWord;
-	std::string lastLine;
-	std::string ninput=input;
-	if(!ninput.empty() && ninput.back() != ' ')
-		ninput += " ";
-
-	while (pos<ninput.length())
-	{
-		if (ninput[pos] == ' ')
-		{
-			int actLineLength = globalContainer->standardFont->getStringWidth(lastLine.c_str());
-			int actWordLength = globalContainer->standardFont->getStringWidth(lastWord.c_str());
-			int spaceLength = globalContainer->standardFont->getStringWidth(" ");
-			if (actWordLength+actLineLength+spaceLength < length)
-			{
-				if (lastLine.length())
-					lastLine += " ";
-				lastLine += lastWord;
-				lastWord.clear();
-			}
-			else
-			{
-				output->push_back(lastLine);
-				lastLine = indent+lastWord;
-				lastWord.clear();
-			}
-		}
-		else
-		{
-			lastWord += ninput[pos];
-		}
-		pos++;
-	}
-	if (lastLine.length())
-		lastLine += " ";
-	lastLine += lastWord;
-	if (lastLine.length())
-		output->push_back(lastLine);
+    if (input.empty()) return;
+    struct MessageMeasurer final : GAGGUI::ui::TextMeasurer
+    {
+        Font *font;
+        explicit MessageMeasurer(Font *font) : font(font) {}
+        int width(GAGGUI::ui::FontRole, const std::string &text) const override
+        { return font->getStringWidth(text.c_str()); }
+        int lineHeight(GAGGUI::ui::FontRole) const override
+        { return font->getStringHeight("M"); }
+    } measurer(globalContainer->standardFont);
+    // Reserve continuation indentation while wrapping. The shared UTF-8
+    // wrapper also handles unspaced CJK text, long words and explicit newlines.
+    const int width = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - 64
+        - globalContainer->standardFont->getStringWidth(indent.c_str());
+    auto lines = GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Body, input, width);
+    for (std::size_t i = 0; i < lines.size(); ++i)
+        output->push_back((i ? indent : std::string()) + lines[i]);
 }
 
 void GameGUI::publishMessageHistoryLines(const std::string& text, HistoryList target,

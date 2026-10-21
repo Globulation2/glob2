@@ -6,34 +6,6 @@ Din browser blev ikke åbnet. Åbn login-siden for at fortsætte.
 Hvis siden spørger, skal du kontrollere, at den viser %0.
 [hub code copied]
 Kode kopieret
-[settings Apply artwork on the next game or editor load.]
-
-[settings Apply at the next completed frame. Your game stays running.]
-
-[settings Automatically show the torus overview while moving around the map.]
-
-[settings Browse shared generators]
-
-[settings Changing renderer…]
-
-[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
-
-[settings Menu scroll wheel enabled]
-
-[settings Move and animate units between game ticks.]
-
-[settings Requires a renderer with texture filtering. Your saved choice is retained.]
-
-[settings Requires a renderer with torus support. Your saved choice is retained.]
-
-[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
-
-[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
-
-[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
-
-[settings Gesture scrolling]
-
 [settings Finish in your browser. The game continues by itself.]
 Afslut i din browser. Spillet fortsætter automatisk.
 [music set]
@@ -6039,96 +6011,622 @@ Tidsgrænsen er nået.
 [outcome reason probability]
 Tærsklen for sejrsandsynlighed er nået.
 [Discord community]
-
+Discord-fællesskab
 [Globulation 2 Discord]
-
+Globulation 2 på Discord
 [discord community intro]
-
+Find modstandere, få hjælp, og del dine baner med Globulation 2-fællesskabet.
 [discord opens externally]
-
+Deltag i vores Discord-server. Dette åbner Discord eller din browser.
 [Join Discord]
-
+Deltag på Discord
 [Copy link]
-
+Kopiér link
 [discord opened]
-
+Discord er åbnet. Du kan vende tilbage til spillet når som helst.
 [discord open failed]
-
+Kunne ikke åbne Discord. Kopiér invitationslinket, og åbn det i din browser.
 [discord link copied]
-
+Invitationslink kopieret.
 [settings CPU automatic]
-
+CPU automatisk
 [settings Scalar]
-
+Skalar
 [settings Unavailable]
-
+Ikke tilgængelig
 [settings Initializing]
-
+Initialiserer
 [settings Gradient backend]
-
+Beregningsmotor til gradienter
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Anvendes ved simuleringens næste synkroniseringspunkt. Beregninger uden understøttelse bruger CPU automatisk; gengivelsen er uafhængig.
 [settings Gradient algorithm]
-
+Gradientalgoritme
 [settings All choices compute the same exact field.]
-
+Alle valgmuligheder beregner præcis det samme felt.
 [settings Bucket propagation]
-
+Udbredelse via spande
 [settings Verify gradient results]
-
+Kontrollér gradientresultater
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Sammenlign GPU-resultater med skalar CPU før brug. Kræver ekstra beregninger og stopper spillet ved uoverensstemmelse.
 [settings Gradient computation]
-
+Gradientberegning
 [settings CPU fallback]
-
+Reserveberegning på CPU
 [settings GPU fields]
-
+GPU-felter
 [settings CPU fallbacks]
-
+Reserveberegninger på CPU
 [settings MCP server]
-
+MCP-server
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Når MCP-serveren aktiveres, kan lokale klienter se og styre spillet.
 [settings Enable MCP server]
-
+Aktivér MCP-server
 [settings Port]
-
+Port
 [settings Current controller: %0]
-
+Aktuel styrende klient: %0
 [settings Copy endpoint]
-
+Kopiér forbindelsesadresse
 [settings Retry listener]
-
+Genstart lytning
 [settings Revoke control]
-
+Tilbagekald styring
 [settings MCP server unavailable in this application]
-
+MCP-serveren er ikke tilgængelig i dette program
 [settings Disabled]
-
+Deaktiveret
 [settings Running]
-
+Kører
 [settings Error: %0]
-
+Fejl: %0
 [settings None]
-
+Ingen
 [settings Starting]
-
+Starter
 [Which hand holds your phone?]
-
+Venstre eller højre hånd?
 [hand preference explanation]
-
+Hold telefonen naturligt. Tryk på den hånd, du spiller med.
 [hand silhouettes description]
-
+Omridset af en telefon med venstre og højre hånd ovenpå. Tryk på et af de skrå tommelfingerfelter for at vælge den side.
 [hand preference change later]
-
+Du kan skifte side senere i indstillingerne.
 [hand preference save failed]
-
+Kunne ikke gemme dit valg. Prøv igen.
 [Left hand]
-
+Venstre hånd
 [Right hand]
-
+Højre hånd
 [discord copy failed]
-
+Kunne ikke kopiere linket. Markér invitationen ovenfor for at kopiere den manuelt.
 [Destroy this building?]
 Ødelæg denne bygning?
+[stat ground movement]
+Bevægelse på jorden
+[stat ground movement about]
+Levende landenheder efter omtrentligt hastighedsforhold. »Svømning 2×« betyder, at svømning er dobbelt så hurtig som løb. Flyvende og ubevægelige enheder er udeladt.
+[stat view by movement]
+Efter bevægelse
+[stat band land only]
+Kun land
+[stat band swim twice run]
+Svømning 2×
+[stat band swim faster run]
+Svømning 1,4×
+[stat band swim equals run]
+Ens
+[stat band run faster swim]
+Løb 1,3×
+[stat band run twice swim]
+Løb 2×
+[stat band run triple swim]
+Løb 3×
+[stat band water only]
+Kun vand
+[settings Browse shared generators]
+Gennemse delte generatorer
+[settings Apply artwork on the next game or editor load.]
+Anvend grafikken, næste gang et spil eller editoren indlæses.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Kræver en gengivelsesmotor med teksturfiltrering. Dit gemte valg bevares.
+[settings Automatically show the torus overview while moving around the map.]
+Vis automatisk torusoversigten, når du bevæger dig rundt på kortet.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Kræver en gengivelsesmotor med torusunderstøttelse. Dit gemte valg bevares.
+[settings Move and animate units between game ticks.]
+Flyt og animér enheder mellem simuleringstrin.
+[settings Renderer unavailable]
+Gengivelsesmotor ikke tilgængelig
+[settings Apply at the next completed frame. Your game stays running.]
+Anvend efter næste færdige billede. Dit spil fortsætter.
+[settings Active renderer: %0]
+Aktiv gengivelsesmotor: %0
+[settings Changing renderer…]
+Skifter gengivelsesmotor…
+[settings Menu scroll wheel enabled]
+Aktivér rullehjul i menuer
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Styrer rulning med hjulet i menuer. Hjulet zoomer altid på spillets og editorens kort.
+[settings Gesture scrolling]
+Rulning med bevægelser
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Rulning med berøring og Mac-bevægelser. 0 slår en effekt fra; 50 er standarden for berøring.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Hvor langt lister og paneler fortsætter med at rulle efter et hurtigt strøg. Mac-bevægelser bruger systemets inerti; nul deaktiverer deres glid.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Hvor meget lister og paneler strækkes ud over deres ender og springer tilbage. Mac-bevægelser bruger et blidere stræk.
+[hive stopping]
+Stopper…
+[hive stopped]
+Stoppet
+[hive stop failed]
+Stop mislykkedes; prøv stopgenvejen igen
+[hive updating]
+Opdaterer…
+[hive requested]
+Anmodet
+[hive update failed]
+Opdatering mislykkedes; prøv igen
+[hive give order]
+Giv ordre
+[hive less]
+Mindre
+[hive reports and details]
+Rapporter / detaljer
+[hive needs fresh order]
+Kræver en ny ordre
+[hive active]
+Aktiv
+[hive resume]
+Fortsæt
+[recordings]
+Optagelser
+[recording delete confirm]
+Slet optagelse?
+[recording delete warning]
+Optagelsen og dens metadata fjernes.
+[recording delete]
+Slet
+[recording working]
+Arbejder…
+[recording none]
+Ingen optagelser endnu.
+[recording interrupted]
+Afbrudt optagelse
+[recording recover]
+Gendan
+[recording export video]
+Eksportér video
+[recording export metadata]
+Eksportér metadata
+[recording export events]
+Eksportér hændelser
+[recording export failed]
+Kunne ikke eksportere optagelsen.
+[recording delete action]
+Slet optagelse
+[recording refresh]
+Opdatér
+[tutorial part1 message 1]
+Velkommen til Globulation 2! Fire missioner lærer dig at styre en koloni. Gem i spilmenuen, og fortsæt senere fra hovedmenuen. Tryk på mellemrum eller OK på en berøringsskærm for at fortsætte. Find tidligere tekster i beskedhistorikken.
+[tutorial part1 message 2]
+Du begynder med en Sværm og en arbejder. Lad os se dem arbejde sammen.
+[tutorial part1 message 3]
+Arbejderen høster hvede og bringer det til Sværmen. Den bruger hvede til at skabe nye enheder og er afgørende for kolonien.
+[tutorial part1 message 4]
+Vælg din globule, den bevægelige enhed, med et venstreklik eller et tryk.
+[tutorial part1 message 5]
+Enhedens oplysninger viser, at madlageret falder: den bliver sulten. Når madbjælker vises, angiver den blå bjælke under enheden dens resterende mad.
+[tutorial part1 message 6]
+Globuler spiser på Kroer. Ryd markeringen med et højreklik, eller tryk på tomt terræn på en berøringsskærm.
+[tutorial part1 message 7]
+Åbn byggekontrollerne, vælg Kro, og placér den nær hvede. Følg arbejderens høstrute, hvis du ikke kan finde hveden. På berøringsskærme bruges Byg og bekræftelse af en gyldig placering. Afslut placeringen med højreklik eller Afbryd.
+[tutorial part1 message 8]
+Godt! Kroens byggeplads er placeret.
+[tutorial part1 message 9]
+En arbejder fra Sværmen kan bygge Kroen. Arbejderen henter træ fra nærliggende træer og bringer det til byggepladsen. Vent på færdiggørelsen.
+[tutorial part1 message 10]
+Den færdige Kro har brug for hvede. En tildelt arbejder høster det ligesom til Sværmen.
+[tutorial part1 message 11]
+Kroens gule lagerbjælke stiger, når hvede leveres. Den viser hvedelageret.
+[tutorial part1 message 12]
+Nu lærer vi at fordele arbejdet.
+[tutorial part1 message 13]
+En arbejder forsyner Sværmen og en anden Kroen. De kan holde spisepause undervejs. Det er normalt.
+[tutorial part1 message 14]
+Vælg Sværmen, og find tildelingen af arbejdere: Arbejder på computer, eller tildelte arbejdere og måltal på berøringsskærm. Måltallet er det ønskede antal arbejdere.
+[tutorial part1 message 15]
+Sæt Sværmens måltal for arbejdere til 0. Vælg derefter Kroen, og gør det samme.
+[tutorial part1 message 16]
+Arbejderne er ledige, men spiser stadig. En Kro uden tildelte arbejdere løber efterhånden tør for hvede.
+[tutorial part1 message 17]
+En globule uden mad mister helbred og kan dø. Et Hospital helbreder skader, men Kroerne skal også forsynes.
+[tutorial part1 message 18]
+Byg et Hospital. Det behøver ikke hvede, så placér det nær træ eller centralt ved Sværmen.
+[tutorial part1 message 19]
+Vælg Hospitalets byggeplads, og sæt måltallet til 2 arbejdere, så byggeriet går hurtigere.
+[tutorial part1 message 20]
+Hospitalet er færdigt. Sårede globuler kan nu blive raske dér.
+[tutorial part1 message 21]
+Sorte områder er uudforskede. Enheder afslører nærliggende terræn, når de bevæger sig. Arbejdere følger deres opgaver; udforskere egner sig bedre til spejderarbejde.
+[tutorial part1 message 22]
+Vælg Sværmen, og find produktionsforholdene for arbejdere, udforskere og krigere. Sæt udforskere til 1.
+[tutorial part1 message 23]
+Med både arbejdere og udforskere på 1 skaber Sværmen lige mange over tid. Sæt arbejdere til 0 for kun at skabe udforskere.
+[tutorial part1 message 24]
+Sæt Sværmens måltal for tildelte arbejdere tilbage til 1, så den får hvede.
+[tutorial part1 message 25]
+Sæt også Kroens måltal til 1 arbejder. Kolonien behøver en stabil madforsyning.
+[tutorial part1 message 26]
+Vent nu på, at Sværmen skaber en udforsker.
+[tutorial part1 message 27]
+Udforskeren flyver rundt om kolonien og afslører terræn. Lad Sværmen skabe en anden udforsker, før du fortsætter.
+[tutorial part1 message 28]
+Vælg Sværmen. Sæt udforskernes produktionsforhold til 0 og arbejdernes til 1 for igen at skabe arbejdere.
+[tutorial part2 message 1]
+Der er sten øst for basen. Husk stedet; du får brug for sten senere.
+[tutorial part2 message 2]
+Træerne syd for stenene er appelsintræer. Vælg dem for at se ressourceoplysninger. Vi vender tilbage til frugt senere; fokusér nu på Sværmen.
+[tutorial part2 message 3]
+Indstil Sværmen til kun at skabe arbejdere: arbejdere 1, udforskere og krigere 0.
+[tutorial part2 message 4]
+Lad os øge væksten. Sæt Sværmens måltal til 6 arbejdere. Nye arbejdere kan fylde de ledige pladser, når de kommer til.
+[tutorial part2 message 5]
+Vi går videre til nye opgaver ved 8 arbejdere. Hold Sværmen og Kroen forsynet imens.
+[tutorial part2 message 6]
+Flere arbejdere forsyner nu Sværmen. Flere hvedeleverancer betyder hurtigere produktion af enheder.
+[tutorial part2 message 7]
+En arbejder koster 5 hvede. Lange transportveje tager tid, så en Sværm behøver ofte flere leverandører end en Kro. Byg hvedeafhængige bygninger tæt på hvede, hvis muligt.
+[tutorial part2 message 8]
+Du har mindst 8 arbejdere. Sænk Sværmens måltal til 1 for at bremse væksten, mens vi bygger.
+[tutorial part2 message 9]
+Kolonien behøver flere spisepladser. Byg endnu en Kro nord for den første.
+[tutorial part2 message 10]
+Tildel ledige arbejdere til den nye byggeplads. Den kræver kun 3 træ; over 3 bygningsarbejdere hjælper kun lidt.
+[tutorial part2 message 11]
+Den færdige Kro bruger sit driftsmåltal, normalt 1 arbejder. Byggeri og daglig forsyning har hver sit måltal.
+[tutorial part2 message 12]
+Arbejdere kan lære at løbe hurtigere på Træningsbanen.
+[tutorial part2 message 13]
+Find Træningsbanen i byggekontrollerne. Hold musemarkøren over ikonet på computer for at se beskrivelse og pris. Vælg den under Byg på berøringsskærm. Placér den ikke endnu.
+[tutorial part2 message 14]
+Træningsbanen behøver meget træ og lidt sten. Vælg et centralt sted, som er let at nå.
+[tutorial part2 message 15]
+Byg en Træningsbane, for eksempel syd for Sværmen. Lad plads være fri omkring den til senere udvidelser.
+[tutorial part2 message 16]
+Tildel mellem 5 og 7 arbejdere til byggepladsen. Den kræver 7 byggematerialer i alt.
+[tutorial part2 message 17]
+Den færdige Træningsbane træner enheder uden fortsat levering af byggematerialer eller hvede.
+[tutorial part2 message 18]
+Globuler går ind på Træningsbanen. Efter træning kan de løbe hurtigere.
+[tutorial part2 message 19]
+Vælg Træningsbanen for at følge træningen. Indikatorerne viser, hvor tæt enhederne er på at være færdige.
+[tutorial part2 message 20]
+Trænede arbejdere leverer ressourcer hurtigere. Hold stadig øje med madlagrene, og sørg for nok forsynede Kroer, mens kolonien vokser.
+[tutorial part2 message 21]
+Find arbejdertælleren i spilvisningen. Totalen viser befolkningen; tilgængeligheden afslører ledige arbejdere eller ubesatte job. Tildel ikke mere arbejde, end kolonien kan klare.
+[tutorial part2 message 22]
+Spilvisningen viser også udforskere og krigere. Brug tallene ved produktionsplanlægning og tildeling til flag.
+[tutorial part2 message 23]
+Du har 2 almindelige Kroer med 4 spisepladser hver: 8 i alt. Flere end 8 enheder kan blive sultne, så sørg for kapacitet til køer.
+[tutorial part2 message 24]
+To Kroer er ikke nok for altid. Udvid kapaciteten, før mangel bliver til hungersnød.
+[tutorial part2 message 25]
+Byg 3 Kroer mere nær hvede. Sultne arbejdere holder op med at arbejde og kan dø. Brug ledige arbejdere uden at forsømme den eksisterende madforsyning.
+[tutorial part2 message 26]
+Færdiggør 3 ekstra Kroer, så du har 5 i alt.
+[tutorial part2 message 27]
+De nye Kroer bruger driftsmåltallet, normalt 1 arbejder hver. Kontrollér leverandører og hvedelagre.
+[tutorial part2 message 28]
+Træningsbanen letter færdsel på land. Nu skal vi lære at svømme.
+[tutorial part2 message 29]
+Et Svømmebassin lærer enheder at svømme og kræver træ. Byg et i den store lysning nordøst for basen, nord for stenene. Lad plads være fri til opgraderinger og voksende ressourcer, og tildel ledige arbejdere.
+[tutorial part2 message 30]
+Et Svømmebassin lærer enheder at svømme og kræver træ. Byg et i den store lysning nordøst for basen, nord for stenene. Lad plads være fri til opgraderinger og voksende ressourcer, og tildel ledige arbejdere.
+[tutorial part2 message 31]
+Svømmebassinet er færdigt. Globuler kan nu lære at svømme dér.
+[tutorial part2 message 32]
+Vælg Svømmebassinet for at følge træningen. Et almindeligt Svømmebassin træner 2 globuler ad gangen, ligesom en almindelig Træningsbane.
+[tutorial part2 message 33]
+De trænede globuler kan nu svømme. Snart får de en opgave, der kræver at krydse vand.
+[tutorial part2 message 34]
+Der er mere at lære. Hvis du behøver en pause, så gem fremskridtet i spilmenuen.
+[tutorial part2 message 35]
+Kolonien har mad og fysisk træning. En Skole lærer arbejderne at opføre bedre bygninger.
+[tutorial part2 message 36]
+Skolen forbedrer høst- og byggefærdigheder. Byggeriet kræver alger fra vandet. Arbejdere, der kan svømme, kan høste dem.
+[tutorial part2 message 37]
+Beskyt vigtige træningsbygninger. En Skole behøver ikke stå ved vandet; en beskyttet placering inde i landet er sikrere.
+[tutorial part2 message 38]
+Byg Skolen beskyttet, for eksempel bag Svømmebassinet eller sydvest for Sværmen ved Træningsbanen. Tildel tilgængelige arbejdere.
+[tutorial part2 message 39]
+Vælg en bygning for at se dens arbejdere. På computer kan den indstillelige handling til enhedsruter vise linjer mod destinationerne. Find den aktuelle genvej under Indstillinger, Spilkontrol. Vent på den færdige Skole.
+[tutorial part3 message 1]
+Kolonien har Kroer, Hospital, Træningsbane, Svømmebassin og Skole. Nu forbereder vi forsvaret.
+[tutorial part3 message 2]
+Vi har endnu ikke skabt krigere. Uden dem har kolonien kun ringe beskyttelse mod angreb.
+[tutorial part3 message 3]
+Vælg Sværmen, og sæt krigernes produktionsforhold til 2. Lad arbejderne stå på 1, så de fortsat bliver produceret.
+[tutorial part3 message 4]
+Sværmen skaber omtrent 2 krigere for hver arbejder. Tildel flere leverandører for at øge produktionen.
+[tutorial part3 message 5]
+Din første kriger er klar og begynder at træne. Vent på en anden, før du fortsætter.
+[tutorial part3 message 6]
+Krigere bruger også Træningsbanen og Svømmebassinet. På Kasernen kan de desuden træne angreb.
+[tutorial part3 message 7]
+Kasernen forbedrer angrebsstyrke og angrebshastighed: skade pr. slag og slagfrekvens. Veltrænede krigere kan besejre langt større utrænede grupper.
+[tutorial part3 message 8]
+Byg en Kaserne nær det træ, byggeriet behøver.
+[tutorial part3 message 9]
+Tildel tilgængelige arbejdere til Kasernen. Bevar madforsyningen, og undgå at skabe for mange job.
+[tutorial part3 message 10]
+Kasernen er færdig. Krigere kan nu træne deres angreb dér.
+[tutorial part3 message 11]
+Opgraderede bygninger gør også kolonien stærkere.
+[tutorial part3 message 12]
+Skoletrænede arbejdere kan bygge opgraderinger. Vælg en egnet bygning og Opgradér i dens kontroller. Beskadigede bygninger kan kræve reparation først.
+[tutorial part3 message 13]
+Hvad skal vi opgradere først? Kroerne har stadig ledige pladser og kan vente.
+[tutorial part3 message 14]
+Hospitalet har også plads. Vi kan fokusere på Skolen, Træningsbanen, Svømmebassinet eller Kasernen.
+[tutorial part3 message 15]
+Opgradér Træningsbanen først, så enhederne kan lære at løbe endnu hurtigere.
+[tutorial part3 message 16]
+Vælg Træningsbanen og Opgradér. Enhederne indenfor skal først ud; derfor starter arbejdet måske ikke straks.
+[tutorial part3 message 17]
+Tildel ledige arbejdere til opgraderingen. Kun arbejdere med den nødvendige skoletræning kan arbejde på en byggeplads på niveau 2.
+[tutorial part3 message 18]
+Vent på færdiggørelsen. Bygninger på højere niveauer kræver flere ressourcer og mere tid.
+[tutorial part3 message 19]
+Træningsbanen på niveau 2 er færdig og større. Derfor lod vi plads være fri: uden udvidelsesplads kan en bygning ikke opgraderes.
+[tutorial part3 message 20]
+Opgradér nu Kasernen og Svømmebassinet til niveau 2. Vi fortsætter, når begge er færdige.
+[tutorial part3 message 21]
+Opgraderede bygninger kan normalt betjene flere globuler eller give bedre træning. En Kro på niveau 2 har 7 spisepladser og bespiser hurtigere.
+[tutorial part3 message 22]
+Fjenden er nær. Lad os forberede os på et angreb.
+[tutorial part3 message 23]
+Forsvarstårne skyder mod fjender inden for rækkevidde. Mure beskytter tårnene. Vi bruger begge dele ved en smal passage.
+[tutorial part3 message 24]
+Placér tårne i par, hvis der er plads. Mure kan beskytte tre sider, men arbejdere behøver adgang med stenammunition.
+[tutorial part3 message 25]
+Øst for Svømmebassinet, nord for de andre frugttræer, fører en smal passage til en anden ø. Forsvar dette sted.
+[tutorial part3 message 26]
+Planlæg 2 tårne mellem træerne og kysten. Bevar adgang bag dem til stenleverancer og plads på de andre sider til Mure. Spær ikke arbejderne ude.
+[tutorial part3 message 27]
+Byg 2 tårne dér. Tildel 2 eller 3 arbejdere til hver byggeplads efter den viste tilgængelighed.
+[tutorial part3 message 28]
+Placér Mure langs tårnenes tre udadvendte sider. Hold siden mod kolonien åben.
+[tutorial part3 message 29]
+Hvert murstykke skaber et job og kræver 1 sten. Hvis der mangler arbejdere, kan de færdiggøre stykkerne efter tur.
+[tutorial part3 message 30]
+Vent på begge tårne og flere murstykker. Tårnene behøver også stenammunition; det fjerne stenbrud gør leveringen langsom. Øg deres måltal, hvis der er ledige arbejdere.
+[tutorial part4 message 1]
+Kolonien har mad, træning og forsvar. Bygninger kan nå niveau 3 med større kapacitet og bedre træning. Fortsæt opgraderingerne efter ressourcer og færdigheder.
+[tutorial part4 message 2]
+Find fjendens koloni nordvest for din base. Flyt visningen dertil.
+[tutorial part4 message 3]
+Krigståge kan skjule udforsket terræn. En udforsker i nærheden viser fjendens aktuelle aktivitet.
+[tutorial part4 message 4]
+Åbn Flag. Flag og zoner styrer enheder uden at kontrollere hver globule enkeltvis.
+[tutorial part4 message 5]
+Vælg Udforskningsflaget med dragesymbolet. Flag kan placeres over land, vand, ressourcer og uudforsket terræn.
+[tutorial part4 message 6]
+Placér det ved den formodede fjendebase. En omtrentlig placering er nok. Afslut med højreklik eller berøringskontrollerne.
+[tutorial part4 message 7]
+Omridset viser flagets radius. En tildelt udforsker undersøger området. Kontrollér udforskertallet, hvis ingen kommer, og skab om nødvendigt en ved Sværmen. Tryk på mellemrum eller OK, når den ankommer.
+[tutorial part4 message 8]
+Fjenden har mange arbejdere og en samlet hær. Lad os forberede forsvaret.
+[tutorial part4 message 9]
+Åbn Flag, og vælg den blå bevogtningszone. Brug tilføjelse frem for fjernelse. På berøringsskærme vælges Mal frem for Slet.
+[tutorial part4 message 10]
+Vælg penselform og størrelse. Den store firkant er god til et kompakt forsvarsområde.
+[tutorial part4 message 11]
+Mal en bevogtningszone bag tårnene på fjendens sandsynlige rute. Klik eller tryk for et punkt, eller træk for et større område. På berøringsskærme bruges Panorer til at flytte visningen under malingen.
+[tutorial part4 message 12]
+Ledige krigere besætter zonen. Giv dem plads, men hold forsvaret samlet ved passagen. Vent på angrebet.
+[tutorial part4 message 13]
+Fjenden nærmer sig passagen!
+[tutorial part4 message 14]
+Vi bliver angrebet. Se, hvordan trænede krigere og tårne forsvarer stillingen.
+[tutorial part4 message 15]
+Du overlevede! Åbn Flag, og vælg det spidse Krigsflag. Placér det over fjendens Sværm for at lede angrebet dertil.
+[tutorial part4 message 16]
+Afslut placeringen, og vælg Krigsflaget. Tildel mere end 1 kriger, og mindsk radius for at samle angrebet ved Sværmen. Vent på deres ankomst.
+[tutorial part4 message 17]
+Angrebet er begyndt. Krigerne skal forbi fjendens tårne for at nå Sværmen.
+[tutorial part4 message 18]
+Krigerne har nået fjendebasen. Hold angrebet rettet mod Sværmen.
+[tutorial part4 message 19]
+Du ødelagde fjendens Sværm! Du har gennemført øvelsen og lært grundlaget for madforsyning, tildeling, træning, opgraderinger, udforskning og kamp.
+[tutorial mission basics]
+Introduktion og grundlæggende spil
+[tutorial mission development]
+Bygninger og skoler
+[tutorial mission training]
+Krigere, træning og opgraderinger
+[tutorial mission flags]
+Flag og afslutning
+[library  Could not restore the previous library: %0]
+ Kunne ikke gendanne det tidligere bibliotek: %0
+[library  The previous library is retained.]
+ Det tidligere bibliotek bevares.
+[library  · Installed]
+ · Installeret
+[library  · Update available]
+ · Opdatering tilgængelig
+[library A different release is installed. Install the selected release to update explicitly.]
+En anden udgave er installeret. Installér den valgte udgave for udtrykkeligt at opdatere.
+[library All engines]
+Alle motorer
+[library All generators]
+Alle generatorer
+[library Available families]
+Tilgængelige familier
+[library Back]
+Tilbage
+[library Building families]
+Bygningsfamilier
+[library Building library]
+Bygningsbibliotek
+[library Checking building release]
+Kontrollerer bygningsudgave
+[library Choose an online instance before opening a family link.]
+Vælg en onlineinstans, før du åbner et familielink.
+[library Compatible with this engine]
+Kompatibel med denne motor
+[library Confirm replacement]
+Bekræft erstatning
+[library Create in Building Studio]
+Opret i Building Studio
+[library Downloading generator…]
+Henter generator…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Hvert landskab vises som et rigtigt kort med den størrelse og det koloniantal, der kan ændres nedenfor. Brug et for at spille det viste kort.
+[library Editor tool: generates terrain for the map editor.]
+Editorværktøj: genererer terræn til korteditoren.
+[library Editor tools]
+Editorværktøjer
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Aktivér installerede familier nedenfor. Valget gemmes i denne lokale profil; eksisterende kort og gemte spil beholder deres egne bygninger. Til onlinespil skal du generere et kort med familierne, offentliggøre det i kortbiblioteket og vælge det i dit rum.
+[library Enter a building family ID or a link to its family page.]
+Indtast en bygningsfamilies ID eller et link til dens side.
+[library Family link or ID]
+Familielink eller ID
+[library Family links must be at most 1024 characters.]
+Familielinks må højst være 1024 tegn lange.
+[library Family removed.]
+Familie fjernet.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Familien er ikke tilgængelig. Private familier kræver login via Online med en konto, der har adgang.
+[library Generator file hash mismatch]
+Generatorfilens kontrolsum stemmer ikke
+[library Generator installed. Future selections use this release.]
+Generator installeret. Fremtidige valg bruger denne udgave.
+[library Generator package identity mismatch]
+Generatorpakkens identitet stemmer ikke
+[library Generators]
+Generatorer
+[library Install compatible release]
+Installér kompatibel udgave
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Installér enkelte bygninger eller opgraderingsfamilier sammen med standardbygningerne. Valget gælder kun nygenererede kort.
+[library Install selected release]
+Installér valgt udgave
+[library Installed]
+Installeret
+[library Installed families]
+Installerede familier
+[library Installed. Enable the family below for new maps.]
+Installeret. Aktivér familien nedenfor til nye kort.
+[library Invalid building family ID.]
+Ugyldigt bygningsfamilie-ID.
+[library Invalid building library response]
+Ugyldigt svar fra bygningsbiblioteket
+[library Invalid library cursor]
+Ugyldig bibliotekscursor
+[library Invalid release identity]
+Ugyldig udgaveidentitet
+[library Load more]
+Indlæs flere
+[library Load more families]
+Indlæs flere familier
+[library Loading building families]
+Indlæser bygningsfamilier
+[library Loading…]
+Indlæser…
+[library Map generators]
+Kortgeneratorer
+[library Maps]
+Kort
+[library Most downloaded]
+Mest hentede
+[library Most liked]
+Mest populære
+[library My generators]
+Mine generatorer
+[library Newest]
+Nyeste
+[library No building families installed.]
+Ingen bygningsfamilier installeret.
+[library No public building families yet]
+Ingen offentlige bygningsfamilier endnu
+[library No validated release for this game version.]
+Ingen valideret udgave til denne spilversion.
+[library Online server changed during download]
+Onlineserveren blev ændret under hentning
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Åbn en ikke-listet familie via link eller ID. Log først ind via Online for private familier.
+[library Open family]
+Åbn familie
+[library Opened family. Install its compatible release below.]
+Familie åbnet. Installér dens kompatible udgave nedenfor.
+[library Opening building family]
+Åbner bygningsfamilie
+[library Playable]
+Spilbar
+[library Playable generator]
+Spilbar generator
+[library Privacy policy]
+Privatlivspolitik
+[library Public library]
+Offentligt bibliotek
+[library Recently updated]
+Nyligt opdateret
+[library Refresh library]
+Opdatér bibliotek
+[library Release identity changed during installation]
+Udgavens identitet blev ændret under installationen
+[library Reroll]
+Generér igen
+[library Reroll seed]
+Vælg tilfældigt starttal
+[library Saving generator library…]
+Gemmer generatorbibliotek…
+[library Search]
+Søg
+[library Seed]
+Starttal
+[library Selection saved for new maps.]
+Valg gemt til nye kort.
+[library Storage failed.]
+Lagring mislykkedes.
+[library Storage persistence unavailable]
+Vedvarende lagring er ikke tilgængelig
+[library Tags]
+Mærkater
+[library Technical checks passed for this engine. Balance is not certified.]
+Tekniske kontroller bestået for denne motor. Spilbalancen er ikke certificeret.
+[library The server returned a different family.]
+Serveren returnerede en anden familie.
+[library This link is from another instance. Switch to that instance in Online first.]
+Linket stammer fra en anden instans. Skift først til den instans under Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Dette pakke-ID er installeret. Bekræft erstatning for at bruge den valgte udgave.
+[library This release has no passing checks for this engine.]
+Denne udgave har ingen beståede kontroller for denne motor.
+[library This release is installed.]
+Denne udgave er installeret.
+[library Update installed family]
+Opdatér installeret familie
+[library Use in a room]
+Brug i et rum
+[library By %0]
+Af %0
+[library Installed release %0]
+Installeret udgave %0
+[library Release %0]
+Udgave %0
+[library Remove %0]
+Fjern %0
+[library Seed: %0]
+Starttal: %0
+[library %0 · revision %1]
+%0 · revision %1
+[library Fit]
+Tilpas
+[library GL only]
+Kun GL

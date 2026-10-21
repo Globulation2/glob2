@@ -91,6 +91,52 @@ as matches and the editor; see [render pacing](../architecture/rendering.md#targ
     strict validation still rejects other untranslated text and all structural
     errors. Remove pending keys once every catalog has a translation.
 
+## Translation coverage checks
+
+Run `python3 data/check_translations.py --strict` and
+`python3 test/test_translations.py` when changing user-visible text.
+Use `python3 data/check_translations.py --json` for per-language missing,
+untranslated, shared-English and placeholder findings, plus the source coverage
+inventory. The checker reads the catalogs without rewriting them.
+
+Native source checks join adjacent C++ literals, skip comments, and include keys
+stored in arrays or passed through UI wrappers and conditional expressions.
+Registered implicit conventions cover settings labels/help (including category
+names and scroll sliders), `musicText`, `customAIText`, `libraryText`, statistics metrics,
+experiments, shipped theme IDs and ruleset names/descriptions. Add a scanner rule
+and a regression fixture when introducing a new wrapper or computed key family.
+Direct prose passed to common frontend constructors, action tables, choice lists
+and map-overlay text is also rejected. A successful
+catalog check cannot detect every string assembled through variables or new helpers.
+
+The JSON `coverage` field records checked families and remaining review surfaces.
+Tutorial SGSL sources retain their legacy translation blocks, but the desktop
+message overlay, touch tutorial panel and history translate recognized tutorial
+text through the current catalogs. `src/ui/TutorialTextAliases.h` contains exact
+aliases from both authored scripts and the scripts embedded in shipped tutorial
+maps. Regenerate it with `python3 tools/localization/generate_tutorial_aliases.py`
+when those inputs change; `--check` and the translation tests verify freshness.
+Full-source fingerprints identify the four authored and four map-embedded tutorial
+scripts when loading a client session, treating LF and CRLF line endings equally. Generic phrases in custom scenarios are
+left untouched. This display mapping also covers old saved tutorial text without rewriting map
+scripts, execution offsets, campaign IDs or progress. Two legacy Spanish pool
+steps share an alias; keep their current combined English instruction identical.
+Campaign mission titles are localized for display while selection still uses
+original mission IDs. Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
+history messages use the shared UTF-8 wrapper, including unspaced CJK text and
+explicit line breaks.
+
+The JSON tutorial inventory distinguishes legacy language blocks from current
+`display_catalog_gaps`. Generator/building/resource names and keyboard names
+built from runtime data and unregistered wrappers still need contextual review.
+Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
+bindings, and render representative screens in each language to check font
+coverage, text fitting and layout. `TrueTypeFont` shapes bidirectional text into
+visual order before rasterization, so every SDL_ttf font instance must use an
+explicit left-to-right direction. Allowing SDL_ttf to guess direction reorders
+Arabic and Persian a second time, including embedded Latin words and numbers.
+The FontKerning suite checks this at multiple raster scales and after font reload.
+
 ## Anatomy of a screen
 
 ```cpp

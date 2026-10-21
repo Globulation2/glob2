@@ -877,6 +877,8 @@ private:
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
+	// Client-only display context, derived on load; never serialized.
+	bool legacyTutorialScript = false;
 	std::string missionName;
 
 	GameGUIDefaultAssignManager defaultAssign;
