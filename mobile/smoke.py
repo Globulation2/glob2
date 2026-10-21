@@ -28,12 +28,16 @@ def wait_for_main_menu(run, logs, wait_for):
         screens = re.findall(r'Glob2 screen ready: ([^\r\n]+)', logs())
         return screens[-1] if screens else ''
 
-    wait_for(lambda: any(name in ready_screen() for name in ('HandPreferenceScreen', 'MainMenuScreen')),
+    setup_screens = ('AudioPreferenceScreen', 'HandPreferenceScreen')
+    wait_for(lambda: any(name in ready_screen() for name in (*setup_screens, 'MainMenuScreen')),
              'native startup and bundled assets')
-    if 'HandPreferenceScreen' in ready_screen():
-        # Select the first grip using the same focus/accept path as the menu.
+    for setup in setup_screens:
+        if setup not in ready_screen():
+            continue
+        # Choose silence, then the first grip, through real focus/accept input.
         run('shell', 'input', 'keyevent', 'KEYCODE_TAB')
         run('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
+        wait_for(lambda: setup not in ready_screen(), 'completion of ' + setup)
     wait_for(lambda: 'MainMenuScreen' in ready_screen(), 'native main menu')
 
 

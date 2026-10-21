@@ -45,6 +45,7 @@ traces even when a native check fails, so failures can be investigated against
 the exact signed package without rebuilding it.
 Interactive tutorial, audio, editor, updates and online play still require
 separate qualification; this workflow does not publish or deploy anything.
+Android emulator checks use the reviewed mirror smoke driver to complete audio and hand-preference setup through real input before testing the main menu and lifecycle. The APK build and its assets still come from the immutable public tag.
 Each channel retains a separate manual workflow for retries; no publication
 workflow runs on ordinary pushes or pull requests.
 Each publication workflow skips every job unless it is manually dispatched
