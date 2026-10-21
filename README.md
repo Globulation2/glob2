@@ -16,7 +16,10 @@ balance, cross-platform checksum equivalence, or release-performance certificati
 
 Historical validation manifests record the actual intermediate source/binary hashes. Later
 changes to unrelated generator code or documentation do not retroactively change those results.
-The combined regression log and final commit source manifest will supplement this evidence.
+The [final combined regression log](final-contracts.log) reports 9 passed cases and 6,658 assertions.
+The [final source manifest](final-source-manifest.json) identifies the committed source, binaries,
+commands, integration review and compatibility limits. Separate Portage regressions passed on
+the same final source before this combined run.
 
 ## Downloads
 

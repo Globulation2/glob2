@@ -14,5 +14,7 @@
   "shattered-coast-expansion.tar.gz": "d9f34bd140a7f6b2a92ae19b97239f17075c52baf5316b31145d753e7ee9486b",
   "portage-lakes-open-fields.tar.gz": "21a1c25a4adbcdaea3495d3be0d917485ebcaa9e6c647b9c8e24a007e3e8866a",
   "derived-log-manifest.json": "fa0111aeece47c29814d36682768726ec6c1b479d5365f74e2bc7f44740d14ba",
-  "README.md": "2bda994538db524a24b26896b7959bcaf66aeab617cddcfa8db0d536d71bf37b"
+  "README.md": "fddda6d2fcadf5e1bf76fa723247bb842fe83577ef9b4194e0cbda6d6d68aafb",
+  "final-source-manifest.json": "08f8ec860042e13d703e0d29d8d7243c48a5b01f5ee5099f6f12a28c25e7688b",
+  "final-contracts.log": "ee62f9bd40374bfd1835a5638c5d56affb66e6b36e67881c01d60b1a1c56cf8b"
 }

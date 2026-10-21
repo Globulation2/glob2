@@ -1,0 +1,19 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/066f/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/066f/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2-claude/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "5a7b684f6df70780da4d7e0357bf6e14cdeba9f4", "sourceStatus": [" M .agents/skills/glob2-map-design/references/landscape-generators.md", " M .agents/skills/glob2-map-design/references/shaped-generators.md", " M docs/map-generators/adding-a-generator.md", " M docs/map-generators/comb.md", " M docs/map-generators/coral.md", " M docs/map-generators/game-rules-for-map-design.md", " M docs/map-generators/honeycomb-isle.md", " M docs/map-generators/lava-shield.md", " M docs/map-generators/locust.md", " M docs/map-generators/old-growth.md", " M docs/map-generators/plantations.md", " M docs/map-generators/resources-and-starts.md", " M docs/map-generators/the-glacis.md", " M src/map/generator/CombGeneratorTest.cpp", " M src/map/generator/MapGeneratorContracts.h", " M src/map/generator/MapGeneratorDefaultsTest.cpp", " M src/map/generator/core/GenerationValidation.cpp", " M src/map/generator/core/GeneratorDefinition.h", " M src/map/generator/generators/BraidedDeltaGenerator.cpp", " M src/map/generator/generators/CombGenerator.cpp", " M src/map/generator/generators/CoralGenerator.cpp", " M src/map/generator/generators/CoralGenerator.h", " M src/map/generator/generators/GlacisGenerator.cpp", " M src/map/generator/generators/HoneycombIsleGenerator.cpp", " M src/map/generator/generators/HoneycombIsleGenerator.h", " M src/map/generator/generators/LavaShieldGenerator.cpp", " M src/map/generator/generators/LocustGenerator.cpp", " M src/map/generator/generators/OldGrowthGenerator.cpp", " M src/map/generator/generators/PlantationsGenerator.cpp", " M src/map/generator/shared/ClearingLandscape.cpp", " M src/map/generator/shared/ClearingLandscape.h", " M test/map-generator-golden.txt"], "sourceTreeSha256": "1b15985e4d942de3e083a9396c2b73af4fc8a87d12b928b2b98d98fac01a0f89"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+PASS Locust: three to five harvests per wheat tile; harvested food never regrows
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+PASS Honeycomb isle: envelope and refusal, design variety, resource extremes, sealed growth, cached designs, starter wheat
+===============================================================================
+[doctest] test cases:    9 |    9 passed | 0 failed | 94 skipped
+[doctest] assertions: 6658 | 6658 passed | 0 failed |
+[doctest] Status: SUCCESS!
