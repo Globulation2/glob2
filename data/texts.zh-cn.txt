@@ -6628,5 +6628,19 @@ MCP 服务器
 %0 · 修订 %1
 [library Fit]
 完整显示
+[Sound or silence?]
+声音还是静音？
+[Silence]
+静音
+[Sound]
+声音
+[audio preference explanation]
+游戏以静音模式启动。您想保持静音，还是开启音乐和游戏音效？
+[audio preference change later]
+您可以随时在“设置 → 音频”中更改。
+[audio preference save failed]
+无法保存您的选择。声音仍处于关闭状态。请重试。
+[audio choices description]
+静音：已静音的扬声器。声音：带有声波的扬声器。
 [library GL only]
 仅限 GL

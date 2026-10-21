@@ -270,6 +270,7 @@ CLIENT_SOURCES = (
     'game/screens/StartQualityScreen.cpp',
     'ui/screens/MainMenuScreen.cpp',
     'ui/screens/HandPreferenceScreen.cpp',
+    'ui/screens/AudioPreferenceScreen.cpp',
     'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',

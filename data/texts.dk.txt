@@ -6628,5 +6628,19 @@ Starttal: %0
 %0 · revision %1
 [library Fit]
 Tilpas
+[Sound or silence?]
+Lyd eller stilhed?
+[Silence]
+Stilhed
+[Sound]
+Lyd
+[audio preference explanation]
+Spillet starter uden lyd. Vil du have stilhed eller musik og spillyde?
+[audio preference change later]
+Du kan ændre dette når som helst under Indstillinger → Lyd.
+[audio preference save failed]
+Dit valg kunne ikke gemmes. Lyden er stadig slået fra. Prøv igen.
+[audio choices description]
+Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 [library GL only]
 Kun GL

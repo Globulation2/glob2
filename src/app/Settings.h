@@ -63,6 +63,9 @@ public:
 	std::string musicSet; // Empty selects a random soundtrack at match start.
 	Uint32 voiceVolume;
 	int mute;
+	bool audioPreferenceChosen = false; ///< Explicit first-run audio choice; old volume defaults are not consent.
+	// Call before constructing the mixer, after the host presentation is known.
+	void applyAudioStartupPolicy(bool mobile) { if (mobile && !audioPreferenceChosen) mute = 1; }
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;

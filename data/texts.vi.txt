@@ -6628,5 +6628,19 @@ Hạt giống: %0
 %0 · bản sửa đổi %1
 [library Fit]
 Vừa khung
+[Sound or silence?]
+Âm thanh hay im lặng?
+[Silence]
+Im lặng
+[Sound]
+Âm thanh
+[audio preference explanation]
+Trò chơi khởi động ở chế độ im lặng. Bạn muốn im lặng hay bật nhạc và âm thanh trò chơi?
+[audio preference change later]
+Bạn có thể thay đổi bất cứ lúc nào trong Cài đặt → Âm thanh.
+[audio preference save failed]
+Không thể lưu lựa chọn. Âm thanh vẫn tắt. Vui lòng thử lại.
+[audio choices description]
+Im lặng: loa bị tắt tiếng. Âm thanh: loa có sóng âm.
 [library GL only]
 Chỉ GL

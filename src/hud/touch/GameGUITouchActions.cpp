@@ -60,9 +60,11 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	auto *b = inspectedBuilding();
 	if (!b)
 		return result;
-	if (b->owner().number != gui.drawnScene().panels.local.state().number || globalContainer->isViewingGame())
+	// Viewing exposes the configuration, while the input paths separately
+	// enforce ownership and spectator/replay restrictions.
+	if (!globalContainer->isViewingGame() && b->owner().number != gui.drawnScene().panels.local.state().number)
 		return result;
-	if (allocationBuilding())
+	if (b->type->maxUnitWorking && b->state().buildingState == Building::ALIVE)
 	{
 		result.push_back({GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(
 														 "[Assigned %0 · Target %1]"))
@@ -125,6 +127,10 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 		if (confirmDestroy)
 			result.push_back({tr("[Cancel]"), 5});
 	}
+	// Confirmation must remain reachable even when inventory leaves only a
+	// short row panel. Other controls dismiss confirmation on contact anyway.
+	if (confirmDestroy)
+		std::erase_if(result, [](const auto &row) { return row.kind != 4 && row.kind != 5; });
 	return result;
 }
 // Local point-space boxes are the sole source of layout for input and drawing.
@@ -511,6 +517,7 @@ void GameGUITouch::applyDiscreteAction(const SceneBuildingPanel &building, const
 		if (row.kind == 4 && b->state().buildingState == Building::ALIVE && !confirmDestroy)
 		{
 			confirmDestroy = true;
+			actionScroll = 0;
 			return;
 		}
 		if (row.kind == 3)

@@ -6628,5 +6628,19 @@ Véletlen mag: %0
 %0 · módosítás %1
 [library Fit]
 Egész
+[Sound or silence?]
+Hang vagy csend?
+[Silence]
+Csend
+[Sound]
+Hang
+[audio preference explanation]
+A játék csendben indul. Csendet szeretnél, vagy zenét és játékhangokat?
+[audio preference change later]
+Ezt bármikor módosíthatod a Beállítások → Hang menüben.
+[audio preference save failed]
+Nem sikerült menteni a választásodat. A hang továbbra is ki van kapcsolva. Próbáld újra.
+[audio choices description]
+Csend: némított hangszóró. Hang: hangszóró hanghullámokkal.
 [library GL only]
 Csak GL

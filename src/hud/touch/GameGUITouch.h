@@ -12,6 +12,7 @@
 #include <optional>
 #include <memory>
 #include <vector>
+#include <utility>
 namespace GAGGUI::ui
 {
 class UIDialog;
@@ -75,6 +76,13 @@ class GameGUITouch
 	GAGCore::ViewRect allocationRect() const;
 	GAGCore::ViewRect panelContent() const;
 	void drawAllocation();
+	struct BuildingInventory
+	{
+		GAGCore::ViewRect bounds;
+		std::vector<std::pair<GAGCore::ViewRect, std::string>> cells;
+	};
+	// Measurement is also used while resolving layout; never calls layout().
+	BuildingInventory buildingInventory(const GAGCore::MobileLayout &ui) const;
 	void drawSelectionHeader(GAGCore::ViewRect rect, GAGCore::Sprite *sprite, int frame,
 		const std::string &text);
 	bool showsBuildPalette() const;
@@ -235,7 +243,6 @@ class GameGUITouch
 	{
 		std::vector<BuildingAction> actions;
 		std::vector<GAGCore::ViewRect> boxes;
-		GAGCore::ViewRect legend;
 		bool fits = true;
 	};
 	DialChips dialChips(const DialLayout &dial) const;

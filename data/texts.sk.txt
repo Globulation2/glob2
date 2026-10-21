@@ -6628,5 +6628,19 @@ Seed: %0
 %0 · revízia %1
 [library Fit]
 Celá
+[Sound or silence?]
+Zvuk alebo ticho?
+[Silence]
+Ticho
+[Sound]
+Zvuk
+[audio preference explanation]
+Hra sa spúšťa potichu. Chcete ticho alebo hudbu a zvuky hry?
+[audio preference change later]
+Voľbu môžete kedykoľvek zmeniť v Nastavenia → Zvuk.
+[audio preference save failed]
+Voľbu sa nepodarilo uložiť. Zvuk je stále vypnutý. Skúste to znova.
+[audio choices description]
+Ticho: stíšený reproduktor. Zvuk: reproduktor so zvukovými vlnami.
 [library GL only]
 Len GL

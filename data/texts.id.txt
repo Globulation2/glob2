@@ -6628,5 +6628,19 @@ Benih: %0
 %0 · revisi %1
 [library Fit]
 Tampilkan seluruh peta
+[Sound or silence?]
+Suara atau senyap?
+[Silence]
+Senyap
+[Sound]
+Suara
+[audio preference explanation]
+Permainan dimulai tanpa suara. Anda ingin senyap atau musik dan suara permainan?
+[audio preference change later]
+Anda dapat mengubahnya kapan saja di Pengaturan → Audio.
+[audio preference save failed]
+Pilihan Anda tidak dapat disimpan. Suara masih dimatikan. Silakan coba lagi.
+[audio choices description]
+Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 [library GL only]
 Hanya GL

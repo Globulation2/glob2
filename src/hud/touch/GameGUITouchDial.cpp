@@ -35,11 +35,12 @@ bool GameGUITouch::usesDial(const MobileLayout &ui) const
 	const double unit = dial.geometry.unit;
 	const double radius = dial.geometry.rings[0].outer * unit;
 	const auto hud = hudLayout(ui);
+	const auto inventory = buildingInventory(ui).bounds;
 	// The sweep is capped on short landscapes; its occupied arc can fit even
 	// when the unused top of the bounding quadrant extends above the HUD.
 	const double rise = radius * std::sin(dial.geometry.sweepEnd * 3.141592653589793 / 180);
 	return dial.geometry.sweepEnd >= 45 &&
-		dial.geometry.center.y - rise >= hud.minimap.y + hud.minimap.h + 4 * unit &&
+		dial.geometry.center.y - rise >= std::max(hud.minimap.y + hud.minimap.h, inventory.y + inventory.h) + 4 * unit &&
 		ui.safe.w >= radius + (dial.portrait ? 16 : InGameTouchTheme::dialChipWidth + 16) * unit &&
 		dial.chips.h >= InGameTouchTheme::dialChipHeight * unit && dialChips(dial).fits;
 }
@@ -54,14 +55,17 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	const auto hud = hudLayout(ui);
 	// Use the same geometry as drawing and minimap input: compact inspection
 	// can enlarge the minimap to leave room for two stat rows and the title.
+	const auto inventory = buildingInventory(ui).bounds;
 	const double minimapBottom = (hud.minimap.y + hud.minimap.h) / unit + 4;
+	const double inventoryBottom = (inventory.y + inventory.h) / unit;
+	const double contentTop = std::max(minimapBottom + header + 2 * margin, inventoryBottom + margin);
 	DialLayout out;
 	out.portrait = safe.w <= safe.h;
 	// Portrait keeps action chips above the arc quadrant; landscape puts them
 	// beside it. The shared header already sits beneath the stats, so the arc
 	// can use the remaining height below the minimap.
 	double radius = out.portrait ? std::min({InGameTouchTheme::dialRadius, safe.w - chip - 2 * margin + InGameTouchTheme::dialRingThickness + InGameTouchTheme::dialRingGap,
-											 bottom - minimapBottom - header - 2 * margin})
+											 bottom - contentTop})
 								 : std::min({InGameTouchTheme::dialRadius, bottom - minimapBottom - margin,
 											 safe.w / 2});
 	radius = std::max(radius, InGameTouchTheme::dialMinimumRadius);
@@ -80,14 +84,14 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	g.sweepStart = InGameTouchTheme::dialSweepStart;
 	g.sweepEnd = InGameTouchTheme::dialSweepEnd;
 	// A short landscape screen needs a shallower sweep at the larger radius
-	// to keep both thumb sides below the header's production readouts.
+	// to keep both thumb sides below the building inventory.
 	if (!out.portrait)
 		g.sweepEnd = std::min(g.sweepEnd, std::asin(std::clamp(
-			(bottom - minimapBottom - 30) / radius, 0., 1.)) * 180 / 3.141592653589793);
+			(bottom - std::max(minimapBottom + 30, inventoryBottom + 4)) / radius, 0., 1.)) * 180 / 3.141592653589793);
 	ViewRect chips;
 	if (out.portrait)
 	{
-		const double top = minimapBottom + header + 2 * margin;
+		const double top = contentTop;
 		chips = {left ? safe.x + safe.w - margin - chip : safe.x + margin, top, chip,
 				 bottom - radius - margin - top};
 	}
@@ -95,10 +99,10 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	{
 		const double farWidth = std::max(0.0, safe.w - radius - 3 * margin);
 		const double farX = left ? safe.x + radius + 2 * margin : safe.x + margin;
-		const double top = bottom - radius + header + margin;
+		const double top = std::max(bottom - radius + header + margin, inventoryBottom + margin);
 		chips = {farX, top, farWidth, bottom - margin - top};
 	}
-	// The identity bar shares the stats column and the minimap's bottom edge.
+	// The identity bar follows the compact stats in the same column.
 	// Allocation geometry above reserves clearance for this shared HUD.
 	const ViewRect head{hud.identity.x / unit, hud.identity.y / unit,
 			hud.identity.w / unit, hud.identity.h / unit};
@@ -126,13 +130,10 @@ GameGUITouch::DialChips GameGUITouch::dialChips(const DialLayout &dial) const
 	DialChips result;
 	if (confirmDestroy) return result;
 	std::vector<BuildingAction> options;
-	bool production = false;
 	for (const auto &row : buildingActions())
 	{
 		if (row.kind == 0)
-		{
-			production |= row.value == 0;
-		}
+			continue;
 		else if (row.kind == 4)
 		{
 			if (confirmDestroy) result.actions.push_back(row);
@@ -151,10 +152,7 @@ GameGUITouch::DialChips GameGUITouch::dialChips(const DialLayout &dial) const
 	const double w = InGameTouchTheme::dialChipWidth * unit, h = InGameTouchTheme::dialChipHeight * unit,
 		space = 6 * unit;
 	const auto &area = dial.chips;
-	result.legend = {dial.header.x, dial.header.y + dial.header.h + 4 * unit,
-		dial.header.w, production ? 26 * unit : 0};
-	// Keep the action column's breathing room as the readouts move to the header.
-	const double top = area.y + (production ? (dial.portrait ? 72 : 24) * unit + space : 0);
+	const double top = area.y;
 	result.fits = top <= area.y + area.h;
 	const int columns = dial.portrait ? 1 : std::max(1, int((area.w + space) / (w + space)));
 	for (size_t i = 0; i < result.actions.size(); ++i)
@@ -452,7 +450,6 @@ void GameGUITouch::drawDial()
 	const auto &g = dial.geometry;
 	const double unit = g.unit;
 	const auto regions = dialRegions();
-	const auto legend = dialChips(dial).legend;
 	gfx->setClipRect();
 	if (regions.empty())
 	{
@@ -515,11 +512,7 @@ void GameGUITouch::drawDial()
 			dialPainter.label(g, ring, region.from + seam, region.to - seam, ratios[type] == 0 ? std::string{} : number,
 				globalContainer->standardFont, .85 * gfx->textUnitsPerPoint(), Color(32, 25, 35),
 				globalContainer->unitmini, type, &teamColor);
-			const double gap = 4 * unit, width = (legend.w - 2 * gap) / 3;
-			const ViewRect label{legend.x + type * (width + gap), legend.y, width, legend.h};
-			gfx->drawFilledRect(float(label.x), float(label.y), float(label.w), float(label.h), InGameTouchTheme::readout());
-			gfx->drawFilledRect(float(label.x), float(label.y + label.h - 2 * unit), float(label.w), float(2 * unit), colors[type]);
-			drawPointLabel(label, std::string(getUnitName(type)) + " " + number, .76);
+
 			continue;
 		}
 		if (region.part == DialRegion::Segment || region.part == DialRegion::Radio || region.part == DialRegion::Toggle)

@@ -6628,5 +6628,19 @@ Siemen: %0
 %0 · muutosversio %1
 [library Fit]
 Sovita
+[Sound or silence?]
+Ääni vai hiljaisuus?
+[Silence]
+Hiljaisuus
+[Sound]
+Ääni
+[audio preference explanation]
+Peli käynnistyy hiljaisena. Haluatko hiljaisuutta vai musiikkia ja peliääniä?
+[audio preference change later]
+Voit muuttaa valintaa milloin tahansa kohdassa Asetukset → Ääni.
+[audio preference save failed]
+Valintaa ei voitu tallentaa. Ääni on yhä pois päältä. Yritä uudelleen.
+[audio choices description]
+Hiljaisuus: mykistetty kaiutin. Ääni: kaiutin ja ääniaaltoja.
 [library GL only]
 Vain GL

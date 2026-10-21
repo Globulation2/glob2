@@ -6628,5 +6628,19 @@ Discord відкрито. Ви можете повернутися до гри �
 %0 · редакція %1
 [library Fit]
 Умістити
+[Sound or silence?]
+Звук чи тиша?
+[Silence]
+Тиша
+[Sound]
+Звук
+[audio preference explanation]
+Гра запускається без звуку. Бажаєте тишу чи музику та звуки гри?
+[audio preference change later]
+Це можна будь-коли змінити в Налаштування → Звук.
+[audio preference save failed]
+Не вдалося зберегти вибір. Звук залишається вимкненим. Спробуйте знову.
+[audio choices description]
+Тиша: вимкнений динамік. Звук: динамік зі звуковими хвилями.
 [library GL only]
 Лише GL

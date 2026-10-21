@@ -6628,5 +6628,19 @@ Seme: %0
 %0 · revizija %1
 [library Fit]
 Prilag.
+[Sound or silence?]
+Zvok ali tišina?
+[Silence]
+Tišina
+[Sound]
+Zvok
+[audio preference explanation]
+Igra se zažene brez zvoka. Želite tišino ali glasbo in zvoke igre?
+[audio preference change later]
+To lahko kadar koli spremenite v Nastavitve → Zvok.
+[audio preference save failed]
+Izbire ni bilo mogoče shraniti. Zvok ostaja izklopljen. Poskusite znova.
+[audio choices description]
+Tišina: utišan zvočnik. Zvok: zvočnik z zvočnimi valovi.
 [library GL only]
 Samo GL

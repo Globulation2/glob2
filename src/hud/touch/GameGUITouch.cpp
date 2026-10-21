@@ -110,9 +110,16 @@ MobileLayout GameGUITouch::layout() const
 		result.panel.w = std::min(result.safe.w, result.safe.w > result.safe.h
 			? InGameTouchTheme::inspectorLandscapeWidth : InGameTouchTheme::inspectorPortraitWidth);
 		result.panel.x = result.safe.x + result.safe.w - result.panel.w;
-		const double available = std::max(0.0, result.actions.y - minimapBottom);
+		// Compact stocks live beneath the HUD identity; spacious stocks are
+		// part of the inspector and reserve space before its scrollable actions.
+		drawable.panel = {result.panel.x * unit, minimapBottom * unit,
+			result.panel.w * unit, 0};
+		const auto inventory = buildingInventory(drawable).bounds;
+		const double top = result.persistentPanel ? minimapBottom :
+			std::max(minimapBottom, (inventory.y + inventory.h) / unit + 4);
+		const double available = std::max(0.0, result.actions.y - top);
 		const double height = std::min(available,
-			(result.persistentPanel ? InGameTouchTheme::inspectorHeader : 0) + buildingActionsHeight(result.panel.w));
+			(result.persistentPanel ? InGameTouchTheme::inspectorHeader + inventory.h / unit : 0) + buildingActionsHeight(result.panel.w));
 		result.panel.y = result.persistentPanel ? minimapBottom : result.actions.y - height;
 		result.panel.h = height;
 	}
@@ -412,6 +419,8 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 			return 38;
 		if (header.contains(point))
 			return 3;
+		if (buildingInventory(layout()).bounds.contains(point))
+			return 3;
 		// The dial answers only on its rings, chips and header; the map shows
 		// (and stays tappable) between them.
 		if (inspecting() && usesDial())
@@ -486,6 +495,13 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	else if (gui.selectionMode == GameGUI::UNIT_SELECTION && ui.panel.h > 0)
 	{
 		targets.push_back(readOnlyCloseRect());
+	}
+	else if (inspecting() && globalContainer->isViewingGame())
+	{
+		// Disabled configuration controls are visible, but never keyboard targets.
+		const auto header = allocationRect();
+		const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
+		targets.push_back({header.x + header.w - target, header.y, target, header.h});
 	}
 	else if (inspecting() && usesDial())
 	{

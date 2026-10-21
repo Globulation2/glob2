@@ -170,10 +170,33 @@ are respected; the side can be changed in Display & graphics settings.
 ### Building and flag inspectors
 
 When safe-area gutters or a short viewport leave too little room for the minimum
-thumb dial and all action chips (including confirmation and the production
-legend), the building inspector uses its scrollable row layout. Drawing and
+thumb dial and all action chips below the material inventory (including
+confirmation), the building inspector uses its scrollable row layout. Drawing and
 input share this fit policy; allocation controls never expand over the minimap
-to satisfy the minimum ring radius.
+to satisfy the minimum ring radius. Destruction confirmation shows only Confirm
+and Cancel, keeping both choices visible even in a short row panel.
+
+The statistics backdrop ends at the bottom of its counter rows; each row is
+40 points high, including the prestige progress bar. Portrait stats share three
+equal columns across both rows: trophy, conversions gained and conversions lost
+align with the population counters above. Each icon-and-value group is measured
+and painted in the same normal font style and centered within its column. Compact selection titles
+sit directly below the stats with a four-point gap.
+
+The building title is followed by a material inventory grid. Every material with
+positive building capacity shows its localized name and current/maximum stock,
+including empty stocks. This includes construction requirements and the stored
+food and fruit in completed buildings. Inventory is visible for allied buildings,
+using the same disclosure rule as the desktop inspector; spectators and replay
+viewers can inspect stocks for any selected building. Compact controls and
+notifications reserve space below the grid; Spacious inspectors place it before
+the scrollable action rows. Text wraps at the selected text size.
+
+Live spectators and replay viewers see the selected building's complete
+configuration in both dial and row layouts, including workers, priority,
+production ratios and flag settings. These controls accept no touch or mouse edits and are omitted from
+keyboard navigation. Scrolling the inspector and closing it remain available;
+colony ownership is labelled by team rather than “Your colony”.
 
 On compact layouts the building inspector is a thumb dial: concentric quarter
 rings centred on the thumb's bottom corner. Their roles never move: workers
@@ -189,11 +212,10 @@ with a unit icon and pale assigned/target counts embedded in the arc. The compac
 Swarm production is one arc divided into worker, explorer and warrior buttons.
 Tap a button to cycle its weight through 0, 1, 2, 3, 5 and back to 0; other
 weights stay unchanged. Each button occupies a fraction of the arc proportional
-to its weight plus one, so zero remains visible and reachable. The buttons and
-three readouts directly below the building header show the actual weights. Each
-ratio button pairs its number with a team-colored unit icon; both follow the arc
+to its weight plus one, so zero remains visible and reachable. The buttons show
+the actual weights. Each ratio button pairs its number with a team-colored unit icon; both follow the arc
 and scale together to fit the sector. Zero-weight buttons show only the centered
-unit icon; the header readouts retain the numeric zero.
+unit icon.
 All dial lanes use display-density antialiasing, softly rounded sector corners
 and subtle edge shading; a bounded inspector-owned texture cache reuses their
 shapes between draws. Existing weights outside the presets

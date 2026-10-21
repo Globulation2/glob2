@@ -6628,5 +6628,19 @@ Building Studio에서 만들기
 %0 · 리비전 %1
 [library Fit]
 전체 보기
+[Sound or silence?]
+소리를 켤까요?
+[Silence]
+무음
+[Sound]
+소리 켜기
+[audio preference explanation]
+게임은 무음으로 시작합니다. 무음으로 할까요, 음악과 게임 소리를 켤까요?
+[audio preference change later]
+설정 → 오디오에서 언제든 변경할 수 있습니다.
+[audio preference save failed]
+선택을 저장할 수 없습니다. 소리는 계속 꺼져 있습니다. 다시 시도하세요.
+[audio choices description]
+무음: 음소거된 스피커. 소리 켜기: 음파가 있는 스피커.
 [library GL only]
 GL 전용

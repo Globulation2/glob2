@@ -6628,5 +6628,19 @@ Slumpfrö: %0
 %0 · revision %1
 [library Fit]
 Anpassa
+[Sound or silence?]
+Ljud eller tystnad?
+[Silence]
+Tystnad
+[Sound]
+Ljud
+[audio preference explanation]
+Spelet startar utan ljud. Vill du ha tystnad eller musik och spelljud?
+[audio preference change later]
+Du kan ändra detta när som helst under Inställningar → Ljud.
+[audio preference save failed]
+Ditt val kunde inte sparas. Ljudet är fortfarande avstängt. Försök igen.
+[audio choices description]
+Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
 [library GL only]
 Bara GL

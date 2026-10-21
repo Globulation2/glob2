@@ -48,7 +48,11 @@ Settings::Settings()
 	language.clear(); // follow the system until the player picks one
 	musicVolume = 190;
 	voiceVolume = 190;
+#ifdef GLOB2_MOBILE
+	mute = 1;
+#else
 	mute = 0;
+#endif
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
     textSizePercent = 100;
@@ -118,6 +122,7 @@ void Settings::load(std::string filename)
     gpuCompute.reset();
     gradientBackend.reset();gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;
     thumbSideChosen = false;
+    audioPreferenceChosen = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
@@ -216,6 +221,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_STRING(musicSet);
 		READ_PARSED_INT(voiceVolume);
 		READ_PARSED_INT(mute);
+		if (const auto chosen = parsed.find("audioPreferenceChosen"); chosen != parsed.end())
+			audioPreferenceChosen = chosen->second == "1";
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(edgeScrollFullscreen);
@@ -372,6 +379,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "musicSet=%s\n", musicSet.c_str());
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
+		Utilities::streamprintf(stream, "audioPreferenceChosen=%d\n", audioPreferenceChosen);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "edgeScrollFullscreen=%d\n", edgeScrollFullscreen);

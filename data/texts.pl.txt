@@ -6628,5 +6628,19 @@ Ziarno: %0
 %0 · rewizja %1
 [library Fit]
 Dopasuj
+[Sound or silence?]
+Dźwięk czy cisza?
+[Silence]
+Cisza
+[Sound]
+Dźwięk
+[audio preference explanation]
+Gra uruchamia się bez dźwięku. Wolisz ciszę czy muzykę i dźwięki gry?
+[audio preference change later]
+Możesz to zmienić w dowolnej chwili w Ustawienia → Dźwięk.
+[audio preference save failed]
+Nie udało się zapisać wyboru. Dźwięk pozostaje wyłączony. Spróbuj ponownie.
+[audio choices description]
+Cisza: wyciszony głośnik. Dźwięk: głośnik z falami dźwiękowymi.
 [library GL only]
 Tylko GL

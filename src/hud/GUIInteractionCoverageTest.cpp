@@ -17,6 +17,8 @@
 #include "MapEditDialog.h"
 #include <SDLGraphicContext.h>
 #include <SDL3/SDL.h>
+#include <ScopedEnvironment.h>
+#include <InterfacePresentation.h>
 #include <algorithm>
 #include <iterator>
 #include <set>
@@ -43,6 +45,51 @@ Uint64 renderPanel(GameGUI& gui)
 }
 TEST_SUITE("GUIInteractionCoverage")
 {
+    TEST_CASE("in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment touch("GLOB2_MOBILE_UI", "1");
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,
+            .width=360,.height=720,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        struct RestoreText { double old=GAGCore::userTextScale; ~RestoreText(){ GAGCore::userTextScale=old; } } restore;
+        GameGUI gui;
+        globals->settings.mute=0;
+        auto* gfx=globals->gfx;
+        gfx->setTargetRenderFps(0);
+        gfx->setResponsiveViewport(true,800,600);
+        for(const auto [width,height]:{std::pair{360,720},std::pair{720,360}})
+        for(const double text:{1.,1.5})
+        {
+            REQUIRE(SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height));
+            REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+            SDL_Event resize{}; resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            GAGCore::userTextScale=text;
+            InGameOptionScreen dialog(&gui);
+            dialog.attach(*gfx); dialog.update(0);
+            auto& host=dialog.host();
+            host.scrollIntoView("music-set"); dialog.update(0);
+            const auto control=host.bounds("music-set");
+            REQUIRE_FALSE(control.empty());
+            CHECK(control.w > host.rootBounds().w*.7);
+            auto capture=[&](const char* state)
+            {
+                gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+                gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(60,110,50));
+                dialog.draw(0);
+                const auto name=std::string("music-")+state+"-"+std::to_string(width)+"-"+std::to_string(int(text*100))+".bmp";
+                gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/"+name);
+                gfx->nextFrame();
+            };
+            capture("closed");
+            host.tapAt(control.center()); dialog.update(0);
+            REQUIRE(host.popupOpen());
+            REQUIRE(host.popupRoot());
+            CHECK(host.popupRoot()->bounds.w > host.rootBounds().w*.7);
+            capture("open");
+            host.closePopup();
+        }
+    }
+
     TEST_CASE("service progress horizon covers mixed visits and preserves stock horizons")
     {
         glob2test::HeadlessGlobals globals;

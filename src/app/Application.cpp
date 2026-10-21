@@ -13,6 +13,7 @@
 #include "SoundMixer.h"
 #include "MainMenuScreen.h"
 #include "HandPreferenceScreen.h"
+#include "AudioPreferenceScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
@@ -184,6 +185,17 @@ Application::~Application() = default;
 
 void Application::mainMenu()
 {
+#ifdef GLOB2_MOBILE
+	const bool mobileAudio = true;
+#else
+	const bool mobileAudio = Glob2UI::touchPresentation();
+#endif
+	if (mobileAudio && !globalContainer->settings.audioPreferenceChosen)
+	{
+		screens.push(std::make_unique<AudioPreferenceScreen>(),
+			[this](GAGGUI::Screen &, int) { mainMenu(); });
+		return;
+	}
 	if (Glob2UI::touchPresentation() && !globalContainer->settings.thumbSideChosen)
 	{
 		screens.push(std::make_unique<HandPreferenceScreen>(),

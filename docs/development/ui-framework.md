@@ -249,8 +249,11 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   painted line crosses a control's edge, at 100% and 150%.
 
 Mobile game-event notifications start below the statistics, minimap and selection
-header, inside the safe-area gutters. Their text uses the mobile text scale and
-wraps to the available width over a translucent background. The feed is bounded
+header and building inventory, inside the safe-area gutters. Their text uses the
+same normal font and .8 text role as the building title and inventory, respects
+the player’s text-size preference, and wraps over a translucent background. Each
+card vertically centers its icon and complete text block with equal top and bottom
+padding. The feed is bounded
 above the action bar and to 180 points of height; a final wrapped row is shortened
 with an ellipsis when space runs out. Click-to-jump rectangles follow the scaled,
 wrapped rows. Desktop notifications retain their original placement and sizing.

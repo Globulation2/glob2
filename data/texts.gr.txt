@@ -6628,5 +6628,19 @@ CPU (αυτόματα)
 %0 · αναθεώρηση %1
 [library Fit]
 Πλήρης
+[Sound or silence?]
+Ήχος ή σιωπή;
+[Silence]
+Σιωπή
+[Sound]
+Ήχος
+[audio preference explanation]
+Το παιχνίδι ξεκινά αθόρυβα. Θέλετε σιωπή ή μουσική και ήχους παιχνιδιού;
+[audio preference change later]
+Μπορείτε να το αλλάξετε οποτεδήποτε στις Ρυθμίσεις → Ήχος.
+[audio preference save failed]
+Η επιλογή σας δεν αποθηκεύτηκε. Ο ήχος παραμένει κλειστός. Δοκιμάστε ξανά.
+[audio choices description]
+Σιωπή: ένα ηχείο σε σίγαση. Ήχος: ένα ηχείο με ηχητικά κύματα.
 [library GL only]
 Μόνο GL

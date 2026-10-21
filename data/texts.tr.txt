@@ -6628,5 +6628,19 @@ Tohum: %0
 %0 · revizyon %1
 [library Fit]
 Sığdır
+[Sound or silence?]
+Ses mi, sessizlik mi?
+[Silence]
+Sessizlik
+[Sound]
+Ses
+[audio preference explanation]
+Oyun sessiz başlar. Sessizlik mi, yoksa müzik ve oyun sesleri mi istersiniz?
+[audio preference change later]
+Bunu istediğiniz zaman Ayarlar → Ses bölümünden değiştirebilirsiniz.
+[audio preference save failed]
+Seçiminiz kaydedilemedi. Ses hâlâ kapalı. Lütfen tekrar deneyin.
+[audio choices description]
+Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
 [library GL only]
 Yalnız GL

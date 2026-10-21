@@ -467,7 +467,7 @@ Element InGameOptionScreen::build(const Presentation &p)
 			labels.push_back(SoundMixer::musicSetLabel(sets[i]));
 		const auto selected = std::find(sets.begin(), sets.end(), settings.musicSet);
 		parts.push_back(fe::label(fe::tr("[music set]")));
-		parts.push_back(fe::segments("music-set", labels,
+		parts.push_back(fe::choice("music-set", labels,
 			selected == sets.end() ? 0 : int(selected - sets.begin()),
 			[this, sets](int index) { if (index >= 0 && index < int(sets.size())) setMusicSet(sets[index]); }));
 		parts.push_back(fe::paragraph(musicSetStatus.empty()

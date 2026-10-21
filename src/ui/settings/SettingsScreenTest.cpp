@@ -181,10 +181,10 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.changeSetting("audio.set", 0));
         screen.finishInteraction();
         REQUIRE(s.musicSet.empty());
-        screen.click("audio.mute");REQUIRE(!s.mute);
+        screen.click("audio.mute");REQUIRE(!s.mute);CHECK(s.audioPreferenceChosen);
         screen.key(SDLK_TAB);screen.key(SDLK_RIGHT);screen.onTimer(SDL_GetTicks()+400);
         REQUIRE(screen.changeSetting("audio.music",123));
-        screen.finishInteraction();Settings loaded;loaded.load();REQUIRE((loaded.musicVolume==123 && !loaded.mute));
+        screen.finishInteraction();Settings loaded;loaded.load();REQUIRE((loaded.musicVolume==123 && !loaded.mute));CHECK(loaded.audioPreferenceChosen);
         screen.selectCategory(SettingsScreen::Category::Controls);
         REQUIRE(screen.row("controls.edgefullscreen").number == 1);
         REQUIRE(screen.row("controls.edgewindowed").number == 0);
