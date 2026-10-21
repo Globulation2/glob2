@@ -924,6 +924,59 @@ TEST_SUITE("UILayout")
 	{
 		checkIconsAndTooltips();
 	}
+	TEST_CASE("settings toggles keep captions left and the full row actionable")
+	{
+		struct ToggleCanvas : RecordingCanvas
+		{
+			using RecordingCanvas::RecordingCanvas;
+			std::vector<Rect> marks;
+			void strokeRect(Rect rect, GAGCore::Color) override { marks.push_back(rect); }
+		};
+		for (bool touch : {false, true})
+			for (int width : {280, 640, 1000})
+				for (int glyph : {8, 12})
+				{
+					bool value = false;
+					bool enabled = true;
+					FixedTextMeasurer text(glyph, glyph * 2);
+					Fixture f([&](const Presentation &) {
+						return column({toggle("setting", "A long setting label that wraps on phones", value,
+							[&](bool next) { value = next; }, enabled,
+							{.trailing = true, .help = "Explanatory help stays with its label and wraps without crossing the checkbox."})});
+					}, width, 1000, touch);
+					f.host.setMeasurer(&text);
+					f.host.invalidate();
+					f.host.layoutIfNeeded();
+					ToggleCanvas canvas(f.presentation.viewport.size(), text);
+					f.host.paint(canvas, 0);
+					REQUIRE(canvas.marks.size() == 1);
+					const auto bounds = f.host.bounds("setting");
+					const auto mark = canvas.marks.front();
+					CHECK(bounds.contains(mark));
+					CHECK(mark.center().x > bounds.center().x);
+					REQUIRE_FALSE(canvas.texts.empty());
+					CHECK(canvas.texts.front().first.x == bounds.x);
+					for (const auto &[at, line] : canvas.texts)
+					{
+						CHECK(at.x + text.width(FontRole::Body, line) <= mark.x);
+						CHECK(bounds.contains(at));
+					}
+					// Label, mark and help all belong to the same target.
+					f.host.tapAt({bounds.x + 1, bounds.y + 1});
+					CHECK(value);
+					f.host.tapAt(mark.center());
+					CHECK_FALSE(value);
+					f.host.tapAt(canvas.texts.back().first);
+					CHECK(value);
+					f.host.focus("setting", true);
+					f.key(SDLK_SPACE);
+					CHECK_FALSE(value);
+					enabled = false;
+					f.host.invalidate();
+					f.host.tapAt(bounds.center());
+					CHECK_FALSE(value);
+				}
+	}
 	TEST_CASE("geometry") { checkGeometry(); }
 	TEST_CASE("text") { checkText(); }
 	TEST_CASE("column and flex") { checkColumnAndFlex(); }
