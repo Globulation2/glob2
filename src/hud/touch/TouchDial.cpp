@@ -236,19 +236,28 @@ void Painter::label(const Geometry &g, const Ring &ring, double from, double to,
 	});
 	if (found == cache->labels.end())
 	{
-		DrawableSurface source(textWidth, textHeight);
-		source.drawFilledRect(0, 0, textWidth, textHeight, Color(0, 0, 0, 0));
+		// The warp samples a bitmap, so rasterize its source at twice the final
+		// physical text size. Enlarging only the curved destination loses the
+		// glyph detail before filtering even starts.
+		const double sourceScale = std::max(1., 2 * scale * density);
+		const int sourceWidth = int(std::ceil(textWidth * sourceScale));
+		const int sourceHeight = int(std::ceil(textHeight * sourceScale));
+		const double sourceScaleX = double(sourceWidth) / textWidth;
+		const double sourceScaleY = double(sourceHeight) / textHeight;
+		DrawableSurface source(sourceWidth, sourceHeight);
+		source.drawFilledRect(0, 0, sourceWidth, sourceHeight, Color(0, 0, 0, 0));
 		if (icon)
 		{
 			icon->setBaseColor(tint);
-			source.drawSprite(0, (textHeight - iconHeight) / 2, iconWidth, iconHeight, icon, iconFrame);
+			source.drawSprite(0, int((textHeight - iconHeight) * sourceScaleY / 2),
+				int(std::round(iconWidth * sourceScaleX)), int(std::round(iconHeight * sourceScaleY)), icon, iconFrame);
 		}
 		if (trashIcon)
 		{
-			const int top = (textHeight - iconHeight) / 2;
+			const double top = (textHeight - iconHeight) / 2.;
 			auto rect = [&](double x, double y, double w, double h) {
-				source.drawFilledRect(int(std::round(x * iconWidth)), top + int(std::round(y * iconHeight)),
-					std::max(1, int(std::round(w * iconWidth))), std::max(1, int(std::round(h * iconHeight))), color);
+				source.drawFilledRect(int(std::round(x * iconWidth * sourceScaleX)), int(std::round((top + y * iconHeight) * sourceScaleY)),
+					std::max(1, int(std::round(w * iconWidth * sourceScaleX))), std::max(1, int(std::round(h * iconHeight * sourceScaleY))), color);
 			};
 			rect(.33, .05, .34, .10); // handle
 			rect(.08, .22, .84, .10); // lid
@@ -259,8 +268,19 @@ void Painter::label(const Geometry &g, const Ring &ring, double from, double to,
 			rect(.58, .42, .08, .35);
 		}
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, color));
-		source.drawString(numberX, 0, font, text);
+		auto glyphs = text.empty() ? nullptr : font->rasterizeString(text, float(sourceScale));
 		font->popStyle();
+		if (!text.empty() && !glyphs) return;
+		if (glyphs)
+		{
+			// Preserve straight-alpha glyph colours on the transparent source;
+			// blending here would darken their antialiased edges a second time.
+			SDL_SetSurfaceBlendMode(glyphs->getSDLSurface(), SDL_BLENDMODE_NONE);
+			SDL_Rect destination{int(std::round(numberX * sourceScaleX)), 0,
+				sourceWidth - int(std::round(numberX * sourceScaleX)), sourceHeight};
+			if (!SDL_BlitSurfaceScaled(glyphs->getSDLSurface(), nullptr, source.getSDLSurface(),
+				&destination, SDL_SCALEMODE_NEAREST)) return;
+		}
 		const auto *sourcePixels = source.getSDLSurface();
 		const double r0 = ring.inner * g.unit, r1 = ring.outer * g.unit;
 		const double across0 = r0 * std::cos(end), across1 = r1 * std::cos(start);
@@ -272,7 +292,7 @@ void Painter::label(const Geometry &g, const Ring &ring, double from, double to,
 		if (!pixels) return;
 		SDL_SetSurfaceBlendMode(pixels, SDL_BLENDMODE_BLEND);
 		auto pixelAt = [&](int sx, int sy) -> Uint32 {
-			if (sx < 0 || sy < 0 || sx >= textWidth || sy >= textHeight) return 0;
+			if (sx < 0 || sy < 0 || sx >= sourceWidth || sy >= sourceHeight) return 0;
 			const auto *line = reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(sourcePixels->pixels) + sy * sourcePixels->pitch);
 			return line[sx];
 		};
@@ -282,8 +302,8 @@ void Painter::label(const Geometry &g, const Ring &ring, double from, double to,
 				const double across = g.mirrored ? x + (column + .5) / density : -x - (column + .5) / density;
 				const double up = -y - (row + .5) / density;
 				const double angle = std::atan2(up, across), r = std::hypot(across, up);
-				const double sx = textWidth / 2. + (g.mirrored ? -1 : 1) * (angle - mid) * radius / scale - .5;
-				const double sy = textHeight / 2. + (radius - r) / scale - .5;
+				const double sx = (textWidth / 2. + (g.mirrored ? -1 : 1) * (angle - mid) * radius / scale) * sourceScaleX - .5;
+				const double sy = (textHeight / 2. + (radius - r) / scale) * sourceScaleY - .5;
 				const int ix = int(std::floor(sx)), iy = int(std::floor(sy));
 				const double fx = sx - ix, fy = sy - iy;
 				const Uint32 samples[] = {pixelAt(ix, iy), pixelAt(ix + 1, iy), pixelAt(ix, iy + 1), pixelAt(ix + 1, iy + 1)};

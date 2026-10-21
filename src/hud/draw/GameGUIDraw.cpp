@@ -590,12 +590,24 @@ void GameGUI::drawOverlayInfos(void)
 		ymesg += yinc+2;
 
 		ymesg = drawEventFeed(32, ymesg);
-		messageManager.drawAllGameMessages(32, ymesg);
+		if (touch->usesHUD())
+		{
+			const auto area = touch->notificationBounds();
+			const SDL_Rect clip{int(area.x), int(area.y), int(area.w), int(area.h)};
+			GAGCore::UITransformScope text(*globalContainer->gfx,
+				1.15 * globalContainer->gfx->textUnitsPerPoint(), area.x, ymesg, &clip);
+			messageManager.drawAllGameMessages(0, 0);
+		}
+		else
+			messageManager.drawAllGameMessages(32, ymesg);
 	}
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, drawnScene(), &camera);
+	if (touch->usesHUD())
+		markManager.drawMainView(viewportX, viewportY, drawnScene(), &camera);
+	else
+		markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, drawnScene(), &camera);
 
 	// display text if placing a building
 	if(!touch->usesHUD() && selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")

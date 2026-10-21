@@ -53,6 +53,8 @@ class GameGUITouch
 	//! The phone HUD's regions in window points (status strip, world, actions).
 	GAGCore::MobileLayout hudLayout() const { return layout(); }
 	GAGCore::ViewRect worldBounds() const { return world(); }
+	//! Safe notification area below the statistics, minimap and selection header.
+	GAGCore::ViewRect notificationBounds() const;
 	void drawHUD();
 	void drawPanel();
 	bool hasPreview() const { return preview.has_value(); }

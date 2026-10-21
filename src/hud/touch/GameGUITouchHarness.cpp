@@ -703,6 +703,189 @@ class GameGUITouchHarness
 		std::puts("PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry "
 				  "and scrolling");
 	}
+	static void minimapMarks()
+	{
+		struct Restore
+		{
+			std::optional<GAGCore::SafeInsets> insets = GAGCore::mobileSafeInsetsForTesting;
+			~Restore() { GAGCore::mobileSafeInsetsForTesting = insets; }
+		} restore;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Marks", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Minimap mark fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{12, 28, 12, 16};
+		gfx->setResponsiveViewport(true, 800, 600);
+		const GAGCore::Color marker(255, 1, 253);
+		// Read native output pixels so this checks the final transform and clip,
+		// including high-DPI output, rather than repeating projection arithmetic.
+		auto inspect = [&](const std::string &name, GAGCore::ViewRect bounds, bool isolated, bool visible)
+		{
+			std::shared_ptr<SDL_Surface> image;
+			bool completed = false;
+			std::string error;
+			const auto capture = gfx->requestMemoryCapture([&](auto pixels, auto, auto why) {
+				image = std::move(pixels); error = std::move(why); completed = true;
+			});
+			gfx->nextFrame();
+			const auto deadline = SDL_GetTicks() + 5000;
+			while (!completed && SDL_GetTicks() < deadline)
+			{
+				gfx->beginRenderFrame();
+				SDL_Delay(1);
+			}
+			if (!completed) gfx->cancelMemoryCapture(capture);
+			INFO(error);
+			REQUIRE(image);
+			const auto path = std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR")) / name;
+			REQUIRE(SDL_SaveBMP(image.get(), path.string().c_str()));
+			const auto *format = SDL_GetPixelFormatDetails(image->format);
+			REQUIRE(format->bytes_per_pixel == 4);
+			INFO(name);
+			// Minimap clips are integer logical rectangles, rounded outwards
+			// again when mapped to native pixels by the renderer.
+			const int left = int(std::floor(int(bounds.x) * double(image->w) / gfx->getW()));
+			const int top = int(std::floor(int(bounds.y) * double(image->h) / gfx->getH()));
+			const int right = int(std::ceil((int(bounds.x) + int(bounds.w)) * double(image->w) / gfx->getW()));
+			const int bottom = int(std::ceil((int(bounds.y) + int(bounds.h)) * double(image->h) / gfx->getH()));
+			int inside = 0, outside = 0, above = 0;
+			for (int y = 0; y < image->h; ++y)
+				for (int x = 0; x < image->w; ++x)
+				{
+					const auto *line = reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(image->pixels) + y * image->pitch);
+					Uint8 r, g, b;
+					SDL_GetRGB(line[x], format, nullptr, &r, &g, &b);
+					if (r != marker.r || g != marker.g || b != marker.b) continue;
+					if (x >= left && x < right && y >= top && y < bottom) ++inside;
+					else ++outside;
+					if (y < top) ++above;
+				}
+			CHECK((inside > 0) == visible);
+			if (isolated) CHECK(outside == 0);
+			else CHECK(above == 0); // No desktop-position pulses above the mobile minimap.
+		};
+		for (const auto [width, height] : {std::pair{360, 720}, {720, 360}})
+		{
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+			SDL_Event resize{};
+			resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+			glob2test::drawGUI(gui, 0);
+			const auto &team = gui.drawnScene().entities.teams[0];
+			gui.markManager = MarkManager{};
+			gui.markManager.addMark(Mark(team.startX, team.startY, marker, 30));
+			gui.markManager.addMark(Mark((team.startX - gui.drawnScene().map.getW() / 2) & gui.drawnScene().map.getMaskW(), team.startY, marker, 30));
+			glob2test::drawGUI(gui, 0);
+			const std::string shape = width < height ? "portrait" : "landscape";
+			inspect("marks-" + shape + ".bmp", gui.touch->minimapRect(), false, true);
+			gfx->nextFrame();
+			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+			gui.touch->drawMinimap();
+			inspect("marks-clipped-" + shape + ".bmp", gui.touch->minimapRect(), true, true);
+			gfx->nextFrame();
+			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+			gui.touch->peekOpen = true;
+			gui.touch->drawPeek();
+			inspect("marks-peek-" + shape + ".bmp", gui.touch->peekRect(), true, true);
+			gui.touch->peekOpen = false;
+			gfx->nextFrame();
+		}
+		const auto &team = gui.drawnScene().entities.teams[0];
+		gui.markManager = MarkManager{};
+		gui.markManager.addMark(Mark(team.startX, team.startY, marker, 2));
+		gui.markManager.drawMainView(gui.viewportX, gui.viewportY, gui.drawnScene(), &gui.camera);
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+		gui.touch->drawMinimap();
+		gui.touch->drawMinimap();
+		inspect("marks-repeat.bmp", gui.touch->minimapRect(), true, true);
+		gfx->nextFrame();
+		gui.markManager.drawMainView(gui.viewportX, gui.viewportY, gui.drawnScene(), &gui.camera);
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+		gui.touch->drawMinimap();
+		inspect("marks-expired.bmp", gui.touch->minimapRect(), true, false);
+		gfx->nextFrame();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+	}
+
+	static void notifications()
+	{
+		struct Restore
+		{
+			std::optional<GAGCore::SafeInsets> insets = GAGCore::mobileSafeInsetsForTesting;
+			double text = GAGCore::userTextScale;
+			~Restore() { GAGCore::mobileSafeInsetsForTesting = insets; GAGCore::userTextScale = text; }
+		} restore;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Notifications", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Notification fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{12, 28, 12, 16};
+		gfx->setResponsiveViewport(true, 800, 600);
+		for (const auto [width, height] : {std::pair{360, 720}, {720, 360}})
+		{
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+			SDL_Event resize{};
+			resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+			for (const double textSize : {1., 1.5})
+			{
+				GAGCore::userTextScale = textSize;
+				gui.eventFeed.clear(0);
+				gui.eventFeed.ingest({GEUnitUnderAttack, WORKER, 0, 20, 25,
+					"Your workers are under attack near the swimming pool. Send reinforcements to defend your colony!",
+					GAGCore::Color(255, 100, 100)}, SDL_GetTicks(), [](int, int, int, int) { return 10000; });
+				gui.eventFeed.ingest({GEBuildingCompleted, 0, 0, 12, 14, "The defence tower is finished.",
+					GAGCore::Color(110, 255, 130)}, SDL_GetTicks(), [](int, int, int, int) { return 10000; });
+				glob2test::drawGUI(gui, 0);
+				const auto area = gui.touch->notificationBounds();
+				const auto hud = gui.touch->hudLayout(gui.touch->layout());
+				CHECK(area.y > hud.minimap.y + hud.minimap.h);
+				CHECK(area.y > hud.stats.y + hud.stats.h);
+				REQUIRE_FALSE(gui.eventFeedHits.empty());
+				CHECK(gui.eventFeedHits.size() == 2);
+				for (const auto &hit : gui.eventFeedHits)
+				{
+					CHECK(hit.x >= area.x - 1);
+					CHECK(hit.y >= area.y - 1);
+					CHECK(hit.x + hit.w <= area.x + area.w + 1);
+					CHECK(hit.y + hit.h <= area.y + area.h + 1);
+					CHECK(hit.h >= 20 * 1.15 * gfx->textUnitsPerPoint() - 1);
+				}
+				const auto hit = gui.eventFeedHits.front();
+				CHECK(gui.handleEventFeedClick(hit.x + hit.w / 2, hit.y + hit.h / 2));
+				gfx->printScreen(std::string("notifications-") + (width < height ? "portrait-" : "landscape-") +
+					std::to_string(int(textSize * 100)) + ".bmp");
+				gfx->nextFrame();
+			}
+		}
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+		gui.drawEventFeed(32, 34);
+		REQUIRE_FALSE(gui.eventFeedHits.empty());
+		CHECK(gui.eventFeedHits.front().x == 32);
+		CHECK(gui.eventFeedHits.front().y == 34);
+		CHECK(gui.eventFeedHits.front().h == 20);
+	}
+
 	static void run()
 	{
 		{
@@ -4637,6 +4820,74 @@ class GameGUITouchHarness
 };
 TEST_SUITE("GameGUITouch")
 {
+	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::minimapMarks();
+		NET_Quit();
+		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("notifications clear system gutters and HUD at mobile text sizes", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::notifications();
+		NET_Quit();
+		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("curved labels retain physical glyph detail and reuse their cache", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .width = 800, .height = 650,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		struct Probe : GAGCore::TrueTypeFont
+		{
+			Probe() : TrueTypeFont("data/fonts/sans.ttf", 13) {}
+			std::vector<float> requested;
+			std::unique_ptr<GAGCore::DrawableSurface> rasterizeString(const std::string &text, float scale) override
+			{
+				requested.push_back(scale);
+				return TrueTypeFont::rasterizeString(text, scale);
+			}
+		} font;
+		auto *gfx = globalContainer->gfx;
+		TouchDial::Painter painter;
+		for (const double unit : {1., 2.})
+			for (const bool mirrored : {false, true})
+			{
+				gfx->drawFilledRect(0, 0, 800, 650, GAGCore::Color(20, 15, 30));
+				TouchDial::Geometry geometry;
+				geometry.center = {mirrored ? 0. : 800., 650.};
+				geometry.unit = unit;
+				geometry.mirrored = mirrored;
+				const TouchDial::Ring ring{260, 292};
+				painter.fill(geometry, ring.inner, ring.outer, 5, 85, GAGCore::Color(53, 32, 75));
+				auto draw = [&] {
+					painter.label(geometry, ring, 15, 65, "Cancel Upgrade", &font, unit, GAGCore::Color(255, 239, 204),
+						nullptr, 0, nullptr, true);
+				};
+				draw();
+				REQUIRE_FALSE(font.requested.empty());
+				CHECK(font.requested.back() == doctest::Approx(2 * unit * gfx->getRasterScale()));
+				const auto calls = font.requested.size();
+				draw();
+				CHECK(font.requested.size() == calls);
+				gfx->setUITransform(unit, 20, 20);
+				gfx->drawString(0, 0, &font, "Cancel Upgrade");
+				gfx->setUITransform();
+				gfx->printScreen(std::string("curved-label-") + std::to_string(int(unit)) + (mirrored ? "-left.bmp" : "-right.bmp"));
+				gfx->nextFrame();
+			}
+		glob2test::retainFromProfile(".bmp");
+	}
+
 	GLOB2_TEST_CASE("scaled gameplay dialog input is translated once", "[display]")
 	{
 		GameGUITouchHarness::scaledDialogInput();

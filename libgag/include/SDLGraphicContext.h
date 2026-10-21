@@ -34,6 +34,7 @@
 
 namespace GAGCore
 {
+    class DrawableSurface;
     class RenderBatch;
     class SpriteLoad;
     struct SkinMesh;
@@ -152,6 +153,9 @@ namespace GAGCore
 		virtual int getStringHeight(const std::string string) = 0;
 		virtual int getStringHeight(const std::string string, int len);
 		virtual int getStringHeight(const int i);
+		//! Owned text bitmap at explicit pixels per authored unit, for transformed labels.
+		//! Layout metrics and the current screen transform are unaffected.
+		virtual std::unique_ptr<DrawableSurface> rasterizeString(const std::string &text, float scale) = 0;
 	
 		// Style and color
 		virtual void setStyle(Style style) = 0;

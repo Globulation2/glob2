@@ -35,6 +35,7 @@ namespace GAGCore
 		int getStringWidth(const std::string string);
 		//! Measure text height; an empty string returns the font's base height.
 		int getStringHeight(const std::string string);
+		std::unique_ptr<DrawableSurface> rasterizeString(const std::string &text, float scale) override;
 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
 		virtual bool hasGlyphsFor(const std::string &utf8Text);
 
@@ -103,16 +104,16 @@ namespace GAGCore
 
 		//! If text is cached, returns its entry. If it is not, create, cache and return it.
 		//! scaled asks for the raster made for a magnifying target; the reported size is the
-		//! authored one either way.
-		const CacheData *getStringCached(const std::string text, bool scaled);
+		//! authored one either way. A positive explicitScale overrides the screen scale.
+		const CacheData *getStringCached(const std::string text, bool scaled, float explicitScale = 0);
 		//! Whether text drawn on this target is resampled on its way to the screen
 		bool targetScalesText(const DrawableSurface *surface) const;
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
 		//! Drop every rendered string, for instance when their raster or textures went stale
 		void clearCache(void);
-		//! Select a cached rasterisation font for the current drawable/UI scale
-		void updateRenderScale(void);
+		//! Select a cached rasterisation font for an explicit or current drawable/UI scale
+		void updateRenderScale(float explicitScale = 0);
 		//! Apply the current style to both the metrics and the rasterisation font
 		void applyStyle(void);
 		//! The text as it is handed to SDL_ttf: shaped and in display order (fribidi, or BidiText without it)

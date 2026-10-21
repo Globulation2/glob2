@@ -206,7 +206,7 @@ void TrueTypeFont::clearCache(void)
 	timeCache.clear();
 }
 
-void TrueTypeFont::updateRenderScale(void)
+void TrueTypeFont::updateRenderScale(float explicitScale)
 {
 	if (!font)
 		return;
@@ -215,7 +215,7 @@ void TrueTypeFont::updateRenderScale(void)
 	// scaled screen they are the only part of the interface that cannot use the pixels it
 	// is given. Rasterise them at the size they are actually drawn at instead, while every
 	// reported metric keeps coming from the authored size: the layout does not move.
-	const float wanted = _gc ? _gc->textRenderScale() : 1.0f;
+	const float wanted = explicitScale > 0 ? explicitScale : (_gc ? _gc->textRenderScale() : 1.0f);
 	const unsigned generation = _gc ? _gc->getGLContextGeneration() : 0;
 	// A texture from a replaced GL context no longer names anything
 	if (generation != textureGeneration)
@@ -405,13 +405,22 @@ Font::Style TrueTypeFont::getStyle(void) const
 	return styleStack.top();
 }
 
-const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string text, bool scaled)
+std::unique_ptr<DrawableSurface> TrueTypeFont::rasterizeString(const std::string &text, float scale)
+{
+	const auto *data = getStringCached(text, true, scale);
+	if (!data) return {};
+	auto result = std::make_unique<DrawableSurface>(data->s->getSDLSurface());
+	cleanupCache();
+	return result;
+}
+
+const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string text, bool scaled, float explicitScale)
 {
 	assert(font);
 	assert(styleStack.size() > 0);
 
 	if (scaled)
-		updateRenderScale();
+		updateRenderScale(explicitScale);
 	scaled = scaled && (renderFont != font);
 
 	CacheKey key;

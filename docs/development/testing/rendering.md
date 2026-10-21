@@ -38,6 +38,22 @@ pause), fading, and GoToEvent stepping through rows by recency, with explicit ti
 python3 test/run_tests.py --filter 'GameEventFeed/*'
 ```
 
+The `GameGUITouch` notification display case checks portrait and landscape with
+system-bar insets at 100% and 150% text size, wrapped rows and click-to-jump bounds,
+and the unchanged desktop coordinates. It retains screenshots for visual review:
+
+```sh
+python3 test/run_tests.py --filter 'GameGUITouch/notifications*' --artifacts artifacts/notifications
+```
+
+Attack and ally-ping marks appear in the world view and over each visible minimap.
+On mobile, the HUD minimap and expanded map peek paint marks after their map
+image, using that minimap's transform and clip. Mark lifetimes advance once in
+the world pass; additional minimap draws must not advance them. The
+`GameGUITouch/attack marks*` display case checks native pixels in portrait and
+landscape, map-edge clipping, map peek, repeat draws and expiry, and retains
+screenshots under the test runner's artifact directory.
+
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
 engine tests into a separate directory with the sanitizer flags and run the same filter:
 
