@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.4.0" date="2026-10-21">
+      <description>
+        <p>Improved mobile building inspection, HUD layout and audio setup; refreshed translations and tutorials; refined map resources and starting settlements; enabled smooth unit motion by default; and fixed browser startup with saved software rendering settings.</p>
+      </description>
+    </release>
     <release version="0.11.3.2" date="2026-10-19">
       <description>
         <p>Updated iOS privacy packaging, fixed Mac build compatibility, and stabilized iPhone build tooling.</p>
