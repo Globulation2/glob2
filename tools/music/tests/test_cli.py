@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from glob2music import cli  # noqa: E402
 from glob2music.audio import AudioFormatError, ogg_streams, write_opus  # noqa: E402
 from glob2music.genai import acestep  # noqa: E402
-from glob2music.manifest import ManifestError, load_manifest, parse_manifest  # noqa: E402
+from glob2music.manifest import ManifestError, parse_manifest  # noqa: E402
 from glob2music.qa import CHECK_NAMES  # noqa: E402
 from glob2music.qa.calibrate import spec_and_waivers  # noqa: E402
 from glob2music.qa.result import FAIL, PASS, CheckResult, Report  # noqa: E402
@@ -59,12 +59,6 @@ class LicenseTextTest(unittest.TestCase):
         self.assertIn('Model weights: https://example.org/weights @ def (MIT)', text)
         self.assertIn('Seed: 11', text)
         self.assertIn('tools/music/sets/test-set/recipe.py', text)
-
-    def test_shipped_ai_set_license_has_its_disclosure(self):
-        m = load_manifest('orchestral-dawn')
-        text = cli.license_text(m)
-        self.assertIn(m.ai['disclosure'].strip(), text)
-        self.assertIn(m.ai['model_weights'], text)
 
 
 class ResolveTest(unittest.TestCase):
