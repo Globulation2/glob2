@@ -1,0 +1,10 @@
+
+Running 6 tests using 2 workers
+
+[1/6] [chromium] › browser/tests/renderer-switching.spec.js:222:3 › serial: saved Software starts when the launcher initially selects GPU
+[2/6] [firefox] › browser/tests/renderer-switching.spec.js:222:3 › serial: saved Software starts when the launcher initially selects GPU
+[3/6] [chromium] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU
+[4/6] [webkit] › browser/tests/renderer-switching.spec.js:222:3 › serial: saved Software starts when the launcher initially selects GPU
+[5/6] [firefox] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU
+[6/6] [webkit] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU
+  6 passed (3.3m)

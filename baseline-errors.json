@@ -1,0 +1,16 @@
+[
+  {
+    "error": {
+      "error": {
+        "message": "Failed to execute 'getContext' on 'HTMLCanvasElement': Cannot get context from a canvas that has transferred its control to offscreen.",
+        "stack": "InvalidStateError: Failed to execute 'getContext' on 'HTMLCanvasElement': Cannot get context from a canvas that has transferred its control to offscreen.\n    at Object.createContext (http://127.0.0.1:8875/threaded/index.js:1:560151)\n    at 2424651 (http://127.0.0.1:8875/threaded/index.js:1:850772)\n    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8875/threaded/index.js:1:517941)\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34300]:0x1447ec9\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34298]:0x1447b05\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34295]:0x1447ab7\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34277]:0x1447220\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34283]:0x144741a\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34277]:0x1447220\n    at http://127.0.0.1:8875/threaded/index.wasm:wasm-function[34449]:0x1450bc3",
+        "name": "InvalidStateError"
+      }
+    },
+    "location": {
+      "url": "http://127.0.0.1:8875/threaded/index.js",
+      "line": 0,
+      "column": 560150
+    }
+  }
+]

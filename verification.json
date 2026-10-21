@@ -1,0 +1,20 @@
+{
+  "tested_commit": "2d67633a0dbaeb166db97d1439f2ff3c91439fe1",
+  "fetched_master": "f0104aab54ce22e6bbb7311c12924d75ad60d83a",
+  "integration": "PR head based on 9d3e771340ba830ed8d64ae3cafd87ed88b22de3. New master f0104aab54ce22e6bbb7311c12924d75ad60d83a changes unrelated AI/simulation code; no actual conflicts or overlapping browser/dependency/CI changes.",
+  "environment": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "node": "20.19.4",
+  "playwright": "1.63.0",
+  "runtime": "Published https://app.glob2online.com/play/ through the included local isolation-header proxy. Exact final committed browser startup helper and preference reconciliation injected into published HTML. C++/Wasm unchanged, not rebuilt from PR head.",
+  "scope": "Browser startup JavaScript and tests only; no new runtime dependencies, simulation/save/replay/network or gameplay changes.",
+  "unit_result": "136 passed, 0 failures, exit 0",
+  "browser_result": "6 passed, 0 skipped, exit 0: Chromium, Firefox and WebKit; serial and threaded for each.",
+  "baseline": "Unpatched published runtime fails after reload with InvalidStateError obtaining a 2D context from transferred canvas; screenshot and browser error attached.",
+  "limits": "macOS browser automation only; no physical mobile checks, fresh browser binary, release packaging, other OS coverage or simulation determinism claims.",
+  "commands": [
+    "node --test browser/unit/*.test.js",
+    "python3 artifacts/browser-software-startup/proxy.py",
+    "GLOB2_TEST_URL=http://127.0.0.1:8875 browser/node_modules/.bin/playwright test -c browser/playwright.config.js --project=chromium --project=firefox --project=webkit --workers=2 -g \"saved Software starts\" --output=artifacts/browser-software-startup/merge-validation --reporter=line"
+  ],
+  "shell_sha256": "80769b44928ca54ace19f1deb54df4351cf72c2dc68787b5fd4d0628283e7dcb"
+}

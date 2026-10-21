@@ -1,0 +1,42 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU (3.2m)
+
+
+  1) [chromium] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MainMenuScreen"
+    Received string:    "loading "
+
+    Call Log:
+    - Timeout 120000ms exceeded while waiting on the predicate
+
+       5 | const {hasDarkText}=require('./pixels');
+       6 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+    >  7 | const screen=(page,name)=>expect.poll(async()=>{const s=await state(page);return s.screen+' '+s.screenClass;},{timeout:120000}).toContain(name);
+         |                                                                                                                                 ^
+       8 | const generation=page=>page.evaluate(()=>Module.glob2PresentationSurface.generation);
+       9 | async function settingsPersisted(page) {
+      10 |   // Software-backed GL can leave a settings write in flight after drawing
+        at screen (/Users/bradley/.codex/worktrees/a3a2/glob2/browser/tests/renderer-switching.spec.js:7:129)
+        at /Users/bradley/.codex/worktrees/a3a2/glob2/browser/tests/renderer-switching.spec.js:240:37
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/renderer-switching-threade-e4cdc-ncher-initially-selects-GPU-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/renderer-switching-threade-e4cdc-ncher-initially-selects-GPU-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/renderer-switching-threade-e4cdc-ncher-initially-selects-GPU-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/renderer-switching-threade-e4cdc-ncher-initially-selects-GPU-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/renderer-switching.spec.js:222:3 › threaded: saved Software starts when the launcher initially selects GPU 
