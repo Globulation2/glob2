@@ -201,6 +201,7 @@ AI_FIELD(Econo_tick_swimmingpool_near_wheat_wood_calls, "Econo.tick_swimmingpool
 AI_FIELD(Econo_tick_school_inland_calls, "Econo.tick_school_inland.calls", "calls", "Invocations of Econo::tick_school_inland; not successful actions", Unsigned, Counter)
 AI_FIELD(Econo_tick_upgrade_l1_to_l2_calls, "Econo.tick_upgrade_l1_to_l2.calls", "calls", "Invocations of Econo::tick_upgrade_l1_to_l2; not successful actions", Unsigned, Counter)
 AI_FIELD(Econo_tick_upgrade_l2_to_l3_calls, "Econo.tick_upgrade_l2_to_l3.calls", "calls", "Invocations of Econo::tick_upgrade_l2_to_l3; not successful actions", Unsigned, Counter)
+// Retained for save/telemetry schema compatibility; Econo no longer destroys buildings.
 AI_FIELD(Econo_tick_delete_old_inns_swarms_calls, "Econo.tick_delete_old_inns_swarms.calls", "calls", "Invocations of Econo::tick_delete_old_inns_swarms; not successful actions", Unsigned, Counter)
 AI_FIELD(Econo_tick_explorer_flags_fruit_calls, "Econo.tick_explorer_flags_fruit.calls", "calls", "Invocations of Econo::tick_explorer_flags_fruit; not successful actions", Unsigned, Counter)
 AI_FIELD(Econo_tick_explorer_flags_enemies_calls, "Econo.tick_explorer_flags_enemies.calls", "calls", "Invocations of Econo::tick_explorer_flags_enemies; not successful actions", Unsigned, Counter)
