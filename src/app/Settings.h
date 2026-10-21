@@ -86,9 +86,9 @@ public:
 	bool translucentPathLines;
 	bool smoothProgressIndicators;
 	bool decorativeAnimations;
-	//! Experimental: draw units moving and animating between simulation ticks.
+	//! Draw units moving and animating between simulation ticks.
 	//! Off draws exactly the simulated positions. Not part of setGraphicsDetail.
-	bool unitInterpolation = false;
+	bool unitInterpolation = true;
 	//! Adapt bars, zones, units and terrain to the zoom instead of scaling them with the map.
 	bool adaptiveZoomDetail = true;
 	//! Fade tiles into and out of the fog of war instead of switching them.
