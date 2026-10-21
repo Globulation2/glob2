@@ -512,6 +512,13 @@ Glob2UI::Rect SettingsScreen::available(const Presentation &p, const Metrics &m)
 Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 {
 	const auto categories = visibleCategories();
+	// A distinct icon for every Category, shared by the rail and compact picker.
+	static constexpr UIIcon icons[] = {
+		UIIcon::Display,  UIIcon::Audio,       UIIcon::Gameplay, UIIcon::Buildings,
+		UIIcon::Controls, UIIcon::Player,      UIIcon::Online,   UIIcon::Crown,
+		UIIcon::Start,    UIIcon::Experiments, UIIcon::Robot,    UIIcon::Map,      UIIcon::Server};
+	static_assert(std::size(icons) == std::size_t(Category::MCPServer) + 1,
+				  "an icon for every settings category");
 	if (sidebar)
 	{
 		std::vector<Element> items;
@@ -522,13 +529,6 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			options.alignLeft = true;
 			options.selected = category == current && modal == Modal::None;
 			options.minHeight = 42;
-			// One icon per Category, in its order.
-			static constexpr UIIcon icons[] = {
-				UIIcon::Display,  UIIcon::Audio,       UIIcon::Gameplay, UIIcon::Buildings,
-				UIIcon::Controls, UIIcon::Player,      UIIcon::Online,   UIIcon::Crown,
-				UIIcon::Display,  UIIcon::Experiments, UIIcon::Gameplay, UIIcon::Gameplay, UIIcon::Display};
-			static_assert(std::size(icons) == std::size_t(Category::MCPServer) + 1,
-						  "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
 											[this, category] { selectCategory(category); }, options));
@@ -536,10 +536,12 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 		return column(std::move(items), {p.pt(4)});
 	}
 	std::vector<std::string> names;
+	ChoiceOptions options;
 	int selected = 0;
 	for (std::size_t i = 0; i < categories.size(); ++i)
 	{
 		names.push_back(categoryName(categories[i]));
+		options.icons.push_back(uiIcon(icons[int(categories[i])]));
 		if (categories[i] == current)
 			selected = int(i);
 	}
@@ -547,12 +549,13 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 						   {
 							   if (v >= 0 && v < int(categories.size()))
 								   selectCategory(categories[std::size_t(v)]);
-						   });
+						   }, options);
 }
 
 Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 {
 	const std::string help = r.help;
+	const FieldOptions fieldOptions{help, p.touch ? 220.0 : 140.0};
 	switch (r.kind)
 	{
 	case Kind::Section:
@@ -562,10 +565,9 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 	case Kind::Toggle:
 	{
 		auto change = r.change;
-		auto control = Glob2UI::toggle(r.id, r.label, r.number != 0, [change](bool v) { if (change) change(v ? 1 : 0); }, r.enabled);
-		if (help.empty())
-			return control;
-		return column({control, padding({p.pt(36), 0, 0, 0}, paragraph(help, {FontRole::Support, true}))}, {p.pt(2)});
+		return Glob2UI::toggle(r.id, r.label, r.number != 0,
+			[change](bool v) { if (change) change(v ? 1 : 0); }, r.enabled,
+			{.trailing = true, .help = help, .controlWidth = fieldOptions.controlWidth});
 	}
 	case Kind::Choice:
 	{
@@ -573,7 +575,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		ChoiceOptions options;
 		options.controlEnabled = r.enabled;
         options.enabled=r.enabledChoices;
-		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), {help, p.touch ? 220.0 : 140.0});
+		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), fieldOptions);
 	}
 	case Kind::Slider:
 	{
@@ -581,7 +583,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		SliderOptions options;
 		options.enabled = r.enabled;
 		options.valueText = r.value;
-		return field(r.label, slider(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options), {help, p.touch ? 220.0 : 140.0});
+		return field(r.label, slider(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options), fieldOptions);
 	}
 	case Kind::Number:
 	{
@@ -592,7 +594,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		auto control = stepper(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options);
 		if (r.label.empty())
 			return control;
-		return field(r.label, control, {help, p.touch ? 220.0 : 140.0});
+		return field(r.label, control, fieldOptions);
 	}
 	case Kind::Text:
 	{
@@ -613,7 +615,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 									 commit();
 								 },
 								 options);
-		return field(r.label, control, {help, p.touch ? 220.0 : 140.0});
+		return field(r.label, control, fieldOptions);
 	}
 	case Kind::Button:
 	{
