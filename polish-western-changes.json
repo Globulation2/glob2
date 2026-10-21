@@ -1,0 +1,278 @@
+{
+  "pt": [
+    {
+      "key": "[hand preference change later]",
+      "before": "Pode mudar de lado mais tarde nas Definições.",
+      "after": "Pode mudar de lado mais tarde nas Opções."
+    },
+    {
+      "key": "[tutorial part2 message 39]",
+      "before": "Selecione um edifício para ver os trabalhadores atribuídos. No computador, a ação configurável Mostrar/ocultar percursos das unidades também mostra linhas até aos destinos; consulte o atalho atual em Definições, Controlos. Aguarde o fim da Escola.",
+      "after": "Selecione um edifício para ver os trabalhadores atribuídos. No computador, a ação configurável Mostrar/ocultar percursos das unidades também mostra linhas até aos destinos; consulte o atalho atual em Opções, Controlos. Aguarde o fim da Escola."
+    },
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Abra Bandeiras e escolha a zona azul de Guarda. Use o modo de adicionar terreno à zona, não o de remover. Nos ecrãs táteis, escolha Pintar em vez de Apagar.",
+      "after": "Abra Bandeiras e escolha a Área de guarda azul. Use o modo de adicionar terreno à zona, não o de remover. Nos ecrãs táteis, escolha Pintar em vez de Apagar."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Pinte uma zona de Guarda logo atrás das Torres, por onde o inimigo deverá chegar. Clique ou toque para pintar um ponto, ou arraste para cobrir mais terreno. Nos ecrãs táteis, use Deslocar para mover a vista durante a pintura.",
+      "after": "Pinte uma Área de guarda logo atrás das Torres, por onde o inimigo deverá chegar. Clique ou toque para pintar um ponto, ou arraste para cobrir mais terreno. Nos ecrãs táteis, use Deslocar para mover a vista durante a pintura."
+    },
+    {
+      "key": "[tutorial part1 message 2]",
+      "before": "Começa com uma Colmeia e um trabalhador. Vamos ver como trabalham em conjunto.",
+      "after": "Começa o jogo com uma Colmeia e um trabalhador. Vamos ver como trabalham em conjunto."
+    },
+    {
+      "key": "[settings Copy endpoint]",
+      "before": "Copiar ponto de acesso",
+      "after": "Copiar endereço de ligação"
+    }
+  ],
+  "nl": [
+    {
+      "key": "[tutorial part2 message 39]",
+      "before": "Selecteer een gebouw om de toegewezen werkers te zien. Op de computer kan de instelbare actie Eenheidspaden tonen/verbergen ook lijnen naar hun bestemming tonen; bekijk de huidige sneltoets onder Instellingen, Bediening. Wacht tot de School klaar is.",
+      "after": "Selecteer een gebouw om de toegewezen werkers te zien. Op de computer kan de instelbare actie Eenheidspaden tonen/verbergen ook lijnen naar hun bestemming tonen; bekijk de huidige sneltoets onder Instellingen, Besturing. Wacht tot de School klaar is."
+    },
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Open Vlaggen en kies de blauwe Bewakingszone. Gebruik de modus om grond toe te voegen, niet om die te verwijderen. Kies op aanraakschermen Schilderen in plaats van Wissen.",
+      "after": "Open Vlaggen en kies de blauwe Verdedigingszone. Gebruik de modus om grond toe te voegen, niet om die te verwijderen. Kies op aanraakschermen Schilderen in plaats van Wissen."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Schilder een Bewakingszone vlak achter je torens, waar de vijand waarschijnlijk nadert. Klik of tik om één plek te schilderen, of sleep voor een groter gebied. Gebruik op aanraakschermen Verschuiven om tijdens het schilderen het beeld te verplaatsen.",
+      "after": "Schilder een Verdedigingszone vlak achter je torens, waar de vijand waarschijnlijk nadert. Klik of tik om één plek te schilderen, of sleep voor een groter gebied. Gebruik op aanraakschermen Verschuiven om tijdens het schilderen het beeld te verplaatsen."
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "before": "Beschikbare krijgers gaan naar de Bewakingszone. Maak deze groot genoeg voor de verdedigers, maar klein genoeg om ze bij de oversteek bijeen te houden. Wacht nu op de aanval.",
+      "after": "Beschikbare krijgers gaan naar de Verdedigingszone. Maak deze groot genoeg voor de verdedigers, maar klein genoeg om ze bij de oversteek bijeen te houden. Wacht nu op de aanval."
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "before": "Hoe ver lijsten en panelen blijven scrollen na een veeg. Mac-gebaren gebruiken de systeemtraagheid; nul schakelt het doorglijden uit.",
+      "after": "Hoe ver lijsten en panelen blijven scrollen na een veeg. Mac-gebaren gebruiken de door het systeem geregelde scrollinertie; nul schakelt het doorglijden uit."
+    },
+    {
+      "key": "[settings Current controller: %0]",
+      "before": "Huidige besturing: %0",
+      "after": "Besturende client: %0"
+    },
+    {
+      "key": "[settings Copy endpoint]",
+      "before": "Endpoint kopiëren",
+      "after": "Verbindingsadres kopiëren"
+    }
+  ],
+  "eo": [
+    {
+      "key": "[tutorial part2 message 39]",
+      "before": "Elektu konstruaĵon por vidi ĝiajn asignitajn laboristojn. Sur komputilo la agordebla ago Montri/kaŝi irvojojn de globuloj ankaŭ povas montri liniojn de unuoj al iliaj celoj; vidu Agordoj, Regiloj por la nuna klavkombino. Atendu la finkonstruon de la Lernejo.",
+      "after": "Elektu konstruaĵon por vidi ĝiajn asignitajn laboristojn. Sur komputilo la agordebla ago Montri/kaŝi irvojojn de globuloj ankaŭ povas montri liniojn de unuoj al iliaj celoj; vidu Agordoj, Ludaj kontroloj por la nuna klavkombino. Atendu la finkonstruon de la Lernejo."
+    },
+    {
+      "key": "[tutorial part1 message 14]",
+      "before": "Elektu la Globulejon kaj trovu ĝian regilon por asigni laboristojn. Sur komputilo ĝi nomiĝas Laborantaj; sur tuŝekrano uzu la regilon pri asignitaj laboristoj kaj celkvanto. La celkvanto estas la nombro da laboristoj, kiujn vi deziras ĉe ĉi tiu konstruaĵo.",
+      "after": "Elektu la Globulejon kaj trovu ĝian regilon por asigni laboristojn. Sur komputilo ĝi nomiĝas Laboranta(j); sur tuŝekrano uzu la regilon pri asignitaj laboristoj kaj celkvanto. La celkvanto estas la nombro da laboristoj, kiujn vi deziras ĉe ĉi tiu konstruaĵo."
+    },
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Malfermu Markilojn kaj elektu la bluan defendatan zonon. Uzu la reĝimon por aldoni terenon al la zono, ne por forigi ĝin. Sur tuŝekrano elektu Pentri anstataŭ Viŝi.",
+      "after": "Malfermu Markilojn kaj elektu la bluan defendatan zonon. Uzu la reĝimon por aldoni terenon al la zono, ne por forigi ĝin. Sur tuŝekrano elektu Pentri anstataŭ Forviŝi."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Pentru defendatan zonon tuj malantaŭ viaj turoj, kie la malamiko verŝajne proksimiĝos. Alklaku aŭ tuŝu por pentri lokon, aŭ trenu por kovri pli da tereno. Sur tuŝekrano uzu Ŝovi por movi la vidon dum pentrado.",
+      "after": "Pentru defendatan zonon tuj malantaŭ viaj turoj, kie la malamiko verŝajne proksimiĝos. Alklaku aŭ tuŝu por pentri lokon, aŭ trenu por kovri pli da tereno. Sur tuŝekrano uzu Movi por movi la vidon dum pentrado."
+    },
+    {
+      "key": "[tutorial part2 message 37]",
+      "before": "Protektu gravajn trejnajn konstruaĵojn. Lernejo ne devas stari apud akvo; ŝirmita loko interne de la tero povas pli bone protekti ĝin kontraŭ atako.",
+      "after": "Protektu gravajn trejnajn konstruaĵojn. Lernejo ne devas stari apud akvo; ŝirmita loko en la internlando povas pli bone protekti ĝin kontraŭ atako."
+    }
+  ],
+  "de": [
+    {
+      "key": "[tutorial part4 message 5]",
+      "before": "Wähle die Erkundungsflagge mit dem Drachen-Symbol. Flaggen lassen sich über Land, Wasser, Rohstoffen und unerforschtem Boden platzieren.",
+      "after": "Wähle die Entdeckerflagge mit dem Drachen-Symbol. Flaggen lassen sich über Land, Wasser, Rohstoffen und unerforschtem Boden platzieren."
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "before": "Wie weit Listen und Bereiche nach einer Wischbewegung weiterscrollen. Mac-Gesten verwenden die Systemträgheit; null deaktiviert ihr Nachgleiten.",
+      "after": "Wie weit Listen und Bereiche nach einer Wischbewegung weiterscrollen. Mac-Gesten verwenden die Scrollträgheit des Systems; null deaktiviert ihr Nachgleiten."
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "before": "Willkommen bei Globulation 2! Vier Missionen erklären die Kolonieverwaltung. Speichere im Spielmenü und lade später im Hauptmenü weiter. Drücke zum Fortfahren die Leertaste oder tippe auf OK. Frühere Texte findest du im Nachrichtenverlauf.",
+      "after": "Willkommen bei Globulation 2! Vier Missionen erklären die Kolonieverwaltung. Speichere im Spielmenü und lade deinen Spielstand später über das Hauptmenü. Drücke zum Fortfahren die Leertaste oder tippe auf OK. Frühere Texte findest du im Nachrichtenverlauf."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Male eine Wachzone hinter den Wachtürmen auf dem vermuteten Angriffsweg. Klicke oder tippe für einzelne Stellen, ziehe für größere Flächen. Auf Touchscreens verschiebt Verschieben die Ansicht beim Malen.",
+      "after": "Male eine Wachzone hinter den Wachtürmen auf dem vermuteten Angriffsweg. Klicke oder tippe für einzelne Stellen, ziehe für größere Flächen. Auf Touchscreens kannst du die Ansicht beim Malen mit Verschieben bewegen."
+    },
+    {
+      "key": "[settings Current controller: %0]",
+      "before": "Aktuelle Steuerung: %0",
+      "after": "Steuernder Client: %0"
+    }
+  ],
+  "dk": [
+    {
+      "key": "[tutorial part1 message 7]",
+      "before": "Åbn byggekontrollerne, vælg Kro, og placér den nær hvede. Følg arbejderens høstrute, hvis du ikke kan finde hveden. På berøringsskærme bruges Byg og bekræftelse af en gyldig placering. Afslut placeringen med højreklik eller Annullér.",
+      "after": "Åbn byggekontrollerne, vælg Kro, og placér den nær hvede. Følg arbejderens høstrute, hvis du ikke kan finde hveden. På berøringsskærme bruges Byg og bekræftelse af en gyldig placering. Afslut placeringen med højreklik eller Afbryd."
+    },
+    {
+      "key": "[tutorial part3 message 18]",
+      "before": "Vent på færdiggørelsen. Højere bygninger kræver flere ressourcer og mere tid.",
+      "after": "Vent på færdiggørelsen. Bygninger på højere niveauer kræver flere ressourcer og mere tid."
+    }
+  ],
+  "es": [
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Abre Banderas y elige la zona azul de vigilancia. Usa el modo para añadir terreno, no para quitarlo. En pantalla táctil, elige Pintar en vez de Borrar.",
+      "after": "Abre Banderas y elige el Área de guardia azul. Usa el modo para añadir terreno, no para quitarlo. En pantalla táctil, elige Pintar en vez de Borrar."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Pinta una zona de vigilancia detrás de las Torres, en la ruta probable del enemigo. Haz clic o toca para un punto, o arrastra para cubrir más terreno. En pantalla táctil, usa Desplazar para mover la vista mientras pintas.",
+      "after": "Pinta un Área de guardia detrás de las Torres, en la ruta probable del enemigo. Haz clic o toca para un punto, o arrastra para cubrir más terreno. En pantalla táctil, usa Desplazar para mover la vista mientras pintas."
+    }
+  ],
+  "sv": [
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Öppna Flaggor och välj den blå vaktzonen. Använd läget för att lägga till mark, inte ta bort. På pekskärm väljer du Måla i stället för Radera.",
+      "after": "Öppna Flaggor och välj det blå vaktområdet. Använd läget för att lägga till mark, inte ta bort. På pekskärm väljer du Måla i stället för Radera."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Måla en vaktzon strax bakom tornen, där fienden sannolikt kommer. Klicka eller tryck för en punkt, eller dra över mer mark. På pekskärm använder du Panorera för att flytta vyn medan du målar.",
+      "after": "Måla ett vaktområde strax bakom tornen, där fienden sannolikt kommer. Klicka eller tryck för en punkt, eller dra över mer mark. På pekskärm använder du Panorera för att flytta vyn medan du målar."
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "before": "Lediga krigare går till vaktzonen. Gör den stor nog för försvararna men liten nog för att hålla dem samlade vid passagen. Vänta nu på anfallet.",
+      "after": "Lediga krigare går till vaktområdet. Gör det stort nog för försvararna men litet nog för att hålla dem samlade vid passagen. Vänta nu på anfallet."
+    },
+    {
+      "key": "[settings Current controller: %0]",
+      "before": "Aktuell styrenhet: %0",
+      "after": "Styrande klient: %0"
+    }
+  ],
+  "it": [
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Apri Bandiere e scegli la zona blu di Guardia. Usa la modalità per aggiungere terreno alla zona, non per rimuoverlo. Su schermi tattili scegli Dipingi invece di Cancella.",
+      "after": "Apri Bandiere e scegli l'Area di pattuglia blu. Usa la modalità per aggiungere terreno alla zona, non per rimuoverlo. Su schermi tattili scegli Dipingi invece di Cancella."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Dipingi una zona di Guardia subito dietro le torri, dove probabilmente arriverà il nemico. Fai clic o tocca per dipingere un punto, oppure trascina per coprire più terreno. Su schermi tattili usa Sposta per muovere la visuale mentre dipingi.",
+      "after": "Dipingi un'Area di pattuglia subito dietro le torri, dove probabilmente arriverà il nemico. Fai clic o tocca per dipingere un punto, oppure trascina per coprire più terreno. Su schermi tattili usa Sposta per muovere la visuale mentre dipingi."
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "before": "I guerrieri disponibili entreranno nella zona di Guardia. Rendila abbastanza grande per i difensori ma abbastanza piccola da tenerli concentrati al passaggio. Ora attendi l'attacco.",
+      "after": "I guerrieri disponibili entreranno nell'Area di pattuglia. Rendila abbastanza grande per i difensori ma abbastanza piccola da tenerli concentrati al passaggio. Ora attendi l'attacco."
+    },
+    {
+      "key": "[settings Current controller: %0]",
+      "before": "Controllore attuale: %0",
+      "after": "Client al controllo: %0"
+    },
+    {
+      "key": "[settings Copy endpoint]",
+      "before": "Copia endpoint",
+      "after": "Copia indirizzo di connessione"
+    }
+  ],
+  "br": [
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Abra Bandeiras e escolha a zona azul de vigilância. Use o modo de adicionar terreno, não de remover. Na tela de toque, escolha Pintar em vez de Apagar.",
+      "after": "Abra Bandeiras e escolha a Área de guarda azul. Use o modo de adicionar terreno, não de remover. Na tela de toque, escolha Pintar em vez de Apagar."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Pinte uma zona de vigilância atrás das Torres, na rota provável do inimigo. Clique ou toque para um ponto, ou arraste para cobrir mais terreno. Na tela de toque, use Deslocar para deslocar a visão enquanto pinta.",
+      "after": "Pinte uma Área de guarda atrás das Torres, na rota provável do inimigo. Clique ou toque para um ponto, ou arraste para cobrir mais terreno. Na tela de toque, use Deslocar para deslocar a visão enquanto pinta."
+    },
+    {
+      "key": "[tutorial part2 message 10]",
+      "before": "Designe trabalhadores livres ao novo canteiro. Ele precisa só de 3 madeiras; mais de 3 construtores ajudarão pouco.",
+      "after": "Designe trabalhadores livres ao novo canteiro. Ele precisa só de 3 unidades de madeira; mais de 3 construtores ajudarão pouco."
+    }
+  ],
+  "eu": [
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Ireki Banderak eta aukeratu Zaindu zona urdina. Erabili lurra gehitzeko modua, ez kentzekoa. Ukipen-pantailan, aukeratu Margotu, ez Ezabatu.",
+      "after": "Ireki Banderak eta aukeratu Babes zonalde urdina. Erabili lurra gehitzeko modua, ez kentzekoa. Ukipen-pantailan, aukeratu Margotu, ez Ezabatu."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Margotu Zaindu zona dorreen atzean, etsaiaren balizko bidean. Egin klik edo ukitu puntu bat, edo arrastatu eremu handiagoa margotzeko. Ukipen-pantailan, erabili Mugitu ikuspegia mugitzeko margotzen ari zaren bitartean.",
+      "after": "Margotu Babes zonaldea dorreen atzean, etsaiaren balizko bidean. Egin klik edo ukitu puntu bat, edo arrastatu eremu handiagoa margotzeko. Ukipen-pantailan, erabili Mugitu ikuspegia mugitzeko margotzen ari zaren bitartean."
+    },
+    {
+      "key": "[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "before": "Alderatu GPUaren emaitzak CPU eskalarrarenekin argitaratu aurretik. Kalkulu gehiago egiten ditu eta jokoa gelditzen du bat ez badatoz.",
+      "after": "Alderatu GPUaren emaitzak CPU eskalarrarenekin erabili aurretik. Kalkulu gehiago egiten ditu eta jokoa gelditzen du bat ez badatoz."
+    },
+    {
+      "key": "[library Family unavailable. Private families require signing in through Online with an account that can access them.]",
+      "before": "Familia ez dago erabilgarri. Familia pribatuetarako, hasi saioa Linean atalean, sarbidea duen kontu batekin.",
+      "after": "Familia ez dago erabilgarri. Familia pribatuetarako, hasi saioa Sarean atalean, sarbidea duen kontu batekin."
+    },
+    {
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "before": "Ireki zerrendatu gabeko familia bat haren estekarekin edo IDarekin. Familia pribatuetarako, hasi saioa lehenik Linean atalean.",
+      "after": "Ireki zerrendatu gabeko familia bat haren estekarekin edo IDarekin. Familia pribatuetarako, hasi saioa lehenik Sarean atalean."
+    },
+    {
+      "key": "[library This link is from another instance. Switch to that instance in Online first.]",
+      "before": "Esteka beste instantzia batekoa da. Aldatu lehenik instantzia horretara Linean atalean.",
+      "after": "Esteka beste instantzia batekoa da. Aldatu lehenik instantzia horretara Sarean atalean."
+    }
+  ],
+  "fi": [
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "before": "Kuinka pitkään luettelot ja paneelit jatkavat vieritystä kosketuspyyhkäisyn jälkeen. Mac-eleet käyttävät järjestelmän liike-energiaa; nolla poistaa niiden liukumisen käytöstä.",
+      "after": "Kuinka pitkään luettelot ja paneelit jatkavat vieritystä kosketuspyyhkäisyn jälkeen. Mac-eleet käyttävät järjestelmän vieritysinertiaa; nolla poistaa niiden liukumisen käytöstä."
+    }
+  ],
+  "ca": [
+    {
+      "key": "[tutorial part1 message 9]",
+      "before": "Un treballador de la Granja pot construir la Despensa. Cull fusta dels arbres propers i la porta al solar. Espera que acabin les obres.",
+      "after": "Un treballador de la Granja pot construir la Despensa. Recull fusta dels arbres propers i la porta al solar. Espera que acabin les obres."
+    }
+  ],
+  "fr": [
+    {
+      "key": "[tutorial part2 message 1]",
+      "before": "Du minerai de pierre se trouve à l’est de votre base. Retenez cet emplacement pour plus tard.",
+      "after": "De la pierre se trouve à l’est de votre base. Retenez cet emplacement pour plus tard."
+    },
+    {
+      "key": "[tutorial part2 message 7]",
+      "before": "Une ouvrière coûte 5 blés. Un champ éloigné ralentit les livraisons : la Ruche a souvent besoin de plus d’ouvrières qu’une Auberge. Construisez près du blé si possible.",
+      "after": "Une ouvrière coûte 5 unités de blé. Un champ éloigné ralentit les livraisons : la Ruche a souvent besoin de plus d’ouvrières qu’une Auberge. Construisez près du blé si possible."
+    },
+    {
+      "key": "[tutorial part2 message 10]",
+      "before": "Affectez des ouvrières libres au chantier. Il ne faut que 3 bois : plus de 3 bâtisseuses aideraient peu.",
+      "after": "Affectez des ouvrières libres au chantier. Il ne faut que 3 unités de bois : plus de 3 bâtisseuses aideraient peu."
+    }
+  ]
+}

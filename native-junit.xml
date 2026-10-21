@@ -1,14 +1,22 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="12" failures="0" errors="0" skipped="0"><testsuite name="BuildingFamilyLinks"><testcase classname="BuildingFamilyLinks" name="family links stay on the selected instance and normalize bounded IDs" time="0.000972" status="run" />
-  <testcase classname="BuildingFamilyLinks" name="unlisted family detail uses the instance client and rejects changed identity" time="0.61526" status="run" />
-  </testsuite><testsuite name="BuildingLibrary"><testcase classname="BuildingLibrary" name="installed families are explicitly selected and corrupt updates never replace a release" time="7.6417" status="run" />
-  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.217048" status="run" />
-  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.68817" status="run" />
-  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.662079" status="run" />
-  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.007098" status="run" />
-  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="39.5004" status="run" />
-  </testsuite><testsuite name="SettingsLocalization"><testcase classname="SettingsLocalization" name="Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" time="36.2274" status="run" />
-  </testsuite><testsuite name="TutorialLocalization"><testcase classname="TutorialLocalization" name="Legacy tutorial aliases use the selected catalog and preserve unknown text" time="1.89446" status="run" />
-  <testcase classname="TutorialLocalization" name="Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" time="5.87999" status="run" />
-  <testcase classname="TutorialLocalization" name="Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" time="4.47825" status="run" />
+<testsuites tests="20" failures="0" errors="0" skipped="0"><testsuite name="BuildingFamilyLinks"><testcase classname="BuildingFamilyLinks" name="family links stay on the selected instance and normalize bounded IDs" time="0.001131" status="run" />
+  <testcase classname="BuildingFamilyLinks" name="unlisted family detail uses the instance client and rejects changed identity" time="1.22147" status="run" />
+  </testsuite><testsuite name="BuildingLibrary"><testcase classname="BuildingLibrary" name="installed families are explicitly selected and corrupt updates never replace a release" time="12.8855" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.317259" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.738036" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.746134" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.00697" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]" time="15.2492" status="run" />
+  <testcase classname="Settings" name="catalog building defaults in compact layout [display][artifacts][writes-preferences]" time="7.20904" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="34.9497" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="43.9617" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="45.0902" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="25.8091" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="30.9043" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="25.6219" status="run" />
+  <testcase classname="Settings" name="render FPS dropdown in compact layout [display][artifacts][writes-preferences]" time="6.86942" status="run" />
+  </testsuite><testsuite name="SettingsLocalization"><testcase classname="SettingsLocalization" name="Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" time="39.9784" status="run" />
+  </testsuite><testsuite name="TutorialLocalization"><testcase classname="TutorialLocalization" name="Legacy tutorial aliases use the selected catalog and preserve unknown text" time="4.00347" status="run" />
+  <testcase classname="TutorialLocalization" name="Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" time="7.94256" status="run" />
+  <testcase classname="TutorialLocalization" name="Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" time="5.94632" status="run" />
   </testsuite></testsuites>

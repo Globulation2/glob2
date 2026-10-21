@@ -1,0 +1,38 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/09c5/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/09c5/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "d1621b1c8485943ad75372303e918732584db4fb", "sourceStatus": [], "sourceTreeSha256": "19adb52d994e722ebfb2a08abad6e5b62a01d807a9e0c8463c4720ebf1529e96"}
+[doctest] listing all test case names
+===============================================================================
+icons and tooltips
+settings toggles keep captions left and the full row actionable
+geometry
+text
+column and flex
+row cross align
+paragraph wraps with width
+text fields retain the touch target with compact control metrics
+wrap columns
+footer folds
+scroll clamp and wheel
+tap versus pan
+native gestures retain fractions ownership and survive rebuilds
+native gesture bounds settle and external jumps cancel the tail
+native nested capture does not transfer to parent and missing owners consume tails
+native popup scrolling owns its tail after dismissal
+fling continues after release
+overscroll springs back
+touch wheel and programmatic scroll stop a fling
+scrollbar press stops a fling
+mouse drag does not fling
+list and text overscroll
+press survives resize
+focus and keyboard
+choice popup
+icon segments and choices
+text field
+list view
+copy field
+adaptive and field
+invariants
+text stays inside its control at every size
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 32

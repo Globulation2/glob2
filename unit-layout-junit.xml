@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="32" failures="0" errors="0" skipped="0"><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.002197" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.026994" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0.000122" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0.000159" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000319" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.0005" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000801" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.001072" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.0108" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000364" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.001143" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.041354" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.004367" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.022027" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.003543" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.00105" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.005946" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0.003789" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000303" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.000249" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000271" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.000153" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000352" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0.000117" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.032964" status="run" />
+  </testsuite></testsuites>

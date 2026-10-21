@@ -1,0 +1,373 @@
+{
+  "ar": [
+    {
+      "key": "[discord copy failed]",
+      "before": "تعذر نسخ الرابط. حدد الدعوة أعلاه لنسخها يدويًا.",
+      "after": "تعذر نسخ الرابط. حدد رابط الدعوة أعلاه لنسخه يدويًا."
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "before": "حسابات بديلة بالمعالج المركزي",
+      "after": "عدد مرات الرجوع إلى المعالج المركزي"
+    },
+    {
+      "key": "[hive less]",
+      "before": "أقل",
+      "after": "طيّ التفاصيل"
+    },
+    {
+      "key": "[tutorial part1 message 7]",
+      "before": "افتح أدوات البناء واختر نُزلًا وضعه قرب القمح. اتبع مسار حصاد العامل إن لم تجده. على شاشة اللمس، استخدم «البناء» وأكّد موقعًا صالحًا. أنهِ الوضع بنقرة يمنى أو بزر «ألغِ» اللمسي.",
+      "after": "افتح أدوات البناء واختر نُزلًا وضعه قرب القمح. اتبع مسار حصاد العامل إن لم تجد القمح. على شاشة اللمس، استخدم «البناء» وأكّد موقعًا صالحًا. غادر وضع البناء بنقرة يمنى أو بزر «ألغِ» اللمسي."
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "before": "يستطيع العمال المتعلمون في المدرسة بناء الترقيات. حدد مبنى مؤهلًا واختر «رقِّ» من أدواته. قد تحتاج المباني المتضررة إلى إصلاح أولًا.",
+      "after": "يستطيع العمال المتعلمون في المدرسة بناء الترقيات. حدد مبنى مؤهلًا واختر «رقِّ» من أدواته. قد تحتاج المباني المتضررة إلى «رمِّم» أولًا."
+    },
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "before": "إصدار آخر مثبّت. ثبّت الإصدار المحدد لإجراء التحديث صراحةً.",
+      "after": "إصدار آخر مثبّت. ثبّت الإصدار المحدد إذا أردت التحديث إليه."
+    },
+    {
+      "key": "[library Reroll seed]",
+      "before": "اختيار بذرة عشوائية",
+      "after": "تغيير البذرة"
+    },
+    {
+      "key": "[tutorial part2 message 23]",
+      "before": "لديك نُزلان أساسيان، بكل منهما 4 أماكن للأكل؛ أي 8 إجمالًا. قد تجوع أكثر من 8 وحدات، لذا وفّر سعة تكفي للانتظار.",
+      "after": "لديك نُزلان أساسيان، بكل منهما 4 أماكن للأكل في الوقت نفسه؛ أي 8 إجمالًا. قد تجوع أكثر من 8 وحدات، لذا وفّر سعة إضافية لتقليل الانتظار."
+    }
+  ],
+  "fa": [
+    {
+      "key": "[discord copy failed]",
+      "before": "کپی کردن پیوند ممکن نشد. دعوت بالا را انتخاب کنید و آن را دستی کپی کنید.",
+      "after": "کپی کردن پیوند ممکن نشد. پیوند دعوت بالا را انتخاب کنید و آن را دستی کپی کنید."
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "before": "محاسبات جایگزین با پردازندهٔ مرکزی",
+      "after": "دفعات استفاده از پردازندهٔ مرکزی جایگزین"
+    },
+    {
+      "key": "[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "before": "پیمایش با چرخ در منوها را کنترل می‌کند. چرخ همیشه نقشه‌های بازی و ویرایشگر را بزرگ‌نمایی می‌کند.",
+      "after": "پیمایش با چرخ در منوها را کنترل می‌کند. در نقشه‌های بازی و ویرایشگر، چرخ همیشه برای بزرگ‌نمایی و کوچک‌نمایی است."
+    },
+    {
+      "key": "[hive less]",
+      "before": "کمتر",
+      "after": "بستن جزئیات"
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "before": "به Globulation 2 خوش آمدید! این چهار مأموریت مدیریت مستعمره را آموزش می‌دهند. پیشرفتتان را از منوی بازی ذخیره و بعداً از منوی اصلی بارگذاری کنید. برای ادامه فاصله را بزنید یا «تأیید» را لمس کنید. پیام‌های قبلی در تاریخچهٔ پیام‌ها هستند.",
+      "after": "به Globulation 2 خوش آمدید! این چهار مأموریت مدیریت مستعمره را آموزش می‌دهند. پیشرفتتان را از منوی بازی ذخیره و بعداً از منوی اصلی بارگذاری کنید. برای ادامه کلید فاصله را بزنید یا «تأیید» را در صفحهٔ لمسی انتخاب کنید. برخی پیام‌ها پس از ادامه ناپدید می‌شوند؛ آن‌ها را در تاریخچهٔ پیام‌ها دوباره بخوانید."
+    },
+    {
+      "key": "[tutorial part4 message 7]",
+      "before": "خط دور پرچم شعاع کار را نشان می‌دهد. جستجوگر تخصیص‌یافته آنجا را بررسی می‌کند. اگر کسی نمی‌آید، تعداد را ببینید و در صورت نیاز در کندو جستجوگر تازه بسازید. پس از رسیدن، فاصله یا «تأیید» را بزنید.",
+      "after": "خط دور پرچم شعاع کار را نشان می‌دهد. جستجوگر تخصیص‌یافته آنجا را بررسی می‌کند. اگر کسی نمی‌آید، تعداد را ببینید و در صورت نیاز در کندو جستجوگر تازه بسازید. پس از رسیدن، کلید فاصله یا «تأیید» را بزنید."
+    },
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "before": "نسخهٔ دیگری نصب است. برای به‌روزرسانی صریح، نسخهٔ انتخاب‌شده را نصب کنید.",
+      "after": "نسخهٔ دیگری نصب است. اگر می‌خواهید به نسخهٔ انتخاب‌شده به‌روزرسانی کنید، آن را نصب کنید."
+    },
+    {
+      "key": "[library Checking building release]",
+      "before": "در حال بررسی انتشار ساختمان",
+      "after": "در حال بررسی نسخهٔ ساختمان"
+    },
+    {
+      "key": "[library Invalid release identity]",
+      "before": "هویت انتشار نامعتبر است",
+      "after": "اطلاعات شناسایی نسخه نامعتبر است"
+    },
+    {
+      "key": "[library Release identity changed during installation]",
+      "before": "هویت انتشار هنگام نصب تغییر کرد",
+      "after": "اطلاعات شناسایی نسخه هنگام نصب تغییر کرد"
+    },
+    {
+      "key": "[library No validated release for this game version.]",
+      "before": "انتشار تأییدشده‌ای برای این نسخهٔ بازی نیست.",
+      "after": "نسخهٔ تأییدشده‌ای برای این نسخهٔ بازی موجود نیست."
+    },
+    {
+      "key": "[library This release has no passing checks for this engine.]",
+      "before": "این انتشار هیچ بررسی موفقی برای این موتور ندارد.",
+      "after": "این نسخه هیچ بررسی موفقی برای این موتور ندارد."
+    },
+    {
+      "key": "[library Reroll seed]",
+      "before": "انتخاب بذر تصادفی",
+      "after": "تغییر بذر"
+    },
+    {
+      "key": "[library Fit]",
+      "before": "جا دادن",
+      "after": "نمایش کامل"
+    }
+  ],
+  "id": [
+    {
+      "key": "[discord copy failed]",
+      "before": "Tidak dapat menyalin tautan. Pilih undangan di atas untuk menyalinnya secara manual.",
+      "after": "Tidak dapat menyalin tautan. Pilih tautan undangan di atas untuk menyalinnya secara manual."
+    },
+    {
+      "key": "[settings Retry listener]",
+      "before": "Coba mulai pendengar lagi",
+      "after": "Coba terima koneksi lagi"
+    },
+    {
+      "key": "[tutorial part2 message 2]",
+      "before": "Pohon di selatan batu adalah pohon jeruk. Pilih untuk melihat informasi sumber dayanya. Kita kembali ke buah nanti; sekarang fokus pada Sarang.",
+      "after": "Pohon di selatan batu adalah pohon jeruk. Pilih untuk melihat informasi sumber dayanya. Kita akan membahas buah nanti; sekarang fokus pada Sarang."
+    },
+    {
+      "key": "[tutorial part2 message 11]",
+      "before": "Penginapan selesai kembali ke target pekerja operasional, biasanya 1. Pembangunan dan pasokan sehari-hari memakai target terpisah.",
+      "after": "Setelah selesai dibangun, Penginapan kembali memakai target pekerja operasional, biasanya 1. Pembangunan dan pasokan sehari-hari memakai target terpisah."
+    },
+    {
+      "key": "[tutorial part4 message 9]",
+      "before": "Buka Bendera dan pilih zona Penjagaan biru. Gunakan mode menambah tanah ke zona, bukan menghapus. Pada layar sentuh pilih Lukis, bukan Hapus.",
+      "after": "Buka Bendera dan pilih zona Jaga berwarna biru. Gunakan mode untuk menambahkan area ke zona, bukan menghapusnya. Pada layar sentuh pilih Lukis, bukan Hapus."
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "before": "Lukis zona Penjagaan tepat di belakang menara, tempat musuh kemungkinan datang. Klik atau ketuk untuk satu titik, atau seret untuk area luas. Pada layar sentuh gunakan Geser saat perlu memindahkan pandangan selagi melukis.",
+      "after": "Lukis zona Jaga tepat di belakang menara, tempat musuh kemungkinan datang. Klik atau ketuk untuk satu titik, atau seret untuk area luas. Pada layar sentuh gunakan Geser saat perlu memindahkan pandangan selagi melukis."
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "before": "Prajurit tersedia akan masuk zona Penjagaan. Buat cukup luas untuk pembela tetapi cukup kecil agar terkumpul di penyeberangan. Tunggu serangan.",
+      "after": "Prajurit yang tersedia akan menuju zona Jaga. Buat cukup luas untuk para penjaga, tetapi cukup kecil agar mereka terkumpul di penyeberangan. Tunggu serangan musuh."
+    },
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "before": "Rilis lain sudah terpasang. Pasang rilis yang dipilih untuk memperbarui secara sengaja.",
+      "after": "Rilis lain sudah terpasang. Pasang rilis yang dipilih jika Anda ingin memperbarui ke rilis tersebut."
+    },
+    {
+      "key": "[library Map generators]",
+      "before": "Pembuat peta",
+      "after": "Generator peta"
+    },
+    {
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "before": "Buka keluarga tak terdaftar dengan tautan atau ID. Untuk keluarga privat, masuk melalui Daring dahulu.",
+      "after": "Buka keluarga yang tidak ditampilkan dalam daftar dengan tautan atau ID. Untuk keluarga privat, masuk melalui Daring dahulu."
+    },
+    {
+      "key": "[library This release has no passing checks for this engine.]",
+      "before": "Rilis ini tidak memiliki pemeriksaan lulus untuk mesin ini.",
+      "after": "Rilis ini belum memiliki hasil pemeriksaan yang lulus untuk mesin ini."
+    },
+    {
+      "key": "[library Fit]",
+      "before": "Muat pas",
+      "after": "Tampilkan seluruh peta"
+    }
+  ],
+  "ja": [
+    {
+      "key": "[hand silhouettes description]",
+      "before": "スマートフォンの輪郭に左右の手が重なっています。斜めの縁がある親指のターゲットを押すと、その側を選べます。",
+      "after": "スマートフォンの輪郭に左右の手が重なっています。斜めの縁がある親指用のボタンを押すと、その側を選べます。"
+    },
+    {
+      "key": "[tutorial part2 message 7]",
+      "before": "労働者 1 人には小麦 5 が必要です。遠くの畑から運ぶには時間がかかるため、巣は食堂より多くの供給担当を必要としがちです。食料を使う建物はなるべく小麦の近くに置きましょう。",
+      "after": "労働者を 1 人生産するには小麦が 5 必要です。遠くの畑から運ぶには時間がかかるため、巣は食堂より多くの供給担当を必要としがちです。食料を使う建物はなるべく小麦の近くに置きましょう。"
+    },
+    {
+      "key": "[tutorial part2 message 11]",
+      "before": "完成した食堂は通常運営の労働者目標、通常は 1 人に戻ります。建設と日々の供給には別々の目標があります。",
+      "after": "食堂が完成すると、労働者の目標は運営用の人数に戻ります。通常は 1 人です。建設と日々の供給には別々の目標があります。"
+    },
+    {
+      "key": "[tutorial part4 message 2]",
+      "before": "拠点の北西で敵のコロニーを探してください。今そこへ視点を移します。",
+      "after": "拠点の北西で敵のコロニーを探してください。今そこへ視点を移してください。"
+    },
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "before": "別のリリースがインストールされています。明示的に更新するには、選択したリリースをインストールしてください。",
+      "after": "別のリリースがインストールされています。選択したリリースに更新するには、そのリリースをインストールしてください。"
+    },
+    {
+      "key": "[library Reroll seed]",
+      "before": "シードを再抽選",
+      "after": "シードを変更"
+    }
+  ],
+  "ko": [
+    {
+      "key": "[hand silhouettes description]",
+      "before": "휴대전화 윤곽 위에 왼손과 오른손이 있습니다. 경사진 테두리가 있는 엄지 대상 영역 중 하나를 눌러 해당 방향을 선택하세요.",
+      "after": "휴대전화 윤곽 위에 왼손과 오른손이 있습니다. 경사진 테두리가 있는 엄지손가락 버튼 중 하나를 눌러 해당 쪽을 선택하세요."
+    },
+    {
+      "key": "[stat band water only]",
+      "before": "물만",
+      "after": "수중만"
+    },
+    {
+      "key": "[tutorial part2 message 36]",
+      "before": "학교는 수확과 건설 기술을 높입니다. 건설에는 물속에서 자라는 해조류가 필요하며 수영하는 일꾼이 채집할 수 있습니다.",
+      "after": "학교는 수확과 건설 기술을 높입니다. 학교를 짓는 데에는 물속에서 자라는 해조류가 필요하며 수영을 배운 일꾼이 채집할 수 있습니다."
+    },
+    {
+      "key": "[tutorial part4 message 8]",
+      "before": "적은 많은 일꾼과 집결한 군대를 보유하고 있습니다. 공격하기 전에 방어를 준비합시다.",
+      "after": "적은 많은 일꾼과 집결한 군대를 보유하고 있습니다. 적이 공격해 오기 전에 방어를 준비합시다."
+    },
+    {
+      "key": "[library Reroll]",
+      "before": "다시 추첨",
+      "after": "다시 생성"
+    },
+    {
+      "key": "[library Reroll seed]",
+      "before": "시드 다시 추첨",
+      "after": "시드 변경"
+    },
+    {
+      "key": "[library This release has no passing checks for this engine.]",
+      "before": "이 릴리스에는 이 엔진용으로 통과한 검사가 없습니다.",
+      "after": "이 릴리스는 이 엔진에 대한 검사 통과 기록이 없습니다."
+    }
+  ],
+  "vi": [
+    {
+      "key": "[discord copy failed]",
+      "before": "Không thể sao chép liên kết. Hãy chọn lời mời ở trên để sao chép thủ công.",
+      "after": "Không thể sao chép liên kết. Hãy chọn liên kết mời ở trên để sao chép thủ công."
+    },
+    {
+      "key": "[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "before": "Áp dụng ở ranh giới mô phỏng tiếp theo. Tác vụ không được hỗ trợ sẽ dùng CPU tự động; việc kết xuất hoạt động độc lập.",
+      "after": "Áp dụng tại điểm chuyển tiếp mô phỏng kế tiếp. Tác vụ không được hỗ trợ sẽ dùng CPU tự động; việc kết xuất hoạt động độc lập."
+    },
+    {
+      "key": "[settings Retry listener]",
+      "before": "Thử lại bộ lắng nghe",
+      "after": "Thử khởi động lại bộ lắng nghe"
+    },
+    {
+      "key": "[tutorial part2 message 1]",
+      "before": "Phía đông căn cứ có đá. Nhớ vị trí này vì sau sẽ cần.",
+      "after": "Có đá ở phía đông căn cứ. Hãy nhớ vị trí này vì bạn sẽ cần đá sau này."
+    },
+    {
+      "key": "[tutorial part2 message 17]",
+      "before": "Đường chạy hoàn thành huấn luyện đơn vị đến thăm mà không cần cung cấp vật liệu hay lúa mì liên tục.",
+      "after": "Sau khi hoàn thành, Đường chạy huấn luyện các đơn vị đến tập mà không cần cung cấp vật liệu hay lúa mì liên tục."
+    },
+    {
+      "key": "[tutorial part2 message 20]",
+      "before": "Công nhân được huấn luyện đi nhanh và giao tài nguyên sớm hơn. Theo dõi kho thức ăn khi thuộc địa lớn lên; giao nhanh chỉ có ích nếu đủ Quán trọ vẫn được tiếp tế.",
+      "after": "Công nhân được huấn luyện di chuyển nhanh và giao tài nguyên sớm hơn. Theo dõi kho thức ăn khi thuộc địa lớn lên; việc giao nhanh chỉ có ích khi có đủ Quán trọ được tiếp tế đầy đủ."
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "before": "Công nhân được học ở trường có thể xây nâng cấp. Chọn công trình phù hợp, tìm Nâng cấp trong điều khiển. Công trình hỏng có thể cần Sửa chữa trước.",
+      "after": "Công nhân được huấn luyện tại Trường học có thể thực hiện việc nâng cấp. Chọn công trình phù hợp, tìm Nâng cấp trong điều khiển. Công trình hỏng có thể cần Sửa chữa trước."
+    },
+    {
+      "key": "[tutorial part3 message 17]",
+      "before": "Giao người sẵn có nâng Đường chạy. Chỉ công nhân có huấn luyện cần thiết ở trường mới xây được công trường cấp 2.",
+      "after": "Giao công nhân sẵn có nâng cấp Đường chạy. Chỉ công nhân đã hoàn thành huấn luyện cần thiết tại Trường học mới xây được công trình cấp 2."
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "before": "Chiến binh sẵn có sẽ tới vùng Canh gác. Để đủ rộng chứa người phòng thủ nhưng đủ nhỏ giữ họ tập trung tại lối vượt. Chờ cuộc đánh.",
+      "after": "Chiến binh sẵn có sẽ tới vùng Canh gác. Vùng cần đủ rộng cho quân phòng thủ, nhưng đủ nhỏ để giữ họ tập trung tại lối vượt. Chờ địch tấn công."
+    },
+    {
+      "key": "[library Release identity changed during installation]",
+      "before": "Danh tính bản phát hành đã đổi trong lúc cài",
+      "after": "Thông tin định danh bản phát hành đã đổi trong lúc cài"
+    },
+    {
+      "key": "[library Invalid release identity]",
+      "before": "Danh tính bản phát hành không hợp lệ",
+      "after": "Thông tin định danh bản phát hành không hợp lệ"
+    },
+    {
+      "key": "[library Generator package identity mismatch]",
+      "before": "Danh tính gói bộ tạo không khớp",
+      "after": "Thông tin định danh gói bộ tạo không khớp"
+    },
+    {
+      "key": "[library Playable generator]",
+      "before": "Bộ tạo có thể chơi",
+      "after": "Bộ tạo bản đồ chơi được"
+    },
+    {
+      "key": "[library This release has no passing checks for this engine.]",
+      "before": "Bản phát hành này chưa có kiểm tra đạt cho bộ máy này.",
+      "after": "Bản phát hành này chưa có kết quả kiểm tra đạt yêu cầu cho bộ máy này."
+    },
+    {
+      "key": "[library Reroll]",
+      "before": "Ngẫu nhiên lại",
+      "after": "Tạo lại"
+    },
+    {
+      "key": "[library Reroll seed]",
+      "before": "Đổi hạt giống ngẫu nhiên",
+      "after": "Đổi hạt giống"
+    }
+  ],
+  "zh-cn": [
+    {
+      "key": "[library Generator package identity mismatch]",
+      "before": "生成器包身份不匹配",
+      "after": "生成器包标识不匹配"
+    },
+    {
+      "key": "[library Invalid release identity]",
+      "before": "版本身份无效",
+      "after": "版本标识无效"
+    },
+    {
+      "key": "[library Release identity changed during installation]",
+      "before": "安装期间版本身份已改变",
+      "after": "安装期间版本标识已改变"
+    },
+    {
+      "key": "[library Reroll]",
+      "before": "重新随机",
+      "after": "重新生成"
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "before": "在学校受训的工人才能进行升级施工。选择可升级建筑，在建筑控件中找到“升级”。受损建筑可能需要先“修复”。",
+      "after": "在学校受训的工人才能进行升级施工。选择可升级建筑，在建筑控件中找到“升级”。受损建筑可能需要先“修理”。"
+    }
+  ],
+  "zh-tw": [
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "before": "已安裝另一個發行版本。請安裝所選版本以明確更新。",
+      "after": "已安裝另一個發行版本。若要更新至所選版本，請安裝該版本。"
+    },
+    {
+      "key": "[library Reroll]",
+      "before": "重新隨機",
+      "after": "重新產生"
+    },
+    {
+      "key": "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "before": "每種地景都以真實地圖呈現，使用下方的大小與殖民地數量，你可在此調整。選擇一種即可遊玩所顯示的地圖。",
+      "after": "每種地景都以實際地圖呈現，使用下方的大小與殖民地數量；你可在此調整這兩項設定。選擇一種即可遊玩所顯示的地圖。"
+    }
+  ]
+}

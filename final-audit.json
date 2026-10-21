@@ -2108,7 +2108,7 @@
   },
   "coverage": {
     "native_source_files": 1585,
-    "native_key_references": 3539,
+    "native_key_references": 3538,
     "checked_key_families": [
       "literal bracketed C++ keys",
       "settings helpers and categories",

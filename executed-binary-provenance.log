@@ -1,0 +1,10 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/09c5/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/09c5/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "d1621b1c8485943ad75372303e918732584db4fb", "sourceStatus": [], "sourceTreeSha256": "19adb52d994e722ebfb2a08abad6e5b62a01d807a9e0c8463c4720ebf1529e96"}
+[doctest] listing all test case names
+===============================================================================
+Arabic and Persian visual-order text is not reordered again by SDL_ttf
+the bundled SDL3_ttf moves the pen for kerned pairs
+pair advances equal the glyph advances plus kerning
+kerned words have no gap wider than the same words unkerned
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 4
