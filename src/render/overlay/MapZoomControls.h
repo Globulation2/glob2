@@ -2,6 +2,7 @@
 #pragma once
 #include <MapCamera.h>
 #include "GlobalContainer.h"
+#include "ui/LibraryText.h"
 
 // Fixed screen-space controls shared by gameplay, replays, and the editor.
 inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, bool softwareMap = false)
@@ -16,12 +17,12 @@ inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, b
     gfx->drawRect(x + 68, y, 24, 22, 120, 130, 150);
     gfx->drawString(x + 8, y + 3, globalContainer->littleFont, "-");
     // At 100% the middle button offers the other fixed stop: the whole map.
-    gfx->drawString(x + 30, y + 3, globalContainer->littleFont, camera.zoom == 1.0 ? "Fit" : "100%");
+    gfx->drawString(x + 30, y + 3, globalContainer->littleFont, camera.zoom == 1.0 ? Glob2UI::libraryText("Fit") : "100%");
     gfx->drawString(x + 76, y + 3, globalContainer->littleFont, "+");
     gfx->drawString(x + 100, y + 3, globalContainer->littleFont,
         (softwareMap || gfx->canDrawStretchedSprite())
             ? std::to_string(int(std::round(camera.zoom * 100))) + "%"
-            : "GL only");
+            : Glob2UI::libraryText("GL only"));
 }
 
 // The zoom holds the view's centre still, or the screen point (anchorX, anchorY) when given.

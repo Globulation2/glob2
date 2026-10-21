@@ -6011,96 +6011,622 @@ Upłynął limit czasu.
 [outcome reason probability]
 Osiągnięto próg prawdopodobieństwa zwycięstwa.
 [Discord community]
-
+Społeczność Discord
 [Globulation 2 Discord]
-
+Discord Globulation 2
 [discord community intro]
-
+Znajdź przeciwników, poproś o pomoc i podziel się mapami ze społecznością Globulation 2.
 [discord opens externally]
-
+Dołącz do naszego serwera Discord. Otworzy to Discord lub przeglądarkę.
 [Join Discord]
-
+Dołącz do Discorda
 [Copy link]
-
+Kopiuj odnośnik
 [discord opened]
-
+Discord został otwarty. W każdej chwili możesz wrócić do gry.
 [discord open failed]
-
+Nie udało się otworzyć Discorda. Skopiuj odnośnik z zaproszeniem i otwórz go w przeglądarce.
 [discord link copied]
-
+Skopiowano odnośnik z zaproszeniem.
 [settings CPU automatic]
-
+Automatyczny CPU
 [settings Scalar]
-
+Skalarny
 [settings Unavailable]
-
+Niedostępne
 [settings Initializing]
-
+Inicjalizacja
 [settings Gradient backend]
-
+Mechanizm gradientów
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Zmiana zostanie zastosowana przy następnym punkcie synchronizacji symulacji. Nieobsługiwane zadania używają automatycznego trybu CPU; renderowanie działa niezależnie.
 [settings Gradient algorithm]
-
+Algorytm gradientów
 [settings All choices compute the same exact field.]
-
+Wszystkie opcje obliczają dokładnie to samo pole.
 [settings Bucket propagation]
-
+Propagacja kubełkowa
 [settings Verify gradient results]
-
+Sprawdzaj wyniki gradientów
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Porównuje wyniki GPU z wynikami obliczeń skalarnych CPU przed ich udostępnieniem. Wymaga dodatkowych obliczeń i zatrzymuje grę w razie rozbieżności.
 [settings Gradient computation]
-
+Obliczanie gradientów
 [settings CPU fallback]
-
+Awaryjne użycie CPU
 [settings GPU fields]
-
+Pola GPU
 [settings CPU fallbacks]
-
+Przełączenia na CPU
 [settings MCP server]
-
+Serwer MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Włączenie serwera MCP pozwala lokalnym klientom obserwować grę i nią sterować.
 [settings Enable MCP server]
-
+Włącz serwer MCP
 [settings Port]
-
+Port
 [settings Current controller: %0]
-
+Bieżący kontroler: %0
 [settings Copy endpoint]
-
+Kopiuj adres połączenia
 [settings Retry listener]
-
+Ponów nasłuchiwanie
 [settings Revoke control]
-
+Odbierz sterowanie
 [settings MCP server unavailable in this application]
-
+Serwer MCP niedostępny w tej aplikacji
 [settings Disabled]
-
+Wyłączone
 [settings Running]
-
+Działa
 [settings Error: %0]
-
+Błąd: %0
 [settings None]
-
+Brak
 [settings Starting]
-
+Uruchamianie
 [Which hand holds your phone?]
-
+Lewa czy prawa ręka?
 [hand preference explanation]
-
+Trzymaj telefon tak jak zwykle. Dotknij ręki, którą grasz.
 [hand silhouettes description]
-
+Zarys telefonu z lewą i prawą dłonią u góry. Naciśnij jeden z wypukłych przycisków pod kciuk, aby wybrać stronę.
 [hand preference change later]
-
+Stronę możesz później zmienić w Ustawieniach.
 [hand preference save failed]
-
+Nie udało się zapisać wyboru. Spróbuj ponownie.
 [Left hand]
-
+Lewa ręka
 [Right hand]
-
+Prawa ręka
 [discord copy failed]
-
+Nie udało się skopiować odnośnika. Zaznacz zaproszenie powyżej, aby skopiować je ręcznie.
 [Destroy this building?]
 Zniszczyć ten budynek?
+[stat ground movement]
+Ruch naziemny
+[stat ground movement about]
+Żywe jednostki naziemne według przybliżonego stosunku prędkości. „Pływanie 2x” oznacza pływanie dwa razy szybsze od biegu. Nie obejmuje jednostek latających i nieruchomych.
+[stat view by movement]
+Według ruchu
+[stat band land only]
+Tylko ląd
+[stat band swim twice run]
+Pływanie 2x
+[stat band swim faster run]
+Pływanie 1,4x
+[stat band swim equals run]
+Równe
+[stat band run faster swim]
+Bieg 1,3x
+[stat band run twice swim]
+Bieg 2x
+[stat band run triple swim]
+Bieg 3x
+[stat band water only]
+Tylko woda
+[settings Browse shared generators]
+Przeglądaj udostępnione generatory
+[settings Apply artwork on the next game or editor load.]
+Zastosuj grafikę przy następnym wczytaniu gry lub edytora.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Wymaga renderera z filtrowaniem tekstur. Zapisany wybór zostaje zachowany.
+[settings Automatically show the torus overview while moving around the map.]
+Automatycznie pokazuj widok torusa podczas poruszania się po mapie.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Wymaga renderera obsługującego torus. Zapisany wybór zostaje zachowany.
+[settings Move and animate units between game ticks.]
+Poruszaj i animuj jednostki pomiędzy taktami gry.
+[settings Renderer unavailable]
+Renderer niedostępny
+[settings Apply at the next completed frame. Your game stays running.]
+Zastosuj po ukończeniu następnej klatki. Gra nadal działa.
+[settings Active renderer: %0]
+Aktywny renderer: %0
+[settings Changing renderer…]
+Zmiana renderera…
+[settings Menu scroll wheel enabled]
+Przewijanie kółkiem w menu włączone
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Steruje przewijaniem kółkiem w menu. Na mapach gry i edytora kółko zawsze zmienia powiększenie.
+[settings Gesture scrolling]
+Przewijanie gestami
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Przewijanie dotykiem i gestami Maca. 0 wyłącza efekt; 50 to wartość domyślna dla dotyku.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Jak daleko listy i panele przewijają się po szybkim przesunięciu palcem. Gesty Maca używają bezwładności systemowej; zero wyłącza dalszy poślizg.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Jak bardzo listy i panele rozciągają się poza końce i sprężynują z powrotem. Gesty Maca używają łagodniejszego rozciągania.
+[hive stopping]
+Zatrzymywanie…
+[hive stopped]
+Zatrzymano
+[hive stop failed]
+Nie udało się zatrzymać; ponów skrót zatrzymania
+[hive updating]
+Aktualizowanie…
+[hive requested]
+Zażądano
+[hive update failed]
+Aktualizacja nie powiodła się; spróbuj ponownie
+[hive give order]
+Wydaj rozkaz
+[hive less]
+Mniej
+[hive reports and details]
+Raporty / szczegóły
+[hive needs fresh order]
+Potrzebny nowy rozkaz
+[hive active]
+Aktywne
+[hive resume]
+Wznów
+[recordings]
+Nagrania
+[recording delete confirm]
+Usunąć nagranie?
+[recording delete warning]
+Nagranie i jego metadane zostaną usunięte.
+[recording delete]
+Usuń
+[recording working]
+Przetwarzanie…
+[recording none]
+Nie ma jeszcze nagrań.
+[recording interrupted]
+Przerwane nagranie
+[recording recover]
+Odzyskaj
+[recording export video]
+Eksportuj wideo
+[recording export metadata]
+Eksportuj metadane
+[recording export events]
+Eksportuj zdarzenia
+[recording export failed]
+Nie udało się wyeksportować nagrania.
+[recording delete action]
+Usuń nagranie
+[recording refresh]
+Odśwież
+[tutorial part1 message 1]
+Witaj w Globulation 2! Ten samouczek uczy zarządzania kolonią w czterech misjach. Możesz zapisać postęp w menu gry i później wczytać go z menu głównego. Naciśnij Spację, aby kontynuować, lub dotknij Ok na ekranie dotykowym. Niektóre komunikaty potem znikają; możesz je ponownie przeczytać w historii wiadomości.
+[tutorial part1 message 2]
+Zaczynasz z Rojem i jednym robotnikiem. Zobaczmy, jak współpracują.
+[tutorial part1 message 3]
+Robotnik zbiera pszenicę i zanosi ją do Roju. Rój zużywa ją na tworzenie nowych jednostek, dlatego jest niezbędny dla kolonii.
+[tutorial part1 message 4]
+Wybierz swojego globula, czyli poruszającą się jednostkę, lewym kliknięciem lub dotknięciem.
+[tutorial part1 message 5]
+Informacje o jednostce pokazują, że jej zapas jedzenia z czasem maleje. Globul staje się głodny. Gdy paski żywności są widoczne, niebieski pasek pod jednostką pokazuje pozostały zapas.
+[tutorial part1 message 6]
+Globule jedzą w Gospodach. Anuluj wybór prawym kliknięciem lub dotknij pustej ziemi na ekranie dotykowym.
+[tutorial part1 message 7]
+Otwórz narzędzia budowania, wybierz Gospodę i umieść ją blisko pszenicy. Jeśli nie widzisz pola, śledź trasę robotnika. Na ekranie dotykowym użyj opcji «Budowa» i potwierdź prawidłowe miejsce. Następnie wyjdź z rozmieszczania prawym kliknięciem lub dotykowym przyciskiem Anuluj.
+[tutorial part1 message 8]
+Dobrze! Plac budowy Gospody jest gotowy.
+[tutorial part1 message 9]
+Robotnik z Roju może teraz zbudować Gospodę. Zbiera drewno z pobliskich drzew i zanosi je na budowę. Poczekaj na zakończenie.
+[tutorial part1 message 10]
+Gotowa Gospoda potrzebuje pszenicy. Przydzielony robotnik będzie ją zbierać, podobnie jak przy zaopatrywaniu Roju.
+[tutorial part1 message 11]
+Żółty pasek zasobów Gospody rośnie wraz z dostawami pszenicy. Pokazuje jej zapas.
+[tutorial part1 message 12]
+Teraz nauczymy się przydzielać pracę.
+[tutorial part1 message 13]
+Jeden robotnik zaopatruje Rój, a drugi Gospodę. Obaj mogą robić przerwy na jedzenie w Gospodzie. To normalne.
+[tutorial part1 message 14]
+Wybierz Rój i znajdź ustawienie przydziału robotników. Na komputerze jest oznaczone jako Pracuje; na ekranie dotykowym użyj liczby przydzielonych robotników i wartości docelowej. Cel określa, ilu robotników chcesz przy tym budynku.
+[tutorial part1 message 15]
+Ustaw docelową liczbę robotników Roju na 0. Następnie wybierz Gospodę i tam również ustaw 0.
+[tutorial part1 message 16]
+Robotnicy są teraz bezczynni, ale nadal potrzebują jedzenia. Gospodzie bez przydzielonych robotników w końcu zabraknie pszenicy.
+[tutorial part1 message 17]
+Globul, który nie znajdzie jedzenia, traci zdrowie i może umrzeć. Szpital leczy ranne globule, ale Gospody także trzeba zaopatrywać.
+[tutorial part1 message 18]
+Zbuduj Szpital za pomocą narzędzi budowania. Nie potrzebuje pszenicy, więc postaw go przy drewnie lub w centralnym miejscu obok Roju.
+[tutorial part1 message 19]
+Wybierz plac budowy Szpitala i ustaw docelową liczbę robotników na 2. Dwaj robotnicy skończą szybciej.
+[tutorial part1 message 20]
+Szpital jest gotowy. Ranne globule mogą go odwiedzać, aby odzyskać zdrowie.
+[tutorial part1 message 21]
+Czarne obszary są niezbadane. Poruszające się jednostki odkrywają pobliski teren. Robotnicy podążają za zadaniami, więc trudno używać ich do zwiadu. Do tego służą zwiadowcy.
+[tutorial part1 message 22]
+Wybierz Rój i znajdź proporcje produkcji robotników, zwiadowców i wojowników. Zwiększ proporcję zwiadowców do 1.
+[tutorial part1 message 23]
+Gdy obie proporcje wynoszą 1, Rój z czasem wytwarza tyle samo robotników i zwiadowców. Ustaw robotników na 0, aby na razie tworzyć tylko zwiadowców.
+[tutorial part1 message 24]
+Przywróć docelowy przydział robotników Roju do 1, aby robotnik mógł dostarczać pszenicę.
+[tutorial part1 message 25]
+Wybierz Gospodę i również ustaw docelową liczbę robotników na 1. Rosnąca kolonia potrzebuje stałych dostaw jedzenia.
+[tutorial part1 message 26]
+Teraz poczekaj, aż Rój wytworzy zwiadowcę.
+[tutorial part1 message 27]
+Zwiadowca lata wokół kolonii, odkrywając teren. Zanim przejdziesz dalej, zaczekaj na drugiego zwiadowcę.
+[tutorial part1 message 28]
+Ponownie wybierz Rój. Ustaw proporcję zwiadowców na 0, a robotników na 1, aby wznowić produkcję robotników.
+[tutorial part2 message 1]
+Na wschód od bazy jest kamień. Zapamiętaj to miejsce; przyda się później.
+[tutorial part2 message 2]
+Drzewa na południe od kamienia to drzewa pomarańczowe. Wybierz je, aby zobaczyć informacje o zasobach. Do owoców wrócimy później; teraz skup się na Roju.
+[tutorial part2 message 3]
+Ustaw produkcję wyłącznie robotników: proporcja robotników 1, zwiadowców i wojowników 0.
+[tutorial part2 message 4]
+Przyspieszmy rozwój kolonii. Wybierz Rój i ustaw docelową liczbę robotników na 6. Możesz jeszcze tylu nie mieć; nowi robotnicy zajmą wolne miejsca, gdy będą dostępni.
+[tutorial part2 message 5]
+Kolejne zadania zaczną się, gdy będziesz mieć 8 robotników. Utrzymuj zaopatrzenie Roju i Gospody podczas wzrostu populacji.
+[tutorial part2 message 6]
+Kilku robotników zaopatruje teraz Rój. Więcej pszenicy pozwala szybciej tworzyć jednostki.
+[tutorial part2 message 7]
+Nowy robotnik kosztuje 5 pszenicy. Dostawa z dalekiego pola trwa, dlatego Rój często potrzebuje więcej dostawców niż Gospoda. Jeśli to możliwe, buduj obiekty zależne od jedzenia blisko pszenicy.
+[tutorial part2 message 8]
+Masz już co najmniej 8 robotników. Wybierz Rój i obniż docelową liczbę robotników do 1, aby spowolnić wzrost populacji na czas budowy.
+[tutorial part2 message 9]
+Kolonia potrzebuje więcej miejsc do jedzenia. Zbuduj drugą Gospodę na północ od istniejącej.
+[tutorial part2 message 10]
+Przydziel wolnych robotników do nowej budowy. Potrzeba tylko 3 drewna, więc więcej niż 3 budowniczych niewiele pomoże.
+[tutorial part2 message 11]
+Gotowa Gospoda wraca do przydziału robotników na czas działania, zwykle 1. Budowa i codzienne zaopatrzenie mają oddzielne ustawienia przydziału.
+[tutorial part2 message 12]
+Robotnicy mogą nauczyć się szybszego poruszania. Służy do tego Tor wyścigowy.
+[tutorial part2 message 13]
+Otwórz narzędzia budowania i znajdź Tor wyścigowy. Na komputerze najedź na ikonę, by sprawdzić opis i koszt. Na ekranie dotykowym wybierz go w opcji «Budowa», przygotowując rozmieszczenie. Jeszcze go nie stawiaj.
+[tutorial part2 message 14]
+Tor wyścigowy wymaga dużo drewna i trochę kamienia. Wybierz centralne miejsce, łatwo dostępne dla jednostek.
+[tutorial part2 message 15]
+Zbuduj Tor wyścigowy, na przykład na południe od Roju. Zostaw wolne miejsce wokół: budynki szkoleniowe powiększają się przy ulepszaniu.
+[tutorial part2 message 16]
+Ustaw docelową liczbę robotników na budowie Toru wyścigowego między 5 a 7. Łącznie potrzeba 7 jednostek materiałów budowlanych.
+[tutorial part2 message 17]
+Gotowy Tor wyścigowy szkoli odwiedzające jednostki bez stałych dostaw materiałów budowlanych lub pszenicy.
+[tutorial part2 message 18]
+Globule wchodzą na Tor wyścigowy, aby trenować. Po szkoleniu potrafią biegać szybciej.
+[tutorial part2 message 19]
+Wybierz Tor wyścigowy, aby sprawdzić szkolenie. Wskaźniki postępu pokazują, ile brakuje jednostkom wewnątrz do ukończenia.
+[tutorial part2 message 20]
+Wyszkoleni robotnicy szybciej podróżują i dostarczają zasoby. Obserwuj zapasy jedzenia podczas rozwoju kolonii: szybkie dostawy pomagają tylko wtedy, gdy dość Gospód jest zaopatrywanych.
+[tutorial part2 message 21]
+Znajdź licznik robotników w interfejsie gry. Łączna liczba pokazuje populację; dostępni robotnicy pomagają dostrzec wolną siłę roboczą i nieobsadzone zadania. Wykorzystuj ich, nie przydzielając więcej prac, niż kolonia może wykonać.
+[tutorial part2 message 22]
+Interfejs pokazuje też liczby zwiadowców i wojowników. Sprawdzaj je podczas planowania produkcji i przydzielania jednostek do flag.
+[tutorial part2 message 23]
+Masz 2 Gospody. Każda podstawowa Gospoda karmi 4 jednostki naraz, więc łącznie mają 8 miejsc. Głód może dotknąć więcej niż 8 jednostek, więc zostaw zapas na kolejki.
+[tutorial part2 message 24]
+Dwie Gospody nie wystarczą rosnącej kolonii na zawsze. Dodawaj miejsca do jedzenia, zanim niedobory doprowadzą do głodu.
+[tutorial part2 message 25]
+Zbuduj jeszcze 3 Gospody blisko pszenicy. Głodni robotnicy przestają pracować, a długotrwały głód ich zabija. Przydzielaj dostępnych robotników do budowy, utrzymując dotychczasowe dostawy jedzenia.
+[tutorial part2 message 26]
+Ukończ jeszcze 3 Gospody, aby mieć łącznie 5.
+[tutorial part2 message 27]
+Po budowie nowe Gospody używają normalnego przydziału, zwykle po 1 robotniku. Sprawdź, czy mają dostawców i dość pszenicy.
+[tutorial part2 message 28]
+Tor wyścigowy usprawnił podróże po lądzie. Teraz nauczymy kolonię pływać.
+[tutorial part2 message 29]
+Basen uczy jednostki pływać i wymaga drewna do budowy. Umieść go na dużej polanie na północny wschód od bazy, na północ od kamienia. Zostaw miejsce na ulepszenia i wzrost zasobów oraz przydziel dostępnych robotników do budowy.
+[tutorial part2 message 30]
+Basen uczy jednostki pływać i wymaga drewna do budowy. Umieść go na dużej polanie na północny wschód od bazy, na północ od kamienia. Zostaw miejsce na ulepszenia i wzrost zasobów oraz przydziel dostępnych robotników do budowy.
+[tutorial part2 message 31]
+Basen jest gotowy. Globule mogą teraz wejść i nauczyć się pływać.
+[tutorial part2 message 32]
+Wybierz Basen, aby sprawdzić szkolenie. Podstawowy Basen szkoli 2 globule jednocześnie, tak jak podstawowy Tor wyścigowy.
+[tutorial part2 message 33]
+Wyszkolone globule potrafią teraz pływać. Wkrótce damy im pracę wymagającą przeprawy przez wodę.
+[tutorial part2 message 34]
+Zostało jeszcze wiele nauki. Jeśli potrzebujesz przerwy, zapisz postęp w menu gry i wróć później.
+[tutorial part2 message 35]
+Kolonia ma jedzenie i trening fizyczny. Szkoła nauczy robotników umiejętności potrzebnych do lepszych budynków.
+[tutorial part2 message 36]
+Szkoła poprawia zbieranie zasobów i budowanie. Do jej budowy potrzeba glonów rosnących w wodzie. Pływający robotnicy mogą je zebrać.
+[tutorial part2 message 37]
+Chroń ważne budynki szkoleniowe. Szkoła nie musi stać nad wodą; osłonięte miejsce w głębi lądu lepiej chroni przed atakiem.
+[tutorial part2 message 38]
+Zbuduj Szkołę w osłoniętym miejscu, na przykład za Basenem lub na południowy zachód od Roju, obok Toru wyścigowego. Przydziel dostępnych robotników.
+[tutorial part2 message 39]
+Wybierz budynek, aby zobaczyć przydzielonych robotników. Na komputerze konfigurowalna akcja pokazywania ścieżek jednostek wyświetla też linie do ich celów; aktualny skrót znajdziesz w Ustawieniach, Sterowanie. Poczekaj na ukończenie Szkoły.
+[tutorial part3 message 1]
+Kolonia ma już Gospody, Szpital, Tor wyścigowy, Basen i Szkołę. Czas przygotować obronę.
+[tutorial part3 message 2]
+Nie wytworzyliśmy jeszcze wojowników. Bez nich kolonia jest słabo chroniona przed atakiem.
+[tutorial part3 message 3]
+Wybierz Rój i ustaw proporcję produkcji wojowników na 2. Robotników pozostaw na 1, aby nadal ich tworzyć.
+[tutorial part3 message 4]
+Rój będzie tworzyć około 2 wojowników na każdego robotnika. Przydziel więcej robotników do zaopatrzenia, jeśli chcesz szybszej produkcji.
+[tutorial part3 message 5]
+Pierwszy wojownik jest gotowy i zacznie trening. Przed kontynuacją poczekaj na drugiego.
+[tutorial part3 message 6]
+Wojownicy również korzystają z Toru wyścigowego i Basenu. W Barakach mogą dodatkowo trenować atak.
+[tutorial part3 message 7]
+Baraki poprawiają siłę i szybkość ataku. Siła zwiększa obrażenia na uderzenie, szybkość — częstotliwość uderzeń. Dobrze wyszkoleni wojownicy pokonają znacznie większe grupy niewyszkolonych wrogów.
+[tutorial part3 message 8]
+Zbuduj Baraki blisko drewna potrzebnego do budowy.
+[tutorial part3 message 9]
+Przydziel dostępnych robotników do budowy Baraków. Zachowaj dość ludzi przy zaopatrzeniu w żywność i nie twórz więcej zadań, niż mogą obsadzić.
+[tutorial part3 message 10]
+Baraki są gotowe. Wojownicy mogą teraz trenować w nich atak.
+[tutorial part3 message 11]
+Nasza kolonia może stać się silniejsza dzięki ulepszaniu budynków.
+[tutorial part3 message 12]
+Robotnicy wyszkoleni w Szkole mogą budować ulepszenia. Wybierz odpowiedni budynek i znajdź opcję «Rozbudowa» w jego sterowaniu. Uszkodzone budynki mogą najpierw wymagać użycia opcji «Napraw».
+[tutorial part3 message 13]
+Zdecydujmy, co ulepszyć najpierw. Gospody mają jeszcze wolne miejsca, więc mogą poczekać.
+[tutorial part3 message 14]
+Szpital także ma wolne miejsca. Możemy zająć się Szkołą, Torem wyścigowym, Basenem lub Barakami.
+[tutorial part3 message 15]
+Najpierw ulepsz Tor wyścigowy, aby jednostki nauczyły się poruszać jeszcze szybciej.
+[tutorial part3 message 16]
+Wybierz Tor wyścigowy i opcję «Rozbudowa». Jednostki wewnątrz muszą wyjść przed rozpoczęciem prac, więc zmiana może nie być natychmiastowa.
+[tutorial part3 message 17]
+Przydziel dostępnych robotników do ulepszenia Toru wyścigowego. Tylko robotnicy z wymaganym szkoleniem w Szkole mogą budować obiekt poziomu 2.
+[tutorial part3 message 18]
+Poczekaj na ukończenie ulepszenia Toru. Budynki wyższych poziomów wymagają więcej zasobów i czasu.
+[tutorial part3 message 19]
+Tor wyścigowy poziomu 2 jest gotowy. Zajmuje więcej ziemi, dlatego zostawiliśmy odstęp. Budynku nie da się ulepszyć bez miejsca na rozbudowę.
+[tutorial part3 message 20]
+Teraz ulepsz Baraki i Basen do poziomu 2. Kontynuujemy, gdy oba będą gotowe.
+[tutorial part3 message 21]
+Ulepszone budynki zwykle obsługują więcej globuli lub oferują lepsze szkolenie. Na przykład Gospoda poziomu 2 ma 7 miejsc i karmi szybciej niż podstawowa.
+[tutorial part3 message 22]
+Wróg jest blisko. Przygotujmy się do ataku.
+[tutorial part3 message 23]
+Wieże strzelają do wrogów w zasięgu. Mury pomagają je chronić. Użyjemy obu do obrony wąskiego dojścia do kolonii.
+[tutorial part3 message 24]
+Jeśli jest miejsce, stawiaj wieże parami. Mury mogą osłaniać trzy strony, ale zostaw drogę robotnikom dostarczającym kamień na amunicję.
+[tutorial part3 message 25]
+Spójrz na wschód od Basenu, na północ od innych drzew owocowych. Wąska przeprawa prowadzi na inną wyspę. To dobre miejsce do obrony.
+[tutorial part3 message 26]
+Zaplanuj miejsce na 2 wieże między drzewami a brzegiem. Zostaw dostęp z tyłu dla dostaw kamienia i miejsce po innych stronach na mury. Nie odgradzaj robotnikom drogi.
+[tutorial part3 message 27]
+Zbuduj tam 2 wieże. Przydziel po 2 lub 3 robotników na budowę, zależnie od dostępnej liczby w licznikach interfejsu.
+[tutorial part3 message 28]
+Rozmieść mury wokół trzech zewnętrznych stron wież za pomocą narzędzi budowania. Stronę od kolonii zostaw otwartą dla robotników.
+[tutorial part3 message 29]
+Każdy odcinek muru tworzy zadanie budowy i kosztuje 1 kamień. Jeśli robotnicy nie obsadzą wszystkich zadań naraz, ukończą odcinki kolejno.
+[tutorial part3 message 30]
+Poczekaj na ukończenie obu wież i kilku odcinków muru. Wieże potrzebują też kamiennej amunicji; odległy kamieniołom spowalnia dostawy. Zwiększ docelową liczbę robotników przy wieżach, jeśli masz wolnych.
+[tutorial part4 message 1]
+Kolonia ma żywność, szkolenie i obronę. Budynki można jeszcze rozwinąć do poziomu 3, aby zwiększyć pojemność i poprawić szkolenie. Ulepszaj je w miarę dostępności zasobów i umiejętności robotników.
+[tutorial part4 message 2]
+Poszukaj wrogiej kolonii na północny zachód od bazy. Przesuń tam widok.
+[tutorial part4 message 3]
+Zbadany teren nadal może być ukryty przez mgłę wojny. Aby zobaczyć bieżące działania wroga, potrzebujemy pobliskiego zwiadowcy.
+[tutorial part4 message 4]
+Otwórz Flagi. Flagi i strefy pozwalają kierować jednostkami bez osobnego kontrolowania każdego globula.
+[tutorial part4 message 5]
+Wybierz Flagę eksploracji z symbolem latawca. Flagi można umieszczać na lądzie, wodzie, zasobach i niezbadanym terenie.
+[tutorial part4 message 6]
+Umieść Flagę eksploracji nad przypuszczalną bazą wroga. Przybliżona lokalizacja wystarczy do rozpoczęcia zwiadu. Wyjdź z rozmieszczania prawym kliknięciem lub zakończ je przyciskami dotykowymi.
+[tutorial part4 message 7]
+Obrys wokół flagi pokazuje promień działania. Przydzielony zwiadowca zbada ten obszar. Jeśli nikt nie przybywa, sprawdź liczbę zwiadowców i w razie potrzeby wytwórz nowego w Roju. Naciśnij Spację lub dotknij Ok, gdy zwiadowca dotrze na miejsce.
+[tutorial part4 message 8]
+Wróg ma wielu robotników i zgromadzoną armię. Przygotujmy obronę, zanim zaatakuje.
+[tutorial part4 message 9]
+Otwórz Flagi i wybierz niebieską strefę Straży. Użyj trybu dodawania terenu do strefy, a nie usuwania. Na ekranie dotykowym wybierz Maluj zamiast Wymaż.
+[tutorial part4 message 10]
+Wybierz kształt i rozmiar pędzla. Duży kwadrat przydaje się do zwartego obszaru obrony.
+[tutorial part4 message 11]
+Namaluj strefę Straży tuż za wieżami, gdzie wróg prawdopodobnie podejdzie. Kliknij lub dotknij, aby pomalować punkt, albo przeciągnij, aby objąć większy teren. Na ekranie dotykowym używaj opcji «Przesuwaj», gdy podczas malowania trzeba przemieścić widok.
+[tutorial part4 message 12]
+Dostępni wojownicy wejdą do strefy Straży. Zrób ją dostatecznie dużą dla obrońców, ale małą na tyle, by skupili się przy przeprawie. Teraz czekaj na atak.
+[tutorial part4 message 13]
+Wróg zbliża się do przeprawy!
+[tutorial part4 message 14]
+Jesteśmy atakowani. Obserwuj, jak wyszkoleni wojownicy i wieże bronią pozycji.
+[tutorial part4 message 15]
+Udało ci się przetrwać! Otwórz Flagi i wybierz kolczastą Flagę wojenną. Umieść ją nad wrogim Rojem, aby skierować tam atak.
+[tutorial part4 message 16]
+Wyjdź z rozmieszczania i wybierz Flagę wojenną. Przydziel więcej niż 1 wojownika, a następnie zmniejsz promień, aby skupić atak wokół wrogiego Roju. Poczekaj na przybycie wojowników.
+[tutorial part4 message 17]
+Atak się rozpoczął. Wojownicy muszą minąć wrogie wieże, aby dotrzeć do Roju.
+[tutorial part4 message 18]
+Wojownicy dotarli do bazy wroga. Skupiaj atak na Roju.
+[tutorial part4 message 19]
+Zniszczyłeś wrogi Rój. Gratulacje! Samouczek ukończony: znasz podstawy zaopatrzenia w żywność, przydziałów, szkolenia, ulepszeń, zwiadu i walki.
+[tutorial mission basics]
+Wprowadzenie i podstawy
+[tutorial mission development]
+Budynki i szkoły
+[tutorial mission training]
+Wojownicy, szkolenie i ulepszenia
+[tutorial mission flags]
+Flagi i zakończenie
+[library  Could not restore the previous library: %0]
+ Nie udało się przywrócić poprzedniej biblioteki: %0
+[library  The previous library is retained.]
+ Poprzednia biblioteka zostaje zachowana.
+[library  · Installed]
+ · Zainstalowano
+[library  · Update available]
+ · Dostępna aktualizacja
+[library A different release is installed. Install the selected release to update explicitly.]
+Zainstalowana jest inna wersja. Jeśli chcesz ją zaktualizować, zainstaluj wybraną wersję.
+[library All engines]
+Wszystkie silniki
+[library All generators]
+Wszystkie generatory
+[library Available families]
+Dostępne rodziny
+[library Back]
+Wstecz
+[library Building families]
+Rodziny budynków
+[library Building library]
+Biblioteka budynków
+[library Checking building release]
+Sprawdzanie wersji budynku
+[library Choose an online instance before opening a family link.]
+Przed otwarciem odnośnika rodziny wybierz instancję online.
+[library Compatible with this engine]
+Zgodne z tym silnikiem
+[library Confirm replacement]
+Potwierdź zastąpienie
+[library Create in Building Studio]
+Utwórz w studiu budynków
+[library Downloading generator…]
+Pobieranie generatora…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Każdy krajobraz jest pokazany jako prawdziwa mapa o podanym niżej rozmiarze i liczbie kolonii, które możesz tu zmienić. Użyj go, aby zagrać na pokazanej mapie.
+[library Editor tool: generates terrain for the map editor.]
+Narzędzie edytora: tworzy teren dla edytora map.
+[library Editor tools]
+Narzędzia edytora
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Włącz poniżej zainstalowane rodziny. Wybór jest zapisany w lokalnym profilu; istniejące mapy i zapisy zachowują swoje budynki. Do gry online wygeneruj mapę z tymi rodzinami, opublikuj ją w bibliotece map i wybierz ją w pokoju.
+[library Enter a building family ID or a link to its family page.]
+Podaj identyfikator rodziny budynków lub odnośnik do jej strony.
+[library Family link or ID]
+Odnośnik lub ID rodziny
+[library Family links must be at most 1024 characters.]
+Odnośniki rodzin mogą mieć najwyżej 1024 znaki.
+[library Family removed.]
+Usunięto rodzinę.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Rodzina niedostępna. Prywatne rodziny wymagają zalogowania przez Online kontem z odpowiednim dostępem.
+[library Generator file hash mismatch]
+Niezgodny skrót pliku generatora
+[library Generator installed. Future selections use this release.]
+Zainstalowano generator. Przyszłe wybory użyją tej wersji.
+[library Generator package identity mismatch]
+Niezgodna tożsamość pakietu generatora
+[library Generators]
+Generatory
+[library Install compatible release]
+Zainstaluj zgodną wersję
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Instaluj pojedyncze budynki lub rodziny ulepszeń obok standardowych budynków. Wybór dotyczy tylko nowo generowanych map.
+[library Install selected release]
+Zainstaluj wybraną wersję
+[library Installed]
+Zainstalowano
+[library Installed families]
+Zainstalowane rodziny
+[library Installed. Enable the family below for new maps.]
+Zainstalowano. Włącz poniżej rodzinę dla nowych map.
+[library Invalid building family ID.]
+Nieprawidłowy identyfikator rodziny budynków.
+[library Invalid building library response]
+Nieprawidłowa odpowiedź biblioteki budynków
+[library Invalid library cursor]
+Nieprawidłowy kursor biblioteki
+[library Invalid release identity]
+Nieprawidłowa tożsamość wersji
+[library Load more]
+Wczytaj więcej
+[library Load more families]
+Wczytaj więcej rodzin
+[library Loading building families]
+Wczytywanie rodzin budynków
+[library Loading…]
+Wczytywanie…
+[library Map generators]
+Generatory map
+[library Maps]
+Mapy
+[library Most downloaded]
+Najczęściej pobierane
+[library Most liked]
+Najbardziej lubiane
+[library My generators]
+Moje generatory
+[library Newest]
+Najnowsze
+[library No building families installed.]
+Nie zainstalowano rodzin budynków.
+[library No public building families yet]
+Nie ma jeszcze publicznych rodzin budynków
+[library No validated release for this game version.]
+Brak zweryfikowanego wydania dla tej wersji gry.
+[library Online server changed during download]
+Serwer online zmienił się podczas pobierania
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Otwórz niewymienioną rodzinę za pomocą odnośnika lub ID. Dla prywatnych rodzin najpierw zaloguj się przez Online.
+[library Open family]
+Otwórz rodzinę
+[library Opened family. Install its compatible release below.]
+Otwarto rodzinę. Zainstaluj poniżej zgodną wersję.
+[library Opening building family]
+Otwieranie rodziny budynków
+[library Playable]
+Grywalne
+[library Playable generator]
+Grywalny generator
+[library Privacy policy]
+Polityka prywatności
+[library Public library]
+Biblioteka publiczna
+[library Recently updated]
+Ostatnio aktualizowane
+[library Refresh library]
+Odśwież bibliotekę
+[library Release identity changed during installation]
+Tożsamość wersji zmieniła się podczas instalacji
+[library Reroll]
+Losuj ponownie
+[library Reroll seed]
+Losuj ziarno
+[library Saving generator library…]
+Zapisywanie biblioteki generatorów…
+[library Search]
+Szukaj
+[library Seed]
+Ziarno
+[library Selection saved for new maps.]
+Zapisano wybór dla nowych map.
+[library Storage failed.]
+Zapis nie powiódł się.
+[library Storage persistence unavailable]
+Trwałe przechowywanie niedostępne
+[library Tags]
+Tagi
+[library Technical checks passed for this engine. Balance is not certified.]
+Zaliczono kontrole techniczne dla tego silnika. Balans gry nie jest certyfikowany.
+[library The server returned a different family.]
+Serwer zwrócił inną rodzinę.
+[library This link is from another instance. Switch to that instance in Online first.]
+Ten odnośnik pochodzi z innej instancji. Najpierw przełącz się na nią w Online.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Pakiet o tym ID jest już zainstalowany. Potwierdź zastąpienie, aby użyć wybranej wersji.
+[library This release has no passing checks for this engine.]
+To wydanie nie ma zaliczonych kontroli dla tego silnika.
+[library This release is installed.]
+Ta wersja jest zainstalowana.
+[library Update installed family]
+Aktualizuj zainstalowaną rodzinę
+[library Use in a room]
+Użyj w pokoju
+[library By %0]
+Autor: %0
+[library Installed release %0]
+Zainstalowana wersja %0
+[library Release %0]
+Wersja %0
+[library Remove %0]
+Usuń %0
+[library Seed: %0]
+Ziarno: %0
+[library %0 · revision %1]
+%0 · rewizja %1
+[library Fit]
+Dopasuj
+[library GL only]
+Tylko GL

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "ui/TutorialText.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -96,6 +97,7 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		co_return false;
 	}
+	legacyTutorialScript = Glob2UI::isTutorialSource(game.sgslScript.sourceCode);
 	rebuildBuildingChoices();
 	defaultGameSaveName = game.mapHeader.getMapName();
 	if (game.mapHeader.getIsSavedGame())

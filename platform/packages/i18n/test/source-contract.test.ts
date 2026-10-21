@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { sourceErrors } from '../scripts/source-contract.ts';
+import { sourceErrors, browserSourceErrors } from '../scripts/source-contract.ts';
 
 function check(source: string) {
   const root = mkdtempSync(join(tmpdir(), 'glob2-source-contract-'));
@@ -51,5 +51,55 @@ describe('localized source contract', () => {
         `const x = <input placeholder={t('Sign in')} value={code} title={name} />; const y = <pre>{'terrain:natural,feature:lakes'}</pre>;`,
       ),
     ).toEqual([]);
+  });
+});
+
+describe('browser launcher catalog contract', () => {
+  it('checks HTML labels, escaped attributes and conditional message calls', () => {
+    const html = `<!-- <div data-i18n="Comment only"></div> -->
+<p data-i18n="Ready &amp; waiting"></p>
+<button data-i18n-aria='Close'></button>
+<script>
+// browserText('Comment only');
+const example = "browserText('Quoted example')";
+const template = '<p data-i18n="Quoted attribute"></p>';
+browserText(loaded ? 'Ready' : 'Loading');
+browserText('Missing');
+</script>`;
+    const errors = browserSourceErrors(
+      {
+        'Ready & waiting': 'Ready & waiting',
+        Close: 'Close',
+        Ready: 'Ready',
+        Loading: 'Loading',
+      },
+      html,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('missing browser catalog key: Missing');
+  });
+  it('ignores scripts inside HTML comments while preserving active source locations', () => {
+    const html = `<!--
+<script>browserText('Hidden');</script>
+-->
+<script>browserText('Visible');</script>`;
+    expect(browserSourceErrors({}, html)).toEqual([
+      'browser/shell.html:4: missing browser catalog key: Visible',
+    ]);
+  });
+  it('retains calls between HTML-comment markers inside JavaScript strings', () => {
+    const html = `<script>
+const start = '<!--';
+browserText('Visible');
+const end = '-->';
+</script>`;
+    expect(browserSourceErrors({}, html)).toEqual([
+      'browser/shell.html:3: missing browser catalog key: Visible',
+    ]);
+  });
+  it('detects a missing accessibility binding with a source location', () => {
+    expect(browserSourceErrors({}, `<div>\n<input data-i18n-aria="Language"></div>`)).toEqual([
+      'browser/shell.html:2: missing browser catalog key: Language',
+    ]);
   });
 });

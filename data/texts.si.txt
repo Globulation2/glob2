@@ -6011,96 +6011,622 @@ Pravila scenarija so odločila o izidu.
 [outcome reason probability]
 Prag verjetnosti zmage je dosežen.
 [Discord community]
-
+Skupnost Discord
 [Globulation 2 Discord]
-
+Discord za Globulation 2
 [discord community intro]
-
+Poiščite nasprotnike, prosite za pomoč in delite svoje zemljevide s skupnostjo Globulation 2.
 [discord opens externally]
-
+Pridružite se našemu strežniku Discord. Odpre se Discord ali vaš brskalnik.
 [Join Discord]
-
+Pridruži se Discordu
 [Copy link]
-
+Kopiraj povezavo
 [discord opened]
-
+Discord je odprt. V igro se lahko vrnete kadar koli.
 [discord open failed]
-
+Discorda ni bilo mogoče odpreti. Kopirajte povezavo do povabila in jo odprite v brskalniku.
 [discord link copied]
-
+Povezava do povabila je kopirana.
 [settings CPU automatic]
-
+Samodejni CPU
 [settings Scalar]
-
+Skalarni
 [settings Unavailable]
-
+Ni na voljo
 [settings Initializing]
-
+Inicializacija
 [settings Gradient backend]
-
+Zaledje za gradiente
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Uveljavi se ob naslednji sinhronizacijski točki simulacije. Nepodprta opravila uporabljajo samodejni način CPU; izrisovanje je neodvisno.
 [settings Gradient algorithm]
-
+Algoritem gradientov
 [settings All choices compute the same exact field.]
-
+Vse možnosti izračunajo popolnoma enako polje.
 [settings Bucket propagation]
-
+Širjenje po skupinah
 [settings Verify gradient results]
-
+Preveri rezultate gradientov
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Primerja rezultate GPU z rezultati skalarnih izračunov na CPU, preden so na voljo. Zahteva dodatne izračune in ob neujemanju ustavi igro.
 [settings Gradient computation]
-
+Izračun gradientov
 [settings CPU fallback]
-
+Prehod na CPU
 [settings GPU fields]
-
+Polja GPU
 [settings CPU fallbacks]
-
+Prehodi na CPU
 [settings MCP server]
-
+Strežnik MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Vklop strežnika MCP lokalnim odjemalcem omogoči opazovanje in upravljanje igre.
 [settings Enable MCP server]
-
+Vklopi strežnik MCP
 [settings Port]
-
+Vrata
 [settings Current controller: %0]
-
+Trenutni upravljavec: %0
 [settings Copy endpoint]
-
+Kopiraj naslov dostopa
 [settings Retry listener]
-
+Ponovi poslušanje
 [settings Revoke control]
-
+Prekliči nadzor
 [settings MCP server unavailable in this application]
-
+Strežnik MCP v tej aplikaciji ni na voljo
 [settings Disabled]
-
+Onemogočeno
 [settings Running]
-
+Se izvaja
 [settings Error: %0]
-
+Napaka: %0
 [settings None]
-
+Brez
 [settings Starting]
-
+Zagon
 [Which hand holds your phone?]
-
+Leva ali desna roka?
 [hand preference explanation]
-
+Telefon držite naravno. Dotaknite se roke, s katero igrate.
 [hand silhouettes description]
-
+Obris telefona z levo in desno roko zgoraj. Pritisnite enega od poševno obrobljenih gumbov za palec, da izberete stran.
 [hand preference change later]
-
+Stran lahko pozneje spremenite v Nastavitvah.
 [hand preference save failed]
-
+Izbire ni bilo mogoče shraniti. Poskusite znova.
 [Left hand]
-
+Leva roka
 [Right hand]
-
+Desna roka
 [discord copy failed]
-
+Povezave ni bilo mogoče kopirati. Izberite zgornje povabilo in ga kopirajte ročno.
 [Destroy this building?]
 Uniči to stavbo?
+[stat ground movement]
+Gibanje po tleh
+[stat ground movement about]
+Žive talne enote po približnem razmerju hitrosti. »Plavanje 2x« pomeni plavanje z dvakratno hitrostjo teka. Leteče in nepremične enote so izključene.
+[stat view by movement]
+Po gibanju
+[stat band land only]
+Samo kopno
+[stat band swim twice run]
+Plavanje 2x
+[stat band swim faster run]
+Plavanje 1,4x
+[stat band swim equals run]
+Enako
+[stat band run faster swim]
+Tek 1,3x
+[stat band run twice swim]
+Tek 2x
+[stat band run triple swim]
+Tek 3x
+[stat band water only]
+Samo voda
+[settings Browse shared generators]
+Prebrskaj deljene generatorje
+[settings Apply artwork on the next game or editor load.]
+Uveljavi grafiko ob naslednjem nalaganju igre ali urejevalnika.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Zahteva izrisovalnik s filtriranjem tekstur. Shranjena izbira se ohrani.
+[settings Automatically show the torus overview while moving around the map.]
+Samodejno prikaži toroidni pregled med premikanjem po zemljevidu.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Zahteva izrisovalnik s podporo torusu. Shranjena izbira se ohrani.
+[settings Move and animate units between game ticks.]
+Premikaj in animiraj enote med koraki igre.
+[settings Renderer unavailable]
+Izrisovalnik ni na voljo
+[settings Apply at the next completed frame. Your game stays running.]
+Uveljavi po naslednji dokončani sličici. Igra se nadaljuje.
+[settings Active renderer: %0]
+Aktivni izrisovalnik: %0
+[settings Changing renderer…]
+Menjava izrisovalnika…
+[settings Menu scroll wheel enabled]
+Drsenje s koleščkom v menijih je vklopljeno
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Upravlja drsenje s koleščkom v menijih. Na zemljevidih igre in urejevalnika kolešček vedno spreminja povečavo.
+[settings Gesture scrolling]
+Drsenje s kretnjami
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Drsenje z dotikom in kretnjami Mac. 0 izklopi učinek; 50 je privzeta vrednost za dotik.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Kako daleč se seznami in plošče premikajo po hitrem potegu s prstom. Kretnje Mac uporabljajo vztrajnost sistema; ničla izklopi drsenje po potegu.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Koliko se seznami in plošče raztegnejo čez robove, preden odskočijo nazaj. Kretnje Mac uporabljajo blažji razteg.
+[hive stopping]
+Ustavljanje…
+[hive stopped]
+Ustavljeno
+[hive stop failed]
+Ustavitev ni uspela; znova uporabite bližnjico za ustavitev
+[hive updating]
+Posodabljanje…
+[hive requested]
+Zahtevano
+[hive update failed]
+Posodobitev ni uspela; poskusite znova
+[hive give order]
+Izdaj ukaz
+[hive less]
+Manj
+[hive reports and details]
+Poročila / podrobnosti
+[hive needs fresh order]
+Potreben je nov ukaz
+[hive active]
+Aktivno
+[hive resume]
+Nadaljuj
+[recordings]
+Posnetki
+[recording delete confirm]
+Izbrišem posnetek?
+[recording delete warning]
+Posnetek in njegovi metapodatki bodo odstranjeni.
+[recording delete]
+Izbriši
+[recording working]
+Obdelava…
+[recording none]
+Posnetkov še ni.
+[recording interrupted]
+Prekinjen posnetek
+[recording recover]
+Obnovi
+[recording export video]
+Izvozi video
+[recording export metadata]
+Izvozi metapodatke
+[recording export events]
+Izvozi dogodke
+[recording export failed]
+Posnetka ni bilo mogoče izvoziti.
+[recording delete action]
+Izbriši posnetek
+[recording refresh]
+Osveži
+[tutorial part1 message 1]
+Dobrodošli v Globulation 2! Ta vadnica vas v štirih misijah nauči upravljati kolonijo. Napredek lahko shranite v meniju igre in ga pozneje naložite iz glavnega menija. Za nadaljevanje pritisnite preslednico ali na zaslonu na dotik Potrdi. Nekatera sporočila nato izginejo; znova jih preberete v zgodovini sporočil.
+[tutorial part1 message 2]
+Začnete s Porodnišnico in enim delavcem. Poglejmo, kako sodelujeta.
+[tutorial part1 message 3]
+Delavec žanje pšenico in jo nosi v Porodnišnico. Ta jo uporablja za nove enote, zato je ključna za kolonijo.
+[tutorial part1 message 4]
+Svojo globulo, premikajočo se enoto, izberite z levim klikom ali dotikom.
+[tutorial part1 message 5]
+Podatki enote kažejo, da se zaloga hrane sčasoma zmanjšuje. Globula postaja lačna. Ko so vrstice hrane vidne, modra vrstica pod enoto kaže preostalo hrano.
+[tutorial part1 message 6]
+Globule jedo v Restavracijah. Izbor počistite z desnim klikom ali dotikom praznih tal na zaslonu na dotik.
+[tutorial part1 message 7]
+Odprite gradbene ukaze, izberite Restavracijo in jo postavite blizu pšenice. Če je ne najdete, sledite delavčevi poti. Na dotik uporabite Gradnja in potrdite veljavno mesto. Nato zapustite postavljanje z desnim klikom ali ukazom Prekliči.
+[tutorial part1 message 8]
+Dobro! Gradbišče Restavracije je postavljeno.
+[tutorial part1 message 9]
+Delavec iz Porodnišnice lahko zdaj zgradi Restavracijo. Z bližnjih dreves nabira les in ga nosi na gradbišče. Počakajte na dokončanje.
+[tutorial part1 message 10]
+Končana Restavracija potrebuje pšenico. Dodeljeni delavec jo bo zbiral, podobno kot oskrbuje Porodnišnico.
+[tutorial part1 message 11]
+Rumena vrstica virov Restavracije raste, ko prihaja pšenica. Kaže njeno zalogo.
+[tutorial part1 message 12]
+Zdaj se naučimo dodeljevanja dela.
+[tutorial part1 message 13]
+En delavec oskrbuje Porodnišnico, drugi Restavracijo. Oba lahko prekineta delo in gresta jest. To je normalno.
+[tutorial part1 message 14]
+Izberite Porodnišnico in poiščite dodeljevanje delavcev. Na računalniku je označeno Delajo; na dotik uporabite dodeljene delavce in ciljno vrednost. Cilj pomeni želeno število delavcev pri stavbi.
+[tutorial part1 message 15]
+Cilj delavcev Porodnišnice nastavite na 0. Nato izberite Restavracijo in tudi tam nastavite 0.
+[tutorial part1 message 16]
+Delavci zdaj mirujejo, a še vedno potrebujejo hrano. Restavraciji brez dodeljenih delavcev bo sčasoma zmanjkalo pšenice.
+[tutorial part1 message 17]
+Globula brez hrane izgublja zdravje in lahko umre. Bolnišnica zdravi poškodovane globule, vendar morate oskrbovati tudi Restavracije.
+[tutorial part1 message 18]
+Z gradbenimi ukazi zgradite Bolnišnico. Ne potrebuje pšenice, zato jo postavite blizu lesa ali na osrednje mesto ob Porodnišnici.
+[tutorial part1 message 19]
+Izberite gradbišče Bolnišnice in nastavite želeno število delavcev na 2. Dva jo lahko dokončata hitreje.
+[tutorial part1 message 20]
+Bolnišnica je pripravljena. Poškodovane globule jo lahko obiščejo za obnovo zdravja.
+[tutorial part1 message 21]
+Črna območja so neraziskana. Enote med premikanjem razkrivajo bližnja tla. Delavci sledijo delu, zato niso priročni za izvidovanje. Temu so namenjeni raziskovalci.
+[tutorial part1 message 22]
+Izberite Porodnišnico in poiščite proizvodna razmerja delavcev, raziskovalcev in vojakov. Razmerje raziskovalcev povečajte na 1.
+[tutorial part1 message 23]
+Ko sta obe razmerji 1, Porodnišnica sčasoma proizvaja enako število delavcev in raziskovalcev. Delavce nastavite na 0, da za zdaj proizvaja le raziskovalce.
+[tutorial part1 message 24]
+Cilj dodeljenih delavcev Porodnišnice vrnite na 1, da ji bo delavec nosil pšenico.
+[tutorial part1 message 25]
+Izberite Restavracijo in tudi njen cilj nastavite na 1. Rastoča kolonija potrebuje stalno oskrbo s hrano.
+[tutorial part1 message 26]
+Počakajte, da Porodnišnica ustvari raziskovalca.
+[tutorial part1 message 27]
+Raziskovalec leti okoli kolonije in razkriva tla. Pred nadaljevanjem počakajte na drugega raziskovalca.
+[tutorial part1 message 28]
+Ponovno izberite Porodnišnico. Razmerje raziskovalcev nastavite na 0, delavcev na 1, da spet proizvaja delavce.
+[tutorial part2 message 1]
+Vzhodno od baze je kamen. Zapomnite si mesto; pozneje ga boste potrebovali.
+[tutorial part2 message 2]
+Drevesa južno od kamna so pomarančevci. Izberite jih za podatke o virih. K sadju se vrnemo pozneje; zdaj se posvetite Porodnišnici.
+[tutorial part2 message 3]
+Porodnišnico nastavite samo za delavce: razmerje delavcev 1, raziskovalcev in vojakov 0.
+[tutorial part2 message 4]
+Pospešimo rast kolonije. Izberite Porodnišnico in nastavite cilj 6 delavcev. Morda jih še nimate šest; novi delavci bodo zapolnili prosta dela, ko bodo na voljo.
+[tutorial part2 message 5]
+Naslednje naloge začnemo pri 8 delavcih. Med rastjo prebivalstva oskrbujte Porodnišnico in Restavracijo.
+[tutorial part2 message 6]
+Več delavcev zdaj oskrbuje Porodnišnico. Več pšenice omogoča hitrejše ustvarjanje enot.
+[tutorial part2 message 7]
+Nov delavec stane 5 pšenice. Nošenje z oddaljenega polja traja, zato Porodnišnica pogosto potrebuje več dobaviteljev kot Restavracija. Stavbe, odvisne od hrane, po možnosti postavite blizu pšenice.
+[tutorial part2 message 8]
+Imate vsaj 8 delavcev. Izberite Porodnišnico in zmanjšajte cilj na 1, da med gradnjo upočasnite rast prebivalstva.
+[tutorial part2 message 9]
+Kolonija potrebuje več mest za hranjenje. Severno od prve zgradite drugo Restavracijo.
+[tutorial part2 message 10]
+Proste delavce dodelite novemu gradbišču. Potrebuje le 3 lesa, zato več kot 3 gradbeniki ne pomagajo veliko.
+[tutorial part2 message 11]
+Končana Restavracija se vrne na obratovalni cilj delavcev, navadno 1. Gradnja in vsakodnevna oskrba imata ločena cilja.
+[tutorial part2 message 12]
+Delavci se lahko naučijo hitrejšega gibanja. To uči Tekaška steza.
+[tutorial part2 message 13]
+Odprite gradbene ukaze in poiščite Tekaško stezo. Na računalniku pridržite kazalec nad ikono za opis in ceno. Na dotik jo izberite v Gradnji za pripravo postavitve. Še je ne postavite.
+[tutorial part2 message 14]
+Tekaška steza potrebuje veliko lesa in malo kamna. Izberite osrednje, lahko dostopno mesto.
+[tutorial part2 message 15]
+Zgradite Tekaško stezo, morda južno od Porodnišnice. Okoli pustite prostor: vadbene stavbe se ob nadgradnji razširijo.
+[tutorial part2 message 16]
+Na gradbišču Tekaške steze nastavite želeno število delavcev med 5 in 7. Skupaj potrebuje 7 enot gradbenega materiala.
+[tutorial part2 message 17]
+Končana Tekaška steza usposablja obiskovalce brez stalne dobave materialov ali pšenice.
+[tutorial part2 message 18]
+Globule vstopajo na Tekaško stezo za vadbo. Po njej bodo hitreje tekle.
+[tutorial part2 message 19]
+Izberite Tekaško stezo za pregled vadbe. Kazalniki kažejo, koliko enotam v notranjosti še manjka do konca.
+[tutorial part2 message 20]
+Usposobljeni delavci potujejo in dostavljajo hitreje. Med rastjo spremljajte zaloge hrane: hitra dostava pomaga le, če je oskrbovanih dovolj Restavracij.
+[tutorial part2 message 21]
+V vmesniku poiščite števec delavcev. Skupno število kaže prebivalstvo; razpoložljivi delavci pomagajo opaziti proste delavce ali nezasedena dela. Uporabite jih brez več dodelitev, kot jih kolonija zmore.
+[tutorial part2 message 22]
+Vmesnik kaže tudi raziskovalce in vojake. Števila preverjajte pri načrtovanju proizvodnje in dodeljevanju enot zastavam.
+[tutorial part2 message 23]
+Imate 2 Restavraciji. Vsaka osnovna hrani 4 enote hkrati, skupaj torej 8 mest. Lačnih je lahko več kot 8 enot, zato pustite zmogljivost za čakalne vrste.
+[tutorial part2 message 24]
+Dve Restavraciji ne bosta vedno zadoščali rastoči koloniji. Dodajte mesta, preden pomanjkanje povzroči stradanje.
+[tutorial part2 message 25]
+Zgradite še 3 Restavracije ob pšenici. Lačni delavci nehajo delati, dolgotrajno stradanje jih ubije. Razpoložljive delavce pošljite gradit, a ohranite obstoječo oskrbo.
+[tutorial part2 message 26]
+Dokončajte še 3 Restavracije za skupno 5.
+[tutorial part2 message 27]
+Nove Restavracije po gradnji uporabljajo obratovalne cilje, navadno po 1 delavca. Preverite dobavitelje in zalogo pšenice.
+[tutorial part2 message 28]
+Tekaška steza je izboljšala potovanje po kopnem. Zdaj naučimo kolonijo plavati.
+[tutorial part2 message 29]
+Bazen uči plavanje in za gradnjo potrebuje les. Postavite ga na veliko jaso severovzhodno od baze, severno od kamna. Pustite prostor za nadgradnje in rast virov ter dodelite razpoložljive delavce.
+[tutorial part2 message 30]
+Bazen uči plavanje in za gradnjo potrebuje les. Postavite ga na veliko jaso severovzhodno od baze, severno od kamna. Pustite prostor za nadgradnje in rast virov ter dodelite razpoložljive delavce.
+[tutorial part2 message 31]
+Bazen je pripravljen. Globule lahko vstopijo in se naučijo plavati.
+[tutorial part2 message 32]
+Izberite Bazen za pregled vadbe. Osnovni Bazen usposablja 2 globuli hkrati, tako kot osnovna Tekaška steza.
+[tutorial part2 message 33]
+Usposobljene globule zdaj znajo plavati. Kmalu jim damo delo, za katero morajo prečkati vodo.
+[tutorial part2 message 34]
+Še več se bomo naučili. Če potrebujete odmor, shranite v meniju igre in se vrnite pozneje.
+[tutorial part2 message 35]
+Kolonija ima hrano in telesno vadbo. Šola bo delavce naučila veščin za boljše stavbe.
+[tutorial part2 message 36]
+Šola izboljšuje žetev in gradnjo. Za gradnjo potrebuje alge, ki rastejo v vodi. Plavajoči delavci jih lahko naberejo.
+[tutorial part2 message 37]
+Varujte pomembne vadbene stavbe. Šoli ni treba stati ob vodi; zaščiteno mesto v notranjosti je lahko varnejše pred napadi.
+[tutorial part2 message 38]
+Zgradite Šolo na varnem mestu, denimo za Bazenom ali jugozahodno od Porodnišnice ob Tekaški stezi. Dodelite razpoložljive delavce.
+[tutorial part2 message 39]
+Izberite stavbo za prikaz dodeljenih delavcev. Na računalniku nastavljivo dejanje prikaza poti enot kaže tudi črte do ciljev; trenutno bližnjico poiščite v Nastavitvah, Upravljanje. Počakajte na Šolo.
+[tutorial part3 message 1]
+Kolonija ima Restavracije, Bolnišnico, Tekaško stezo, Bazen in Šolo. Čas je za pripravo obrambe.
+[tutorial part3 message 2]
+Bojevnikov še nismo ustvarili. Brez njih je kolonija slabo zaščitena pred napadom.
+[tutorial part3 message 3]
+Izberite Porodnišnico in nastavite razmerje vojakov na 2. Delavce pustite na 1, da jih še naprej ustvarja.
+[tutorial part3 message 4]
+Porodnišnica bo ustvarila približno 2 vojaka na delavca. Za hitrejšo proizvodnjo dodelite več delavcev oskrbi.
+[tutorial part3 message 5]
+Prvi vojak je pripravljen in bo začel vaditi. Pred nadaljevanjem počakajte na drugega.
+[tutorial part3 message 6]
+Bojevniki uporabljajo Tekaško stezo in Bazen. V Vojašnici lahko vadijo tudi napad.
+[tutorial part3 message 7]
+Vojašnica izboljša moč in hitrost napada. Moč poveča škodo posameznega udarca, hitrost pogostost napadov. Dobro usposobljeni vojaki premagajo precej večje skupine neizurjenih sovražnikov.
+[tutorial part3 message 8]
+Zgradite Vojašnico blizu lesa, ki ga potrebuje za gradnjo.
+[tutorial part3 message 9]
+Razpoložljive delavce dodelite gradbišču Vojašnice. Dovolj jih pustite pri hrani in ne ustvarite več del, kot jih lahko zasedejo.
+[tutorial part3 message 10]
+Vojašnica je pripravljena. Bojevniki lahko tam vadijo napad.
+[tutorial part3 message 11]
+Kolonija se lahko okrepi z nadgrajevanjem stavb.
+[tutorial part3 message 12]
+Delavci, šolani v Šoli, lahko gradijo nadgradnje. Izberite ustrezno stavbo in poiščite Nadgradi. Poškodovane stavbe lahko najprej potrebujejo Popravi.
+[tutorial part3 message 13]
+Odločimo se, kaj nadgradimo najprej. Restavracije imajo še prosta mesta in lahko počakajo.
+[tutorial part3 message 14]
+Tudi Bolnišnica ima prostor. Osredotočimo se lahko na Šolo, Tekaško stezo, Bazen ali Vojašnico.
+[tutorial part3 message 15]
+Najprej nadgradite Tekaško stezo, da se bodo enote naučile še hitrejšega gibanja.
+[tutorial part3 message 16]
+Izberite Tekaško stezo in Nadgradi. Enote v notranjosti morajo pred gradnjo oditi, zato sprememba morda ne bo takojšnja.
+[tutorial part3 message 17]
+Razpoložljive delavce dodelite nadgradnji Tekaške steze. Na gradbišču 2. stopnje lahko gradijo le delavci z zahtevano šolsko izobrazbo.
+[tutorial part3 message 18]
+Počakajte na nadgradnjo Tekaške steze. Stavbe višjih stopenj zahtevajo več virov in časa.
+[tutorial part3 message 19]
+Tekaška steza 2. stopnje je pripravljena. Zavzame več tal, zato smo pustili razmik. Brez prostora za širitev se stavba ne more nadgraditi.
+[tutorial part3 message 20]
+Zdaj nadgradite Vojašnico in Bazen na 2. stopnjo. Nadaljujemo, ko sta oba pripravljena.
+[tutorial part3 message 21]
+Nadgrajene stavbe navadno služijo več globulam ali nudijo boljšo vadbo. Restavracija 2. stopnje ima na primer 7 mest in hrani hitreje kot osnovna.
+[tutorial part3 message 22]
+Sovražnik je blizu. Pripravimo se na napad.
+[tutorial part3 message 23]
+Stolpi streljajo na sovražnike v dosegu. Zidovi jih varujejo. Z obojim bomo branili ozek dostop do kolonije.
+[tutorial part3 message 24]
+Če je prostor, gradite Stolpe v parih. Zidovi lahko varujejo tri strani, a pustite pot za delavce, ki nosijo kamen za strelivo.
+[tutorial part3 message 25]
+Poglejte vzhodno od Bazena, severno od drugih sadnih dreves. Ozek prehod vodi na drug otok. To je dobro obrambno mesto.
+[tutorial part3 message 26]
+Načrtujte prostor za 2 Stolpa med drevesi in obalo. Zadaj pustite dostop za kamen, ob drugih straneh prostor za Zidove. Ne zaprite delavcev zunaj.
+[tutorial part3 message 27]
+Tam zgradite 2 Stolpa. Vsakemu gradbišču dodelite 2 ali 3 delavce glede na razpoložljivost v števcih vmesnika.
+[tutorial part3 message 28]
+Z gradbenimi ukazi postavite Zidove okoli treh zunanjih strani Stolpov. Stran proti koloniji pustite odprto za delavce.
+[tutorial part3 message 29]
+Vsak del Zidu ustvari gradbeno delo in potrebuje 1 kamen. Če ni dovolj delavcev za vsa dela hkrati, jih lahko končajo zaporedoma.
+[tutorial part3 message 30]
+Počakajte, da sta končana oba Stolpa in več delov Zidu. Stolpa potrebujeta tudi kamnito strelivo; oddaljen kamnolom upočasni dostavo. Če imate proste delavce, povečajte želeno število delavcev pri Stolpih.
+[tutorial part4 message 1]
+Kolonija ima hrano, vadbo in obrambo. Stavbe lahko napredujejo še na 3. stopnjo za boljšo vadbo in večjo zmogljivost. Nadgrajujte jih, ko to dopuščajo viri in znanje delavcev.
+[tutorial part4 message 2]
+Poiščite sovražno kolonijo severozahodno od baze. Premaknite pogled tja.
+[tutorial part4 message 3]
+Raziskana tla lahko še vedno skriva vojna megla. Za pogled na trenutno sovražno dejavnost potrebujemo bližnjega raziskovalca.
+[tutorial part4 message 4]
+Odprite Zastave. Zastave in območja usmerjajo enote brez ločenega nadzora vsake globule.
+[tutorial part4 message 5]
+Izberite Raziskovalno zastavo z znakom papirnatega zmaja. Zastave lahko postavite na kopno, vodo, vire in neraziskana tla.
+[tutorial part4 message 6]
+Postavite Raziskovalno zastavo nad domnevno sovražno bazo. Za začetek zadostuje približen položaj. Zapustite postavljanje z desnim klikom ali ga končajte z upravljanjem na dotik.
+[tutorial part4 message 7]
+Obris zastave kaže delovni polmer. Dodeljeni raziskovalec bo pregledal območje. Če ne pride, preverite število raziskovalcev in po potrebi ustvarite novega v Porodnišnici. Ko prispe, pritisnite preslednico ali Potrdi.
+[tutorial part4 message 8]
+Sovražnik ima veliko delavcev in zbrano vojsko. Pripravimo obrambo pred napadom.
+[tutorial part4 message 9]
+Odprite Zastave in izberite modro Stražarsko območje. Uporabite dodajanje tal v območje, ne odstranjevanja. Na dotik izberite Riši namesto Briši.
+[tutorial part4 message 10]
+Izberite obliko in velikost čopiča. Velik kvadrat je primeren za strnjeno obrambno območje.
+[tutorial part4 message 11]
+Narišite Stražarsko območje tik za Stolpi, kjer pričakujete sovražnika. Klik ali dotik pobarva točko, vlečenje več tal. Na dotik uporabite Premikaj za premikanje pogleda med risanjem.
+[tutorial part4 message 12]
+Razpoložljivi vojaki bodo prišli v Stražarsko območje. Naj bo dovolj veliko za branilce, a dovolj majhno, da ostanejo skupaj pri prehodu. Zdaj počakajte na napad.
+[tutorial part4 message 13]
+Sovražnik se približuje prehodu!
+[tutorial part4 message 14]
+Napadeni smo. Opazujte, kako izurjeni vojaki in Stolpi branijo položaj.
+[tutorial part4 message 15]
+Preživeli ste! Odprite Zastave in izberite koničasto Vojaško zastavo. Postavite jo nad sovražno Porodnišnico, da usmerite napad tja.
+[tutorial part4 message 16]
+Zapustite postavljanje in izberite Vojaško zastavo. Dodelite več kot 1 vojaka ter zmanjšajte polmer, da napad osredotočite okoli sovražne Porodnišnice. Počakajte na vojake.
+[tutorial part4 message 17]
+Napad se je začel. Bojevniki morajo mimo sovražnih Stolpov, da dosežejo Porodnišnico.
+[tutorial part4 message 18]
+Bojevniki so dosegli sovražno bazo. Napad osredotočajte na Porodnišnico.
+[tutorial part4 message 19]
+Uničili ste sovražno Porodnišnico. Čestitamo! Končali ste vadnico in spoznali osnove oskrbe s hrano, dodeljevanja, vadbe, nadgradenj, raziskovanja in boja.
+[tutorial mission basics]
+Uvod in osnove
+[tutorial mission development]
+Stavbe in šole
+[tutorial mission training]
+Bojevniki, vadba in nadgradnje
+[tutorial mission flags]
+Zastave in zaključek
+[library  Could not restore the previous library: %0]
+ Prejšnje knjižnice ni bilo mogoče obnoviti: %0
+[library  The previous library is retained.]
+ Prejšnja knjižnica se ohrani.
+[library  · Installed]
+ · Nameščeno
+[library  · Update available]
+ · Posodobitev je na voljo
+[library A different release is installed. Install the selected release to update explicitly.]
+Nameščena je druga izdaja. Če jo želite posodobiti, namestite izbrano izdajo.
+[library All engines]
+Vsi pogoni
+[library All generators]
+Vsi generatorji
+[library Available families]
+Razpoložljive družine
+[library Back]
+Nazaj
+[library Building families]
+Družine stavb
+[library Building library]
+Knjižnica stavb
+[library Checking building release]
+Preverjanje izdaje stavbe
+[library Choose an online instance before opening a family link.]
+Pred odpiranjem povezave družine izberite spletno instanco.
+[library Compatible with this engine]
+Združljivo s tem pogonom
+[library Confirm replacement]
+Potrdi zamenjavo
+[library Create in Building Studio]
+Ustvari v studiu stavb
+[library Downloading generator…]
+Prenašanje generatorja…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Vsaka pokrajina je prikazana kot pravi zemljevid s spodaj navedeno velikostjo in številom kolonij, ki ju lahko tu spremenite. Uporabite jo za igranje prikazanega zemljevida.
+[library Editor tool: generates terrain for the map editor.]
+Orodje urejevalnika: ustvari teren za urejevalnik zemljevidov.
+[library Editor tools]
+Orodja urejevalnika
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Spodaj omogočite nameščene družine. Izbor je shranjen v lokalnem profilu; obstoječi zemljevidi in shranjene igre ohranijo svoje stavbe. Za spletno igro ustvarite zemljevid s temi družinami, ga objavite v knjižnici zemljevidov in izberite v sobi.
+[library Enter a building family ID or a link to its family page.]
+Vnesite ID družine stavb ali povezavo do njene strani.
+[library Family link or ID]
+Povezava ali ID družine
+[library Family links must be at most 1024 characters.]
+Povezave družin smejo imeti največ 1024 znakov.
+[library Family removed.]
+Družina je odstranjena.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Družina ni na voljo. Za zasebne družine se prijavite prek Spletno z računom, ki ima dostop.
+[library Generator file hash mismatch]
+Zgoščena vrednost datoteke generatorja se ne ujema
+[library Generator installed. Future selections use this release.]
+Generator je nameščen. Prihodnji izbori uporabljajo to izdajo.
+[library Generator package identity mismatch]
+Identiteta paketa generatorja se ne ujema
+[library Generators]
+Generatorji
+[library Install compatible release]
+Namesti združljivo izdajo
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Namestite posamezne stavbe ali družine nadgradenj poleg privzetih stavb. Izbor velja le za novo ustvarjene zemljevide.
+[library Install selected release]
+Namesti izbrano izdajo
+[library Installed]
+Nameščeno
+[library Installed families]
+Nameščene družine
+[library Installed. Enable the family below for new maps.]
+Nameščeno. Spodaj omogočite družino za nove zemljevide.
+[library Invalid building family ID.]
+Neveljaven ID družine stavb.
+[library Invalid building library response]
+Neveljaven odgovor knjižnice stavb
+[library Invalid library cursor]
+Neveljaven kazalec knjižnice
+[library Invalid release identity]
+Neveljavna identiteta izdaje
+[library Load more]
+Naloži več
+[library Load more families]
+Naloži več družin
+[library Loading building families]
+Nalaganje družin stavb
+[library Loading…]
+Nalaganje…
+[library Map generators]
+Generatorji zemljevidov
+[library Maps]
+Zemljevidi
+[library Most downloaded]
+Največkrat preneseni
+[library Most liked]
+Najbolj všečni
+[library My generators]
+Moji generatorji
+[library Newest]
+Najnovejši
+[library No building families installed.]
+Ni nameščenih družin stavb.
+[library No public building families yet]
+Javnih družin stavb še ni
+[library No validated release for this game version.]
+Za to različico igre ni preverjene izdaje.
+[library Online server changed during download]
+Spletni strežnik se je med prenosom spremenil
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Odprite nenavedeno družino s povezavo ali ID-jem. Za zasebne družine se najprej prijavite prek Spletno.
+[library Open family]
+Odpri družino
+[library Opened family. Install its compatible release below.]
+Družina je odprta. Spodaj namestite združljivo izdajo.
+[library Opening building family]
+Odpiranje družine stavb
+[library Playable]
+Igralno
+[library Playable generator]
+Igralni generator
+[library Privacy policy]
+Pravilnik o zasebnosti
+[library Public library]
+Javna knjižnica
+[library Recently updated]
+Nedavno posodobljeni
+[library Refresh library]
+Osveži knjižnico
+[library Release identity changed during installation]
+Identiteta izdaje se je med nameščanjem spremenila
+[library Reroll]
+Ustvari znova
+[library Reroll seed]
+Naključno seme
+[library Saving generator library…]
+Shranjevanje knjižnice generatorjev…
+[library Search]
+Išči
+[library Seed]
+Seme
+[library Selection saved for new maps.]
+Izbor je shranjen za nove zemljevide.
+[library Storage failed.]
+Shranjevanje ni uspelo.
+[library Storage persistence unavailable]
+Trajno shranjevanje ni na voljo
+[library Tags]
+Oznake
+[library Technical checks passed for this engine. Balance is not certified.]
+Tehnična preverjanja za ta pogon so uspela. Uravnoteženost igre ni potrjena.
+[library The server returned a different family.]
+Strežnik je vrnil drugo družino.
+[library This link is from another instance. Switch to that instance in Online first.]
+Ta povezava je iz druge instance. Najprej preklopite nanjo v Spletno.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Paket s tem ID-jem je že nameščen. Potrdite zamenjavo za uporabo izbrane izdaje.
+[library This release has no passing checks for this engine.]
+Ta izdaja nima uspešnih preverjanj za ta pogon.
+[library This release is installed.]
+Ta izdaja je nameščena.
+[library Update installed family]
+Posodobi nameščeno družino
+[library Use in a room]
+Uporabi v sobi
+[library By %0]
+Avtor: %0
+[library Installed release %0]
+Nameščena izdaja %0
+[library Release %0]
+Izdaja %0
+[library Remove %0]
+Odstrani %0
+[library Seed: %0]
+Seme: %0
+[library %0 · revision %1]
+%0 · revizija %1
+[library Fit]
+Prilag.
+[library GL only]
+Samo GL

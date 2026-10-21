@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "app/ClientFeatures.h"
 #include "ui/ThemeCatalog.h"
+#include "ui/TutorialText.h"
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
 #include <algorithm>
@@ -87,7 +88,7 @@ static void run(int width,int height,bool gl,bool expanded)
         for(auto category:screen.visibleCategories()){
             screen.selectCategory(category);
             for(const auto& r:screen.rows()){
-                if(category==SettingsScreen::Category::Online){
+                {
                     CHECK(r.label.find("[settings ")==std::string::npos);
                     CHECK(r.help.find("[settings ")==std::string::npos);
                 }
@@ -635,5 +636,70 @@ TEST_CASE("Settings categories follow the resolved client capabilities" * doctes
     if (!ClientFeatures::Commander) {
         screen.selectCategory(SettingsScreen::Category::HiveMind);
         CHECK(screen.category() == SettingsScreen::Category::Display);
+    }
+}
+
+
+TEST_CASE("Legacy tutorial aliases use the selected catalog and preserve unknown text" * doctest::test_suite("TutorialLocalization"))
+{
+    glob2test::GlobalsOptions options{.loadStrings=true};
+    glob2test::HeadlessGlobals globals(options);
+    auto *strings = Toolkit::getStringTable();
+    CHECK_FALSE(Glob2UI::isTutorialSource("show(\"Good...\")"));
+    CHECK(Glob2UI::tutorialText("Good...") == "Good...");
+    CHECK(Glob2UI::tutorialText("Introduction and Basics") == "Introduction and Basics");
+    for (int part = 1; part <= 4; ++part)
+    {
+        const auto source = readFile((glob2test::sourceRoot() / ("scripts/tutorial_part" + std::to_string(part) + ".sgsl")).string());
+        CHECK(Glob2UI::isTutorialSource(source));
+        std::string windowsSource;
+        for (const char byte : source)
+        {
+            if (byte == '\n' && (windowsSource.empty() || windowsSource.back() != '\r')) windowsSource += '\r';
+            windowsSource += byte;
+        }
+        CHECK(Glob2UI::isTutorialSource(windowsSource));
+        CHECK_FALSE(Glob2UI::isTutorialSource(source + "# custom scenario"));
+    }
+    const std::string original = "Let's first have a look at what's going on. You have a Swarm and a worker...";
+    for (int language = 0; language < strings->getNumberOfLanguage(); ++language)
+    {
+        strings->setLang(language);
+        CAPTURE(language);
+        CHECK(Glob2UI::tutorialText(original, true) == strings->getString("[tutorial part1 message 2]"));
+        for (const auto &alias : Glob2UI::tutorialTextAliases)
+            CHECK(Glob2UI::tutorialText(std::string(alias.first), true) == strings->getString(std::string(alias.second)));
+        CHECK(Glob2UI::tutorialText("Tutorial Campaign", true) == strings->getString("[tutorial]"));
+        CHECK(Glob2UI::tutorialText("Introduction and Basics", true) == strings->getString("[tutorial mission basics]"));
+        CHECK(Glob2UI::tutorialText("A player's custom mission") == "A player's custom mission");
+    }
+}
+
+
+TEST_CASE("Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" * doctest::test_suite("SettingsLocalization"))
+{
+    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
+    glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=1280,.height=900};
+    glob2test::HeadlessGlobals globals(options);
+    FrontendTheme theme;
+    FrontendScope frontend;
+    auto *strings = Toolkit::getStringTable();
+    for (int language = 0; language < strings->getNumberOfLanguage(); ++language)
+    {
+        strings->setLang(language);
+        const auto code = strings->getString("[language-code]");
+        globalContainer->settings.language = code;
+        CAPTURE(code);
+        NativeSettings screen;
+        screen.selectCategory(SettingsScreen::Category::Controls);
+        for (const auto &row : screen.rows())
+        {
+            CHECK(row.label.find("[settings ") == std::string::npos);
+            CHECK(row.help.find("[settings ") == std::string::npos);
+            CHECK(Toolkit::getFont("standard")->hasGlyphsFor(row.label));
+            CHECK(Toolkit::getFont("standard")->hasGlyphsFor(row.help));
+        }
+        CHECK(screen.row("controls.wheel").label == strings->getString("[settings Menu scroll wheel enabled]"));
+        screen.capture((glob2test::artifactDir() / ("controls-" + code + ".bmp")).string());
     }
 }

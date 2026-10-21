@@ -127,7 +127,16 @@ TTF_Font *TrueTypeFont::openFont(const std::string &filename, unsigned size)
                 [](void*, void *value) { delete static_cast<Source*>(value); }, nullptr)) {
             SDL_CloseIO(stream); return nullptr;
         }
-        return TTF_OpenFontIO(stream, true, openSize);
+        TTF_Font *result = TTF_OpenFontIO(stream, true, openSize);
+        // shapeText already joins Arabic/Persian and puts every run in visual
+        // order. HarfBuzz's default direction guessing would reorder that text
+        // a second time, reversing both the letters and embedded Latin/numbers.
+        // Set this on every opened size, including cached high-DPI rasters.
+        if (result && !TTF_SetFontDirection(result, TTF_DIRECTION_LTR)) {
+            TTF_CloseFont(result);
+            return nullptr;
+        }
+        return result;
 	};
 	TTF_Font *opened = open(size);
 	if (!opened)

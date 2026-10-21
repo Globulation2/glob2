@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 #include "OnlineServices.h"
@@ -10,6 +11,7 @@
 #include "GeneratorControls.h"
 #include "ui/OnlineUI.h"
 #include <ScreenStack.h>
+#include <FormatableString.h>
 using namespace Glob2UI;
 using Json = nlohmann::json;
 namespace JS = MapGeneration::JavaScript;
@@ -147,12 +149,12 @@ void OnlineGeneratorsScreen::install()
 	if (library.entries().contains(packageId) && replacing != packageId)
 	{
 		replacing = packageId;
-		status = "This package ID is installed. Confirm replacement to use the selected release.";
+		status = Glob2UI::libraryText("This package ID is installed. Confirm replacement to use the selected release.");
 		invalidate();
 		return;
 	}
 	downloading = true;
-	status = "Downloading generator…";
+	status = Glob2UI::libraryText("Downloading generator…");
 	calls.restRaw(
 		HttpFetch::Method::Get,
 		"/api/v1/generators/" + Online::urlEncode(id) + "/versions/" +
@@ -166,20 +168,20 @@ void OnlineGeneratorsScreen::install()
 				if (!r.ok)
 					throw std::runtime_error(r.error.message);
 				if (calls.client().origin() != origin)
-					throw std::runtime_error("Online server changed during download");
+					throw std::runtime_error(Glob2UI::libraryText("Online server changed during download"));
 				if (Online::Sha256::hex(r.body) != fileHash)
-					throw std::runtime_error("Generator file hash mismatch");
+					throw std::runtime_error(Glob2UI::libraryText("Generator file hash mismatch"));
 				const auto package = JS::Package::parse(r.body);
 				if (package->id != packageId || package->hash != packageHash)
-					throw std::runtime_error("Generator package identity mismatch");
+					throw std::runtime_error(Glob2UI::libraryText("Generator package identity mismatch"));
 				before = library.checkpoint();
 				JS::LibraryOrigin source{origin, id, versionId, fileHash, packageHash};
 				library.put(r.body, library.entries().contains(packageId) ? packageId : "",
 							&source);
 				persistence = AH::persistStorage();
 				if (!persistence)
-					throw std::runtime_error("Storage persistence unavailable");
-				status = "Saving generator library…";
+					throw std::runtime_error(Glob2UI::libraryText("Storage persistence unavailable"));
+				status = Glob2UI::libraryText("Saving generator library…");
 			}
 			catch (const std::exception &e)
 			{
@@ -198,12 +200,11 @@ void OnlineGeneratorsScreen::failInstallation(const std::string &message)
 		try
 		{
 			library.rollback(before);
-			status += " The previous library is retained.";
+			status += Glob2UI::libraryText(" The previous library is retained.");
 		}
 		catch (const std::exception &error)
 		{
-			status += " Could not restore the previous library: ";
-			status += error.what();
+			status += GAGCore::FormattableString(Glob2UI::libraryText(" Could not restore the previous library: %0")).arg(error.what());
 		}
 	}
 	persistence.reset();
@@ -217,11 +218,11 @@ void OnlineGeneratorsScreen::onTimer(Uint32)
 	if (persistence->state() == AH::PersistenceState::Succeeded)
 	{
 		library.publish();
-		status = "Generator installed. Future selections use this release.";
+		status = Glob2UI::libraryText("Generator installed. Future selections use this release.");
 	}
 	else
 	{
-		failInstallation("Storage failed.");
+		failInstallation(Glob2UI::libraryText("Storage failed."));
 	}
 	persistence.reset();
 	before.clear();
@@ -255,37 +256,37 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 	std::vector<Element> rows;
 	const bool busy = loading || downloading || bool(persistence);
 	rows.push_back(row(
-		{button("maps", "Maps", [this] { onEscape(); }), button("generators", "Generators", [] {})},
+		{button("maps", Glob2UI::libraryText("Maps"), [this] { onEscape(); }), button("generators", Glob2UI::libraryText("Generators"), [] {})},
 		{p.pt(8)}));
 	TextFieldOptions search;
 	search.submit = [this](const std::string &) { fetch(); };
-	rows.push_back(field("Search", textField(
+	rows.push_back(field(Glob2UI::libraryText("Search"), textField(
 									   "generators/search", query,
 									   [this](const std::string &s) { query = s; }, search)));
 	rows.push_back(field(
-		"Tags",
+		Glob2UI::libraryText("Tags"),
 		textField("generators/tags", tags, [this](const std::string &s) { tags = s; }, search)));
 	rows.push_back(choice("generators/sort",
-						  {"Newest", "Recently updated", "Most liked", "Most downloaded"}, sort,
+						  {Glob2UI::libraryText("Newest"), Glob2UI::libraryText("Recently updated"), Glob2UI::libraryText("Most liked"), Glob2UI::libraryText("Most downloaded")}, sort,
 						  [this](int i)
 						  {
 							  sort = i;
 							  fetch();
 						  }));
-	rows.push_back(choice("generators/ownership", {"Public library", "My generators"}, mine ? 1 : 0,
+	rows.push_back(choice("generators/ownership", {Glob2UI::libraryText("Public library"), Glob2UI::libraryText("My generators")}, mine ? 1 : 0,
 						  [this](int i)
 						  {
 							  mine = i == 1;
 							  fetch();
 						  }));
 	rows.push_back(choice("generators/compatibility",
-						  {"All engines", "Compatible with this engine"}, compatibleOnly ? 1 : 0,
+						  {Glob2UI::libraryText("All engines"), Glob2UI::libraryText("Compatible with this engine")}, compatibleOnly ? 1 : 0,
 						  [this](int i)
 						  {
 							  compatibleOnly = i == 1;
 							  fetch();
 						  }));
-	rows.push_back(choice("generators/filter", {"All generators", "Playable", "Editor tools"},
+	rows.push_back(choice("generators/filter", {Glob2UI::libraryText("All generators"), Glob2UI::libraryText("Playable"), Glob2UI::libraryText("Editor tools")},
 						  filter,
 						  [this](int i)
 						  {
@@ -293,11 +294,11 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 							  fetch();
 						  }));
 	rows.push_back(
-		button("generators/search-button", "Search", [this] { fetch(); }, {.enabled = !busy}));
+		button("generators/search-button", Glob2UI::libraryText("Search"), [this] { fetch(); }, {.enabled = !busy}));
 	if (!status.empty())
 		rows.push_back(paragraph(status));
 	if (loading)
-		rows.push_back(paragraph("Loading…"));
+		rows.push_back(paragraph(Glob2UI::libraryText("Loading…")));
 	for (const auto &g : catalogue)
 	{
 		const std::string id = g.at("id");
@@ -306,7 +307,7 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 	}
 	if (!cursor.empty())
 		rows.push_back(
-			button("generators/more", "Load more", [this] { fetch(true); }, {.enabled = !busy}));
+			button("generators/more", Glob2UI::libraryText("Load more"), [this] { fetch(true); }, {.enabled = !busy}));
 	if (detail.is_object() && !detail.at("versions").empty())
 	{
 		const auto &release = detail.at("versions").at(version);
@@ -319,8 +320,8 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 			rows.push_back(previewPicture(surface, p.pt(256)));
 		std::vector<std::string> labels;
 		for (const auto &v : detail.at("versions"))
-			labels.push_back(v.at("label").get<std::string>() + " · revision " +
-							 std::to_string(v.at("metadata").at("revision").get<unsigned>()));
+			labels.push_back(GAGCore::FormattableString(Glob2UI::libraryText("%0 · revision %1"))
+                .arg(v.at("label").get<std::string>()).arg(v.at("metadata").at("revision").get<unsigned>()));
 		rows.push_back(choice("generators/release", labels, version,
 							  [this](int i)
 							  {
@@ -330,12 +331,12 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 								  invalidate();
 							  }));
 		rows.push_back(paragraph(metadata.value("editorOnly", false)
-									 ? "Editor tool: generates terrain for the map editor."
-									 : "Playable generator"));
+									 ? Glob2UI::libraryText("Editor tool: generates terrain for the map editor.")
+									 : Glob2UI::libraryText("Playable generator")));
 		rows.push_back(
 			paragraph(compatible(release)
-						  ? "Technical checks passed for this engine. Balance is not certified."
-						  : "This release has no passing checks for this engine."));
+						  ? Glob2UI::libraryText("Technical checks passed for this engine. Balance is not certified.")
+						  : Glob2UI::libraryText("This release has no passing checks for this engine.")));
 		for (const auto &shared : sharedGeneratorControls())
 		{
 			const auto control =
@@ -345,7 +346,7 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 			for (const int value : domain)
 				values.push_back(std::to_string(control.displayValue(value)));
 			const int chosen = control.indexOf(settings.at("params").at(control.id).get<int>());
-			rows.push_back(field(control.label, choice("generator/" + control.id, values, chosen,
+			rows.push_back(field(Glob2UI::tr("[" + std::string(control.label) + "]"), choice("generator/" + control.id, values, chosen,
 													   [this, id = control.id, domain](int i)
 													   {
 														   settings["params"][id] = domain.at(i);
@@ -384,14 +385,14 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 													   })));
 		}
 		rows.push_back(
-			paragraph("Seed: " + std::to_string(settings.at("seed").get<std::uint32_t>())));
+			paragraph(GAGCore::FormattableString(Glob2UI::libraryText("Seed: %0")).arg(settings.at("seed").get<std::uint32_t>())));
 		const std::string manifestId = metadata.at("id");
 		if (const auto found = library.origins().find(manifestId); found != library.origins().end())
 			rows.push_back(paragraph(found->second.versionId == release.at("id").get<std::string>()
-										 ? "This release is installed."
-										 : "A different release is installed. Install the selected "
-										   "release to update explicitly."));
-		rows.push_back(button("generator/reroll", "Reroll seed",
+										 ? Glob2UI::libraryText("This release is installed.")
+										 : Glob2UI::libraryText("A different release is installed. Install the selected "
+										   "release to update explicitly.")));
+		rows.push_back(button("generator/reroll", Glob2UI::libraryText("Reroll seed"),
 							  [this]
 							  {
 								  settings["seed"] =
@@ -401,15 +402,15 @@ Element OnlineGeneratorsScreen::build(const Presentation &p)
 							  {.enabled = !busy}));
 		rows.push_back(
 			button("generator/install",
-				   replacing.empty() ? "Install selected release" : "Confirm replacement",
+				   replacing.empty() ? Glob2UI::libraryText("Install selected release") : Glob2UI::libraryText("Confirm replacement"),
 				   [this] { install(); }, {.enabled = !busy && compatible(release)}));
 		rows.push_back(button(
-			"generator/room", "Use in a room", [this] { useInRoom(); },
+			"generator/room", Glob2UI::libraryText("Use in a room"), [this] { useInRoom(); },
 			{.enabled = !busy && compatible(release) && !metadata.value("editorOnly", false)}));
 	}
 	OnlinePanel panel;
-	panel.title = "Map generators";
+	panel.title = Glob2UI::libraryText("Map generators");
 	panel.body = scroll("generators/body", column(std::move(rows), {p.pt(8)}));
-	panel.actions = {{"back", "Back", [this] { onEscape(); }, false, SDLK_ESCAPE}};
+	panel.actions = {{"back", Glob2UI::libraryText("Back"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
 	return onlinePanel(std::move(panel), p);
 }

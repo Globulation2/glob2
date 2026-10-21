@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "ui/TutorialText.h"
 #include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
@@ -301,7 +302,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
     const bool legacyShown=drawnScene().panels.hud.state().legacyScriptTextShown;
 	if(legacyShown && legacyText != previousSGSLText)
 	{
-		publishMessageHistoryLines(legacyText, HistoryList::Chat,
+		publishMessageHistoryLines(Glob2UI::tutorialText(legacyText, legacyTutorialScript), HistoryList::Chat,
 			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
 		previousSGSLText = legacyText;
 	}

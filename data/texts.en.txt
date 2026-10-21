@@ -6126,3 +6126,507 @@ Run 2x
 Run 3x
 [stat band water only]
 Water only
+[settings Browse shared generators]
+Browse shared generators
+[settings Apply artwork on the next game or editor load.]
+Apply artwork on the next game or editor load.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Requires a renderer with texture filtering. Your saved choice is retained.
+[settings Automatically show the torus overview while moving around the map.]
+Automatically show the torus overview while moving around the map.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Requires a renderer with torus support. Your saved choice is retained.
+[settings Move and animate units between game ticks.]
+Move and animate units between game ticks.
+[settings Renderer unavailable]
+Renderer unavailable
+[settings Apply at the next completed frame. Your game stays running.]
+Apply at the next completed frame. Your game stays running.
+[settings Active renderer: %0]
+Active renderer: %0
+[settings Changing renderer…]
+Changing renderer…
+[settings Menu scroll wheel enabled]
+Menu scroll wheel enabled
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.
+[settings Gesture scrolling]
+Gesture scrolling
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.
+[hive stopping]
+Stopping…
+[hive stopped]
+Stopped
+[hive stop failed]
+Stop failed; retry the stop shortcut
+[hive updating]
+Updating…
+[hive requested]
+Requested
+[hive update failed]
+Update failed; try again
+[hive give order]
+Give order
+[hive less]
+Less
+[hive reports and details]
+Reports / details
+[hive needs fresh order]
+Needs a fresh order
+[hive active]
+Active
+[hive resume]
+Resume
+[recordings]
+Recordings
+[recording delete confirm]
+Delete recording?
+[recording delete warning]
+The recording and its metadata will be removed.
+[recording delete]
+Delete
+[recording working]
+Working…
+[recording none]
+No recordings yet.
+[recording interrupted]
+Interrupted recording
+[recording recover]
+Recover
+[recording export video]
+Export video
+[recording export metadata]
+Export metadata
+[recording export events]
+Export events
+[recording export failed]
+Could not export recording.
+[recording delete action]
+Delete recording
+[recording refresh]
+Refresh
+[tutorial part1 message 1]
+Welcome to Globulation 2! This tutorial teaches colony management over four missions. You can save your progress from the game menu and load it later from the main menu. Press Space to continue, or tap OK on a touch screen. Some messages disappear after you continue; use Message history to read them again.
+[tutorial part1 message 2]
+You begin with a Swarm and one worker. Let's see how they work together.
+[tutorial part1 message 3]
+Your worker harvests wheat and carries it to the Swarm. The Swarm uses wheat to produce new units, making it essential to your colony.
+[tutorial part1 message 4]
+Select your globule, the moving unit, with a left-click or a tap.
+[tutorial part1 message 5]
+The unit information shows its food level falling over time. Your globule is getting hungry. When food bars are visible, the blue bar beneath the unit shows its remaining food.
+[tutorial part1 message 6]
+Globules eat at Inns. Clear the selection with a right-click, or tap empty ground on a touch screen.
+[tutorial part1 message 7]
+Open the building controls, choose Inn, and place it near wheat. Follow your worker's harvesting route if you cannot spot the wheat. On touch screens, use Build and confirm a valid placement. When finished, leave placement mode with a right-click or the touch Cancel control.
+[tutorial part1 message 8]
+Good! The Inn's building site is in place.
+[tutorial part1 message 9]
+A worker from the Swarm can now build the Inn. The worker gathers wood from nearby trees and brings it to the site. Wait for construction to finish.
+[tutorial part1 message 10]
+The finished Inn needs wheat. An assigned worker will gather it, just as a worker supplies the Swarm.
+[tutorial part1 message 11]
+The Inn's yellow resource bar rises as wheat arrives. It shows how much wheat the Inn has in stock.
+[tutorial part1 message 12]
+Now let's learn how to assign work.
+[tutorial part1 message 13]
+One worker supplies the Swarm and another supplies the Inn. Either may pause to eat at the Inn. That is normal.
+[tutorial part1 message 14]
+Select the Swarm and find its worker assignment control. On desktop it is labeled Working; on touch screens, use the assigned workers and target control. The target is how many workers you want at this building.
+[tutorial part1 message 15]
+Use the assignment control to set the Swarm's worker target to 0. Then select the Inn and set its target to 0 too.
+[tutorial part1 message 16]
+Your workers are now idle, but they still need food. An Inn with no assigned workers will eventually run out of wheat.
+[tutorial part1 message 17]
+A globule that cannot find food will lose health and may die. A Hospital can heal damaged globules, but you must also keep the Inns supplied.
+[tutorial part1 message 18]
+Build a Hospital using the building controls. It does not need wheat, so place it near wood or in a central spot near your Swarm.
+[tutorial part1 message 19]
+Select the Hospital's building site and set its worker target to 2. Two workers can finish it faster.
+[tutorial part1 message 20]
+The Hospital is ready. Injured globules can now visit it to recover their health.
+[tutorial part1 message 21]
+The black areas are unexplored. Units reveal nearby ground as they move. Workers follow their jobs, so they are hard to use for scouting. Explorers are designed for that task.
+[tutorial part1 message 22]
+Select the Swarm and find the production ratios for workers, explorers, and warriors. Increase the explorer ratio to 1.
+[tutorial part1 message 23]
+With worker and explorer ratios both at 1, the Swarm produces equal numbers of each over time. Set the worker ratio to 0 so it produces only explorers for now.
+[tutorial part1 message 24]
+Set the Swarm's worker assignment target back to 1 so a worker can bring it wheat.
+[tutorial part1 message 25]
+Select the Inn and set its worker target to 1 too. Your growing colony needs a steady food supply.
+[tutorial part1 message 26]
+Now wait for the Swarm to produce an explorer.
+[tutorial part1 message 27]
+Your explorer flies around the colony, revealing more ground. Let the Swarm produce a second explorer before continuing.
+[tutorial part1 message 28]
+Select the Swarm again. Set the explorer production ratio to 0 and the worker ratio to 1 to resume producing workers.
+[tutorial part2 message 1]
+There is stone east of your base. Remember this location; you will need stone later.
+[tutorial part2 message 2]
+The trees south of the stone are orange trees. Select them to see their resource information. We will return to fruit later; for now, focus on the Swarm.
+[tutorial part2 message 3]
+Set your Swarm to produce workers only: worker ratio 1, explorer and warrior ratios 0.
+[tutorial part2 message 4]
+Let's grow the colony faster. Select the Swarm and set its worker assignment target to 6. You may not have six workers yet; new workers can fill the extra jobs as they become available.
+[tutorial part2 message 5]
+We will start the next tasks when you have 8 workers. Keep the Swarm and Inn supplied while the population grows.
+[tutorial part2 message 6]
+Several workers are now supplying the Swarm. More wheat deliveries mean it can produce units more quickly.
+[tutorial part2 message 7]
+A new worker costs 5 wheat. Carrying wheat from a distant field takes time, so a Swarm often needs more suppliers than an Inn. Place food-dependent buildings near wheat when possible.
+[tutorial part2 message 8]
+You now have at least 8 workers. Select the Swarm and reduce its worker assignment target to 1 to slow population growth while we build.
+[tutorial part2 message 9]
+Your colony needs more feeding capacity. Build a second Inn north of the existing one.
+[tutorial part2 message 10]
+Assign free workers to the new Inn's construction site. It needs only 3 wood, so more than 3 builders will not help much.
+[tutorial part2 message 11]
+The finished Inn returns to its operating worker target, normally 1. Construction and everyday supply use separate assignment targets.
+[tutorial part2 message 12]
+Workers can learn to move faster. A Racetrack provides that training.
+[tutorial part2 message 13]
+Open the building controls and find Racetrack. On desktop, hover over its icon to inspect its description and cost. On touch screens, select it in Build to prepare placement. Do not place it yet.
+[tutorial part2 message 14]
+A Racetrack needs plenty of wood and a little stone. Choose a central location so units can reach it easily.
+[tutorial part2 message 15]
+Build a Racetrack, perhaps south of the Swarm. Leave clear space around it: training buildings need room to expand when upgraded.
+[tutorial part2 message 16]
+Set the Racetrack construction site's worker target between 5 and 7. It needs 7 construction materials in total.
+[tutorial part2 message 17]
+Once finished, a Racetrack trains visiting units without a continuing supply of construction materials or wheat.
+[tutorial part2 message 18]
+Globules are entering the Racetrack to train. Once trained, they can run faster.
+[tutorial part2 message 19]
+Select the Racetrack to inspect training progress. Its progress indicators show how close the units inside are to finishing.
+[tutorial part2 message 20]
+Your trained workers travel faster and can deliver resources sooner. Keep watching food stocks as the colony grows; faster deliveries help only if enough Inns remain supplied.
+[tutorial part2 message 21]
+Find the worker population counter in the HUD. The total shows your population; the available-worker figure helps you spot spare workers or unfilled jobs. Use free workers without assigning more jobs than the colony can support.
+[tutorial part2 message 22]
+The HUD also shows explorer and warrior counts. Check these when planning production or assigning units to flags.
+[tutorial part2 message 23]
+You have 2 Inns. Each basic Inn can feed 4 units at once, so together they have 8 feeding places. More than 8 units can become hungry, so leave enough capacity for queues.
+[tutorial part2 message 24]
+Two Inns will not support a growing colony forever. Build extra feeding capacity before shortages turn into starvation.
+[tutorial part2 message 25]
+Build 3 more Inns near wheat. Hungry workers stop working, and prolonged starvation kills them. Assign available workers to construction while keeping your existing food supply running.
+[tutorial part2 message 26]
+Finish building 3 more Inns, bringing your total to 5.
+[tutorial part2 message 27]
+The new Inns use their operating assignment targets after construction, normally 1 worker each. Check that they have suppliers and enough wheat.
+[tutorial part2 message 28]
+The Racetrack has improved travel on land. Now let's teach the colony to swim.
+[tutorial part2 message 29]
+A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction.
+[tutorial part2 message 30]
+A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction.
+[tutorial part2 message 31]
+The Swimming Pool is ready. Globules can now enter and learn to swim.
+[tutorial part2 message 32]
+Select the Swimming Pool to inspect training progress. A basic Pool trains 2 globules at a time, just like a basic Racetrack.
+[tutorial part2 message 33]
+Your trained globules can now swim. Soon we will give them a job that requires crossing water.
+[tutorial part2 message 34]
+There is more to learn. If you need a break, save your progress from the game menu and return later.
+[tutorial part2 message 35]
+Your colony has food and physical training. A School will teach workers the skills needed for better buildings.
+[tutorial part2 message 36]
+A School improves workers' harvesting and construction skills. Building one requires algae, which grows in water. Your swimming workers can gather it.
+[tutorial part2 message 37]
+Protect important training buildings. A School does not have to stand beside water; a sheltered inland location can keep it safer from attack.
+[tutorial part2 message 38]
+Build a School in a protected spot, such as behind the Swimming Pool or southwest of the Swarm beside the Racetrack. Assign available workers to build it.
+[tutorial part2 message 39]
+Select a building to see the workers assigned to it. On desktop, the configurable Toggle draw unit paths action can also show lines from units to their destinations; see Settings, Controls for its current shortcut. Wait for the School to finish.
+[tutorial part3 message 1]
+Your colony now has Inns, a Hospital, a Racetrack, a Swimming Pool, and a School. It is time to prepare its defenses.
+[tutorial part3 message 2]
+We have not produced any warriors yet. Without them, the colony has little protection against an attack.
+[tutorial part3 message 3]
+Select the Swarm and set the warrior production ratio to 2. Leave the worker ratio at 1 so the colony keeps producing workers too.
+[tutorial part3 message 4]
+The Swarm will now produce roughly 2 warriors for every worker. Assign more workers to supply it if you want faster production.
+[tutorial part3 message 5]
+Your first warrior is ready and will begin training. Wait for a second warrior before continuing.
+[tutorial part3 message 6]
+Warriors use the Racetrack and Swimming Pool too. They can also train their attack skills at Barracks.
+[tutorial part3 message 7]
+Barracks improve attack strength and attack speed. Strength increases damage per hit; speed increases how often a warrior attacks. Well-trained warriors can defeat much larger groups of untrained enemies.
+[tutorial part3 message 8]
+Build Barracks near wood, which is needed for construction.
+[tutorial part3 message 9]
+Assign available workers to the Barracks building site. Keep enough workers on food supply and avoid creating more jobs than they can fill.
+[tutorial part3 message 10]
+The Barracks are ready. Warriors can now train their attack skills there.
+[tutorial part3 message 11]
+Our colony can grow stronger by upgrading its buildings.
+[tutorial part3 message 12]
+Workers trained at the School can construct upgrades. Select an eligible building and look for Upgrade in its building controls. Damaged buildings may need Repair first.
+[tutorial part3 message 13]
+Let's decide what to upgrade first. Our Inns still have spare capacity, so they can wait.
+[tutorial part3 message 14]
+The Hospital also has room. We can focus on the School, Racetrack, Swimming Pool, or Barracks.
+[tutorial part3 message 15]
+Upgrade the Racetrack first so units can learn to move even faster.
+[tutorial part3 message 16]
+Select the Racetrack and choose Upgrade in its building controls. Units inside must leave before construction begins, so the change may not be immediate.
+[tutorial part3 message 17]
+Assign available workers to the Racetrack upgrade. Only workers with the required School training can build a level 2 construction site.
+[tutorial part3 message 18]
+Wait for the Racetrack upgrade to finish. Higher-level buildings take more resources and time to construct.
+[tutorial part3 message 19]
+Your level 2 Racetrack is complete. It occupies more ground than before, which is why we left a gap. A building cannot upgrade without enough room to expand.
+[tutorial part3 message 20]
+Now upgrade the Barracks and the Swimming Pool to level 2. We will continue when both are finished.
+[tutorial part3 message 21]
+Upgraded buildings can generally serve more globules or offer better training. A level 2 Inn, for example, has 7 feeding places and feeds units faster than a basic Inn.
+[tutorial part3 message 22]
+The enemy is nearby. Let's prepare for an attack.
+[tutorial part3 message 23]
+Towers shoot at enemies within range. Walls help protect them. We will use both to defend a narrow approach to the colony.
+[tutorial part3 message 24]
+Place towers in pairs if space allows. Walls can protect three sides, but leave a route open so workers can deliver stone ammunition.
+[tutorial part3 message 25]
+Look east of the Swimming Pool, north of the other fruit trees. A narrow crossing leads toward another island. This is a good place to defend.
+[tutorial part3 message 26]
+Plan room for 2 towers between the trees and the shore. Leave access behind them for stone deliveries and space on the other sides for walls. Do not wall the workers out.
+[tutorial part3 message 27]
+Build 2 towers there. Assign 2 or 3 workers to each construction site, depending on how many are available in the HUD counters.
+[tutorial part3 message 28]
+Use the building controls to place wall sections around the three outward-facing sides of the towers. Keep the side toward your colony open for workers.
+[tutorial part3 message 29]
+Each wall section creates a construction job and needs 1 stone. If workers cannot fill every job at once, they can finish the sections in turn.
+[tutorial part3 message 30]
+Wait for both towers and several wall sections to finish. The towers also need stone ammunition; the distant quarry makes deliveries slow. Increase their worker targets if you have spare workers.
+[tutorial part4 message 1]
+Your colony has food, training, and defenses. Buildings can advance once more to level 3, providing stronger training and greater capacity. Keep improving them as resources and worker skills allow.
+[tutorial part4 message 2]
+Look northwest of your base for the enemy colony. Move the view there now.
+[tutorial part4 message 3]
+Explored ground can still be hidden by fog of war. To see the enemy's current activity, we need an explorer nearby.
+[tutorial part4 message 4]
+Open Flags. This gives you flags and zones for directing units without controlling each globule individually.
+[tutorial part4 message 5]
+Choose the Exploration Flag, shown with a kite-shaped symbol. Flags can be placed over land, water, resources, and unexplored ground.
+[tutorial part4 message 6]
+Place an Exploration Flag over the suspected enemy base. An approximate location is enough to start scouting. Leave placement mode with a right-click, or finish the placement using the touch controls.
+[tutorial part4 message 7]
+The outline around the flag shows its working radius. An assigned explorer will scout that area. Check your explorer count if none arrives, and produce another at the Swarm if needed. Press Space or tap OK once the explorer reaches the area.
+[tutorial part4 message 8]
+The enemy has many workers and a gathered army. Let's prepare our defenses before it attacks.
+[tutorial part4 message 9]
+Open Flags and choose the blue Guard zone. Use the mode for adding ground to the zone, rather than removing it. On touch screens, choose Paint rather than Erase.
+[tutorial part4 message 10]
+Choose a brush shape and size. The large square is useful for painting a compact defensive area.
+[tutorial part4 message 11]
+Paint a Guard zone just behind your towers, where the enemy is likely to approach. Click or tap to paint a spot, or drag to cover more ground. On touch screens, use Pan when you need to move the view while painting.
+[tutorial part4 message 12]
+Available warriors will move into the Guard zone. Make it large enough for the defenders but small enough to keep them concentrated at the crossing. Now wait for the attack.
+[tutorial part4 message 13]
+The enemy is approaching the crossing!
+[tutorial part4 message 14]
+We are under attack. Watch how your trained warriors and towers defend the position.
+[tutorial part4 message 15]
+You survived! Now open Flags and choose the spiked War Flag. Place it over the enemy Swarm to direct an attack there.
+[tutorial part4 message 16]
+Leave placement mode and select the War Flag. Assign more than 1 warrior, then reduce its radius to concentrate the attack around the enemy Swarm. Wait for your warriors to arrive.
+[tutorial part4 message 17]
+The attack has begun. Your warriors must get past the enemy towers to reach its Swarm.
+[tutorial part4 message 18]
+Your warriors have reached the enemy base. Keep the attack focused on the Swarm.
+[tutorial part4 message 19]
+You destroyed the enemy Swarm. Congratulations! You have completed the tutorial and learned the basics of food supply, assignments, training, upgrades, scouting, and combat.
+[tutorial mission basics]
+Introduction and basics
+[tutorial mission development]
+Buildings and schools
+[tutorial mission training]
+Warriors, training and upgrades
+[tutorial mission flags]
+Flags and completion
+[library  Could not restore the previous library: %0]
+ Could not restore the previous library: %0
+[library  The previous library is retained.]
+ The previous library is retained.
+[library  · Installed]
+ · Installed
+[library  · Update available]
+ · Update available
+[library A different release is installed. Install the selected release to update explicitly.]
+A different release is installed. Install the selected release to update explicitly.
+[library All engines]
+All engines
+[library All generators]
+All generators
+[library Available families]
+Available families
+[library Back]
+Back
+[library Building families]
+Building families
+[library Building library]
+Building library
+[library Checking building release]
+Checking building release
+[library Choose an online instance before opening a family link.]
+Choose an online instance before opening a family link.
+[library Compatible with this engine]
+Compatible with this engine
+[library Confirm replacement]
+Confirm replacement
+[library Create in Building Studio]
+Create in Building Studio
+[library Downloading generator…]
+Downloading generator…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.
+[library Editor tool: generates terrain for the map editor.]
+Editor tool: generates terrain for the map editor.
+[library Editor tools]
+Editor tools
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.
+[library Enter a building family ID or a link to its family page.]
+Enter a building family ID or a link to its family page.
+[library Family link or ID]
+Family link or ID
+[library Family links must be at most 1024 characters.]
+Family links must be at most 1024 characters.
+[library Family removed.]
+Family removed.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Family unavailable. Private families require signing in through Online with an account that can access them.
+[library Generator file hash mismatch]
+Generator file hash mismatch
+[library Generator installed. Future selections use this release.]
+Generator installed. Future selections use this release.
+[library Generator package identity mismatch]
+Generator package identity mismatch
+[library Generators]
+Generators
+[library Install compatible release]
+Install compatible release
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.
+[library Install selected release]
+Install selected release
+[library Installed]
+Installed
+[library Installed families]
+Installed families
+[library Installed. Enable the family below for new maps.]
+Installed. Enable the family below for new maps.
+[library Invalid building family ID.]
+Invalid building family ID.
+[library Invalid building library response]
+Invalid building library response
+[library Invalid library cursor]
+Invalid library cursor
+[library Invalid release identity]
+Invalid release identity
+[library Load more]
+Load more
+[library Load more families]
+Load more families
+[library Loading building families]
+Loading building families
+[library Loading…]
+Loading…
+[library Map generators]
+Map generators
+[library Maps]
+Maps
+[library Most downloaded]
+Most downloaded
+[library Most liked]
+Most liked
+[library My generators]
+My generators
+[library Newest]
+Newest
+[library No building families installed.]
+No building families installed.
+[library No public building families yet]
+No public building families yet
+[library No validated release for this game version.]
+No validated release for this game version.
+[library Online server changed during download]
+Online server changed during download
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Open an unlisted family by its link or ID. For private families, sign in through Online first.
+[library Open family]
+Open family
+[library Opened family. Install its compatible release below.]
+Opened family. Install its compatible release below.
+[library Opening building family]
+Opening building family
+[library Playable]
+Playable
+[library Playable generator]
+Playable generator
+[library Privacy policy]
+Privacy policy
+[library Public library]
+Public library
+[library Recently updated]
+Recently updated
+[library Refresh library]
+Refresh library
+[library Release identity changed during installation]
+Release identity changed during installation
+[library Reroll]
+Reroll
+[library Reroll seed]
+Reroll seed
+[library Saving generator library…]
+Saving generator library…
+[library Search]
+Search
+[library Seed]
+Seed
+[library Selection saved for new maps.]
+Selection saved for new maps.
+[library Storage failed.]
+Storage failed.
+[library Storage persistence unavailable]
+Storage persistence unavailable
+[library Tags]
+Tags
+[library Technical checks passed for this engine. Balance is not certified.]
+Technical checks passed for this engine. Balance is not certified.
+[library The server returned a different family.]
+The server returned a different family.
+[library This link is from another instance. Switch to that instance in Online first.]
+This link is from another instance. Switch to that instance in Online first.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+This package ID is installed. Confirm replacement to use the selected release.
+[library This release has no passing checks for this engine.]
+This release has no passing checks for this engine.
+[library This release is installed.]
+This release is installed.
+[library Update installed family]
+Update installed family
+[library Use in a room]
+Use in a room
+[library By %0]
+By %0
+[library Installed release %0]
+Installed release %0
+[library Release %0]
+Release %0
+[library Remove %0]
+Remove %0
+[library Seed: %0]
+Seed: %0
+[library %0 · revision %1]
+%0 · revision %1
+[library Fit]
+Fit
+[library GL only]
+GL only

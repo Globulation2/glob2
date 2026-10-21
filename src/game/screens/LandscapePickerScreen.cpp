@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/LibraryText.h"
 #include "LandscapePickerScreen.h"
 #include "GenerationContext.h"
 #include "GenerationValidation.h"
@@ -468,8 +469,8 @@ Element LandscapePickerScreen::build(const Presentation &p)
 {
 	const bool compact = p.compact() || p.safe.w < p.pt(800);
 	std::vector<Element> header;
-	header.push_back(fe::paragraph("Each landscape is shown as a real map at the size and colony count below, which you can change here. "
-								   "Use one to play the map shown.",
+	header.push_back(fe::paragraph(Glob2UI::libraryText("Each landscape is shown as a real map at the size and colony count below, which you can change here. "
+								   "Use one to play the map shown."),
 								   {fe::FontRole::Support}));
 	// Sort order and tag filters, browsed like a catalog: a category narrows the list to entries
 	// carrying its chosen value (AND across categories; "Any" leaves a category unfiltered).

@@ -1,5 +1,5 @@
 {
-  "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations. Resource labels also share native spellings: Metal in Portuguese, Danish, Spanish, Polish, Romanian and Turkish; Paper and Prunes in Catalan; Gold in German; Oranges and Prunes in French. These cognates retain their normal local spelling.",
+  "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations. Resource labels also share native spellings: Metal in Portuguese, Danish, Spanish, Polish, Romanian and Turkish; Paper and Prunes in Catalan; Gold in German; Oranges and Prunes in French. These cognates retain their normal local spelling. Reviewed localization additions retain native technical cognates (Port, Catalan/Spanish Error, Romanian Scalar), the Hungarian Globulation 2 Discord brand title, Danish/Swedish revision templates and the Slovak Seed template. These exceptions are scoped per language; no tutorial or explanatory sentence is exempted.",
   "standard_names_and_key_legends": [
     "%0×",
     "%0 %1",
@@ -131,7 +131,9 @@
       "Tutorial ▸",
       "Zones",
       "bases",
-      "desert"
+      "desert",
+      "Port",
+      "Error: %0"
     ],
     "texts.cz.txt": [
       "%0 min",
@@ -147,7 +149,8 @@
       "P %0/%1/%2",
       "Server",
       "Server: %0",
-      "Start"
+      "Start",
+      "Port"
     ],
     "texts.de.txt": [
       "%0 Level %1",
@@ -199,7 +202,8 @@
       "Teams %0/%1",
       "Teams…",
       "Version",
-      "Veteran"
+      "Veteran",
+      "Port"
     ],
     "texts.dk.txt": [
       "256 × 256",
@@ -244,7 +248,9 @@
       "Upload",
       "Version",
       "Veteran",
-      "version %0"
+      "version %0",
+      "Port",
+      "%0 · revision %1"
     ],
     "texts.eo.txt": [
       "%0 min",
@@ -284,7 +290,8 @@
       "Total",
       "Tutorial",
       "Tutorial ▸",
-      "bases"
+      "bases",
+      "Error: %0"
     ],
     "texts.eu.txt": [
       "%0 min",
@@ -378,7 +385,8 @@
       "bases",
       "colonies",
       "options",
-      "version %0"
+      "version %0",
+      "Port"
     ],
     "texts.gr.txt": [
       "%0 / %1 HP · %2",
@@ -394,7 +402,9 @@
       "Online",
       "P %0/%1/%2",
       "Ping",
-      "Polder"
+      "Polder",
+      "Globulation 2 Discord",
+      "Port"
     ],
     "texts.id.txt": [
       "%0 / %1 HP · %2",
@@ -564,7 +574,8 @@
       "Ping",
       "Polder",
       "host",
-      "host %0"
+      "host %0",
+      "Port"
     ],
     "texts.pt.txt": [
       "%0 min",
@@ -628,7 +639,9 @@
       "Total",
       "Tutorial",
       "Tutorial ▸",
-      "Veteran"
+      "Veteran",
+      "Scalar",
+      "Port"
     ],
     "texts.ru.txt": [
       "256 × 256"
@@ -658,7 +671,9 @@
       "Online",
       "P %0/%1/%2",
       "Polder",
-      "Server"
+      "Server",
+      "Port",
+      "Seed: %0"
     ],
     "texts.sr.txt": [
       "256 × 256"
@@ -704,7 +719,8 @@
       "Version",
       "Veteran",
       "jitter %0",
-      "version %0"
+      "version %0",
+      "%0 · revision %1"
     ],
     "texts.tr.txt": [
       "%0 KB",

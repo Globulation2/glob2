@@ -6011,96 +6011,622 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [outcome reason probability]
 آستانهٔ احتمال پیروزی محقق شد.
 [Discord community]
-
+انجمن Discord
 [Globulation 2 Discord]
-
+Globulation 2 در Discord
 [discord community intro]
-
+حریف پیدا کنید، کمک بخواهید و نقشه‌هایتان را با انجمن Globulation 2 به اشتراک بگذارید.
 [discord opens externally]
-
+به سرور Discord ما بپیوندید. با این کار Discord یا مرورگرتان باز می‌شود.
 [Join Discord]
-
+پیوستن به Discord
 [Copy link]
-
+کپی پیوند
 [discord opened]
-
+Discord باز شد. هر زمان بخواهید می‌توانید به بازی برگردید.
 [discord open failed]
-
+باز کردن Discord ممکن نشد. پیوند دعوت را کپی کنید و در مرورگرتان باز کنید.
 [discord link copied]
-
+پیوند دعوت کپی شد.
 [settings CPU automatic]
-
+پردازندهٔ مرکزی خودکار
 [settings Scalar]
-
+اسکالر
 [settings Unavailable]
-
+در دسترس نیست
 [settings Initializing]
-
+در حال آماده‌سازی
 [settings Gradient backend]
-
+موتور محاسبهٔ گرادیان
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+در نقطهٔ همگام‌سازی بعدی شبیه‌سازی اعمال می‌شود. محاسبات پشتیبانی‌نشده از حالت خودکار پردازندهٔ مرکزی استفاده می‌کنند؛ رندر مستقل است.
 [settings Gradient algorithm]
-
+الگوریتم گرادیان
 [settings All choices compute the same exact field.]
-
+همهٔ گزینه‌ها دقیقاً همان میدان را محاسبه می‌کنند.
 [settings Bucket propagation]
-
+انتشار با سطل‌ها
 [settings Verify gradient results]
-
+بررسی نتایج گرادیان
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+مقایسهٔ نتایج پردازندهٔ گرافیکی با محاسبهٔ اسکالر پردازندهٔ مرکزی پیش از استفاده. محاسبات را افزایش می‌دهد و در صورت عدم تطابق بازی را متوقف می‌کند.
 [settings Gradient computation]
-
+محاسبهٔ گرادیان
 [settings CPU fallback]
-
+محاسبهٔ جایگزین با پردازندهٔ مرکزی
 [settings GPU fields]
-
+میدان‌های پردازندهٔ گرافیکی
 [settings CPU fallbacks]
-
+دفعات استفاده از پردازندهٔ مرکزی جایگزین
 [settings MCP server]
-
+سرور MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+فعال کردن سرور MCP به کارخواه‌های محلی اجازه می‌دهد بازی را ببینند و کنترل کنند.
 [settings Enable MCP server]
-
+فعال کردن سرور MCP
 [settings Port]
-
+درگاه
 [settings Current controller: %0]
-
+کنترل‌کنندهٔ فعلی: %0
 [settings Copy endpoint]
-
+کپی نشانی اتصال
 [settings Retry listener]
-
+راه‌اندازی دوبارهٔ شنود
 [settings Revoke control]
-
+لغو کنترل
 [settings MCP server unavailable in this application]
-
+سرور MCP در این برنامه در دسترس نیست
 [settings Disabled]
-
+غیرفعال
 [settings Running]
-
+در حال اجرا
 [settings Error: %0]
-
+خطا: %0
 [settings None]
-
+هیچ‌کدام
 [settings Starting]
-
+در حال شروع
 [Which hand holds your phone?]
-
+دست چپ یا راست؟
 [hand preference explanation]
-
+گوشی را به حالت عادی در دست بگیرید. روی دستی که با آن بازی می‌کنید بزنید.
 [hand silhouettes description]
-
+طرح یک گوشی با دست‌های چپ و راست در بالا. برای انتخاب هر طرف، ناحیهٔ پخ‌خوردهٔ شست همان طرف را فشار دهید.
 [hand preference change later]
-
+می‌توانید بعداً در تنظیمات طرف را عوض کنید.
 [hand preference save failed]
-
+ذخیرهٔ انتخاب شما ممکن نشد. دوباره تلاش کنید.
 [Left hand]
-
+دست چپ
 [Right hand]
-
+دست راست
 [discord copy failed]
-
+کپی کردن پیوند ممکن نشد. پیوند دعوت بالا را انتخاب کنید و آن را دستی کپی کنید.
 [Destroy this building?]
 این ساختمان تخریب شود؟
+[stat ground movement]
+حرکت زمینی
+[stat ground movement about]
+واحدهای زمینی زنده بر اساس نسبت تقریبی سرعت. «شنا 2×» یعنی شنا کردن دو برابر سریع‌تر از دویدن است. واحدهای پرنده و بی‌حرکت در نظر گرفته نمی‌شوند.
+[stat view by movement]
+بر اساس حرکت
+[stat band land only]
+فقط خشکی
+[stat band swim twice run]
+شنا 2×
+[stat band swim faster run]
+شنا 1.4×
+[stat band swim equals run]
+برابر
+[stat band run faster swim]
+دویدن 1.3×
+[stat band run twice swim]
+دویدن 2×
+[stat band run triple swim]
+دویدن 3×
+[stat band water only]
+فقط آب
+[settings Browse shared generators]
+مرور مولدهای اشتراکی
+[settings Apply artwork on the next game or editor load.]
+اعمال تصاویر در بارگذاری بعدی بازی یا ویرایشگر.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+به رندرکننده‌ای با پالایش بافت نیاز دارد. انتخاب ذخیره‌شدهٔ شما حفظ می‌شود.
+[settings Automatically show the torus overview while moving around the map.]
+نمای کلی چنبره را هنگام حرکت روی نقشه خودکار نشان بده.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+به رندرکننده‌ای با پشتیبانی از چنبره نیاز دارد. انتخاب ذخیره‌شدهٔ شما حفظ می‌شود.
+[settings Move and animate units between game ticks.]
+حرکت و پویانمایی واحدها بین گام‌های شبیه‌سازی.
+[settings Renderer unavailable]
+رندرکننده در دسترس نیست
+[settings Apply at the next completed frame. Your game stays running.]
+اعمال پس از تکمیل فریم بعدی. بازی شما به اجرا ادامه می‌دهد.
+[settings Active renderer: %0]
+رندرکنندهٔ فعال: %0
+[settings Changing renderer…]
+در حال تغییر رندرکننده…
+[settings Menu scroll wheel enabled]
+فعال کردن چرخ پیمایش در منوها
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+پیمایش با چرخ در منوها را کنترل می‌کند. در نقشه‌های بازی و ویرایشگر، چرخ همیشه برای بزرگ‌نمایی و کوچک‌نمایی است.
+[settings Gesture scrolling]
+پیمایش با حرکت‌های لمسی
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+پیمایش با لمس و حرکت‌های Mac. مقدار 0 جلوه را خاموش می‌کند؛ 50 مقدار پیش‌فرض لمس است.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+میزان ادامهٔ پیمایش فهرست‌ها و پنل‌ها پس از کشیدن سریع انگشت. حرکت‌های Mac از اینرسی سیستم استفاده می‌کنند؛ صفر لغزش آن‌ها را غیرفعال می‌کند.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+میزان کش آمدن فهرست‌ها و پنل‌ها پس از رسیدن به انتها و بازگشت آن‌ها. حرکت‌های Mac از کشش ملایم‌تری استفاده می‌کنند.
+[hive stopping]
+در حال توقف…
+[hive stopped]
+متوقف شد
+[hive stop failed]
+توقف ناموفق بود؛ میان‌بر توقف را دوباره امتحان کنید
+[hive updating]
+در حال به‌روزرسانی…
+[hive requested]
+درخواست شد
+[hive update failed]
+به‌روزرسانی ناموفق بود؛ دوباره تلاش کنید
+[hive give order]
+دادن دستور
+[hive less]
+بستن جزئیات
+[hive reports and details]
+گزارش‌ها / جزئیات
+[hive needs fresh order]
+به دستور تازه نیاز دارد
+[hive active]
+فعال
+[hive resume]
+ادامه
+[recordings]
+ضبط‌ها
+[recording delete confirm]
+ضبط حذف شود؟
+[recording delete warning]
+ضبط و فرادادهٔ آن حذف خواهند شد.
+[recording delete]
+حذف
+[recording working]
+در حال پردازش…
+[recording none]
+هنوز ضبطی وجود ندارد.
+[recording interrupted]
+ضبط قطع‌شده
+[recording recover]
+بازیابی
+[recording export video]
+صدور ویدیو
+[recording export metadata]
+صدور فراداده
+[recording export events]
+صدور رویدادها
+[recording export failed]
+صدور ضبط ممکن نشد.
+[recording delete action]
+حذف ضبط
+[recording refresh]
+تازه‌سازی
+[library Fit]
+نمایش کامل
+[library GL only]
+فقط GL
+[tutorial part1 message 1]
+به Globulation 2 خوش آمدید! این چهار مأموریت مدیریت مستعمره را آموزش می‌دهند. پیشرفتتان را از منوی بازی ذخیره و بعداً از منوی اصلی بارگذاری کنید. برای ادامه کلید فاصله را بزنید یا «تأیید» را در صفحهٔ لمسی انتخاب کنید. برخی پیام‌ها پس از ادامه ناپدید می‌شوند؛ آن‌ها را در تاریخچهٔ پیام‌ها دوباره بخوانید.
+[tutorial part1 message 2]
+با یک کندو و یک کارگر شروع می‌کنید. ببینیم چطور با هم کار می‌کنند.
+[tutorial part1 message 3]
+کارگر گندم برداشت می‌کند و به کندو می‌برد. کندو با مصرف گندم واحدهای تازه می‌سازد و برای مستعمره حیاتی است.
+[tutorial part1 message 4]
+واحد متحرکتان را با کلیک چپ یا لمس انتخاب کنید.
+[tutorial part1 message 5]
+اطلاعات واحد کاهش ذخیرهٔ غذایش را نشان می‌دهد؛ گرسنه می‌شود. وقتی نوارهای غذا نمایش داده می‌شوند، نوار آبی زیر واحد غذای باقی‌مانده را نشان می‌دهد.
+[tutorial part1 message 6]
+واحدها در مسافرخانه غذا می‌خورند. با کلیک راست یا لمس زمین خالی در صفحهٔ لمسی، انتخاب را لغو کنید.
+[tutorial part1 message 7]
+کنترل‌های ساخت را باز کنید، مسافرخانه را انتخاب و نزدیک گندم قرار دهید. اگر گندم را نمی‌بینید، مسیر برداشت کارگر را دنبال کنید. در صفحهٔ لمسی از «ساخت» استفاده و جای معتبر را تأیید کنید. با کلیک راست یا «لغو» از حالت جای‌گذاری خارج شوید.
+[tutorial part1 message 8]
+خوب است! محل ساخت مسافرخانه مشخص شد.
+[tutorial part1 message 9]
+کارگری از کندو می‌تواند مسافرخانه را بسازد. او از درختان نزدیک چوب می‌آورد و به محل ساخت می‌برد. منتظر پایان کار بمانید.
+[tutorial part1 message 10]
+مسافرخانهٔ آماده به گندم نیاز دارد. کارگر تعیین‌شده آن را برداشت می‌کند، درست مانند تأمین کندو.
+[tutorial part1 message 11]
+نوار زرد منابع مسافرخانه با رسیدن گندم بالا می‌رود و ذخیرهٔ آن را نشان می‌دهد.
+[tutorial part1 message 12]
+اکنون تخصیص کار را یاد می‌گیریم.
+[tutorial part1 message 13]
+یک کارگر کندو و دیگری مسافرخانه را تأمین می‌کند. هرکدام ممکن است برای غذا خوردن مکث کنند. طبیعی است.
+[tutorial part1 message 14]
+کندو را انتخاب و کنترل تخصیص کارگر را پیدا کنید. در رایانه «در حال کار» است؛ در صفحهٔ لمسی از تعداد تخصیص‌یافته و هدف استفاده کنید. هدف تعداد کارگران دلخواه در این ساختمان است.
+[tutorial part1 message 15]
+هدف کارگران کندو را روی 0 بگذارید. سپس مسافرخانه را انتخاب و هدف آن را هم 0 کنید.
+[tutorial part1 message 16]
+کارگران بیکارند، اما هنوز غذا می‌خواهند. گندم مسافرخانه‌ای که کارگر ندارد سرانجام تمام می‌شود.
+[tutorial part1 message 17]
+واحدی که غذا پیدا نکند سلامتش را از دست می‌دهد و ممکن است بمیرد. بیمارستان زخم‌ها را درمان می‌کند، اما مسافرخانه‌ها را نیز باید تأمین کنید.
+[tutorial part1 message 18]
+بیمارستان بسازید. به گندم نیاز ندارد، پس آن را نزدیک چوب یا در جایی مرکزی کنار کندو قرار دهید.
+[tutorial part1 message 19]
+محل ساخت بیمارستان را انتخاب و هدف را روی 2 کارگر بگذارید تا زودتر تمام شود.
+[tutorial part1 message 20]
+بیمارستان آماده است. واحدهای زخمی می‌توانند آنجا سلامتشان را بازیابند.
+[tutorial part1 message 21]
+مناطق سیاه کشف نشده‌اند. واحدها هنگام حرکت زمین اطراف را آشکار می‌کنند. کارگران دنبال وظیفه‌شان می‌روند؛ جستجوگرها برای شناسایی مناسب‌ترند.
+[tutorial part1 message 22]
+کندو را انتخاب و نسبت تولید کارگر، جستجوگر و جنگجو را پیدا کنید. نسبت جستجوگر را به 1 برسانید.
+[tutorial part1 message 23]
+با نسبت 1 برای کارگر و جستجوگر، کندو در طول زمان تعداد برابر تولید می‌کند. کارگر را 0 کنید تا فعلاً فقط جستجوگر ساخته شود.
+[tutorial part1 message 24]
+هدف کارگران تخصیص‌یافته به کندو را دوباره 1 کنید تا گندم دریافت کند.
+[tutorial part1 message 25]
+هدف مسافرخانه را هم روی 1 کارگر بگذارید. مستعمرهٔ رو به رشد به غذای منظم نیاز دارد.
+[tutorial part1 message 26]
+منتظر بمانید تا کندو جستجوگر بسازد.
+[tutorial part1 message 27]
+جستجوگر دور مستعمره پرواز می‌کند و زمین را آشکار می‌سازد. پیش از ادامه، بگذارید کندو جستجوگر دومی بسازد.
+[tutorial part1 message 28]
+کندو را انتخاب کنید. نسبت جستجوگر را 0 و کارگر را 1 کنید تا تولید کارگر از سر گرفته شود.
+[tutorial part2 message 1]
+در شرق پایگاه سنگ هست. محل آن را به خاطر بسپارید؛ بعداً لازم می‌شود.
+[tutorial part2 message 2]
+درختان جنوب سنگ پرتقال‌اند. آن‌ها را برای اطلاعات منابع انتخاب کنید. بعداً به میوه برمی‌گردیم؛ فعلاً روی کندو تمرکز کنید.
+[tutorial part2 message 3]
+کندو را فقط برای کارگر تنظیم کنید: کارگر 1، جستجوگر و جنگجو 0.
+[tutorial part2 message 4]
+رشد را سریع‌تر کنیم. هدف کندو را روی 6 کارگر بگذارید. کارگران تازه پس از تولید جای خالی را پر می‌کنند.
+[tutorial part2 message 5]
+با رسیدن به 8 کارگر، کارهای بعدی را شروع می‌کنیم. در این فاصله کندو و مسافرخانه را تأمین کنید.
+[tutorial part2 message 6]
+اکنون چند کارگر کندو را تأمین می‌کنند. گندم بیشتر تولید سریع‌تر واحد را ممکن می‌کند.
+[tutorial part2 message 7]
+کارگر تازه 5 گندم هزینه دارد. حمل از مزرعهٔ دور زمان می‌برد؛ کندو معمولاً بیش از مسافرخانه تأمین‌کننده می‌خواهد. ساختمان‌های وابسته به گندم را تا جای ممکن نزدیک آن بسازید.
+[tutorial part2 message 8]
+دست‌کم 8 کارگر دارید. هدف کندو را به 1 کاهش دهید تا هنگام ساخت‌وساز رشد جمعیت کند شود.
+[tutorial part2 message 9]
+مستعمره به جای بیشتری برای غذا خوردن نیاز دارد. مسافرخانهٔ دوم را شمال اولی بسازید.
+[tutorial part2 message 10]
+کارگران آزاد را به محل تازه تخصیص دهید. تنها 3 چوب لازم دارد؛ بیش از 3 سازنده کمک چندانی نمی‌کند.
+[tutorial part2 message 11]
+مسافرخانهٔ آماده به هدف بهره‌برداری، معمولاً 1 کارگر، برمی‌گردد. ساخت و تأمین روزانه هدف‌های جدا دارند.
+[tutorial part2 message 12]
+کارگران در پیست مسابقه سریع‌تر دویدن می‌آموزند.
+[tutorial part2 message 13]
+پیست مسابقه را در کنترل‌های ساخت پیدا کنید. در رایانه نشانگر را روی نماد ببرید تا شرح و هزینه را ببینید. در صفحهٔ لمسی آن را از «ساخت» انتخاب کنید. هنوز جای‌گذاری نکنید.
+[tutorial part2 message 14]
+پیست مسابقه چوب زیاد و کمی سنگ می‌خواهد. جای مرکزی و دسترس‌پذیر انتخاب کنید.
+[tutorial part2 message 15]
+پیست مسابقه‌ای، مثلاً جنوب کندو، بسازید. اطرافش برای گسترش هنگام ارتقا فضای خالی بگذارید.
+[tutorial part2 message 16]
+هدف محل ساخت پیست را بین 5 تا 7 کارگر بگذارید. در مجموع 7 مصالح لازم دارد.
+[tutorial part2 message 17]
+پیست آماده بدون تأمین دائمی مصالح یا گندم واحدها را آموزش می‌دهد.
+[tutorial part2 message 18]
+واحدها وارد پیست می‌شوند. پس از آموزش سریع‌تر می‌دوند.
+[tutorial part2 message 19]
+پیست را برای دیدن پیشرفت آموزش انتخاب کنید. نشانگرها میزان نزدیکی واحدهای داخل به پایان آموزش را نشان می‌دهند.
+[tutorial part2 message 20]
+کارگران آموزش‌دیده منابع را زودتر تحویل می‌دهند. همچنان ذخیرهٔ غذا را زیر نظر بگیرید و مسافرخانه‌های کافی را تأمین کنید.
+[tutorial part2 message 21]
+شمارندهٔ کارگران را در رابط بازی پیدا کنید. مجموع جمعیت را نشان می‌دهد؛ تعداد در دسترس به یافتن کارگران آزاد یا کارهای بی‌کارگر کمک می‌کند. بیش از توان مستعمره کار تخصیص ندهید.
+[tutorial part2 message 22]
+رابط تعداد جستجوگرها و جنگجوها را نیز نشان می‌دهد. هنگام برنامه‌ریزی تولید یا تخصیص به پرچم‌ها آن‌ها را بررسی کنید.
+[tutorial part2 message 23]
+2 مسافرخانهٔ پایه دارید، هرکدام با 4 جای غذا: در مجموع 8 جا. بیش از 8 واحد ممکن است گرسنه شوند؛ برای صف‌ها هم ظرفیت بگذارید.
+[tutorial part2 message 24]
+دو مسافرخانه برای همیشه کافی نیست. پیش از تبدیل کمبود به قحطی، ظرفیت را افزایش دهید.
+[tutorial part2 message 25]
+3 مسافرخانهٔ دیگر نزدیک گندم بسازید. کارگران گرسنه از کار می‌ایستند و ممکن است بمیرند. از کارگران آزاد استفاده کنید و تأمین فعلی غذا را حفظ کنید.
+[tutorial part2 message 26]
+3 مسافرخانهٔ دیگر را کامل کنید تا مجموع به 5 برسد.
+[tutorial part2 message 27]
+مسافرخانه‌های تازه پس از ساخت از هدف بهره‌برداری استفاده می‌کنند، معمولاً هرکدام 1 کارگر. تأمین‌کننده‌ها و ذخیرهٔ گندم را بررسی کنید.
+[tutorial part2 message 28]
+پیست رفت‌وآمد زمینی را بهتر کرده است. اکنون شنا یاد می‌گیریم.
+[tutorial part2 message 29]
+استخر به واحدها شنا می‌آموزد و ساختش چوب می‌خواهد. یکی در محوطهٔ باز بزرگ شمال‌شرق پایگاه، شمال سنگ، بسازید. برای ارتقا و رشد منابع فضا بگذارید و کارگران آزاد را تخصیص دهید.
+[tutorial part2 message 30]
+استخر به واحدها شنا می‌آموزد و ساختش چوب می‌خواهد. یکی در محوطهٔ باز بزرگ شمال‌شرق پایگاه، شمال سنگ، بسازید. برای ارتقا و رشد منابع فضا بگذارید و کارگران آزاد را تخصیص دهید.
+[tutorial part2 message 31]
+استخر آماده است. واحدها می‌توانند برای یادگیری شنا وارد شوند.
+[tutorial part2 message 32]
+استخر را برای دیدن پیشرفت آموزش انتخاب کنید. استخر پایه هم‌زمان 2 واحد را آموزش می‌دهد، درست مانند پیست پایه.
+[tutorial part2 message 33]
+واحدهای آموزش‌دیده اکنون شنا می‌کنند. به‌زودی کاری می‌دهیم که عبور از آب می‌خواهد.
+[tutorial part2 message 34]
+هنوز بیشتر می‌آموزیم. اگر استراحت می‌خواهید، پیشرفت را از منوی بازی ذخیره کنید.
+[tutorial part2 message 35]
+مستعمره غذا و تمرین بدنی دارد. مدرسه مهارت‌های لازم برای ساختمان‌های بهتر را به کارگران می‌آموزد.
+[tutorial part2 message 36]
+مدرسه برداشت و ساخت‌وساز را بهبود می‌دهد. ساختش جلبک می‌خواهد که در آب رشد می‌کند. کارگران شناگر می‌توانند آن را جمع کنند.
+[tutorial part2 message 37]
+ساختمان‌های آموزشی مهم را محافظت کنید. مدرسه لازم نیست کنار آب باشد؛ جایی محافظت‌شده درون خشکی امن‌تر است.
+[tutorial part2 message 38]
+مدرسه را در جای امن، مثلاً پشت استخر یا جنوب‌غرب کندو کنار پیست، بسازید. کارگران در دسترس را به آن تخصیص دهید.
+[tutorial part2 message 39]
+ساختمانی را برای دیدن کارگرانش انتخاب کنید. در رایانه، عمل قابل‌تنظیم نمایش مسیر واحدها خط‌هایی به مقصدشان می‌کشد. میان‌بر فعلی را در تنظیمات، کنترل‌ها ببینید. منتظر پایان مدرسه بمانید.
+[tutorial part3 message 1]
+مستعمره مسافرخانه، بیمارستان، پیست، استخر و مدرسه دارد. اکنون دفاع را آماده کنیم.
+[tutorial part3 message 2]
+هنوز جنگجو تولید نکرده‌ایم. بدون آن‌ها مستعمره در برابر حمله آسیب‌پذیر است.
+[tutorial part3 message 3]
+کندو را انتخاب و نسبت جنگجو را 2 کنید. کارگر را 1 نگه دارید تا تولیدش هم ادامه یابد.
+[tutorial part3 message 4]
+کندو تقریباً به ازای هر کارگر 2 جنگجو تولید می‌کند. برای تولید سریع‌تر تأمین‌کنندهٔ بیشتری تخصیص دهید.
+[tutorial part3 message 5]
+نخستین جنگجو آماده است و آموزش را شروع می‌کند. پیش از ادامه منتظر دومی بمانید.
+[tutorial part3 message 6]
+جنگجوها هم از پیست و استخر استفاده می‌کنند. مهارت حمله را نیز در سربازخانه آموزش می‌بینند.
+[tutorial part3 message 7]
+سربازخانه قدرت و سرعت حمله را افزایش می‌دهد: آسیب هر ضربه و بسامد ضربه‌ها. جنگجوهای آموزش‌دیده می‌توانند گروه‌های آموزش‌ندیدهٔ بسیار بزرگ‌تر را شکست دهند.
+[tutorial part3 message 8]
+سربازخانه را نزدیک چوب لازم برای ساختش بسازید.
+[tutorial part3 message 9]
+کارگران در دسترس را به محل ساخت سربازخانه تخصیص دهید. کارگر کافی برای غذا نگه دارید و کار بیش از حد ایجاد نکنید.
+[tutorial part3 message 10]
+سربازخانه آماده است. جنگجوها می‌توانند حمله را آنجا آموزش ببینند.
+[tutorial part3 message 11]
+ارتقای ساختمان‌ها نیز مستعمره را نیرومندتر می‌کند.
+[tutorial part3 message 12]
+کارگران آموزش‌دیده در مدرسه می‌توانند ارتقا بسازند. ساختمان واجد شرایط را انتخاب و «ارتقا» را پیدا کنید. ساختمان آسیب‌دیده شاید ابتدا تعمیر بخواهد.
+[tutorial part3 message 13]
+اول چه چیزی را ارتقا دهیم؟ مسافرخانه‌ها هنوز جا دارند و می‌توانند منتظر بمانند.
+[tutorial part3 message 14]
+بیمارستان هم جا دارد. می‌توان روی مدرسه، پیست، استخر یا سربازخانه تمرکز کرد.
+[tutorial part3 message 15]
+ابتدا پیست را ارتقا دهید تا واحدها باز هم سریع‌تر دویدن بیاموزند.
+[tutorial part3 message 16]
+پیست را انتخاب و «ارتقا» را بزنید. واحدهای داخل باید پیش از شروع کار خارج شوند؛ پس تغییر شاید فوری نباشد.
+[tutorial part3 message 17]
+کارگران در دسترس را به ارتقای پیست تخصیص دهید. تنها کارگران با آموزش مدرسهٔ لازم می‌توانند در ساخت سطح 2 کار کنند.
+[tutorial part3 message 18]
+منتظر پایان ارتقا بمانید. ساختمان‌های پیشرفته منابع و زمان بیشتری می‌خواهند.
+[tutorial part3 message 19]
+پیست سطح 2 آماده و بزرگ‌تر شده است. برای همین فضا گذاشتیم: بدون جای گسترش، ارتقا ممکن نیست.
+[tutorial part3 message 20]
+اکنون سربازخانه و استخر را به سطح 2 ارتقا دهید. پس از پایان هردو ادامه می‌دهیم.
+[tutorial part3 message 21]
+ساختمان‌های ارتقایافته معمولاً به واحدهای بیشتر خدمت می‌کنند یا آموزش بهتری دارند. مسافرخانهٔ سطح 2 مثلاً 7 جای غذا دارد و سریع‌تر غذا می‌دهد.
+[tutorial part3 message 22]
+دشمن نزدیک است. برای مقابله با حمله آماده شویم.
+[tutorial part3 message 23]
+برج‌های دفاعی به دشمنان در برد تیر می‌زنند. دیوارها از آن‌ها محافظت می‌کنند. هردو را در یک گذرگاه باریک به کار می‌بریم.
+[tutorial part3 message 24]
+اگر جا هست برج‌ها را جفت بسازید. دیوارها سه طرف را محافظت می‌کنند؛ برای کارگران حامل مهمات سنگی راه باز بگذارید.
+[tutorial part3 message 25]
+شرق استخر و شمال درختان میوهٔ دیگر، گذرگاهی باریک به جزیرهٔ دیگری می‌رود. از این نقطه دفاع کنید.
+[tutorial part3 message 26]
+برای 2 برج بین درختان و ساحل جا بگذارید. پشتشان برای سنگ و طرف‌های دیگر برای دیوار فضا لازم است. راه کارگران را نبندید.
+[tutorial part3 message 27]
+2 برج آنجا بسازید. طبق تعداد در دسترس در شمارنده‌ها، به هر محل 2 یا 3 کارگر تخصیص دهید.
+[tutorial part3 message 28]
+با کنترل‌های ساخت در سه طرف بیرونی برج‌ها دیوار بگذارید. طرف رو به مستعمره برای کارگران باز بماند.
+[tutorial part3 message 29]
+هر بخش دیوار یک کار ساختمانی ایجاد می‌کند و 1 سنگ می‌خواهد. اگر کارگر کافی نیست، بخش‌ها به‌ترتیب کامل می‌شوند.
+[tutorial part3 message 30]
+منتظر پایان هردو برج و چند بخش دیوار بمانید. برج‌ها مهمات سنگی می‌خواهند؛ معدن دور تحویل را کند می‌کند. اگر کارگر آزاد دارید، هدف برج‌ها را افزایش دهید.
+[tutorial part4 message 1]
+مستعمره غذا، آموزش و دفاع دارد. ساختمان‌ها می‌توانند به سطح 3 برسند تا ظرفیت و آموزش بهتر شود. طبق منابع و مهارت کارگران به ارتقا ادامه دهید.
+[tutorial part4 message 2]
+مستعمرهٔ دشمن را شمال‌غرب پایگاه پیدا کنید. نما را به آنجا ببرید.
+[tutorial part4 message 3]
+مه جنگ می‌تواند زمین کشف‌شده را پنهان کند. برای دیدن فعالیت فعلی دشمن، جستجوگری در نزدیکی لازم است.
+[tutorial part4 message 4]
+«پرچم‌ها» را باز کنید. پرچم‌ها و ناحیه‌ها واحدها را بدون کنترل جداگانهٔ هرکدام هدایت می‌کنند.
+[tutorial part4 message 5]
+پرچم جستجو با نماد بادبادک را انتخاب کنید. پرچم را می‌توان روی خشکی، آب، منابع و زمین کشف‌نشده گذاشت.
+[tutorial part4 message 6]
+آن را بالای جای احتمالی پایگاه دشمن بگذارید. مکان تقریبی کافی است. با کلیک راست یا کنترل‌های لمسی جای‌گذاری را تمام کنید.
+[tutorial part4 message 7]
+خط دور پرچم شعاع کار را نشان می‌دهد. جستجوگر تخصیص‌یافته آنجا را بررسی می‌کند. اگر کسی نمی‌آید، تعداد را ببینید و در صورت نیاز در کندو جستجوگر تازه بسازید. پس از رسیدن، کلید فاصله یا «تأیید» را بزنید.
+[tutorial part4 message 8]
+دشمن کارگران بسیار و ارتشی گردآمده دارد. پیش از حمله، دفاع را آماده کنیم.
+[tutorial part4 message 9]
+پرچم‌ها را باز و ناحیهٔ آبی «نگهبانی» را انتخاب کنید. از حالت افزودن زمین استفاده کنید، نه حذف. در صفحهٔ لمسی «رسم» را به‌جای «پاک کردن» بزنید.
+[tutorial part4 message 10]
+شکل و اندازهٔ قلم را انتخاب کنید. مربع بزرگ برای یک ناحیهٔ دفاعی فشرده مناسب است.
+[tutorial part4 message 11]
+ناحیهٔ نگهبانی را پشت برج‌ها در مسیر احتمالی دشمن رسم کنید. کلیک یا لمس یک نقطه را رسم می‌کند؛ کشیدن، زمین بیشتری را می‌پوشاند. در صفحهٔ لمسی از «جابه‌جایی» برای حرکت نما هنگام رسم استفاده کنید.
+[tutorial part4 message 12]
+جنگجوهای در دسترس وارد ناحیه می‌شوند. جای کافی بدهید، ولی آن‌قدر کوچک نگه دارید که مدافعان در گذرگاه متمرکز بمانند. منتظر حمله باشید.
+[tutorial part4 message 13]
+دشمن به گذرگاه نزدیک می‌شود!
+[tutorial part4 message 14]
+زیر حمله‌ایم. ببینید جنگجوهای آموزش‌دیده و برج‌ها چگونه از موقعیت دفاع می‌کنند.
+[tutorial part4 message 15]
+جان سالم بردید! پرچم‌ها را باز و پرچم جنگ خاردار را انتخاب کنید. آن را روی کندوی دشمن بگذارید تا حمله به آنجا هدایت شود.
+[tutorial part4 message 16]
+جای‌گذاری را تمام و پرچم جنگ را انتخاب کنید. بیش از 1 جنگجو تخصیص دهید و شعاع را کم کنید تا حمله روی کندو متمرکز شود. منتظر رسیدن جنگجوها بمانید.
+[tutorial part4 message 17]
+حمله شروع شده است. جنگجوها باید از برج‌های دشمن بگذرند تا به کندو برسند.
+[tutorial part4 message 18]
+جنگجوها به پایگاه دشمن رسیده‌اند. حمله را روی کندو متمرکز نگه دارید.
+[tutorial part4 message 19]
+کندوی دشمن را نابود کردید! آموزش تمام شد و اصول غذا، تخصیص، آموزش، ارتقا، شناسایی و نبرد را آموختید.
+[tutorial mission basics]
+مقدمه و اصول اولیه
+[tutorial mission development]
+ساختمان‌ها و مدرسه‌ها
+[tutorial mission training]
+جنگجوها، آموزش و ارتقا
+[tutorial mission flags]
+پرچم‌ها و پایان
+[library  Could not restore the previous library: %0]
+ بازیابی کتابخانهٔ قبلی ممکن نشد: %0
+[library  The previous library is retained.]
+ کتابخانهٔ قبلی حفظ می‌شود.
+[library  · Installed]
+ · نصب‌شده
+[library  · Update available]
+ · به‌روزرسانی موجود است
+[library A different release is installed. Install the selected release to update explicitly.]
+نسخهٔ دیگری نصب است. اگر می‌خواهید به نسخهٔ انتخاب‌شده به‌روزرسانی کنید، آن را نصب کنید.
+[library All engines]
+همهٔ موتورها
+[library All generators]
+همهٔ مولدها
+[library Available families]
+خانواده‌های در دسترس
+[library Back]
+بازگشت
+[library Building families]
+خانواده‌های ساختمان
+[library Building library]
+کتابخانهٔ ساختمان
+[library Checking building release]
+در حال بررسی نسخهٔ ساختمان
+[library Choose an online instance before opening a family link.]
+پیش از باز کردن پیوند خانواده، یک نمونهٔ آنلاین انتخاب کنید.
+[library Compatible with this engine]
+سازگار با این موتور
+[library Confirm replacement]
+تأیید جایگزینی
+[library Create in Building Studio]
+ساخت در Building Studio
+[library Downloading generator…]
+در حال دریافت مولد…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+هر چشم‌انداز به‌صورت نقشه‌ای واقعی با اندازه و تعداد مستعمرهٔ قابل‌تنظیم در پایین نمایش داده می‌شود. یکی را برای بازی در نقشهٔ نمایش‌داده‌شده به کار ببرید.
+[library Editor tool: generates terrain for the map editor.]
+ابزار ویرایشگر: برای ویرایشگر نقشه زمین می‌سازد.
+[library Editor tools]
+ابزارهای ویرایشگر
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+خانواده‌های نصب‌شده را در پایین فعال کنید. انتخاب در این نمایهٔ محلی ذخیره می‌شود؛ نقشه‌ها و ذخیره‌های موجود ساختمان‌های خودشان را نگه می‌دارند. برای بازی آنلاین، نقشه‌ای با این خانواده‌ها بسازید، در کتابخانهٔ نقشه منتشر و سپس در اتاقتان انتخاب کنید.
+[library Enter a building family ID or a link to its family page.]
+شناسهٔ خانوادهٔ ساختمان یا پیوند صفحهٔ آن را وارد کنید.
+[library Family link or ID]
+پیوند یا شناسهٔ خانواده
+[library Family links must be at most 1024 characters.]
+پیوند خانواده باید حداکثر 1024 نویسه داشته باشد.
+[library Family removed.]
+خانواده حذف شد.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+خانواده در دسترس نیست. برای خانواده‌های خصوصی، از بخش آنلاین با حسابی که دسترسی دارد وارد شوید.
+[library Generator file hash mismatch]
+هش فایل مولد مطابقت ندارد
+[library Generator installed. Future selections use this release.]
+مولد نصب شد. انتخاب‌های بعدی از این نسخه استفاده می‌کنند.
+[library Generator package identity mismatch]
+هویت بستهٔ مولد مطابقت ندارد
+[library Generators]
+مولدها
+[library Install compatible release]
+نصب نسخهٔ سازگار
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+ساختمان‌های تکی یا خانواده‌های ارتقا را در کنار ساختمان‌های اصلی نصب کنید. انتخاب فقط روی نقشه‌های تازه‌تولیدشده اعمال می‌شود.
+[library Install selected release]
+نصب نسخهٔ انتخاب‌شده
+[library Installed]
+نصب‌شده
+[library Installed families]
+خانواده‌های نصب‌شده
+[library Installed. Enable the family below for new maps.]
+نصب شد. خانواده را در پایین برای نقشه‌های جدید فعال کنید.
+[library Invalid building family ID.]
+شناسهٔ خانوادهٔ ساختمان نامعتبر است.
+[library Invalid building library response]
+پاسخ کتابخانهٔ ساختمان نامعتبر است
+[library Invalid library cursor]
+نشانگر پیمایش کتابخانه نامعتبر است
+[library Invalid release identity]
+اطلاعات شناسایی نسخه نامعتبر است
+[library Load more]
+بارگذاری بیشتر
+[library Load more families]
+بارگذاری خانواده‌های بیشتر
+[library Loading building families]
+در حال بارگذاری خانواده‌های ساختمان
+[library Loading…]
+در حال بارگذاری…
+[library Map generators]
+مولدهای نقشه
+[library Maps]
+نقشه‌ها
+[library Most downloaded]
+بیشترین دریافت
+[library Most liked]
+بیشترین پسند
+[library My generators]
+مولدهای من
+[library Newest]
+تازه‌ترین
+[library No building families installed.]
+هیچ خانوادهٔ ساختمانی نصب نیست.
+[library No public building families yet]
+هنوز خانوادهٔ ساختمان عمومی وجود ندارد
+[library No validated release for this game version.]
+نسخهٔ تأییدشده‌ای برای این نسخهٔ بازی موجود نیست.
+[library Online server changed during download]
+سرور آنلاین هنگام دریافت تغییر کرد
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+خانوادهٔ فهرست‌نشده را با پیوند یا شناسه باز کنید. برای خانواده‌های خصوصی ابتدا از بخش آنلاین وارد شوید.
+[library Open family]
+باز کردن خانواده
+[library Opened family. Install its compatible release below.]
+خانواده باز شد. نسخهٔ سازگارش را در پایین نصب کنید.
+[library Opening building family]
+در حال باز کردن خانوادهٔ ساختمان
+[library Playable]
+قابل‌بازی
+[library Playable generator]
+مولد قابل‌بازی
+[library Privacy policy]
+سیاست حریم خصوصی
+[library Public library]
+کتابخانهٔ عمومی
+[library Recently updated]
+تازه به‌روز‌شده
+[library Refresh library]
+تازه‌سازی کتابخانه
+[library Release identity changed during installation]
+اطلاعات شناسایی نسخه هنگام نصب تغییر کرد
+[library Reroll]
+تولید دوباره
+[library Reroll seed]
+تغییر بذر
+[library Saving generator library…]
+در حال ذخیرهٔ کتابخانهٔ مولدها…
+[library Search]
+جستجو
+[library Seed]
+بذر
+[library Selection saved for new maps.]
+انتخاب برای نقشه‌های جدید ذخیره شد.
+[library Storage failed.]
+ذخیره ناموفق بود.
+[library Storage persistence unavailable]
+ذخیره‌سازی پایدار در دسترس نیست
+[library Tags]
+برچسب‌ها
+[library Technical checks passed for this engine. Balance is not certified.]
+بررسی‌های فنی این موتور موفق بود. تعادل بازی تأیید نشده است.
+[library The server returned a different family.]
+سرور خانوادهٔ دیگری برگرداند.
+[library This link is from another instance. Switch to that instance in Online first.]
+این پیوند متعلق به نمونهٔ دیگری است. ابتدا از بخش آنلاین به آن نمونه بروید.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+این شناسهٔ بسته نصب است. برای استفاده از نسخهٔ انتخاب‌شده جایگزینی را تأیید کنید.
+[library This release has no passing checks for this engine.]
+این نسخه هیچ بررسی موفقی برای این موتور ندارد.
+[library This release is installed.]
+این نسخه نصب است.
+[library Update installed family]
+به‌روزرسانی خانوادهٔ نصب‌شده
+[library Use in a room]
+استفاده در یک اتاق
+[library By %0]
+سازنده: %0
+[library Installed release %0]
+نسخهٔ نصب‌شدهٔ %0
+[library Release %0]
+نسخهٔ %0
+[library Remove %0]
+حذف %0
+[library Seed: %0]
+بذر: %0
+[library %0 · revision %1]
+%0 · بازبینی %1

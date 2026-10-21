@@ -6011,96 +6011,622 @@ Limite de temps atteinte.
 [outcome reason probability]
 Seuil de probabilité de victoire atteint.
 [Discord community]
-
+Communauté Discord
 [Globulation 2 Discord]
-
+Discord de Globulation 2
 [discord community intro]
-
+Trouvez des adversaires, demandez de l’aide et partagez vos cartes avec la communauté de Globulation 2.
 [discord opens externally]
-
+Rejoignez notre serveur Discord. Discord ou votre navigateur s’ouvrira.
 [Join Discord]
-
+Rejoindre Discord
 [Copy link]
-
+Copier le lien
 [discord opened]
-
+Discord est ouvert. Vous pouvez revenir au jeu à tout moment.
 [discord open failed]
-
+Impossible d’ouvrir Discord. Copiez le lien d’invitation et ouvrez-le dans votre navigateur.
 [discord link copied]
-
+Lien d’invitation copié.
 [settings CPU automatic]
-
+CPU automatique
 [settings Scalar]
-
+Scalaire
 [settings Unavailable]
-
+Indisponible
 [settings Initializing]
-
+Initialisation
 [settings Gradient backend]
-
+Moteur de calcul des gradients
 [settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
-
+Prend effet à la prochaine étape de synchronisation de la simulation. Les calculs non pris en charge utilisent le CPU automatique ; le rendu est indépendant.
 [settings Gradient algorithm]
-
+Algorithme des gradients
 [settings All choices compute the same exact field.]
-
+Toutes les options calculent exactement le même champ.
 [settings Bucket propagation]
-
+Propagation par compartiments
 [settings Verify gradient results]
-
+Vérifier les résultats des gradients
 [settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
-
+Comparer les résultats du GPU à ceux du CPU scalaire avant leur utilisation. Ajoute des calculs et arrête le jeu en cas de différence.
 [settings Gradient computation]
-
+Calcul des gradients
 [settings CPU fallback]
-
+Repli sur le CPU
 [settings GPU fields]
-
+Champs GPU
 [settings CPU fallbacks]
-
+Replis sur le CPU
 [settings MCP server]
-
+Serveur MCP
 [settings Enabling the MCP server permits local clients to see and operate the game.]
-
+Activer le serveur MCP permet aux clients locaux de consulter et de contrôler le jeu.
 [settings Enable MCP server]
-
+Activer le serveur MCP
 [settings Port]
-
+Port
 [settings Current controller: %0]
-
+Contrôleur actuel : %0
 [settings Copy endpoint]
-
+Copier le point de connexion
 [settings Retry listener]
-
+Relancer l’écoute
 [settings Revoke control]
-
+Révoquer le contrôle
 [settings MCP server unavailable in this application]
-
+Serveur MCP indisponible dans cette application
 [settings Disabled]
-
+Désactivé
 [settings Running]
-
+En cours d’exécution
 [settings Error: %0]
-
+Erreur : %0
 [settings None]
-
+Aucun
 [settings Starting]
-
+Démarrage
 [Which hand holds your phone?]
-
+Main gauche ou main droite ?
 [hand preference explanation]
-
+Tenez votre téléphone naturellement. Touchez la main avec laquelle vous jouez.
 [hand silhouettes description]
-
+Contour d’un téléphone surmonté des mains gauche et droite. Appuyez sur l’une des zones biseautées des pouces pour choisir ce côté.
 [hand preference change later]
-
+Vous pourrez changer de côté dans les paramètres.
 [hand preference save failed]
-
+Impossible d’enregistrer votre choix. Veuillez réessayer.
 [Left hand]
-
+Main gauche
 [Right hand]
-
+Main droite
 [discord copy failed]
-
+Impossible de copier le lien. Sélectionnez l’invitation ci-dessus pour la copier manuellement.
 [Destroy this building?]
 Détruire ce bâtiment ?
+[stat ground movement]
+Déplacement au sol
+[stat ground movement about]
+Unités terrestres vivantes selon le rapport approximatif de leurs vitesses. « Nage 2× » signifie une nage deux fois plus rapide que la course. Les unités volantes et immobiles sont exclues.
+[stat view by movement]
+Par déplacement
+[stat band land only]
+Terre uniquement
+[stat band swim twice run]
+Nage 2×
+[stat band swim faster run]
+Nage 1,4×
+[stat band swim equals run]
+Vitesses égales
+[stat band run faster swim]
+Course 1,3×
+[stat band run twice swim]
+Course 2×
+[stat band run triple swim]
+Course 3×
+[stat band water only]
+Eau uniquement
+[settings Browse shared generators]
+Parcourir les générateurs partagés
+[settings Apply artwork on the next game or editor load.]
+Appliquer les graphismes au prochain chargement d’une partie ou de l’éditeur.
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+Nécessite un moteur de rendu avec filtrage des textures. Votre choix est conservé.
+[settings Automatically show the torus overview while moving around the map.]
+Afficher automatiquement la vue du tore pendant les déplacements sur la carte.
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+Nécessite un moteur de rendu prenant en charge le tore. Votre choix est conservé.
+[settings Move and animate units between game ticks.]
+Déplacer et animer les unités entre les pas de simulation.
+[settings Renderer unavailable]
+Moteur de rendu indisponible
+[settings Apply at the next completed frame. Your game stays running.]
+Appliquer à la fin de la prochaine image. Votre partie continue.
+[settings Active renderer: %0]
+Moteur de rendu actif : %0
+[settings Changing renderer…]
+Changement du moteur de rendu…
+[settings Menu scroll wheel enabled]
+Activer la molette dans les menus
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+Contrôle le défilement à la molette dans les menus. Sur les cartes du jeu et de l’éditeur, la molette règle toujours le zoom.
+[settings Gesture scrolling]
+Défilement par gestes
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+Défilement tactile et gestes Mac. 0 désactive un effet ; 50 est la valeur tactile par défaut.
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+Distance de défilement des listes et panneaux après une impulsion tactile. Les gestes Mac utilisent l’inertie du système ; zéro désactive leur glissement.
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+Étirement des listes et panneaux au-delà de leurs extrémités avant de rebondir. Les gestes Mac utilisent un étirement plus doux.
+[hive stopping]
+Arrêt…
+[hive stopped]
+Arrêté
+[hive stop failed]
+Échec de l’arrêt ; réessayez le raccourci d’arrêt
+[hive updating]
+Mise à jour…
+[hive requested]
+Demandé
+[hive update failed]
+Échec de la mise à jour ; réessayez
+[hive give order]
+Donner un ordre
+[hive less]
+Moins
+[hive reports and details]
+Rapports / détails
+[hive needs fresh order]
+Nouvel ordre nécessaire
+[hive active]
+Actif
+[hive resume]
+Reprendre
+[recordings]
+Enregistrements
+[recording delete confirm]
+Supprimer l’enregistrement ?
+[recording delete warning]
+L’enregistrement et ses métadonnées seront supprimés.
+[recording delete]
+Supprimer
+[recording working]
+Traitement…
+[recording none]
+Aucun enregistrement pour le moment.
+[recording interrupted]
+Enregistrement interrompu
+[recording recover]
+Récupérer
+[recording export video]
+Exporter la vidéo
+[recording export metadata]
+Exporter les métadonnées
+[recording export events]
+Exporter les événements
+[recording export failed]
+Impossible d’exporter l’enregistrement.
+[recording delete action]
+Supprimer l’enregistrement
+[recording refresh]
+Actualiser
+[tutorial part1 message 1]
+Bienvenue dans Globulation 2 ! Ces quatre missions vous apprennent à gérer une colonie. Enregistrez votre progression dans le menu du jeu pour la reprendre depuis le menu principal. Appuyez sur Espace, ou touchez OK, pour continuer. Retrouvez les messages disparus dans l’historique des messages.
+[tutorial part1 message 2]
+Vous commencez avec une Ruche et une ouvrière. Observons leur travail.
+[tutorial part1 message 3]
+L’ouvrière récolte du blé et l’apporte à la Ruche, qui le consomme pour produire de nouvelles unités. La Ruche est essentielle à votre colonie.
+[tutorial part1 message 4]
+Sélectionnez votre globule, l’unité mobile, d’un clic gauche ou d’un toucher.
+[tutorial part1 message 5]
+Les informations de l’unité montrent sa réserve de nourriture diminuer : elle a faim. Lorsque les barres de nourriture sont visibles, la barre bleue sous l’unité indique sa réserve.
+[tutorial part1 message 6]
+Les globules mangent dans les Auberges. Désélectionnez l’unité par un clic droit, ou touchez un terrain vide sur écran tactile.
+[tutorial part1 message 7]
+Ouvrez les commandes de construction et placez une Auberge près du blé. Suivez le trajet de votre ouvrière pour le trouver. Sur écran tactile, ouvrez Construire et confirmez un emplacement valide. Quittez le placement par un clic droit ou le bouton tactile Annuler.
+[tutorial part1 message 8]
+Bien ! Le chantier de l’Auberge est en place.
+[tutorial part1 message 9]
+Une ouvrière de la Ruche peut construire l’Auberge. Elle récolte du bois dans les arbres voisins et l’apporte au chantier. Attendez la fin des travaux.
+[tutorial part1 message 10]
+L’Auberge terminée a besoin de blé. Une ouvrière affectée le récolte, comme pour la Ruche.
+[tutorial part1 message 11]
+La barre jaune de l’Auberge monte avec les livraisons : elle indique le stock de blé.
+[tutorial part1 message 12]
+Apprenons maintenant à répartir le travail.
+[tutorial part1 message 13]
+Une ouvrière approvisionne la Ruche, une autre l’Auberge. Elles peuvent interrompre leur travail pour manger. C’est normal.
+[tutorial part1 message 14]
+Sélectionnez la Ruche et trouvez le réglage d’affectation des ouvrières : Au travail sur ordinateur, nombre affecté et cible sur écran tactile. La cible indique le nombre d’ouvrières souhaité.
+[tutorial part1 message 15]
+Réglez la cible d’ouvrières de la Ruche sur 0. Sélectionnez ensuite l’Auberge et faites de même.
+[tutorial part1 message 16]
+Vos ouvrières sont inactives, mais mangent toujours. Sans ouvrière affectée, l’Auberge finira par manquer de blé.
+[tutorial part1 message 17]
+Un globule privé de nourriture perd de la santé et peut mourir. Un Hôpital soigne les blessures, mais il faut aussi approvisionner les Auberges.
+[tutorial part1 message 18]
+Construisez un Hôpital. Il ne consomme pas de blé : placez-le près du bois ou au centre, près de la Ruche.
+[tutorial part1 message 19]
+Sélectionnez le chantier de l’Hôpital et réglez sa cible sur 2 ouvrières pour accélérer les travaux.
+[tutorial part1 message 20]
+L’Hôpital est prêt. Les globules blessés peuvent maintenant s’y soigner.
+[tutorial part1 message 21]
+Les zones noires sont inexplorées. Les unités révèlent le terrain voisin en se déplaçant. Les ouvrières suivent leur travail ; les exploratrices sont mieux adaptées à la reconnaissance.
+[tutorial part1 message 22]
+Sélectionnez la Ruche et trouvez les proportions de production des ouvrières, exploratrices et guerrières. Montez celle des exploratrices à 1.
+[tutorial part1 message 23]
+Avec les proportions ouvrières et exploratrices à 1, la Ruche produit autant des unes que des autres. Réglez les ouvrières sur 0 pour ne produire que des exploratrices.
+[tutorial part1 message 24]
+Ramenez la cible d’ouvrières affectées à la Ruche à 1 pour l’approvisionner en blé.
+[tutorial part1 message 25]
+Réglez aussi la cible de l’Auberge sur 1 ouvrière. La colonie a besoin d’une alimentation régulière.
+[tutorial part1 message 26]
+Attendez que la Ruche produise une exploratrice.
+[tutorial part1 message 27]
+Votre exploratrice survole la colonie et révèle le terrain. Laissez la Ruche en produire une deuxième avant de continuer.
+[tutorial part1 message 28]
+Sélectionnez la Ruche. Réglez la proportion d’exploratrices sur 0 et celle des ouvrières sur 1 pour reprendre leur production.
+[tutorial part2 message 1]
+De la pierre se trouve à l’est de votre base. Retenez cet emplacement pour plus tard.
+[tutorial part2 message 2]
+Les arbres au sud de la pierre sont des orangers. Sélectionnez-les pour afficher leurs ressources. Nous reviendrons aux fruits ; concentrons-nous sur la Ruche.
+[tutorial part2 message 3]
+Réglez la Ruche pour produire uniquement des ouvrières : ouvrières 1, exploratrices et guerrières 0.
+[tutorial part2 message 4]
+Accélérons la croissance. Réglez la cible d’ouvrières de la Ruche sur 6. Les nouvelles ouvrières prendront les postes libres à mesure de leur arrivée.
+[tutorial part2 message 5]
+Nous passerons aux tâches suivantes à 8 ouvrières. Maintenez l’approvisionnement de la Ruche et de l’Auberge en attendant.
+[tutorial part2 message 6]
+Plusieurs ouvrières approvisionnent maintenant la Ruche. Davantage de blé permet de produire des unités plus vite.
+[tutorial part2 message 7]
+Une ouvrière coûte 5 unités de blé. Un champ éloigné ralentit les livraisons : la Ruche a souvent besoin de plus d’ouvrières qu’une Auberge. Construisez près du blé si possible.
+[tutorial part2 message 8]
+Vous avez au moins 8 ouvrières. Ramenez la cible de la Ruche à 1 pour ralentir la croissance pendant les constructions.
+[tutorial part2 message 9]
+Il faut davantage de places pour manger. Construisez une deuxième Auberge au nord de la première.
+[tutorial part2 message 10]
+Affectez des ouvrières libres au chantier. Il ne faut que 3 unités de bois : plus de 3 bâtisseuses aideraient peu.
+[tutorial part2 message 11]
+L’Auberge terminée reprend sa cible de fonctionnement, normalement 1 ouvrière. Les cibles de construction et d’approvisionnement sont distinctes.
+[tutorial part2 message 12]
+Les ouvrières peuvent apprendre à courir plus vite à la Piste de course.
+[tutorial part2 message 13]
+Trouvez la Piste de course dans les commandes de construction. Sur ordinateur, survolez son icône pour lire sa description et son coût. Sur écran tactile, sélectionnez-la dans Construire. Ne la placez pas encore.
+[tutorial part2 message 14]
+La Piste de course demande beaucoup de bois et un peu de pierre. Choisissez un emplacement central, facile à rejoindre.
+[tutorial part2 message 15]
+Construisez une Piste de course, par exemple au sud de la Ruche. Laissez de l’espace autour pour ses futurs agrandissements.
+[tutorial part2 message 16]
+Affectez entre 5 et 7 ouvrières au chantier de la Piste de course. Il demande 7 matériaux au total.
+[tutorial part2 message 17]
+Une fois construite, la Piste de course entraîne les unités sans apport continu de matériaux ou de blé.
+[tutorial part2 message 18]
+Des globules entrent à la Piste de course. Ils courront plus vite après leur entraînement.
+[tutorial part2 message 19]
+Sélectionnez la Piste de course pour suivre l’entraînement. Les indicateurs montrent quand les unités termineront.
+[tutorial part2 message 20]
+Vos ouvrières entraînées livrent les ressources plus vite. Surveillez toujours les stocks de nourriture et gardez assez d’Auberges approvisionnées.
+[tutorial part2 message 21]
+Trouvez le compteur d’ouvrières dans l’interface. Le total indique la population ; la disponibilité révèle les ouvrières libres ou les postes vacants. Évitez de créer plus de travail que la colonie peut en assurer.
+[tutorial part2 message 22]
+L’interface indique aussi les exploratrices et guerrières. Consultez ces compteurs pour régler la production et les affectations aux drapeaux.
+[tutorial part2 message 23]
+Vos 2 Auberges de base ont chacune 4 places, soit 8 au total. Plus de 8 unités peuvent avoir faim : prévoyez de la capacité pour les files d’attente.
+[tutorial part2 message 24]
+Deux Auberges ne suffiront pas indéfiniment. Augmentez les capacités avant que les pénuries ne deviennent une famine.
+[tutorial part2 message 25]
+Construisez 3 autres Auberges près du blé. Les ouvrières affamées cessent de travailler et finissent par mourir. Construisez tout en maintenant l’approvisionnement existant.
+[tutorial part2 message 26]
+Terminez 3 Auberges supplémentaires pour en avoir 5.
+[tutorial part2 message 27]
+Les nouvelles Auberges reprennent leurs cibles de fonctionnement, normalement 1 ouvrière chacune. Vérifiez leur approvisionnement et leurs stocks de blé.
+[tutorial part2 message 28]
+La Piste de course facilite les déplacements terrestres. Apprenons maintenant à nager.
+[tutorial part2 message 29]
+Une Piscine apprend aux unités à nager et demande du bois. Construisez-en une dans la grande clairière au nord-est, au nord de la pierre. Gardez de l’espace pour les améliorations et la croissance des ressources ; affectez des ouvrières libres au chantier.
+[tutorial part2 message 30]
+Une Piscine apprend aux unités à nager et demande du bois. Construisez-en une dans la grande clairière au nord-est, au nord de la pierre. Gardez de l’espace pour les améliorations et la croissance des ressources ; affectez des ouvrières libres au chantier.
+[tutorial part2 message 31]
+La Piscine est prête. Les globules peuvent y apprendre à nager.
+[tutorial part2 message 32]
+Sélectionnez la Piscine pour suivre l’entraînement. Une Piscine de base entraîne 2 globules à la fois, comme une Piste de course de base.
+[tutorial part2 message 33]
+Les globules entraînés savent maintenant nager. Nous leur donnerons bientôt une tâche qui demande de traverser l’eau.
+[tutorial part2 message 34]
+Il reste des choses à apprendre. Pour faire une pause, enregistrez votre progression dans le menu du jeu.
+[tutorial part2 message 35]
+Votre colonie dispose de nourriture et d’entraînement physique. L’École apprendra aux ouvrières à construire de meilleurs bâtiments.
+[tutorial part2 message 36]
+L’École améliore la récolte et la construction. Elle nécessite des algues, qui poussent dans l’eau. Les ouvrières sachant nager peuvent les récolter.
+[tutorial part2 message 37]
+Protégez vos bâtiments d’entraînement. L’École n’a pas besoin d’être au bord de l’eau ; un emplacement abrité à l’intérieur des terres est plus sûr.
+[tutorial part2 message 38]
+Construisez l’École dans un lieu protégé, derrière la Piscine ou au sud-ouest de la Ruche, près de la Piste de course. Affectez-y des ouvrières disponibles.
+[tutorial part2 message 39]
+Sélectionnez un bâtiment pour voir ses ouvrières. Sur ordinateur, l’action configurable d’affichage des trajets relie les unités à leurs destinations ; consultez son raccourci dans Paramètres, Commandes. Attendez la fin de l’École.
+[tutorial part3 message 1]
+Vous disposez d’Auberges, d’un Hôpital, d’une Piste de course, d’une Piscine et d’une École. Préparons maintenant les défenses.
+[tutorial part3 message 2]
+Nous n’avons pas encore produit de guerrières. La colonie est donc peu protégée contre une attaque.
+[tutorial part3 message 3]
+Sélectionnez la Ruche et réglez la proportion de guerrières sur 2. Gardez celle des ouvrières à 1 pour continuer à en produire.
+[tutorial part3 message 4]
+La Ruche produira environ 2 guerrières pour chaque ouvrière. Affectez davantage d’ouvrières à son approvisionnement pour accélérer la production.
+[tutorial part3 message 5]
+Votre première guerrière est prête et va s’entraîner. Attendez une deuxième guerrière avant de continuer.
+[tutorial part3 message 6]
+Les guerrières utilisent aussi la Piste de course et la Piscine. Les Camps d’entraînement leur enseignent en plus le combat.
+[tutorial part3 message 7]
+Les Camps d’entraînement améliorent la force et la vitesse d’attaque : dégâts par coup et fréquence des coups. Des guerrières entraînées peuvent vaincre des groupes non entraînés bien plus nombreux.
+[tutorial part3 message 8]
+Construisez un Camp d’entraînement près du bois nécessaire à sa construction.
+[tutorial part3 message 9]
+Affectez des ouvrières disponibles au chantier du Camp d’entraînement, sans négliger la nourriture ni créer trop de postes.
+[tutorial part3 message 10]
+Le Camp d’entraînement est prêt. Les guerrières peuvent y améliorer leurs attaques.
+[tutorial part3 message 11]
+Améliorer les bâtiments renforce aussi la colonie.
+[tutorial part3 message 12]
+Les ouvrières formées à l’École peuvent réaliser les améliorations. Sélectionnez un bâtiment admissible et choisissez Améliorer. S’il est endommagé, une réparation peut être nécessaire d’abord.
+[tutorial part3 message 13]
+Que faut-il améliorer en premier ? Nos Auberges ont encore de la place : elles peuvent attendre.
+[tutorial part3 message 14]
+L’Hôpital aussi a de la place. Concentrons-nous sur l’École, la Piste de course, la Piscine ou le Camp d’entraînement.
+[tutorial part3 message 15]
+Améliorez la Piste de course en premier pour apprendre aux unités à courir encore plus vite.
+[tutorial part3 message 16]
+Sélectionnez la Piste de course et choisissez Améliorer. Les unités présentes doivent sortir avant le début des travaux : le changement peut attendre un instant.
+[tutorial part3 message 17]
+Affectez des ouvrières disponibles à l’amélioration de la Piste de course. Seules celles ayant la formation scolaire requise peuvent travailler sur un chantier de niveau 2.
+[tutorial part3 message 18]
+Attendez la fin de l’amélioration. Les bâtiments avancés demandent davantage de ressources et de temps.
+[tutorial part3 message 19]
+La Piste de course de niveau 2 est terminée. Elle est plus grande, d’où l’espace réservé. Sans place pour s’agrandir, un bâtiment ne peut pas être amélioré.
+[tutorial part3 message 20]
+Améliorez maintenant le Camp d’entraînement et la Piscine au niveau 2. Nous continuerons une fois les deux terminés.
+[tutorial part3 message 21]
+Les bâtiments améliorés accueillent généralement plus de globules ou offrent un meilleur entraînement. Une Auberge de niveau 2 possède 7 places et sert les repas plus vite.
+[tutorial part3 message 22]
+L’ennemi est proche. Préparons-nous à l’attaque.
+[tutorial part3 message 23]
+Les Tourelles tirent sur les ennemis à portée. Les Murs les protègent. Combinons-les pour défendre un passage étroit.
+[tutorial part3 message 24]
+Placez deux Tourelles si possible. Protégez trois côtés par des Murs, mais gardez un accès pour les livraisons de munitions en pierre.
+[tutorial part3 message 25]
+À l’est de la Piscine, au nord des autres arbres fruitiers, un passage étroit mène à une autre île. Défendez cet endroit.
+[tutorial part3 message 26]
+Prévoyez 2 Tourelles entre les arbres et la rive. Gardez un accès derrière pour la pierre et de la place ailleurs pour les Murs. Ne bloquez pas les ouvrières.
+[tutorial part3 message 27]
+Construisez 2 Tourelles à cet endroit. Affectez 2 ou 3 ouvrières à chaque chantier selon les disponibilités affichées.
+[tutorial part3 message 28]
+Placez des Murs sur les trois côtés extérieurs des Tourelles. Laissez ouvert le côté tourné vers la colonie.
+[tutorial part3 message 29]
+Chaque section de Mur crée un travail et demande 1 pierre. Les ouvrières peuvent terminer les sections successivement si elles ne sont pas assez nombreuses.
+[tutorial part3 message 30]
+Attendez la fin des deux Tourelles et de plusieurs Murs. Les Tourelles consomment de la pierre comme munitions, livrée lentement depuis la carrière éloignée. Augmentez leurs cibles si des ouvrières sont libres.
+[tutorial part4 message 1]
+Votre colonie dispose de nourriture, d’entraînement et de défenses. Les bâtiments peuvent encore atteindre le niveau 3 pour gagner en capacité et en entraînement. Poursuivez les améliorations selon vos ressources et compétences.
+[tutorial part4 message 2]
+Cherchez la colonie ennemie au nord-ouest de votre base. Déplacez-y la vue.
+[tutorial part4 message 3]
+Le terrain exploré peut rester caché par le brouillard de guerre. Pour observer l’activité actuelle de l’ennemi, il faut une exploratrice à proximité.
+[tutorial part4 message 4]
+Ouvrez Drapeaux. Les drapeaux et les zones dirigent les unités sans contrôler chaque globule individuellement.
+[tutorial part4 message 5]
+Choisissez le Drapeau d’exploration, au symbole de cerf-volant. Il se place sur la terre, l’eau, les ressources et les terrains inexplorés.
+[tutorial part4 message 6]
+Placez-le à l’emplacement supposé de la base ennemie. Une position approximative suffit. Quittez le placement par un clic droit ou les commandes tactiles.
+[tutorial part4 message 7]
+Le contour indique le rayon d’action du drapeau. Une exploratrice affectée viendra reconnaître la zone. Vérifiez leur nombre si personne n’arrive et produisez-en une à la Ruche au besoin. Appuyez sur Espace ou touchez OK à son arrivée.
+[tutorial part4 message 8]
+L’ennemi a beaucoup d’ouvrières et une armée rassemblée. Préparons nos défenses.
+[tutorial part4 message 9]
+Ouvrez Drapeaux et choisissez la zone de Garde bleue. Utilisez le mode d’ajout, pas de suppression. Sur écran tactile, choisissez Peindre plutôt qu’Effacer.
+[tutorial part4 message 10]
+Choisissez une forme et une taille de pinceau. Le grand carré convient à une défense compacte.
+[tutorial part4 message 11]
+Peignez une zone de Garde derrière les Tourelles, sur l’axe d’approche ennemi. Cliquez ou touchez un point, ou faites glisser pour couvrir plus de terrain. Sur écran tactile, utilisez Déplacer pour déplacer la vue pendant ce travail.
+[tutorial part4 message 12]
+Les guerrières disponibles rejoignent la zone. Prévoyez assez de place, mais gardez les défenseuses regroupées au passage. Attendez l’attaque.
+[tutorial part4 message 13]
+L’ennemi approche du passage !
+[tutorial part4 message 14]
+Nous sommes attaqués. Observez comment les guerrières entraînées et les Tourelles défendent la position.
+[tutorial part4 message 15]
+Vous avez survécu ! Ouvrez Drapeaux et choisissez le Drapeau de guerre hérissé de pointes. Placez-le sur la Ruche ennemie pour y diriger l’attaque.
+[tutorial part4 message 16]
+Quittez le placement et sélectionnez le Drapeau de guerre. Affectez plus d’une guerrière et réduisez le rayon pour concentrer l’attaque sur la Ruche. Attendez leur arrivée.
+[tutorial part4 message 17]
+L’attaque a commencé. Vos guerrières doivent passer les Tourelles ennemies pour atteindre la Ruche.
+[tutorial part4 message 18]
+Vos guerrières ont atteint la base ennemie. Maintenez l’attaque sur la Ruche.
+[tutorial part4 message 19]
+Vous avez détruit la Ruche ennemie ! Le didacticiel est terminé. Vous connaissez les bases de l’alimentation, des affectations, de l’entraînement, des améliorations, de la reconnaissance et du combat.
+[tutorial mission basics]
+Introduction et bases
+[tutorial mission development]
+Bâtiments et écoles
+[tutorial mission training]
+Guerrières, entraînement et améliorations
+[tutorial mission flags]
+Drapeaux et conclusion
+[library  Could not restore the previous library: %0]
+ Impossible de restaurer la bibliothèque précédente : %0
+[library  The previous library is retained.]
+ La bibliothèque précédente est conservée.
+[library  · Installed]
+ · Installé
+[library  · Update available]
+ · Mise à jour disponible
+[library A different release is installed. Install the selected release to update explicitly.]
+Une autre version est installée. Installez la version sélectionnée pour effectuer explicitement la mise à jour.
+[library All engines]
+Tous les moteurs
+[library All generators]
+Tous les générateurs
+[library Available families]
+Familles disponibles
+[library Back]
+Retour
+[library Building families]
+Familles de bâtiments
+[library Building library]
+Bibliothèque de bâtiments
+[library Checking building release]
+Vérification de la version du bâtiment
+[library Choose an online instance before opening a family link.]
+Choisissez une instance en ligne avant d’ouvrir un lien de famille.
+[library Compatible with this engine]
+Compatible avec ce moteur
+[library Confirm replacement]
+Confirmer le remplacement
+[library Create in Building Studio]
+Créer dans Building Studio
+[library Downloading generator…]
+Téléchargement du générateur…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+Chaque paysage est présenté comme une véritable carte, avec la taille et le nombre de colonies réglables ci-dessous. Utilisez-le pour jouer sur la carte affichée.
+[library Editor tool: generates terrain for the map editor.]
+Outil d’édition : génère du terrain pour l’éditeur de cartes.
+[library Editor tools]
+Outils d’édition
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+Activez les familles installées ci-dessous. La sélection est enregistrée dans ce profil local ; les cartes et sauvegardes existantes conservent leurs bâtiments. Pour jouer en ligne, générez une carte avec ces familles, publiez-la dans la bibliothèque de cartes, puis choisissez-la dans votre salon.
+[library Enter a building family ID or a link to its family page.]
+Saisissez l’identifiant d’une famille de bâtiments ou le lien vers sa page.
+[library Family link or ID]
+Lien ou identifiant de famille
+[library Family links must be at most 1024 characters.]
+Les liens de famille sont limités à 1024 caractères.
+[library Family removed.]
+Famille supprimée.
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+Famille indisponible. Pour une famille privée, connectez-vous via En ligne avec un compte qui y a accès.
+[library Generator file hash mismatch]
+L’empreinte du fichier du générateur ne correspond pas
+[library Generator installed. Future selections use this release.]
+Générateur installé. Les prochaines sélections utiliseront cette version.
+[library Generator package identity mismatch]
+L’identité du paquet du générateur ne correspond pas
+[library Generators]
+Générateurs
+[library Install compatible release]
+Installer une version compatible
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+Installez des bâtiments individuels ou des familles d’améliorations en complément des bâtiments de base. La sélection s’applique uniquement aux nouvelles cartes générées.
+[library Install selected release]
+Installer la version sélectionnée
+[library Installed]
+Installé
+[library Installed families]
+Familles installées
+[library Installed. Enable the family below for new maps.]
+Installation terminée. Activez la famille ci-dessous pour les nouvelles cartes.
+[library Invalid building family ID.]
+Identifiant de famille de bâtiments invalide.
+[library Invalid building library response]
+Réponse invalide de la bibliothèque de bâtiments
+[library Invalid library cursor]
+Curseur de bibliothèque invalide
+[library Invalid release identity]
+Identité de version invalide
+[library Load more]
+Charger la suite
+[library Load more families]
+Charger d’autres familles
+[library Loading building families]
+Chargement des familles de bâtiments
+[library Loading…]
+Chargement…
+[library Map generators]
+Générateurs de cartes
+[library Maps]
+Cartes
+[library Most downloaded]
+Les plus téléchargés
+[library Most liked]
+Les plus appréciés
+[library My generators]
+Mes générateurs
+[library Newest]
+Les plus récents
+[library No building families installed.]
+Aucune famille de bâtiments installée.
+[library No public building families yet]
+Aucune famille de bâtiments publique pour le moment
+[library No validated release for this game version.]
+Aucune version validée pour cette version du jeu.
+[library Online server changed during download]
+Le serveur en ligne a changé pendant le téléchargement
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+Ouvrez une famille non répertoriée avec son lien ou son identifiant. Pour les familles privées, connectez-vous d’abord via En ligne.
+[library Open family]
+Ouvrir une famille
+[library Opened family. Install its compatible release below.]
+Famille ouverte. Installez sa version compatible ci-dessous.
+[library Opening building family]
+Ouverture de la famille de bâtiments
+[library Playable]
+Jouable
+[library Playable generator]
+Générateur jouable
+[library Privacy policy]
+Politique de confidentialité
+[library Public library]
+Bibliothèque publique
+[library Recently updated]
+Mis à jour récemment
+[library Refresh library]
+Actualiser la bibliothèque
+[library Release identity changed during installation]
+L’identité de la version a changé pendant l’installation
+[library Reroll]
+Relancer
+[library Reroll seed]
+Nouvelle graine
+[library Saving generator library…]
+Enregistrement de la bibliothèque de générateurs…
+[library Search]
+Rechercher
+[library Seed]
+Graine
+[library Selection saved for new maps.]
+Sélection enregistrée pour les nouvelles cartes.
+[library Storage failed.]
+Échec de l’enregistrement.
+[library Storage persistence unavailable]
+Stockage persistant indisponible
+[library Tags]
+Étiquettes
+[library Technical checks passed for this engine. Balance is not certified.]
+Vérifications techniques réussies pour ce moteur. L’équilibrage n’est pas certifié.
+[library The server returned a different family.]
+Le serveur a renvoyé une autre famille.
+[library This link is from another instance. Switch to that instance in Online first.]
+Ce lien provient d’une autre instance. Sélectionnez d’abord cette instance dans En ligne.
+[library This package ID is installed. Confirm replacement to use the selected release.]
+Ce paquet est installé. Confirmez le remplacement pour utiliser la version sélectionnée.
+[library This release has no passing checks for this engine.]
+Cette version n’a aucune vérification réussie pour ce moteur.
+[library This release is installed.]
+Cette version est installée.
+[library Update installed family]
+Mettre à jour la famille installée
+[library Use in a room]
+Utiliser dans un salon
+[library By %0]
+Par %0
+[library Installed release %0]
+Version installée %0
+[library Release %0]
+Version %0
+[library Remove %0]
+Supprimer %0
+[library Seed: %0]
+Graine : %0
+[library %0 · revision %1]
+%0 · révision %1
+[library Fit]
+Ajuster
+[library GL only]
+GL uniquement
