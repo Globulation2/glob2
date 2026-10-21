@@ -14,24 +14,27 @@ class EmulatorSmokeTests(unittest.TestCase):
     def test_smoke_completes_hand_preference_and_waits_for_current_menu(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
         import smoke
-        for first_run in (False, True):
-            with self.subTest(first_run=first_run):
+        for initial in ((), ('HandPreferenceScreen',), ('AudioPreferenceScreen',),
+                        ('AudioPreferenceScreen', 'HandPreferenceScreen')):
+            with self.subTest(initial=initial):
                 history = ['Glob2 screen ready: MainMenuScreen']
-                if first_run:
-                    history.append('Glob2 screen ready: HandPreferenceScreen')
+                pending = list(initial)
+                if pending:
+                    history.append('Glob2 screen ready: ' + pending[0])
                 commands = []
 
                 def run(*command):
                     commands.append(command)
                     if command[-1] == 'KEYCODE_ENTER':
-                        history.append('Glob2 screen ready: MainMenuScreen')
+                        pending.pop(0)
+                        history.append('Glob2 screen ready: ' + (pending[0] if pending else 'MainMenuScreen'))
 
                 def wait_for(predicate, description):
                     self.assertTrue(predicate(), description)
 
                 smoke.wait_for_main_menu(run, lambda: '\n'.join(history), wait_for)
                 self.assertEqual([command[-1] for command in commands],
-                                 ['KEYCODE_TAB', 'KEYCODE_ENTER'] if first_run else [])
+                                 ['KEYCODE_TAB', 'KEYCODE_ENTER'] * len(initial))
 
     def test_pinned_java_home_is_host_specific_and_preserves_override(self):
         import json

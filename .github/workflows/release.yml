@@ -151,6 +151,17 @@ jobs:
             | tee "build/android-${{ matrix.arch }}-build.log"
           apk="build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
           python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
+      - name: Load reviewed emulator smoke driver
+        if: matrix.arch == 'x86_64'
+        env:
+          DRIVER_REPOSITORY: ${{ github.repository }}
+          DRIVER_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # Validation follows the reviewed mirror driver; APK bytes remain tagged.
+          git fetch --no-tags "https://github.com/$DRIVER_REPOSITORY.git" "$DRIVER_COMMIT"
+          git show FETCH_HEAD:mobile/smoke.py > "$RUNNER_TEMP/release-smoke.py"
+          cp "$RUNNER_TEMP/release-smoke.py" mobile/smoke.py
       - name: Launch x86_64 release candidate in an emulator
         if: matrix.arch == 'x86_64'
         run: |
