@@ -7,11 +7,20 @@ on:
         description: Existing immutable public vVERSION tag
         required: true
         type: string
+      play_preflight_only:
+        description: Check Play access without re-uploading; select only after this tag was uploaded successfully
+        required: false
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       tag:
         required: true
         type: string
+      play_preflight_only:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -196,6 +205,7 @@ jobs:
       tag: ${{ inputs.tag }}
       source_commit: ${{ needs.context.outputs.revision }}
       track: internal
+      preflight_only: ${{ inputs.play_preflight_only || false }}
       release_notes: Globulation 2 public-release qualification candidate.
 
   ios-candidate:
