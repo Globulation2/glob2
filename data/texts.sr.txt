@@ -6629,18 +6629,18 @@ MCP сервер није доступан у овој апликацији
 [library Fit]
 Уклопи
 [Sound or silence?]
-
+Звук или тишина?
 [Silence]
-
+Тишина
 [Sound]
-
+Звук
 [audio preference explanation]
-
+Игра се покреће без звука. Желите ли тишину или музику и звукове игре?
 [audio preference change later]
-
+Ово можете променити у било ком тренутку у Подешавања → Звук.
 [audio preference save failed]
-
+Није могуће сачувати избор. Звук је и даље искључен. Покушајте поново.
 [audio choices description]
-
+Тишина: утишан звучник. Звук: звучник са звучним таласима.
 [library GL only]
 Само GL

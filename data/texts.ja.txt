@@ -6629,18 +6629,18 @@ Building Studio で作成
 [library Fit]
 全体表示
 [Sound or silence?]
-
+音を出しますか？
 [Silence]
-
+無音
 [Sound]
-
+音あり
 [audio preference explanation]
-
+ゲームは無音で起動します。無音のままにしますか？ 音楽とゲーム音を有効にしますか？
 [audio preference change later]
-
+この設定は「設定 → オーディオ」でいつでも変更できます。
 [audio preference save failed]
-
+選択を保存できませんでした。音は無効のままです。もう一度お試しください。
 [audio choices description]
-
+無音：ミュートされたスピーカー。音あり：音波の付いたスピーカー。
 [library GL only]
 GL のみ

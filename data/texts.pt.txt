@@ -6629,18 +6629,18 @@ Semente: %0
 [library Fit]
 Ajustar
 [Sound or silence?]
-
+Som ou silêncio?
 [Silence]
-
+Silêncio
 [Sound]
-
+Som
 [audio preference explanation]
-
+O jogo começa em silêncio. Prefere silêncio ou música e sons do jogo?
 [audio preference change later]
-
+Pode alterar esta opção a qualquer momento em Definições → Áudio.
 [audio preference save failed]
-
+Não foi possível guardar a sua escolha. O som continua desligado. Tente novamente.
 [audio choices description]
-
+Silêncio: um altifalante silenciado. Som: um altifalante com ondas sonoras.
 [library GL only]
 Só GL

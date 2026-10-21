@@ -6629,18 +6629,18 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 [library Seed: %0]
 بذر: %0
 [Sound or silence?]
-
+صدا یا سکوت؟
 [Silence]
-
+سکوت
 [Sound]
-
+صدا
 [audio preference explanation]
-
+بازی بی‌صدا شروع می‌شود. سکوت می‌خواهید یا موسیقی و صداهای بازی؟
 [audio preference change later]
-
+می‌توانید هر زمان این گزینه را در تنظیمات ← صدا تغییر دهید.
 [audio preference save failed]
-
+انتخاب شما ذخیره نشد. صدا همچنان خاموش است. دوباره تلاش کنید.
 [audio choices description]
-
+سکوت: بلندگوی بی‌صدا. صدا: بلندگو همراه با موج‌های صوتی.
 [library %0 · revision %1]
 %0 · بازبینی %1

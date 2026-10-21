@@ -6629,18 +6629,18 @@ GL فقط
 [library Seed: %0]
 البذرة: %0
 [Sound or silence?]
-
+صوت أم صمت؟
 [Silence]
-
+صمت
 [Sound]
-
+صوت
 [audio preference explanation]
-
+تبدأ اللعبة بصمت. هل تفضل الصمت أم الموسيقى وأصوات اللعبة؟
 [audio preference change later]
-
+يمكنك تغيير ذلك في أي وقت من الإعدادات ← الصوت.
 [audio preference save failed]
-
+تعذر حفظ اختيارك. لا يزال الصوت مكتومًا. حاول مجددًا.
 [audio choices description]
-
+الصمت: مكبر صوت مكتوم. الصوت: مكبر صوت مع موجات صوتية.
 [library %0 · revision %1]
 %0 · المراجعة %1

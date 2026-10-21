@@ -6629,18 +6629,18 @@ Startwert: %0
 [library Fit]
 Gesamt
 [Sound or silence?]
-
+Ton oder Stille?
 [Silence]
-
+Stille
 [Sound]
-
+Ton
 [audio preference explanation]
-
+Das Spiel startet lautlos. Möchtest du Stille oder Musik und Spielgeräusche?
 [audio preference change later]
-
+Du kannst das jederzeit unter Einstellungen → Audio ändern.
 [audio preference save failed]
-
+Deine Auswahl konnte nicht gespeichert werden. Der Ton bleibt aus. Bitte versuche es erneut.
 [audio choices description]
-
+Stille: ein stummgeschalteter Lautsprecher. Ton: ein Lautsprecher mit Schallwellen.
 [library GL only]
 Nur GL

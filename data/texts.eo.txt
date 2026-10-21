@@ -6629,18 +6629,18 @@ Semo: %0
 [library Fit]
 Adapti
 [Sound or silence?]
-
+Sono aŭ silento?
 [Silence]
-
+Silento
 [Sound]
-
+Sono
 [audio preference explanation]
-
+La ludo komenciĝas silente. Ĉu vi volas silenton aŭ muzikon kaj ludsonojn?
 [audio preference change later]
-
+Vi povas ŝanĝi tion iam ajn en Agordoj → Sono.
 [audio preference save failed]
-
+Via elekto ne povis esti konservita. Sono restas malŝaltita. Bonvolu reprovi.
 [audio choices description]
-
+Silento: silentigita laŭtparolilo. Sono: laŭtparolilo kun sonondoj.
 [library GL only]
 Nur GL

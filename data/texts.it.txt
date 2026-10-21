@@ -6629,18 +6629,18 @@ Seme: %0
 [library Fit]
 Adatta
 [Sound or silence?]
-
+Audio o silenzio?
 [Silence]
-
+Silenzio
 [Sound]
-
+Audio
 [audio preference explanation]
-
+Il gioco si avvia in silenzio. Preferisci il silenzio o la musica e i suoni del gioco?
 [audio preference change later]
-
+Puoi cambiare questa scelta in qualsiasi momento in Impostazioni → Audio.
 [audio preference save failed]
-
+Impossibile salvare la scelta. L’audio resta disattivato. Riprova.
 [audio choices description]
-
+Silenzio: un altoparlante disattivato. Audio: un altoparlante con onde sonore.
 [library GL only]
 Solo GL

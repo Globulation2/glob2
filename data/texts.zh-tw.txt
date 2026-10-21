@@ -6629,18 +6629,18 @@ MCP 伺服器
 [library Fit]
 完整顯示
 [Sound or silence?]
-
+聲音還是靜音？
 [Silence]
-
+靜音
 [Sound]
-
+聲音
 [audio preference explanation]
-
+遊戲以靜音模式啟動。您想保持靜音，還是開啟音樂和遊戲音效？
 [audio preference change later]
-
+您可以隨時在「設定 → 音訊」中變更。
 [audio preference save failed]
-
+無法儲存您的選擇。聲音仍處於關閉狀態。請重試。
 [audio choices description]
-
+靜音：已靜音的喇叭。聲音：帶有聲波的喇叭。
 [library GL only]
 僅限 GL

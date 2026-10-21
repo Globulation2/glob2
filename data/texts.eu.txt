@@ -6629,18 +6629,18 @@ Kendu %0
 [library Seed: %0]
 Hazia: %0
 [Sound or silence?]
-
+Soinua ala isiltasuna?
 [Silence]
-
+Isiltasuna
 [Sound]
-
+Soinua
 [audio preference explanation]
-
+Jokoa isilik hasten da. Isiltasuna nahi duzu, ala musika eta jokoaren soinuak?
 [audio preference change later]
-
+Edozein unetan alda dezakezu Ezarpenak → Audioa atalean.
 [audio preference save failed]
-
+Ezin izan da zure aukera gorde. Soinua itzalita dago oraindik. Saiatu berriro.
 [audio choices description]
-
+Isiltasuna: bozgorailu isildua. Soinua: soinu-uhinak dituen bozgorailua.
 [library %0 · revision %1]
 %0 · %1 berrikuspena

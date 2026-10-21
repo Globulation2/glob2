@@ -6629,18 +6629,18 @@ Zaad: %0
 [library Fit]
 Passend
 [Sound or silence?]
-
+Geluid of stilte?
 [Silence]
-
+Stilte
 [Sound]
-
+Geluid
 [audio preference explanation]
-
+Het spel start zonder geluid. Wil je stilte of muziek en spelgeluiden?
 [audio preference change later]
-
+Je kunt dit altijd wijzigen via Instellingen → Audio.
 [audio preference save failed]
-
+Je keuze kon niet worden opgeslagen. Het geluid blijft uit. Probeer het opnieuw.
 [audio choices description]
-
+Stilte: een gedempte luidspreker. Geluid: een luidspreker met geluidsgolven.
 [library GL only]
 Alleen GL

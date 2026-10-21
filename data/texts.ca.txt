@@ -6629,18 +6629,18 @@ Llavor: %0
 [library Fit]
 Ajusta
 [Sound or silence?]
-
+So o silenci?
 [Silence]
-
+Silenci
 [Sound]
-
+So
 [audio preference explanation]
-
+El joc comença en silenci. Prefereixes silenci o música i sons del joc?
 [audio preference change later]
-
+Ho pots canviar en qualsevol moment a Configuració → Àudio.
 [audio preference save failed]
-
+No s’ha pogut desar la tria. El so continua desactivat. Torna-ho a provar.
 [audio choices description]
-
+Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 [library GL only]
 Només GL

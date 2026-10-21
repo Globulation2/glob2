@@ -6629,18 +6629,18 @@ Odstranit %0
 [library Seed: %0]
 Semínko: %0
 [Sound or silence?]
-
+Zvuk, nebo ticho?
 [Silence]
-
+Ticho
 [Sound]
-
+Zvuk
 [audio preference explanation]
-
+Hra začíná potichu. Chcete ticho, nebo hudbu a zvuky hry?
 [audio preference change later]
-
+Volbu můžete kdykoli změnit v Nastavení → Zvuk.
 [audio preference save failed]
-
+Volbu se nepodařilo uložit. Zvuk je stále vypnutý. Zkuste to znovu.
 [audio choices description]
-
+Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
 [library %0 · revision %1]
 %0 · revize %1

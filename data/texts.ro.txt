@@ -6629,18 +6629,18 @@ Sămânță: %0
 [library Fit]
 Încadr.
 [Sound or silence?]
-
+Sunet sau liniște?
 [Silence]
-
+Liniște
 [Sound]
-
+Sunet
 [audio preference explanation]
-
+Jocul pornește fără sunet. Preferi liniște sau muzică și sunetele jocului?
 [audio preference change later]
-
+Poți schimba alegerea oricând în Setări → Audio.
 [audio preference save failed]
-
+Alegerea nu a putut fi salvată. Sunetul rămâne oprit. Încearcă din nou.
 [audio choices description]
-
+Liniște: un difuzor dezactivat. Sunet: un difuzor cu unde sonore.
 [library GL only]
 Doar GL

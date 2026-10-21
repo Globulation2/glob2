@@ -6629,18 +6629,18 @@ Graine : %0
 [library Fit]
 Ajuster
 [Sound or silence?]
-
+Son ou silence ?
 [Silence]
-
+Silence
 [Sound]
-
+Son
 [audio preference explanation]
-
+Le jeu démarre en silence. Préférez-vous le silence ou la musique et les sons du jeu ?
 [audio preference change later]
-
+Vous pouvez modifier ce choix à tout moment dans Paramètres → Audio.
 [audio preference save failed]
-
+Votre choix n’a pas pu être enregistré. Le son reste désactivé. Veuillez réessayer.
 [audio choices description]
-
+Silence : un haut-parleur muet. Son : un haut-parleur avec des ondes sonores.
 [library GL only]
 GL uniquement
