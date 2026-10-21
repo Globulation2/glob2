@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="12" failures="0" errors="0" skipped="0"><testsuite name="BuildingFamilyLinks"><testcase classname="BuildingFamilyLinks" name="family links stay on the selected instance and normalize bounded IDs" time="0.000972" status="run" />
+  <testcase classname="BuildingFamilyLinks" name="unlisted family detail uses the instance client and rejects changed identity" time="0.61526" status="run" />
+  </testsuite><testsuite name="BuildingLibrary"><testcase classname="BuildingLibrary" name="installed families are explicitly selected and corrupt updates never replace a release" time="7.6417" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.217048" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.68817" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.662079" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.007098" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="39.5004" status="run" />
+  </testsuite><testsuite name="SettingsLocalization"><testcase classname="SettingsLocalization" name="Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" time="36.2274" status="run" />
+  </testsuite><testsuite name="TutorialLocalization"><testcase classname="TutorialLocalization" name="Legacy tutorial aliases use the selected catalog and preserve unknown text" time="1.89446" status="run" />
+  <testcase classname="TutorialLocalization" name="Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" time="5.87999" status="run" />
+  <testcase classname="TutorialLocalization" name="Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" time="4.47825" status="run" />
+  </testsuite></testsuites>

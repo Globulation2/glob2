@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/09c5/glob2/platform
+
+
+ Test Files  3 passed (3)
+      Tests  24 passed (24)
+   Start at  11:41:08
+   Duration  3.62s (tests 39%, import 37%, transform 22%, worker 1%)
+

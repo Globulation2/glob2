@@ -1,0 +1,23 @@
+{
+  "validation.md": "1c5fd7e1ca48d28d1f058b6d8c90b4fd0cf5c6b5297a1f58652537ba54b0b419",
+  "final-audit.json": "cf097dff89d4fcd1075683519890b12279576e94f0da62ad2f93fcf714618a46",
+  "final-python-tests.log": "4cfbc83946c39a98fe7fbd819f57dcbb935251285063d79766f541960e62f9ce",
+  "font-coverage.log": "d449397493bd4cd3d1e811413ff74c6f309e51abab23aa62ac93624a90912939",
+  "platform-i18n.log": "b94ea51003cb5059877b8d44bbbc1aba7cc37d253cc00d050ce1b0089057c509",
+  "platform-tests.log": "28399b9a31f89d71ac8463f1717f228f88a72c8421edf35c3fbf3e523511b0cf",
+  "platform-lint.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+  "final-native-build.log": "6245df139076626fbd35ab26e16387ed0164e15adcdc3e4aa8f74dab2a2df53a",
+  "native-tests.log": "52ae10295c226fcb7039485dd525ae8219cdb1eb95b431fa2a7bb34f05fc1f0b",
+  "native-junit.xml": "dcb4a76841e6f4e3cc586d5b81c41f75da96a265a47821b0889612c2c9916486",
+  "previews/controls-ar.png": "ad28e3bfbe9daee48706e7da9151ad38edda5b2ebe2383da6cab7800f9f19dcf",
+  "previews/controls-fa.png": "d0b5993c98aea69503d050074eba79b56eed7e1ccd2c00681389dc182acdf278",
+  "previews/controls-zh-cn.png": "4ea3a8000ae400f9aa7880a0592a75612f5e518c1d4b21c37e13889d9b4b2926",
+  "previews/controls-en.png": "bb309a2971d461f18ec44555a1fb05a31f8dce51d68766abddc8166e6272317f",
+  "previews/controls-ja.png": "085d8a3dae729322763332858a08434b30c6f4003ce28ba3765426751d610f00",
+  "previews/controls-de.png": "81da4dfa876b0e428f1fea15aadd032e05e8e4694dbac2345760b674d51a6ee2",
+  "polish-western.md": "61a0b1e5151cca0b5013297ff539ff3367c8746d48e4c460b2669807fa340fc3",
+  "polish-asian.md": "58d8989ad68e5b15db870914d9490bdcca632089c255b3702d17d36f41bf6944",
+  "polish-eastern.md": "7074f7e6f001e29f88bf4fb4323949feabd2ea94b936ae4537c5db04b6ae253d",
+  "native/TutorialLocalization/Old_tutorial_localization_preserves_script_bytes_and_matches_ordinary_save-load_state_display_artifacts/tutorial-localization-roundtrip.game": "2d0fa54122599c6986af594ce6d45d5b3eae2f9dd8fc5b1d3410b760936f6046",
+  "native/TutorialLocalization/Old_tutorial_localization_preserves_script_bytes_and_matches_ordinary_save-load_state_display_artifacts/tutorial-localization-baseline.game": "66eb3bcbe1b515ddb315d9c1412017103182ea18a64439587895531338b0138e"
+}
