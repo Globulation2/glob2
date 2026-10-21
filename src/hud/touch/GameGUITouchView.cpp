@@ -786,6 +786,16 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	return hud;
 }
 
+ViewRect GameGUITouch::notificationBounds() const
+{
+	const auto ui = layout();
+	const auto hud = hudLayout(ui);
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), gap = 6 * unit;
+	const double top = std::max(hud.stats.y + hud.stats.h, hud.minimap.y + hud.minimap.h) + gap;
+	return {ui.safe.x + gap, top, std::max(0., ui.safe.w - 2 * gap),
+		std::max(0., std::min(180 * unit, ui.actions.y - gap - top))};
+}
+
 ViewRect GameGUITouch::statRect(const HudLayout &hud, int index) const
 {
 	return hud.cells[index];
@@ -819,6 +829,7 @@ void GameGUITouch::drawMinimap()
 	hudMinimap->draw(gui.view.drawnScene(), gui.localTeamNo, gui.viewportX, gui.viewportY,
 					 int(std::ceil(gui.camera.visibleW() / 32)),
 					 int(std::ceil(gui.camera.visibleH() / 32)));
+	gui.markManager.drawMinimap(gui.localTeamNo, gfx->getW() - 128, 0, 128, gui.drawnScene());
 	gfx->setUITransform();
 	gfx->setClipRect();
 	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());

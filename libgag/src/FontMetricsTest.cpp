@@ -1,8 +1,50 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <TrueTypeFont.h>
+#include <cmath>
+#include <cstring>
 
 using namespace GAGCore;
+
+TEST_CASE("offscreen transformed text rasterizes at the requested resolution" *
+		  doctest::test_suite("TextMetrics"))
+{
+	glob2test::ToolkitScope toolkit;
+	struct TtfScope
+	{
+		TtfScope() { REQUIRE(TTF_Init()); }
+		~TtfScope() { TTF_Quit(); }
+	} ttf;
+	const auto path = (glob2test::sourceRoot() / "data/fonts/sans.ttf").string();
+	TrueTypeFont font(path, 13);
+	font.setStyle(Font::Style(Font::STYLE_NORMAL, 255, 239, 204));
+	const std::string text = "Cancel Upgrade · مرحبا";
+	const int width = font.getStringWidth(text), height = font.getStringHeight(text);
+	for (const float scale : {1.f, 2.f, 3.f, 1.5f, 3.f})
+	{
+		auto bitmap = font.rasterizeString(text, scale);
+		REQUIRE(bitmap);
+		// Compare against an independently opened font at the physical size,
+		// including shaping and every pixel, rather than an enlarged base bitmap.
+		TrueTypeFont reference(path, unsigned(std::lround(13 * scale)));
+		reference.setStyle(font.getStyle());
+		auto expected = reference.rasterizeString(text, 1);
+		REQUIRE(expected);
+		CHECK(bitmap->getW() == expected->getW());
+		CHECK(bitmap->getH() == expected->getH());
+		const auto *actualPixels = bitmap->getSDLSurface();
+		const auto *expectedPixels = expected->getSDLSurface();
+		REQUIRE(actualPixels->format == expectedPixels->format);
+		REQUIRE(actualPixels->w == expectedPixels->w);
+		REQUIRE(actualPixels->h == expectedPixels->h);
+		for (int y = 0; y < expectedPixels->h; ++y)
+			CHECK(std::memcmp(static_cast<const Uint8 *>(actualPixels->pixels) + y * actualPixels->pitch,
+				static_cast<const Uint8 *>(expectedPixels->pixels) + y * expectedPixels->pitch,
+				expectedPixels->w * SDL_BYTESPERPIXEL(expectedPixels->format)) == 0);
+		CHECK(font.getStringWidth(text) == width);
+		CHECK(font.getStringHeight(text) == height);
+	}
+}
 
 TEST_CASE("font metrics do not rasterize or evict rendered text" *
 		  doctest::test_suite("TextMetrics"))

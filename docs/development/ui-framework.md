@@ -202,6 +202,13 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   `libgag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
   painted line crosses a control's edge, at 100% and 150%.
 
+Mobile game-event notifications start below the statistics, minimap and selection
+header, inside the safe-area gutters. Their text uses the mobile text scale and
+wraps to the available width over a translucent background. The feed is bounded
+above the action bar and to 180 points of height; a final wrapped row is shortened
+with an ellipsis when space runs out. Click-to-jump rectangles follow the scaled,
+wrapped rows. Desktop notifications retain their original placement and sizing.
+
 ### Building assignment preferences
 
 Settings > Buildings enumerates variants from the installed building catalog;
@@ -270,6 +277,12 @@ replacement/reload clears these metrics. Layout measurement neither creates
 bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
+
+Offscreen text that will be transformed must use `Font::rasterizeString` with an
+explicit physical scale; ordinary offscreen `drawString` retains the authored
+resolution. The touch inspector's curved labels rasterize their source at twice
+the final physical text size before warping, while keeping authored metrics for
+button fitting and display-density textures for the finished labels.
 
 Every screen uses the same scale, so menus read alike:
 

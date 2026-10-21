@@ -34,7 +34,7 @@ public:
 private:
 	friend class MarkManager;
 	///Advances the mark's lifetime by one engine tick. Called once per
-	///MarkManager::drawAll iteration — the draw* methods are pure rendering
+	///MarkManager frame advance — the draw* methods are pure rendering
 	///and must not mutate state. After tick(), the mark is expired iff
 	///showTicks <= 0.
 	void tick() { showTicks -= 1; }
@@ -68,9 +68,15 @@ public:
 	
 	///Draw all marks
 	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera = nullptr);
+	/// Advance once and draw world marks; mobile minimaps render later with the HUD.
+	void drawMainView(int viewportX, int viewportY, const PresentationFrame &scene, const MapCamera *camera = nullptr);
+	/// Paint the current marks over a minimap without advancing their lifetimes.
+	/// The caller supplies the minimap's transform and clip.
+	void drawMinimap(int localTeam, int x, int y, int size, const PresentationFrame &scene) const;
 
 	///Add another mark to the manager
 	void addMark(const Mark& mark);
 private:
+	void advance();
 	std::vector<Mark> marks;
 };

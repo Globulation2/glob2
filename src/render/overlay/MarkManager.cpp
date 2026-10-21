@@ -109,6 +109,27 @@ MarkManager::MarkManager()
 
 void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera)
 {
+	advance();
+	drawMinimap(localTeam, minimapX, minimapY, minimapSize, scene);
+	for (const auto &mark : marks)
+		mark.drawInMainView(viewportX, viewportY, scene, camera);
+}
+
+void MarkManager::drawMainView(int viewportX, int viewportY, const PresentationFrame &scene, const MapCamera *camera)
+{
+	advance();
+	for (const auto &mark : marks)
+		mark.drawInMainView(viewportX, viewportY, scene, camera);
+}
+
+void MarkManager::drawMinimap(int localTeam, int x, int y, int size, const PresentationFrame &scene) const
+{
+	for (const auto &mark : marks)
+		mark.drawInMinimap(size, localTeam, x, y, scene);
+}
+
+void MarkManager::advance()
+{
 	for(std::vector<Mark>::iterator i=marks.begin(); i!=marks.end();)
 	{
 		i->tick();
@@ -117,8 +138,6 @@ void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimap
 			i = marks.erase(i);
 			continue;
 		}
-		i->drawInMinimap(minimapSize, localTeam, minimapX, minimapY, scene);
-		i->drawInMainView(viewportX, viewportY, scene, camera);
 		++i;
 	}
 }

@@ -219,6 +219,7 @@ void GameGUITouch::drawPeek()
 	peekMinimap->setMinimapMode(Minimap::ShowFOW);
 	peekMinimap->draw(gui.view.drawnScene(), gui.localTeamNo, gui.viewportX, gui.viewportY, int(std::ceil(gui.camera.visibleW() / 32)),
 					  int(std::ceil(gui.camera.visibleH() / 32)));
+	gui.markManager.drawMinimap(gui.localTeamNo, gfx->getW() - size, 0, size, gui.drawnScene());
 	gfx->setUITransform();
 	gfx->setClipRect();
 	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
