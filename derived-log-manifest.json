@@ -1,0 +1,107 @@
+[
+  {
+    "path": "comb-natural-shores/before-game.economy.log",
+    "source": "comb-natural-shores/before-game.log",
+    "source_sha256": "860a0a06226492e0c21f11be5c0927657f39ce7ec9dc8bce45c73bcfbc84b9cd"
+  },
+  {
+    "path": "comb-natural-shores/after-game.economy.log",
+    "source": "comb-natural-shores/after-game.log",
+    "source_sha256": "5af8d4e5748e9b2a8dccb100c25a1faafcda35946430c39cabf51229c37ed277"
+  },
+  {
+    "path": "coral-expansion-nodes/before-game.economy.log",
+    "source": "coral-expansion-nodes/before-game.log",
+    "source_sha256": "5681a1340b48538f19a935a70d36f477a02154f80a0377204838654f3d284f50"
+  },
+  {
+    "path": "coral-expansion-nodes/after-game.economy.log",
+    "source": "coral-expansion-nodes/after-game.log",
+    "source_sha256": "f24c33626e5358e5b2a01050997c8298789d62772247fa972eb66ebac1e33131"
+  },
+  {
+    "path": "honeycomb-open-cells/before-game.economy.log",
+    "source": "honeycomb-open-cells/before-game.log",
+    "source_sha256": "e7e777a4a4122f813cc9b64c7a88861621b0827a60c3ebb73a91a7995b9a9ba0"
+  },
+  {
+    "path": "honeycomb-open-cells/after-game.economy.log",
+    "source": "honeycomb-open-cells/after-game.log",
+    "source_sha256": "8cb3b5349822a6193ff46e976ab39d6f5deb958e75df6d4153bb4bad616708c2"
+  },
+  {
+    "path": "plantations-island-workers/before-game.economy.log",
+    "source": "plantations-island-workers/before-game.log",
+    "source_sha256": "837791bb981da8a5215d73fe872741e7c37b8ff5c177697e5c5daa94b0ceb301"
+  },
+  {
+    "path": "plantations-island-workers/after-game.economy.log",
+    "source": "plantations-island-workers/after-game.log",
+    "source_sha256": "e0819124afed4eb05108e9aca250fc68b4d4225aa2df9da4d308b4efcdae7915"
+  },
+  {
+    "path": "irregular-clearing-starts/locust-before-game.economy.log",
+    "source": "irregular-clearing-starts/locust-before-game.log",
+    "source_sha256": "a07bce57312e6cd652bc1d48ec0de2de51079e911474282f65b82c0c4cdd5f09"
+  },
+  {
+    "path": "irregular-clearing-starts/old-growth-before-game.economy.log",
+    "source": "irregular-clearing-starts/old-growth-before-game.log",
+    "source_sha256": "31fb2a904d80799159db1f4c28f6ebce5f426f1487fc501b58f97bc93077a509"
+  },
+  {
+    "path": "irregular-clearing-starts/locust-after-game.economy.log",
+    "source": "irregular-clearing-starts/locust-after-game.log",
+    "source_sha256": "ff5552331e17e030801eba0f37217b03cac9634936933dbe2418dd74b26d406c"
+  },
+  {
+    "path": "irregular-clearing-starts/old-growth-after-game.economy.log",
+    "source": "irregular-clearing-starts/old-growth-after-game.log",
+    "source_sha256": "6eac84d434493edf4b38e0519f713d3405b8d562593db21af3fd8bfde914f0c3"
+  },
+  {
+    "path": "glacis-waterfront-crops/after-game.economy.log",
+    "source": "glacis-waterfront-crops/after-game.log",
+    "source_sha256": "234fec5d21bc8e450f2d38a35728e01b8b4495b0f695afd2ed12314e6ae8fcfa"
+  },
+  {
+    "path": "glacis-waterfront-crops/before-game.economy.log",
+    "source": "glacis-waterfront-crops/before-game.log",
+    "source_sha256": "d3564d4f7b055de2f42802eb5c230d6ad5a47b537f3baf4ef59a61892cf32ca5"
+  },
+  {
+    "path": "braided-delta-resource-redesign/before-game.economy.log",
+    "source": "braided-delta-resource-redesign/before-game.log",
+    "source_sha256": "9754047df30084780e57ecd06c4fd30494ee0b5051b0627f9f1bdc15b6de0865"
+  },
+  {
+    "path": "braided-delta-resource-redesign/forts-reference-game.economy.log",
+    "source": "braided-delta-resource-redesign/forts-reference-game.log",
+    "source_sha256": "9017cd2abc709650908e57bb606dff902391f0f1098f52c9dfe632047787948d"
+  },
+  {
+    "path": "braided-delta-resource-redesign/after-game.economy.log",
+    "source": "braided-delta-resource-redesign/after-game.log",
+    "source_sha256": "dbcd9cfff4e26034c47d24d637e982bbbb04fa17a35d2ba8167253da49826fad"
+  },
+  {
+    "path": "shattered-coast-expansion/before-game.economy.log",
+    "source": "shattered-coast-expansion/before-game.log",
+    "source_sha256": "dd396e78b436c375f3a39ee045c1a4702e15d095cf42aef7603dd2786401e1cd"
+  },
+  {
+    "path": "shattered-coast-expansion/after-game.economy.log",
+    "source": "shattered-coast-expansion/after-game.log",
+    "source_sha256": "faf59b72db18834220ab830def0b12fd7d1b37a8ca1dcb1a8c7aa8f409f65074"
+  },
+  {
+    "path": "portage-lakes-open-fields/before-game.economy.log",
+    "source": "portage-lakes-open-fields/before-game.log",
+    "source_sha256": "3e33e0e803c22e157840b73a73dcaa552b4fa0e5dce109033288e0ed712aecd9"
+  },
+  {
+    "path": "portage-lakes-open-fields/after-game.economy.log",
+    "source": "portage-lakes-open-fields/after-game.log",
+    "source_sha256": "d9fb63ff882e86b508a25422f164b8ef667d866cf6fc6fd85af6d1ce09b67fa0"
+  }
+]
