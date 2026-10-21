@@ -6102,5 +6102,19 @@ FFmpeg недоступен, поэтому запись отключена. У�
 
 [discord copy failed]
 
+[Sound or silence?]
+
+[Silence]
+
+[Sound]
+
+[audio preference explanation]
+
+[audio preference change later]
+
+[audio preference save failed]
+
+[audio choices description]
+
 [Destroy this building?]
 Уничтожить это здание?

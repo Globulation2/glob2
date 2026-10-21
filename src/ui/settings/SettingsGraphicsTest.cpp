@@ -2,6 +2,8 @@
 #include "EngineFixtures.h"
 #include "Settings.h"
 #include "HandPreferenceScreen.h"
+#include "AudioPreferenceScreen.h"
+#include "SoundMixer.h"
 #include "CommandLine.h"
 #include "ScopedEnvironment.h"
 #include "ui/FrontendUI.h"
@@ -55,6 +57,121 @@ TEST_SUITE("SettingsGraphics")
         CHECK_THROWS_AS(globals->gradientConfiguration(),std::invalid_argument);
         std::filesystem::remove(path);
     }
+
+	TEST_CASE("mobile audio startup requires an explicit saved choice")
+	{
+		glob2test::HeadlessGlobals globals;
+		const std::string file = "audio-preference-test.txt";
+		const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+		Settings settings;
+		settings.mute = 0;
+		settings.applyAudioStartupPolicy(false);
+		CHECK(settings.mute == 0); // Desktop defaults are unchanged.
+		for (const char *legacy : {"mute=0\nmusicVolume=123\nvoiceVolume=91\n", "mute=1\n",
+			"mute=0\naudioPreferenceChosen=invalid\n", "mute=0\naudioPreferenceChosen=1x\n"})
+		{
+			{ std::ofstream out(path); out << legacy; }
+			settings.load(file);
+			CHECK_FALSE(settings.audioPreferenceChosen);
+			const auto music = settings.musicVolume, voice = settings.voiceVolume;
+			settings.applyAudioStartupPolicy(true);
+			CHECK(settings.mute == 1);
+			CHECK(settings.musicVolume == music);
+			CHECK(settings.voiceVolume == voice);
+			REQUIRE(settings.save(file));
+			settings.load(file);
+			CHECK_FALSE(settings.audioPreferenceChosen); // Other saves never imply consent.
+		}
+		for (bool sound : {false, true})
+		{
+			settings.audioPreferenceChosen = true;
+			settings.mute = !sound;
+			REQUIRE(settings.save(file));
+			Settings loaded;
+			loaded.load(file);
+			CHECK(loaded.audioPreferenceChosen);
+			loaded.applyAudioStartupPolicy(true);
+			CHECK(loaded.mute == !sound);
+		}
+		std::filesystem::remove(path);
+	}
+
+	TEST_CASE("audio choice saves before enabling the mixer and fails silently [writes-preferences]")
+	{
+		glob2test::ScopedEnvironment audio("SDL_AUDIODRIVER", "dummy");
+		REQUIRE(SDL_InitSubSystem(SDL_INIT_AUDIO));
+		struct QuitAudio { ~QuitAudio() { SDL_QuitSubSystem(SDL_INIT_AUDIO); } } quit;
+		glob2test::HeadlessGlobals globals;
+		auto &settings = globals->settings;
+		for (bool sound : {false, true})
+		{
+			settings.audioPreferenceChosen = false;
+			settings.mute = 0;
+			settings.applyAudioStartupPolicy(true);
+			globals->mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
+			CHECK_FALSE(globals->mix->enabled()); // The production startup constructor is silent.
+			AudioPreferenceScreen screen;
+			screen.choose(sound);
+			CHECK(settings.audioPreferenceChosen);
+			CHECK(settings.mute == !sound);
+			CHECK(globals->mix->enabled() == sound);
+			Settings loaded;
+			loaded.load();
+			loaded.applyAudioStartupPolicy(true);
+			CHECK(loaded.audioPreferenceChosen);
+			CHECK(loaded.mute == !sound);
+		}
+		const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / "preferences.txt";
+		std::filesystem::remove(path);
+		std::filesystem::create_directory(path);
+		settings.audioPreferenceChosen = false;
+		settings.mute = 1;
+		globals->mix = std::make_unique<SoundMixer>(190, 190, true);
+		AudioPreferenceScreen failed;
+		failed.choose(true);
+		CHECK_FALSE(settings.audioPreferenceChosen);
+		CHECK(settings.mute == 1);
+		CHECK_FALSE(globals->mix->enabled());
+		std::filesystem::remove(path);
+	}
+
+	TEST_CASE("illustrated audio choices work on phones without implicit sound [display][writes-preferences][artifacts]")
+	{
+		glob2test::ScopedEnvironment touch("GLOB2_MOBILE_UI", "1");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU,
+			.beforeLoad = [](GlobalContainer &g) { g.settings.mute = 0; g.settings.audioPreferenceChosen = false; }};
+		glob2test::HeadlessGlobals globals(options);
+		CHECK(globals->settings.mute == 1);
+		CHECK_FALSE(globals->settings.audioPreferenceChosen);
+		CHECK_FALSE(globals->mix->enabled());
+		REQUIRE(GAGCore::Toolkit::getSprite("data/gfx/audiochoice")->getFrameCount() == 2);
+		for (bool sound : {false, true})
+		{
+			globals->settings.audioPreferenceChosen = false;
+			globals->settings.mute = 1;
+			AudioPreferenceScreen screen;
+			screen.beginExecution(globals->gfx);
+			screen.paintFrame(SDL_GetTicks());
+			SDL_Event escape{};
+			escape.type = SDL_EVENT_KEY_DOWN;
+			escape.key.key = SDLK_ESCAPE;
+			screen.handleExecutionEvent(escape);
+			CHECK(screen.isExecutionRunning());
+			CHECK_FALSE(globals->settings.audioPreferenceChosen);
+			CHECK(globals->settings.mute == 1);
+			globals->gfx->printScreen(sound ? "audio-choice-sound.bmp" : "audio-choice-silence.bmp");
+			globals->gfx->nextFrame(); // Flush the portable renderer's deferred capture.
+			const auto bounds = screen.host().bounds(sound ? "audio.picture.sound" : "audio.picture.silence");
+			REQUIRE_FALSE(bounds.empty());
+			screen.host().tapAt(bounds.center());
+			CHECK(globals->settings.audioPreferenceChosen);
+			CHECK(globals->settings.mute == !sound);
+			CHECK_FALSE(screen.isExecutionRunning());
+			screen.finishExecution();
+		}
+		CHECK(glob2test::retainFromProfile(".bmp") == 2);
+	}
 
     TEST_CASE("first-launch hand choice persists and migrates existing side preferences")
     {

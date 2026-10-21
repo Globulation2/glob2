@@ -13,6 +13,7 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include "FrontendUI.h"
 #include "render/ResourceSprites.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
@@ -246,6 +247,12 @@ void GlobalContainer::loadClient(void)
         if (gameData) requestGameGraphics();
         Toolkit::pollAssets(4);
 
+		// No loading/menu music may escape before the mobile audio prompt.
+#ifdef GLOB2_MOBILE
+		settings.applyAudioStartupPolicy(true);
+#else
+		settings.applyAudioStartupPolicy(Glob2UI::touchPresentation());
+#endif
 		// create mixer
 		mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
 		// Track slots must match the MusicTrack enum order. Engine::run may

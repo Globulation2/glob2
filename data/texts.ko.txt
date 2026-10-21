@@ -6102,5 +6102,19 @@ AI 생성 아님
 
 [discord copy failed]
 
+[Sound or silence?]
+
+[Silence]
+
+[Sound]
+
+[audio preference explanation]
+
+[audio preference change later]
+
+[audio preference save failed]
+
+[audio choices description]
+
 [Destroy this building?]
 이 건물을 파괴하시겠습니까?

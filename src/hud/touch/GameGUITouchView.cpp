@@ -17,6 +17,8 @@
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "BuildingType.h"
+#include "Material.h"
+#include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
@@ -337,7 +339,26 @@ void GameGUITouch::drawHUD()
 	// Measure the icon and value as one group. Every value starts the same
 	// distance after its icon; the cell centres the group, not the text alone.
 	auto *font = globalContainer->standardFont;
+	// Measure in the same style used for painting; inherited bold metrics can
+	// otherwise shift the combined icon/value group away from the cell centre.
+	InGameTouchTheme::TextStyle statsTextStyle(font);
 	const double mainHeight = 40 * unit, valueGap = 6 * unit, iconGap = 4 * unit;
+	const auto conversionCell = [&](int side) {
+		auto rect = hud.cells[4];
+		if (rect.y > hud.cells[0].y)
+		{
+			// In portrait, conversions occupy columns two and three, directly
+			// beneath the corresponding population counters (including gutters).
+			rect.x = hud.cells[side + 1].x;
+			rect.w = hud.cells[side + 1].w;
+		}
+		else
+		{
+			rect.w /= 2;
+			rect.x += side * rect.w;
+		}
+		return rect;
+	};
 	double numericScale = std::min(.88, 24 * unit /
 		(std::max(1, font->getStringHeight("Ag")) * gfx->textUnitsPerPoint()));
 	double iconPoints = 24;
@@ -348,7 +369,7 @@ void GameGUITouch::drawHUD()
 		for (int i : {0, 1, 2, 3, 5})
 			visit(hud.cells[i], stats[i].text, false, i != 5 || chevrons);
 		for (int side = 0; side < 2; ++side)
-			visit(ViewRect{0, 0, hud.cells[4].w / 2, mainHeight},
+			visit(conversionCell(side),
 				std::to_string(side == 0 ? colony.unitConversionGained : colony.unitConversionLost), true, true);
 	};
 	eachMetric([&](const ViewRect &r, const std::string &text, bool pair, bool hasIcon) {
@@ -393,7 +414,7 @@ void GameGUITouch::drawHUD()
 		{
 			for (int side = 0; side < 2; ++side)
 			{
-				const ViewRect part{r.x + side * r.w / 2, r.y, r.w / 2, r.h};
+				const ViewRect part = conversionCell(side);
 				const std::string text = std::to_string(side == 0 ? colony.unitConversionGained : colony.unitConversionLost);
 				const double groupX = groupLeft(part, text, true);
 				const double width = iconWidth(true, true), height = iconPoints * unit;
@@ -637,7 +658,8 @@ ViewRect GameGUITouch::panelContent() const
 	const double header = gui.selectionMode == GameGUI::UNIT_SELECTION
 		? (InGameTouchTheme::unitStatsTitle + (ui.persistentPanel ? InGameTouchTheme::inspectorHeader : 0)) *
 			globalContainer->gfx->logicalUnitsPerPoint()
-		: inspecting() && !ui.persistentPanel ? 0 : allocationRect().h;
+		: inspecting() && !ui.persistentPanel ? 0 : allocationRect().h +
+			(inspecting() ? buildingInventory(ui).bounds.h : 0);
 	rect.y += header;
 	rect.h = std::max(0.0, rect.h - header);
 	return rect;
@@ -709,12 +731,49 @@ void GameGUITouch::drawSelectionHeader(ViewRect rect, Sprite *sprite, int frame,
 	const ViewRect caption{rect.x + (compact ? 40 : 60) * unit, rect.y,
 		std::max(0.0, rect.w - (compact ? 88 : 108) * unit), rect.h};
 	double textScale = compact ? .8 : .85;
-	// Long translated names and multiple material stocks must fit together.
+	// Keep translated building names and the HP line inside the title bar.
 	const double lineHeight = globalContainer->standardFont->getStringHeight("Ag") * gfx->textUnitsPerPoint();
 	while (textScale > .45 && pointLines(text, caption.w, textScale).size() * lineHeight * textScale > rect.h - 4 * unit)
 		textScale -= .05;
 	drawPointLabel(caption, text, textScale);
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, rect.h}, "×", 1.2);
+}
+
+GameGUITouch::BuildingInventory GameGUITouch::buildingInventory(const MobileLayout &ui) const
+{
+	BuildingInventory inventory;
+	const auto *building = inspectedBuilding();
+	if (!building || (!globalContainer->isViewingGame() &&
+		!(building->owner().allies & Team::teamNumberToMask(gui.localTeamNo))))
+		return inventory;
+	std::vector<std::string> labels;
+	for (int material = 0; material < MaterialCount; ++material)
+		if (building->type->maxMaterial[material] > 0)
+			labels.push_back(std::string(getMaterialName(material)) + " " +
+				std::to_string(building->materials[material]) + "/" +
+				std::to_string(building->type->maxMaterial[material]));
+	if (labels.empty()) return inventory;
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint(), gap = 4 * unit;
+	auto header = ui.persistentPanel ? ui.panel : hudLayout(ui).identity;
+	if (ui.persistentPanel) header.h = InGameTouchTheme::inspectorHeader * unit;
+	inventory.bounds = {header.x, header.y + header.h, header.w, 0};
+	const int columns = std::min(int(labels.size()), std::max(1, int(header.w / (100 * unit))));
+	const double width = std::max(0., (header.w - (columns - 1) * gap) / columns);
+	InGameTouchTheme::TextStyle style(globalContainer->standardFont);
+	const double line = globalContainer->standardFont->getStringHeight("Ag") * .8 * gfx->textUnitsPerPoint();
+	for (size_t first = 0; first < labels.size(); first += columns)
+	{
+		double height = 26 * unit;
+		const size_t end = std::min(labels.size(), first + columns);
+		for (size_t i = first; i < end; ++i)
+			height = std::max(height, pointLines(labels[i], width, .8).size() * line + 8 * unit);
+		for (size_t i = first; i < end; ++i)
+			inventory.cells.push_back({{header.x + (i - first) * (width + gap),
+				inventory.bounds.y + inventory.bounds.h + gap, width, height}, labels[i]});
+		inventory.bounds.h += gap + height;
+	}
+	return inventory;
 }
 
 void GameGUITouch::drawAllocation()
@@ -736,12 +795,19 @@ void GameGUITouch::drawAllocation()
 				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
 				.arg(building->state().hp)
 				.arg(type->hpMax)
-				.arg(building->owner().number == gui.drawnScene().panels.local.state().number
+				.arg(!globalContainer->isViewingGame() &&
+					building->owner().number == gui.drawnScene().panels.local.state().number
 						 ? std::string(
 							   GAGCore::Toolkit::getStringTable()->getString("[Your colony]"))
 						 : GAGCore::FormattableString(
 							   GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
 							   .arg(building->owner().number + 1)));
+	for (const auto &[cell, label] : buildingInventory(layout()).cells)
+	{
+		globalContainer->gfx->drawFilledRect(float(cell.x), float(cell.y), float(cell.w), float(cell.h),
+			InGameTouchTheme::readout());
+		drawPointLabel(cell, label, .8);
+	}
 }
 
 GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
@@ -753,8 +819,8 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.persistentPanel;
 	const bool stackedWide = wide && ((safe.w / unit - 92) * .25 - 4) / 2 < 82;
 	const double side = (wide ? (safe.h / unit < 360 && !identity ? 72 : stackedWide ? 104 : 84) : 104) * unit, gap = 4 * unit;
-	const double x = safe.x, y = safe.y + gap;
-	hud.minimap = {safe.x + safe.w - side - gap, wide ? y : y + 44 * unit, side, side};
+	const double x = safe.x, y = safe.y + gap, rowHeight = 40 * unit;
+	hud.minimap = {safe.x + safe.w - side - gap, wide ? y : y + rowHeight + gap, side, side};
 	const double available = std::max(0.0, hud.minimap.x - gap - x);
 	if (wide)
 	{
@@ -764,25 +830,25 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 		for (int i = 0; i < 6; ++i)
 		{
 			const double width = available * weights[i];
-			hud.cells[i] = {left, y, width - gap, (stackedWide ? 60 : 40) * unit};
+			hud.cells[i] = {left, y, width - gap, rowHeight};
 			left += width;
 		}
-		hud.stats = {x, y, available - gap, (stackedWide ? 60 : 40) * unit};
+		hud.stats = {x, y, available - gap, rowHeight};
 	}
 	else
 	{
 		// Keep speed above the minimap, so the second row can give conversions
 		// a full visual composition instead of two tiny symbols in one cell.
 		for (int i = 0; i < 3; ++i)
-			hud.cells[i] = {x + i * available / 3, y, available / 3 - gap, 40 * unit};
-		hud.cells[5] = {hud.minimap.x, y, side, 40 * unit};
-		const double prestige = available * .42;
-		hud.cells[3] = {x, y + 44 * unit, prestige - gap, 60 * unit};
-		hud.cells[4] = {x + prestige, y + 44 * unit, available - prestige - gap, 60 * unit};
-		hud.stats = {x, y, available - gap, 104 * unit};
+			hud.cells[i] = {x + i * available / 3, y, available / 3 - gap, rowHeight};
+		hud.cells[5] = {hud.minimap.x, y, side, rowHeight};
+		const double prestige = available / 3;
+		hud.cells[3] = {x, y + rowHeight + gap, prestige - gap, rowHeight};
+		hud.cells[4] = {x + prestige, y + rowHeight + gap, available - prestige - gap, rowHeight};
+		hud.stats = {x, y, available - gap, 2 * rowHeight + gap};
 	}
 	const double header = InGameTouchTheme::inspectorHeader * unit;
-	hud.identity = {hud.stats.x, hud.minimap.y + hud.minimap.h - header, hud.stats.w, header};
+	hud.identity = {hud.stats.x, hud.stats.y + hud.stats.h + gap, hud.stats.w, header};
 	return hud;
 }
 
@@ -791,7 +857,9 @@ ViewRect GameGUITouch::notificationBounds() const
 	const auto ui = layout();
 	const auto hud = hudLayout(ui);
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), gap = 6 * unit;
-	const double top = std::max(hud.stats.y + hud.stats.h, hud.minimap.y + hud.minimap.h) + gap;
+	const auto inventory = ui.persistentPanel ? ViewRect{} : buildingInventory(ui).bounds;
+	const double top = std::max({hud.stats.y + hud.stats.h, hud.minimap.y + hud.minimap.h,
+		inventory.y + inventory.h}) + gap;
 	return {ui.safe.x + gap, top, std::max(0., ui.safe.w - 2 * gap),
 		std::max(0., std::min(180 * unit, ui.actions.y - gap - top))};
 }

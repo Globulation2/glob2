@@ -6102,5 +6102,19 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 
 [discord copy failed]
 
+[Sound or silence?]
+
+[Silence]
+
+[Sound]
+
+[audio preference explanation]
+
+[audio preference change later]
+
+[audio preference save failed]
+
+[audio choices description]
+
 [Destroy this building?]
 این ساختمان تخریب شود؟

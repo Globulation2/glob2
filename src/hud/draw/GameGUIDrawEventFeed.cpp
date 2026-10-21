@@ -7,6 +7,7 @@
 #include <TouchText.h>
 #include <RenderStateScope.h>
 #include <cmath>
+#include <optional>
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
 
@@ -48,7 +49,12 @@ int GameGUI::drawEventFeed(int x, int y)
 	auto *gfx = globalContainer->gfx;
 	const bool mobile = touch->usesHUD();
 	const auto area = mobile ? touch->notificationBounds() : GAGCore::ViewRect{};
-	const double scale = mobile ? 1.15 * gfx->textUnitsPerPoint() : 1.;
+	// Match the normal building-header/inventory text role, including the
+	// player's text-size preference. Desktop notifications retain their style.
+	std::optional<InGameTouchTheme::TextStyle> mobileStyle;
+	if (mobile) mobileStyle.emplace(font);
+	const auto weight = mobile ? Font::STYLE_NORMAL : Font::STYLE_BOLD;
+	const double scale = mobile ? .8 * gfx->textUnitsPerPoint() : 1.;
 	const double originX = mobile ? area.x : 0, originY = mobile ? std::max(area.y, double(y)) : 0;
 	const int lineHeight = mobile ? std::max(EVENT_ROW_H_PX, font->getStringHeight("Ag") + 4) : EVENT_ROW_H_PX;
 	SDL_Rect oldClip;
@@ -69,14 +75,16 @@ int GameGUI::drawEventFeed(int x, int y)
 		std::string text = row.label;
 		if (row.count > 1)
 			text += FormattableString(" ×%0").arg(row.count);
-		font->pushStyle(Font::Style(Font::STYLE_BOLD, row.color));
+		font->pushStyle(Font::Style(weight, row.color));
 		const double textWidth = area.w / scale - EVENT_TEXT_X_PX - 4;
 		auto lines = mobile ? GAGCore::wrapTouchText(font, text, textWidth)
 			: std::vector<std::string>{text};
 		if (mobile)
 		{
-			const int availableLines = int(std::floor(((area.y + area.h - originY) / scale - y) / lineHeight));
-			if (textWidth <= 0 || availableLines < 1)
+			const double available = (area.y + area.h - originY) / scale - y;
+			const int availableLines = int(std::floor((available - 8 +
+				lineHeight - font->getStringHeight("Ag")) / lineHeight));
+			if (textWidth <= 0 || availableLines < 1 || available < std::max(EVENT_ICON_PX, font->getStringHeight("Ag")) + 8)
 			{
 				font->popStyle();
 				break;
@@ -88,7 +96,10 @@ int GameGUI::drawEventFeed(int x, int y)
 				lines.back() = (tail.empty() ? std::string{} : tail.front()) + "…";
 			}
 		}
-		const int rowHeight = std::max(1, int(lines.size())) * lineHeight;
+		const int textHeight = font->getStringHeight("Ag") + (std::max(1, int(lines.size())) - 1) * lineHeight;
+		const int rowHeight = mobile ? std::max(EVENT_ICON_PX, textHeight) + 8 : EVENT_ROW_H_PX;
+		const int iconY = mobile ? y + (rowHeight - EVENT_ICON_PX) / 2 : y;
+		const int textY = mobile ? y + (rowHeight - textHeight) / 2 : y;
 		font->popStyle();
 		if (mobile)
 		{
@@ -102,18 +113,20 @@ int GameGUI::drawEventFeed(int x, int y)
 		{
 		case GEUnitUnderAttack:
 			if (row.subject < NB_UNIT_TYPE)
-				drawFittedIcon(x, y, globalContainer->unitmini, row.subject, alpha);
+			{
+				globalContainer->unitmini->setBaseColor(ownColor);
+				drawFittedIcon(x, iconY, globalContainer->unitmini, row.subject, alpha);
+				gfx->finishDrawingSprite(globalContainer->unitmini, alpha);
+			}
 			break;
 		case GEUnitLostConversion:
 		case GEUnitGainedConversion:
-			// The other team's colour behind a worker.
-			if (row.subject < teams.size())
-			{
-				const GAGCore::Color c = presentationColor(teams[row.subject].color);
-				globalContainer->gfx->drawFilledRect(x, y, EVENT_ICON_PX, EVENT_ICON_PX, c.r, c.g, c.b,
-													 static_cast<Uint8>(alpha * 3 / 4));
-			}
-			drawFittedIcon(x, y, globalContainer->unitmini, WORKER, alpha);
+			// Identify the other team using the worker's normal team-color mask.
+			globalContainer->unitmini->setBaseColor(row.subject < teams.size()
+				? presentationColor(teams[row.subject].color) : ownColor);
+			drawFittedIcon(x, iconY, globalContainer->unitmini, WORKER, alpha);
+			gfx->finishDrawingSprite(globalContainer->unitmini, alpha);
+			globalContainer->unitmini->setBaseColor(ownColor);
 			break;
 		case GEBuildingUnderAttack:
 		case GEBuildingCompleted:
@@ -127,7 +140,7 @@ int GameGUI::drawEventFeed(int x, int y)
 			if (!sprite)
 				break;
 			sprite->setBaseColor(ownColor);
-			drawFittedIcon(x, y, sprite, frame, alpha);
+			drawFittedIcon(x, iconY, sprite, frame, alpha);
 			globalContainer->gfx->finishDrawingSprite(sprite, alpha);
 			break;
 		}
@@ -136,11 +149,11 @@ int GameGUI::drawEventFeed(int x, int y)
 		}
 
 		// Message, with the number of reports it stands for
-		font->pushStyle(Font::Style(Font::STYLE_BOLD, row.color));
+		font->pushStyle(Font::Style(weight, row.color));
 		int textW = 0;
 		for (size_t i = 0; i < lines.size(); ++i)
 		{
-			gfx->drawString(x + EVENT_TEXT_X_PX, y + int(i) * lineHeight, font, lines[i], 0, alpha);
+			gfx->drawString(x + EVENT_TEXT_X_PX, textY + int(i) * lineHeight, font, lines[i], 0, alpha);
 			textW = std::max(textW, font->getStringWidth(lines[i]));
 		}
 		font->popStyle();

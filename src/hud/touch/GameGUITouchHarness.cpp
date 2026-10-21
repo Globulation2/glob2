@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <utility>
+#include <tuple>
 #include <iterator>
 #include <cmath>
 #include <cstdlib>
@@ -817,6 +818,276 @@ class GameGUITouchHarness
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
 
+	static void spectatorBuildings()
+	{
+		struct Restore
+		{
+			bool replay = globalContainer->replaying, live = globalContainer->liveSpectating;
+			~Restore() { globalContainer->replaying = replay; globalContainer->liveSpectating = live; }
+		} restore;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(2);
+		players.getBasePlayer(0) = BasePlayer(0, "Viewer", 0, BasePlayer::P_LOCAL);
+		players.getBasePlayer(1) = BasePlayer(1, "Other colony", 1, BasePlayer::P_AI);
+		require(gui.loadFromHeaders(map, players, true, true), "Spectator fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		gui.gamePaused = false;
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		Uint64 now = 20000;
+		auto finger = [&](Uint32 type, GAGCore::ViewPoint point) {
+			SDL_Event event{};
+			event.type = type;
+			event.tfinger.timestamp = SDL_MS_TO_NS(now);
+			event.tfinger.touchID = 7;
+			event.tfinger.fingerID = 1;
+			event.tfinger.x = float(point.x / gfx->getW());
+			event.tfinger.y = float(point.y / gfx->getH());
+			gui.processEvent(&event);
+			now += 30;
+		};
+		for (int owner : {0, 1})
+		for (const char *name : {"swarm", "warflag", "clearingflag"})
+		{
+			auto *team = gui.game.teams[owner];
+			int slot = 0;
+			while (team->myBuildings[slot]) ++slot;
+			auto *building = new Building(0, 0, Building::GIDfrom(slot, owner), gui.game.buildingsTypes.getTypeNum(name, 0, false),
+				team, &gui.game.buildingsTypes, 1, 1);
+			team->attachBuilding(slot, building);
+			building->maxUnitWorking = 7;
+			building->priority = 1;
+			building->unitStayRange = 11;
+			building->minLevelToFlag = 2;
+			building->minWorkerLevelToFlag = 2;
+			building->ratio[0] = 2; building->ratio[1] = 3; building->ratio[2] = 5;
+			for (bool replay : {false, true})
+			for (const auto [width, height] : {std::pair{360, 720}, {720, 360}, {800, 600}})
+			{
+				globalContainer->replaying = replay;
+				globalContainer->liveSpectating = !replay;
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", width == 800 ? "touch-auto" : "1", 1);
+				const int oldW = gfx->getW(), oldH = gfx->getH();
+				SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+				REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+				SDL_Event resize{};
+				resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+				GAGCore::GraphicContext::translateMouseEvent(&resize);
+				gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+				gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+				gui.touch->panelOpen = true;
+				glob2test::drawGUI(gui, 0);
+				CHECK((gfx->getW() < gfx->getH()) == (width < height));
+				const auto rows = gui.touch->buildingActions();
+				REQUIRE_FALSE(rows.empty());
+				CHECK(std::any_of(rows.begin(), rows.end(), [](const auto &row) { return row.kind == 6; }));
+				CHECK(std::any_of(rows.begin(), rows.end(), [](const auto &row) { return row.kind == 7; }));
+				const auto *panel = gui.touch->inspectedBuilding();
+				REQUIRE(panel);
+				CHECK(gui.displayedMaxUnitWorking(*panel) == 7);
+				CHECK(gui.displayedPriority(*panel) == 1);
+				if (std::string(name) == "swarm")
+				{
+					CHECK(gui.touch->dialRatios() == std::array<int, 3>{2, 3, 5});
+					CHECK(std::count_if(rows.begin(), rows.end(), [](const auto &row) { return row.kind == 0; }) == 3);
+					CHECK_FALSE(gui.touch->buildingInventory(gui.touch->layout()).cells.empty());
+				}
+				else
+				{
+					CHECK(gui.displayedUnitStayRange(*panel) == 11);
+					CHECK(std::any_of(rows.begin(), rows.end(), [](const auto &row) { return row.kind == 8; }));
+					const int kind = std::string(name) == "warflag" ? 2 : 12;
+					CHECK(std::any_of(rows.begin(), rows.end(), [kind](const auto &row) {
+						return row.kind == kind && row.value == 2 && row.selected;
+					}));
+				}
+				CHECK(gui.touch->keyboardTargets().size() == 7); // Toolbar and close only.
+				std::vector<GAGCore::ViewPoint> controls;
+				if (gui.touch->usesDial())
+					for (const auto &region : gui.touch->dialRegions())
+					{
+						const auto &g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+						controls.push_back(region.ring < 0 ? GAGCore::ViewPoint{region.box.x + region.box.w / 2,
+							region.box.y + region.box.h / 2} : TouchDial::point(g, g.rings[region.ring].middle(),
+							(region.from + region.to) / 2));
+					}
+				else
+					for (size_t i = 0; i < rows.size(); ++i)
+					{
+						const auto box = gui.touch->buildingActionRect(i);
+						if (gui.touch->panelContent().contains({box.x + box.w / 2, box.y + box.h / 2}))
+							controls.push_back({box.x + box.w - 16, box.y + box.h / 2});
+					}
+				REQUIRE_FALSE(controls.empty());
+				const auto checksum = gui.game.checkSum();
+				for (const auto point : controls)
+				{
+					// The first tap can switch pointer mode; the second must also be inert.
+					for (int tap = 0; tap < 2; ++tap)
+					{
+						finger(SDL_EVENT_FINGER_DOWN, point);
+						finger(SDL_EVENT_FINGER_UP, point);
+					}
+					finger(SDL_EVENT_FINGER_DOWN, point);
+					finger(SDL_EVENT_FINGER_MOTION, {point.x - 10, point.y + 10});
+					CHECK_FALSE(gui.touch->allocation.has_value());
+					finger(SDL_EVENT_FINGER_UP, {point.x - 10, point.y + 10});
+					SDL_Event mouse{};
+					mouse.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+					mouse.button.button = SDL_BUTTON_LEFT;
+					mouse.button.x = float(point.x); mouse.button.y = float(point.y);
+					for (int click = 0; click < 2; ++click)
+					{
+						mouse.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+						gui.processEvent(&mouse);
+						mouse.type = SDL_EVENT_MOUSE_BUTTON_UP;
+						gui.processEvent(&mouse);
+					}
+				}
+				CHECK(gui.orderQueue.empty());
+				CHECK(gui.buildingGuiState.empty());
+				CHECK_FALSE(gui.touch->confirmDestroy);
+				CHECK(gui.game.checkSum() == checksum);
+				CHECK(gui.selectionMode == GameGUI::BUILDING_SELECTION);
+				if (owner == 1 && !replay)
+					gfx->printScreen(std::string("spectator-") + name + "-" + std::to_string(width) + ".bmp");
+				gfx->nextFrame();
+				gui.touch->cancel();
+			}
+		}
+		const auto header = gui.touch->allocationRect();
+		gui.touch->interfaceTap({header.x + header.w - 24 * gfx->logicalUnitsPerPoint(), header.y + header.h / 2});
+		CHECK(gui.selectionMode == GameGUI::NO_SELECTION);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+	}
+
+	static void inventory()
+	{
+		struct Restore
+		{
+			double text = GAGCore::userTextScale;
+			~Restore() { GAGCore::userTextScale = text; }
+		} restore;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Inventory", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Inventory fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.game.map.setMapDiscovered();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		int slot = 0;
+		for (const auto &[name, site] : {std::pair{"swarm", false}, {"inn", false}, {"swarm", true}})
+		{
+			while (gui.localTeam->myBuildings[slot]) ++slot;
+			auto *building = new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, site),
+				gui.localTeam, &gui.game.buildingsTypes, 1, 1);
+			gui.localTeam->attachBuilding(slot, building);
+			int count = 0;
+			for (int material = 0; material < MaterialCount; ++material)
+				if (building->type->maxMaterial[material] > 0)
+				{
+					building->setMaterial(material, count++ % 2 ? 0 : building->type->maxMaterial[material] / 2);
+				}
+			REQUIRE(count > 0);
+			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+			gui.touch->panelOpen = true;
+			CHECK(gui.touch->buildingInventory(gui.touch->layout()).cells.empty());
+			for (const auto [width, height] : {std::pair{360, 720}, {720, 360}, {800, 600}})
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", width == 800 ? "touch-auto" : "1", 1);
+				const int oldW = gfx->getW(), oldH = gfx->getH();
+				SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+				REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+				SDL_Event resize{};
+				resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+				GAGCore::GraphicContext::translateMouseEvent(&resize);
+				gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+				for (const double text : {1., 1.5})
+				{
+					GAGCore::userTextScale = text;
+					glob2test::drawGUI(gui, 0);
+					const auto ui = gui.touch->layout();
+					const auto inventory = gui.touch->buildingInventory(ui);
+					const auto hud = gui.touch->hudLayout(ui);
+					const double unit = gfx->logicalUnitsPerPoint();
+					for (const auto &cell : hud.cells)
+						CHECK(cell.h == doctest::Approx(40 * unit));
+					CHECK(hud.stats.y + hud.stats.h == doctest::Approx(hud.cells[4].y + hud.cells[4].h));
+					CHECK(hud.identity.y == doctest::Approx(hud.stats.y + hud.stats.h + 4 * unit));
+					if (hud.cells[3].y > hud.cells[0].y)
+					{
+						CHECK(hud.cells[3].x == doctest::Approx(hud.cells[0].x));
+						CHECK(hud.cells[3].w == doctest::Approx(hud.cells[0].w));
+						CHECK(hud.cells[4].x == doctest::Approx(hud.cells[1].x));
+						CHECK(hud.cells[4].x + hud.cells[4].w == doctest::Approx(hud.cells[2].x + hud.cells[2].w));
+					}
+					CHECK(inventory.cells.size() == count);
+					CHECK(inventory.bounds.y == doctest::Approx(gui.touch->allocationRect().y + gui.touch->allocationRect().h));
+					size_t index = 0;
+					for (int material = 0; material < MaterialCount; ++material)
+						if (building->type->maxMaterial[material] > 0)
+						{
+							const auto &[cell, label] = inventory.cells.at(index++);
+							CHECK(label == std::string(getMaterialName(material)) + " " + std::to_string(building->material(material)) +
+								"/" + std::to_string(building->type->maxMaterial[material]));
+							CHECK(cell.y + cell.h <= ui.actions.y);
+							CHECK(gui.touch->interfaceRegion({cell.x + cell.w / 2, cell.y + cell.h / 2}) == 3);
+							const auto lines = gui.touch->pointLines(label, cell.w, .8).size();
+							CHECK(cell.h >= lines * globalContainer->standardFont->getStringHeight("Ag") * .8 * gfx->textUnitsPerPoint());
+						}
+					if (ui.persistentPanel)
+						CHECK(gui.touch->panelContent().y >= inventory.bounds.y + inventory.bounds.h);
+					else
+						CHECK(gui.touch->notificationBounds().y >= inventory.bounds.y + inventory.bounds.h);
+					if (!ui.persistentPanel && !gui.touch->usesDial())
+						CHECK(ui.panel.y >= inventory.bounds.y + inventory.bounds.h);
+					else if (gui.touch->usesDial())
+					{
+						const auto dial = gui.touch->dialLayout(ui);
+						CHECK(TouchDial::point(dial.geometry, dial.geometry.rings[0].outer, dial.geometry.sweepEnd).y >=
+							inventory.bounds.y + inventory.bounds.h);
+					}
+					gfx->printScreen(std::string("inventory-") + name + (site ? "-site-" : "-") +
+						std::to_string(width) + "-" + std::to_string(int(text * 100)) + ".bmp");
+					gfx->nextFrame();
+					gui.touch->confirmDestroy = true;
+					glob2test::drawGUI(gui, 0);
+					const auto choices = gui.touch->buildingActions();
+					REQUIRE(choices.size() == 2);
+					CHECK(choices[0].kind == 4);
+					CHECK(choices[1].kind == 5);
+					if (!gui.touch->usesDial())
+					{
+						const auto content = gui.touch->panelContent();
+						for (size_t i = 0; i < choices.size(); ++i)
+						{
+							const auto box = gui.touch->buildingActionRect(i);
+							CHECK(box.y >= content.y);
+							CHECK(box.y + box.h <= content.y + content.h);
+						}
+					}
+					gui.touch->confirmDestroy = false;
+				}
+			}
+			const auto allies = gui.localTeam->allies;
+			gui.localTeam->allies = 0;
+			glob2test::drawGUI(gui, 0);
+			CHECK(gui.touch->buildingInventory(gui.touch->layout()).cells.empty());
+			gui.localTeam->allies = allies;
+		}
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+	}
+
 	static void notifications()
 	{
 		struct Restore
@@ -854,7 +1125,7 @@ class GameGUITouchHarness
 				gui.eventFeed.ingest({GEUnitUnderAttack, WORKER, 0, 20, 25,
 					"Your workers are under attack near the swimming pool. Send reinforcements to defend your colony!",
 					GAGCore::Color(255, 100, 100)}, SDL_GetTicks(), [](int, int, int, int) { return 10000; });
-				gui.eventFeed.ingest({GEBuildingCompleted, 0, 0, 12, 14, "The defence tower is finished.",
+				gui.eventFeed.ingest({GEBuildingCompleted, Uint32(gui.game.buildingsTypes.getTypeNum("swarm", 0, false)), 0, 12, 14, "The swarm is finished.",
 					GAGCore::Color(110, 255, 130)}, SDL_GetTicks(), [](int, int, int, int) { return 10000; });
 				glob2test::drawGUI(gui, 0);
 				const auto area = gui.touch->notificationBounds();
@@ -869,11 +1140,30 @@ class GameGUITouchHarness
 					CHECK(hit.y >= area.y - 1);
 					CHECK(hit.x + hit.w <= area.x + area.w + 1);
 					CHECK(hit.y + hit.h <= area.y + area.h + 1);
-					CHECK(hit.h >= 20 * 1.15 * gfx->textUnitsPerPoint() - 1);
+					CHECK(hit.h >= (std::max(18, globalContainer->standardFont->getStringHeight("Ag")) + 8) *
+						.8 * gfx->textUnitsPerPoint() - 1);
 				}
+				// The single-line card uses the same .8 normal text role as the
+				// building title/inventory, with room for the icon and vertical padding.
+				CHECK(gui.eventFeedHits.front().h == int(std::ceil(
+					(std::max(18, globalContainer->standardFont->getStringHeight("Ag")) + 8) *
+					.8 * gfx->textUnitsPerPoint())));
 				const auto hit = gui.eventFeedHits.front();
 				CHECK(gui.handleEventFeedClick(hit.x + hit.w / 2, hit.y + hit.h / 2));
 				gfx->printScreen(std::string("notifications-") + (width < height ? "portrait-" : "landscape-") +
+					std::to_string(int(textSize * 100)) + ".bmp");
+				gfx->nextFrame();
+				// Exercise differently colored conversion icons alongside a local
+				// worker, so captures expose any team-color leakage between rows.
+				gui.eventFeed.clear(0);
+				for (const auto [type, subject, label] : {
+					std::tuple{GEUnitUnderAttack, Uint32(WORKER), "Your worker is under attack."},
+					std::tuple{GEUnitLostConversion, Uint32(0), "A worker joined another team."},
+					std::tuple{GEUnitGainedConversion, Uint32(1), "A worker joined your team."}})
+					gui.eventFeed.ingest({type, subject, 0, 20, 25, label, GAGCore::Color(110, 255, 130)},
+						SDL_GetTicks(), [](int, int, int, int) { return 10000; });
+				glob2test::drawGUI(gui, 0);
+				gfx->printScreen(std::string("notification-team-icons-") + (width < height ? "portrait-" : "landscape-") +
 					std::to_string(int(textSize * 100)) + ".bmp");
 				gfx->nextFrame();
 			}
@@ -1547,7 +1837,7 @@ class GameGUITouchHarness
 					const auto hud = gui.touch->hudLayout(gui.touch->layout());
 					auto nearlyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
 					require(nearlyEqual(panel.x, hud.stats.x) && nearlyEqual(panel.w, hud.stats.w) &&
-						nearlyEqual(panel.y + panel.h, hud.minimap.y + hud.minimap.h) &&
+						nearlyEqual(panel.y, hud.stats.y + hud.stats.h + 4 * unit) &&
 						panel.y >= hud.stats.y + hud.stats.h &&
 						nearlyEqual(panel.h, InGameTouchTheme::inspectorHeader * unit) && !gui.touch->lensVisible(),
 						"Resource identity shares the building header geometry below stats");
@@ -2267,6 +2557,9 @@ class GameGUITouchHarness
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
 		{
+			// The selected snapshot (including stocks) must exist before choosing
+			// between the dial and the row layout used by the rendered frame.
+			glob2test::drawGUI(gui, 0);
 			if (gui.touch->usesDial())
 			{
 				// The phone dial uses the same action regions as rendering.
@@ -2286,7 +2579,9 @@ class GameGUITouchHarness
 				const auto found =
 					std::find_if(rows.begin(), rows.end(), [&](const auto &row)
 								 { return row.kind == kind && (kind == 7 || row.value == value); });
-				require(found != rows.end(), "Building action must be available");
+				require(found != rows.end(), ("Building action must be available: kind " + std::to_string(kind) +
+					" value " + std::to_string(value) + " viewport " + std::to_string(gfx->getW()) + "x" +
+					std::to_string(gfx->getH()) + " selection " + std::to_string(gui.selectionMode)).c_str());
 				const auto r = gui.touch->panelContent();
 				const double u = gfx->logicalUnitsPerPoint();
 				const auto box = gui.touch->buildingActionRect(std::distance(rows.begin(), found));
@@ -2698,7 +2993,7 @@ class GameGUITouchHarness
 			const auto header = gui.touch->allocationRect();
 			auto approx = [](double a, double b) { return std::abs(a - b) < .5; };
 			require(approx(header.x, hud.stats.x) && approx(header.w, hud.stats.w) &&
-				approx(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
+				approx(header.y, hud.stats.y + hud.stats.h + 4 * gfx->logicalUnitsPerPoint()) &&
 				header.y >= hud.stats.y + hud.stats.h,
 				"Row fallback keeps the compact identity below stats beside the minimap");
 			const auto content = gui.touch->panelContent();
@@ -2777,9 +3072,9 @@ class GameGUITouchHarness
 				auto approx = [](double a, double b) { return std::abs(a - b) < .5; };
 				require(approx(identity.x, hud.stats.x) && approx(identity.w, hud.stats.w),
 						"Building identity aligns with the rendered stats width");
-				require(approx(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+				require(approx(identity.y, hud.stats.y + hud.stats.h + 4 * gfx->logicalUnitsPerPoint()) &&
 						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
-						"Building identity sits below stats and beside the minimap, bottom aligned");
+						"Building identity follows the stats without unused vertical space");
 				const auto overlaps = [](const auto &a, const auto &b) {
 					return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 				};
@@ -2800,12 +3095,12 @@ class GameGUITouchHarness
 				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(), "Moved close dismisses without an order");
 				openActions(swarm);
 				const auto dial = gui.touch->dialLayout(ui);
-				const auto legend = gui.touch->dialChips(dial).legend;
-				require(approx(legend.x, dial.header.x) && approx(legend.w, dial.header.w) &&
-					approx(legend.y, dial.header.y + dial.header.h + 4 * gfx->logicalUnitsPerPoint()),
-					"Production readouts align directly below the building header");
+				const auto inventory = gui.touch->buildingInventory(ui).bounds;
+				require(approx(inventory.x, dial.header.x) && approx(inventory.w, dial.header.w) &&
+					approx(inventory.y, dial.header.y + dial.header.h),
+					"Material inventory aligns directly below the building header");
 				if (width > height)
-					require(TouchDial::point(dial.geometry, dial.geometry.rings[0].outer, dial.geometry.sweepEnd).y >= legend.y + legend.h,
+					require(TouchDial::point(dial.geometry, dial.geometry.rings[0].outer, dial.geometry.sweepEnd).y >= inventory.y + inventory.h,
 						"The landscape dial clears the header readouts on either thumb side");
 				const auto regions = gui.touch->dialRegions();
 				require(regions.size() >= 3 + 3 + 3,
@@ -2874,12 +3169,14 @@ class GameGUITouchHarness
 			else
 			{
 				const auto content = gui.touch->panelContent();
-				for (size_t i = 0; i < gui.touch->buildingActions().size(); ++i)
-				{
-					const auto box = gui.touch->buildingActionRect(i);
-					require(box.y >= content.y && box.y + box.h <= content.y + content.h,
-							"Swarm controls must fit without inspector scrolling");
-				}
+				const auto inventory = gui.touch->buildingInventory(gui.touch->layout()).bounds;
+				require(content.h > 0 && content.y >= inventory.y + inventory.h,
+					"Fallback controls use the remaining height below inventory");
+				const auto destroy = actionPoint(4, 0);
+				const auto action = gui.touch->actionAt(destroy);
+				require(action && action->kind == 4,
+					"The last fallback action stays reachable by scrolling");
+				openActions(swarm);
 			}
 			gfx->printScreen(width < height ? "touch-swarm-portrait.bmp"
 											: "touch-swarm-landscape.bmp");
@@ -3709,7 +4006,7 @@ class GameGUITouchHarness
 				const auto hud = gui.touch->hudLayout(ui);
 				auto nearlyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
 				require(nearlyEqual(identity.x, hud.stats.x) && nearlyEqual(identity.w, hud.stats.w) &&
-					nearlyEqual(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+					nearlyEqual(identity.y, hud.stats.y + hud.stats.h + 4 * gfx->logicalUnitsPerPoint()) &&
 					identity.y >= hud.stats.y + hud.stats.h && ui.panel.y >= identity.y + identity.h,
 					"Unit identity shares the selection header and stays separate from statistics");
 				const auto values = gui.touch->unitInfoRows();
@@ -4885,6 +5182,30 @@ TEST_SUITE("GameGUITouch")
 				gfx->printScreen(std::string("curved-label-") + std::to_string(int(unit)) + (mirrored ? "-left.bmp" : "-right.bmp"));
 				gfx->nextFrame();
 			}
+		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("spectators inspect building controls without editing their configuration", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::spectatorBuildings();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("building inventory shows material stocks below the mobile title", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::inventory();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		glob2test::retainFromProfile(".bmp");
 	}
 

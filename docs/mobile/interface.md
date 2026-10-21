@@ -32,6 +32,22 @@ options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
 
+## First-launch preferences
+
+Mobile and touch presentations start silently until an explicit audio choice is
+saved. The mixer receives this mute policy before loading or selecting intro and
+menu music, so neither onboarding nor loading can emit unexpected sound. The
+first menu visit offers illustrated **Silence** and **Sound** choices before the
+hand-preference screen. Sound is enabled only after successfully saving that
+choice; failed saves and dismissed input remain silent. The choice persists
+across restarts, and Audio settings can change it later without losing volume
+levels.
+
+Older mobile profiles without an audio-choice marker are also kept silent and
+asked once: an old unmuted default is not an explicit sound choice. Desktop
+startup keeps its existing audio preference behavior. These are local interface
+preferences, independent of simulation, save files and replay compatibility.
+
 ## Safe areas
 
 Interactive content uses the host safe rectangle, including Android system bars

@@ -6102,5 +6102,19 @@ Tröskeln för vinstsannolikhet är uppnådd.
 
 [discord copy failed]
 
+[Sound or silence?]
+
+[Silence]
+
+[Sound]
+
+[audio preference explanation]
+
+[audio preference change later]
+
+[audio preference save failed]
+
+[audio choices description]
+
 [Destroy this building?]
 Förstöra den här byggnaden?

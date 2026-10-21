@@ -6102,5 +6102,19 @@ Umbral de probabilidad de victoria alcanzado.
 
 [discord copy failed]
 
+[Sound or silence?]
+
+[Silence]
+
+[Sound]
+
+[audio preference explanation]
+
+[audio preference change later]
+
+[audio preference save failed]
+
+[audio choices description]
+
 [Destroy this building?]
 ¿Destruir este edificio?

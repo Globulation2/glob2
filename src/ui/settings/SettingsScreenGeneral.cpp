@@ -267,6 +267,7 @@ void SettingsScreen::buildGeneral()
 			   {
 				   auto &s = globalContainer->settings;
 				   s.mute = v;
+				   s.audioPreferenceChosen = true;
 				   globalContainer->mix->setVolume(s.musicVolume, s.voiceVolume, s.mute);
 				   commit();
 			   });

@@ -6126,3 +6126,17 @@ Run 2x
 Run 3x
 [stat band water only]
 Water only
+[Sound or silence?]
+Sound or silence?
+[Silence]
+Silence
+[Sound]
+Sound
+[audio preference explanation]
+The game starts quietly. Would you like silence, or music and game audio?
+[audio preference change later]
+You can change this anytime in Settings → Audio.
+[audio preference save failed]
+Your choice could not be saved. Audio is still off. Please try again.
+[audio choices description]
+Silence: a muted speaker. Sound: a speaker with sound waves.
