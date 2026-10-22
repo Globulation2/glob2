@@ -27,9 +27,9 @@ def gh(path, binary=False):
 def paginated(path, field):
     items = []
     for page in range(1, 101):
-        data = gh(path + ('&' if '?' in path else '?') + f'per_page=100&page={page}')[field]
+        data = gh(path + ('&' if '?' in path else '?') + f'per_page=30&page={page}')[field]
         items.extend(data)
-        if len(data) < 100:
+        if len(data) < 30:
             return items
     raise ValueError('Release evidence pagination limit exceeded')
 

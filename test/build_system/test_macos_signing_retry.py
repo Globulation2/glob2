@@ -32,6 +32,14 @@ class SigningRetryTests(unittest.TestCase):
                      for index, arch in enumerate(('arm64', 'x86_64'))]
         return run, jobs, artifacts, 'timestamp TAG: v0.11.0.5\ntimestamp ' + COMMIT + '\n'
 
+    def test_evidence_uses_small_complete_pages(self):
+        pages = [{'jobs': list(range(30))}, {'jobs': [30, 31]}]
+        with patch.object(retry, 'gh', side_effect=pages) as query:
+            self.assertEqual(retry.paginated('/jobs?filter=all', 'jobs'), list(range(32)))
+        self.assertEqual([call.args[0] for call in query.call_args_list],
+                         ['/jobs?filter=all&per_page=30&page=1',
+                          '/jobs?filter=all&per_page=30&page=2'])
+
     def test_failed_signing_run_can_reuse_verified_builds(self):
         self.assertEqual(set(retry.validate(*self.fixture(), 'v0.11.0.5', COMMIT)), {'arm64', 'x86_64'})
 
