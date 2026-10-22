@@ -53,6 +53,11 @@ def validate(run, jobs, artifacts, context_log, tag, commit, kind="unsigned-maco
         required |= {'macos-sign (macos-15, arm64)', 'macos-sign (macos-15-intel, x86_64)'}
     for name in required:
         matching = [job for job in jobs if job.get('name') == name]
+        if name.startswith('macos-sign ') and matching:
+            # A recovered signing job supersedes its failed earlier attempts.
+            # Source build/context attempts still all have to succeed below.
+            latest = max(job.get('run_attempt', 1) for job in matching)
+            matching = [job for job in matching if job.get('run_attempt', 1) == latest]
         if not matching or any(job.get('status') != 'completed' or job.get('conclusion') != 'success'
                                for job in matching):
             raise ValueError('Source context or Mac package job is not successfully completed')

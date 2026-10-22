@@ -35,6 +35,28 @@ class SigningRetryTests(unittest.TestCase):
     def test_failed_signing_run_can_reuse_verified_builds(self):
         self.assertEqual(set(retry.validate(*self.fixture(), 'v0.11.0.5', COMMIT)), {'arm64', 'x86_64'})
 
+    def test_signed_artifacts_require_successful_latest_signing_attempt(self):
+        data = list(self.fixture())
+        for artifact in data[2]:
+            artifact['name'] = artifact['name'].replace('unsigned-macos', 'signed-macos')
+        for arch, runner in [('arm64', 'macos-15'), ('x86_64', 'macos-15-intel')]:
+            name = f'macos-sign ({runner}, {arch})'
+            data[1].extend([
+                {'name': name, 'run_attempt': 1, 'status': 'completed', 'conclusion': 'failure'},
+                {'name': name, 'run_attempt': 2, 'status': 'completed', 'conclusion': 'success'},
+            ])
+        self.assertEqual(set(retry.validate(*data, 'v0.11.0.5', COMMIT, kind='signed-macos')),
+                         {'arm64', 'x86_64'})
+        # An older success cannot hide a failed or still-running latest retry.
+        for status, conclusion in [('completed', 'failure'), ('in_progress', '')]:
+            data[1][-1].update(status=status, conclusion=conclusion)
+            with self.subTest(status=status), self.assertRaises(ValueError):
+                retry.validate(*data, 'v0.11.0.5', COMMIT, kind='signed-macos')
+        data[1][-1].update(status='completed', conclusion='success')
+        data[1][1]['conclusion'] = 'failure'
+        with self.assertRaises(ValueError):
+            retry.validate(*data, 'v0.11.0.5', COMMIT, kind='signed-macos')
+
     def test_foreign_dispatch_and_mixed_source_fail_closed(self):
         for field, value in [('actor', {'id': 1}), ('triggering_actor', {'id': 1}),
                              ('repository', {'id': 1, 'full_name': retry.REPOSITORY}),
