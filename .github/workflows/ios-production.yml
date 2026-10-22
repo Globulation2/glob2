@@ -116,13 +116,13 @@ jobs:
           ref: ${{ needs.context.outputs.commit }}
           persist-credentials: false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        if: inputs.stage == 'inspect' || inputs.stage == 'supersede'
         with:
           ref: ${{ github.sha }}
           path: release-driver
           sparse-checkout: |
             mobile/ios_store_inspect.py
             mobile/ios_store_supersede.py
+            mobile/ios_store_release.py
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -165,7 +165,7 @@ jobs:
           fi
           replacement_args=()
           if [ -n "$REPLACE_DRAFT_BUILD_ID" ]; then replacement_args=(--replace-draft-build-id "$REPLACE_DRAFT_BUILD_ID"); fi
-          "$RUNNER_TEMP/ios-production-tools/bin/python" mobile/ios_store_release.py "$STAGE" \
+          PYTHONPATH="$PWD/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/mobile/ios_store_release.py "$STAGE" \
             --provenance artifacts/ios-production/ios-upload-provenance.json \
             --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID" \
             --draft-version-id "$DRAFT_VERSION_ID" "${replacement_args[@]}"
