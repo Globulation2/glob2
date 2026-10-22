@@ -22,7 +22,14 @@ def inspect(api, provenance):
                        'state': state(version),
                        'releaseType': version['attributes'].get('releaseType'),
                        'buildId': build['id'] if build else None})
-    return {'appId': app['id'], 'selectedMarketingVersion': provenance['marketingVersion'],
+    infos = []
+    for info in api.collect(f"/v1/apps/{app['id']}/appInfos"):
+        locales = api.collect(f"/v1/appInfos/{info['id']}/appInfoLocalizations")
+        infos.append({'appInfoId': info['id'], 'state': info['attributes'].get('state'),
+                      'legacyState': info['attributes'].get('appStoreState'),
+                      'primaryLocalePrivacyPolicyUrls': [item['attributes'].get('privacyPolicyUrl')
+                          for item in locales if item['attributes'].get('locale') == app['attributes']['primaryLocale']]})
+    return {'appId': app['id'], 'appInfos': infos, 'selectedMarketingVersion': provenance['marketingVersion'],
             'selectedBuildNumber': provenance['buildNumber'], 'versions': result}
 
 

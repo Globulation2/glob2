@@ -12,15 +12,19 @@ class StoreInspectionTests(unittest.TestCase):
     def test_only_reads_and_limits_output_to_version_identity(self):
         api = Mock()
         api.collect.side_effect = [
-            [{'id': 'app', 'attributes': {'private': 'not returned'}}],
+            [{'id': 'app', 'attributes': {'private': 'not returned', 'primaryLocale': 'en-US'}}],
             [{'id': 'draft', 'attributes': {'versionString': '0.11.302',
               'appStoreState': 'PREPARE_FOR_SUBMISSION', 'releaseType': 'MANUAL',
               'contactEmail': 'not returned'}}],
+            [{'id': 'info', 'attributes': {'state': 'DEVELOPER_REJECTED'}}],
+            [{'attributes': {'locale': 'en-US', 'privacyPolicyUrl': 'https://example.com/privacy'}}],
         ]
         api.request.return_value = {'data': {'id': 'old-build'}}
         result = ios_store_inspect.inspect(api, {'marketingVersion': '0.11.400',
                                                 'buildNumber': '123'})
-        self.assertEqual(result, {'appId': 'app', 'selectedMarketingVersion': '0.11.400',
+        self.assertEqual(result, {'appId': 'app', 'appInfos': [{'appInfoId': 'info', 'state': 'DEVELOPER_REJECTED',
+                                 'legacyState': None, 'primaryLocalePrivacyPolicyUrls': ['https://example.com/privacy']}],
+                                 'selectedMarketingVersion': '0.11.400',
                                  'selectedBuildNumber': '123', 'versions': [
                                      {'versionId': 'draft', 'version': '0.11.302',
                                       'state': 'PREPARE_FOR_SUBMISSION',
