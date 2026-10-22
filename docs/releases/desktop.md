@@ -16,7 +16,7 @@ release public; only `promote-downloads.yml` can do that after qualification.
 its immutable public tag and the owner-dispatched all-platform source run ID.
 It verifies every successful source-context attempt, both successful native Mac
 package jobs, and each artifact's GitHub SHA-256 digest before importing signing
-credentials. The source run may have failed at signing. Unexpected contents,
+credentials. The source run may have failed at signing. Qualification requires the latest attempt of each signing job to succeed; earlier failed signing attempts do not invalidate a recovered run. Source context and package build attempts must still all succeed. Unexpected contents,
 expired artifacts and mixed revisions fail closed. The mirror's reviewed driver
 imports the pinned Apple Developer ID G2 intermediate and adds the isolated
 keychain to the search list; the selected game source still supplies the app and
