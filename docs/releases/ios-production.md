@@ -13,7 +13,11 @@ review may outlast that retention period. Internal-only uploads cannot be used
 for App Store production.
 
 Dispatch `ios-production.yml` with the same `tag`, the successful mirror
-`upload_run_id`, and one deliberate `stage`: `prepare`, `submit` or `publish`.
+`upload_run_id`, and one deliberate `stage`: `inspect`, `prepare`, `submit` or `publish`.
+`inspect` is read-only: it lists version IDs, version strings, states, release
+types and attached build IDs to diagnose existing-draft conflicts. It uses the
+reviewed mirror inspector and the tagged authentication/provenance helpers; it
+never logs review contacts, credentials or full Apple response bodies.
 The context job verifies the owner-dispatched mirror run, expected workflow,
 success and exact source provenance before the protected `ios-testflight`
 environment supplies App Store Connect credentials. Apple queries must find
