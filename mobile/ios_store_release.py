@@ -121,7 +121,9 @@ def check_metadata(api, app, version):
     infos=api.collect(f"/v1/apps/{app['id']}/appInfos")
     privacy=[]
     for info in infos:
-        if info['attributes'].get('state') not in ('PREPARE_FOR_SUBMISSION','READY_FOR_REVIEW','READY_FOR_DISTRIBUTION','ACCEPTED'): continue
+        if (info['attributes'].get('state') or info['attributes'].get('appStoreState')) not in (
+                'PREPARE_FOR_SUBMISSION','READY_FOR_REVIEW','READY_FOR_DISTRIBUTION','ACCEPTED',
+                'REJECTED','METADATA_REJECTED','DEVELOPER_REJECTED'): continue
         privacy.extend(api.collect(f"/v1/appInfos/{info['id']}/appInfoLocalizations"))
     if not any(item['attributes'].get('locale')==app['attributes']['primaryLocale'] and
                str(item['attributes'].get('privacyPolicyUrl','')).startswith('https://') for item in privacy):

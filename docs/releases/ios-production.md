@@ -47,6 +47,12 @@ Retries can resume the same withdrawn editable version; submission of the new
 version remains a separate `submit` action. This driver action preserves listing
 metadata and never bypasses Apple's review or qualification.
 
+Store write stages use the reviewed mirror's production driver while the uploaded
+binary, marketing version and provenance remain bound to the immutable public
+tag. Privacy-policy checks read current and legacy AppInfo state fields and
+include rejected editable app-information records; the primary-locale HTTPS URL
+is still mandatory, and Apple independently validates review eligibility.
+
 `prepare` creates or binds the selected version with `MANUAL` release and does
 not submit it. Complete private store listing configuration before `submit`:
 copyright, localized descriptions and HTTPS support links, primary-locale

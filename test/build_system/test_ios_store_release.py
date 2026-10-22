@@ -59,6 +59,22 @@ class MetadataAPI(FakeAPI):
 
 
 class IOSStoreTests(unittest.TestCase):
+    def test_rejected_app_info_policy_is_checked_including_legacy_state(self):
+        for field in ('state', 'appStoreState'):
+            for value in ('REJECTED', 'DEVELOPER_REJECTED', 'METADATA_REJECTED'):
+                api = MetadataAPI()
+                original = api.collect
+                def collect(path):
+                    if path.endswith('/appInfos'):
+                        return [{'id': 'info-1', 'attributes': {field: value}}]
+                    return original(path)
+                api.collect = collect
+                with self.subTest(field=field, state=value):
+                    store.check_metadata(api, api.app, api.version)
+                    api.missing = 'privacy'
+                    with self.assertRaisesRegex(ValueError, 'privacy policy URL'):
+                        store.check_metadata(api, api.app, api.version)
+
     def draft_api(self):
         class DraftAPI(FakeAPI):
             def __init__(self):
