@@ -13,7 +13,7 @@ review may outlast that retention period. Internal-only uploads cannot be used
 for App Store production.
 
 Dispatch `ios-production.yml` with the same `tag`, the successful mirror
-`upload_run_id`, and one deliberate `stage`: `inspect`, `prepare`, `submit` or `publish`.
+`upload_run_id`, and one deliberate `stage`: `inspect`, `supersede`, `prepare`, `submit` or `publish`.
 `inspect` is read-only: it lists version IDs, version strings, states, release
 types and attached build IDs to diagnose existing-draft conflicts. It uses the
 reviewed mirror inspector and the tagged authentication/provenance helpers; it
@@ -34,6 +34,16 @@ Retries accept an already attached selected build. This preserves the existing
 listing while advancing its version and build, without submitting or publishing.
 The selected public tag must include replacement support; older tagged tooling
 fails before protected store credentials are obtained.
+
+`supersede` explicitly withdraws an older manual-release iOS version that is
+waiting for review, then binds the new provenance-verified eligible build and
+marketing version to that same version record. Pass the inspected
+`draft_version_id` and exact current `replace_draft_build_id`. It refuses changed
+identities, active review, newer versions, automatic release, or a submission
+containing other items. Apple's review queue position is lost on withdrawal.
+Retries can resume the same withdrawn editable version; submission of the new
+version remains a separate `submit` action. This driver action preserves listing
+metadata and never bypasses Apple's review or qualification.
 
 `prepare` creates or binds the selected version with `MANUAL` release and does
 not submit it. Complete private store listing configuration before `submit`:
