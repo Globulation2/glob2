@@ -25,6 +25,11 @@ SETS = [
     ('warrior-fight', 'glob-warrior-fight.blend', 384, 40, True),
 ]
 
+MOVEMENT_FRAMES_PER_SET = 256
+TURN_BASE = len(SETS) * MOVEMENT_FRAMES_PER_SET
+TURN_FRAMES = 32
+TURN_END = TURN_BASE + len(SETS) * TURN_FRAMES
+
 # Every unit HD texture renders onto this same pixel canvas regardless of its
 # native size (32, 38 or 40), so the ratio is 4x for the 32-native explorer set
 # and non-integer (128/38, 128/40) for the others -- chosen because 128 is
@@ -235,7 +240,7 @@ def install(staged, destination):
 
 def is_turn_frame(ident):
     match = re.fullmatch(r'unit(\d+)', ident)
-    return bool(match and 1792 <= int(match[1]) < 2016)
+    return bool(match and TURN_BASE <= int(match[1]) < TURN_END)
 
 
 def highres_layout():

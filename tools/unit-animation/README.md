@@ -15,9 +15,9 @@ Use the official Blender **2.34 Linux i386 static** release. Blender 2.79 change
 the orthographic projection and surface rendering; even corrected camera
 projection does not reproduce the warrior's surface detail. Blender 2.34 uses
 the source rigs, materials, lights, gamma/alpha encoding, and shadow passes
-directly. No animation channels are removed or modified. The explorer camera
-is shifted half a pixel left/down in image space to match the shipped sprites;
-all other cameras are unchanged.
+directly. Movement renders leave every animation channel unchanged. The explorer
+camera is shifted half a pixel left/down in image space to match the shipped
+sprites; all other cameras are unchanged.
 
 Download: [Blender 2.34 archive](https://download.blender.org/release/Blender2.34/blender-2.34-linux-glibc2.2.5-i386-static.tar.gz)
 
@@ -128,10 +128,16 @@ python3 tools/artwork/package_runtime.py --capture-approved
 python3 tools/artwork/runtime_provenance.py
 ```
 
-Prepare and render use the same absolute work path. Rendering resumes only when
-the prepared-scene and renderer hashes match. Installation validates the whole
-native/HD inventory before copying, appends the HD manifest and retains movement
-assets. The existing movement installers also preserve the turn blocks.
+Prepare and render use the same absolute work path. Rendering and installation
+validate the complete native/HD inventory against the canonical turn layout,
+including frame identities, dimensions and source/scene hashes. Each rendered
+PNG has a `<frame>.receipt.json` recording `version`, `source_sha256`,
+`scene_sha256`, `renderer_sha256` and `output_sha256`. Rendering resumes only
+when the receipt matches the current source, prepared scene, renderer and PNG
+bytes. Renders use temporary output so a failed rerender cannot approve a stale
+PNG. Installation requires verified receipts for every layer before copying,
+appends the HD manifest and retains movement assets. The existing movement
+installers also preserve the turn blocks.
 
 Published custom skins retain their 256-frame clip contract and eight-heading
 turns through `unitSkinAnimationFrame`; this change adds smoother turns to the
@@ -332,7 +338,7 @@ skins paint each model through its quadrant of a `colony-v2` atlas.
 GSK1 stores a bounded little-endian header (magic, vertex count, index count,
 one static pose or 256 unit poses, logical canvas size), shared UV float pairs, uint32 triangle indices,
 then camera-space position/normal float sextuples for each vertex of each pose.
-UVs use a top-left image origin. Directions and phases follow `unitAnimationFrame`.
+UVs use a top-left image origin. Directions and phases follow `unitSkinAnimationFrame`.
 The editor reconstructs model space using versioned, hash-bound `.view.json`
 sidecars; rotating raw GSK positions would distort their independently scaled
 depth. After changing any mesh export, regenerate these camera transforms and
@@ -647,10 +653,10 @@ Both formats share the camera and frame rules. Every clip stores a row-major
 model-to-clip matrix and a model-to-camera normal matrix; positions transform
 by the first and normals by the second, then normalize, with a cancelled
 normal shorter than `1e-8` becoming `(0, 0, 1)`. The renderer alone applies
-the 1.25 atlas padding. Gameplay still calls `unitAnimationFrame`: frame `f`
+the 1.25 atlas padding. Skin gameplay calls `unitSkinAnimationFrame`: frame `f`
 of a clip has heading `-floor(f/32)*pi/4`, and direction 8 maps to phase zero
-of successive headings through the existing function rather than a ninth
-heading. Gameplay timing and discrete heading selection are unchanged.
+of successive headings rather than a ninth heading. Skin gameplay timing and
+discrete heading selection are unchanged.
 
 A GSB1 frame is `mean + sum(c_k * shape_k)` for positions and, separately,
 normals, turned about model Z by the heading and taken through the camera.

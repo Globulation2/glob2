@@ -9,11 +9,11 @@ cadence are preserved. Unsupported backends and missing frames use classic art.
 Approved inputs live in `datasrc/gfx/production`; package them with
 `tools/artwork/package_runtime.py`. `manifest.json` records provenance and hashes;
 `frames.txt` is the runtime lookup. Terrain/resource atlases contain padded mip
-levels matching these frames. Start with the [artwork workflow](../../../docs/assets/artwork-workflow.md),
-[pack maintenance](../../../docs/assets/high-resolution/README.md),
-[candidate pipeline](../../../tools/artwork/ai/README.md) and
-[unit animation](../../../tools/unit-animation/README.md). The generated
-[frame inventory](../../../docs/assets/high-resolution/ASSET-PROVENANCE.md)
+levels matching these frames. Start with the [artwork workflow](https://github.com/Globulation2/glob2/blob/master/docs/assets/artwork-workflow.md),
+[pack maintenance](https://github.com/Globulation2/glob2/blob/master/docs/assets/high-resolution/README.md),
+[candidate pipeline](https://github.com/Globulation2/glob2/blob/master/tools/artwork/ai/README.md) and
+[unit animation](https://github.com/Globulation2/glob2/blob/master/tools/unit-animation/README.md). The generated
+[frame inventory](https://github.com/Globulation2/glob2/blob/master/docs/assets/high-resolution/ASSET-PROVENANCE.md)
 classifies every manifest row.
 
 This directory is an approved PNG source pack, not a playable runtime asset tree.
