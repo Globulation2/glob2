@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Validates the GPU unit shader against an independent CPU reference:
 //   1. Per-pixel HSV hue shift, isolated from compositing, over every one of
-//      the 1,792 poses (three fixed colors) and over the 12 game-team hues
+//      the 2,016 poses (three fixed colors) and over the 12 game-team hues
 //      plus the existing 16-hue test palette (one representative pose per
 //      action/direction).
 //   2. The single-pose and stacked multi-pose combined
@@ -188,11 +188,11 @@ TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [di
 
 	double totalError = 0; int maxError = 0; size_t channels = 0, alphaMismatches = 0;
 
-	// 1) Exhaustive: all 1,792 poses (every action/direction/phase), native and
+	// 1) Exhaustive: all 2,016 poses (every action/direction/phase), native and
 	// HD, at three fixed colors.
 	for (bool experiment : {false, true})
 	for (int base = 0; base <= 384; base += 64)
-	for (int dir = 0; dir < 8; ++dir)
+	for (int dir = 0; dir <= 8; ++dir)
 	for (int phase = 0; phase < 32; ++phase)
 	{
 		const int index = unitAnimationFrame(base, dir, phase * 8);
@@ -203,10 +203,10 @@ TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [di
 	}
 
 	// 2) Breadth: all 28 hues (12 game colors + 16-hue palette), one
-	// representative pose per action/direction (56 poses), native and HD.
+	// representative pose per action/direction (63 poses), native and HD.
 	for (bool experiment : {false, true})
 	for (int base = 0; base <= 384; base += 64)
-	for (int dir = 0; dir < 8; ++dir)
+	for (int dir = 0; dir <= 8; ++dir)
 	{
 		const int index = unitAnimationFrame(base, dir, 128);
 		DrawableSurface *team = sprite.teamOrig(index, experiment);
@@ -279,7 +279,7 @@ TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [di
 		REQUIRE(sprite.teamHueShiftDegrees() == hueShifts[0]);
 		for (bool experiment : {false, true})
 		for (int base = 0; base <= 384; base += 64)
-		for (int dir = 0; dir < 8; ++dir)
+		for (int dir = 0; dir <= 8; ++dir)
 		for (int count : {1, 4})
 		{
 			const int index = unitAnimationFrame(base, dir, 64);
@@ -329,7 +329,7 @@ TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [di
 		REQUIRE(maxFrameError <= 4);
 	}
 
-	std::cout << "PASS: shader vs CPU HSV over all 1,792 poses / 12 team hues + 16-hue palette; "
+	std::cout << "PASS: shader vs CPU HSV over all 2,016 poses / 12 team hues + 16-hue palette; "
 	             "single and stacked framebuffer within tolerance of an independent CPU reference"
 	          << std::endl;
 }

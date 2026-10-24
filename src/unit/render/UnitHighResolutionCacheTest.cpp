@@ -26,7 +26,7 @@ struct InspectUnitSprite : Sprite
 {
 	void checkLayers(bool high) const
 	{
-		REQUIRE((images.size() == 1792 && rotated.size() == 1792));
+		REQUIRE((images.size() == UNIT_ANIMATION_ATLAS_FRAME_COUNT && rotated.size() == UNIT_ANIMATION_ATLAS_FRAME_COUNT));
 		for (size_t i = 0; i < images.size(); ++i)
 		{
 			REQUIRE(bool(experimentImages[i]) == (high && bool(images[i])));
@@ -90,6 +90,11 @@ void run(bool software)
 		// layer must make the whole block ineligible for HD, not just 257.
 		if (!software)
 		{
+			// Dedicated turns form their own complete 32-angle HD block.
+			REQUIRE(sprite.blockHasCompleteHD(1792));
+			sprite.dropExperimentRotated(1793);
+			REQUIRE(!sprite.blockHasCompleteHD(1792));
+			REQUIRE(sprite.blockHasCompleteHD(1824));
 			REQUIRE((sprite.blockHasCompleteHD(256) && sprite.blockHasCompleteHD(257)));
 			sprite.dropExperimentRotated(257);
 			REQUIRE(!sprite.blockHasCompleteHD(256));
@@ -115,7 +120,7 @@ void run(bool software)
 		if (!software)
 			glGetIntegerv(GL_VIEWPORT, viewport);
 		for (int base = 0; base <= 384; base += 64)
-			for (int dir = 0; dir < 8; ++dir)
+			for (int dir = 0; dir <= 8; ++dir)
 				for (int color = 0; color < 3; ++color)
 				{
 					sprite.setBaseColor(color == 0   ? Color(255, 60, 40)
@@ -187,7 +192,7 @@ void run(bool software)
 				REQUIRE(maxDiff <= 10);
 			}
 		}
-		std::cout << "PASS all 1792 layer mappings, whole-block HD/native fallback, HD/classic "
+		std::cout << "PASS all movement and turn layer mappings, whole-block HD/native fallback, HD/classic "
 		             "switching, zoom, and no CPU team-color cache growth under the shader"
 		          << std::endl;
 	}

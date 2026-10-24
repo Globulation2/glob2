@@ -247,15 +247,15 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
         const unsigned clip=unitClip(type,action);
         if(clip>=8)return false;
         const float size=Online::SkinSpriteLogicalSizes[clip],offset=(size-32)/2;
-        return sprites->draw(gfx,team,clip,unitAnimationFrame(0,direction,delta),x-offset,y-offset,size,size,shadow,alpha);
+        return sprites->draw(gfx,team,clip,unitSkinAnimationFrame(direction,delta),x-offset,y-offset,size,size,shadow,alpha);
     }
-    if (sprites) sprites->prefetch(team, unitClip(type, action), unitAnimationFrame(0, direction, delta));
+    if (sprites) sprites->prefetch(team, unitClip(type, action), unitSkinAnimationFrame(direction, delta));
     if (!ready || !textures[team] || !materials[team]) return false;
     const auto *mesh = unitMesh(type, action);
     if (!mesh) return false;
     const float size = mesh->logicalSize;
     const float offset = (size - 32) / 2;
-    return gfx.drawSkinMesh(*mesh, unitAnimationFrame(0, direction, delta),
+    return gfx.drawSkinMesh(*mesh, unitSkinAnimationFrame(direction, delta),
                             *textures[team], *materials[team], unitRegion(type),
                             x-offset, y-offset, size, size, shadow, alpha);
 }
@@ -349,7 +349,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Presentation
                     const auto meshClass = scene.world.catalogs->units->runtime(unit->typeNum).meshClass;
                     const auto *mesh = unitMesh(meshClass,unit->action);
                     if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
-                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(meshClass)});
+                        requests.push_back({mesh, static_cast<unsigned>(unitSkinAnimationFrame(unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(meshClass)});
                 }
                 if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));

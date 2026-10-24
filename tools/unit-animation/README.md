@@ -91,18 +91,61 @@ obsolete numbered shadow layers. It does not install the JSON report or change
 them into sprite sheets (see "Release asset and bundle sizes" in
 `docs/development/README.md`).
 
-The expanded layout has 1,792 consecutive recolorable frames and 1,024 shadow
+The movement layout has 1,792 consecutive recolorable frames and 1,024 shadow
 frames. Action bases in unit types and saves keep their existing values;
 `unitAnimationFrame` maps them to the render-only fourfold layout. Direction 8
-retains its eight-direction turning cadence. The credits retain their existing
-walk-cycle duration.
+uses the separate stationary turn blocks described below. The credits retain
+their existing walk-cycle duration.
+
+## Stationary turns
+
+Zero displacement uses direction 8. Stock action bases select 32 dedicated
+headings (11.25 degrees apart) instead of borrowing eight movement poses. The
+224 frames are appended at `unit1792` through `unit2015`, in the same seven-set
+order as the movement atlas. Each turn retains the existing 0–255 action phase
+and duration; smooth unit motion interpolates that phase between simulation
+ticks. Saved offsets, movement frames and simulation state are unchanged.
+Unaligned historical catalog offsets retain their legacy frame selection.
+
+`turns.py` freezes each original model at frame 1 and overrides only its heading
+IPO in temporary copies. Shadows render at frame 65 with the same fixed heading;
+cyclic heading extrapolation is disabled. This gives a continuous turn with a
+fixed body pose, including at the loop boundary. Gait, materials, lighting and
+source files are preserved; only the temporary heading curve is changed, plus
+the standard render settings and explorer camera calibration. Explorer turns
+use a 40-pixel logical canvas with four pixels of padding per side: its camera
+is widened proportionally, preserving world size while fitting spread wings at
+intermediate angles. Its HD textures still use the fixed 128-pixel canvas.
+
+With the pinned Blender 2.34 executable and its private libraries available:
+
+```sh
+python3 tools/unit-animation/turns.py prepare --work artifacts/unit-turn/job
+python3 tools/unit-animation/turns.py render --work artifacts/unit-turn/job \
+  --blender /path/to/blender-2.34/blender --workers 4
+python3 tools/unit-animation/turns.py install --work artifacts/unit-turn/job
+python3 tools/artwork/package_runtime.py --capture-approved
+python3 tools/artwork/runtime_provenance.py
+```
+
+Prepare and render use the same absolute work path. Rendering resumes only when
+the prepared-scene and renderer hashes match. Installation validates the whole
+native/HD inventory before copying, appends the HD manifest and retains movement
+assets. The existing movement installers also preserve the turn blocks.
+
+Published custom skins retain their 256-frame clip contract and eight-heading
+turns through `unitSkinAnimationFrame`; this change adds smoother turns to the
+stock native/HD artwork. Skin frame selection is kept separate so stock atlas
+indices cannot escape the bounds of a skin clip.
 
 ## Checks
 
 Run `python3 tools/unit-animation/test_render.py` with Pillow installed to test
-scene preparation and rejection of an incomplete install. `src/unit/render/UnitAnimationTest.cpp`
+scene preparation and rejection of an incomplete install. Run
+`python3 tools/unit-animation/test_turns.py` for turn-source integrity, complete
+turn coverage and transactional validation before installation. `src/unit/render/UnitAnimationTest.cpp`
 is part of `glob2-unit-tests` and exhaustively checks frame ranges and
-turning cadence. Compare alpha separately from RGB when reviewing the generated
+turn-frame selection. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.
 
 ## High-resolution textures

@@ -229,8 +229,13 @@ def install(staged, destination):
         (destination / filename).write_bytes((staged / filename).read_bytes())
     # Remove old optional layers whose indices now belong to other animations.
     for path in destination.glob('unit*.png'):
-        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in expected:
+        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in expected and not is_turn_frame(path.stem.rstrip('r')):
             path.unlink()
+
+
+def is_turn_frame(ident):
+    match = re.fullmatch(r'unit(\d+)', ident)
+    return bool(match and 1792 <= int(match[1]) < 2016)
 
 
 def highres_layout():
@@ -339,12 +344,12 @@ def install_highres(staged, destination):
         if not lines or lines[0] != 'GLOB2_HIGHRES 1':
             raise ValueError('Unsupported destination pack')
         other_rows = [line for line in lines[1:]
-                      if line.strip() and not re.fullmatch(r'unit\d+', line.split()[0])]
+                      if line.strip() and (not re.fullmatch(r'unit\d+', line.split()[0]) or is_turn_frame(line.split()[0]))]
     metadata_path = destination / 'manifest.json'
     metadata = json.loads(metadata_path.read_text()) if metadata_path.exists() else dict(version=1, frames=[])
     if metadata['version'] != 1:
         raise ValueError('Unsupported destination provenance')
-    metadata['frames'] = [f for f in metadata['frames'] if not re.fullmatch(r'unit\d+', f['id'])] + staged_metadata['frames']
+    metadata['frames'] = [f for f in metadata['frames'] if (not re.fullmatch(r'unit\d+', f['id']) or is_turn_frame(f['id']))] + staged_metadata['frames']
     destination.mkdir(parents=True, exist_ok=True)
     for name in sorted(files):
         temp = destination / (name + '.tmp')
@@ -355,12 +360,12 @@ def install_highres(staged, destination):
     temporary.write_text('GLOB2_HIGHRES 1\n' + '\n'.join(other_rows + rows) + '\n')
     temporary.replace(manifest)
     for path in destination.glob('unit*.png'):
-        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in files:
+        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in files and not is_turn_frame(path.stem.rstrip('r')):
             path.unlink()
     if destination.resolve() == (ROOT / 'data/highres/v1').resolve():
         (destination / 'README.md').write_text(
             '# High-resolution runtime pack\n\n'
-            + str(len(metadata['frames'])) + ' registered frames, including 1,792 unit poses across seven animation sets.\n'
+            + str(len(metadata['frames'])) + ' registered frames, including movement and stationary-turn unit poses across seven animation sets.\n'
             'Unit textures render onto a fixed 128x128 pixel canvas from the preserved Blender originals, without AI\n'
             '(4x for the 32px-native explorer set, ~3.37x for the 38px-native worker sets, 3.2x for the 40px-native warrior sets).\n'
             'Native-resolution sprites remain in `data/gfx`; logical geometry, team colors and animation timing are preserved.\n\n'

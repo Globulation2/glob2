@@ -286,10 +286,12 @@ Export scripts write staging files under derived/. They do not automatically rep
 
 The seven animation sets are rendered directly from the preserved Blender rigs
 in `originals/units` with Blender 2.34. Each direction retains 32 poses; native
-canvases of 32/38/40 pixels become 128/152/160 pixel HD textures. Camera framing,
+canvases of 32/38/40 pixels use fixed 128×128 HD textures. Camera framing,
 materials, team-color and shadow layers use the same settings as the native
 32-pose render. Prepared scene copies only change resolution and sampling fields
-plus the documented explorer camera calibration.
+plus the documented explorer camera calibration. A further 224 stationary-turn
+poses render 32 headings per set from a fixed gait pose, with the heading IPO
+overridden in temporary scene copies; the source scenes remain unchanged.
 
 Approved unit layers belong in `production/original-derived`; the runtime copies
 are in `data/highres/v1`. The native fallback sprites remain in `data/gfx`.

@@ -56,7 +56,7 @@ TEST_SUITE("SkinModel")
 		for (unsigned direction = 0; direction <= 8; ++direction)
 			for (unsigned delta = 0; delta < 256; ++delta)
 			{
-				const auto frame = unitAnimationFrame(0, direction, delta);
+				const auto frame = unitSkinAnimationFrame(direction, delta);
 				REQUIRE(frame >= 0);
 				REQUIRE(frame < 256);
 				const auto &mapping = model->clips()[0].frames[frame];

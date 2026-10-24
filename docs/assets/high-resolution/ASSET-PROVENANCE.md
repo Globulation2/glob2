@@ -15,9 +15,9 @@ Generated terrain combines selected generated materials with deterministic masks
 | Original-based terrain with deterministic grain and tiling | 256 |
 | Procedural resource painting | 120 |
 | Procedural terrain synthesis | 1036 |
-| Recovered original | 1852 |
+| Recovered original | 2076 |
 
-Total: **3441 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
+Total: **3665 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -2534,32 +2534,256 @@ Total: **3441 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `unit179` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit1790` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit1791` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1792` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1793` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1794` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1795` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1796` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1797` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1798` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1799` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit18` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit180` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1800` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1801` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1802` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1803` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1804` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1805` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1806` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1807` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1808` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1809` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit181` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1810` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1811` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1812` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1813` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1814` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1815` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1816` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1817` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1818` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1819` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit182` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1820` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1821` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1822` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1823` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1824` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1825` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1826` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1827` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1828` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1829` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit183` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1830` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1831` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1832` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1833` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1834` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1835` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1836` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1837` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1838` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1839` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit184` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1840` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1841` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1842` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1843` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1844` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1845` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1846` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1847` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1848` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1849` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit185` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1850` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1851` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1852` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1853` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1854` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1855` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1856` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1857` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1858` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1859` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit186` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1860` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1861` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1862` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1863` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1864` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1865` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1866` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1867` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1868` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1869` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit187` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1870` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1871` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1872` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1873` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1874` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1875` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1876` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1877` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1878` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1879` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit188` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1880` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1881` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1882` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1883` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1884` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1885` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1886` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1887` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1888` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1889` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit189` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1890` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1891` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1892` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1893` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1894` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1895` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1896` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1897` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1898` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1899` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit19` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit190` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1900` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1901` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1902` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1903` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1904` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1905` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1906` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1907` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1908` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1909` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit191` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1910` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1911` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1912` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1913` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1914` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1915` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1916` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1917` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1918` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1919` | Recovered original | 38×38 | — ([source](../../../datasrc/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit192` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1920` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1921` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1922` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1923` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1924` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1925` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1926` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1927` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1928` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1929` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit193` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1930` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1931` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1932` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1933` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1934` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1935` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1936` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1937` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1938` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1939` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit194` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1940` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1941` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1942` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1943` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1944` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1945` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1946` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1947` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1948` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1949` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit195` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1950` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1951` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-walk.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1952` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1953` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1954` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1955` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1956` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1957` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1958` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1959` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit196` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1960` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1961` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1962` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1963` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1964` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1965` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1966` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1967` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1968` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1969` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit197` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1970` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1971` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1972` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1973` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1974` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1975` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1976` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1977` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1978` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1979` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit198` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1980` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1981` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1982` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1983` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-swim.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1984` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1985` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1986` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1987` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1988` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1989` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit199` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit1990` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1991` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1992` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1993` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1994` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1995` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1996` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1997` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1998` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit1999` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit2` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit20` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit200` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2000` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2001` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2002` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2003` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2004` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2005` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2006` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2007` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2008` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2009` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit201` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2010` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2011` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2012` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2013` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2014` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2015` | Recovered original | 40×40 | — ([source](../../../datasrc/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit202` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit203` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit204` | Recovered original | 32×32 | — ([source](../../../datasrc/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
