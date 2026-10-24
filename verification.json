@@ -49,5 +49,9 @@
   ],
   "tested_revision": "8fa158cd8c8de11b94f465db970697991223ec1f",
   "source_tree": "9b380798e2fba1f7f60af97c1ceb8ee64d0dc86a",
-  "review": "Independent subagent found two P2 tooling issues; fixed and re-reviewed. No remaining merge-blocking code issues."
+  "review": "Independent subagent found two P2 tooling issues; fixed and re-reviewed. No remaining merge-blocking code issues.",
+  "python_version": "3.12.3",
+  "pipeline_pillow_version": "12.2.0 (repository pin)",
+  "native_build_export_pillow_version": "10.2.0",
+  "hosted_ci": "Final source8fa158cd8 run40126928290: unchanged music-inventory assertion9!=10; no introduced failure observed."
 }
