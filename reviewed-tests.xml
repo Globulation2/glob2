@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="36" failures="0" errors="0" skipped="0"><testsuite name="ColonySkinPreview"><testcase classname="ColonySkinPreview" name="expired and cancelled subscribers cannot affect another owner [display:64x64]" time="0.356226" status="run" />
+  <testcase classname="ColonySkinPreview" name="shared images retain each owner's fresh appearance [display:64x64]" time="0.40824" status="run" />
+  </testsuite><testsuite name="RuntimePack"><testcase classname="RuntimePack" name="HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow]" time="243.654" status="run" />
+  <testcase classname="RuntimePack" name="HD runtime pack: logical sizes in software rendering" time="6.30964" status="run" />
+  </testsuite><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.542456" status="run" />
+  <testcase classname="SpriteLoad" name="ready sprite pixels publish before unrelated cooperative work" time="0.002379" status="run" />
+    <testcase classname="SpriteLoad" name="source frames prepare in parallel without a graphic context" time="0.00385" status="run" />
+    <testcase classname="SpriteLoad" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.005231" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="SDL GPU retains standalone HD authored mips [display]" time="0.459429" status="run" />
+  <testcase classname="SpriteSheets" name="failed published HD mip upgrade retains valid artwork without retry [display][writes-preferences]" time="2.56427" status="run" />
+  <testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.579995" status="run" />
+  <testcase classname="SpriteSheets" name="legacy HD without retained CPU levels restores authored mips on a live GL device switch [display][writes-preferences]" time="1.91828" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD prefetch upgrades across a live programmable GL switch [display][writes-preferences]" time="2.54399" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.58393" status="run" />
+  <testcase classname="SpriteSheets" name="programmable GL retains standalone HD authored mips [display]" time="1.91551" status="run" />
+  <testcase classname="SpriteSheets" name="published portable HD upgrades after a live GL switch and survives switching back [display][writes-preferences]" time="2.89533" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.013943" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.020021" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.011763" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.021017" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.03453" status="run" />
+  </testsuite><testsuite name="UnitCatalog"><testcase classname="UnitCatalog" name="authored animation spans stay inside the stock atlas" time="0.96652" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.434844" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="7.95524" status="run" />
+  </testsuite><testsuite name="UnitTeamColorCache"><testcase classname="UnitTeamColorCache" name="team colour cache is bypassed by the shader and bounded without it [display]" time="7.94897" status="run" />
+  <testcase classname="UnitTeamColorCache" name="team colour cache stays bounded in software rendering" time="5.54424" status="run" />
+  </testsuite><testsuite name="UnitTeamShader"><testcase classname="UnitTeamShader" name="shader hue shifts match the CPU reference over every pose and hue [display]" time="14.11" status="run" />
+  </testsuite><testsuite name="SkinModel"><testcase classname="SkinModel" name="shared fixture covers hierarchy weights normals interpolation and all legacy frames" time="0.049078" status="run" />
+    <testcase classname="SkinModel" name="affine camera translation is independent of rounded influence sums" time="0.030463" status="run" />
+    <testcase classname="SkinModel" name="serialized float boundaries have identical native and Studio acceptance" time="0.043065" status="run" />
+    <testcase classname="SkinModel" name="malformed assets never publish partial models" time="0.029775" status="run" />
+  </testsuite><testsuite name="UnitAnimation"><testcase classname="UnitAnimation" name="DirectionsAndProgress" time="0.0138" status="run" />
+    <testcase classname="UnitAnimation" name="TurningKeepsItsDuration" time="0.00092" status="run" />
+    <testcase classname="UnitAnimation" name="LegacyCatalogAndSkinFrames" time="0.001566" status="run" />
+    <testcase classname="UnitAnimation" name="HistoricalOffsetsAtPhaseBoundaries" time="0.008037" status="run" />
+    <testcase classname="UnitAnimation" name="TurnBlocksAndLoopBoundaries" time="0" status="run" />
+  </testsuite></testsuites>

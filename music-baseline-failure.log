@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_every_installed_music_set_is_owned_and_opus_only (test_web_assets.WebAssetPlanTests.test_every_installed_music_set_is_owned_and_opus_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/6516ffcb-605a-43a9-9fbe-ba6143e7dec3/glob2/test/build_system/test_web_assets.py", line 184, in test_every_installed_music_set_is_owned_and_opus_only
+    self.assertEqual(len(sets), 10)
+AssertionError: 9 != 10
+
+----------------------------------------------------------------------
+Ran 1 test in 1.621s
+
+FAILED (failures=1)

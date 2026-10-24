@@ -1,0 +1,114 @@
+[
+  {
+    "mode": "native",
+    "animation": "explorer",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 8.35984375,
+    "max_adjacent_error": 8.6640625
+  },
+  {
+    "mode": "native",
+    "animation": "worker-walk",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 5.576177285318559,
+    "max_adjacent_error": 5.576177285318559
+  },
+  {
+    "mode": "native",
+    "animation": "worker-swim",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 6.929362880886426,
+    "max_adjacent_error": 7.216932132963989
+  },
+  {
+    "mode": "native",
+    "animation": "worker-harvest",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 5.20446675900277,
+    "max_adjacent_error": 5.369806094182826
+  },
+  {
+    "mode": "native",
+    "animation": "warrior-walk",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 11.59125,
+    "max_adjacent_error": 12.063125
+  },
+  {
+    "mode": "native",
+    "animation": "warrior-swim",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 14.92234375,
+    "max_adjacent_error": 15.5675
+  },
+  {
+    "mode": "native",
+    "animation": "warrior-fight",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 11.40203125,
+    "max_adjacent_error": 11.9028125
+  },
+  {
+    "mode": "hd",
+    "animation": "explorer",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 9.0899658203125,
+    "max_adjacent_error": 9.358444213867188
+  },
+  {
+    "mode": "hd",
+    "animation": "worker-walk",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 5.9119720458984375,
+    "max_adjacent_error": 5.9412078857421875
+  },
+  {
+    "mode": "hd",
+    "animation": "worker-swim",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 7.47906494140625,
+    "max_adjacent_error": 7.710418701171875
+  },
+  {
+    "mode": "hd",
+    "animation": "worker-harvest",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 5.529144287109375,
+    "max_adjacent_error": 5.7147216796875
+  },
+  {
+    "mode": "hd",
+    "animation": "warrior-walk",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 12.49749755859375,
+    "max_adjacent_error": 13.0811767578125
+  },
+  {
+    "mode": "hd",
+    "animation": "warrior-swim",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 15.854522705078125,
+    "max_adjacent_error": 16.547698974609375
+  },
+  {
+    "mode": "hd",
+    "animation": "warrior-fight",
+    "distinct_angles": 32,
+    "clipped": [],
+    "wrap_error": 12.2470703125,
+    "max_adjacent_error": 12.9036865234375
+  }
+]

@@ -1,0 +1,53 @@
+{
+  "base_revision": "2c66ea850c92a526eba96ae8d04ef32d20fc6aa1",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "build_flags": "dev_fast=1 linker=auto; repository-pinned SDL3 built into artifacts/unit-turn/sdl-prefix",
+  "simulation": "No simulation state, timing, save formats or serialized offsets changed; no SIM_REVISION bump.",
+  "checks": {
+    "python_pipeline": "test-turns-reviewed.log: 15 cases; test-render-reviewed.log: 8 cases; all passed.",
+    "unit": "tests.xml: 7 cases passed",
+    "sprite_loading": "sprite-tests.xml: 17 cases passed",
+    "pixels": "pixel-audit.json",
+    "packaging": "package_runtime.py --check and runtime_provenance.py --check passed",
+    "pixel_anchor": "Explorer native turn frame 0 equals original RGBA exactly inside the added 4-pixel gutter.",
+    "engine": "engine-tests.xml: all 7 software/OpenGL/caching/skin cases passed",
+    "build": "Unit test binary and full engine test binary built successfully with all supported features.",
+    "game_build": "Full fast-development game binary built and glob2 info version succeeded (game-version.log).",
+    "runtime_pack": "pack-tests.xml: all 3 runtime-pack/catalog cases passed, including all 3665 HD frames across 16 team hues.",
+    "native_total": 36,
+    "reviewed_integration": "reviewed-tests.xml: 36 cases passed on the reviewed working tree before final commit.",
+    "clean_final_revision": "final-revision-tests.xml: 15 affected native cases passed, with clean 8fa158cd8 build provenance."
+  },
+  "limits": [
+    "General artwork validator fails on unchanged terrain-table discovery (validate-runtime.log).",
+    "Custom skins retain eight-heading turns and their existing 256-frame clips.",
+    "Native Linux x86_64 only; no physical GPU or other platform validation.",
+    "Hosted CI fails unchanged test_web_assets music inventory assertion (9 installed sets, expected10). Initial run40126025730; reproduced locally; relevant files unchanged from master."
+  ],
+  "previews": [
+    "comparison.gif",
+    "contact.png",
+    "renderer-worker-turns.png"
+  ],
+  "commands": [
+    "python3 tools/unit-animation/turns.py prepare --work artifacts/unit-turn/job",
+    "LD_LIBRARY_PATH=<private legacy libraries> python3 tools/unit-animation/turns.py render --work artifacts/unit-turn/job --blender artifacts/unit-turn/blender-2.34-linux-glibc2.2.5-i386-static/blender --workers 4",
+    "python3 tools/unit-animation/turns.py install --work artifacts/unit-turn/job",
+    "python3 tools/unit-animation/test_render.py",
+    "python3 tools/unit-animation/test_turns.py",
+    "python3 tools/artwork/package_runtime.py --capture-approved",
+    "python3 tools/artwork/package_runtime.py --check",
+    "python3 tools/artwork/runtime_provenance.py --check",
+    "GLOB2_SDL3_PREFIX=$PWD/artifacts/unit-turn/sdl-prefix LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 tools/dev_build.py unit-tests",
+    "GLOB2_SDL3_PREFIX=$PWD/artifacts/unit-turn/sdl-prefix LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 tools/dev_build.py -j16 engine-tests",
+    "LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary unit --filter UnitAnimation/* --filter SkinModel/*",
+    "LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary unit --filter SpriteLoad/* --filter SpriteSheets/*",
+    "LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'UnitHighResolutionCache/*' --filter 'UnitTeamShader/*' --filter 'UnitTeamColorCache/*' --filter 'ColonySkinPreview/*'",
+    "LD_LIBRARY_PATH=$PWD/artifacts/unit-turn/sdl-prefix/lib python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'RuntimePack/*' --filter 'UnitCatalog/authored animation spans stay inside the stock atlas'"
+  ],
+  "tested_revision": "8fa158cd8c8de11b94f465db970697991223ec1f",
+  "source_tree": "9b380798e2fba1f7f60af97c1ceb8ee64d0dc86a",
+  "review": "Independent subagent found two P2 tooling issues; fixed and re-reviewed. No remaining merge-blocking code issues."
+}

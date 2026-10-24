@@ -1,0 +1,11 @@
+PASS glob2-unit-tests UnitAnimation (5 cases) (0.1s)
+PASS glob2-unit-tests SkinModel (4 cases) (0.2s)
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (0.4s)
+PASS ColonySkinPreview/expired and cancelled subscribers cannot affect another owner [display:64x64] (0.5s)
+PASS ColonySkinPreview/shared images retain each owner's fresh appearance [display:64x64] (0.5s)
+PASS UnitCatalog/authored animation spans stay inside the stock atlas (0.9s)
+PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (6.5s)
+PASS UnitTeamShader/shader hue shifts match the CPU reference over every pose and hue [display] (9.9s)
+
+8 passed, 0 failed, 0 skipped (19.0s of test time)
+[run_tests] JUnit report: artifacts/unit-turn/final-revision-tests.xml (15 cases)

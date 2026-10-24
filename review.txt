@@ -1,0 +1,11 @@
+Independent subagent review of db15c46f2 versus base 2c66ea850
+
+P2: render_turns could accept a stale output when a renderer exited successfully without writing. Reproduced with /bin/true and an existing output. Fixed by rendering a disposable scene copy into a fresh temporary directory, fully decoding the PNG, and recording its output digest. Cache hits require matching source, scene, renderer and output hashes. Regression tests cover no-output, failed renderer and corrupt output recovery.
+
+P2: install_turns trusted editable manifest dimensions/paths and omitted source/scene/output provenance checks. A complete 1x1 RGBA inventory could install after editing its declared dimensions. Fixed by independently deriving canonical identities, geometry and source hashes, checking prepared scene bytes and verified render receipts, validating destination metadata, and holding validated PNG bytes until all inputs pass. Regression tests cover manifest mutations, changed sources/scenes, mixed/stale receipts, missing output, malformed images, destination versions and incomplete inventories.
+
+Review also found stale skin helper names, an overbroad movement byte-preservation claim, and links that only worked from the exported pack location. These are corrected; shared pack README links now work from retained and exported copies.
+
+Follow-up identified a scene-read race between preflight and workers. The worker now hashes the exact bytes it reads before modifying the temporary output-path field; the regression ensures Blender is not invoked and no receipt is written when that scene changed.
+
+Final follow-up conclusion: no merge-blocking code issues remain. Protected-path checks cover all commands. Runtime stock/skin separation, catalog bounds, turn-block HD fallback alignment and silhouette framing were reviewed without finding another bug. This is an agent code review, not a GitHub approval or a substitute for maintainer gameplay review.
