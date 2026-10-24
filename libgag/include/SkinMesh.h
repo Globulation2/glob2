@@ -14,7 +14,8 @@ class SkinShapeModel;
 class StreamBackend;
 class DrawableSurface;
 // Every unit clip holds 256 frames: eight headings of 32 animation phases, in
-// the order unitAnimationFrame() produces.
+// the order unitSkinAnimationFrame() produces. Stock sprite turns use a
+// separate appended atlas block; published skin payloads keep this layout.
 constexpr unsigned SkinClipFrames = 256;
 // Renderer adapter over the three unit mesh formats. GSK1 stores every posed
 // vertex; GSR1 is a bone rig and GSB1 a blend-shape clip, both evaluated into

@@ -1,8 +1,8 @@
 # High-resolution artwork pack
 
-The current [manifest](../../../data/highres/v1/manifest.json) registers 3,441 frames.
+The current [manifest](../../../data/highres/v1/manifest.json) registers 3,665 frames.
 The pack contains the organized artist originals, 60 verified original-derived
-world frames, and 1,792 unit animation poses rendered from the original Blender
+world frames, and 2,016 unit animation poses rendered from the original Blender
 rigs. The pack also includes reviewed AI-enhanced sprites, original-based terrain and generated water,
 resampled masks, and complete padded resource/terrain mip atlases.
 All overlapping original-derived frames remain byte-identical.

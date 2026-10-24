@@ -124,7 +124,7 @@ TEST_SUITE("UnitCatalog")
             level["startImage"] = std::array<unsigned, NB_MOVE>{384,384,384,384,384,384,384,384,384};
         const auto valid = UnitCatalog::fromJson(snapshot.dump());
         CHECK(UnitCatalog::deserialize(valid->serialize())->serialize() == valid->serialize());
-        CHECK(unitAnimationFrame(384, 7, 255) == UNIT_ANIMATION_ATLAS_FRAME_COUNT - 1);
+        CHECK(unitAnimationFrame(384, 7, 255) == UNIT_ANIMATION_MOVEMENT_FRAME_COUNT - 1);
         for (unsigned level = 0; level < NB_UNIT_LEVELS; ++level)
             for (unsigned action = 0; action < NB_MOVE; ++action)
                 for (unsigned invalid : {385u, 1000000u}) {
