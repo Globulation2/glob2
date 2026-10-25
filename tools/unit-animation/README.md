@@ -357,7 +357,10 @@ UVs use a top-left image origin. Directions and phases follow `unitMovementFrame
 The editor reconstructs model space using versioned, hash-bound `.view.json`
 sidecars; rotating raw GSK positions would distort their independently scaled
 depth. After changing any mesh export, regenerate these camera transforms and
-native swarm and unit constants with the pinned Blender executable:
+native swarm and unit constants with the pinned Blender executable. The constants
+generator checks each sidecar's mesh hash, schema version, matrix dimensions and
+finite numeric values; `python3 tools/skins/view_constants.py --check` also rejects
+stale generated headers:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
@@ -814,6 +817,14 @@ Browser-reported renderer strings may be masked and do not establish physical
 hardware coverage. This suite checks the shared shader body and evaluator, not
 the complete Emscripten game renderer, Studio interaction or browser
 context-loss recovery.
+
+For a Scene-renderer review of stationary turns, set `SKIN_BENCH_STATIONARY=1`
+when running `skin-game-preview` in benchmark mode. With
+`SKIN_BENCH_FRAME_PREFIX=artifacts/skins/turn-frame`, it also captures a complete
+32-heading loop of the worker, warrior and explorer crowd. The diagnostic
+compares classic/skinned simulation checksums and rejects rendering mutations;
+its JSON identifies stationary runs. Development-build captures are visual
+checks, not release-performance measurements.
 
 #### Paired rig frame measurements
 

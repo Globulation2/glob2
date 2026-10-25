@@ -31,7 +31,7 @@ struct SkinMesh
 	// saved paint keeps the established atlas coordinates. Empty uses uv.
 	std::vector<float> detailUV;
 	std::vector<std::uint32_t> indices;
-	std::vector<float> poses; // GSK1 only: xyz, normal xyz; frame-major
+	std::vector<float> poses; // Baked/derived clips: xyz, normal xyz; frame-major
 	// GSR1 and GSB1 meshes keep their immutable model and the chosen clip
 	// instead of poses; several clip views may share one model. Identity
 	// includes the chosen clip.
@@ -75,11 +75,11 @@ enum SkinRegion : std::uint8_t
 	SkinRegionExplorer = 2,
 	SkinRegionSwarm = 3
 };
-// Loads a colony-v2 material-id map. Each texel's id (0..255) is written as
-// an opaque grey (r=g=b=id) so the GPU sampler reads it back exactly.
-// Greyscale PNGs decode to INDEX8 surfaces whose generated palette is not an
-// exact identity ramp in every SDL_image build, so grey-ramp palettes use the
-// pixel index itself. Returns null when the file is missing or undecodable.
+// Loads a colony-v2 WebP material-id map. Each texel's id (0..255) is written
+// as opaque grey (r=g=b=id) so the GPU sampler reads it back exactly.
+// PNG publication sources are normalized separately by the native renderer;
+// gameplay assets use the shared WebP loader. Material IDs are data, so this
+// path copies them without filtering. Missing or undecodable files return null.
 std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path);
 // Whether a material id grows fur shells (libgag/shaders/skin-materials.json).
 bool skinMaterialShells(unsigned id);

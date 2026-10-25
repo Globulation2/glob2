@@ -1,12 +1,15 @@
 """The shipped colony paint layout stays attached across all source animations."""
 from pathlib import Path
 import hashlib
+import importlib.util
 import json
 import re
 import struct
 import subprocess
 import sys
 import unittest
+import tempfile
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 FOLDER = ROOT / 'data/skins/colony-v1'
@@ -40,6 +43,34 @@ class ColonySkinAssetsTest(unittest.TestCase):
                 self.assertAlmostEqual(a, b, places=8)
             if path.stem.startswith('swarm'):
                 self.assertEqual(view['pivot'], [0, 0, 0])
+
+    def test_camera_generator_rejects_corrupt_or_incomplete_transforms(self):
+        spec = importlib.util.spec_from_file_location('skin_views', ROOT / 'tools/skins/view_constants.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            folder = root / 'data/skins/colony-v1'
+            folder.mkdir(parents=True)
+            mesh = b'camera-bound mesh'
+            (folder / 'swarm.gsk').write_bytes(mesh)
+            valid = {'version': 1, 'meshSha256': hashlib.sha256(mesh).hexdigest(),
+                     'clipToModel': [0.] * 16, 'modelToClip': [0.] * 16,
+                     'normalToModel': [0.] * 9}
+            sidecar = folder / 'swarm.view.json'
+            with patch.object(module, 'ROOT', root), patch.object(module, 'SWARMS', ('swarm',)), patch.object(module, 'UNITS', ()):
+                sidecar.write_text(json.dumps(valid))
+                self.assertIn('// swarm', module.generate())
+                faults = [('version', 2), ('meshSha256', '0' * 64),
+                          ('clipToModel', [0.] * 15), ('modelToClip', [0.] * 17),
+                          ('normalToModel', [0.] * 8 + [float('nan')]),
+                          ('normalToModel', [0.] * 8 + [float('inf')]),
+                          ('normalToModel', [0.] * 8 + [True]), ('clipToModel', None)]
+                for key, value in faults:
+                    with self.subTest(key=key, value=value):
+                        sidecar.write_text(json.dumps({**valid, key: value}))
+                        with self.assertRaises(ValueError):
+                            module.generate()
 
     def test_unit_rigs_are_accepted_hash_bound_and_preserve_paint_topology(self):
         manifest = json.loads((FOLDER / 'manifest.json').read_text())

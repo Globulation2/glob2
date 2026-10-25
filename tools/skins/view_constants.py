@@ -8,6 +8,7 @@ Reading the retained JSON needs neither Blender nor NumPy.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -26,6 +27,15 @@ def generate():
             record = json.loads((folder / (clip + '.view.json')).read_text())
             if hashlib.sha256((folder / (clip + '.gsk')).read_bytes()).hexdigest() != record['meshSha256']:
                 raise ValueError('View does not match baked mesh: ' + clip)
+            if record.get('version') != 1:
+                raise ValueError('Unsupported skin view version: ' + clip)
+            # C++ aggregate initialization silently zero-fills short arrays.
+            # Reject malformed cameras here rather than publishing a bad turn.
+            for key, count in (('clipToModel', 16), ('modelToClip', 16), ('normalToModel', 9)):
+                values = record.get(key)
+                if (not isinstance(values, list) or len(values) != count or
+                        any(type(v) not in (int, float) or not math.isfinite(v) for v in values)):
+                    raise ValueError('Invalid ' + key + ' camera matrix: ' + clip)
             arrays = ['{{' + ','.join(format(float(v), '.9e') + 'f' for v in record[key]) + '}}'
                       for key in ('clipToModel', 'modelToClip', 'normalToModel')]
             lines.append('    {' + ','.join(arrays) + '}, // ' + clip)
