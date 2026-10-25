@@ -51,12 +51,11 @@ TEST_SUITE("SkinModel")
 		CHECK(output == beforeInvalidRequest);
 		CHECK_FALSE(model->evaluate(2, 0, output));
 		CHECK(output == beforeInvalidRequest);
-		// Direction 8 chooses the first phase of successive headings; ordinary
-		// directions preserve all 32 samples, including both gait-half boundaries.
-		for (unsigned direction = 0; direction <= 8; ++direction)
+		// Movement directions preserve all 32 samples, including both gait-half boundaries.
+		for (unsigned direction = 0; direction < 8; ++direction)
 			for (unsigned delta = 0; delta < 256; ++delta)
 			{
-				const auto frame = unitSkinAnimationFrame(direction, delta);
+				const auto frame = unitMovementFrame(direction, delta);
 				REQUIRE(frame >= 0);
 				REQUIRE(frame < 256);
 				const auto &mapping = model->clips()[0].frames[frame];

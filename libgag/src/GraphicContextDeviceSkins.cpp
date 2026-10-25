@@ -147,13 +147,13 @@ void GraphicContext::prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> 
         } catch(...) {endDeviceTarget();deviceSkinState.reset();throw;}
     }
 }
-bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,float y,float w,float h,DrawableSurface *underlay,Uint8 alpha) {
+bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,float y,float w,float h,SkinShadow underlay,Uint8 alpha) {
     if(!validDeviceSkin(request) || !rendererCapabilities().liveSkins) return false;
     prepareDeviceSkinMeshes({request});
     if(!deviceSkinState) return false;
     auto &state=*deviceSkinState;const auto slot=state.slots.find(skinKey(request));
     if(!slot) return false;
-    if(underlay) drawSurface(x,y,w,h,underlay,alpha);
+    drawSkinShadow(*this,underlay,x,y,w,h,request.mesh->logicalSize,alpha);
     DrawPacket packet;packet.kind=DrawPacket::Kind::Blit;packet.texture=state.page(*slot/SlotsPerPage);
     const auto tile=*slot%SlotsPerPage;
     packet.source={int(tile%Columns*TileSize),int(tile/Columns*TileSize),TileSize,TileSize};

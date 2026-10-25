@@ -13,10 +13,10 @@ class SkinModel;
 class SkinShapeModel;
 class StreamBackend;
 class DrawableSurface;
-// Every unit clip holds 256 frames: eight headings of 32 animation phases, in
-// the order unitSkinAnimationFrame() produces. Stock sprite turns use a
-// separate appended atlas block; published skin payloads keep this layout.
+// Serialized unit clips hold eight headings of 32 movement phases. Derived
+// stationary clips hold 32 frozen headings and are never serialized as rigs.
 constexpr unsigned SkinClipFrames = 256;
+constexpr unsigned SkinTurnFrames = 32;
 // Renderer adapter over the three unit mesh formats. GSK1 stores every posed
 // vertex; GSR1 is a bone rig and GSB1 a blend-shape clip, both evaluated into
 // the same per-pose layout on request. Positions are in orthographic clip
@@ -31,7 +31,7 @@ struct SkinMesh
 	// saved paint keeps the established atlas coordinates. Empty uses uv.
 	std::vector<float> detailUV;
 	std::vector<std::uint32_t> indices;
-	std::vector<float> poses; // GSK1 only: xyz, normal xyz; frame-major
+	std::vector<float> poses; // Baked/derived clips: xyz, normal xyz; frame-major
 	// GSR1 and GSB1 meshes keep their immutable model and the chosen clip
 	// instead of poses; several clip views may share one model. Identity
 	// includes the chosen clip.
@@ -46,9 +46,15 @@ struct SkinMesh
 	// requests fail without modifying output.
 	bool evaluate(unsigned frame, std::vector<float> &output) const;
 	// Cosmetic camera rotation; returns a separately identified static mesh.
-	SkinMesh rotatedView(unsigned angle, const std::array<float, 16> &inverse,
+	SkinMesh rotatedView(double angle, const std::array<float, 16> &inverse,
 						 const std::array<float, 16> &projection,
 						 const std::array<float, 9> &normals) const;
+	// Presentation-only turn clip, derived from phase zero without changing the
+	// serialized 256-frame mesh/rig contracts. Rotates in model space so camera
+	// depth scaling and lighting normals stay correct at intermediate headings.
+	SkinMesh stationaryTurns(const std::array<float, 16> &inverse,
+							 const std::array<float, 16> &projection,
+							 const std::array<float, 9> &normals) const;
 	bool load(const std::string &path, std::string &error);
 	bool load(StreamBackend &input, std::string &error);
 	bool loadDetailUV(StreamBackend &input, std::string &error);
@@ -69,11 +75,11 @@ enum SkinRegion : std::uint8_t
 	SkinRegionExplorer = 2,
 	SkinRegionSwarm = 3
 };
-// Loads a colony-v2 material-id map. Each texel's id (0..255) is written as
-// an opaque grey (r=g=b=id) so the GPU sampler reads it back exactly.
-// Greyscale PNGs decode to INDEX8 surfaces whose generated palette is not an
-// exact identity ramp in every SDL_image build, so grey-ramp palettes use the
-// pixel index itself. Returns null when the file is missing or undecodable.
+// Loads a colony-v2 WebP material-id map. Each texel's id (0..255) is written
+// as opaque grey (r=g=b=id) so the GPU sampler reads it back exactly.
+// PNG publication sources are normalized separately by the native renderer;
+// gameplay assets use the shared WebP loader. Material IDs are data, so this
+// path copies them without filtering. Missing or undecodable files return null.
 std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path);
 // Whether a material id grows fur shells (libgag/shaders/skin-materials.json).
 bool skinMaterialShells(unsigned id);
@@ -85,6 +91,6 @@ struct SkinMeshRequest
 	unsigned frame;
 	DrawableSurface *texture;  // colour atlas
 	DrawableSurface *material; // material ids, see libgag/shaders/skin-materials.json
-	std::uint8_t region;	   // SkinRegion: the atlas quadrant this mesh samples
+	std::uint8_t region;       // SkinRegion: the atlas quadrant this mesh samples
 };
 } // namespace GAGCore

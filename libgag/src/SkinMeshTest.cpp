@@ -51,6 +51,65 @@ std::string fixture(unsigned frames = 256)
 }
 TEST_SUITE("SkinMesh")
 {
+    TEST_CASE("stationary unit turns preserve frozen geometry and source clip across all mesh formats")
+    {
+        for (unsigned clip = 0; clip < 7; ++clip)
+        {
+            const auto &view = Online::UnitSkinViews[clip];
+            const std::string name = Online::SkinSpriteClips[clip];
+            for (const auto &extension : {std::string(".gsk"), GAGCore::skinClipFile(name).substr(name.size())})
+            {
+                GAGCore::SkinMesh mesh;
+                std::string error;
+                REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(name+extension)).string(), error));
+                std::vector<float> original;
+                REQUIRE(mesh.evaluate(0, original));
+                const auto identity = mesh.identity;
+                const auto turns = mesh.stationaryTurns(view.inverse, view.projection, view.normals);
+                REQUIRE(turns.identity);
+                CHECK(turns.identity != identity);
+                CHECK(turns.frames == 32);
+                CHECK_FALSE(turns.model);
+                CHECK_FALSE(turns.shapes);
+                CHECK(turns.uv == mesh.uv);
+                CHECK(turns.detailUV == mesh.detailUV);
+                CHECK(turns.indices == mesh.indices);
+                CHECK(turns.logicalSize == mesh.logicalSize);
+                std::vector<float> first, previous;
+                REQUIRE(turns.evaluate(0, first));
+                REQUIRE(first.size() == original.size());
+                for (unsigned i=0; i<first.size(); ++i)
+                    CHECK(std::abs(first[i]-original[i]) < 0.00001f);
+                for (unsigned frame=0; frame<32; ++frame)
+                {
+                    std::vector<float> current;
+                    REQUIRE(turns.evaluate(frame, current));
+                    INFO(name << extension << " heading " << frame);
+                    if (frame) CHECK(current != previous);
+                    for (unsigned vertex=0; vertex<mesh.vertices; ++vertex)
+                    {
+                        const auto i=vertex*6;
+                        const auto height=[&](const auto &p) { return view.inverse[8]*p[i]+view.inverse[9]*p[i+1]+view.inverse[10]*p[i+2]+view.inverse[11]; };
+                        CHECK(std::abs(height(current)-height(original)) < 0.00001f);
+                        const auto length=[&](const auto &p) { return p[i+3]*p[i+3]+p[i+4]*p[i+4]+p[i+5]*p[i+5]; };
+                        CHECK(std::abs(length(current)-length(original)) < 0.00001f);
+                        CHECK(std::abs(current[i]) < 1.25f);
+                        CHECK(std::abs(current[i+1]) < 1.25f);
+                    }
+                    previous = std::move(current);
+                }
+                CHECK_FALSE(turns.evaluate(32, previous));
+                CHECK_FALSE(turns.stationaryTurns(view.inverse, view.projection, view.normals).identity);
+                CHECK(mesh.identity == identity);
+                CHECK(mesh.frames == 256);
+                REQUIRE(mesh.evaluate(0, previous));
+                CHECK(previous == original);
+                CHECK(mesh.stationaryTurns(view.inverse, view.projection, view.normals).identity != turns.identity);
+            }
+        }
+        const auto &view=Online::UnitSkinViews[0];
+        CHECK_FALSE(GAGCore::SkinMesh{}.stationaryTurns(view.inverse, view.projection, view.normals).identity);
+    }
     TEST_CASE("detail unwrap preserves paint and rejects malformed sidecars transactionally")
     {
         auto bytes = fixture();
@@ -141,7 +200,8 @@ TEST_SUITE("SkinMesh")
                 }
                 previous=rotated.identity;
             }
-            CHECK(mesh.rotatedView(360,t.inverse,t.projection,t.normals).identity==0);
+            for (double invalid : {-1., 360., std::numeric_limits<double>::infinity(), std::numeric_limits<double>::quiet_NaN()})
+                CHECK(mesh.rotatedView(invalid,t.inverse,t.projection,t.normals).identity==0);
         }
     }
 #ifdef HAVE_OPENGL
@@ -427,7 +487,7 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
     if(exportPath)bundle=nlohmann::json::parse(glob2test::readFile(std::filesystem::path(exportPath)/"manifest.json"));
     std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> exported(nullptr,SDL_DestroySurface);
     unsigned loadedPage=~0u;std::uint64_t poses=0;
-    const auto compare=[&](const GAGCore::SkinMesh &mesh,unsigned frame,unsigned region,unsigned clip) {
+    const auto compare=[&](const GAGCore::SkinMesh &mesh,unsigned frame,unsigned region,unsigned clip,bool turning=false) {
         std::vector<uint8_t> rgba;REQUIRE(gfx->readSkinMesh({&mesh,frame,&paint,material.get(),uint8_t(region)},rgba));
         REQUIRE(rgba.size()==128*128*4);
         gfx->drawFilledRect(0,0,640,480,GAGCore::Color(20,40,60));
@@ -441,25 +501,35 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
         }
         INFO("clip "<<clip<<" frame "<<frame);CHECK(error<=1);
         if(exportPath && clip<8) {
-            const unsigned page=clip<7?clip*4+frame/64:28;
+            const unsigned page=turning?29+clip:clip<7?clip*4+frame/64:28;
             if(page!=loadedPage) {
-                const auto hash=bundle["pages"][page]["sha256"].get<std::string>();
+                const auto hash=(turning?bundle["turnPages"][clip]:bundle["pages"][page])["sha256"].get<std::string>();
                 std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> image(IMG_Load((std::filesystem::path(exportPath)/(hash+".webp")).string().c_str()),SDL_DestroySurface);
                 REQUIRE(image);exported.reset(SDL_ConvertSurface(image.get(),SDL_PIXELFORMAT_RGBA32));REQUIRE(exported);loadedPage=page;
             }
-            const unsigned cell=clip<7?frame%64:0;
+            const unsigned cell=turning?frame:clip<7?frame%64:0;
             for(unsigned y=0;y<128;++y)for(unsigned x=0;x<128;++x) {
                 const auto *pixel=static_cast<const uint8_t *>(exported->pixels)+((cell/8)*128+y)*exported->pitch+((cell%8)*128+x)*4;
                 alphaErrors+=pixel[3]!=rgba[(y*128+x)*4+3];
             }
-            CHECK(alphaErrors==0);
+            if (alphaErrors)
+                glob2test::writeFile(std::filesystem::path(glob2test::artifactDirFromWorkingDirectory()) / "mismatched-live-tile.rgba",
+                    std::string(reinterpret_cast<const char *>(rgba.data()),rgba.size()));
+            REQUIRE(alphaErrors==0);
         }
         ++poses;
     };
     for(unsigned clip=0;clip<7;++clip) {
         GAGCore::SkinMesh mesh;std::string error;
-        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
+        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(exportPath?GAGCore::skinClipFile(Online::SkinSpriteClips[clip]):std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
         for(unsigned frame=0;frame<256;++frame)compare(mesh,frame,clip<3?0:clip<6?1:2,clip);
+        // Publishing uses the fitted meshes; compare every derived heading to
+        // live compositing and, when supplied, the exported turn page alpha.
+        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/GAGCore::skinClipFile(Online::SkinSpriteClips[clip])).string(),error));
+        const auto &view=Online::UnitSkinViews[clip];
+        const auto turns=mesh.stationaryTurns(view.inverse,view.projection,view.normals);
+        REQUIRE(turns.identity);
+        for(unsigned frame=0;frame<32;++frame)compare(turns,frame,clip<3?0:clip<6?1:2,clip,true);
     }
     for(unsigned choice=0;choice<Online::SWARM_MESHES.size();++choice) {
         GAGCore::SkinMesh mesh;std::string error;
@@ -470,7 +540,7 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
             compare(oriented,0,3,choice==0 && angle==0?7:8);
         }
     }
-    CHECK(poses==1813);
+    CHECK(poses==2037);
 }
 }
 #endif

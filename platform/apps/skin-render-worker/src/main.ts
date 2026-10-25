@@ -13,7 +13,7 @@ import {
 import { requireCliVersion } from '@glob2/engine/engineCli';
 import { runProcess } from '@glob2/engine/process';
 import { renderSkin } from './process.ts';
-import { SPRITE_BUNDLE_FORMAT } from './bundle.ts';
+import { validateRendererCapability } from './bundle.ts';
 const config = loadConfig(),
   logger = createLogger('skin-render-worker', config.logLevel),
   shutdown = new Shutdown(logger, 310);
@@ -37,10 +37,7 @@ const info = await runProcess({
   limits: { timeoutMs: 10000, memoryMb: 2048 },
 });
 if (info.code !== 0) throw new Error('Skin renderer capability probe failed');
-const capability = JSON.parse(info.stdout) as { renderRevision: string; format: string };
-if (capability.format !== SPRITE_BUNDLE_FORMAT || !/^[0-9a-f]{64}$/.test(capability.renderRevision))
-  throw new Error('Unsupported skin renderer');
-const revision = capability.renderRevision;
+const revision = validateRendererCapability(JSON.parse(info.stdout));
 const database = createDatabase({
   connectionString: config.databaseUrl,
   applicationName: 'glob2-skin-render-worker',

@@ -44,6 +44,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
     const capability = JSON.parse(probe.stdout) as { renderRevision: string };
     expect(capability).toMatchObject({
       format: 'colony-sprites-v1',
+      stationaryTurns: true,
       encoding: recipe.recipe,
       webpVersion: recipe.webpVersion,
     });
@@ -116,7 +117,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
         .innerJoin('blobs', 'blobs.sha256', 'colony_skin_sprite_pages.sha256')
         .select(['blobs.size', 'blobs.content_type'])
         .execute();
-      expect(pages).toHaveLength(29);
+      expect(pages).toHaveLength(36);
       expect(pages.every((p) => p.content_type === 'image/webp')).toBe(true);
       console.log(
         JSON.stringify({
@@ -216,6 +217,35 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       })
         .png()
         .toBuffer();
+      await save();
+      expect((await command()).stderr).toContain('invalid material');
+      const registry = JSON.parse(
+        await readFile(join(cwd, 'libgag/shaders/skin-materials.json'), 'utf8'),
+      ) as { materials: unknown[] };
+      const invalidId = registry.materials.length;
+      // Grayscale PNG IDs must survive SDL's generated palette. Previously
+      // the first invalid ID became the preceding valid material and rendered.
+      material = await sharp(Buffer.alloc(512 * 512, invalidId), {
+        raw: { width: 512, height: 512, channels: 1 },
+      })
+        .toColourspace('b-w')
+        .png()
+        .toBuffer();
+      expect(material[25]).toBe(0);
+      await save();
+      expect((await command()).stderr).toContain('invalid material');
+      // A real indexed-color palette is authoritative, even when its index is0.
+      material = await sharp({
+        create: {
+          width: 512,
+          height: 512,
+          channels: 3,
+          background: { r: invalidId, g: invalidId, b: invalidId },
+        },
+      })
+        .png({ palette: true })
+        .toBuffer();
+      expect(material[25]).toBe(3);
       await save();
       expect((await command()).stderr).toContain('invalid material');
       material = Buffer.from(fixture.materialHex, 'hex');

@@ -49,6 +49,9 @@ int main(int argc, char **argv)
             const auto drawScene = [&] {
                 // Match Application's frame pump so shared asset finalizers run.
                 GAGCore::Toolkit::pollAssets();
+                // Standalone tools publish their own immutable frame; drawAll
+                // consumes it and deliberately never reads the live game.
+                gui.prepareLocalPresentation();
                 gui.drawAll(0);
             };
             GAGCore::BinaryInputStream stream(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), save));
@@ -115,6 +118,9 @@ int main(int argc, char **argv)
             }
             if (const char *benchmark = std::getenv("SKIN_PREVIEW_BENCHMARK"))
             {
+                // Exercise the same stationary sentinel as gameplay, while the
+                // diagnostic advances only presentation phase between captures.
+                const bool stationary = std::getenv("SKIN_BENCH_STATIONARY") && std::string(std::getenv("SKIN_BENCH_STATIONARY")) == "1";
                 const bool forceMiss = std::getenv("SKIN_BENCH_FORCE_MISS") && std::string(std::getenv("SKIN_BENCH_FORCE_MISS")) == "1";
                 const bool uncapped = std::getenv("SKIN_BENCH_UNCAPPED") && std::string(std::getenv("SKIN_BENCH_UNCAPPED")) == "1";
                 if (uncapped) {
@@ -151,7 +157,7 @@ int main(int argc, char **argv)
                         for (int type : {index%3 ? WORKER : WARRIOR, EXPLORER})
                             if (auto *unit=gui.game.addUnit(mx,my,(index/3)%skinTeams,type,0,0,0,0))
                             {
-                                unit->direction=index%8;
+                                unit->direction=stationary?8:index%8;
                                 crowd.push_back(unit);
                             }
                     }
@@ -232,7 +238,7 @@ int main(int argc, char **argv)
                     }
 #endif
                     std::cout << nlohmann::json{{"zoom",gui.camera.zoom},
-                        {"backend",backend},{"forcedMiss",forceMiss},{"uncapped",uncapped},
+                        {"backend",backend},{"stationaryTurns",stationary},{"forcedMiss",forceMiss},{"uncapped",uncapped},
                         {"workerRig",bool(appearance.clips[0].model||appearance.clips[0].shapes)},{"gpuRig",bool(globalContainer->gfx->skinResources.rigProgram)},
                         {"frameMs",samples},{"stateChecksums",classicChecksums},
                         {"adaptiveZoom",globalContainer->settings.adaptiveZoomDetail},

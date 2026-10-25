@@ -268,11 +268,13 @@ bool SkinSprites::decodePage(Page &page, const std::string &bytes)
 		return false;
 	loaded.reset();
 	const unsigned columns = page.info.size == TileSize ? 1 : 8;
-	const unsigned rows = columns;
+	// Cache by image hash, independent of which clip requested it. The same
+	// square page may serve both a 32-pose turn and a 64-pose movement page.
+	const unsigned rows = columns, cells = columns * rows;
 	page.cellW = page.cellH = 1;
 	// Retain full-resolution pixels, with a transparent filtering guard around
 	// each pose. Packing discards only unused margins, not visible coverage.
-	for (unsigned frame = 0; frame < page.info.frames; ++frame)
+	for (unsigned frame = 0; frame < cells; ++frame)
 	{
 		unsigned left = TileSize, top = TileSize, right = 0, bottom = 0;
 		for (unsigned y = 0; y < TileSize; ++y)
@@ -308,7 +310,7 @@ bool SkinSprites::decodePage(Page &page, const std::string &bytes)
 		std::make_unique<GAGCore::DrawableSurface>(page.cellW * columns, page.cellH * rows);
 	SDL_FillSurfaceRect(page.surface->getSDLSurface(), nullptr, 0);
 	SDL_SetSurfaceBlendMode(rgba.get(), SDL_BLENDMODE_NONE);
-	for (unsigned frame = 0; frame < page.info.frames; ++frame)
+	for (unsigned frame = 0; frame < cells; ++frame)
 	{
 		const auto &bounds = page.frames[frame];
 		SDL_Rect source{int((frame % columns) * TileSize + bounds.x),
@@ -386,15 +388,16 @@ SkinSprites::Page *SkinSprites::requestPage(int team, unsigned clip, unsigned fr
 }
 void SkinSprites::prefetch(int team, unsigned clip, unsigned frame)
 {
-    requestPage(team, clip, frame);
+	requestPage(team, clip, frame);
 }
 
 bool SkinSprites::draw(GAGCore::GraphicContext &gfx, int team, unsigned clip, unsigned frame,
-					   float x, float y, float w, float h, GAGCore::DrawableSurface *shadow,
+					   float x, float y, float w, float h, GAGCore::SkinShadow shadow,
 					   unsigned char alpha)
 {
 	auto *requested = requestPage(team, clip, frame);
-	if (!requested) return false;
+	if (!requested)
+		return false;
 	auto &page = *requested;
 	if (!page.surface)
 	{
@@ -404,8 +407,7 @@ bool SkinSprites::draw(GAGCore::GraphicContext &gfx, int team, unsigned clip, un
 	++metrics.hits;
 	if (!alpha)
 		return true;
-	if (shadow)
-		gfx.drawSurface(x, y, w, h, shadow, alpha);
+	GAGCore::drawSkinShadow(gfx, shadow, x, y, w, h, SkinSpriteLogicalSizes[clip], alpha);
 	x -= w * 0.125f;
 	y -= h * 0.125f;
 	w *= 1.25f;

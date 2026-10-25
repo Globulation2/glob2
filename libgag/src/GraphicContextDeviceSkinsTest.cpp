@@ -69,7 +69,7 @@ TEST_SUITE("GraphicContextDeviceSkins") {
                     maximum=std::max(maximum,delta);differences+=delta!=0;
                 }
                 CHECK(maximum<=2);CHECK(differences<=64);
-                REQUIRE(gfx->drawSkinMesh(mesh,frame,paint,material,0,20,20,64,64,nullptr,173));
+                REQUIRE(gfx->drawSkinMesh(mesh,frame,paint,material,0,20,20,64,64,{},173));
                 gfx->nextFrame();
             }
             CHECK(visibleFrames>=2);

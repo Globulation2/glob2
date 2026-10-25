@@ -96,6 +96,22 @@ std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bo
 		IMG_Load_IO(SDL_IOFromConstMem(bytes.data(), bytes.size()), true), SDL_DestroySurface);
 	if (!loaded || loaded->w != 512 || loaded->h != 512)
 		throw std::invalid_argument("invalid skin image");
+	// SDL_image can assign a nonidentity palette to grayscale PNGs (ID 3
+	// becomes 2). Material IDs are raw bytes, not display intensities. Repair
+	// only grayscale PNGs; indexed-color PNGs keep their authored palette and
+	// transparency must still fail the opaque-material validation below.
+	if (material && bytes.size() >= 33 && bytes.substr(0, 8) == "\211PNG\r\n\032\n" &&
+		static_cast<unsigned char>(bytes[25]) == 0 && loaded->format == SDL_PIXELFORMAT_INDEX8)
+	{
+		auto *palette = SDL_GetSurfacePalette(loaded.get());
+		if (!palette || palette->ncolors != 256)
+			throw std::runtime_error("invalid grayscale material palette");
+		std::array<SDL_Color, 256> identity;
+		for (unsigned i = 0; i < identity.size(); ++i)
+			identity[i] = {Uint8(i), Uint8(i), Uint8(i), palette->colors[i].a};
+		if (!SDL_SetPaletteColors(palette, identity.data(), 0, identity.size()))
+			throw std::runtime_error(SDL_GetError());
+	}
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
 		SDL_ConvertSurface(loaded.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	if (!rgba || !SDL_LockSurface(rgba.get()))
@@ -105,7 +121,8 @@ std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bo
 		for (int x = 0; x < 512; ++x)
 		{
 			const auto *p = static_cast<const uint8_t *>(rgba->pixels) + y * rgba->pitch + x * 4;
-			if (p[3] != 255 || (material && (p[0] >= SKIN_MATERIAL_COUNT || p[0] != p[1] || p[0] != p[2])))
+			if (p[3] != 255 ||
+				(material && (p[0] >= SKIN_MATERIAL_COUNT || p[0] != p[1] || p[0] != p[2])))
 			{
 				valid = false;
 				break;
@@ -114,7 +131,7 @@ std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bo
 	SDL_UnlockSurface(rgba.get());
 	if (!valid)
 		throw std::invalid_argument(material ? "invalid material ids or alpha"
-										  : "skin paint must be opaque");
+											 : "skin paint must be opaque");
 	// Offline inputs may be immutable PNG sources. The game's asset loader
 	// accepts only WebP, so adopt these already bounded and validated pixels.
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
@@ -182,8 +199,9 @@ std::string encode(const std::vector<uint8_t> &rgba, unsigned size)
 } // namespace
 int runRenderSkin(const Cli::Request &request)
 {
-    const auto &command = request.command;
-    if (command != "assets render-skin" && command != "assets skin-info") return -1;
+	const auto &command = request.command;
+	if (command != "assets render-skin" && command != "assets skin-info")
+		return -1;
 	std::filesystem::path staging;
 	try
 	{
@@ -194,6 +212,7 @@ int runRenderSkin(const Cli::Request &request)
 			// a revision and consumes publication jobs.
 			checkEncoderVersion();
 			std::cout << Json{{"format", "colony-sprites-v1"},
+							  {"stationaryTurns", true},
 							  {"renderRevision", SKIN_RENDER_REVISION},
 							  {"encoding", "bundled-images-v3-webp-only"},
 							  {"webpVersion", SKIN_WEBP_VERSION}}
@@ -204,8 +223,9 @@ int runRenderSkin(const Cli::Request &request)
 			throw std::runtime_error("requires a native OpenGL client build");
 #endif
 		}
-        std::map<std::string, std::string> options;
-        for (const auto &[key, values] : request.options) options[key] = values.at(0);
+		std::map<std::string, std::string> options;
+		for (const auto &[key, values] : request.options)
+			options[key] = values.at(0);
 		const auto source = Json::parse(read(options.at("--manifest"), 65536));
 		const auto texture = read(options.at("--texture"), 1024 * 1024),
 				   material = read(options.at("--material"), 256 * 1024);
@@ -272,7 +292,36 @@ int runRenderSkin(const Cli::Request &request)
 			{"padding", 1.25},
 			{"logicalSizes", Online::SkinSpriteLogicalSizes},
 			{"encoding", "bundled-images-v3-webp-only"},
-			{"pages", Json::array()}};
+			{"pages", Json::array()},
+			{"turnMapping", {{"first", 256}, {"frames", 32}, {"phaseShift", 3}}},
+			{"turnPages", Json::array()}};
+		const auto renderPage = [&](const GAGCore::SkinMesh &mesh, unsigned clip,
+									unsigned sourceFirst, unsigned first, unsigned frames,
+									unsigned size, Json &records)
+		{
+			const unsigned region = clip < 3 ? 0 : clip < 6 ? 1 : clip == 6 ? 2 : 3;
+			std::vector<uint8_t> pixels(size * size * 4, 0), tile;
+			for (unsigned frame = 0; frame < frames; ++frame)
+			{
+				if (!gfx->readSkinMesh(
+						{&mesh, sourceFirst + frame, paint.get(), ids.get(), uint8_t(region)},
+						tile))
+					throw std::runtime_error("OpenGL skin rendering unavailable");
+				const unsigned col = frame % 8, row = frame / 8;
+				for (unsigned y = 0; y < 128; ++y)
+					std::copy_n(tile.data() + y * 128 * 4, 128 * 4,
+								pixels.data() + ((row * 128 + y) * size + col * 128) * 4);
+			}
+			const auto bytes = encode(pixels, size), hash = Online::Sha256::hex(bytes);
+			write(staging / (hash + ".webp"), bytes);
+			records.push_back({{"clip", Online::SkinSpriteClips[clip]},
+							   {"first", first},
+							   {"frames", frames},
+							   {"width", size},
+							   {"height", size},
+							   {"sha256", hash},
+							   {"bytes", bytes.size()}});
+		};
 		for (unsigned clip = 0; clip < 8; ++clip)
 		{
 			GAGCore::SkinMesh mesh;
@@ -292,31 +341,17 @@ int runRenderSkin(const Cli::Request &request)
 			if (mesh.frames != (clip < 7 ? 256u : 1u) ||
 				mesh.logicalSize != Online::SkinSpriteLogicalSizes[clip])
 				throw std::runtime_error("unsupported mesh dimensions");
-			const unsigned region = clip < 3 ? 0 : clip < 6 ? 1 : clip == 6 ? 2 : 3;
 			for (unsigned page = 0; page < (clip < 7 ? 4u : 1u); ++page)
+				renderPage(mesh, clip, page * 64, page * 64, clip < 7 ? 64 : 1,
+						   clip < 7 ? 1024 : 128, result["pages"]);
+			if (clip < 7)
 			{
-				const unsigned size = clip < 7 ? 1024 : 128, frames = clip < 7 ? 64 : 1;
-				std::vector<uint8_t> pixels(size * size * 4, 0), tile;
-				for (unsigned frame = 0; frame < frames; ++frame)
-				{
-					if (!gfx->readSkinMesh(
-							{&mesh, page * 64 + frame, paint.get(), ids.get(), uint8_t(region)},
-							tile))
-						throw std::runtime_error("OpenGL skin rendering unavailable");
-					const unsigned col = frame % 8, row = frame / 8;
-					for (unsigned y = 0; y < 128; ++y)
-						std::copy_n(tile.data() + y * 128 * 4, 128 * 4,
-									pixels.data() + ((row * 128 + y) * size + col * 128) * 4);
-				}
-				const auto bytes = encode(pixels, size), hash = Online::Sha256::hex(bytes);
-				write(staging / (hash + ".webp"), bytes);
-				result["pages"].push_back({{"clip", Online::SkinSpriteClips[clip]},
-										   {"first", page * 64},
-										   {"frames", frames},
-										   {"width", size},
-										   {"height", size},
-										   {"sha256", hash},
-										   {"bytes", bytes.size()}});
+				const auto &view = Online::UnitSkinViews[clip];
+				const auto turns =
+					mesh.stationaryTurns(view.inverse, view.projection, view.normals);
+				if (!turns.identity)
+					throw std::runtime_error("cannot generate skin turns");
+				renderPage(turns, clip, 0, 256, GAGCore::SkinTurnFrames, 1024, result["turnPages"]);
 			}
 		}
 		write(staging / "manifest.json", result.dump());
@@ -336,6 +371,9 @@ int runRenderSkin(const Cli::Request &request)
 			std::filesystem::remove_all(staging, error);
 		}
 		std::cerr << command << ": " << e.what() << '\n';
-		return dynamic_cast<const std::invalid_argument*>(&e) || dynamic_cast<const nlohmann::json::exception*>(&e) ? 2 : 3;
+		return dynamic_cast<const std::invalid_argument *>(&e) ||
+					   dynamic_cast<const nlohmann::json::exception *>(&e)
+				   ? 2
+				   : 3;
 	}
 }

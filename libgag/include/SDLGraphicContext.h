@@ -10,6 +10,7 @@
 #include "RenderResources.h"
 #include "GameplayRecording.h"
 #include "SkinAtlasCache.h"
+#include "SkinShadow.h"
 #include "SpriteRenderAtlas.h"
 #include <AssetLoader.h>
 #include <array>
@@ -391,7 +392,7 @@ namespace GAGCore
         void resetDeviceSkinState() { deviceSkinState.reset(); }
         void invalidateDeviceSkinTiles();
         void prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> &);
-        bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, DrawableSurface *, Uint8);
+        bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, SkinShadow, Uint8);
         bool readDeviceSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &);
         void captureScreenshot();
         bool saveScreenshot(SDL_Surface &, const std::string &);
@@ -825,7 +826,7 @@ namespace GAGCore
         // region (SkinRegion) selects the model's quadrant of both.
         bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                           DrawableSurface &material, std::uint8_t region,
-                          float x, float y, float w, float h, DrawableSurface *underlay = nullptr, Uint8 alpha = Color::ALPHA_OPAQUE);
+                          float x, float y, float w, float h, SkinShadow underlay = {}, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);

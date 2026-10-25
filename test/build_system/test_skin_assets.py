@@ -1,12 +1,15 @@
 """The shipped colony paint layout stays attached across all source animations."""
 from pathlib import Path
 import hashlib
+import importlib.util
 import json
 import re
 import struct
 import subprocess
 import sys
 import unittest
+import tempfile
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 FOLDER = ROOT / 'data/skins/colony-v1'
@@ -23,21 +26,51 @@ UNIT_FORMATS = {
 class ColonySkinAssetsTest(unittest.TestCase):
     def test_camera_metadata_is_bound_and_native_constants_match(self):
         header = (ROOT / 'src/online/SkinViewTransforms.h').read_text()
+        result = subprocess.run([sys.executable, str(ROOT / 'tools/skins/view_constants.py'), '--check'],
+                                cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         for path in FOLDER.glob('*.gsk'):
             sidecar = path.with_suffix('.view.json')
             view = json.loads(sidecar.read_text())
             self.assertEqual(view['version'], 1)
             self.assertEqual(view['meshSha256'], hashlib.sha256(path.read_bytes()).hexdigest())
             self.assertEqual(sidecar.read_bytes(), (DESIGNER / sidecar.name).read_bytes())
+            line = next(line for line in header.splitlines() if line.endswith('// ' + path.stem))
+            actual = [float(value) for value in re.findall(r'([-+\d.]+e[-+]\d+)f', line)]
+            expected = view['clipToModel'] + view['modelToClip'] + view['normalToModel']
+            self.assertEqual(len(actual), len(expected))
+            for a, b in zip(actual, expected):
+                self.assertAlmostEqual(a, b, places=8)
             if path.stem.startswith('swarm'):
-                shape = path.stem.removeprefix('swarm-') if path.stem != 'swarm' else 'classic'
-                line = next(line for line in header.splitlines() if line.endswith('// ' + shape))
-                actual = [float(value) for value in re.findall(r'([-+\d.]+e[-+]\d+)f', line)]
-                expected = view['clipToModel'] + view['modelToClip'] + view['normalToModel']
-                self.assertEqual(len(actual), len(expected))
-                for a, b in zip(actual, expected):
-                    self.assertAlmostEqual(a, b, places=8)
                 self.assertEqual(view['pivot'], [0, 0, 0])
+
+    def test_camera_generator_rejects_corrupt_or_incomplete_transforms(self):
+        spec = importlib.util.spec_from_file_location('skin_views', ROOT / 'tools/skins/view_constants.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            folder = root / 'data/skins/colony-v1'
+            folder.mkdir(parents=True)
+            mesh = b'camera-bound mesh'
+            (folder / 'swarm.gsk').write_bytes(mesh)
+            valid = {'version': 1, 'meshSha256': hashlib.sha256(mesh).hexdigest(),
+                     'clipToModel': [0.] * 16, 'modelToClip': [0.] * 16,
+                     'normalToModel': [0.] * 9}
+            sidecar = folder / 'swarm.view.json'
+            with patch.object(module, 'ROOT', root), patch.object(module, 'SWARMS', ('swarm',)), patch.object(module, 'UNITS', ()):
+                sidecar.write_text(json.dumps(valid))
+                self.assertIn('// swarm', module.generate())
+                faults = [('version', 2), ('meshSha256', '0' * 64),
+                          ('clipToModel', [0.] * 15), ('modelToClip', [0.] * 17),
+                          ('normalToModel', [0.] * 8 + [float('nan')]),
+                          ('normalToModel', [0.] * 8 + [float('inf')]),
+                          ('normalToModel', [0.] * 8 + [True]), ('clipToModel', None)]
+                for key, value in faults:
+                    with self.subTest(key=key, value=value):
+                        sidecar.write_text(json.dumps({**valid, key: value}))
+                        with self.assertRaises(ValueError):
+                            module.generate()
 
     def test_unit_rigs_are_accepted_hash_bound_and_preserve_paint_topology(self):
         manifest = json.loads((FOLDER / 'manifest.json').read_text())

@@ -118,9 +118,6 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	// Published skins retain the old heading layout, including their stock
-	// shadow. A smooth stock turn must not rotate that shadow independently.
-	const int skinShadowFrame = imgid * UNIT_ANIMATION_FRAME_MULTIPLIER + unitSkinAnimationFrame(dir, delta);
 	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	// draw unit
@@ -143,7 +140,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// and their original ground shadows.
 	if (detail.unitSprite > 0 &&
 		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
-			unit->action, dir, delta, px, py, unitSprite->baseFrame(skinShadowFrame), fogAlpha))
+			unit->action, dir, delta, px, py,
+            {unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
+             unsigned(unitSprite->getH(imgid))}, fogAlpha))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{

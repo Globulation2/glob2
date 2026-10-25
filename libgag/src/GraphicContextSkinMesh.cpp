@@ -43,6 +43,14 @@ std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path)
     else surface = SDL_DuplicateSurface(normalized.get()->surface);
     return surface ? std::make_unique<DrawableSurface>(surface, DrawableSurface::AdoptPixels{}) : nullptr;
 }
+void drawSkinShadow(GraphicContext &gfx, SkinShadow shadow, float x, float y,
+                    float w, float h, unsigned logicalSize, std::uint8_t alpha)
+{
+    if (!shadow.surface || !shadow.width || !shadow.height || !logicalSize) return;
+    const float width = shadow.width * w / logicalSize;
+    const float height = shadow.height * h / logicalSize;
+    gfx.drawSurface(x + (w-width)/2, y + (h-height)/2, width, height, shadow.surface, alpha);
+}
 bool skinMaterialShells(unsigned id)
 {
     return id < SKIN_MATERIAL_COUNT && SkinMaterials[id].shells;
@@ -740,7 +748,7 @@ bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<st
 }
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                                   DrawableSurface &material, std::uint8_t region,
-                                  float x, float y, float w, float h, DrawableSurface *underlay, Uint8 alpha)
+                                  float x, float y, float w, float h, SkinShadow underlay, Uint8 alpha)
 {
     PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture, &material, region};
@@ -759,7 +767,7 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     }
     // Draw the original ground shadow only after confirming the mesh can
     // render. A failed mesh draw must leave the classic fallback untouched.
-    if (underlay) drawSurface(x, y, w, h, underlay, alpha);
+    drawSkinShadow(*this, underlay, x, y, w, h, mesh.logicalSize, alpha);
     Sprite::flushBatches(this);
     const unsigned slot = *found, tile = slot % SlotsPerPage;
     const float u = float(tile%Columns)/Columns, v = float(tile/Columns)/Columns;
@@ -784,6 +792,6 @@ namespace GAGCore
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba) { return presentationDevice && renderer == deviceRenderer.get() && readDeviceSkinMesh(request, rgba); }
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests) { if (presentationDevice && renderer == deviceRenderer.get()) prepareDeviceSkinMeshes(requests); }
-bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, DrawableSurface *underlay, Uint8 alpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha); }
+bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, SkinShadow underlay, Uint8 alpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha); }
 }
 #endif
