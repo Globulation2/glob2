@@ -44,6 +44,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
     const capability = JSON.parse(probe.stdout) as { renderRevision: string };
     expect(capability).toMatchObject({
       format: 'colony-sprites-v1',
+      stationaryTurns: true,
       encoding: recipe.recipe,
       webpVersion: recipe.webpVersion,
     });

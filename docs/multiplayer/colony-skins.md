@@ -343,7 +343,9 @@ Older bundles remain valid for movement; stationary units fall back to smooth
 stock artwork until an updated bundle is authorized. Older clients ignore the
 extension. Shadow draw requests carry their logical canvas size separately from
 texture resolution so padded explorer turns and HD textures keep their alignment.
-Deploy the worker and native renderer together: new worker output validation requires the turn pages, and the changed
+Deploy the worker and native renderer together: startup requires the native
+`assets skin-info` probe to advertise `stationaryTurns: true` before registering
+a revision or consuming jobs. Output validation requires the turn pages, and the changed
 renderer recipe queues fresh derivatives at startup. Existing match pins and
 immutable bundles remain valid.
 See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).

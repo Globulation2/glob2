@@ -49,6 +49,9 @@ int main(int argc, char **argv)
             const auto drawScene = [&] {
                 // Match Application's frame pump so shared asset finalizers run.
                 GAGCore::Toolkit::pollAssets();
+                // Standalone tools publish their own immutable frame; drawAll
+                // consumes it and deliberately never reads the live game.
+                gui.prepareLocalPresentation();
                 gui.drawAll(0);
             };
             GAGCore::BinaryInputStream stream(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), save));

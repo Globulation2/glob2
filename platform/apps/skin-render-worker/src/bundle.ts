@@ -1,5 +1,18 @@
 /** Version 1 sprite bundle contract shared by output validation and worker startup. */
 export const SPRITE_BUNDLE_FORMAT = 'colony-sprites-v1';
+/** Reject mismatched deployments before registering a recipe or consuming jobs. */
+export function validateRendererCapability(value: unknown): string {
+  if (!value || typeof value !== 'object') throw new Error('Unsupported skin renderer');
+  const capability = value as Record<string, unknown>;
+  if (
+    capability['format'] !== SPRITE_BUNDLE_FORMAT ||
+    capability['stationaryTurns'] !== true ||
+    typeof capability['renderRevision'] !== 'string' ||
+    !/^[0-9a-f]{64}$/.test(capability['renderRevision'])
+  )
+    throw new Error('Unsupported skin renderer; deploy a native renderer with stationary turns');
+  return capability['renderRevision'];
+}
 const clips = [
   'worker-walk',
   'worker-swim',

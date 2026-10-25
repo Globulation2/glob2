@@ -651,6 +651,16 @@ DIR PREFIX --all-phases` draws every unit clip under the classic sprites for
 review, and `GLOB2_SKIN_RIGS=0` shows the baked clips beside them. Judge
 candidates on these sheets at game scale as well as on the numbers.
 
+For an end-to-end publication check, export the paint and material PNG sources
+from `test/fixtures/skins/authorization.json` through `assets render-skin`, then
+run `test/run_tests.py --filter 'SkinReadback/*'` with
+`GLOB2_SKIN_EXPORT_DIR` set to that bundle directory (and `--build-dir` selecting
+the matching test binary). The test loads the fixture's equivalent WebP inputs
+and compares every exported movement/turn pose against live readback, including
+exact alpha. Its mixed material map contains hairy ID3, so grayscale palette
+rounding cannot silently remove fur while this check passes. Use this fixture
+bundle, not arbitrary skin paint, for the comparison.
+
 For Studio thumbnails, first export a neutral-paint bundle with `glob2
 assets render-skin` using its normal manifest, texture, material and
 output-directory arguments, then extract the selectors:

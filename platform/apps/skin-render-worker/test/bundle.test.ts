@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { validateBundle } from '../src/bundle.ts';
+import { validateBundle, validateRendererCapability } from '../src/bundle.ts';
 const source = {
   manifest_sha256: 'a'.repeat(64),
   texture_sha256: 'b'.repeat(64),
@@ -83,4 +83,20 @@ it.each([
   if (fault === 'oversized page') turns[0]!['bytes'] = 2 * 1024 * 1024 + 1;
   if (fault === 'extra mapping') mapping['extra'] = true;
   expect(() => validateBundle(Buffer.from(JSON.stringify(doc)), source, revision)).toThrow();
+});
+
+it('requires turn support before a worker registers the renderer revision', () => {
+  const current = { format: 'colony-sprites-v1', renderRevision: revision, stationaryTurns: true };
+  expect(validateRendererCapability(current)).toBe(revision);
+  for (const bad of [
+    null,
+    {},
+    { ...current, stationaryTurns: undefined },
+    { ...current, stationaryTurns: false },
+    { ...current, stationaryTurns: 'true' },
+    { ...current, format: 'future' },
+    { ...current, renderRevision: '../bad' },
+  ]) {
+    expect(() => validateRendererCapability(bad)).toThrow('Unsupported skin renderer');
+  }
 });

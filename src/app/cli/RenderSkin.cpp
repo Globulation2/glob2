@@ -212,6 +212,7 @@ int runRenderSkin(const Cli::Request &request)
 			// a revision and consumes publication jobs.
 			checkEncoderVersion();
 			std::cout << Json{{"format", "colony-sprites-v1"},
+							  {"stationaryTurns", true},
 							  {"renderRevision", SKIN_RENDER_REVISION},
 							  {"encoding", "bundled-images-v3-webp-only"},
 							  {"webpVersion", SKIN_WEBP_VERSION}}
