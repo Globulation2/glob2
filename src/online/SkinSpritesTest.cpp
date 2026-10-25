@@ -70,10 +70,95 @@ struct Fixture
 		}
 		skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
 	}
+	void addTurns()
+	{
+		doc["turnMapping"] = {{"first", 256}, {"frames", 32}, {"phaseShift", 3}};
+		doc["turnPages"] = nlohmann::json::array();
+		for (unsigned clip = 0; clip < 7; ++clip)
+		{
+			auto page = doc["pages"][clip * 4];
+			page["first"] = 256;
+			page["frames"] = 32;
+			doc["turnPages"].push_back(page);
+		}
+		skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
+	}
 };
 } // namespace
 TEST_SUITE("SkinSprites")
 {
+	TEST_CASE("padded turn shadows keep their native size and shared mesh center")
+	{
+		glob2test::ToolkitScope toolkit;
+		auto *gfx = GAGCore::Toolkit::initGraphic(128, 128, 0, "skin shadow placement");
+
+		for (unsigned resolution : {40u, 128u})
+			for (float scale : {1.f, 2.f})
+			{
+				GAGCore::DrawableSurface shadow(resolution, resolution);
+				shadow.drawFilledRect(0, 0, resolution, resolution, GAGCore::Color(210, 30, 10));
+				gfx->drawFilledRect(0, 0, 128, 128, GAGCore::Color(0, 0, 0));
+				GAGCore::drawSkinShadow(*gfx, {&shadow, 40, 40}, 24, 24, 32 * scale, 32 * scale, 32,
+										255);
+				const int left = 24 - 4 * scale, right = 24 + 36 * scale;
+				Uint8 r, g, b, a;
+				REQUIRE(SDL_ReadSurfacePixel(gfx->getSDLSurface(), left, left, &r, &g, &b, &a));
+				CHECK(r == 210);
+				REQUIRE(SDL_ReadSurfacePixel(gfx->getSDLSurface(), right - 1, right - 1, &r, &g, &b,
+											 &a));
+				CHECK(r == 210);
+				REQUIRE(
+					SDL_ReadSurfacePixel(gfx->getSDLSurface(), left - 1, left - 1, &r, &g, &b, &a));
+				CHECK(r == 0);
+				REQUIRE(SDL_ReadSurfacePixel(gfx->getSDLSurface(), right, right, &r, &g, &b, &a));
+				CHECK(r == 0);
+			}
+	}
+
+	TEST_CASE("turn extension is complete and transactional while legacy bundles remain valid")
+	{
+		Fixture f;
+		Online::SkinSpriteManifest manifest;
+		REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+		f.addTurns();
+		REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+		REQUIRE(manifest.pages.size() == 36);
+		CHECK(manifest.pages.back().clip == 6);
+		CHECK(manifest.pages.back().first == 256);
+		CHECK(manifest.pages.back().frames == 32);
+		for (unsigned fault = 0; fault < 11; ++fault)
+		{
+			auto doc = f.doc;
+			if (fault == 0)
+				doc.erase("turnMapping");
+			if (fault == 1)
+				doc.erase("turnPages");
+			if (fault == 2)
+				doc["turnMapping"]["phaseShift"] = 5;
+			if (fault == 3)
+				doc["turnMapping"]["first"] = 0;
+			if (fault == 4)
+				doc["turnPages"].erase(6);
+			if (fault == 5)
+				doc["turnPages"][0]["clip"] = "swarm";
+			if (fault == 6)
+				doc["turnPages"][6]["first"] = 255;
+			if (fault == 7)
+				doc["turnPages"][0]["frames"] = 64;
+			if (fault == 8)
+				doc["turnPages"][0]["width"] = 512;
+			if (fault == 9)
+				doc["turnPages"][0]["bytes"] = -1;
+			if (fault == 10)
+				doc["turnPages"][0]["sha256"] = "../bad";
+			auto skin = f.skin;
+			skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
+			CHECK_FALSE(manifest.parse(doc.dump(), skin));
+			CHECK(manifest.pages.empty());
+			REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+		}
+	}
+
 	TEST_CASE("bundle binds complete frame layout and source identity before decoding")
 	{
 		Fixture f;
@@ -148,10 +233,10 @@ TEST_SUITE("SkinSprites")
 		REQUIRE(manifest);
 		manifest->replyRaw(200, f.doc.dump());
 		sprites.poll();
-        // A live renderer can prepare the software fallback without drawing it.
-        sprites.prefetch(2, 0, 0);
-        CHECK(sprites.counters().hits == 0);
-        CHECK(sprites.counters().misses == 0);
+		// A live renderer can prepare the software fallback without drawing it.
+		sprites.prefetch(2, 0, 0);
+		CHECK(sprites.counters().hits == 0);
+		CHECK(sprites.counters().misses == 0);
 		sprites.poll();
 		auto page = http.pending("/pages/" + Online::Sha256::hex(f.unit));
 		REQUIRE(page);
@@ -161,6 +246,8 @@ TEST_SUITE("SkinSprites")
 		sprites.poll();
 		REQUIRE(sprites.draw(*gfx, 2, 0, 0, 10, 10, 38, 38));
 		CHECK(sprites.decodedBytes() == 65 * 8 * 1024 * 4);
+		// Legacy bundles keep movement, but cannot substitute eight-point turns.
+		CHECK_FALSE(sprites.draw(*gfx, 2, 0, 256, 10, 10, 38, 38));
 		// Compaction preserves placement, clipping, filtering and faded pixels at
 		// normal and enlarged scales, including transparent RGB from lossy WebP.
 		glob2test::TempDir files("skin-packed-page");
@@ -170,7 +257,7 @@ TEST_SUITE("SkinSprites")
 			for (unsigned char alpha : {uint8_t(255), uint8_t(127)})
 			{
 				gfx->drawFilledRect(0, 0, 128, 128, GAGCore::Color(15, 25, 35));
-				REQUIRE(sprites.draw(*gfx, 2, 0, 0, 10, 10, size, size, nullptr, alpha));
+				REQUIRE(sprites.draw(*gfx, 2, 0, 0, 10, 10, size, size, {}, alpha));
 				auto *surface = gfx->getSDLSurface();
 				std::string actual(static_cast<const char *>(surface->pixels),
 								   surface->pitch * surface->h);
@@ -192,6 +279,39 @@ TEST_SUITE("SkinSprites")
 		CHECK_FALSE(sprites.draw(*gfx, 2, 0, 0, 10, 10, 38, 38));
 		CHECK(sprites.decodedBytes() == 0);
 	}
+	TEST_CASE("software turns share hash cached images with movement in either request order")
+	{
+		glob2test::ToolkitScope toolkit;
+		auto *gfx = GAGCore::Toolkit::initGraphic(128, 128, 0, "skin turns");
+		for (bool turnFirst : {false, true})
+		{
+			Fixture f;
+			f.addTurns();
+			Online::MemoryStorage storage;
+			OnlineFakes::Http http;
+			Online::SkinSprites sprites(storage, "https://example.test", [&](auto request)
+										{ return http.start(std::move(request)); });
+			sprites.install(f.skin);
+			sprites.poll();
+			auto manifest = http.pending("/manifest");
+			REQUIRE(manifest);
+			manifest->replyRaw(200, f.doc.dump());
+			sprites.poll();
+			sprites.prefetch(2, 0, turnFirst ? 256 : 63);
+			sprites.poll();
+			auto page = http.pending("/pages/" + Online::Sha256::hex(f.unit));
+			REQUIRE(page);
+			page->replyRaw(200, f.unit);
+			sprites.prefetch(2, 0, turnFirst ? 256 : 63);
+			sprites.poll();
+			for (unsigned frame : {256u, 287u, 0u, 63u, 255u})
+				REQUIRE(sprites.draw(*gfx, 2, 0, frame, 10, 10, 38, 38));
+			CHECK_FALSE(sprites.draw(*gfx, 2, 0, 288, 10, 10, 38, 38));
+			CHECK(http.count("/pages/" + Online::Sha256::hex(f.unit)) == 1);
+			sprites.remove(2);
+		}
+	}
+
 	TEST_CASE("decoded pages evict at 64 MiB and reload verified disk content")
 	{
 		glob2test::ToolkitScope toolkit;

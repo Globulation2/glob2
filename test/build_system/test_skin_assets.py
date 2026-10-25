@@ -23,20 +23,22 @@ UNIT_FORMATS = {
 class ColonySkinAssetsTest(unittest.TestCase):
     def test_camera_metadata_is_bound_and_native_constants_match(self):
         header = (ROOT / 'src/online/SkinViewTransforms.h').read_text()
+        result = subprocess.run([sys.executable, str(ROOT / 'tools/skins/view_constants.py'), '--check'],
+                                cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         for path in FOLDER.glob('*.gsk'):
             sidecar = path.with_suffix('.view.json')
             view = json.loads(sidecar.read_text())
             self.assertEqual(view['version'], 1)
             self.assertEqual(view['meshSha256'], hashlib.sha256(path.read_bytes()).hexdigest())
             self.assertEqual(sidecar.read_bytes(), (DESIGNER / sidecar.name).read_bytes())
+            line = next(line for line in header.splitlines() if line.endswith('// ' + path.stem))
+            actual = [float(value) for value in re.findall(r'([-+\d.]+e[-+]\d+)f', line)]
+            expected = view['clipToModel'] + view['modelToClip'] + view['normalToModel']
+            self.assertEqual(len(actual), len(expected))
+            for a, b in zip(actual, expected):
+                self.assertAlmostEqual(a, b, places=8)
             if path.stem.startswith('swarm'):
-                shape = path.stem.removeprefix('swarm-') if path.stem != 'swarm' else 'classic'
-                line = next(line for line in header.splitlines() if line.endswith('// ' + shape))
-                actual = [float(value) for value in re.findall(r'([-+\d.]+e[-+]\d+)f', line)]
-                expected = view['clipToModel'] + view['modelToClip'] + view['normalToModel']
-                self.assertEqual(len(actual), len(expected))
-                for a, b in zip(actual, expected):
-                    self.assertAlmostEqual(a, b, places=8)
                 self.assertEqual(view['pivot'], [0, 0, 0])
 
     def test_unit_rigs_are_accepted_hash_bound_and_preserve_paint_topology(self):

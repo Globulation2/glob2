@@ -64,15 +64,30 @@ export function validateBundle(
     throw new Error('Skin output identity mismatch');
   const pages = doc['pages'];
   if (!Array.isArray(pages) || pages.length !== 29) throw new Error('Incomplete sprite bundle');
-  pages.forEach((raw: unknown, index: number) => {
+  // New render recipes must include turns. Clients still accept legacy bundles;
+  // the original pages stay intact for clients that predate this extension.
+  const mapping = doc['turnMapping'] as Record<string, unknown> | undefined;
+  const turns = doc['turnPages'];
+  if (
+    !mapping ||
+    mapping['first'] !== 256 ||
+    mapping['frames'] !== 32 ||
+    mapping['phaseShift'] !== 3 ||
+    !Array.isArray(turns) ||
+    turns.length !== 7 ||
+    Object.keys(mapping).length !== 3
+  )
+    throw new Error('Incomplete skin turns');
+  const allPages = [...pages, ...turns];
+  allPages.forEach((raw: unknown, index: number) => {
     if (!raw || typeof raw !== 'object') throw new Error('Invalid sprite page');
     const p = raw as Record<string, unknown>,
-      clip = index < 28 ? Math.floor(index / 4) : 7,
-      size = index < 28 ? 1024 : 128;
+      clip = index < 28 ? Math.floor(index / 4) : index === 28 ? 7 : index - 29,
+      size = index === 28 ? 128 : 1024;
     if (
       p['clip'] !== clips[clip] ||
-      p['first'] !== (index < 28 ? (index % 4) * 64 : 0) ||
-      p['frames'] !== (index < 28 ? 64 : 1) ||
+      p['first'] !== (index < 28 ? (index % 4) * 64 : index === 28 ? 0 : 256) ||
+      p['frames'] !== (index < 28 ? 64 : index === 28 ? 1 : 32) ||
       p['width'] !== size ||
       p['height'] !== size ||
       typeof p['sha256'] !== 'string' ||
@@ -84,5 +99,5 @@ export function validateBundle(
     )
       throw new Error('Invalid sprite page');
   });
-  return { pages: pages as Page[] };
+  return { pages: allPages as Page[] };
 }

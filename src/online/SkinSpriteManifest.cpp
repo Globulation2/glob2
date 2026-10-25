@@ -39,15 +39,24 @@ bool SkinSpriteManifest::parse(const std::string &bytes, const AuthorizedSkin &s
 		const auto &records = doc.at("pages");
 		if (!records.is_array() || records.size() != 29)
 			return false;
+		const bool turns = doc.contains("turnMapping") || doc.contains("turnPages");
+		if (turns && (doc.at("turnMapping") !=
+						  nlohmann::json{{"first", 256}, {"frames", 32}, {"phaseShift", 3}} ||
+					  !doc.at("turnPages").is_array() || doc.at("turnPages").size() != 7))
+			return false;
+		auto allRecords = records;
+		if (turns)
+			for (const auto &page : doc.at("turnPages"))
+				allRecords.push_back(page);
 		std::vector<SkinSpritePage> candidate;
-		for (unsigned i = 0; i < records.size(); ++i)
+		for (unsigned i = 0; i < allRecords.size(); ++i)
 		{
-			const auto &r = records[i];
+			const auto &r = allRecords[i];
 			SkinSpritePage p;
-			p.clip = i < 28 ? i / 4 : 7;
-			p.first = i < 28 ? (i % 4) * 64 : 0;
-			p.frames = i < 28 ? 64 : 1;
-			p.size = i < 28 ? 1024 : 128;
+			p.clip = i < 28 ? i / 4 : i == 28 ? 7 : i - 29;
+			p.first = i < 28 ? (i % 4) * 64 : i == 28 ? 0 : 256;
+			p.frames = i < 28 ? 64 : i == 28 ? 1 : 32;
+			p.size = i == 28 ? 128 : 1024;
 			p.hash = r.at("sha256").get<std::string>();
 			if (!r.at("bytes").is_number_unsigned() && !r.at("bytes").is_number_integer())
 				return false;

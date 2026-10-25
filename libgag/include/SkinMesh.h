@@ -13,10 +13,10 @@ class SkinModel;
 class SkinShapeModel;
 class StreamBackend;
 class DrawableSurface;
-// Every unit clip holds 256 frames: eight headings of 32 animation phases, in
-// the order unitSkinAnimationFrame() produces. Stock sprite turns use a
-// separate appended atlas block; published skin payloads keep this layout.
+// Serialized unit clips hold eight headings of 32 movement phases. Derived
+// stationary clips hold 32 frozen headings and are never serialized as rigs.
 constexpr unsigned SkinClipFrames = 256;
+constexpr unsigned SkinTurnFrames = 32;
 // Renderer adapter over the three unit mesh formats. GSK1 stores every posed
 // vertex; GSR1 is a bone rig and GSB1 a blend-shape clip, both evaluated into
 // the same per-pose layout on request. Positions are in orthographic clip
@@ -46,9 +46,15 @@ struct SkinMesh
 	// requests fail without modifying output.
 	bool evaluate(unsigned frame, std::vector<float> &output) const;
 	// Cosmetic camera rotation; returns a separately identified static mesh.
-	SkinMesh rotatedView(unsigned angle, const std::array<float, 16> &inverse,
+	SkinMesh rotatedView(double angle, const std::array<float, 16> &inverse,
 						 const std::array<float, 16> &projection,
 						 const std::array<float, 9> &normals) const;
+	// Presentation-only turn clip, derived from phase zero without changing the
+	// serialized 256-frame mesh/rig contracts. Rotates in model space so camera
+	// depth scaling and lighting normals stay correct at intermediate headings.
+	SkinMesh stationaryTurns(const std::array<float, 16> &inverse,
+							 const std::array<float, 16> &projection,
+							 const std::array<float, 9> &normals) const;
 	bool load(const std::string &path, std::string &error);
 	bool load(StreamBackend &input, std::string &error);
 	bool loadDetailUV(StreamBackend &input, std::string &error);
@@ -85,6 +91,6 @@ struct SkinMeshRequest
 	unsigned frame;
 	DrawableSurface *texture;  // colour atlas
 	DrawableSurface *material; // material ids, see libgag/shaders/skin-materials.json
-	std::uint8_t region;	   // SkinRegion: the atlas quadrant this mesh samples
+	std::uint8_t region;       // SkinRegion: the atlas quadrant this mesh samples
 };
 } // namespace GAGCore

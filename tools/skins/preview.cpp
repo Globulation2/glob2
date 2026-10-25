@@ -104,7 +104,7 @@ int main(int argc, char **argv)
                     gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
                     gfx->resetDrawCallCount();
                     if (!gfx->drawSkinMesh(mesh,0,paint,material,SkinRegionWorker,80,80,256,256,
-                                          underlay ? &shadow : nullptr, Uint8(alpha))) return 13;
+                                          SkinShadow{underlay ? &shadow : nullptr, mesh.logicalSize, mesh.logicalSize}, Uint8(alpha))) return 13;
                     // Opacity changes only the composite, never the cached pose.
                     if (!underlay && gfx->getDrawCallCount() != (alpha ? 1u : 0u)) return 14;
                     if (!alpha && gfx->getDrawCallCount() != 0) return 15;
@@ -180,8 +180,8 @@ int main(int argc, char **argv)
             struct MissingPaint : DrawableSurface { MissingPaint() : DrawableSurface() {} } missingPaint;
             gfx->resetDrawCallCount();
             gfx->prepareSkinMeshes({{&mesh,0,&missingPaint,&material,SkinRegionWorker},{&mesh,0,&paint,&missingPaint,SkinRegionWorker}});
-            if (gfx->drawSkinMesh(mesh,0,missingPaint,material,SkinRegionWorker,0,0,32,32,&paint)
-                || gfx->drawSkinMesh(mesh,0,paint,missingPaint,SkinRegionWorker,0,0,32,32,&paint)
+            if (gfx->drawSkinMesh(mesh,0,missingPaint,material,SkinRegionWorker,0,0,32,32,{&paint,mesh.logicalSize,mesh.logicalSize})
+                || gfx->drawSkinMesh(mesh,0,paint,missingPaint,SkinRegionWorker,0,0,32,32,{&paint,mesh.logicalSize,mesh.logicalSize})
                 || gfx->getDrawCallCount() != 0) return 7;
             std::array<std::unique_ptr<DrawableSurface>,4> paints;
             for (unsigned i=0; i<paints.size(); ++i)
@@ -245,7 +245,8 @@ int main(int argc, char **argv)
                         const int size = clip == 7 ? 114 : mesh.logicalSize * 3, inset = (128-size)/2;
                         if (clip != 7) gfx->drawSprite(x+inset,y+6,size,size,classic,bases[clip]*4+frame);
                         if (!gfx->drawSkinMesh(mesh,frame,paint,material,regions[clip],x+inset,y+126,size,size,
-                            clip == 7 ? nullptr : classic->baseFrame(bases[clip]*4+frame)))
+                            SkinShadow{clip == 7 ? nullptr : classic->baseFrame(bases[clip]*4+frame),
+                                unsigned(classic->getW(bases[clip]*4+frame)), unsigned(classic->getH(bases[clip]*4+frame))}))
                         { std::cerr << "GPU mesh draw unavailable\n"; return 5; }
                     }
                 gfx->printScreen(std::string(argv[2])+"-"+names[clip]+

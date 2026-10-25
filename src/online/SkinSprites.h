@@ -3,6 +3,7 @@
 
 #include "SkinDownloads.h"
 #include "SkinSpriteManifest.h"
+#include <SkinShadow.h>
 #include <array>
 #include <map>
 
@@ -26,7 +27,7 @@ class SkinSprites
     // Record visible fallback demand without submitting any drawing.
     void prefetch(int team, unsigned clip, unsigned frame);
 	bool draw(GAGCore::GraphicContext &, int team, unsigned clip, unsigned frame, float x, float y,
-			  float w, float h, GAGCore::DrawableSurface *shadow = nullptr,
+			  float w, float h, GAGCore::SkinShadow shadow = {},
 			  unsigned char alpha = 255);
 	std::size_t decodedBytes() const { return decoded; }
 	struct Counters

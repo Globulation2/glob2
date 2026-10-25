@@ -62,7 +62,10 @@ Xvfb, a five-minute timeout and resource limits. `colony_skin_sprites` records
 after every image is validated and stored. The library exposes `softwareStatus`
 and explains preparing or unavailable software artwork while keeping equipment
 available. Ready derivatives are immutable. Renderer upgrades create new records
-without rewriting published paint.
+without rewriting published paint. Grayscale PNG material sources preserve their
+raw byte IDs before palette conversion; indexed-color PNG sources retain their
+authored palette. This avoids SDL_image palette rounding silently changing a
+material (for example, hairy ID3 to metallic ID2).
 
 A signed optional `softwareSprites` descriptor carries `format`,
 `manifestSha256` and `renderRevision`. Its optional `source` identifies the immutable
@@ -328,6 +331,21 @@ asset is missing or invalid, and `GLOB2_SKIN_RIGS=0` selects them in gameplay
 for comparison. Sprite publishing always renders the rigs; its recipe digest
 covers their bytes and decoders, so a changed rig never overwrites a published
 bundle. Software clients continue using their authorized published sprites.
+
+Stationary turns use 32 headings at the existing rotation speed. Live rendering
+derives a frozen phase-zero turn clip from each unit mesh, retaining its paint
+UVs and rotating normals with the geometry. Published `colony-sprites-v1` bundles
+retain the original 29 `pages` and add seven optional `turnPages`, one per unit
+clip. `turnMapping` is exactly `{first: 256, frames: 32, phaseShift: 3}`. Each turn
+page is 1024×1024 with 32 128-pixel tiles in row-major order and a transparent
+lower half. An extension must include all seven pages in unit-clip order.
+Older bundles remain valid for movement; stationary units fall back to smooth
+stock artwork until an updated bundle is authorized. Older clients ignore the
+extension. Shadow draw requests carry their logical canvas size separately from
+texture resolution so padded explorer turns and HD textures keep their alignment.
+Deploy the worker and native renderer together: new worker output validation requires the turn pages, and the changed
+renderer recipe queues fresh derivatives at startup. Existing match pins and
+immutable bundles remain valid.
 See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).
 
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
@@ -354,7 +372,9 @@ sidecars bound to each GSK SHA-256 and the corresponding native constants in
 separate depth scaling without changing GSK payloads, UVs, topology or poses.
 Regenerate sidecars/constants whenever source mesh exports change. The web
 viewport, brush and pattern engine share these transforms; the native rendering
-path uses the generated swarm constants. `studio_thumbnails.py` regenerates the
+path uses the generated swarm and unit constants. Run
+`python3 tools/skins/view_constants.py` to refresh only the native constants from
+hash-checked retained sidecars. `studio_thumbnails.py` regenerates the
 model and action thumbnails from the shipped meshes.
 
 Online replay recordings and native profile downloads have an optional

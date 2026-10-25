@@ -139,10 +139,25 @@ PNG. Installation requires verified receipts for every layer before copying,
 appends the HD manifest and retains movement assets. The existing movement
 installers also preserve the turn blocks.
 
-Published custom skins retain their 256-frame clip contract and eight-heading
-turns through `unitSkinAnimationFrame`; this change adds smoother turns to the
-stock native/HD artwork. Skin frame selection is kept separate so stock atlas
-indices cannot escape the bounds of a skin clip.
+Custom skins also use 32 stationary headings, generated from phase zero of each
+loaded unit mesh. `SkinMesh::stationaryTurns` recovers model coordinates with the
+calibrated view transform, rotates positions and normals about world Z, and
+projects them back into the same camera. This works with GSB1, GSR1 and the GSK1
+fallback without rerendering Blender sources or changing their 256-frame formats.
+The derived clips have separate render-cache identities and retain paint UVs.
+
+Publishing adds `turnMapping: {first: 256, frames: 32, phaseShift: 3}` and seven
+`turnPages` to `colony-sprites-v1`. Each 1024-square WebP contains 32 tiles in
+its first four rows; the other rows are transparent. The original 29 `pages`
+and movement mapping stay intact for older clients. New clients accept both
+layouts, using the same 32-phase clock for stock sprites, live meshes and
+published skin sprites. When a bundle lacks turn pages, stationary units fall back to the smooth
+stock artwork; movement keeps using the skin. Shadows follow the same pose.
+Deploy the updated worker with the native renderer so all turn pages are
+validated and stored; its new recipe revision backfills published
+skins without modifying their immutable paint or existing bundles. The v1
+`frameMapping.direction8Shift` field remains frozen for older clients; the
+current renderer uses only `turnMapping` for stationary sprite selection.
 
 ## Checks
 
@@ -338,11 +353,11 @@ skins paint each model through its quadrant of a `colony-v2` atlas.
 GSK1 stores a bounded little-endian header (magic, vertex count, index count,
 one static pose or 256 unit poses, logical canvas size), shared UV float pairs, uint32 triangle indices,
 then camera-space position/normal float sextuples for each vertex of each pose.
-UVs use a top-left image origin. Directions and phases follow `unitSkinAnimationFrame`.
+UVs use a top-left image origin. Directions and phases follow `unitMovementFrame`.
 The editor reconstructs model space using versioned, hash-bound `.view.json`
 sidecars; rotating raw GSK positions would distort their independently scaled
 depth. After changing any mesh export, regenerate these camera transforms and
-native swarm constants with the pinned Blender executable:
+native swarm and unit constants with the pinned Blender executable:
 
 ```sh
 blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
@@ -653,10 +668,13 @@ Both formats share the camera and frame rules. Every clip stores a row-major
 model-to-clip matrix and a model-to-camera normal matrix; positions transform
 by the first and normals by the second, then normalize, with a cancelled
 normal shorter than `1e-8` becoming `(0, 0, 1)`. The renderer alone applies
-the 1.25 atlas padding. Skin gameplay calls `unitSkinAnimationFrame`: frame `f`
-of a clip has heading `-floor(f/32)*pi/4`, and direction 8 maps to phase zero
-of successive headings rather than a ninth heading. Skin gameplay timing and
-discrete heading selection are unchanged.
+the 1.25 atlas padding. Movement uses `unitMovementFrame`: frame `f` of a
+serialized clip has heading `-floor(f/32)*pi/4`. Stationary units instead select
+`unitSkinMeshFrame` from a derived 32-heading turn clip, freezing phase zero
+and rotating around model Z. Stock, mesh and published sprite turns share
+`unitAnimationPhase`; simulation timing is unchanged. Historical catalog offsets keep their movement
+mapping; stationary turns use the containing stock action block, clamped to the
+nearest supported block for offsets outside the current atlas.
 
 A GSB1 frame is `mean + sum(c_k * shape_k)` for positions and, separately,
 normals, turned about model Z by the heading and taken through the camera.

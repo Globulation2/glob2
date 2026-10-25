@@ -5,8 +5,7 @@
 
 class UnitAnimationTest
 {
-public:
-
+  public:
 	void testDirectionsAndProgress()
 	{
 		for (int base = 0; base <= 384; base += 64)
@@ -22,7 +21,8 @@ public:
 					CHECK(frame < base * 4 + (direction + 1) * 32);
 					if (delta % 32 == 0)
 						CHECK_EQ((base + direction * 8 + delta / 32) * 4, frame);
-					if (frame != previous) ++changes;
+					if (frame != previous)
+						++changes;
 					previous = frame;
 				}
 				CHECK_EQ(32, changes);
@@ -45,14 +45,13 @@ public:
 		for (int delta = 0; delta < 256; ++delta)
 		{
 			// Historical catalogs can start partway through a stock action.
-			CHECK_EQ(4 + (delta / 32) * 32, unitAnimationFrame(1, 8, delta));
-			for (int direction = 0; direction <= 8; ++direction)
+			CHECK_EQ(1792 + delta / 8, unitAnimationFrame(1, 8, delta));
+			for (int direction = 0; direction < 8; ++direction)
 			{
-				const int frame = unitSkinAnimationFrame(direction, delta);
+				const int frame = unitMovementFrame(direction, delta);
 				CHECK(frame >= 0);
 				CHECK(frame < 256);
 			}
-			CHECK_EQ((delta / 32) * 32, unitSkinAnimationFrame(8, delta));
 		}
 		// Appending presentation frames must not expand catalog validation.
 		CHECK(validUnitAnimationBase(384));
@@ -63,7 +62,7 @@ public:
 	void testHistoricalOffsetsAtPhaseBoundaries()
 	{
 		// Every accepted offset remains valid, including bases that start inside
-		// an action block. Only aligned stock bases may use the appended turns.
+		// an action block. Every offset uses its containing block for turns.
 		for (int base = 0; base <= 384; ++base)
 		{
 			CHECK(validUnitAnimationBase(base));
@@ -71,12 +70,13 @@ public:
 			{
 				for (int direction = 0; direction < 8; ++direction)
 					CHECK_EQ(base * 4 + direction * 32 + delta / 8,
-						unitAnimationFrame(base, direction, delta));
+							 unitAnimationFrame(base, direction, delta));
 				if (base % 64 != 0)
 				{
 					const int frame = unitAnimationFrame(base, 8, delta);
-					CHECK_EQ(base * 4 + (delta / 32) * 32, frame);
-					CHECK(frame < UNIT_ANIMATION_MOVEMENT_FRAME_COUNT);
+					CHECK_EQ(1792 + (base / 64) * 32 + delta / 8, frame);
+					CHECK(frame >= UNIT_ANIMATION_MOVEMENT_FRAME_COUNT);
+					CHECK(frame < UNIT_ANIMATION_ATLAS_FRAME_COUNT);
 				}
 			}
 		}
@@ -100,18 +100,63 @@ public:
 			else
 				CHECK_EQ(UNIT_ANIMATION_ATLAS_FRAME_COUNT - 1, last);
 		}
-		// Skin turns keep their separate eight-frame cadence at the same edges.
-		CHECK_EQ(0, unitSkinAnimationFrame(8, 31));
-		CHECK_EQ(32, unitSkinAnimationFrame(8, 32));
-		CHECK_EQ(224, unitSkinAnimationFrame(8, 255));
 	}
 };
 
 TEST_SUITE("UnitAnimation")
 {
-	TEST_CASE_FIXTURE(UnitAnimationTest, "DirectionsAndProgress") { testDirectionsAndProgress(); }
-	TEST_CASE_FIXTURE(UnitAnimationTest, "TurningKeepsItsDuration") { testTurningKeepsItsDuration(); }
-	TEST_CASE_FIXTURE(UnitAnimationTest, "LegacyCatalogAndSkinFrames") { testLegacyCatalogAndSkinFrames(); }
-	TEST_CASE_FIXTURE(UnitAnimationTest, "HistoricalOffsetsAtPhaseBoundaries") { testHistoricalOffsetsAtPhaseBoundaries(); }
-	TEST_CASE_FIXTURE(UnitAnimationTest, "TurnBlocksAndLoopBoundaries") { testTurnBlocksAndLoopBoundaries(); }
+	TEST_CASE("HistoricalOutOfRangeTurns")
+	{
+		for (int base : {-1, std::numeric_limits<int>::min(), 385, 447, 448, 4096,
+						 std::numeric_limits<int>::max()})
+			for (int delta : {0, 7, 8, 248, 255})
+			{
+				const auto frame = unitAnimationFrame(base, 8, delta);
+				const int clip = base < 0 ? 0 : 6;
+				CHECK_EQ(1792 + clip * 32 + delta / 8, frame);
+				CHECK(frame >= UNIT_ANIMATION_MOVEMENT_FRAME_COUNT);
+				CHECK(frame < UNIT_ANIMATION_ATLAS_FRAME_COUNT);
+			}
+	}
+
+	TEST_CASE("SkinSpriteTurns")
+	{
+		for (int delta = 0; delta < 256; ++delta)
+			for (int direction = 0; direction <= 8; ++direction)
+			{
+				const auto meshFrame = unitSkinMeshFrame(direction, delta);
+				const auto spriteFrame = unitSkinSpriteFrame(direction, delta);
+				if (direction == 8)
+				{
+					CHECK_EQ(delta / 8, meshFrame);
+					CHECK_EQ(256 + meshFrame, spriteFrame);
+				}
+				else
+				{
+					CHECK_EQ(unitMovementFrame(direction, delta), meshFrame);
+					CHECK_EQ(meshFrame, spriteFrame);
+				}
+			}
+	}
+
+	TEST_CASE_FIXTURE(UnitAnimationTest, "DirectionsAndProgress")
+	{
+		testDirectionsAndProgress();
+	}
+	TEST_CASE_FIXTURE(UnitAnimationTest, "TurningKeepsItsDuration")
+	{
+		testTurningKeepsItsDuration();
+	}
+	TEST_CASE_FIXTURE(UnitAnimationTest, "LegacyCatalogAndSkinFrames")
+	{
+		testLegacyCatalogAndSkinFrames();
+	}
+	TEST_CASE_FIXTURE(UnitAnimationTest, "HistoricalOffsetsAtPhaseBoundaries")
+	{
+		testHistoricalOffsetsAtPhaseBoundaries();
+	}
+	TEST_CASE_FIXTURE(UnitAnimationTest, "TurnBlocksAndLoopBoundaries")
+	{
+		testTurnBlocksAndLoopBoundaries();
+	}
 }

@@ -94,15 +94,15 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	for (const auto &swarm : Online::SWARM_MESHES)
 		requests.push_back(
 			GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
-	std::array<GAGCore::SkinMesh, 7> replacement;
+	std::array<GAGCore::SkinMesh, 7> replacement, replacementTurns;
 	for (unsigned i = 0; i < replacement.size(); ++i)
 	{
 		auto mesh = loader.wait(requests[i]);
 		// A rig that is missing or does not match the clip's frame count or
 		// logical size falls back to the baked clip, so the unit still draws.
-		if (!baked && (!mesh || !(mesh->model || mesh->shapes) ||
-					   mesh->frames != GAGCore::SkinClipFrames ||
-					   mesh->logicalSize != Online::SkinSpriteLogicalSizes[i]))
+		if (!baked &&
+			(!mesh || !(mesh->model || mesh->shapes) || mesh->frames != GAGCore::SkinClipFrames ||
+			 mesh->logicalSize != Online::SkinSpriteLogicalSizes[i]))
 		{
 			std::cerr << "Colony skin preview: " << GAGCore::skinClipFile(names[i]) << ": "
 					  << (mesh ? "unexpected clip layout" : requests[i].error())
@@ -116,9 +116,14 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 			std::cerr << "Colony skin preview: " << names[i] << ": " << requests[i].error() << '\n';
 			return false;
 		}
+		const auto &view = Online::UnitSkinViews[i];
+		replacementTurns[i] = mesh->stationaryTurns(view.inverse, view.projection, view.normals);
+		if (!replacementTurns[i].identity)
+			return false;
 		replacement[i] = *mesh;
 	}
 	clips = std::move(replacement);
+	turns = std::move(replacementTurns);
 	for (unsigned i = 0; i < swarms.size(); ++i)
 		if (auto mesh = loader.wait(requests[clips.size() + i]))
 			swarms[i] = *mesh;
@@ -235,42 +240,52 @@ std::optional<std::uint32_t> ColonySkinPreview::buildingColor(int team) const
 }
 ColonySkinPreview::~ColonySkinPreview() {
     assetLifetime.reset();
-    for (auto &request : preparingSkins) request.cancel();
+	for (auto &request : preparingSkins)
+		request.cancel();
 }
 
-bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
-                            int action, int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow, std::uint8_t alpha)
+bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
+							 int direction, int delta, float x, float y,
+							 GAGCore::SkinShadow shadow, std::uint8_t alpha)
 {
-    if (!visible || team<0 || team>=32 || direction < 0 || direction > 8 || delta < 0 || delta > 255)
-        return false;
-    if(sprites && (!gfx.rendererCapabilities().liveSkins || !ready || !textures[team])) {
-        const unsigned clip=unitClip(type,action);
-        if(clip>=8)return false;
-        const float size=Online::SkinSpriteLogicalSizes[clip],offset=(size-32)/2;
-        return sprites->draw(gfx,team,clip,unitSkinAnimationFrame(direction,delta),x-offset,y-offset,size,size,shadow,alpha);
-    }
-    if (sprites) sprites->prefetch(team, unitClip(type, action), unitSkinAnimationFrame(direction, delta));
-    if (!ready || !textures[team] || !materials[team]) return false;
-    const auto *mesh = unitMesh(type, action);
-    if (!mesh) return false;
-    const float size = mesh->logicalSize;
-    const float offset = (size - 32) / 2;
-    return gfx.drawSkinMesh(*mesh, unitSkinAnimationFrame(direction, delta),
-                            *textures[team], *materials[team], unitRegion(type),
-                            x-offset, y-offset, size, size, shadow, alpha);
+	if (!visible || team < 0 || team >= 32 || direction < 0 || direction > 8 || delta < 0 ||
+		delta > 255)
+		return false;
+	if (sprites && (!gfx.rendererCapabilities().liveSkins || !ready || !textures[team]))
+	{
+		const unsigned clip = unitClip(type, action);
+		if (clip >= 8)
+			return false;
+		const float size = Online::SkinSpriteLogicalSizes[clip], offset = (size - 32) / 2;
+		return sprites->draw(gfx, team, clip, unitSkinSpriteFrame(direction, delta), x - offset,
+							 y - offset, size, size, shadow, alpha);
+	}
+	if (sprites)
+		sprites->prefetch(team, unitClip(type, action), unitSkinSpriteFrame(direction, delta));
+	if (!ready || !textures[team] || !materials[team])
+		return false;
+	const auto *mesh = unitMesh(type, action, direction == 8);
+	if (!mesh)
+		return false;
+	const float size = mesh->logicalSize;
+	const float offset = (size - 32) / 2;
+	return gfx.drawSkinMesh(*mesh, unitSkinMeshFrame(direction, delta), *textures[team],
+							*materials[team], unitRegion(type), x - offset, y - offset, size, size,
+							shadow, alpha);
 }
 
-bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
-                                 float x, float y, float width, float height, std::uint8_t alpha)
+bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
+								  float width, float height, std::uint8_t alpha)
 {
-    if (!visible) return false;
-    if(sprites && (!gfx.rendererCapabilities().liveSkins || !ready || team<0 || team>=32 || !textures[team]))return sprites->draw(gfx,team,7,0,x,y,width,height,nullptr,alpha);
+	if (!visible)
+		return false;
+	if(sprites && (!gfx.rendererCapabilities().liveSkins || !ready || team<0 || team>=32 || !textures[team]))return sprites->draw(gfx,team,7,0,x,y,width,height,{},alpha);
     if (!ready || team < 0 || team >= 32 || !textures[team]) return false;
     if (sprites) sprites->prefetch(team, 7, 0);
     const auto *mesh = swarmMesh(team);
     // Whichever mesh is chosen, the swarm is painted from the swarm quadrant.
     return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], *materials[team], GAGCore::SkinRegionSwarm,
-                                    x, y, width, height, nullptr, alpha);
+                                    x, y, width, height, {}, alpha);
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const
@@ -312,55 +327,74 @@ unsigned ColonySkinPreview::unitClip(int type, int action)
         }
         if (type == WARRIOR) clip += 3;
     }
-    else return 8;
-    return clip;
+	else
+		return 8;
+	return clip;
 }
-const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type,int action) const
+const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action, bool turning) const
 {
-    const auto clip=unitClip(type,action);
-    return clip<clips.size()?&clips[clip]:nullptr;
+	const auto clip = unitClip(type, action);
+	return clip < clips.size() ? (turning ? &turns[clip] : &clips[clip]) : nullptr;
 }
 void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const PresentationFrame &scene,
-    int left, int top, int right, int bottom, int viewportX, int viewportY,
-    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings, const FogFade *fogFade)
+								int left, int top, int right, int bottom, int viewportX,
+								int viewportY, int localTeam, std::uint32_t visibleTeams,
+								bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings,
+								const FogFade *fogFade)
 {
-    std::vector<GAGCore::SkinMeshRequest> requests;
-    if (visible && ready && gfx.rendererCapabilities().liveSkins && (drawUnits || drawBuildings))
-    {
-        const auto &map = scene.map;
-        const auto &entities = scene.entities;
-        for (int y=top-1; y<=bottom; ++y)
-            for (int x=left-1; x<=right; ++x)
-            {
-                const int mx=x+viewportX, my=y+viewportY;
-                if (drawUnits) for (auto gid : {map.getGroundUnit(mx,my), map.getAirUnit(mx,my)})
-                {
-                    const auto *unit = entities.unit(gid);
-                    if (!unit || unit->team<0 || unit->team>=32 || !textures[unit->team]) continue;
-                    if (!wholeMap)
-                    {
-                        if (fogFade && fogFade->active())
-                        {
-                            if (std::min(fogFade->level(mx,my), fogFade->level(mx-unit->dx,my-unit->dy)) == FogFade::FOGGED) continue;
-                        }
-                        else if (!map.isFOWDiscovered(mx,my,visibleTeams) &&
-                                 !map.isFOWDiscovered(mx-unit->dx,my-unit->dy,visibleTeams)) continue;
-                    }
-                    const auto meshClass = scene.world.catalogs->units->runtime(unit->typeNum).meshClass;
-                    const auto *mesh = unitMesh(meshClass,unit->action);
-                    if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
-                        requests.push_back({mesh, static_cast<unsigned>(unitSkinAnimationFrame(unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(meshClass)});
-                }
-                if (!drawBuildings) continue;
-                const auto *building = entities.building(map.getBuilding(mx,my));
-                if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
-                    entities.type(*building)->isBuildingSite ||
-                    entities.type(*building)->presentation.skinSlot != "swarm") continue;
-                const auto *swarm = swarmMesh(building->team);
+	std::vector<GAGCore::SkinMeshRequest> requests;
+	if (visible && ready && gfx.rendererCapabilities().liveSkins && (drawUnits || drawBuildings))
+	{
+		const auto &map = scene.map;
+		const auto &entities = scene.entities;
+		for (int y = top - 1; y <= bottom; ++y)
+			for (int x = left - 1; x <= right; ++x)
+			{
+				const int mx = x + viewportX, my = y + viewportY;
+				if (drawUnits)
+					for (auto gid : {map.getGroundUnit(mx, my), map.getAirUnit(mx, my)})
+					{
+						const auto *unit = entities.unit(gid);
+						if (!unit || unit->team < 0 || unit->team >= 32 || !textures[unit->team])
+							continue;
+						if (!wholeMap)
+						{
+							if (fogFade && fogFade->active())
+							{
+								if (std::min(fogFade->level(mx, my),
+											 fogFade->level(mx - unit->dx, my - unit->dy)) ==
+									FogFade::FOGGED)
+									continue;
+							}
+							else if (!map.isFOWDiscovered(mx, my, visibleTeams) &&
+									 !map.isFOWDiscovered(mx - unit->dx, my - unit->dy,
+														  visibleTeams))
+								continue;
+						}
+						const auto meshClass =
+							scene.world.catalogs->units->runtime(unit->typeNum).meshClass;
+						const auto *mesh = unitMesh(meshClass, unit->action, unit->direction == 8);
+						if (mesh && unit->direction >= 0 && unit->direction <= 8 &&
+							unit->delta >= 0 && unit->delta <= 255)
+							requests.push_back(
+								{mesh,
+								 static_cast<unsigned>(unitSkinMeshFrame(
+									 unit->direction, drawnUnitDelta(*unit, unitMotion))),
+								 textures[unit->team].get(), materials[unit->team].get(),
+								 unitRegion(meshClass)});
+					}
+				if (!drawBuildings)
+					continue;
+				const auto *building = entities.building(map.getBuilding(mx, my));
+				if (!building || building->team < 0 || building->team >= 32 ||
+					!textures[building->team] || entities.type(*building)->isBuildingSite ||
+					entities.type(*building)->presentation.skinSlot != "swarm")
+					continue;
+				const auto *swarm = swarmMesh(building->team);
                 if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
                     map.isFOWDiscovered(mx,my,visibleTeams)))
                     requests.push_back({swarm,0,textures[building->team].get(),materials[building->team].get(),GAGCore::SkinRegionSwarm});
-            }
-    }
-    gfx.prepareSkinMeshes(requests);
+			}
+	}
+	gfx.prepareSkinMeshes(requests);
 }
