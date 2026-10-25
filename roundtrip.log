@@ -1,0 +1,4 @@
+PASS SkinReadback/export readback matches live compositing for every pose and rotated swarm [display] (23.5s)
+
+1 passed, 0 failed, 0 skipped (23.5s of test time)
+[run_tests] JUnit report: artifacts/skin-turns/pr-final/roundtrip.xml (1 cases)

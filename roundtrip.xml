@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="SkinReadback"><testcase classname="SkinReadback" name="export readback matches live compositing for every pose and rotated swarm [display]" time="23.3861" status="run" />
+  </testsuite></testsuites>

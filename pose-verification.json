@@ -1,0 +1,9 @@
+{
+  "poses": 224,
+  "distinctPerClip": 32,
+  "turnPages": 7,
+  "movementAndSwarmPages": 29,
+  "edgeClipping": false,
+  "authenticatedPages": true,
+  "unusedRowsTransparent": true
+}

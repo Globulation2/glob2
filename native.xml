@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="88" failures="0" errors="0" skipped="0"><testsuite name="ColonySkinPreview"><testcase classname="ColonySkinPreview" name="expired and cancelled subscribers cannot affect another owner [display:64x64]" time="0.170579" status="run" />
+  <testcase classname="ColonySkinPreview" name="shared images retain each owner's fresh appearance [display:64x64]" time="0.170749" status="run" />
+  </testsuite><testsuite name="GraphicContextDeviceSkins"><testcase classname="GraphicContextDeviceSkins" name="live skin adapters preserve assets and scoped transforms across backend switching [display]" time="1.9172" status="run" />
+  </testsuite><testsuite name="SkinMesh"><testcase classname="SkinMesh" name="material contact sheet [display][artifacts]" time="2.94555" status="run" />
+  <testcase classname="SkinMesh" name="rotated swarms render independently with every material [display][artifacts]" time="1.19967" status="run" />
+  <testcase classname="SkinMesh" name="stationary unit turns preserve frozen geometry and source clip across all mesh formats" time="2.47056" status="run" />
+    <testcase classname="SkinMesh" name="detail unwrap preserves paint and rejects malformed sidecars transactionally" time="0.000727" status="run" />
+    <testcase classname="SkinMesh" name="virtual asset streams use the same bounded decoder" time="0.000686" status="run" />
+    <testcase classname="SkinMesh" name="static swarm pose" time="0.000341" status="run" />
+    <testcase classname="SkinMesh" name="static camera ring preserves UVs, scale and independent cache identities" time="0.634406" status="run" />
+    <testcase classname="SkinMesh" name="bounded transactional decoding" time="0.002043" status="run" />
+  </testsuite><testsuite name="SkinModelRender"><testcase classname="SkinModelRender" name="rig shader matches CPU poses for every heading and restores context resources [display]" time="1.74135" status="run" />
+  <testcase classname="SkinModelRender" name="rig stream loading is transactional and retains fixed geometry" time="0.019176" status="run" />
+  </testsuite><testsuite name="SkinReadback"><testcase classname="SkinReadback" name="export readback matches live compositing for every pose and rotated swarm [display]" time="24.804" status="run" />
+  </testsuite><testsuite name="UnitCatalog"><testcase classname="UnitCatalog" name="authored animation spans stay inside the stock atlas" time="0.539362" status="run" />
+  <testcase classname="UnitCatalog" name="both header forms retain embedded unit properties and experiment gates" time="0.358045" status="run" />
+  <testcase classname="UnitCatalog" name="converted legacy flight tables retain their authoritative exception" time="0.265575" status="run" />
+  <testcase classname="UnitCatalog" name="counted race tables survive both text and binary saves" time="0.301547" status="run" />
+  <testcase classname="UnitCatalog" name="current header forms reject omitted embedded definitions" time="0.256836" status="run" />
+  <testcase classname="UnitCatalog" name="current race records cannot override the embedded catalog" time="0.297414" status="run" />
+  <testcase classname="UnitCatalog" name="embedded experiments contribute allowed keys without global registration" time="0.245401" status="run" />
+  <testcase classname="UnitCatalog" name="installed definitions reproduce immutable embedded defaults" time="0.249183" status="run" />
+  <testcase classname="UnitCatalog" name="legacy movement exception cannot relax additional definitions" time="0.280246" status="run" />
+  <testcase classname="UnitCatalog" name="legacy performance policies preserve tables and remain migration only" time="0.283283" status="run" />
+  <testcase classname="UnitCatalog" name="legacy presentation offsets survive migration without relaxing additional types" time="0.272223" status="run" />
+  <testcase classname="UnitCatalog" name="legacy signed cached performance normalizes without narrowing race tables [save-format]" time="0.781101" status="run" />
+  <testcase classname="UnitCatalog" name="malformed definitions fail before publication" time="0.265491" status="run" />
+  <testcase classname="UnitCatalog" name="new combinations retain appearance and preserve other games" time="0.259445" status="run" />
+  <testcase classname="UnitCatalog" name="optional recruitment policies preserve pre-policy snapshots and compact traits" time="0.278347" status="run" />
+  <testcase classname="UnitCatalog" name="pre-race legacy headers receive cached-performance policies" time="0.256886" status="run" />
+  <testcase classname="UnitCatalog" name="pre73 team race tables survive cached units training production and current resaves [save-format]" time="3.88835" status="run" />
+  <testcase classname="UnitCatalog" name="retained format64 FourSquares map keeps its historical warrior tables and current continuation [save-format]" time="2.24439" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.172703" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="3.20452" status="run" />
+  </testsuite><testsuite name="UnitTeamColorCache"><testcase classname="UnitTeamColorCache" name="team colour cache is bypassed by the shader and bounded without it [display]" time="4.57222" status="run" />
+  <testcase classname="UnitTeamColorCache" name="team colour cache stays bounded in software rendering" time="3.24611" status="run" />
+  </testsuite><testsuite name="UnitTeamShader"><testcase classname="UnitTeamShader" name="shader hue shifts match the CPU reference over every pose and hue [display]" time="4.58438" status="run" />
+  </testsuite><testsuite name="SkinAtlasCache"><testcase classname="SkinAtlasCache" name="visible hits survive a full atlas eviction batch" time="0.00744" status="run" />
+    <testcase classname="SkinAtlasCache" name="paint and material revisions, lifetimes, region, mesh and pose are independent cache keys" time="0" status="run" />
+  </testsuite><testsuite name="SkinAuthorization"><testcase classname="SkinAuthorization" name="server-format signatures authorize only their bound appearance" time="0.017036" status="run" />
+    <testcase classname="SkinAuthorization" name="the chosen swarm mesh is part of the signed manifest" time="0.00895" status="run" />
+    <testcase classname="SkinAuthorization" name="the final camera angle is signed and legacy angles default to zero" time="0.008582" status="run" />
+    <testcase classname="SkinAuthorization" name="signed optional sprite descriptors bind derivatives and ignore future formats" time="0.008764" status="run" />
+    <testcase classname="SkinAuthorization" name="signed immutable source identity survives live WebP renditions" time="0.008769" status="run" />
+    <testcase classname="SkinAuthorization" name="untrusted key sets and bounded malformed inputs fail closed" time="0.008559" status="run" />
+  </testsuite><testsuite name="SkinDownloads"><testcase classname="SkinDownloads" name="verified texture downloads are cached and reused after fresh authorization" time="0.009887" status="run" />
+    <testcase classname="SkinDownloads" name="renderer changes restore either representation without changing authorization" time="0.008451" status="run" />
+    <testcase classname="SkinDownloads" name="switching to sprites cancels pending live atlas downloads" time="0.008343" status="run" />
+    <testcase classname="SkinDownloads" name="corrupt cache and network bytes cannot reach the renderer" time="0.00837" status="run" />
+    <testcase classname="SkinDownloads" name="a skin installs only when both its colour atlas and material map are valid" time="0.041932" status="run" />
+    <testcase classname="SkinDownloads" name="invalid authorization does not download a texture" time="0.008515" status="run" />
+    <testcase classname="SkinDownloads" name="failed key fetch falls back without waiting for a texture" time="0.008211" status="run" />
+    <testcase classname="SkinDownloads" name="download concurrency is bounded and ambiguous teams fail closed" time="0.011236" status="run" />
+    <testcase classname="SkinDownloads" name="cache eviction bounds retained assets while preserving current appearances" time="0.009377" status="run" />
+    <testcase classname="SkinDownloads" name="moderation removes cached appearances and restoration verifies them again" time="0.009179" status="run" />
+    <testcase classname="SkinDownloads" name="failed or malformed refresh keeps valid paint but expiry removes it" time="0.008848" status="run" />
+    <testcase classname="SkinDownloads" name="texture completing after authorization expiry is never installed" time="0.008489" status="run" />
+    <testcase classname="SkinDownloads" name="initial downloads finish before a newer moderation snapshot starts" time="0.008709" status="run" />
+    <testcase classname="SkinDownloads" name="initial key outages recover through the match refresh" time="0.008632" status="run" />
+    <testcase classname="SkinDownloads" name="refreshed additions still require signatures and reject duplicate teams atomically" time="0.009134" status="run" />
+    <testcase classname="SkinDownloads" name="replay context fetches a fresh snapshot immediately without old tickets" time="0.008589" status="run" />
+    <testcase classname="SkinDownloads" name="software authorization does not request mesh paint inputs" time="0.0087" status="run" />
+    <testcase classname="SkinDownloads" name="software appearance refresh delivers a late ready descriptor and observes expiry" time="0.009051" status="run" />
+  </testsuite><testsuite name="SkinMaterialMap"><testcase classname="SkinMaterialMap" name="greyscale material maps decode to exact ids" time="0.020132" status="run" />
+  </testsuite><testsuite name="SkinModel"><testcase classname="SkinModel" name="shared fixture covers hierarchy weights normals interpolation and all legacy frames" time="0.028248" status="run" />
+    <testcase classname="SkinModel" name="affine camera translation is independent of rounded influence sums" time="0.017116" status="run" />
+    <testcase classname="SkinModel" name="serialized float boundaries have identical native and Studio acceptance" time="0.018286" status="run" />
+    <testcase classname="SkinModel" name="malformed assets never publish partial models" time="0.016019" status="run" />
+  </testsuite><testsuite name="SkinShapeModel"><testcase classname="SkinShapeModel" name="shared fixture decodes and evaluates the analytic frames" time="0.013463" status="run" />
+    <testcase classname="SkinShapeModel" name="malformed assets never publish partial models" time="0.016179" status="run" />
+    <testcase classname="SkinShapeModel" name="skin mesh adapter loads shape clips transactionally" time="0.01364" status="run" />
+  </testsuite><testsuite name="SkinSprites"><testcase classname="SkinSprites" name="padded turn shadows keep their native size and shared mesh center" time="0.005225" status="run" />
+    <testcase classname="SkinSprites" name="turn extension is complete and transactional while legacy bundles remain valid" time="0.087809" status="run" />
+    <testcase classname="SkinSprites" name="bundle binds complete frame layout and source identity before decoding" time="0.068892" status="run" />
+    <testcase classname="SkinSprites" name="bundles bind immutable source hashes when live claims name renditions" time="0.051297" status="run" />
+    <testcase classname="SkinSprites" name="software requests demand pages and removes appearance without an OpenGL context" time="0.081228" status="run" />
+    <testcase classname="SkinSprites" name="software turns share hash cached images with movement in either request order" time="0.120834" status="run" />
+    <testcase classname="SkinSprites" name="decoded pages evict at 64 MiB and reload verified disk content" time="0.494558" status="run" />
+    <testcase classname="SkinSprites" name="corrupt disk pages are rejected and replacement downloads are bounded" time="0.055021" status="run" />
+    <testcase classname="SkinSprites" name="offscreen completions release slots before new visible pages are requested" time="0.137686" status="run" />
+    <testcase classname="SkinSprites" name="verified pages remain drawable when persistent storage rejects writes" time="0.063389" status="run" />
+  </testsuite><testsuite name="UnitAnimation"><testcase classname="UnitAnimation" name="HistoricalOutOfRangeTurns" time="0" status="run" />
+    <testcase classname="UnitAnimation" name="SkinSpriteTurns" time="0.000578" status="run" />
+    <testcase classname="UnitAnimation" name="DirectionsAndProgress" time="0.006749" status="run" />
+    <testcase classname="UnitAnimation" name="TurningKeepsItsDuration" time="0.000473" status="run" />
+    <testcase classname="UnitAnimation" name="LegacyCatalogAndSkinFrames" time="0.000613" status="run" />
+    <testcase classname="UnitAnimation" name="HistoricalOffsetsAtPhaseBoundaries" time="0.004309" status="run" />
+    <testcase classname="UnitAnimation" name="TurnBlocksAndLoopBoundaries" time="0" status="run" />
+  </testsuite></testsuites>
