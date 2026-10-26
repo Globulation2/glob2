@@ -1,0 +1,2 @@
+[doctest] test cases:     7 |     7 passed | 0 failed | 1978 skipped
+[doctest] assertions: 19544 | 19544 passed | 0 failed |
