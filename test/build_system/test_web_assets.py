@@ -181,7 +181,9 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
         sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
-        self.assertEqual(len(sets), 10)
+        catalogue = {p.name for p in (ROOT / 'tools/music/sets').iterdir() if p.is_dir()}
+        self.assertTrue(catalogue)
+        self.assertEqual({p.name for p in sets}, catalogue)
         for directory in sets:
             package = 'music' if directory.name == 'original' else 'music-sets'
             for slot in range(1, 4):
