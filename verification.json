@@ -1,0 +1,54 @@
+{
+  "testedRevision": "7298588bb1ae7bbadc62fc33e31b36060855704c",
+  "baseRevision": "e154bda4ce68715a37cabe956713cf00366d76ab",
+  "integration": "PR head; fetched master equals the parent of the PR head",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "macOS": "26.6.2",
+    "architecture": "arm64",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n"
+  },
+  "build": "PYTHONPATH=/Users/bradley/glob2 python3 tools/dev_build.py --build build/maxima-access engine-tests -s",
+  "tests": [
+    "python3 test/run_tests.py --binary engine --build-dir build/maxima-access --filter 'Maxima.*' --no-display -j 4 --timeout 300 --artifacts artifacts/maxima-access/pr-suite --junit artifacts/maxima-access/pr-suite.xml",
+    "python3 test/run_tests.py --binary engine --build-dir build/maxima-access --filter 'TurnEngineHarness/the committed*' --filter 'PlatformProtocol/the local sim version*' --filter 'MatchSetup/*SimVersion*' --artifacts artifacts/maxima-access/pr-compatibility --junit artifacts/maxima-access/pr-compatibility.xml",
+    "python3 test/check_sim_revision.py --base origin/master",
+    "python3 src/ai/maxima/MaximaDirectorAuthorityTest.py",
+    "python3 src/ai/maxima/MaximaDecouplingTest.py"
+  ],
+  "fixtureRegeneration": "GLOB2_RECORD_RALLY_CHECKSUMS=1 GLOB2_RECORD_ARMY_CHECKSUMS=1 python3 test/run_tests.py --binary engine --build-dir build/maxima-access --filter 'Maxima.Combat/rally assembles by movement' --filter 'Maxima.Economy/army births match platform checksums'",
+  "coverage": "All 167 Maxima engine cases, including demolition/ledger release, diagonal/wrapped/swimming and isolated-worker preservation, saved pending construction, two seeded save/load per-tick continuations, rally movement and army birth traces. Two compatibility cases cover the golden match and MatchSetup/SimVersion acceptance boundaries. The PlatformProtocol selector matched no engine case and is not claimed as coverage.",
+  "results": {
+    "maxima": {
+      "passed": 167,
+      "failed": 0,
+      "exit": 0
+    },
+    "compatibility": {
+      "passed": 2,
+      "failed": 0,
+      "exit": 0
+    },
+    "simRevisionCheck": 0,
+    "directorAuthorityCheck": 0,
+    "decoupling": {
+      "passed": 2,
+      "skipped": 1
+    }
+  },
+  "baseline": "Both checksum failures reproduced before the cleanup with identical first mismatches: rally shift 0 step 69 actual 1485550414 expected 3889515454; army tick 1 actual 3185931345 expected 3189421137. The reference traces predate the later gradient scheduling changes. Regenerated traces retain the movement/production gameplay assertions.",
+  "limits": "macOS arm64 development build only. No Linux/Windows/browser/mobile per-tick comparison, release packaging/performance, interactive gameplay review or complete engine suite. No new runtime dependencies or saved fields. Pre-existing untracked .playwright-mcp/ and glob2/ paths were left untouched and excluded from the commit.",
+  "sha256": {
+    "maxima-tests.log": "9455f36652b4476d3ff79091b2ebf3694ca59b50641f866f139473937b98b6c1",
+    "maxima-tests.xml": "ae3e16d347d561d6f47282ba9c1ac4d9c600ddadd592850a734e99d07f260483",
+    "compatibility.log": "96fc40a328475b39c48536e55169b989c4b1c030b3a0b1118047515f4d671983",
+    "compatibility.xml": "8089c0c4f9a8dca0873f8670b40499d99f2e29bb86cad332652d940bc87e9034",
+    "baseline-failures.log": "57dadd704ca37b3a1d1da328f87a6b542387a2be90cc05423beab37dd53b0715",
+    "build.log": "17f2292898bf02ecda88f9ff630e13d1bd2d4173baf85ef7f533b6e962911550",
+    "build-identity.json": "a464d622646b58aebf46b87f5faa3021491a37d20361fe3c4e3139ae1a0cae17",
+    "build-provenance.h": "0a8d0ccf626257da322d4dd64b4eca17cd71758ac147f1cf15ab51e047c8f03c",
+    "rally-movement-checksums.txt": "9a54bcbe523798eafcfa30cffac098365924019263a4229d8f9a824b70c944cd",
+    "army-birth-checksums.txt": "0ccee99d273e493c0de429f7d2517e56ea38720e0b8ccc3cddecee0fa6274f1e",
+    "FourSquares1.g2mr": "2627223adc61680138fc3394ce4bc79724f8a4bfb5e33a42aab86add65c0b79e"
+  }
+}

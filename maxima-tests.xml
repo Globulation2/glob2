@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="167" failures="0" errors="0" skipped="0"><testsuite name="Maxima.Combat"><testcase classname="Maxima.Combat" name="active offense credits only returning recipients or continuing members" time="1.46213" status="run" />
+  <testcase classname="Maxima.Combat" name="barracks are filled before attacking" time="0.396703" status="run" />
+  <testcase classname="Maxima.Combat" name="custom melee remains a reference when built-in combat is disabled" time="0.599616" status="run" />
+  <testcase classname="Maxima.Combat" name="defense coverage" time="0.550373" status="run" />
+  <testcase classname="Maxima.Combat" name="defense deadband preserves coverage" time="1.26279" status="run" />
+  <testcase classname="Maxima.Combat" name="defense wraps building origins" time="0.520254" status="run" />
+  <testcase classname="Maxima.Combat" name="economic recovery preserves military budget" time="0.286152" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted force uses only visible units" time="0.301046" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted history survives save" time="0.289471" status="run" />
+  <testcase classname="Maxima.Combat" name="fitted power controls attack gate" time="0.322033" status="run" />
+  <testcase classname="Maxima.Combat" name="food posture does not veto combat" time="0.301603" status="run" />
+  <testcase classname="Maxima.Combat" name="forbidden defense zones" time="0.413079" status="run" />
+  <testcase classname="Maxima.Combat" name="historical combat calibration remains private to imported race tables" time="0.394148" status="run" />
+  <testcase classname="Maxima.Combat" name="lowered flag level survives review" time="0.328186" status="run" />
+  <testcase classname="Maxima.Combat" name="minimum force gate" time="0.420085" status="run" />
+  <testcase classname="Maxima.Combat" name="nearby warriors count as rallied" time="0.374087" status="run" />
+  <testcase classname="Maxima.Combat" name="offense follows destroyed targets" time="0.304266" status="run" />
+  <testcase classname="Maxima.Combat" name="offense uses effective mobile recruits and preserves already assigned custom fighters" time="0.371974" status="run" />
+  <testcase classname="Maxima.Combat" name="offensive control switches" time="1.43362" status="run" />
+  <testcase classname="Maxima.Combat" name="raids outscore distant buildings" time="0.284289" status="run" />
+  <testcase classname="Maxima.Combat" name="rally assembles by movement" time="0.463546" status="run" />
+  <testcase classname="Maxima.Combat" name="rally rejects blocked ground" time="0.298399" status="run" />
+  <testcase classname="Maxima.Combat" name="retained attraction completes saved missions" time="0.937641" status="run" />
+  <testcase classname="Maxima.Combat" name="retirement preserves independent training" time="0.77275" status="run" />
+  <testcase classname="Maxima.Combat" name="sealed target opens route" time="0.559979" status="run" />
+  <testcase classname="Maxima.Combat" name="small wave keeps recruiting" time="0.298253" status="run" />
+  <testcase classname="Maxima.Combat" name="stalled target is quarantined" time="0.285165" status="run" />
+  <testcase classname="Maxima.Combat" name="stationary effective melee triggers local defense while inactive attacks do not" time="0.376783" status="run" />
+  <testcase classname="Maxima.Combat" name="streaming scales with army" time="4.87123" status="run" />
+  <testcase classname="Maxima.Combat" name="training reservations match different levels" time="0.273871" status="run" />
+  <testcase classname="Maxima.Combat" name="unavailable attraction has no placement" time="0.378664" status="run" />
+  <testcase classname="Maxima.Combat" name="unlearned combat estimates use configured tables at the shared strategy level" time="0.804478" status="run" />
+  <testcase classname="Maxima.Combat" name="untrained warriors fight at level one" time="0.415714" status="run" />
+  <testcase classname="Maxima.Combat" name="unusable training does not block attacks" time="0.461263" status="run" />
+  <testcase classname="Maxima.Combat" name="warrior eligibility" time="0.310554" status="run" />
+  <testcase classname="Maxima.Combat" name="wave assembly and pipeline" time="0.313713" status="run" />
+  <testcase classname="Maxima.Combat" name="wave assembly fallback" time="0.30471" status="run" />
+  <testcase classname="Maxima.Combat" name="wave delivery fallback" time="0.377402" status="run" />
+  </testsuite><testsuite name="Maxima.Diagnostics"><testcase classname="Maxima.Diagnostics" name="names; descriptions and two seeded diagnostic runs" time="31.8683" status="run" />
+  </testsuite><testsuite name="Maxima.Director"><testcase classname="Maxima.Director" name="ally prestige" time="0.287438" status="run" />
+  <testcase classname="Maxima.Director" name="cadence" time="0.289641" status="run" />
+  <testcase classname="Maxima.Director" name="disconnected army" time="0.338562" status="run" />
+  <testcase classname="Maxima.Director" name="flying defenders and nonexploring magic threats" time="0.310887" status="run" />
+  <testcase classname="Maxima.Director" name="fortification uses only spare labour" time="0.270558" status="run" />
+  <testcase classname="Maxima.Director" name="proactive protection" time="0.295654" status="run" />
+  <testcase classname="Maxima.Director" name="reconnaissance waits for eighty percent" time="0.289564" status="run" />
+  <testcase classname="Maxima.Director" name="reused own id" time="0.467304" status="run" />
+  <testcase classname="Maxima.Director" name="tactical quarantine budget survives current and legacy execution loads" time="0.477295" status="run" />
+  <testcase classname="Maxima.Director" name="third party tower" time="0.289644" status="run" />
+  <testcase classname="Maxima.Director" name="unified hospital capacity" time="0.297889" status="run" />
+  </testsuite><testsuite name="Maxima.Economy"><testcase classname="Maxima.Economy" name="Colony food traversal preserves ordered scalar reachability" time="0.022178" status="run" />
+  <testcase classname="Maxima.Economy" name="Food reach crosses passable nonfood deposits but respects resource obstruction" time="0.000132" status="run" />
+  <testcase classname="Maxima.Economy" name="aggregate feeding demand escapes a crop count cap during service shortage" time="1.2123" status="run" />
+  <testcase classname="Maxima.Economy" name="army births match platform checksums" time="0.384297" status="run" />
+  <testcase classname="Maxima.Economy" name="army demand funds training and birth mix" time="0.40368" status="run" />
+  <testcase classname="Maxima.Economy" name="barracks upgrades keep training open" time="0.292703" status="run" />
+  <testcase classname="Maxima.Economy" name="birth budget scales beyond twenty" time="0.411339" status="run" />
+  <testcase classname="Maxima.Economy" name="birth funding counts production packets without independent hybrid service costs" time="0.310668" status="run" />
+  <testcase classname="Maxima.Economy" name="colony startup and affordability" time="0.281589" status="run" />
+  <testcase classname="Maxima.Economy" name="completion reallocates colony" time="0.331038" status="run" />
+  <testcase classname="Maxima.Economy" name="corn pile interior is supply" time="0.36256" status="run" />
+  <testcase classname="Maxima.Economy" name="counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]" time="0.27499" status="run" />
+  <testcase classname="Maxima.Economy" name="crisis production pause" time="0.400143" status="run" />
+  <testcase classname="Maxima.Economy" name="custom construction supply counts reachable mixed yields and shore access" time="0.46127" status="run" />
+  <testcase classname="Maxima.Economy" name="distant wheat funds recovery" time="0.325697" status="run" />
+  <testcase classname="Maxima.Economy" name="explorer target always gets production" time="0.697557" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding budget scaling handles maximum seats without overflowing intermediate products" time="0.396722" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding candidates transfer funded meal shares through cache reload and replacement" time="0.009606" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding capacity preserves independently admitted recipient classes" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding colonies join overlapping catchments transitively and preserve independent training" time="0.397533" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding demand allocation conserves recipient classes and shared provider capacity" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding estimate shares resources and seats across capability combinations" time="0.630625" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding fallback uses enabled movement and retains compiled admissions" time="0.600628" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding farm claims follow one cohort while hybrid operating demand stays independent" time="0.015813" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding flow agrees with the exhaustive three-recipient oracle" time="0.227578" status="run" />
+  <testcase classname="Maxima.Economy" name="feeding packet denominations preserve large stock rates and profile continuation" time="0.401105" status="run" />
+  <testcase classname="Maxima.Economy" name="food allocation does not retire reachable production but exhausted sites remain retirable" time="0.322458" status="run" />
+  <testcase classname="Maxima.Economy" name="food pressure increases planned feeding capacity without a permanent queue ratchet" time="0.326465" status="run" />
+  <testcase classname="Maxima.Economy" name="food retirement preserves the only explorer feeder despite surplus worker seats" time="0.410896" status="run" />
+  <testcase classname="Maxima.Economy" name="growing food funds capacity" time="0.299667" status="run" />
+  <testcase classname="Maxima.Economy" name="holiday harvest capacity" time="0.461862" status="run" />
+  <testcase classname="Maxima.Economy" name="labour continuation" time="0.287234" status="run" />
+  <testcase classname="Maxima.Economy" name="legacy planner rebuild replaces feeding providers without duplicating capacity" time="0.320611" status="run" />
+  <testcase classname="Maxima.Economy" name="mechanical production ceilings are separate from planned carrier throughput" time="0.300692" status="run" />
+  <testcase classname="Maxima.Economy" name="nearby corn determines staffing" time="0.349464" status="run" />
+  <testcase classname="Maxima.Economy" name="new buildings start staffed" time="0.499748" status="run" />
+  <testcase classname="Maxima.Economy" name="nominal service capacity uses unit feeding healing and training speeds" time="0.308375" status="run" />
+  <testcase classname="Maxima.Economy" name="observed hunger expands feeding for an opening colony mix beyond nominal forecasts" time="65.4851" status="run" />
+  <testcase classname="Maxima.Economy" name="one training course credits independent movement and worker construction outcomes" time="0.449883" status="run" />
+  <testcase classname="Maxima.Economy" name="operating estimates use one production clock and packet denominators" time="0.433426" status="run" />
+  <testcase classname="Maxima.Economy" name="operating production claims preserve weighted recipe costs and shared carrier work" time="0" status="run" />
+  <testcase classname="Maxima.Economy" name="parallel training budgets separate compatible recipients and disabled services" time="0.501686" status="run" />
+  <testcase classname="Maxima.Economy" name="producer candidates enforce local feasibility alongside strategic target caps" time="0.002683" status="run" />
+  <testcase classname="Maxima.Economy" name="production ledger uses requested staffing ratios and target stage with continuation" time="0.010906" status="run" />
+  <testcase classname="Maxima.Economy" name="production observation keeps planned work despite temporarily absent carriers" time="0.449758" status="run" />
+  <testcase classname="Maxima.Economy" name="projectile profiles reserve ammunition workers and cache nominal feeding" time="0.496113" status="run" />
+  <testcase classname="Maxima.Economy" name="recipient meal demand follows saved hunger and external action clocks" time="0.319897" status="run" />
+  <testcase classname="Maxima.Economy" name="retained Maxima save compiles each feeding admission row once [save-format]" time="1.03064" status="run" />
+  <testcase classname="Maxima.Economy" name="schools do not require known algae" time="0.289967" status="run" />
+  <testcase classname="Maxima.Economy" name="service ceilings respect the engine action clock and crop funding avoids overflow" time="0.315856" status="run" />
+  <testcase classname="Maxima.Economy" name="service rate uses simulated visit ticks" time="0.295214" status="run" />
+  <testcase classname="Maxima.Economy" name="sole swarm staffs from its own stock" time="0.361813" status="run" />
+  <testcase classname="Maxima.Economy" name="stranded algae keeps pool demand" time="0.291436" status="run" />
+  <testcase classname="Maxima.Economy" name="sustained stock feeding reports capability estimates and historical strategy targets" time="49.8001" status="run" />
+  <testcase classname="Maxima.Economy" name="tracker logical cadence" time="4.13701" status="run" />
+  <testcase classname="Maxima.Economy" name="upgrade batches reuse baseline claims without changing food appraisals" time="0.038885" status="run" />
+  </testsuite><testsuite name="Maxima.FarmingIntegration"><testcase classname="Maxima.FarmingIntegration" name="aligned pattern transitions" time="0.755027" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="archipelago harvest does not seal wheat" time="0.619025" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="coastal wheat crosses fertility dips" time="0.442629" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="custom producers only reserve finite spreading seeds" time="2.31949" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="custom spreading frontier follows actual donor habitat" time="0.507987" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="expansion leaves harvest lanes open" time="0.710299" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm boundary geometry reads depleted secondary Food stocks" time="0.327795" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm management radius" time="0.320276" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm zones use the final wheat protection plan including empty frontier cells" time="0.34096" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farming eligibility snapshot refreshes after stock and catalog changes" time="0.344969" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farming respects discovery" time="0.540367" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="firebreak management radius" time="0.335176" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="indexed farm geometry matches scalar toroidal closing and seed adjacency" time="0.005098" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="initial flag staffing" time="0.416912" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="maintenance protection agreement" time="0.481888" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="mixed donor reserves its propagating wood without borrowing food renewal" time="0.31838" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="permanent wheat layout" time="0.880279" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed stability across maps" time="3.61259" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed survival" time="0.693554" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives own farm protection" time="0.363366" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives wheat pincer" time="0.974601" status="run" />
+  </testsuite><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="Maxima food catchments and carrier discounts follow trail and ice travel costs" time="0.303626" status="run" />
+  <testcase classname="Maxima.Implementation" name="category maintenance capacity regressions" time="11.8617" status="run" />
+  <testcase classname="Maxima.Implementation" name="completed swarm budget regressions" time="0.333154" status="run" />
+  <testcase classname="Maxima.Implementation" name="director execution regressions" time="0.340673" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade priority regressions" time="0.316763" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade regressions" time="0.382934" status="run" />
+  <testcase classname="Maxima.Implementation" name="economic resource access regressions" time="0.350072" status="run" />
+  <testcase classname="Maxima.Implementation" name="economy staffing regressions" time="0.34342" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution regressions" time="0.352314" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution state save regression" time="0.326211" status="run" />
+  <testcase classname="Maxima.Implementation" name="explorer swarm staffing regressions" time="0.892408" status="run" />
+  <testcase classname="Maxima.Implementation" name="food relocation executor regression" time="0.378765" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit strategy regressions" time="0.392143" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit supply routes" time="0.225567" status="run" />
+  <testcase classname="Maxima.Implementation" name="gradient dependencies; payload round trips and cache expiry" time="1.09742" status="run" />
+  <testcase classname="Maxima.Implementation" name="inn completion staffing regressions" time="0.338647" status="run" />
+  <testcase classname="Maxima.Implementation" name="integration regressions" time="0.340264" status="run" />
+  <testcase classname="Maxima.Implementation" name="maxima bootstrap regression" time="0.344335" status="run" />
+  <testcase classname="Maxima.Implementation" name="mission force regressions" time="0.321712" status="run" />
+  <testcase classname="Maxima.Implementation" name="placement maintenance regressions" time="1.56018" status="run" />
+  <testcase classname="Maxima.Implementation" name="preemptive scheduling regression" time="0.328416" status="run" />
+  <testcase classname="Maxima.Implementation" name="prepared resource obstacles match scalar entity gradients" time="0.505051" status="run" />
+  <testcase classname="Maxima.Implementation" name="rejected placement upgrade regressions" time="0.367467" status="run" />
+  <testcase classname="Maxima.Implementation" name="repair labor contract regressions" time="0.572547" status="run" />
+  <testcase classname="Maxima.Implementation" name="review bug regressions" time="0.345983" status="run" />
+  <testcase classname="Maxima.Implementation" name="school population scaling regressions" time="0.327482" status="run" />
+  <testcase classname="Maxima.Implementation" name="strategy and maintenance share the deterministic queue" time="0.327946" status="run" />
+  <testcase classname="Maxima.Implementation" name="terrain travel fields serialize mode and retain stale snapshots" time="0.451073" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade clearing regressions" time="0.526993" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade worker priority regressions" time="0.350275" status="run" />
+  </testsuite><testsuite name="Maxima.Lifecycle"><testcase classname="Maxima.Lifecycle" name="names; descriptions and two seeded lifecycles" time="30.3283" status="run" />
+  </testsuite><testsuite name="Maxima.Relocation"><testcase classname="Maxima.Relocation" name="access retains isolated workers and ignores forbidden zones" time="0.433515" status="run" />
+  <testcase classname="Maxima.Relocation" name="deferred retry" time="0.422801" status="run" />
+  <testcase classname="Maxima.Relocation" name="deletion safety" time="1.12803" status="run" />
+  <testcase classname="Maxima.Relocation" name="lost replacement" time="0.555224" status="run" />
+  <testcase classname="Maxima.Relocation" name="saved relationships" time="1.05311" status="run" />
+  <testcase classname="Maxima.Relocation" name="sealed buildings are demolished and release their commitments" time="1.15929" status="run" />
+  <testcase classname="Maxima.Relocation" name="sealed construction and diagonal access survive save loading" time="1.34364" status="run" />
+  <testcase classname="Maxima.Relocation" name="wrapped and future swimming access remain usable" time="0.495556" status="run" />
+  </testsuite><testsuite name="Maxima.Strategy"><testcase classname="Maxima.Strategy" name="formats; canonical values and version gates" time="0.364579" status="run" />
+  </testsuite></testsuites>

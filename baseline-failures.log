@@ -1,0 +1,30 @@
+Baseline build exit: 0
+FAIL Maxima.Economy/army births match platform checksums (1.1s)
+FAIL Maxima.Combat/rally assembles by movement (1.2s)
+
+===== FAIL Maxima.Combat/rally assembles by movement =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/glob2/build/maxima-access/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "e154bda4ce68715a37cabe956713cf00366d76ab", "sourceStatus": [" M docs/ai/maxima/README.md", " M src/ai/maxima/AIMaxima.h", " M src/ai/maxima/MaximaRelocationIntegrationTest.cpp", " M src/game/SimRevision.h", " M test/fixtures/multiplayer/FourSquares1.g2mr", " M test/maxima/README.md", "?? .playwright-mcp/", "?? glob2/"], "sourceTreeSha256": "884ce9b948ac0a275e3ae81516c2219fda8f50febff6493c7fad89054d1afd92"}
+Rally checksum mismatch: shift=0 step=69 actual=1485550414 expected=3889515454
+
+[failure] rally assembles by movement: false
+src/ai/maxima/MaximaCombatIntegrationTest.cpp:503:
+REQUIRE( (expectedShift==shift && expectedStep==f.game.stepCounter && expectedChecksum==checksum) ) is NOT correct!
+  values: REQUIRE( false )
+
+
+===== FAIL Maxima.Economy/army births match platform checksums =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/glob2/build/maxima-access/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "e154bda4ce68715a37cabe956713cf00366d76ab", "sourceStatus": [" M docs/ai/maxima/README.md", " M src/ai/maxima/AIMaxima.h", " M src/ai/maxima/MaximaRelocationIntegrationTest.cpp", " M src/game/SimRevision.h", " M test/fixtures/multiplayer/FourSquares1.g2mr", " M test/maxima/README.md", "?? .playwright-mcp/", "?? glob2/"], "sourceTreeSha256": "884ce9b948ac0a275e3ae81516c2219fda8f50febff6493c7fad89054d1afd92"}
+Army birth checksum mismatch: tick=1 actual=3185931345 expected=3189421137
+
+[failure] army births match platform checksums: false
+src/ai/maxima/MaximaEconomyRegressionTest.cpp:573:
+REQUIRE( (expectedTick==tick && expectedChecksum==checksum) ) is NOT correct!
+  values: REQUIRE( false )
+
+
+0 passed, 2 failed, 0 skipped (2.3s of test time)
+[run_tests] JUnit report: artifacts/maxima-access/baseline.xml (2 cases)
+Baseline regression exit: 1
+Restored final build exit: 0

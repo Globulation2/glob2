@@ -1,0 +1,17 @@
+{
+  "client_features": {
+    "authoring_links": true,
+    "commander": true,
+    "community_ai": true,
+    "community_generators": true
+  },
+  "client_profile": "full",
+  "dev_fast": true,
+  "distribution": "direct",
+  "linker": "auto",
+  "mode": "debug",
+  "native_wss": true,
+  "role": "client",
+  "target": "native",
+  "toolchain": "darwin"
+}

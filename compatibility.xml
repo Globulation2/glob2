@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.239185" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="1.82037" status="run" />
+  </testsuite></testsuites>
