@@ -6,6 +6,7 @@
 #include "Geometry.h"
 #include "GraphMaze.h"
 #include "Grid.h"
+#include "LatticeNoise.h"
 #include "Morphology.h"
 #include "Pipeline.h"
 #include "Planting.h"
@@ -21,13 +22,13 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Anthill: a map of solid stone, carved into chambers joined by winding tunnels two or three tiles
-// wide. Every colony starts in a queen chamber of its own, a cul-de-sac with a single door and a
-// pond; the other chambers are farm chambers with a pond and a field, or dead-end treasure
-// chambers with fruit and wheat and nothing else. Stone is everywhere and never runs out, but it
-// cannot be built on and cannot be cleared, so the one thing scarce on this map is room: a chamber
-// holds a few buildings, not a colony, and growing means taking the next chamber down the tunnel.
-// Towers shoot through the rock into neighbouring tunnels.
+// Anthill: a map of solid rock, carved into chambers joined by winding tunnels two or three tiles
+// wide. Every colony starts in a queen chamber of its own, a dry cul-de-sac with a single door;
+// the other chambers are farm chambers with a pond and a field, plain chambers with a pond and a
+// wheat or wood patch, dead-end treasure chambers with fruit and wheat, or quarry chambers with a
+// stone deposit. The rock cannot be built on, walked or cleared, so the one thing scarce on this
+// map is room: a chamber holds a few buildings, not a colony, and growing means taking the next
+// chamber down the tunnel. Towers shoot over the rock into neighbouring tunnels.
 //
 // The chambers are scattered sites (Points.h) with their nearest-site cells as the graph the
 // tunnels are carved on (GraphMaze.h): a spanning tree, a door into every queen chamber, and a
@@ -36,7 +37,7 @@ using namespace MapGeneration;
 // colony starts with more room than another.
 //
 // WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Buildings need pure grass
-// and stone is never cleared, so the map's building room is fixed at generation and the fight is
+// and rock is never cleared, so the map's building room is fixed at generation and the fight is
 // over chambers; tunnels a column wide are closed by one building or one tower; the ponds in the
 // farm chambers are the only water, so a colony that wants its fields to regrow holds a farm
 // chamber; and a tower scans square rings with no line of sight, so the rock between two tunnels
@@ -65,6 +66,14 @@ using namespace MapGeneration;
 // into." So: a chamber's crops are grown from eight seeds spaced round its pond, so a road through
 // the chamber never cuts them off from the rest of it; and the queen chamber has no pond at all, just
 // a bigger starting kit that never regrows, so growing means taking a farm chamber.
+//
+// REVISION 2026-10-26 (the terrain catalogue): the rock is ridge rock and outcrop terrain on the
+// vertices, not stone deposits on the tiles, so the walls hold no stone. Stone comes from quarry
+// chambers instead, dry chambers with a deposit at the middle in a field of scree spoil, and from
+// a small clump in every queen chamber's kit. The roads are dirt track, not sand: a line one
+// vertex wide spoils the tiles beside it for building and crops exactly as the sand did,
+// at ordinary walking speed (a mixed tile walks at its slowest walkable corner's speed and grows
+// only what every corner allows). Ridge rock stops no projectile, so towers still shoot over it.
 namespace
 {
 
@@ -104,6 +113,37 @@ constexpr double kWanderShare = 0.18, kWidthJitter = 0.25;
 // The queen chamber starts this much bigger than an ordinary chamber and grows until it holds
 // `queenRoom` building sites, never more than this many tiles.
 constexpr int kQueenExtra = 3, kQueenGrowthLimit = 400;
+// Every chamber is dug this much wider than its size (REVISION 2026-10-26): rock on the vertices
+// makes the open tiles along the face mixed, so the face comes out of the rock and a chamber keeps
+// the building room and crop ground it had when its walls were stone. A tile and a half, not one:
+// eroding a rough outline by a tile takes more than a tile from its notches, and with one a queen
+// chamber held a tenth fewer 4x4 sites than revision 5's.
+constexpr double kFace = 1.5;
+// Tunnels likewise: the open tile beside the rock is drawn half rock, so a tunnel stroked to its
+// width read a tile narrower than it (first previews of revision 6). Each side is dug this much
+// further, so a tunnel looks `tunnel-width` across; it walks about a tile wider than revision 5's.
+constexpr double kTunnelFace = 0.5;
+// A quarry chamber (REVISION 2026-10-26) is dug to a farm chamber's size but has no pond: a stone
+// deposit of radius kQuarryRadius at its middle at the default stone amount, its roads stopping
+// kQuarryRoadStop short of the middle so the tiles they spoil never reach the deposit. Round the
+// deposit lies a field of scree spoil heaps (lumpy noise above kSpoilNoise, from kSpoilClear out to
+// the walls), so a quarry is poor building land, a place to work and not a second home; a lane
+// kHaulLane tiles either side of the line from every tunnel's mouth to the deposit stays grass, so
+// no haul crosses scree (which walks at about two thirds speed). First previews of quarries with
+// three small heaps showed every quarry a dry clearing with more 4x4 sites than a queen chamber.
+// One plain chamber in kQuarryEvery is a quarry, never the one outside a queen's door, and never
+// fewer than one per colony while there are candidates.
+constexpr double kQuarryRadius = 2.0, kQuarryRoadStop = 4.5, kSpoilClear = 4.0, kHaulLane = 2.5,
+				 kSpoilCell = 3.0, kSpoilNoise = 0.36;
+constexpr int kQuarryEvery = 3;
+// The queen chamber's starter stone: exactly a plus of kHomeStone tiles towards its back wall,
+// invariant whatever the amounts say, as the rest of the kit is. Not placeResourceClump, which
+// drops edge tiles at random: first previews gave one colony five tiles and another one.
+constexpr int kHomeStone = 5;
+// The rock face: a rock vertex is outcrop where smooth noise tops the threshold for its depth (on
+// open ground's edge, one tile behind it, deeper), ridge rock elsewhere, so the walls read broken
+// at the face and solid behind it.
+constexpr double kOutcropCell = 5.0, kOutcropFace = 0.42, kOutcropBehind = 0.62, kOutcropDeep = 0.8;
 
 // What a chamber is: the queen chambers are the colonies' homes; farm chambers hold a pond and a
 // field; treasure chambers are the tunnels' dead ends; the rest are plain.
@@ -112,17 +152,29 @@ enum ChamberKind
 	PlainChamber = 0,
 	FarmChamber,
 	QueenChamber,
-	TreasureChamber
+	TreasureChamber,
+	QuarryChamber
 };
+
+// The quarry deposit's radius at `stone` percent of the default amount: by area, at least 1 while
+// there is any stone, none at 0.
+int quarryRadiusFor(int stone)
+{
+	if (stone <= 0)
+		return 0;
+	return std::max(1, int(std::lround(kQuarryRadius * std::sqrt(stone / 100.0))));
+}
 
 struct Layout
 {
 	Torus t{1, 1};
 	std::vector<Site> sites;
 	std::vector<int> label; // every tile's nearest site
-	std::vector<int> homeSite, farmSite, treasureSite;
+	std::vector<int> homeSite, farmSite, treasureSite, quarrySite;
 	std::vector<int> kind;                        // every chamber's ChamberKind
-	std::vector<unsigned char> open, water, road; // tunnels and chambers; ponds; sand roads
+	std::vector<unsigned char> open, water, road; // tunnels and chambers; ponds; dirt-track roads
+	std::vector<unsigned char> spoil;             // the quarries' scree heaps (tiles)
+	TerrainSketch terrain;                        // every vertex as it is written
 	std::vector<double> pondRadius;               // every chamber's pond
 	std::vector<int> homeOf;
 	std::vector<ShapePoint> homes, kits;
@@ -176,6 +228,28 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int site = 0; site < int(L.sites.size()); ++site)
 		if (!isPocket[site] && !isEnd[site] && site % 2 == 0)
 			L.farmSite.push_back(site);
+	// One plain chamber in kQuarryEvery is a quarry (REVISION 2026-10-26), never one outside a
+	// queen's door, so no colony starts with a quarry on its doorstep; at least one per colony while
+	// there are candidates.
+	{
+		std::vector<unsigned char> doorstep(L.sites.size(), 0);
+		for (int k = 0; k < teams; ++k)
+			doorstep[graph.other(doors[k], L.homeSite[k])] = 1;
+		int plain = 0;
+		std::vector<int> candidates;
+		for (int site = 0; site < int(L.sites.size()); ++site)
+			if (!isPocket[site] && !isEnd[site] && site % 2 != 0)
+			{
+				++plain;
+				if (!doorstep[site])
+					candidates.push_back(site);
+			}
+		context.shuffle(candidates.begin(), candidates.end(), "anthill-quarries");
+		const int wanted =
+			std::min(int(candidates.size()), std::max(teams, plain / kQuarryEvery));
+		L.quarrySite.assign(candidates.begin(), candidates.begin() + wanted);
+		std::sort(L.quarrySite.begin(), L.quarrySite.end());
+	}
 
 	// Every chamber's kind sets its size and its pond (a treasure chamber's are a plain chamber's).
 	L.kind.assign(L.sites.size(), PlainChamber);
@@ -185,17 +259,26 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.kind[site] = FarmChamber;
 	for (int site : L.homeSite)
 		L.kind[site] = QueenChamber;
+	for (int site : L.quarrySite)
+		L.kind[site] = QuarryChamber;
 	const std::vector<int> &kind = L.kind;
 	L.pondRadius.assign(L.sites.size(), pondRadiusFor(o.chamberSize));
 	for (int site : L.farmSite)
 		L.pondRadius[site] += kFarmPondExtra;
 	for (int site : L.homeSite)
 		L.pondRadius[site] = 0; // no water in a queen chamber (second play)
-	// Where a road stops at each end: on a pond's beach, or short of a queen chamber's clear middle.
+	for (int site : L.quarrySite)
+		L.pondRadius[site] = 0; // nor in a quarry, whose middle is its deposit
+	// Where a road stops at each end: on a pond's beach, short of a queen chamber's clear middle, or
+	// short of a quarry's deposit.
 	const auto roadStop = [&](int site)
-	{ return (kind[site] == QueenChamber ? kQueenCore : L.pondRadius[site]) + kRoadStop; };
+	{
+		return kind[site] == QueenChamber	 ? kQueenCore + kRoadStop
+			   : kind[site] == QuarryChamber ? kQuarryRoadStop
+											 : L.pondRadius[site] + kRoadStop;
+	};
 
-	// Carving: every open edge a wandering tunnel between its two chambers' middles, with a sand road
+	// Carving: every open edge a wandering tunnel between its two chambers' middles, with a road
 	// down its middle that stops on the shore of the pond at each end (FEEDBACK 2026-09-13); then
 	// every chamber a rough disc, queen and farm chambers bigger.
 	L.open.assign(n, 0);
@@ -209,7 +292,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const int siteA = graph.edgeCells[edge][0], siteB = graph.edgeCells[edge][1];
 		const Site a = L.sites[siteA], b = L.sites[siteB];
 		const std::vector<StrokePoint> path =
-			wanderingPath(t, {a.x + 0.5, a.y + 0.5}, {b.x + 0.5, b.y + 0.5}, o.tunnelWidth / 2.0,
+			wanderingPath(t, {a.x + 0.5, a.y + 0.5}, {b.x + 0.5, b.y + 0.5}, o.tunnelWidth / 2.0 + kTunnelFace,
 						  kWanderShare * o.chamberSpacing, kWidthJitter, tunnels);
 		strokePath(L.open, t, path);
 		if (!o.sandRoads)
@@ -223,31 +306,71 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (road.size() >= 2)
 			tracePath(L.road, t, road);
 	}
-	const RadialShape chamber(o.chamberSize, 0.3, context, "anthill-chambers");
-	const RadialShape farm(o.chamberSize + kFarmExtra, 0.3, context, "anthill-chambers");
-	const RadialShape queen(o.chamberSize + kQueenExtra, 0.25, context, "anthill-chambers");
+	const RadialShape chamber(o.chamberSize + kFace, 0.3, context, "anthill-chambers");
+	const RadialShape farm(o.chamberSize + kFarmExtra + kFace, 0.3, context, "anthill-chambers");
+	const RadialShape queen(o.chamberSize + kQueenExtra + kFace, 0.25, context, "anthill-chambers");
 	for (int site = 0; site < int(L.sites.size()); ++site)
 	{
 		// Each chamber turned by a different angle, so one outline reads as many.
 		const double turn = site * 2.399963; // the golden angle
-		const RadialShape &shape = kind[site] == QueenChamber  ? queen
-								   : kind[site] == FarmChamber ? farm
-															   : chamber;
+		const RadialShape &shape = kind[site] == QueenChamber ? queen
+								   : kind[site] == FarmChamber || kind[site] == QuarryChamber
+									   ? farm
+									   : chamber;
 		fillShape(L.open, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5, shape, turn);
 	}
-	// A pond at the middle of every chamber but the queens' (FEEDBACK 2026-09-13, both plays): a
-	// queen chamber is dry, its swarm at its middle and its kit behind, so the colony must take a farm
-	// chamber for anything to regrow.
+	// A pond at the middle of every chamber but the queens' and the quarries' (FEEDBACK 2026-09-13,
+	// both plays): a queen chamber is dry, its swarm at its middle and its kit behind, so the colony
+	// must take a farm chamber for anything to regrow.
 	const RadialShape pondPlain(pondRadiusFor(o.chamberSize), 0.3, context, "anthill-ponds");
 	const RadialShape pondFarm(pondRadiusFor(o.chamberSize) + kFarmPondExtra, 0.3, context,
 							   "anthill-ponds");
 	for (int site = 0; site < int(L.sites.size()); ++site)
-		if (kind[site] != QueenChamber)
+		if (kind[site] != QueenChamber && kind[site] != QuarryChamber)
 			fillShape(L.water, t, L.sites[site].x + 0.5, L.sites[site].y + 0.5,
 					  kind[site] == FarmChamber ? pondFarm : pondPlain, 0.0);
 	for (int i = 0; i < n; ++i)
 		if (L.water[i])
 			L.road[i] = 0;
+	// Scree spoil round every quarry's deposit (REVISION 2026-10-26), out to its walls, except in a
+	// haul lane from each tunnel's mouth to the deposit.
+	{
+		std::vector<std::vector<ShapePoint>> lanes(L.sites.size()); // unit headings to every mouth
+		for (int edge = 0; edge < int(openEdge.size()); ++edge)
+			if (openEdge[edge])
+				for (int end = 0; end < 2; ++end)
+				{
+					const int site = graph.edgeCells[edge][end];
+					if (kind[site] != QuarryChamber)
+						continue;
+					const Site a = L.sites[site], b = L.sites[graph.other(edge, site)];
+					const double dx = t.offsetX(a.x, b.x), dy = t.offsetY(a.y, b.y);
+					const double length = std::max(1.0, std::hypot(dx, dy));
+					lanes[site].push_back({dx / length, dy / length});
+				}
+		const PeriodicNoise heaps(t.w, t.h, kSpoilCell, context.stream("anthill-spoil"));
+		L.spoil.assign(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			const int site = L.label[i];
+			if (!L.open[i] || kind[site] != QuarryChamber)
+				continue;
+			const int x = t.remainderX(i), y = i / t.w;
+			const double dx = t.offsetX(L.sites[site].x, x), dy = t.offsetY(L.sites[site].y, y);
+			if (dx * dx + dy * dy <= kSpoilClear * kSpoilClear || heaps.at(x, y) <= kSpoilNoise)
+				continue;
+			const bool inLane = std::any_of(lanes[site].begin(), lanes[site].end(),
+											[&](const ShapePoint &u)
+											{
+												return dx * u.x + dy * u.y > 0 &&
+													   std::fabs(dy * u.x - dx * u.y) < kHaulLane;
+											});
+			L.spoil[i] = !inLane;
+		}
+		if (context.telemetry.enabled())
+			context.telemetry.measure("anthill.spoil.tiles",
+									  std::count(L.spoil.begin(), L.spoil.end(), 1));
+	}
 	L.homeOf.assign(n, -1);
 	for (int k = 0; k < teams; ++k)
 	{
@@ -264,7 +387,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	}
 	// The queen chambers grow until each holds `queenRoom` building sites: the tiles nearest the
 	// middle first, within the chamber's own cell so it never meets a neighbour, and never onto water
-	// or the beach a pond will get (two tiles round it).
+	// or the beach a pond will get (two tiles round it). Rock stands on vertices (REVISION
+	// 2026-10-26), so an open tile beside the rock is mixed and holds no building: what grows is the
+	// chamber's core, the tiles with open ground all round them, and the chamber is that core with a
+	// tile of rock face round it.
 	const std::vector<unsigned char> shore = dilate(t, L.water, 2);
 	std::vector<unsigned char> buildable(n, 0);
 	for (int i = 0; i < n; ++i)
@@ -272,21 +398,26 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const int site = L.homeSite[k];
-		std::vector<unsigned char> region(n, 0), eligible(n, 0);
+		std::vector<unsigned char> cell(n, 0), carved(n, 0), eligible(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			region[i] = L.open[i] && L.label[i] == site;
-			eligible[i] = L.label[i] == site && !shore[i];
+			cell[i] = L.label[i] == site;
+			carved[i] = L.open[i] && cell[i];
 		}
+		std::vector<unsigned char> core = erode(t, carved, 1);
+		const std::vector<unsigned char> inner = erode(t, cell, 1);
+		for (int i = 0; i < n; ++i)
+			eligible[i] = inner[i] && !shore[i];
 		const int sites = growUntilSites(
-			t, region, buildable, eligible, o.queenRoom, kQueenGrowthLimit,
+			t, core, buildable, eligible, o.queenRoom, kQueenGrowthLimit,
 			[&](int i) { return t.dist2(L.sites[site].x, L.sites[site].y, t.remainderX(i), i / t.w); });
 		context.telemetry.measure("anthill.queen.build-sites", sites, k);
 		if (sites < o.queenRoom)
 			context.telemetry.fallback("anthill.queen.room-shortfall",
 									   "Room growth stopped below the requested anchor count.", k);
+		const std::vector<unsigned char> chamber = dilate(t, core, 1);
 		for (int i = 0; i < n; ++i)
-			if (region[i])
+			if (chamber[i])
 				L.open[i] = 1;
 	}
 	for (int i = 0; i < n; ++i)
@@ -296,7 +427,38 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 			if (L.open[i] && L.label[i] == L.homeSite[k])
 				L.homeOf[i] = k;
+	// The terrain (REVISION 2026-10-26): ponds, dirt-track roads and scree spoil on open ground, and
+	// rock on every vertex of a closed tile, so a closed tile is rock on all four corners and as
+	// impassable as the stone was, while an open tile against the rock face is mixed: walkable, but
+	// holding no building and no crop.
+	{
+		std::vector<unsigned char> closed(n, 0);
+		for (int i = 0; i < n; ++i)
+			closed[i] = !L.open[i];
+		const std::vector<unsigned char> rock = tileCorners(t, closed);
+		const std::vector<unsigned char> scree = tileCorners(t, L.spoil);
+		const std::vector<int> depth = stepsFrom(t, L.open);
+		const PeriodicNoise face(t.w, t.h, kOutcropCell, context.stream("anthill-rock"));
+		L.terrain.assign(n, GRASS);
+		for (int i = 0; i < n; ++i)
+		{
+			const int x = t.remainderX(i), y = i / t.w;
+			if (rock[i])
+			{
+				// Vertex (x, y) is the corner of tiles (x - 1 .. x, y - 1 .. y); its depth is theirs.
+				int d = depth[i];
+				for (const int j : {t.at(x - 1, y - 1), t.at(x, y - 1), t.at(x - 1, y)})
+					d = std::min(d, depth[j]);
+				const double threshold = d <= 0 ? kOutcropFace : d == 1 ? kOutcropBehind : kOutcropDeep;
+				L.terrain[i] = face.at(x, y) > threshold ? OUTCROP : RIDGE_ROCK;
+			}
+			else
+				L.terrain[i] = L.water[i] ? WATER : L.road[i] ? DIRT_TRACK : scree[i] ? SCREE : GRASS;
+		}
+		layBeaches(L.terrain, t);
+	}
 	context.telemetry.measure("anthill.chambers.actual", L.sites.size());
+	context.telemetry.measure("anthill.quarries.actual", L.quarrySite.size());
 	context.telemetry.measure("anthill.farms.actual", L.farmSite.size());
 	context.telemetry.measure("anthill.treasure-chambers.actual", L.treasureSite.size());
 	if (context.telemetry.enabled())
@@ -322,26 +484,14 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "anthill terrain";
-	TerrainSketch terrain(n, GRASS);
-	for (int i = 0; i < n; ++i)
-		terrain[i] = L.water[i] ? WATER : L.road[i] ? SAND : GRASS;
-	layBeaches(terrain, t);
-	writeVertices(map, terrain);
-	// The rock: stone on every tile that is not carved, wherever pure grass allows it.
-	std::vector<unsigned char> rock(n, 0);
-	for (int i = 0; i < n; ++i)
-		if (!L.open[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
-		{
-			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
-			rock[i] = 1;
-		}
+	writeVertices(map, L.terrain);
 
 	context.stage = "anthill colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable && !rock[i];
+			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	// The swarm stands at the chamber's middle, a tile towards the door.
@@ -359,24 +509,58 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const auto eligible = [&](int i)
 		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
-		// Wheat and wood on the flanks behind the swarm (the axis points away from the door), and a
-		// second wheat patch straight behind it.
+		// Wheat and wood on the flanks behind the swarm (the axis points away from the door), a stone
+		// clump against the back wall (REVISION 2026-10-26: the walls are no longer stone), and a
+		// second wheat patch straight behind the swarm.
 		const KitFrame frame{int(std::lround(L.kits[k].x)), int(std::lround(L.kits[k].y)),
 							 L.axes[k]};
-		plantKit(
-			map, t, context,
-			{frame.at(3, -5, 6), frame.at(3, 5, 6), frame.at(0, 0, 0), kHomeWheat, kHomeWood, -1},
-			eligible);
+		plantKit(map, t, context,
+				 {frame.at(3, -5, 6), frame.at(3, 5, 6), frame.at(0, 0, 0), kHomeWheat, kHomeWood, -1},
+				 eligible);
+		// The starter stone on the nearest ground that holds the whole plus.
+		const int plus[kHomeStone][2] = {{0, 0}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+		const auto holdsPlus = [&](int i)
+		{
+			return std::all_of(std::begin(plus), std::end(plus),
+							   [&](const int *d)
+							   {
+								   const int x = t.remainderX(i) + d[0], y = i / t.w + d[1];
+								   const int j = t.at(x, y);
+								   return eligible(j) &&
+										  map.isResourceAllowed(t.remainderX(j), j / t.w, STONE);
+							   });
+		};
+		const KitSeed stoneAt = frame.at(8, 0, 8);
+		if (const int seed = seedNear(t, stoneAt.x, stoneAt.y, stoneAt.within, holdsPlus); seed >= 0)
+			for (const auto &d : plus)
+			{
+				const int j = t.at(t.remainderX(seed) + d[0], seed / t.w + d[1]);
+				map.setResourceByIndex(t.remainderX(j), j / t.w, STONE, 1);
+			}
+		else
+			context.telemetry.fallback("anthill.queen.stone-missing",
+									   "No ground near the back of the queen chamber held the starter stone.", k);
 		const KitSeed behind = frame.at(7, 0, 6);
 		if (const int seed = seedNear(t, behind.x, behind.y, behind.within, eligible); seed >= 0)
 			growPatch(map, t, seed, WHEAT, kHomeWheatBehind, eligible);
+		if (context.telemetry.enabled())
+		{
+			int stone = 0;
+			for (int i = 0; i < n; ++i)
+				stone += L.homeOf[i] == k && map.getResource(i).type == STONE;
+			context.telemetry.measure("anthill.queen.stone-tiles", stone, k);
+		}
 	}
 	// Every chamber with crops has them on every side of its pond (FEEDBACK 2026-09-13, second play):
 	// a patch is grown from kRingSeeds seeds spaced evenly round the pond's shore, each given its
 	// share of the count, so no road through the chamber can cut its crops off from the rest of it.
 	// Farm chambers ring the pond with wheat and a wider ring of wood beyond ("no sections empty of
 	// growth"); every other chamber a wheat or a wood ring in turn; treasure chambers a fruit grove
-	// and a wheat ring.
+	// and a wheat ring; quarries a stone deposit at the middle and nothing else.
+	const int quarryRadius = quarryRadiusFor(o.stone);
+	std::vector<unsigned char> quarryGround(n, 0);
+	for (int i = 0; i < n; ++i)
+		quarryGround[i] = L.open[i] && L.kind[L.label[i]] == QuarryChamber && !reserved[i];
 	const auto ringPlant = [&](int site, double radius, int type, int count, const auto &here)
 	{
 		const Site s = L.sites[site];
@@ -400,6 +584,13 @@ bool generate(Game &game, GenerationContext &context)
 		};
 		if (L.kind[site] == QueenChamber)
 			continue;
+		if (L.kind[site] == QuarryChamber)
+		{
+			if (quarryRadius > 0)
+				placeResourceClump(map, context, MapGeneratorPoint(s.x, s.y), STONE, quarryRadius,
+								   &quarryGround);
+			continue;
+		}
 		if (L.kind[site] == FarmChamber)
 		{
 			ringPlant(site, shore, WHEAT, int(scaledCount(kFarmWheat, o.wheat)), here);
@@ -419,12 +610,18 @@ bool generate(Game &game, GenerationContext &context)
 			ringPlant(site, shore, WOOD, int(scaledCount(kPlainWood, o.wood)), here);
 	}
 	seedAlgae(map, context, t, "anthill-algae", o.algae, AlgaeBand::anyWater(12));
-	secureStartingCrops(game, context, t, 24, 32, 0, &rock);
-	reopenCrampedStarts(game, context, {o.wheat, o.wood, 100, o.algae, o.fruit}, 24, 32, 0, &rock);
-	// The tunnels join every chamber; only crops in a tunnel could close one, and only those are
-	// cleared. Stone is cut only as a last resort, at a cost that keeps it to a tile or two.
+	// The stone deposits are designed: the crop guarantees never clear them.
+	std::vector<unsigned char> stone(n, 0);
+	for (int i = 0; i < n; ++i)
+		stone[i] = map.getResource(i).type == STONE;
+	context.telemetry.measure("anthill.stone.tiles", std::count(stone.begin(), stone.end(), 1));
+	secureStartingCrops(game, context, t, 24, 32, 0, &stone);
+	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
+						&stone);
+	// The tunnels join every chamber and rock is never cut; only crops in a tunnel could close one,
+	// and only those are cleared.
 	context.stage = "anthill routes";
-	openColonyRoutes(map, context, t, StepCosts{1, 3, 12, -1, -1});
+	openColonyRoutes(map, context, t, StepCosts{1, 3, -1, -1, -1});
 	return true;
 }
 
@@ -435,6 +632,27 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Map &map = game.map;
 	if (const std::string mismatch = designMismatch(L, map, "anthill"); !mismatch.empty())
 		return mismatch;
+	// The terrain is the design's, vertex for vertex: nothing may cut the rock or lay a ford.
+	for (int i = 0; i < L.t.size(); ++i)
+		if (map.vertexTerrainAt(L.t.remainderX(i), i / L.t.w) != L.terrain[i])
+			return "The anthill's terrain differs from its design at vertex (" +
+				   std::to_string(L.t.remainderX(i)) + ", " + std::to_string(i / L.t.w) + ").";
+	// Every queen chamber holds its starter stone.
+	for (int k = 0; k < context.request.nbTeams; ++k)
+	{
+		int stone = 0;
+		for (int i = 0; i < L.t.size(); ++i)
+			stone += L.homeOf[i] == k && map.getResource(i).type == STONE;
+		if (stone < kHomeStone)
+			return "Colony " + std::to_string(k) + "'s queen chamber holds " + std::to_string(stone) +
+				   " stone tiles, not its " + std::to_string(kHomeStone) + ".";
+	}
+	// A quarry holds its deposit whenever there is stone to place.
+	if (quarryRadiusFor(AnthillOptions(context.request).stone) > 0)
+		for (int site : L.quarrySite)
+			if (map.getResource(L.t.at(L.sites[site].x, L.sites[site].y)).type != STONE)
+				return "A quarry chamber has no stone at its middle (" +
+					   std::to_string(L.sites[site].x) + ", " + std::to_string(L.sites[site].y) + ").";
 	// A queen chamber is dry by design (second play); the farm chambers keep the water.
 	for (int site : L.farmSite)
 		if (!map.isWater(L.sites[site].x, L.sites[site].y))
@@ -450,7 +668,8 @@ AnthillOptions::AnthillOptions(const GenerationRequest &r)
 	  queenRoom(r.option("queen-room")), tunnelWidth(r.option("tunnel-width")),
 	  loops(r.option("loops")), sandRoads(r.option("sand-roads") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
+	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount")),
+	  stone(r.option("stone-amount"))
 {
 }
 
@@ -460,7 +679,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		5,
+		6,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
@@ -470,7 +689,7 @@ GeneratorDefinition anthillDefinition()
 		{GeneratorControl{"chamber-spacing", "Chamber spacing", 20, 40, 2, 28, ControlGroup::Layout}
 			 .withSearchRange(24, 34),
 		 // FEEDBACK 2026-09-13: chambers of 7 (was 5) with a pond each, queen chambers grown to
-		 // 60 sites (was 40); tunnels stay 3 wide but carry a sand road so nothing is built across.
+		 // 60 sites (was 40); tunnels stay 3 wide but carry a road so nothing is built across.
 		 GeneratorControl{"chamber-size", "Chamber size", 5, 10, 1, 7, ControlGroup::Layout}
 			 .withSearchRange(7, 10),
 		 GeneratorControl{"queen-room", "Queen room", 20, 160, 10, 60, ControlGroup::Layout}
@@ -485,11 +704,13 @@ GeneratorDefinition anthillDefinition()
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
+		 // REVISION 2026-10-26: the quarries' deposits; the queen chamber's starter clump is fixed.
+		 GeneratorControl::percentage("stone-amount", "Stone amount")},
 		generate,
 		true,
 		designFailure<design>,
 		validateWorld,
-		// An organic tunnel network in open stone, not a constructed battle arena.
+		// An organic tunnel network in solid rock, not a constructed battle arena.
 		{"terrain:natural", "feature:caves", "feature:stone-walls", "style:tight-building"}};
 }
