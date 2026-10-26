@@ -9,7 +9,7 @@
 # Generation fingerprints are platform-specific; acceptance does not imply cross-platform terrain equality.
 # --require-rows remains strict for platforms without accepted rows.
 # Regenerate this platform with MapGeneratorGoldenTest <profile> --update after a generator revision bump.
-# Anthill revision 6 (ridge-rock walls, quarry chambers): macos-arm64 rows from a local native run; Linux rows from CI.
+# Anthill revision 6 (ridge-rock walls, quarry chambers): macos-arm64 rows from a local native run; linux-x86_64 rows from CI (identical hashes).
 linux-x86_64 0 1 7 7 4 1 ok 598464062941275300
 linux-x86_64 0 1 8 8 2 1 ok 5434630491393693860
 linux-x86_64 0 1 8 8 4 1 ok 5434630491393693860
@@ -250,14 +250,14 @@ linux-x86_64 31 8 8 8 4 3 ok 7826050083688479218
 linux-x86_64 31 8 8 8 8 1 ok 12293982463491608539
 linux-x86_64 31 8 9 8 4 1 ok 6719207024132515404
 linux-x86_64 31 8 9 9 4 1 ok 5725696217103701812
-linux-x86_64 32 5 7 7 4 1 ok 5909755488904156220
-linux-x86_64 32 5 8 8 2 1 ok 6173215767790105469
-linux-x86_64 32 5 8 8 4 1 ok 5273532311840647648
-linux-x86_64 32 5 8 8 4 2 ok 11104724346769559390
-linux-x86_64 32 5 8 8 4 3 ok 13446198069294618755
-linux-x86_64 32 5 8 8 8 1 ok 1985496809958470998
-linux-x86_64 32 5 9 8 4 1 ok 12164340929680476609
-linux-x86_64 32 5 9 9 4 1 ok 9414857453327895731
+linux-x86_64 32 6 7 7 4 1 ok 15372299971347194034
+linux-x86_64 32 6 8 8 2 1 ok 11188341439130921012
+linux-x86_64 32 6 8 8 4 1 ok 8676908147398606881
+linux-x86_64 32 6 8 8 4 2 ok 5577125225318506242
+linux-x86_64 32 6 8 8 4 3 ok 12781317722885880596
+linux-x86_64 32 6 8 8 8 1 ok 2902403404051186242
+linux-x86_64 32 6 9 8 4 1 ok 1475572825042535457
+linux-x86_64 32 6 9 9 4 1 ok 10476121665164785911
 linux-x86_64 34 12 7 7 4 1 invalid 0
 linux-x86_64 34 12 8 8 2 1 ok 6357569789016499830
 linux-x86_64 34 12 8 8 4 1 ok 8609650566664054695
