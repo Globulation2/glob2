@@ -9,6 +9,15 @@ Policy modules execute those decisions through Maxima's private runtime using
 the engine's ordinary orders. Building lifetime identities keep pending work
 from attaching to a different building that reuses a slot.
 
+At each building-management review, Maxima demolishes ground buildings (including
+construction sites) whose entrances cannot be reached from any worker.
+Resources, terrain and other buildings can seal access; temporary unit traffic
+and forbidden zones do not count. Diagonal, wrapped-map and potential swimming
+access keep a building usable, as do workers already serving an isolated colony.
+With no workers available, only completely blocked entrance aprons are rejected.
+Destruction releases its ordinary planner and food-ledger commitments, and normal
+strategy decides whether to build elsewhere.
+
 Compact inn, hospital and school campuses share their four reserved building slots:
 inns, hospitals, schools and towers can fill any free slot when their ordinary location
 scoring and food-capacity checks support it. Inns in these campuses stop at

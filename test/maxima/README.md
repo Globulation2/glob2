@@ -22,7 +22,7 @@ are required.
 | Configuration resolution, bounds and defaults | `MaximaStrategyTest`, `MaximaStrategyConfigTest`, `MaximaStrategyPolicyTest` |
 | Director budgets, production and labour | `MaximaDirectorRegressionTest`, `MaximaEconomyRegressionTest`, `MaximaLabourStandaloneTest` |
 | Stock-band staffing | `MaximaStaffingControlStandaloneTest` |
-| Food claims, bounds and relocation | `MaximaFoodLedgerStandaloneTest`, `MaximaRelocationIntegrationTest` |
+| Food claims, bounds, relocation and sealed-building demolition | `MaximaFoodLedgerStandaloneTest`, `MaximaRelocationIntegrationTest` |
 | Permanent farm seeds, harvest lanes, wood reserves and clearing | `MaximaFarmingStandaloneTest`, `MaximaFarmingIntegrationTest` |
 | Placement and wrapped routes | `MaximaPlacementStandaloneTest` |
 | Defence, scouting and force inference | `MaximaDefenseStandaloneTest`, `MaximaReconStandaloneTest`, `MaximaForceModelStandaloneTest` |

@@ -462,6 +462,7 @@ static void rallyAssemblesByMovement()
     for(int shift:{0,52}) {
         setSyncRandSeed(5489);
         Fixture f;
+        f.game.map.configureGradientPipeline(0,8);
         const auto wrap=[&](int v){return (v+shift)%64;};
         f.game.gameHeader.setHungerDisabled(true);
         f.building(wrap(10),wrap(10),0);

@@ -234,6 +234,121 @@ void savedRelationships()
 
 TEST_SUITE("Maxima.Relocation")
 {
+	TEST_CASE("sealed buildings are demolished and release their commitments")
+	{
+		glob2test::HeadlessGlobals globals;
+		for(const char* kind:{"swarm","inn","school","hospital","defencetower","barracks"})
+		{
+			Fixture f(2,kind);
+			Building* target=f.buildings[0];
+			const int gid=target->gid;
+			REQUIRE(f.game.addUnit(5,5,0,WORKER,0,0,0,0));
+			// Leave a grass apron inside a larger resource ring.
+			for(int dy=-2;dy<=target->type->height+1;++dy)
+				for(int dx=-2;dx<=target->type->width+1;++dx)
+					if(dx==-2||dy==-2||dx==target->type->width+1||dy==target->type->height+1)
+						f.game.map.setResourceByIndex(target->posX+dx,target->posY+dy,WOOD,0);
+			f.ai->development_planner.adoptStartingBuildings(f.world());
+			bool reserved=false;
+			for(const auto& entry:f.ai->development_planner.standaloneContracts())
+				if(entry.buildingId==0)reserved=true;
+			REQUIRE(reserved);
+			f.ai->staffing_control[0].request=3;
+			f.ai->manage_buildings(f.ai->context);
+			REQUIRE(f.deletions()==std::set<int>{0});
+			REQUIRE(!f.ai->staffing_control.count(0));
+			f.ai->context.update_management_orders();
+			for(const auto& order:f.ai->context.orders)
+				if(order->getOrderType()==ORDER_DELETE)
+				{order->sender=0;f.game.executeOrder(order,0);}
+			REQUIRE(target->buildingState==Building::WAITING_FOR_DESTRUCTION);
+			for(int tick=0;tick<400&&f.game.teams[0]->myBuildings[Building::GIDtoID(gid)];++tick)
+				f.game.step(0);
+			REQUIRE(!f.game.teams[0]->myBuildings[Building::GIDtoID(gid)]);
+			glob2test::withMaximaObservation(f.ai->context,[&]{f.ai->context.buildings.tick();});
+			auto world=f.world();
+			f.ai->development_planner.observe(world);
+			REQUIRE(!world.building(0));
+			for(const auto& entry:f.ai->development_planner.standaloneContracts())
+				REQUIRE(entry.buildingId!=0);
+			for(const auto& consumer:f.ai->development_planner.evaluateFoodLedger(world).consumers)
+				REQUIRE(consumer.key!=0);
+		}
+	}
+	TEST_CASE("sealed construction and diagonal access survive save loading")
+	{
+		glob2test::HeadlessGlobals globals;
+		for(bool restored:{false,true})for(bool open:{false,true})for(bool site:{false,true})
+		{
+			Fixture f;
+			Building* target=f.buildings[0];
+			if(site)
+			{
+				const int type=globalContainer->buildingsTypes.getTypeNum("defencetower",0,true);
+				target=f.game.addBuilding(42,10,type,0);
+				REQUIRE(target);
+				glob2test::withMaximaObservation(f.ai->context,[&]{f.ai->context.buildings.initiate();});
+			}
+			for(int dy=-1;dy<=target->type->height;++dy)
+				for(int dx=-1;dx<=target->type->width;++dx)
+					if(dx==-1||dy==-1||dx==target->type->width||dy==target->type->height)
+						if(!open||dx!=-1||dy!=-1)
+							f.game.map.setResourceByIndex(target->posX+dx,target->posY+dy,WOOD,0);
+			if(restored)f.roundTrip();
+			f.ai->manage_buildings(f.ai->context);
+			REQUIRE(f.deletions().size()==(open?0:1));
+		}
+	}
+	TEST_CASE("access retains isolated workers and ignores forbidden zones")
+	{
+		glob2test::HeadlessGlobals globals;
+		for(bool inside:{false,true})
+		{
+			Fixture f;
+			Building* target=f.buildings[0];
+			for(int dy=-2;dy<=target->type->height+1;++dy)
+				for(int dx=-2;dx<=target->type->width+1;++dx)
+					if(dx==-2||dy==-2||dx==target->type->width+1||dy==target->type->height+1)
+						f.game.map.setResourceByIndex(target->posX+dx,target->posY+dy,WOOD,0);
+			REQUIRE(f.game.addUnit(5,5,0,WORKER,0,0,0,0));
+			if(inside)REQUIRE(f.game.addUnit(target->posX-1,target->posY-1,0,WORKER,0,0,0,0));
+			else f.game.map.setNoResource(target->posX-2,target->posY-2,0);
+			// Every walkable tile can be forbidden by farming or a player order;
+			// that is not grounds for destroying the colony.
+			for(int y=0;y<64;++y)for(int x=0;x<64;++x)
+				f.game.map.addForbidden(x,y,0);
+			f.ai->manage_buildings(f.ai->context);
+			REQUIRE(f.deletions().empty());
+		}
+	}
+	TEST_CASE("wrapped and future swimming access remain usable")
+	{
+		glob2test::HeadlessGlobals globals;
+		for(bool water:{false,true})
+		{
+			Fixture f;
+			const int type=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
+			Building* target=f.game.addBuilding(0,0,type,0);
+			REQUIRE(target);
+			glob2test::withMaximaObservation(f.ai->context,[&]{f.ai->context.buildings.initiate();});
+			REQUIRE(f.game.addUnit(60,60,0,WORKER,0,0,0,0));
+			if(water)
+			{
+				for(int y=0;y<64;++y)for(int x=0;x<64;++x)
+					f.game.map.setVertexTerrain(x,y,WATER);
+			}
+			else
+			{
+				for(int dy=-1;dy<=target->type->height;++dy)
+					for(int dx=-1;dx<=target->type->width;++dx)
+						if((dx==-1||dy==-1||dx==target->type->width||dy==target->type->height)
+							&&!(dx==-1&&dy==-1))
+							f.game.map.setResourceByIndex((dx+64)%64,(dy+64)%64,WOOD,0);
+			}
+			f.ai->manage_buildings(f.ai->context);
+			REQUIRE(f.deletions().empty());
+		}
+	}
 	TEST_CASE("deletion safety")
 	{
 		glob2test::HeadlessGlobals globals;
