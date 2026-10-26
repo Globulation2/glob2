@@ -553,7 +553,8 @@ void armyBirthsMatchPlatformChecksums()
     std::ofstream output;
     // Record the same delayed schedule used by normal verification. Dedicated
     // gradient-publication suites vary executor counts and check every tick.
-    if(record) { f.game.map.configureGradientPipeline(0,8); output.open(path); }
+    f.game.map.configureGradientPipeline(0,8);
+    if(record) output.open(path);
     else expected.open(path);
     REQUIRE((record?output.good():expected.good()));
     for(int tick=1;tick<=512;++tick) {

@@ -5788,10 +5788,76 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 }
 
 
+bool Maxima::building_has_access(Context& runtime,int id,
+    const std::vector<Uint8>& access) const
+{
+    auto ownerObservation=runtime.scopeOwnerObservation();
+    const auto* building=runtime.get_building_register().get_building(id);
+    if(!building)return false;
+    const auto& world=runtime.observation();
+    const auto& type=AIEngine::ObservationQueries::buildingType(world,*building);
+    if(!type.semantics.occupiesGround)return true;
+    // Units can enter from any of the eight neighbouring directions, including
+    // across the map seam. Ignore traffic and forbidden zones: neither makes a
+    // building permanently useless. Retain water access even before swimming
+    // is trained, so an island colony can still come into service later.
+    for(int dy=-1;dy<=type.height;++dy)
+        for(int dx=-1;dx<=type.width;++dx)
+        {
+            if(dx>=0&&dx<type.width&&dy>=0&&dy<type.height)continue;
+            const int index=world.tileIndex(building->posX+dx,building->posY+dy);
+            if(access[index])return true;
+        }
+    return false;
+}
+
 void Maxima::manage_buildings(Context& runtime)
 {
     AIProfile::Scope profileScope(AIProfile::Phase::ManageBuildings);
     auto ownerObservation=runtime.scopeOwnerObservation();
+	const auto& world=runtime.observation();
+	std::vector<Uint8> access(world.width*world.height,0);
+	for(int index=0;index<int(access.size());++index)
+	{
+		// Unexplored space cannot prove a route blocked.
+		if(!(world.visibilityAt(index).discovered&runtime.observedTeam().allies))
+		{access[index]=1;continue;}
+		const auto& terrain=AIEngine::ObservationQueries::terrain(world,index);
+		access[index]=(terrain.walkable||terrain.swimmable)
+			&&world.occupancyAt(index).building==NOGBID
+			&&!MapState::resourceBlocksGround(world.state(),index);
+	}
+	std::vector<int> sources;
+	collect_worker_sources(world,runtime.teamNumber(),false,access,sources);
+	if(!sources.empty())
+	{
+		// Check the whole route, not just the apron: a resource ring can leave
+		// a few empty tiles beside a building. Potential swimming routes count
+		// even before training; a disconnected colony with its own workers is
+		// also useful. With no workers yet, only reject fully blocked aprons.
+		std::vector<int> distance;
+		compute_preemptive_distance_field(world.width,world.height,access,sources,distance);
+		for(int index=0;index<int(access.size());++index)
+			access[index]=distance[index]!=PREEMPTIVE_UNREACHABLE;
+	}
+	std::set<int> sealed;
+	for(const auto& [id,record]:runtime.get_building_register().found())
+	{
+		const auto* building=runtime.get_building_register().get_building(id);
+		if(building&&building->buildingState==Building::WAITING_FOR_DESTRUCTION)
+		{sealed.insert(id);continue;}
+		if(!building||building->buildingState!=Building::ALIVE)continue;
+		if(building_has_access(runtime,id,access))continue;
+		sealed.insert(id);
+		// Keep the register identity until the normal delete order executes.
+		// Its disappearance then releases planner reservations and food claims
+		// through the same lifecycle as any other destroyed building.
+		runtime.add_management_order(new DestroyBuilding(id));
+		staffing_control.erase(id);
+		swarm_allowance.erase(id);
+		director.dirty=true;
+		emit_telemetry(runtime,"building_sealed","\tbuilding_id="+telemetryText(id));
+	}
 	labour_observation=observe_labour(runtime);
 	labour_plan=Labour::plan(labour_observation, labour_policy(), budget.swarm_workers);
 	// Births take the labour that subsistence, the training reserve and
@@ -5805,7 +5871,7 @@ void Maxima::manage_buildings(Context& runtime)
 		BuildingSearch swarms(runtime);
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
-			if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
+			if(!sealed.count(*i)&&runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 			{
 				std::map<int,StaffingControl::State>::const_iterator state=
 					staffing_control.find(*i);
@@ -5825,6 +5891,7 @@ void Maxima::manage_buildings(Context& runtime)
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
+		if(sealed.count(*i))continue;
 		if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 		{
 			manage_swarm(runtime, *i);

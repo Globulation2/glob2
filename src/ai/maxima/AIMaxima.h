@@ -763,8 +763,10 @@ private:
 		int x, int y) const;
 
 
-	///This function updates all of the buildings that are not under construction.
+	///Retire inaccessible buildings and update staffing of completed buildings.
 	void manage_buildings(AIMaximaRuntime::Context& runtime);
+	bool building_has_access(AIMaximaRuntime::Context& runtime, int id,
+		const std::vector<Uint8>& access) const;
 	///This function updates the units assigned to a particular Inn.
 	///Using the messaging system, it is called after the completion
 	///of a new Inn and periodically thereafter
