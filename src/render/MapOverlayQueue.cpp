@@ -98,19 +98,15 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double 
 	int x = 0, y = 0, sx, sy, sw, sh;
 	gfx.beginScreenOverlay(x, y, sx, sy, sw, sh);
 	{
-		// The most important glyphs claim their place first; one that an already
-		// placed glyph would cover much of is left out rather than piled on top.
+		// Draw every glyph, with the most important ones on top when they overlap.
 		constexpr double SmallestChipPoints = 15, LargestChipPoints = 26, FlagDiscPoints = 17;
-		constexpr float MostGlyphOverlap = 0.15f;
 		// Icon frames per icon, by edge length in target pixels
 		// (tools/icons/export_map_icons.py).
 		static const int iconSizes[] = {10, 12, 16, 20, 24, 32, 48};
 		constexpr int IconSizeCount = int(sizeof(iconSizes) / sizeof(iconSizes[0]));
 		const float raster = gfx.getRasterScale();
 		std::stable_sort(glyphs.begin(), glyphs.end(),
-			[](const Glyph &a, const Glyph &b) { return a.priority > b.priority; });
-		std::vector<SDL_FRect> placed;
-		placed.reserve(glyphs.size());
+			[](const Glyph &a, const Glyph &b) { return a.priority < b.priority; });
 		for (const Glyph &glyph : glyphs)
 		{
 			const float centerX = (glyph.left + glyph.right) / 2, centerY = (glyph.top + glyph.bottom) / 2;
@@ -126,20 +122,6 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double 
 				: std::clamp(footprint, float(SmallestChipPoints * unitsPerPoint), float(LargestChipPoints * unitsPerPoint));
 			const int size = std::max(6, int(std::lround(side)));
 			const SDL_FRect box{centerX - size / 2.f, centerY - size / 2.f, float(size), float(size)};
-			bool covered = false;
-			for (const SDL_FRect &other : placed)
-			{
-				const float overlapW = std::min(box.x + box.w, other.x + other.w) - std::max(box.x, other.x);
-				const float overlapH = std::min(box.y + box.h, other.y + other.h) - std::max(box.y, other.y);
-				if (overlapW > 0 && overlapH > 0 && overlapW * overlapH > MostGlyphOverlap * box.w * box.h)
-				{
-					covered = true;
-					break;
-				}
-			}
-			if (covered)
-				continue;
-			placed.push_back(box);
 			const int left = int(std::lround(box.x)), top = int(std::lround(box.y));
 			// The chip: a dark rim, then the team's colour inside it. A
 			// construction site is a paler chip. A square chip has its corners
