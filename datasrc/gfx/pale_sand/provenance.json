@@ -1,0 +1,188 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "0b4d0178747f57963b3fda0330aad333ed8009cc5f1527f212aa9b22e1247bc5",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "pale_sand",
+  "group": "sand",
+  "label": "Pale sand",
+  "recipe": {
+    "name": "pale_sand",
+    "group": "sand",
+    "label": "Pale sand",
+    "profile": "sand",
+    "seam": {
+      "height": 2,
+      "cast_q8": 40,
+      "cast_width_q8": 448
+    },
+    "palette": {
+      "dark": [
+        190,
+        180,
+        146
+      ],
+      "mid": [
+        214,
+        204,
+        170
+      ],
+      "light": [
+        234,
+        226,
+        196
+      ],
+      "shell": [
+        250,
+        246,
+        232
+      ]
+    },
+    "style": {
+      "luma": 198,
+      "std": 14,
+      "grain_max": 24,
+      "match": 0.5
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "periodic": false,
+    "grid": 0,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"pale_sand:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-pale_sand",
+  "preview": [
+    211,
+    202,
+    168
+  ],
+  "minimap": [
+    211,
+    202,
+    168
+  ],
+  "mean_color": [
+    211,
+    202,
+    168
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 200.7,
+      "std": 15.2,
+      "grain": 12.9,
+      "sat": 0.2,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.7",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "darwin",
+    "machine": "arm64",
+    "libc": null
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-pale_sand0.png": "eade083d8ac180100e1bfbd7ff778a889b1e45defb4e4e449aa76d2c296af493",
+    "data/gfx/terrain-pale_sand1.png": "27b36bb81e02b323701b4af37ad465051c0ddfa04447268dbb389fcb4370f2fa",
+    "data/gfx/terrain-pale_sand2.png": "c86dd71b87c93062f97d0132262c26c109063f4e7f9a6cbd9280277e24ae6ca2",
+    "data/gfx/terrain-pale_sand3.png": "9e4e795e77aa0a875e8b0f3e3509d975a342c8ab34c27e73b9e95f4cb5b45902",
+    "data/gfx/terrain-pale_sand4.png": "c00c680ab7b114969e6fad1df46aaf1f932acfd009e88a30c5df92440ab3e12f",
+    "data/gfx/terrain-pale_sand5.png": "8aced3e19d02461de7be9b9d34aecdb26b737988c1fc36e2261692a3d69a5988",
+    "data/gfx/terrain-pale_sand6.png": "59d34c0dc63fa10d41d2a47b0fdbdddb189a3b1e5dbeb0445defe0cd386d8666",
+    "data/gfx/terrain-pale_sand7.png": "955a49a69dd5287c50d1114b7b7387d23309e2c8141d5973529c145e2d5c7459",
+    "data/gfx/terrain-pale_sand8.png": "241b5d7bc010ab43760b51a4f8d1275923d47e5f0ea2763c9434441110e53a74",
+    "data/gfx/terrain-pale_sand9.png": "a02599bbff6a86cb89f40be598c1b9bded065a9a1f248df7cfe63670a4f1b628",
+    "data/gfx/terrain-pale_sand10.png": "27d15b5ebb690e3916357c7e68772986b68018de4055151b040dc5012c1225a7",
+    "data/gfx/terrain-pale_sand11.png": "6f64f439b6c260b0b39f17bdd70b64947456e1fd5abb08ad394a94d754278484",
+    "data/gfx/terrain-pale_sand12.png": "9e73e12f075dbf40d585671b4fa9995ea8036275f1b2b3f0fce9881acfdb701f",
+    "data/gfx/terrain-pale_sand13.png": "d06df44d5218f8c7f5473f12adddbeeacda86847fab20c900a3bdc583046f6d1",
+    "data/gfx/terrain-pale_sand14.png": "e3ee2c121c29b8dcf35aa635e287919fcb431a79ed3e7ff893affd5e130384ed",
+    "data/gfx/terrain-pale_sand15.png": "041e23f6840dcdabb35ab23eed7fb5343347ed1581fac2c8b2ac2cb90c9ee2a3"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-pale_sand0.png": "0ad839d4007fe6fed360213337836173654cf44c9f2b31a2b38b0fc25d760cca",
+    "data/highres/v1/terrain-pale_sand1.png": "98c10b9c53093bdfec7938f81f103b7511e71e76df78fa55c57cb93f0ff48a7a",
+    "data/highres/v1/terrain-pale_sand2.png": "8234d2d003e6f5c6a84952ebf056a0a6a12b720102a080cdf75fa7ca6965661f",
+    "data/highres/v1/terrain-pale_sand3.png": "8e5849a217e0b2f60a8df8c9e55ec7f3f59393225a6a688697f8d819997a803e",
+    "data/highres/v1/terrain-pale_sand4.png": "5a8a909962f40e9f7b3f1727906d828e347fe8b1589369a87a2a84fca0da9599",
+    "data/highres/v1/terrain-pale_sand5.png": "87296dace44abb44f862c3139f54cd32fb52d2c58e879718e5c9d1ea08f24f34",
+    "data/highres/v1/terrain-pale_sand6.png": "7ccc68e642c95d67ff8ab4c4887ec41a7274a5c1fb25622447e50ec6c46a7285",
+    "data/highres/v1/terrain-pale_sand7.png": "791266ca95f8bbf2b022539485804bad8c458175606f9810ff6596f09ceaeffd",
+    "data/highres/v1/terrain-pale_sand8.png": "a40977c1955df33cdde2bc9ffafe0c575138497eb1cc4fce936bfc284b7ad420",
+    "data/highres/v1/terrain-pale_sand9.png": "ce6f61baae45ea264a5964d19bd0eb1c984b385673e456add08faa2607270b77",
+    "data/highres/v1/terrain-pale_sand10.png": "cd83a7ede01be10a9cdffc1c99c77cd7969ca3e8733c0e09d545f8706828e74e",
+    "data/highres/v1/terrain-pale_sand11.png": "fa4be25bda52ed845a1b36d74c81f8e400dfd2a4bcb9c1715bfe0d50e6b03c69",
+    "data/highres/v1/terrain-pale_sand12.png": "27d4aea4c1a8409172297aa46e46151c9b8d9d950c9d46a05a04a4af08abb3d4",
+    "data/highres/v1/terrain-pale_sand13.png": "e6b2f78a62eda6e5476e96ea69931cf000966345dbbb16418c4d6347d70e6032",
+    "data/highres/v1/terrain-pale_sand14.png": "1c1adeceb0dbd1719a987ffdae4d66fc8ed41170172bb7508c5e9b74b53d92e3",
+    "data/highres/v1/terrain-pale_sand15.png": "6516772ecf540eabcdbe0d5bab839ee7344a027ee0c0e454dd41230b7628a5c8"
+  }
+}

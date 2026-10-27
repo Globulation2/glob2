@@ -5678,6 +5678,14 @@ Donker water
 Gat
 [chasm]
 Kloof
+[lush_grass]
+Weelderig gras
+[dry_grass]
+Droog gras
+[dune_sand]
+Duinzand
+[pale_sand]
+Licht zand
 [terrain group water]
 Water
 [terrain group sand]

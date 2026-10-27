@@ -261,12 +261,14 @@ TEST_CASE("old cell terrain moves onto the vertices it covers")
 	CHECK(map.cellCorners(4, 3) == std::array{TRAIL, TRAIL, ICE, TRAIL});
 }
 
-TEST_CASE("terrain IDs of older files skip the retired shores")
+TEST_CASE("terrain IDs of older files skip the retired shores and follow the current built-ins")
 {
 	using R = TerrainRegistry;
 	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_TERRAIN_CATALOGUE - 1) == TERRAIN_COUNT_BEFORE_CATALOGUE);
 	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_VERTEX_TERRAIN - 1) == TERRAIN_COUNT_BEFORE_VERTEX);
-	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_VERTEX_TERRAIN) == TERRAIN_COUNT);
+	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_VERTEX_TERRAIN) == TERRAIN_COUNT_BEFORE_GROUND_LOOKS);
+	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_GROUND_LOOKS - 1) == TERRAIN_COUNT_BEFORE_GROUND_LOOKS);
+	CHECK(R::savedBuiltinCount(FILE_FORMAT_VERSION_GROUND_LOOKS) == TERRAIN_COUNT);
 	for (unsigned builtins : {TERRAIN_COUNT_BEFORE_CATALOGUE, TERRAIN_COUNT_BEFORE_VERTEX})
 	{
 		CHECK(R::currentTerrainId(builtins, WATER) == WATER);
@@ -278,6 +280,11 @@ TEST_CASE("terrain IDs of older files skip the retired shores")
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_VERTEX, 7) == BOULDERS);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_VERTEX, 30) == CHASM);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, 5) == BOULDERS);
+	// Formats 146 to 186 keep every built-in and move custom IDs behind the looks.
+	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, 5) == BOULDERS);
+	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, CHASM) == CHASM);
+	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, TERRAIN_COUNT_BEFORE_GROUND_LOOKS) == TERRAIN_COUNT);
+	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, 40) == 40 - TERRAIN_COUNT_BEFORE_GROUND_LOOKS + TERRAIN_COUNT);
 	CHECK(legacyFrameCorners(16) == std::array{SAND, SAND, SAND, GRASS});
 	CHECK(legacyFrameCorners(3) == std::array{GRASS, GRASS, GRASS, GRASS});
 	CHECK_FALSE(legacyFrameCorners(272));

@@ -5678,6 +5678,14 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 حفرة
 [chasm]
 هاوية
+[lush_grass]
+عشب كثيف
+[dry_grass]
+عشب جاف
+[dune_sand]
+رمل الكثبان
+[pale_sand]
+رمل فاتح
 [terrain group water]
 ماء
 [terrain group sand]

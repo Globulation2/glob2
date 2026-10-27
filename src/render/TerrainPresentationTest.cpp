@@ -1676,15 +1676,16 @@ TEST_SUITE("TerrainValidation")
 					map.paintCell(x, y, WATER);
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
-		// five per row, so interior variants, boundaries and seams are all visible.
+		// five per row on a four-cell pitch, so interior variants, boundaries and seams
+		// are all visible in the 24 rendered rows.
 		std::vector<TerrainType> types;
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
-		REQUIRE(types.size() == 24);
+		REQUIRE(types.size() == 28);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5; // rows 0..23 are rendered
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..23 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
 					map.paintCell(ox + dx, oy + dy, types[n]);
@@ -1720,7 +1721,7 @@ TEST_SUITE("TerrainValidation")
 		{ return std::find(frames.begin(), frames.end(), frame) != frames.end(); };
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5;
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4;
 			const auto &decor =
 				catalog.materials[catalog.bindings.at(terrainPresentation(types[n]).name)].decor;
 			INFO(terrainPresentation(types[n]).name);
@@ -1738,7 +1739,7 @@ TEST_SUITE("TerrainValidation")
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity and the map declares every group painted.
 		for (std::size_t n = 0; n < types.size(); ++n)
-			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);
+			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 4) == types[n]);
 		const auto required = map.requiredTerrainExperiments();
 		for (auto type : types)
 			if (const auto experiment = terrainExperiment(type))
@@ -1765,9 +1766,9 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
-		REQUIRE(keys.size() == 24);
+		REQUIRE(keys.size() == 28);
 		// One 4x composed tile per catalogue material, six per row.
-		GAGCore::DrawableSurface sheet(6 * 128, 4 * 128);
+		GAGCore::DrawableSurface sheet(6 * 128, 5 * 128);
 		for (std::size_t n = 0; n < keys.size(); ++n)
 		{
 			INFO(keys[n]);

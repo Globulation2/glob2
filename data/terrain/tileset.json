@@ -2931,6 +2931,318 @@
         "cast_q8": 96,
         "cast_width_q8": 512
       }
+    },
+    {
+      "key": "lush_grass",
+      "sprite": "data/gfx/terrain-lush_grass",
+      "profile": "sand",
+      "preview": [25, 101, 49],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [25, 101, 49],
+      "seam": {
+        "height": 2,
+        "cast_q8": 48,
+        "cast_width_q8": 480
+      }
+    },
+    {
+      "key": "dry_grass",
+      "sprite": "data/gfx/terrain-dry_grass",
+      "profile": "sand",
+      "preview": [120, 123, 52],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [120, 123, 52],
+      "seam": {
+        "height": 2,
+        "cast_q8": 48,
+        "cast_width_q8": 480
+      }
+    },
+    {
+      "key": "dune_sand",
+      "sprite": "data/gfx/terrain-dune_sand",
+      "profile": "sand",
+      "preview": [204, 151, 85],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [204, 151, 85],
+      "seam": {
+        "height": 2,
+        "cast_q8": 40,
+        "cast_width_q8": 448
+      }
+    },
+    {
+      "key": "pale_sand",
+      "sprite": "data/gfx/terrain-pale_sand",
+      "profile": "sand",
+      "preview": [211, 202, 168],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [211, 202, 168],
+      "seam": {
+        "height": 2,
+        "cast_q8": 40,
+        "cast_width_q8": 448
+      }
     }
   ],
   "bindings": {
@@ -2962,7 +3274,11 @@
     "deep_water": "deep_water",
     "dark_water": "dark_water",
     "void_hole": "void_hole",
-    "chasm": "chasm"
+    "chasm": "chasm",
+    "lush_grass": "lush_grass",
+    "dry_grass": "dry_grass",
+    "dune_sand": "dune_sand",
+    "pale_sand": "pale_sand"
   },
   "pair_treatments": [
     {
@@ -3689,6 +4005,346 @@
       "a": "ember_field",
       "b": "scree",
       "profile": "fractured"
+    },
+    {
+      "a": "void_hole",
+      "b": "lush_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "dry_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "dune_sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "void_hole",
+      "b": "pale_sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "lush_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "dry_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "dune_sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "chasm",
+      "b": "pale_sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "road",
+      "b": "lush_grass",
+      "profile": "cobblestone"
+    },
+    {
+      "a": "road",
+      "b": "dry_grass",
+      "profile": "cobblestone"
+    },
+    {
+      "a": "road",
+      "b": "dune_sand",
+      "profile": "cobblestone"
+    },
+    {
+      "a": "road",
+      "b": "pale_sand",
+      "profile": "cobblestone"
+    },
+    {
+      "a": "boulders",
+      "b": "lush_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "boulders",
+      "b": "dry_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "ridge_rock",
+      "b": "lush_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "ridge_rock",
+      "b": "dry_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "outcrop",
+      "b": "lush_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "outcrop",
+      "b": "dry_grass",
+      "profile": "rock"
+    },
+    {
+      "a": "hedge",
+      "b": "lush_grass",
+      "profile": "brush"
+    },
+    {
+      "a": "hedge",
+      "b": "dry_grass",
+      "profile": "brush"
+    },
+    {
+      "a": "thicket",
+      "b": "lush_grass",
+      "profile": "brush"
+    },
+    {
+      "a": "thicket",
+      "b": "dry_grass",
+      "profile": "brush"
+    },
+    {
+      "a": "lava",
+      "b": "lush_grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "dry_grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "dune_sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "lava",
+      "b": "pale_sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "lush_grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "dry_grass",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "dune_sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "ember_field",
+      "b": "pale_sand",
+      "profile": "fractured"
+    },
+    {
+      "a": "lush_grass",
+      "b": "water",
+      "profile": "shore"
+    },
+    {
+      "a": "dry_grass",
+      "b": "water",
+      "profile": "shore"
+    },
+    {
+      "a": "lush_grass",
+      "b": "deep_water",
+      "profile": "shore"
+    },
+    {
+      "a": "dry_grass",
+      "b": "deep_water",
+      "profile": "shore"
+    },
+    {
+      "a": "lush_grass",
+      "b": "dark_water",
+      "profile": "shore"
+    },
+    {
+      "a": "dry_grass",
+      "b": "dark_water",
+      "profile": "shore"
+    },
+    {
+      "a": "moss",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "moss",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "moss",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "moss",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "loam",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "loam",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "loam",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "loam",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "mud",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "mud",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "mud",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "mud",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "marsh",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "marsh",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "marsh",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "marsh",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "dirt",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "dirt",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "dirt",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "dirt",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "clay",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "clay",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "clay",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "clay",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "deep_snow",
+      "b": "lush_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "deep_snow",
+      "b": "dry_grass",
+      "profile": "organic"
+    },
+    {
+      "a": "deep_snow",
+      "b": "dune_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "deep_snow",
+      "b": "pale_sand",
+      "profile": "organic"
+    },
+    {
+      "a": "boardwalk",
+      "b": "lush_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "boardwalk",
+      "b": "dry_grass",
+      "profile": "crisp"
+    },
+    {
+      "a": "boardwalk",
+      "b": "dune_sand",
+      "profile": "crisp"
+    },
+    {
+      "a": "boardwalk",
+      "b": "pale_sand",
+      "profile": "crisp"
     }
   ],
   "boundary_warp_q8": [960, 352, 120]

@@ -5678,6 +5678,14 @@ Air gelap
 Lubang
 [chasm]
 Jurang
+[lush_grass]
+Rumput lebat
+[dry_grass]
+Rumput kering
+[dune_sand]
+Pasir bukit
+[pale_sand]
+Pasir pucat
 [terrain group water]
 Air
 [terrain group sand]

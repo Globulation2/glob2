@@ -3,6 +3,7 @@
 #include "GradientFixture.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
+#include "TerrainExperiments.h"
 #include "BinaryStream.h"
 #include "TextStream.h"
 #include "PackedArray.h"
@@ -772,6 +773,78 @@ TEST_SUITE("TerrainRuntime")
 		// Current files number their custom definitions from the current built-ins.
 		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
 	}
+	TEST_CASE("format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks")
+	{
+		glob2test::HeadlessGlobals globals;
+		// Written by an origin/master build (TERRAIN_COUNT 29) with two runtime
+		// definitions painted at IDs 29 and 30 beside chasm, ice, trail, sand and water.
+		auto *backend = globalContainer->fileManager->openInflatingInputStreamBackend(
+			"test/fixtures/terrain-catalogue/custom-registry-186.game.gz");
+		REQUIRE(backend);
+		GameGUI loaded;
+		{
+			GAGCore::BinaryInputStream input(backend);
+			REQUIRE(loaded.game.load(&input));
+		}
+		auto verify = [](const Map &map)
+		{
+			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
+			const auto bog = map.terrainRegistry().find("fixture:bog");
+			const auto mud = map.terrainRegistry().find("fixture:mud");
+			REQUIRE(bog);
+			REQUIRE(mud);
+			CHECK(*bog == TerrainType(TERRAIN_COUNT));
+			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
+			CHECK(map.terrainProperties(*bog).swimmable);
+			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
+			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
+			CHECK_FALSE(map.terrainProperties(*mud).buildable);
+			CHECK(map.terrainTypeAt(4, 4) == *bog);
+			CHECK(map.terrainTypeAt(5, 4) == *bog);
+			CHECK(map.terrainTypeAt(6, 6) == *mud);
+			CHECK(map.terrainTypeAt(8, 8) == CHASM);
+			CHECK(map.terrainTypeAt(10, 10) == ICE);
+			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
+			CHECK(map.terrainTypeAt(14, 14) == SAND);
+			CHECK(map.terrainTypeAt(16, 14) == WATER);
+			CHECK(map.terrainTypeAt(0, 0) == GRASS);
+		};
+		verify(loaded.game.map);
+		auto *resaved = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(resaved);
+		loaded.game.save(&output, false, "custom-registry-187");
+		output.flush();
+		GameGUI reloaded;
+		{
+			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+				std::string(resaved->getBuffer(), resaved->getPosition())));
+			REQUIRE(reloaded.game.load(&input));
+		}
+		verify(reloaded.game.map);
+		CHECK(reloaded.game.map.terrainRegistry().digest() == loaded.game.map.terrainRegistry().digest());
+		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
+	}
+	TEST_CASE("grass and sand looks share every rule of grass and sand")
+	{
+		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
+									 std::pair{DUNE_SAND, SAND}, std::pair{PALE_SAND, SAND}})
+		{
+			CAPTURE(terrainPresentation(look).name);
+			CHECK(terrainGroup(look) == terrainGroup(classic));
+			CHECK(sameTerrainProperties(terrainProperties(look), terrainProperties(classic)));
+			CHECK_FALSE(terrainExperiment(look));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(look) ==
+				  TerrainRegistry::builtins()->propertyIndex(classic));
+		}
+		// The editor lays a sand beach where any grass look meets water.
+		Map map;
+		map.setSize(5, 5, WATER);
+		map.paintVertices({{2, 2}}, DRY_GRASS);
+		CHECK(map.vertexTerrainAt(2, 2) == DRY_GRASS);
+		CHECK(map.vertexTerrainAt(1, 1) == SAND);
+		CHECK(map.vertexTerrainAt(3, 2) == SAND);
+		CHECK(map.vertexTerrainAt(0, 0) == WATER);
+	}
 	TEST_CASE("painted catalogue terrain survives save and reload with its checksum")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -781,7 +854,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 24);
+		REQUIRE(painted.size() == 28);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);

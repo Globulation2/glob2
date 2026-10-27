@@ -331,3 +331,7 @@ static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 174;
 
 // Per-team building admission widens pending counts from 8 to 16 bits.
 static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 186;
+
+//! Built-in looks of grass and sand: TERRAIN_COUNT grew from 29 to 33, so earlier
+//! files carry custom terrain IDs starting at 29 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_GROUND_LOOKS = 187;
