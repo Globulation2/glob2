@@ -34,7 +34,7 @@ using namespace MapGeneration;
 // tunnels are carved on (GraphMaze.h): a spanning tree, a door into every queen chamber, and a
 // share of extra tunnels for loops. Fairness is statistical, the lobby keeping the best of several
 // seeds; every queen chamber is grown to hold the same number of building sites (Room.h), so no
-// colony starts with more room than another.
+// colony starts with more room than another, and opens onto a farm chamber.
 //
 // WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Buildings need pure grass
 // and rock is never cleared, so the map's building room is fixed at generation and the fight is
@@ -89,8 +89,7 @@ double pondRadiusFor(int chamberSize)
 }
 // The queen chamber's kit, unscaled whatever the amounts say: wheat and wood on the flanks behind the
 // swarm and a second wheat patch straight behind it. Bigger than a watered home's, since none of it
-// regrows (second play: no water in the home, "you can still have some starting resources"). No
-// quarry: the walls are stone.
+// regrows (second play: no water in the home, "you can still have some starting resources").
 constexpr int kHomeWheat = 24, kHomeWood = 16, kHomeWheatBehind = 16;
 // Crops in a chamber are grown from this many seeds spaced evenly round its pond, each given its
 // share of the count (FEEDBACK 2026-09-13, second play: crops on one side never spread past the sand
@@ -217,32 +216,38 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const std::vector<int> doors =
 		openPocketDoors(graph, context, "anthill-maze", L.homeSite, isPocket, openEdge);
 	openLoops(graph, context, "anthill-maze", isPocket, o.loops, openEdge);
-	// Dead ends other than the queens' are treasure chambers; of the rest, every other one is a
-	// farm chamber (index parity, which is as random as the sites are).
+	// The chamber outside every queen's door is a farm chamber (REVISION 2026-10-27), so every
+	// colony's first chamber down the tunnel is the same kind. Revision 6's chambers dug wider made
+	// a farm on the doorstep worth far more than a plain one: the colony that drew it grew to twice
+	// its rivals in four-AI calibration games, and the lobby's fairness median fell from 0.93 to 0.89.
+	std::vector<unsigned char> doorstep(L.sites.size(), 0);
+	for (int k = 0; k < teams; ++k)
+		doorstep[graph.other(doors[k], L.homeSite[k])] = 1;
+	// Other dead ends than the queens' and the doorsteps are treasure chambers; of the rest, every
+	// other one is a farm chamber (index parity, which is as random as the sites are).
 	std::vector<int> exitEdge;
 	const std::vector<int> ends = deadEnds(graph, openEdge, isPocket, exitEdge);
 	std::vector<unsigned char> isEnd(L.sites.size(), 0);
 	for (int site : ends)
-		isEnd[site] = 1;
-	L.treasureSite = ends;
+		if (!doorstep[site])
+		{
+			isEnd[site] = 1;
+			L.treasureSite.push_back(site);
+		}
 	for (int site = 0; site < int(L.sites.size()); ++site)
-		if (!isPocket[site] && !isEnd[site] && site % 2 == 0)
+		if (!isPocket[site] && !isEnd[site] && (doorstep[site] || site % 2 == 0))
 			L.farmSite.push_back(site);
-	// One plain chamber in kQuarryEvery is a quarry (REVISION 2026-10-26), never one outside a
-	// queen's door, so no colony starts with a quarry on its doorstep; at least one per colony while
-	// there are candidates.
+	// One plain chamber in kQuarryEvery is a quarry (REVISION 2026-10-26); a doorstep is a farm, so
+	// no colony starts with a quarry on its doorstep; at least one per colony while there are
+	// candidates.
 	{
-		std::vector<unsigned char> doorstep(L.sites.size(), 0);
-		for (int k = 0; k < teams; ++k)
-			doorstep[graph.other(doors[k], L.homeSite[k])] = 1;
 		int plain = 0;
 		std::vector<int> candidates;
 		for (int site = 0; site < int(L.sites.size()); ++site)
-			if (!isPocket[site] && !isEnd[site] && site % 2 != 0)
+			if (!isPocket[site] && !isEnd[site] && !doorstep[site] && site % 2 != 0)
 			{
 				++plain;
-				if (!doorstep[site])
-					candidates.push_back(site);
+				candidates.push_back(site);
 			}
 		context.shuffle(candidates.begin(), candidates.end(), "anthill-quarries");
 		const int wanted =

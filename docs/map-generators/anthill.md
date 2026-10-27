@@ -19,9 +19,11 @@ buildings, and growing means taking the next chamber down the tunnel.
   rough disc of `chamber-size` (5-10, 7), farm chambers two bigger, queen chambers three, each turned
   by the golden angle so one outline reads as many. Every chamber's pond is 40% of the chamber's
   radius (a tile more for a farm, half a tile for a queen).
-- **Kinds.** Dead ends other than the queens' are treasure chambers; of the rest every other one is a
-  farm chamber. One plain chamber in three is a quarry, never the one outside a queen's door and never
-  fewer than one per colony while there are candidates. A queen chamber's swarm stands between its
+- **Kinds.** The chamber outside every queen's door is a farm chamber, so every colony's first
+  chamber down the tunnel is the same kind (a farm there or a plain chamber was the largest
+  difference between starts in calibration games). Other dead ends than the queens' are treasure
+  chambers; of the rest every other one is a farm chamber. One plain chamber in three is a quarry,
+  never fewer than one per colony while there are candidates. A queen chamber's swarm stands between its
   middle and its door, and the chamber is grown until it holds `queen-room` building sites (20-160,
   60: overlapping 4x4 footprints, the start scorer's measure) with `growUntilSites`, within its own
   cell and never onto a pond's beach, so no colony starts with more room than another. What grows is
@@ -31,15 +33,17 @@ buildings, and growing means taking the next chamber down the tunnel.
   five (the validator refuses a queen chamber with fewer). None of it regrows and none of it scales with the
   amounts.
 - **Quarries.** Dug to a farm chamber's size, with no pond: a stone deposit at the middle, radius 2 at the default `stone-amount`
-  (scaled by area, at least 1 above 0%), the roads stopping 4.5 tiles short of it, and up to three
-  scree spoil heaps against the walls, each well away from every tunnel's mouth so no haul crosses
-  the slow ground. Stone deposits never run out, so a quarry is a permanent supply; the contest is
+  (scaled by area, at least 1 above 0%), the roads stopping 4.5 tiles short of it, and a field of
+  scree spoil round it out to the walls wherever smooth noise is high, except in a lane from each
+  tunnel's mouth to the deposit, so no haul crosses the slow ground and a quarry is poor building
+  land. Stone deposits never run out, so a quarry is a permanent supply; the contest is
   over holding one.
 - **Rock.** Every vertex of an uncarved tile is ridge rock or outcrop (`ridge-terrain` experiment),
   so an uncarved tile is as impassable as the stone it replaced, and towers still shoot over it.
   Outcrop takes the face where smooth noise is high and thins out behind it, so walls read broken at
   the face and solid within. Open tiles against the face are mixed: walkable, no building, no crop,
-  so every chamber is dug a tile wider than its size and keeps the room it had with stone walls.
+  so every chamber is dug a tile and a half wider than its size and keeps the room it had with
+  stone walls.
   `openColonyRoutes` only clears crops in a tunnel; it never cuts rock, and the validator checks that
   the finished terrain is the design's vertex for vertex.
 - **Experiments.** A generated map declares the ridge, rough (scree) and path (dirt track) terrain
