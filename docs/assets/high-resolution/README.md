@@ -24,8 +24,8 @@ Validate the built WebP layers, atlases and index with
 The HD terrain atlas covers 272 legacy connected tiles. The catalogue materials
 (`terrain-<name>N`) ship standalone 4× frames in the `procedural-materials/`
 production folder; `tools/artwork/terrain_synth.py` writes and registers them
-together with the classic tiles. Ice and cobblestone have no HD source yet and
-use native fallback.
+together with the classic tiles. Catalog ice now has procedural HD artwork;
+the old connected ice frames and legacy cobblestone sprites retain native fallback.
 AI candidates are generated into fresh staging directories only; see the
 [candidate pipeline](../../../tools/artwork/ai/README.md). Production packaging
 reproduces the committed reviewed finals without model inference.

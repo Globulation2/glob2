@@ -383,6 +383,8 @@ TEST_SUITE("TerrainMaterials")
 		definitions.compiledPack.clear();
 		const auto id = definitions.find("ice");
 		auto &ice = definitions.materials[id];
+		ice.sprite = "data/gfx/terrain";
+		ice.variantGrid = 0; ice.variantBlocks = 1;
 		ice.variants = {{272, 1}};
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
@@ -446,6 +448,8 @@ TEST_SUITE("TerrainMaterials")
 		auto definitions = catalog();
 		definitions.compiledPack.clear(); // Synthetic animation has no compiled artifact.
 		auto &ice = definitions.materials[definitions.find("ice")];
+		ice.sprite = "data/gfx/terrain";
+		ice.variantGrid = 0; ice.variantBlocks = 1;
 		ice.variants = {{272, 1}};
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
@@ -482,6 +486,8 @@ TEST_SUITE("TerrainMaterials")
 		auto definitions = catalog();
 		const auto id = definitions.find("ice");
 		auto &material = definitions.materials[id];
+		material.sprite = "data/gfx/terrain";
+		material.variantGrid = 0; material.variantBlocks = 1;
 		material.variants = {{272, 1}, {273, 9}};
 		material.totalWeight = 10;
 		unsigned frequent = 0;
@@ -566,7 +572,11 @@ TEST_SUITE("TerrainMaterials")
 		document["compiled_pack"] = "data/terrain/startup-override/atlas.json";
 		for (auto &material : document["materials"])
 			if (material["key"] == "ice")
+			{
+				material["sprite"] = "data/gfx/terrain";
+				material.erase("variant_grid"); material.erase("variant_blocks"); material.erase("variant_block_group");
 				material["variants"] = {{{"frame", 272}, {"weight", 1}}};
+			}
 		const auto directory = glob2test::artifactDir() / "data/terrain/startup-override";
 		std::filesystem::create_directories(directory);
 		globals->fileManager->addDir(glob2test::artifactDir().string());
@@ -808,10 +818,12 @@ TEST_SUITE("TerrainMaterials")
 		const auto c = catalog();
 		const auto grass = c.find("grass"), sand = c.find("sand");
 		unsigned differentVariants = 0;
+		const int grid = c.materials[grass].variantGrid;
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
-				differentVariants += c.variantIndex(grass, x, y, 1) != c.variantIndex(grass, x, y, 2);
-		CHECK(differentVariants > 700); // 15/16 of cells differ between independent seeds.
+				differentVariants += c.variantIndex(grass, x * grid, y * grid, 1) !=
+									c.variantIndex(grass, x * grid, y * grid, 2);
+		CHECK(differentVariants > 600); // Four independently seeded layouts.
 		CHECK(c.variantIndex(grass, 5, 6) == c.variantIndex(grass, 5, 6, 0));
 		TerrainVisual::Recipe r;
 		r.width = r.height = 16;
@@ -1191,22 +1203,24 @@ TEST_SUITE("TerrainMaterials")
 					seen.insert(frame);
 					CHECK(frame == c.frame(id, x, y, 100));
 				}
-			CHECK(seen.size() == 16);
+			CHECK(seen.size() == c.materials[id].variants.size());
 		}
 	}
 
 	TEST_CASE("grid variants repeat one positional block independent of the map seed")
 	{
 		glob2test::HeadlessGlobals globals;
-		const auto c = catalog();
+		auto c = catalog();
 		const auto water = c.find("water");
-		REQUIRE(c.materials[water].variantGrid == 4);
+		const unsigned grid = unsigned(c.materials[water].variantGrid);
+		c.materials[water].variantBlocks = 1;
+		c.materials[water].variants.resize(grid * grid);
 		for (std::uint32_t seed : {0u, 1u, 0xdeadbeefu})
 			for (int y = -4; y < 12; ++y)
 				for (int x = -4; x < 12; ++x)
 				{
 					INFO(seed << " " << x << " " << y);
-					CHECK(c.variantIndex(water, x, y, seed) == unsigned((y & 3) * 4 + (x & 3)));
+					CHECK(c.variantIndex(water, x, y, seed) == (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)));
 				}
 
 		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
@@ -1218,10 +1232,65 @@ TEST_SUITE("TerrainMaterials")
 		invalid["materials"][index]["variant_grid"] = 3;
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		invalid = j;
-		invalid["materials"][index]["variant_grid"] = 8; // 16 variants, not 64.
+		invalid["materials"][index]["variant_grid"] = 16; // Four complete8x8 layouts, not16x16.
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		invalid = j;
 		invalid["materials"][index].erase("edges");
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+	}
+
+	TEST_CASE("interchangeable grid blocks select one seeded layout for every cell in a block")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		for (const auto &material : c.materials)
+		{
+			const auto id = c.find(material.key);
+			REQUIRE(c.materials[id].variantBlocks == 4);
+			const int grid = c.materials[id].variantGrid;
+			const unsigned cells = unsigned(grid * grid);
+			REQUIRE(grid == 8);
+			std::set<unsigned> seen;
+			unsigned changed = 0;
+			for (int by = -4; by < 28; ++by)
+				for (int bx = -4; bx < 28; ++bx)
+				{
+					const unsigned layout = c.variantIndex(id, bx * grid, by * grid, 42) / cells;
+					seen.insert(layout);
+					changed += layout != c.variantIndex(id, bx * grid, by * grid, 43) / cells;
+					for (int y = 0; y < grid; ++y)
+						for (int x = 0; x < grid; ++x)
+						{
+							const unsigned index = c.variantIndex(id, bx * grid + x, by * grid + y, 42);
+							CHECK(index == layout * cells + unsigned(y * grid + x));
+							CHECK(index == c.variantIndex(id, bx * grid + x, by * grid + y, 42));
+						}
+				}
+			CHECK(seen.size() == 4);
+			CHECK(changed > 600);
+		}
+		for (unsigned seed : {0u, 1u, 42u})
+			for (int y = -8; y < 64; ++y)
+				for (int x = -8; x < 64; ++x)
+					CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find("deep_water"), x, y, seed));
+		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		const auto document = nlohmann::json::parse(input);
+		std::size_t index = 0;
+		while (document["materials"][index]["key"] != "scree") ++index;
+		for (const auto &value : {nlohmann::json(0), nlohmann::json(2), nlohmann::json(17), nlohmann::json("4")})
+		{
+			auto invalid = document;
+			invalid["materials"][index]["variant_blocks"] = value;
+			CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		}
+		for (const auto &value : {nlohmann::json(""), nlohmann::json(7), nlohmann::json(std::string(65, 'x'))})
+		{
+			auto invalid = document;
+			invalid["materials"][index]["variant_block_group"] = value;
+			CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		}
+		auto invalid = document;
+		invalid["materials"][index].erase("variant_grid");
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 	}
 
@@ -1374,6 +1443,120 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(c.frame(c.find("ice"), 7, 9, t) ==
 				  c.frame(c.find("ice"), 7, 9, 0) + (t / 4) % 3 * 16);
 	}
+}
+
+TEST_CASE("selected terrain preparation bounds pixels and preserves retained snapshots [display]" *
+          doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::HeadlessGlobals globals({.display = true});
+    globals->fileManager->addDir(glob2test::sourceRoot().string());
+    TerrainVisual::Compositor compositor(catalog());
+    const auto &c = compositor.catalog();
+    const auto grass = c.find("grass"), water = c.find("water");
+    const auto uniform = [&](TerrainVisual::MaterialId id)
+    {
+        return contextualRecipe(3, 7, 16, [=](int, int) { return id; });
+    };
+    const std::array grassRecipes{uniform(grass)}, waterRecipes{uniform(water)};
+    const auto retainedPixels = [](const auto &snapshot)
+    {
+        std::size_t pixels = 0, variants = 0;
+        for (const auto &material : snapshot->textures)
+            for (const auto &texture : material)
+                if (texture.pixels && !texture.pixels->empty())
+                {
+                    pixels += texture.pixels->size();
+                    ++variants;
+                }
+        return std::pair{pixels, variants};
+    };
+    for (bool hd : {false, true})
+    {
+        INFO("hd=" << hd);
+        const auto idleWaterRevision = compositor.materialRevision(water);
+        compositor.prepareForRecipes(hd, 0, grassRecipes);
+        const auto grassView = compositor.preparedMaterial(grassRecipes[0], grass);
+        REQUIRE(grassView.size > 0);
+        auto retained = compositor.cpuMaterials(std::array{grass});
+        const auto [pixelCount, variantCount] = retainedPixels(retained);
+        CHECK(variantCount == 1);
+        CHECK(pixelCount == std::size_t(grassView.size * grassView.size));
+        CHECK(retained->included[grass]);
+        CHECK_FALSE(retained->included[water]);
+        auto adjacentGrass = grassRecipes[0];
+        ++adjacentGrass.x;
+        const std::array twoGrassRecipes{grassRecipes[0], adjacentGrass};
+        compositor.prepareForRecipes(hd, 0, twoGrassRecipes);
+        const auto twoGrass = compositor.cpuMaterials(std::array{grass});
+        const auto [twoPixelCount, twoVariantCount] = retainedPixels(twoGrass);
+        CHECK(twoVariantCount == 2);
+        CHECK(twoPixelCount == pixelCount * 2);
+        const auto batch = compositor.cpuMaterialsForRecipes(grassRecipes);
+        const auto [batchPixels, batchVariants] = retainedPixels(batch);
+        CHECK(batchVariants == 1);
+        CHECK(batchPixels == pixelCount);
+        CHECK(batch->bytes == compositor.cpuMaterialBytesForRecipes(grassRecipes));
+        CHECK(batch->bytes < twoGrass->bytes);
+        CHECK(compositor.preparedMaterial(adjacentGrass, grass).size > 0);
+        const auto hidden = compositor.cpuMaterialsForRecipes({});
+        CHECK(retainedPixels(hidden).second == 0);
+        CHECK(twoGrass->bytes > retained->bytes);
+        CHECK(twoGrass->bytes <= retained->bytes +
+              pixelCount * sizeof(TerrainVisual::Compositor::MaterialPixels::value_type) + 4096);
+        compositor.prepareForRecipes(hd, 0, grassRecipes);
+        const auto selectedGrassRevision = compositor.materialRevision(grass);
+        const auto original = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+            SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        const auto actual = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+            SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        REQUIRE(original);
+        REQUIRE(actual);
+        retained->compose(grassRecipes[0], original.get(), 1);
+        compositor.prepareForRecipes(hd, 5, grassRecipes);
+        CHECK(compositor.materialRevision(grass) == selectedGrassRevision);
+        CHECK(compositor.materialRevision(water) == idleWaterRevision);
+
+        compositor.prepareForRecipes(hd, 0, waterRecipes);
+        const auto phase0View = compositor.preparedMaterial(waterRecipes[0], water);
+        REQUIRE_FALSE(phase0View.pixels.empty());
+        const TerrainVisual::Compositor::MaterialPixels phase0(phase0View.pixels.begin(), phase0View.pixels.end());
+        auto adjacentWater = waterRecipes[0];
+        ++adjacentWater.x;
+        const std::array twoWaterRecipes{waterRecipes[0], adjacentWater};
+        compositor.prepareForRecipes(hd, 0, twoWaterRecipes);
+        CHECK_FALSE(compositor.preparedMaterial(adjacentWater, water).pixels.empty());
+        const auto unchangedWater = compositor.preparedMaterial(waterRecipes[0], water);
+        CHECK(std::equal(phase0.begin(), phase0.end(), unchangedWater.pixels.begin(), unchangedWater.pixels.end()));
+        compositor.prepareForRecipes(hd, 6, waterRecipes);
+        const auto phase1View = compositor.preparedMaterial(waterRecipes[0], water);
+        const TerrainVisual::Compositor::MaterialPixels phase1(phase1View.pixels.begin(), phase1View.pixels.end());
+        compositor.prepareForRecipes(hd, 5, waterRecipes);
+        const auto blended = compositor.preparedMaterial(waterRecipes[0], water);
+        REQUIRE(blended.pixels.size() == phase0.size());
+        REQUIRE(blended.pixels.size() == phase1.size());
+        const unsigned weightB = (5u * 65536 + 3) / 6;
+        for (std::size_t p = 0; p < blended.pixels.size(); ++p)
+        {
+            REQUIRE(phase0[p][3] == 255);
+            REQUIRE(phase1[p][3] == 255);
+            for (unsigned channel = 0; channel < 3; ++channel)
+                CHECK(blended.pixels[p][channel] ==
+                      (phase0[p][channel] * (65536 - weightB) + phase1[p][channel] * weightB + 32768) >> 16);
+        }
+        auto selected = compositor.cpuMaterials();
+        const auto [selectedPixels, selectedVariants] = retainedPixels(selected);
+        CHECK(selectedVariants == 1);
+        CHECK(selectedPixels == std::size_t(blended.size * blended.size));
+        // The byte admission includes catalog metadata, but its live pixel payload
+        // is one chosen variant rather than the complete 256-variant bank.
+        CHECK(selected->bytes >= selectedPixels * sizeof(TerrainVisual::Compositor::MaterialPixels::value_type));
+        retained->compose(grassRecipes[0], actual.get(), 1);
+        for (int y = 0; y < 32; ++y)
+            CHECK(std::memcmp(static_cast<Uint8 *>(actual->pixels) + y * actual->pitch,
+                              static_cast<Uint8 *>(original->pixels) + y * original->pitch, 32 * 4) == 0);
+        // Evict water before the next HD mode so its idle revision is comparable.
+        compositor.prepareForRecipes(hd, 5, grassRecipes);
+    }
 }
 
 TEST_CASE("owned prepared materials survive animation and share unchanged revisions [display]" *

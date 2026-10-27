@@ -45,6 +45,42 @@ class TerrainTileset(unittest.TestCase):
         self.assertEqual(len(self.document["materials"]), 64)
         self.assertEqual(len(validate(self.document)), expected)
 
+    def test_interchangeable_blocks_require_complete_periodic_grids(self):
+        for material in self.document["materials"]:
+            self.assertEqual(material["variant_blocks"], 4)
+            self.assertEqual(material["variant_grid"], 8)
+            self.assertEqual(len(material["variants"]), 256)
+            for value in (0, 2, 17, "4", True):
+                invalid = copy.deepcopy(self.document)
+                next(m for m in invalid["materials"] if m["key"] == material["key"])["variant_blocks"] = value
+                with self.assertRaises(ValueError):
+                    validate(invalid)
+            invalid = copy.deepcopy(self.document)
+            next(m for m in invalid["materials"] if m["key"] == material["key"]).pop("variant_grid")
+            with self.assertRaises(ValueError):
+                validate(invalid)
+
+    def test_variant_block_groups_use_nonempty_utf8_keys_of_at_most_64_bytes(self):
+        # Reduce to one material so each schema boundary checks only its frames.
+        document = copy.deepcopy(self.document)
+        document["materials"] = [document["materials"][0]]
+        key = document["materials"][0]["key"]
+        document["bindings"] = {name: key for name in document["bindings"]}
+        document["pair_treatments"] = []
+        for value in ("waves", "a" * 64, "é" * 32):
+            document["materials"][0]["variant_block_group"] = value
+            with self.subTest(valid=value):
+                validate(document)
+        for value in ("", "a" * 65, "é" * 33, True, 4, [], {}):
+            document["materials"][0]["variant_block_group"] = value
+            with self.subTest(invalid=value):
+                with self.assertRaisesRegex(ValueError, "variant_block_group"):
+                    validate(document)
+        document["materials"][0]["variant_block_group"] = "waves"
+        document["materials"][0].pop("variant_grid")
+        with self.assertRaisesRegex(ValueError, "variant_block_group"):
+            validate(document)
+
     def test_required_bindings_cover_legacy_and_builtin_names(self):
         names = json.loads((ROOT / "tools/terrain_builtin_names.json").read_text())
         self.assertEqual(BINDINGS[:5], LEGACY_BINDINGS)
@@ -62,10 +98,8 @@ class TerrainTileset(unittest.TestCase):
     def test_material_provenance_is_per_material(self):
         provenance = material_provenance(self.document)
         self.assertEqual(set(provenance), {m["key"] for m in self.document["materials"]})
-        self.assertEqual(provenance["grass"]["method"], "existing")
+        self.assertEqual(provenance["grass"]["method"], "procedural")
         for key, record in provenance.items():
-            if key in LEGACY_BINDINGS:
-                continue
             self.assertIn(record["method"], ("procedural", "image-generator", "hybrid"), key)
             self.assertTrue((ROOT / record["source"]).is_file(), key)
 

@@ -18,6 +18,7 @@
 #include <RenderDevice.h>
 
 #include <memory>
+#include <deque>
 using std::make_unique;
 
 #define GL_GLEXT_PROTOTYPES
@@ -65,6 +66,17 @@ namespace GAGCore
         bool retainPublishedOnFailure = false;
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
+    static std::set<std::string> deferredHighResolutionNames;
+    struct DeferredHighResolution {
+        std::set<unsigned> wanted, completed, active;
+        std::map<unsigned, HighResolutionInputs> pending;
+        std::deque<unsigned> queued;
+        std::vector<unsigned> order;
+    };
+    static std::map<Sprite*, DeferredHighResolution> deferredHighResolution;
+    static Sprite *deferredHighResolutionCursor = nullptr;
+    static bool validHighResolutionFile(const std::string& file);
+
     // Source decoding and standalone frame preparation work with either texture
     // backend. Only packing those frames into the legacy atlas requires GL.
     // SDL's portable renderer consumes only the base image; requesting a mip
@@ -82,7 +94,7 @@ namespace GAGCore
         packEntries.clear();
         packSource = Toolkit::assets().requestBytes(directory + "/frames.txt");
         auto bytes = Toolkit::assets().wait(packSource);
-        if (!bytes || bytes->empty() || bytes->size() > 1024 * 1024) return false;
+        if (!bytes || bytes->empty() || bytes->size() > 8 * 1024 * 1024) return false;
         std::string text(bytes->begin(), bytes->end());
         std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
         if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
@@ -443,6 +455,58 @@ namespace GAGCore
         return stats;
     }
 
+    bool Sprite::highResolutionDeferred(const std::string& name)
+    {
+        return deferredHighResolutionNames.contains(name);
+    }
+    void Sprite::deferHighResolution(const std::string& name)
+    {
+        deferredHighResolutionNames.insert(name);
+    }
+    void Sprite::setHighResolutionFrames(std::span<const unsigned> indices)
+    {
+        if (!highResolutionDeferred(fileName)) return;
+        std::set<unsigned> wanted;
+        for (unsigned frame : indices) if (frame < images.size()) wanted.insert(frame);
+        auto &stream = deferredHighResolution[this];
+        if (wanted == stream.wanted) return;
+        stream.wanted = std::move(wanted);
+        stream.order.assign(indices.begin(), indices.end());
+        // Preserve overlapping in-flight subscriptions as animation advances.
+        // Cancelling the whole window here can prevent later variants decoding.
+        std::erase_if(stream.pending, [&](const auto &item) { return !stream.wanted.contains(item.first); });
+        std::erase_if(stream.completed, [&](unsigned frame) { return !stream.wanted.contains(frame); });
+        std::erase_if(stream.active, [&](unsigned frame) { return !stream.wanted.contains(frame); });
+        std::erase_if(stream.queued, [&](unsigned frame) { return !stream.wanted.contains(frame); });
+        experimentImages.resize(images.size(), nullptr);
+        experimentRotated.resize(images.size(), nullptr);
+        // Readers own copied pixels, never a borrowed pointer across this declaration.
+        for (unsigned frame = 0; frame < images.size(); ++frame) {
+            if (!stream.wanted.contains(frame)) {
+                delete experimentImages[frame]; experimentImages[frame] = nullptr;
+                delete experimentRotated[frame]; experimentRotated[frame] = nullptr;
+            }
+        }
+        recomputeBlockCompleteHD();
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        if (!readPack(directory)) return;
+        const auto prefix = fileName.substr(fileName.find_last_of('/') + 1);
+        const bool mipmaps = false; // Deferred terrain is sampled by CPU page composition.
+        // Preserve caller order, which interleaves current/next animation endpoints.
+        for (unsigned frame : indices) {
+            if (!stream.wanted.contains(frame)) continue;
+            if (experimentImages[frame] || stream.pending.contains(frame) || stream.completed.contains(frame)) continue;
+            auto entry = packEntries.find(prefix + std::to_string(frame));
+            if (entry == packEntries.end()) continue;
+            auto &inputs = stream.pending[frame];
+            stream.queued.push_back(frame);
+            for (const auto &file : {entry->second.base, entry->second.team})
+                if (validHighResolutionFile(file)) inputs.add(directory + '/' + file, mipmaps);
+        }
+    }
+
     void Sprite::requestHighResolution(bool enabled)
     {
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
@@ -462,6 +526,18 @@ namespace GAGCore
         requestedHighResolutionGeneration = Toolkit::assets().sourceGeneration();
         requestedHighResolutionDirectory = directory;
         for (auto *sprite : loadedSprites) {
+            if (highResolutionDeferred(sprite->fileName)) {
+                auto &stream = deferredHighResolution[sprite];
+                auto wanted = stream.order;
+                stream.pending.clear(); stream.completed.clear(); stream.wanted.clear();
+                stream.active.clear(); stream.queued.clear();
+                for (auto *&image : sprite->experimentImages) { delete image; image = nullptr; }
+                for (auto *&image : sprite->experimentRotated) { delete image; image = nullptr; }
+                sprite->highResolutionAtlas.reset();
+                sprite->recomputeBlockCompleteHD();
+                sprite->setHighResolutionFrames(wanted);
+                continue;
+            }
             auto prepared = std::make_unique<Sprite>();
             prepared->fileName = sprite->fileName;
             prepared->dynamicTeamColor = sprite->dynamicTeamColor;
@@ -530,7 +606,50 @@ namespace GAGCore
             sprite->recomputeBlockCompleteHD();
             it = pendingHighResolution.erase(it);
         }
-        return pendingHighResolution.empty();
+        bool streamed = true;
+        auto streamIt = deferredHighResolution.upper_bound(deferredHighResolutionCursor);
+        if (streamIt == deferredHighResolution.end()) streamIt = deferredHighResolution.begin();
+        for (size_t bank = 0; bank < deferredHighResolution.size(); ++bank) {
+            auto &[sprite, stream] = *streamIt;
+            if (++streamIt == deferredHighResolution.end()) streamIt = deferredHighResolution.begin();
+            // Rotate banks when a short presentation budget expires, so one
+            // animated bank cannot monopolize every poll.
+            deferredHighResolutionCursor = sprite;
+            bool changed = false;
+            const auto expired = [&] {
+                if (std::chrono::steady_clock::now() < deadline) return false;
+                if (changed) sprite->recomputeBlockCompleteHD();
+                return true;
+            };
+            // Publish before refilling so completed decodes immediately release
+            // slots. Refill within this same deadline instead of leaving workers
+            // idle until the next presentation turn.
+            for (;;) {
+                bool progress = false;
+                for (auto it = stream.active.begin(); it != stream.active.end();) {
+                    if (expired()) return false;
+                    auto found = stream.pending.find(*it);
+                    if (found->second.pending()) { ++it; continue; }
+                    sprite->appendHighResolutionFrame(found->first, *sprite, found->second);
+                    stream.completed.insert(found->first);
+                    stream.pending.erase(found);
+                    it = stream.active.erase(it);
+                    changed = progress = true;
+                }
+                while (stream.active.size() < 64 && !stream.queued.empty()) {
+                    if (expired()) return false;
+                    const unsigned frame = stream.queued.front(); stream.queued.pop_front();
+                    auto found = stream.pending.find(frame);
+                    highResolutionFrameReady(sprite->fileName, frame, found->second);
+                    stream.active.insert(frame);
+                    progress = true;
+                }
+                if (!progress) break;
+            }
+            if (changed) sprite->recomputeBlockCompleteHD();
+            streamed &= stream.pending.empty();
+        }
+        return pendingHighResolution.empty() && streamed;
     }
     void Sprite::setHighResolution(bool enabled)
     {
@@ -669,7 +788,7 @@ namespace GAGCore
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return inputs;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
         size_t firstFrame = frames;
         auto add = [&](const std::string& path, bool mipmaps) {
             inputs.add(path, mipmaps);
@@ -706,9 +825,11 @@ namespace GAGCore
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return true;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
-        // Preserve the existing eight-frame decode window and worker admission.
-        for (size_t frame = index; frame < index + 8; ++frame) {
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
+        // Deferred sparse inputs own one frame; numeric lookahead only adds
+        // repeated failed lookups there. Ordinary sprite prefetch keeps eight.
+        const size_t lookahead = Sprite::highResolutionDeferred(name) ? 1 : 8;
+        for (size_t frame = index; frame < index + lookahead; ++frame) {
             auto entry = packEntries.find(prefix + std::to_string(frame));
             if (entry == packEntries.end()) continue;
             for (const auto& file : {entry->second.base, entry->second.team})
@@ -738,8 +859,11 @@ namespace GAGCore
     void Sprite::appendHighResolutionFrame(size_t index, Sprite& target,
         HighResolutionInputs& inputs)
     {
-        assert(target.experimentImages.size() == index && target.experimentRotated.size() == index);
-        target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
+        if (target.experimentImages.size() == index) {
+            target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
+        }
+        assert(index < target.experimentImages.size() && index < target.experimentRotated.size());
+        assert(!target.experimentImages[index] && !target.experimentRotated[index]);
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
@@ -748,7 +872,8 @@ namespace GAGCore
         auto found = packEntries.find(wanted); if (found == packEntries.end()) return;
         const auto &entry = found->second;
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
+        const bool deferred = highResolutionDeferred(fileName);
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !deferred;
         auto load = [&](const std::string& name, DrawableSurface *original) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
@@ -759,9 +884,11 @@ namespace GAGCore
             const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;
             const int height = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getH() : entry.height) * entry.scale;
             if (surface->w != width || surface->h != height) return nullptr;
-            auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive);
+            auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
             result->highResolutionSampling = true;
-            result->prepareTexture();
+            // Deferred terrain feeds CPU composition; only composed pages need
+            // GPU textures. A direct draw can still upload this source lazily.
+            if (!deferred) result->prepareTexture();
             return result.release();
         };
         auto *normal = load(entry.base, images[index]);
@@ -770,8 +897,8 @@ namespace GAGCore
             (images[index] && entry.base == "-") || (rotated[index] && entry.team == "-")) {
             delete normal; delete colored; return;
         }
-        target.experimentImages.back() = normal;
-        if (colored) target.experimentRotated.back() = new RotatedImage(colored);
+        target.experimentImages[index] = normal;
+        if (colored) target.experimentRotated[index] = new RotatedImage(colored);
     }
 
 	DrawableSurface *Sprite::prepareDrawSurface(unsigned index, bool teamColor, bool experiment)
@@ -806,6 +933,8 @@ namespace GAGCore
 	{
         // Private reload staging sprites were never published. Their destruction
         // must not re-enter the pending map while it destroys its own entries.
+        deferredHighResolution.erase(this);
+        if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);
 #ifdef HAVE_OPENGL
         if (_gc && SDL_GL_GetCurrentContext() && bufferGeneration == _gc->getGLContextGeneration()) {

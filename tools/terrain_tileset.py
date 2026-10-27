@@ -233,10 +233,17 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "variant_block_group" in m:
+            group = m["variant_block_group"]
+            if "variant_grid" not in m or not isinstance(group, str) or not 1 <= len(group.encode("utf-8")) <= 64:
+                raise ValueError("variant_block_group requires a grid and a short nonempty key")
+        blocks = integer(m.get("variant_blocks", 1), 1, 16, "Variant blocks")
+        if "variant_blocks" in m and "variant_grid" not in m:
+            raise ValueError("variant_blocks requires variant_grid")
         if "variant_grid" in m:
             grid = integer(m["variant_grid"], 1, 16, "Variant grid")
-            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid:
-                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid variants")
+            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid * blocks:
+                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid*blocks variants")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")

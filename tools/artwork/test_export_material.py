@@ -109,7 +109,7 @@ class ExportMaterial(unittest.TestCase):
         )
 
     def test_committed_materials_validate(self):
-        for name in terrain_synth.BUILTIN_ORDER:
+        for name in terrain_synth.SYNTH_ORDER:
             with self.subTest(material=name):
                 method = validate_material.validate(name)["method"]
                 if terrain_synth.RECIPES[name].placeholder_only:

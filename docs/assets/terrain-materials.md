@@ -35,6 +35,8 @@ Each material supplies:
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
 - optional `edges` (`blend` or `periodic`, see [Periodic edges](terrain-production.md#periodic-edges))
   and `variant_grid`, see [Positional variants](terrain-production.md#positional-variants);
+- optional `variant_blocks` for interchangeable interiors and `variant_block_group`
+  for materials that share layout selection, see [Interchangeable blocks](terrain-production.md#interchangeable-blocks);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](terrain-rendering.md#seams).
 
