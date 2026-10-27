@@ -1263,7 +1263,7 @@ TEST_SUITE("UnitCustomization")
             // The scenario tests mixed cargo, so make both destination queries
             // available before travel; a cold second field may deliver wood first.
             for (int material:{WOOD,WHEAT}) glob2test::awaitGradient(world.game,[&] {
-                return world.game.map.getMaterialGradientSlot(0,material,unit->swimClass(),false,inn);
+                return world.game.map.getMaterialGradientSlot(0,material,unit->movementClass(),false,inn);
             });
             unit->destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
@@ -1274,7 +1274,7 @@ TEST_SUITE("UnitCustomization")
                 world.game.step(0);
                 sawMixed |= unit->hasCarriedMaterial(WOOD) && unit->hasCarriedMaterial(WHEAT);
             }
-            CAPTURE(key);
+            CAPTURE(std::string(key));
             CHECK(sawMixed);
             CHECK(inn->material(WOOD)==1); CHECK(inn->material(WHEAT)==3);
             CHECK(world.team->stats.events().materialSpillageEvents==0);

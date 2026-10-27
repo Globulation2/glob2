@@ -173,10 +173,14 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);
         game.map.configureCompute(1);
         game.map.configureGradientPipeline(0,3);
-        for (auto* building:team->liveBuildings)
-            game.map.requestBuildingRefresh(building,building->routeSlot(0,BuildingRoute::Automatic));
-        game.map.updateMaterialGradient(0,WHEAT,0);
         game.observeCompletedWorld();
+        // Reconstruct a historical completed warm output directly. Format166
+        // submitted periodic work at T0; the current 32-tick admission minimum
+        // deliberately cannot produce that historical queue from a warm read.
+        auto** materialSlot=&game.map.materialGradients[0][WHEAT][0];
+        auto historicalField=std::make_unique<Uint16[]>(game.map.size);
+        std::copy_n(*materialSlot,game.map.size,historicalField.get());
+        game.map.gradientRuntime->pipeline.restoreCompleted({materialSlot,0,3,false,std::move(historicalField)});
         REQUIRE(game.stepCounter==0);
         pendingFields=game.map.gradientPipelineStatus().pending;
         pendingGrowth=game.map.gradientRuntime->growth.count();

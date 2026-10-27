@@ -694,6 +694,12 @@ static void checkRandomContinuation(bool text, bool ai)
 		game.step(0);
 	};
 	for (int i=0; i<100; ++i) step(gui.game);
+    // Idle matches no longer schedule periodic route work. Explicitly admit a
+    // cold, otherwise unused movement class so malformed pending-job checks
+    // always exercise a real saved destination and publication deadline.
+    REQUIRE(gui.game.map.lookupForbiddenGradient(0,WATER_ONLY_CLASS)==nullptr);
+    gui.game.map.getForbiddenGradient(0,WATER_ONLY_CLASS);
+    gui.game.observeCompletedWorld();
 	const auto savedRandom = gui.game.syncRandom;
 	auto *backend = new MemoryStreamBackend();
 	class CheckpointOutput : public BinaryOutputStream

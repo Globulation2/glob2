@@ -710,7 +710,12 @@ struct HeadlessRunner
         // Complete this reporting-only sample during setup. A serial executor
         // otherwise retains the initial world for the entire match.
         SimulationChecksum::Pipeline initialHash(engine.gui.game.map.computeExecutor());
-        const auto& initialWorld=engine.gui.game.observeCompletedWorld();
+        // This is the first owner observation, also reused by beginSession.
+        // Request PNG diagnostic components before fixing its frozen payload.
+        const auto initialOptions=engine.diagnostics
+            ? engine.diagnostics->captureOptions(engine.gui.game.stepCounter)
+            : SimulationSnapshot::CaptureOptions{};
+        const auto& initialWorld=engine.gui.game.observeCompletedWorld(initialOptions);
         initialHash.submit(initialWorld,initialWorld.tick,engine.routineMapChecksums());
         const auto initialSamples=initialHash.collect(initialWorld.tick,true);
         if (initialSamples.size()!=1) throw std::runtime_error("Missing initial snapshot checksum");

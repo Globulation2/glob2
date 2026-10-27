@@ -54,9 +54,10 @@ def main():
     for phase in range(8):
         checkpoint = output/f'checkpoint-{phase}'
         saved_result = execute(binary, ['--load-game',str(initial),'--ticks',str(32+phase),'--save','final'], checkpoint)
-        delay_args=['--load-game',str(checkpoint/'final.game'),'--gradient-delay','3','--ticks','1']
+        delay_args=['--load-game',str(checkpoint/'final.game'),'--gradient-delay','3','--ticks',str(33+phase)]
         if saved_result['result']['gradient_pending']:
             cases_delay = subprocess.run([str(binary),'game','run','--output-dir',str(output/f'delay-rejection-{phase}'),*delay_args],capture_output=True,text=True)
+            (output/f'delay-rejection-{phase}.log').write_text(cases_delay.stdout+cases_delay.stderr)
             assert cases_delay.returncode != 0, 'delay change accepted with pending gradients'
         else:
             changed=execute(binary,delay_args,output/f'delay-change-{phase}')

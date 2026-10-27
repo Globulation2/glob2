@@ -683,9 +683,9 @@ the additional continuation fields.
 Headless diagnostic exports wait for each pending output batch before advancing
 the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
 from being lost while PNGs are written; it affects export wall time only.
-PNG diagnostic sessions request presentation data for every completed observation,
-including between samples. Worker completion cannot change the requested payload
-within an already captured tick. CSV-only sessions omit that presentation data.
+PNG diagnostic sessions retain presentation requirements while an export is
+pending. Draining the export cannot introduce a missing component within an
+already captured tick. CSV-only sessions omit that presentation data.
 
 ### Repeating saves with normal presentation
 

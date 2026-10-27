@@ -435,7 +435,13 @@ TEST_CASE("PNG diagnostics retain presentation requirements through repeated own
     CHECK(first.supportsPresentation());
     // A later sample request must use the same completed observation.
     session.beginTick(fixture.game);
-    REQUIRE(session.reserveCapture(0,0));
+    const auto capture=session.reserveCapture(0,0); REQUIRE(capture);
+    AIMaximaPlacement::WorldState state;
+    state.reset(fixture.game.map.getW(),fixture.game.map.getH());
+    capture->capture(state);
+    session.publishCapture(*capture);
+    session.completeTick(first); REQUIRE(session.pending());
+    CHECK(session.captureOptions(0).presentation);
     const auto repeated=fixture.game.observeCompletedWorld(session.captureOptions(0));
     CHECK(repeated.supportsPresentation());
     CHECK(first.observationRevision==repeated.observationRevision);
