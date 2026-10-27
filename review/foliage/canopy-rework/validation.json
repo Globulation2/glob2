@@ -1,0 +1,32 @@
+{
+  "committed_revision": "39243cc853e3c986c262ba2119798d9d72345c49",
+  "master_base": "ddfa81a405e0c47442e1787ccdf7d4e95ca57d6e",
+  "branch_diff_sha256": "0b7a06048035997633cccba9224aee6888885fd69d1c746cf1bdf0b842169589",
+  "manifest_sha256": "6753c039c17c1ff07d5262320ac68e64f4254671513735af2c4a6b285dcf4a2f",
+  "artwork_attestation": "data/highres/v1/manifest.json records the source and native PNG hashes for all 736 connected frames; object frames 0-59 are byte-identical to the earlier commit",
+  "environment": "macOS arm64; Apple clang 21.0.0; dev_fast=1 (-O0 -g1); pinned artwork Python 3.14 / Pillow 12.2.0",
+  "validation": {
+    "native_selected_cases_passed": 53,
+    "artwork_tests_passed": 7,
+    "catalogue_tests_passed": 3,
+    "packaging_check": "passed",
+    "diff_check": "passed"
+  },
+  "commands": [
+    "PYTHONPATH=$PWD python3 tools/dev_build.py --build=build/canopy -Q engine-tests build/canopy/src/glob2",
+    "python3 test/run_tests.py --build-dir build/canopy --binary engine --filter 'TerrainMaterials/*' --filter 'TerrainValidation/*' --filter 'BrushCatalog/*' --filter 'MapSets/*' --artifacts artifacts/terrain/canopy -j 4 --display-jobs 1 --junit artifacts/terrain/evidence/native-tests.xml",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s tools/artwork -p test_terrain_decor.py",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s tools -p test_terrain_tileset.py -k connected_decor -k invalid_catalogs -k registered_materials",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 tools/artwork/package_runtime.py --check",
+    "git diff --check master...HEAD"
+  ],
+  "test_changes": "Engine tests now check corner-colour frame selection for masks 0-14, base-or-interior selection for mask 15 with all 8 looks occurring, and corner colours agreeing across shared vertices including the torus wrap. The artwork mask probe tolerates the soft ground shadow at open bottom corners; a new test keeps vertex crowns and interiors clear of neighbouring halos.",
+  "coverage_rationale": "Presentation-only asset, catalogue and renderer change. Covered corner masks and colours, interior selection, torus wrapping, mixed foliage, native/HD frame loading, compositor contracts, editor swatches and custom map save/load. Simulation code and state formats are unchanged, so no SIM_REVISION bump.",
+  "limitations": [
+    "macOS validation only; Windows, Linux, browser and mobile builds were not run",
+    "Fast development build, not release performance evidence",
+    "Faint cell-sized grain still visible in large hedge patches at full zoom",
+    "Hedge/thicket boundary remains a straight colour change at the cell edge",
+    "Maintainer play review not recorded"
+  ]
+}

@@ -1,0 +1,9 @@
+../Users/bradley/glob2/.claude/worktrees/pr-1266-review-d50618/tools/artwork/test_terrain_decor.py:95: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  self.assertEqual(sum(hd.getchannel("A").getdata()),
+../Users/bradley/glob2/.claude/worktrees/pr-1266-review-d50618/tools/artwork/test_terrain_decor.py:76: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  coverage.append(sum(alpha.getdata()) / 255)
+...
+----------------------------------------------------------------------
+Ran 7 tests in 53.388s
+
+OK

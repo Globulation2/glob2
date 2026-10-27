@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="53" failures="0" errors="0" skipped="0"><testsuite name="BrushCatalog"><testcase classname="BrushCatalog" name="brush swatches are opaque and composed like the map [display][artifacts]" time="5.67896" status="run" />
+  <testcase classname="BrushCatalog" name="catalogue lists classic ground every catalogue member and every registry resource [display]" time="3.16857" status="run" />
+  <testcase classname="BrushCatalog" name="every unlocked catalogue action selects the entry it belongs to [display]" time="3.12948" status="run" />
+  <testcase classname="BrushCatalog" name="imported terrain joins the custom group in natural order and refreshes the catalogue [display]" time="2.96755" status="run" />
+  <testcase classname="BrushCatalog" name="imported terrain names cannot take over resource or built-in actions [display]" time="3.10158" status="run" />
+  </testsuite><testsuite name="MapSets"><testcase classname="MapSets" name="custom artwork properties and credits survive offline save and load [artifacts]" time="7.82116" status="run" />
+  <testcase classname="MapSets" name="custom sprites render from memory without installation [display] [artifacts]" time="3.92487" status="run" />
+  <testcase classname="MapSets" name="invalid packages fail atomically and reimports preserve local edits" time="0.560729" status="run" />
+  <testcase classname="MapSets" name="selected terrain includes custom resources and explicit updates replace local copies" time="0.557464" status="run" />
+  <testcase classname="MapSets" name="swatches remain textured when alternating inspected map bundles [display]" time="2.10204" status="run" />
+  </testsuite><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="CPU terrain groups preserve incremental pages under serial and parallel schedules [display]" time="2.13678" status="run" />
+  <testcase classname="TerrainMaterials" name="CPU terrain retires coverage when cells leave discovery [display]" time="1.30871" status="run" />
+  <testcase classname="TerrainMaterials" name="an additional material and a 64-material catalog compose without renderer branches [display]" time="1.42974" status="run" />
+  <testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="2.17448" status="run" />
+  <testcase classname="TerrainMaterials" name="catalog rejects corrupt references and grows independently of gameplay IDs" time="0.604675" status="run" />
+  <testcase classname="TerrainMaterials" name="catalogue boundary profiles keep their reviewed geometry" time="1.57088" status="run" />
+  <testcase classname="TerrainMaterials" name="compiled pages validate metadata and stale catalogs use source fallback [artifacts]" time="0.486391" status="run" />
+  <testcase classname="TerrainMaterials" name="compositor preserves native artwork overridden before startup [display] [artifacts]" time="1.58746" status="run" />
+  <testcase classname="TerrainMaterials" name="connected canopy ground leaves contact shadows to the foliage [display]" time="1.94671" status="run" />
+  <testcase classname="TerrainMaterials" name="connected foliage rejects incomplete corner groups" time="0.41878" status="run" />
+  <testcase classname="TerrainMaterials" name="connected foliage selects the requested corner mask and keeps legacy decor" time="0.26684" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual borders preserve seams and normalization across both wrapped axes" time="0.319017" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual cells retain every corner region at native and HD sample positions" time="0.590753" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual contours use their halo and leave ambiguous and sharp borders unchanged" time="0.261592" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual interiors remain within twelve pixels of the marching contour" time="0.299947" status="run" />
+  <testcase classname="TerrainMaterials" name="coverage partitions every binary shape and multi-material junction" time="0.477429" status="run" />
+  <testcase classname="TerrainMaterials" name="diagonal contacts stay distinct and both torus axes share coverage" time="0.18418" status="run" />
+  <testcase classname="TerrainMaterials" name="failed CPU terrain groups retire invalid pages and recover on the next prepare [display]" time="1.29588" status="run" />
+  <testcase classname="TerrainMaterials" name="grid variants repeat one positional block independent of the map seed" time="0.297609" status="run" />
+  <testcase classname="TerrainMaterials" name="halo edits invalidate adjacent terrain pages including wrap and undo [display]" time="1.87639" status="run" />
+  <testcase classname="TerrainMaterials" name="map seed reseeds variants and boundaries without breaking partitions or edges" time="0.186356" status="run" />
+  <testcase classname="TerrainMaterials" name="mixed cells compose exactly as a direct per-pixel coverage blend [display]" time="1.42725" status="run" />
+  <testcase classname="TerrainMaterials" name="natural border visual fixture and cold composition timings [display] [artifacts]" time="27.5143" status="run" />
+  <testcase classname="TerrainMaterials" name="organic contours agree across ordinary tile edges and both torus axes" time="0.188614" status="run" />
+  <testcase classname="TerrainMaterials" name="owned prepared materials survive animation and share unchanged revisions [display]" time="1.35287" status="run" />
+  <testcase classname="TerrainMaterials" name="partial direct CPU terrain writes stay unpublished after a failed rebuild [display]" time="1.59033" status="run" />
+  <testcase classname="TerrainMaterials" name="prepared coverage preserves native and HD contour geometry" time="2.5426" status="run" />
+  <testcase classname="TerrainMaterials" name="seam treatment tones only the lower material beside a higher edge [display]" time="1.41385" status="run" />
+  <testcase classname="TerrainMaterials" name="shared edges and wrapped samples have identical coverage" time="0.197296" status="run" />
+  <testcase classname="TerrainMaterials" name="shared reservation pressure preserves serial terrain before readmitting jobs [display]" time="1.31025" status="run" />
+  <testcase classname="TerrainMaterials" name="single vertices own their corner and animation does not reseed variants" time="0.216909" status="run" />
+  <testcase classname="TerrainMaterials" name="sparse CPU terrain edits snapshot only changed materials [display]" time="1.3452" status="run" />
+  <testcase classname="TerrainMaterials" name="steep detailed contours retain one crossing on shared patch edges" time="0.203298" status="run" />
+  <testcase classname="TerrainMaterials" name="straight boundaries bend over multiple cells without moving their solid cores" time="0.198347" status="run" />
+  <testcase classname="TerrainMaterials" name="straight contextual borders have seeded scallops without folding" time="0.383928" status="run" />
+  <testcase classname="TerrainMaterials" name="terrain crossfade preserves endpoints midpoint loop and paused revisions [display]" time="1.94458" status="run" />
+  <testcase classname="TerrainMaterials" name="the Python validator's built-in name list mirrors the terrain table" time="0.000361" status="run" />
+  <testcase classname="TerrainMaterials" name="unequal variant weights affect deterministic texture selection" time="0.275526" status="run" />
+  <testcase classname="TerrainMaterials" name="weighted choices are stable and all existing variants are reachable" time="0.263738" status="run" />
+  </testsuite><testsuite name="TerrainValidation"><testcase classname="TerrainValidation" name="catalogue materials load 4x HD frames and compose at 4x [display][artifacts]" time="6.44195" status="run" />
+  <testcase classname="TerrainValidation" name="connected foliage corners strips and filled patches [display][artifacts]" time="2.64849" status="run" />
+  <testcase classname="TerrainValidation" name="mixed terrain simulation trace and visual gallery [display][artifacts]" time="20.5072" status="run" />
+  <testcase classname="TerrainValidation" name="terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]" time="2.30111" status="run" />
+  </testsuite></testsuites>
