@@ -15,8 +15,7 @@ ambient layer but still leaves every colony a start.
 
 Every landscape carries `wheat-amount`, `wood-amount`,
 `stone-amount`, `algae-amount` and `fruit-amount` as percentages, with these exceptions, each
-because the landscape has no such layer or names it differently: Anthill has no `stone-amount`
-(its only stone is its walls); Old growth has no `wood-amount` (its `forest-density` is the wood
+because the landscape has no such layer or names it differently: Old growth has no `wood-amount` (its `forest-density` is the wood
 control); Isles, Old random and Old islands have no `fruit-amount` (they place no fruit); the
 height-field generators (Swamp, River, Islands, Crater lakes) share `heightFieldResourceControls`
 and keep their `fruit` control as a count of groves, 0 to 64. Maze's and Stone highlands' amounts
