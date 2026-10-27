@@ -1,0 +1,10 @@
+usage: run_coverage.py [-h] [--build-dir BUILD_DIR] [--optimization {0,1,2,3}]
+                       [--debug-info {full,line-tables-only}]
+                       [--profile-pool-size {0,1,2,3,4,5,6,7,8,9}]
+                       [--output OUTPUT] [--filter FILTER]
+                       [--exclude-tag EXCLUDE_TAG] [--cc CC] [--cxx CXX]
+                       [--llvm-profdata LLVM_PROFDATA] [--llvm-cov LLVM_COV]
+                       [--timeout TIMEOUT] [--with-cli] [--quick]
+                       [--no-display] [--fullscreen]
+                       [--discard-merged-profiles] [--stream-logs] [-j JOBS]
+run_coverage.py: error: argument --profile-pool-size: invalid choice: '10' (choose from 0, 1, 2, 3, 4, 5, 6, 7, 8, 9)

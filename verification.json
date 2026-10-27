@@ -1,0 +1,13 @@
+{
+  "revision": "b27d3a8ad85d559bbdc1a3e23708e707f18b3720",
+  "base": "60be419db529347457c8cf80e853d2ab2eff4dcb",
+  "environment": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "compiler": "Ubuntu clang version 18.1.8 (20ubuntu8)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin\n",
+  "commands": [
+    "python3 -m unittest discover -s test -p test_run_coverage.py -v",
+    "python3 -m unittest discover -s test/build_system -p 'test_ci*.py'",
+    "python3 tools/check_docs.py",
+    "python3 artifacts/coverage-disk/retain-profile-proof.py"
+  ],
+  "limits": "No complete game coverage build or hosted disk/time saving measurement; actual engine translation-unit compile and matched LLVM counter/region export tests only."
+}

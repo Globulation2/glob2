@@ -1,0 +1,170 @@
+{
+  "rows": [
+    {
+      "debugInfo": "full",
+      "pool": 0,
+      "processes": 16,
+      "failedProcesses": 1,
+      "profiles": 16,
+      "binaryBytes": 198360,
+      "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+    },
+    {
+      "debugInfo": "full",
+      "pool": 4,
+      "processes": 16,
+      "failedProcesses": 1,
+      "profiles": 4,
+      "binaryBytes": 198360,
+      "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+    },
+    {
+      "debugInfo": "line-tables-only",
+      "pool": 0,
+      "processes": 16,
+      "failedProcesses": 1,
+      "profiles": 16,
+      "binaryBytes": 129992,
+      "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+    },
+    {
+      "debugInfo": "line-tables-only",
+      "pool": 4,
+      "processes": 16,
+      "failedProcesses": 1,
+      "profiles": 4,
+      "binaryBytes": 129992,
+      "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+    }
+  ],
+  "completeExportsEqual": true,
+  "commands": [
+    [
+      "clang++-18",
+      "-g",
+      "-O0",
+      "-fprofile-instr-generate",
+      "-fcoverage-mapping",
+      "-DGLOB2_TEST_COVERAGE",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full"
+    ],
+    [
+      "llvm-profdata-18",
+      "merge",
+      "-sparse",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253279.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253280.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253281.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253282.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253283.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253284.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253285.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253286.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253287.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253288.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253289.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253290.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253291.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253292.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253293.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/3824704641135685325_0-253294.profraw",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/coverage.profdata"
+    ],
+    [
+      "llvm-cov-18",
+      "export",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full",
+      "-instr-profile=/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-0/coverage.profdata",
+      "-skip-expansions",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp"
+    ],
+    [
+      "llvm-profdata-18",
+      "merge",
+      "-sparse",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/3824704641135685325_0.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/3824704641135685325_1.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/3824704641135685325_2.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/3824704641135685325_3.profraw",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/coverage.profdata"
+    ],
+    [
+      "llvm-cov-18",
+      "export",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full",
+      "-instr-profile=/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/full-4/coverage.profdata",
+      "-skip-expansions",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp"
+    ],
+    [
+      "clang++-18",
+      "-gline-tables-only",
+      "-O0",
+      "-fprofile-instr-generate",
+      "-fcoverage-mapping",
+      "-DGLOB2_TEST_COVERAGE",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only"
+    ],
+    [
+      "llvm-profdata-18",
+      "merge",
+      "-sparse",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253332.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253333.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253334.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253335.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253336.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253337.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253338.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253339.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253340.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253341.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253342.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253343.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253344.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253345.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253346.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/3824704641135685325_0-253347.profraw",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/coverage.profdata"
+    ],
+    [
+      "llvm-cov-18",
+      "export",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only",
+      "-instr-profile=/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-0/coverage.profdata",
+      "-skip-expansions",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp"
+    ],
+    [
+      "llvm-profdata-18",
+      "merge",
+      "-sparse",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/3824704641135685325_0.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/3824704641135685325_1.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/3824704641135685325_2.profraw",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/3824704641135685325_3.profraw",
+      "-o",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/coverage.profdata"
+    ],
+    [
+      "llvm-cov-18",
+      "export",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only",
+      "-instr-profile=/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/line-tables-only-4/coverage.profdata",
+      "-skip-expansions",
+      "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/coverage-disk/profile-proof/fixture.cpp"
+    ],
+    [
+      "clang++-18",
+      "--version"
+    ]
+  ],
+  "clang": "Ubuntu clang version 18.1.8 (20ubuntu8)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin\n"
+}

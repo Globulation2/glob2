@@ -1,0 +1,47 @@
+usage: run_coverage.py [-h] [--build-dir BUILD_DIR] [--optimization {0,1,2,3}]
+                       [--debug-info {full,line-tables-only}]
+                       [--profile-pool-size {0,1,2,3,4,5,6,7,8,9}]
+                       [--output OUTPUT] [--filter FILTER]
+                       [--exclude-tag EXCLUDE_TAG] [--cc CC] [--cxx CXX]
+                       [--llvm-profdata LLVM_PROFDATA] [--llvm-cov LLVM_COV]
+                       [--timeout TIMEOUT] [--with-cli] [--quick]
+                       [--no-display] [--fullscreen]
+                       [--discard-merged-profiles] [--stream-logs] [-j JOBS]
+
+Build/run native tests with Clang coverage, keeping each binary's profiles
+separate. Reports are evidence, not a repository-wide or cross-platform
+coverage claim. The engine report is the implementation baseline; unit results
+are supplemental.
+
+options:
+  -h, --help            show this help message and exit
+  --build-dir BUILD_DIR
+  --optimization {0,1,2,3}
+                        Clang optimization level; use 1 for expensive slow
+                        integration coverage
+  --debug-info {full,line-tables-only}
+                        line-tables-only bounds CI object storage while
+                        preserving coverage mapping
+  --profile-pool-size {0,1,2,3,4,5,6,7,8,9}
+                        LLVM online merge pool per binary (1..9); 0 keeps per-
+                        process raw profiles
+  --output OUTPUT
+  --filter FILTER
+  --exclude-tag EXCLUDE_TAG
+  --cc CC
+  --cxx CXX
+  --llvm-profdata LLVM_PROFDATA
+  --llvm-cov LLVM_COV
+  --timeout TIMEOUT     explicit per-case timeout override for instrumented
+                        runs
+  --with-cli            also measure the production executable in a separate
+                        client report
+  --quick
+  --no-display
+  --fullscreen
+  --discard-merged-profiles
+                        discard raw profiles after successful tests, merge,
+                        export and HTML; retain failed-run inputs
+  --stream-logs         also stream command output to CI logs before artifact
+                        upload
+  -j, --jobs JOBS

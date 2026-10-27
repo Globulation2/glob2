@@ -1,0 +1,38 @@
+[
+  {
+    "debugInfo": "full",
+    "pool": 0,
+    "processes": 16,
+    "failedProcesses": 1,
+    "profiles": 16,
+    "binaryBytes": 198360,
+    "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+  },
+  {
+    "debugInfo": "full",
+    "pool": 4,
+    "processes": 16,
+    "failedProcesses": 1,
+    "profiles": 4,
+    "binaryBytes": 198360,
+    "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+  },
+  {
+    "debugInfo": "line-tables-only",
+    "pool": 0,
+    "processes": 16,
+    "failedProcesses": 1,
+    "profiles": 16,
+    "binaryBytes": 129992,
+    "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+  },
+  {
+    "debugInfo": "line-tables-only",
+    "pool": 4,
+    "processes": 16,
+    "failedProcesses": 1,
+    "profiles": 4,
+    "binaryBytes": 129992,
+    "exportSha256": "709b6c609e3bafb4d20cb3725143f4a6923f7d6fd3754ee750c1c5181f82608a"
+  }
+]

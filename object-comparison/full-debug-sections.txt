@@ -1,0 +1,14 @@
+  [25289] __llvm_covmap     PROGBITS        0000000000000000 1877e0 0007f8 00   R  0   0  8
+  [53010] .debug_loclists   PROGBITS        0000000000000000 223718 000071 00      0   0  1
+  [53011] .debug_abbrev     PROGBITS        0000000000000000 223789 0015e1 00      0   0  1
+  [53012] .debug_info       PROGBITS        0000000000000000 224d6a 1231b1 00      0   0  1
+  [53013] .rela.debug_info  RELA            0000000000000000 923640 000108 18   I 53031 53012  8
+  [53014] .debug_rnglists   PROGBITS        0000000000000000 347f1b 0082ad 00      0   0  1
+  [53015] .debug_str_offsets PROGBITS        0000000000000000 3501c8 01efd4 00      0   0  1
+  [53016] .rela.debug_str_offsets RELA            0000000000000000 923748 0b9ec8 18   I 53031 53015  8
+  [53017] .debug_str        PROGBITS        0000000000000000 36f19c 28f151 01  MS  0   0  1
+  [53018] .debug_addr       PROGBITS        0000000000000000 5fe2ed 0143f8 00      0   0  1
+  [53019] .rela.debug_addr  RELA            0000000000000000 9dd610 03cbd0 18   I 53031 53018  8
+  [53027] .debug_line       PROGBITS        0000000000000000 6463d0 078012 00      0   0  1
+  [53028] .rela.debug_line  RELA            0000000000000000 a45998 0238e0 18   I 53031 53027  8
+  [53029] .debug_line_str   PROGBITS        0000000000000000 6be3e2 000fef 01  MS  0   0  1
