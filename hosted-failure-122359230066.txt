@@ -1,0 +1,13 @@
+Full hosted log SHA256 09fbcee8f1e2da854b6ffc86f9efaae75497964c6c4649500a93ed4c11f956f6
+Source: https://github.com/Globulation2/glob2/actions/runs/40540201313/job/122359230066
+
+2026-10-27T18:08:39.3087614Z     main()
+2026-10-27T18:08:39.3088077Z   File "/home/runner/work/glob2/glob2/test/check_gradient_pipeline.py", line 90, in main
+2026-10-27T18:08:39.3088601Z     building_pass(binary, initial, output/'building')
+2026-10-27T18:08:39.3089338Z   File "/home/runner/work/glob2/glob2/test/check_gradient_pipeline.py", line 158, in building_pass
+2026-10-27T18:08:39.3089824Z     assert 'cannot change the delay with pending gradients' in run.stdout + run.stderr
+2026-10-27T18:08:39.3090179Z AssertionError
+2026-10-27T18:08:39.7982260Z ##[endgroup]
+2026-10-27T18:08:39.8002377Z ##[error]gradient pipeline exited 1
+2026-10-27T18:08:39.8029486Z Failed checks: gradient pipeline (1)
+2026-10-27T18:08:39.8031255Z ##[error]Process completed with exit code 1.

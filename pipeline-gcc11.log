@@ -1,0 +1,34 @@
+mixed-water 0 d1-w1: wall=2.121s cpu=2.143s
+mixed-water 0 d1-w2: wall=1.796s cpu=2.134s
+mixed-water 0 d1-w4: wall=1.849s cpu=2.331s
+mixed-water 0 d1-w8: wall=1.817s cpu=2.412s
+mixed-water 0 d3-w0: wall=1.791s cpu=1.790s
+mixed-water 0 d3-w1: wall=2.120s cpu=2.160s
+mixed-water 0 d3-w2: wall=1.903s cpu=2.268s
+mixed-water 0 d3-w4: wall=1.785s cpu=2.257s
+mixed-water 0 d3-w8: wall=1.623s cpu=2.235s
+mixed-water 0 d8-w0: wall=1.832s cpu=1.831s
+mixed-water 0 d8-w1: wall=2.219s cpu=2.249s
+mixed-water 0 d8-w2: wall=1.852s cpu=2.214s
+mixed-water 0 d8-w4: wall=1.818s cpu=2.280s
+mixed-water 0 d8-w8: wall=1.641s cpu=2.144s
+mixed-water 0 d1-w0: wall=1.870s cpu=1.869s
+PASS exact same-schedule traces and outcomes
+building-d1 0 d8-w1: wall=2.246s cpu=2.272s
+building-d1 0 d8-w2: wall=1.870s cpu=2.208s
+building-d1 0 d8-w4: wall=1.729s cpu=2.080s
+building-d1 0 d8-w8: wall=1.618s cpu=2.090s
+building-d1 0 d8-w0: wall=1.707s cpu=1.707s
+building-d4 0 d8-w1: wall=2.010s cpu=2.048s
+building-d4 0 d8-w2: wall=1.810s cpu=2.193s
+building-d4 0 d8-w4: wall=1.810s cpu=2.257s
+building-d4 0 d8-w8: wall=1.684s cpu=2.191s
+building-d4 0 d8-w0: wall=1.904s cpu=1.903s
+building-d8 0 d8-w1: wall=1.923s cpu=1.943s
+building-d8 0 d8-w2: wall=1.744s cpu=2.091s
+building-d8 0 d8-w4: wall=1.746s cpu=2.232s
+building-d8 0 d8-w8: wall=1.812s cpu=2.354s
+building-d8 0 d8-w0: wall=1.889s cpu=1.888s
+PASS exact same-schedule traces and outcomes
+PASS pipeline defaults, trace determinism, eight-phase save continuation and invalid option rejection
+PASS building gradient delays (1, 4, 8): worker-count traces, 13 in-flight saves resumed, delay 0/9 rejected

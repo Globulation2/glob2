@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="14" failures="0" errors="0" skipped="0"><testsuite name="EntityRandomLifecycle"><testcase classname="EntityRandomLifecycle" name="binary and text saves preserve exact private state and subsequent draws" time="5.47993" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="entity operations consume only their own streams outside a tick" time="0.65289" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="14.9795" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="fresh header reseeds starting entities but resume header preserves progress" time="1.80703" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="gradient sidesteps draw from the moving unit rather than the target building" time="0.685873" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="malformed new world RNG records fail rather than migrating" time="1.65591" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="missing malformed and even text RNG fields are rejected" time="0.001243" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="snapshots freeze both unit and building RNG state" time="0.731275" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="story identities isolate extra draws and fixed domains differ" time="0" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="team steps consume entity streams without consuming world randomness" time="0.679706" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="truncated binary RNG state and even increments are rejected" time="0.000751" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="upgrades preserve streams and reused slots receive a fresh salt" time="0.697286" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world owners are isolated and their progress changes lockstep checksums" time="0.683019" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world streams continue through binary and text saves without resume reseeding" time="4.96406" status="run" />
+  </testsuite></testsuites>

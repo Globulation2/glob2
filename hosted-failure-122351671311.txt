@@ -1,0 +1,35 @@
+Full hosted log SHA256 6bb83997e81c379b66589236883472b11d679c4e2053670a5e8ef46a978db3f0
+Source: https://github.com/Globulation2/glob2/actions/runs/40540201313/job/122351671311
+
+2026-10-27T18:25:55.1192790Z PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (17.9s)
+2026-10-27T18:25:55.1617760Z 
+2026-10-27T18:25:55.1618920Z ===== FAIL EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts] =====
+2026-10-27T18:25:55.1620010Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-27T18:25:55.1625250Z GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/runner/work/glob2/glob2/build/darwin/client/release/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-I/opt/homebrew/opt/openssl@3/include -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-L/opt/homebrew/opt/openssl@3/lib -Wall -O3 -Wl,-rpath,/Users/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib"}, "revision": "d80e39b1521aeef0097df3a0e350748f33a2755f", "sourceStatus": [], "sourceTreeSha256": "f09467ae229b030496ff8a6524f5e30cf1948a6a28fdb41b62beaa8102ab255d"}
+2026-10-27T18:25:55.1630540Z TextInputStream::readFromTableToString : no entry named Game.mapRuntime.teams.0.swimClasses.0.resources.0.updated
+2026-10-27T18:25:55.1632810Z TextInputStream::readFromTableToString : no entry named Game.mapRuntime.teams.0.swimClasses.0.resources.0.markets.dirty
+2026-10-27T18:25:55.1635410Z TextInputStream::readFromTableToString : no entry named Game.mapRuntime.teams.0.swimClasses.0.resources.0.markets.updated
+2026-10-27T18:25:55.1636720Z 
+2026-10-27T18:25:55.1637490Z [error] format 150 text area saves retain funded services through current saves [save-format][artifacts]: exception
+2026-10-27T18:25:55.1639170Z Market routing state requires Markets V2
+2026-10-27T18:25:55.1640270Z 
+2026-10-27T18:25:55.1729680Z ##[error]fail
+2026-10-27T18:25:55.1756590Z 
+2026-10-27T18:25:55.1757630Z 1660 passed, 1 failed, 219 skipped (1275.8s of test time)
+2026-10-27T18:27:46.5377000Z ##[group]accepted generator fingerprints
+2026-10-27T18:27:46.7761560Z Settings::load("preferences.txt") : error, can't open file.
+2026-10-27T18:29:51.8420340Z STALE macos-arm64 generator shattered-coast (7): local rows are not all revision 7; run --update
+2026-10-27T18:29:51.8421600Z STALE macos-arm64 generator lava-shield (51): local rows are not all revision 7; run --update
+2026-10-27T18:29:51.8422220Z STALE macos-arm64 generator honeycomb-isle (53): local rows are not all revision 4; run --update
+2026-10-27T18:29:51.8422850Z STALE macos-arm64 generator portage-lakes (65): local rows are not all revision 6; run --update
+2026-10-27T18:29:51.8423570Z STALE macos-arm64 generator comb (62): local rows are not all revision 6; run --update
+2026-10-27T18:29:51.8424210Z STALE macos-arm64 generator old-growth (28): local rows are not all revision 6; run --update
+2026-10-27T18:29:51.8430000Z STALE macos-arm64 generator coral (21): local rows are not all revision 3; run --update
+2026-10-27T18:29:51.8430800Z STALE macos-arm64 generator braided-delta (36): local rows are not all revision 5; run --update
+2026-10-27T18:29:51.8431430Z STALE macos-arm64 generator glacis (39): local rows are not all revision 5; run --update
+2026-10-27T18:29:51.8432030Z STALE macos-arm64 generator locust (47): local rows are not all revision 6; run --update
+2026-10-27T18:29:51.8432590Z STALE macos-arm64 generator plantations (48): local rows are not all revision 5; run --update
+2026-10-27T18:29:51.8433090Z macos-arm64: 472 golden rows compared, 11 failures
+2026-10-27T18:29:51.8462860Z ##[endgroup]
+2026-10-27T18:29:51.8483530Z ##[error]accepted generator fingerprints exited 1
+2026-10-27T18:29:51.8502700Z ##[group]generator fingerprints

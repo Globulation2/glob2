@@ -1,0 +1,6 @@
+{
+  "head": "dc187a0e4c5c69b089aed9ee083f1eb6770bef40",
+  "base": "697ad9d29ed4c2c7d5c965c71dd4ad54395e8306",
+  "environment": "Ubuntu 26.04 x86_64, Python 3.14.4; GCC15.2 -O0 -g1 engine tests; retained GCC11 -O3 CLI from clean hosted d80e build, with matching pinned SDL3 prefix",
+  "limits": "Corrected test not executed on macOS/Windows locally. macOS generator evidence comes from hosted d80e; generator implementation unchanged. No full hosted master checkpoint."
+}

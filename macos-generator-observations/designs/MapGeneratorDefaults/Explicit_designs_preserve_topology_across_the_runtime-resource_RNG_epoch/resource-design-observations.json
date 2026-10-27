@@ -1,0 +1,35 @@
+{
+  "acceptance": "observations only; historical comparison required before accepting new hashes",
+  "designs": {
+    "canals": {
+      "accepted_platform_reference": true,
+      "full": 6840133876837962579,
+      "historical_full_reference": 16622643961647829752,
+      "portable_topology_reference": true,
+      "topology": 6348996818089081022
+    },
+    "caravanserai": {
+      "accepted_platform_reference": true,
+      "full": 3708140998014682865,
+      "historical_full_reference": 6244602504248136250,
+      "portable_topology_reference": true,
+      "topology": 3089921906549973481
+    },
+    "fingerprint": {
+      "accepted_platform_reference": true,
+      "full": 9431081131420941301,
+      "historical_full_reference": 15850274609968439542,
+      "portable_topology_reference": false,
+      "topology": 12595387656138280966
+    },
+    "maze": {
+      "accepted_platform_reference": true,
+      "full": 251410384669209409,
+      "historical_full_reference": 6132248727033081699,
+      "portable_topology_reference": true,
+      "topology": 8061784440331878678
+    }
+  },
+  "platform": "macos-arm64",
+  "resource_epoch": 1
+}
