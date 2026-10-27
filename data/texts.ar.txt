@@ -6644,3 +6644,13 @@ GL فقط
 الصمت: مكبر صوت مكتوم. الصوت: مكبر صوت مع موجات صوتية.
 [library %0 · revision %1]
 %0 · المراجعة %1
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

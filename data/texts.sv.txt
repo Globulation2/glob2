@@ -6644,3 +6644,13 @@ Ditt val kunde inte sparas. Ljudet är fortfarande avstängt. Försök igen.
 Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
 [library GL only]
 Bara GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

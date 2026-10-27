@@ -6644,3 +6644,13 @@ Discord открыт. Вы можете вернуться в игру в люб
 Тишина: отключённый динамик. Звук: динамик со звуковыми волнами.
 [library GL only]
 Лишь GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

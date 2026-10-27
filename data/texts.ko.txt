@@ -6644,3 +6644,13 @@ Building Studio에서 만들기
 무음: 음소거된 스피커. 소리 켜기: 음파가 있는 스피커.
 [library GL only]
 GL 전용
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

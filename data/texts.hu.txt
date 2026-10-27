@@ -6644,3 +6644,13 @@ Nem sikerült menteni a választásodat. A hang továbbra is ki van kapcsolva. P
 Csend: némított hangszóró. Hang: hangszóró hanghullámokkal.
 [library GL only]
 Csak GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount
