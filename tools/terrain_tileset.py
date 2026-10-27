@@ -240,16 +240,24 @@ def _validate(document, root):
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")
-            for key in ("full", "edge"):
+            for key in ("full", "edge", "connected"):
+                if key == "connected" and key not in decor:
+                    continue
                 frames = decor.get(key)
                 if not isinstance(frames, list) or not frames or len(frames) > 256:
                     raise ValueError("Decor frames must be a non-empty array")
+                if key == "connected" and len(frames) % 16:
+                    raise ValueError("Connected decor needs equal variants for all 16 masks")
                 for frame in frames:
                     integer(frame, 0, 65535, "Decor frame")
                     source = root / f"{decor_sprite.as_posix()}{frame}.png"
                     with Image.open(source) as image:
                         if image.width > 64 or image.height > 64:
                             raise ValueError(f"Decor frame larger than 64x64: {source}")
+            if "connected_grid" in decor:
+                grid = integer(decor["connected_grid"], 1, 4, "Connected decor grid")
+                if grid & (grid - 1) or len(decor.get("connected", [])) != 16 * grid * grid:
+                    raise ValueError("Connected decor grid needs grid*grid variants per mask")
             decor_sprites.add(decor["sprite"])
         materials[m["key"]] = m
     if len(decor_sprites) > 1:

@@ -41,10 +41,15 @@ struct Seam
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames
 // (smaller, pulled toward the cell centre) for cells with an open neighbour.
+// Connected foliage instead selects its surface using the painted corner mask.
 struct Decor
 {
 	std::string sprite;
 	std::vector<int> full, edge;
+	// Optional mask-major frames: TL=1, TR=2, BL=4, BR=8. Equal numbers
+	// of variants for each of the 16 masks; mask zero is never drawn.
+	std::vector<int> connected;
+	int connectedGrid = 0; // Optional continuous grid of texture slices per mask.
 };
 struct Material
 {
@@ -90,7 +95,7 @@ class Catalog
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
 	// Decor frame for a cell of this material, or -1 when it has no decor.
-	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
+	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0, unsigned cornerMask = 15) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 struct Recipe

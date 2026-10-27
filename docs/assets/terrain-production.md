@@ -91,11 +91,23 @@ A material opts in with a `decor` block:
 - `edge` frames are smaller and pulled toward the cell centre, for cells where two
   or three corners share it, so clusters do not spill far onto open ground. A
   single decorated corner draws no decor.
-- The frame is chosen by a coordinate hash salted with the map's terrain seed.
+- Optional `connected` frames follow the four painted corners, including single
+  corners. The flat array has 16 mask groups with the same number of variants
+  in each group: top-left bit 1, top-right bit 2, bottom-left bit 4, bottom-right
+  bit 8. Mask zero draws nothing. These frames override `full`/`edge`; those
+  arrays remain available for older catalogs and standalone object decor.
+- The variant is chosen by a coordinate hash salted with the map's terrain seed,
+  unless `connected_grid` supplies a power-of-two texture block size. A grid of
+  four uses sixteen positional texture slices per mask, repeating every 128
+  native pixels. This keeps crown lighting, leaves and branches continuous
+  across cells without a repeated edge band. Connected foliage also joins
+  other connected foliage materials, avoiding bare strips between hedge and
+  thicket.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
-- Frames are at most 64×64; they are centred on the cell, and the shipped 48×48
-  frames overhang neighbours by 8 px.
+- Frames are at most 64×64 and centred on the 32×32 cell. Connected foliage
+  uses cropped 32×48 frames to limit texture memory. Object silhouettes
+  may overhang neighbours; connected canopy surfaces join at cell boundaries.
 
 `tools/artwork/terrain_decor.py` synthesises the frames in the game's soft
 three-quarter view:
@@ -105,12 +117,26 @@ three-quarter view:
   side away from the light.
 - One soft ground shadow falls to the lower right.
 
-The sets are rounded boulders, a continuous hedge mass that joins its
-neighbours, scrubby bushes with twigs, tilted ridge slabs and shards, and
-bedrock massifs with sparse lichen. The tool writes `data/gfx/terrain-decorN.png`
-(set k at frames 12k–12k+11), the HD frames, provenance and, with
+Hedge and thicket use connected canopy surfaces rather than shaded bushes
+stamped on every cell. Only exposed contours receive front-edge shading;
+interior cells have no ground shadow or dark rim. Exposed fronts have a short
+foliage skirt and contact shadow. The ground compositor skips their ground
+seam cast, so a second shadow cannot protrude from the rough undergrowth
+contour as dark teeth or hairlines. Their `canopy` ground profile has no
+roughness, speckle or contour displacement; irregularity belongs to the
+foliage silhouette rather than exposed soil spikes. `--write-catalog` installs
+this profile and applies it to foliage material pairs as well as their decor. Hedge has dense green leaf
+strokes and soft crowns. Thicket has sparser olive foliage with visible branches.
+Both rise six native pixels above their ground material and sample one
+continuous canopy texture across a 4×4 block of cells. Thicket has broader
+boundary irregularity and woody gaps between crowns. The other sets are rounded boulders, tilted ridge slabs and
+shards, and bedrock massifs with sparse lichen. The tool writes `data/gfx/terrain-decorN.png`
+(legacy set k at frames 12k–12k+11, connected hedge at 60–315 and thicket at
+316–571), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
-writes a review sheet. Decor is presentation only: the minimap, the overview and
+writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
+for before/after fields with narrow strips, corners, isolated vegetation and a
+hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
 
 ### Periodic edges

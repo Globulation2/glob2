@@ -187,13 +187,24 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge"})
+			for (const auto *key : {"full", "edge", "connected"})
 			{
-				auto &frames = std::string(key) == "full" ? v.decor.full : v.decor.edge;
+				if (std::string(key) == "connected" && !d.contains(key)) continue;
+				auto &frames = std::string(key) == "full" ? v.decor.full :
+					std::string(key) == "edge" ? v.decor.edge : v.decor.connected;
 				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
 					frames.push_back(integerInRange(frame, 0, 65535));
+			}
+			require(v.decor.connected.empty() || v.decor.connected.size() % 16 == 0,
+				"connected decor needs equal variant counts for all 16 corner masks");
+			if (d.contains("connected_grid"))
+			{
+				v.decor.connectedGrid = integerInRange(d.at("connected_grid"), 1, 4);
+				const auto grid = unsigned(v.decor.connectedGrid);
+				require((grid & (grid - 1)) == 0 && v.decor.connected.size() == 16 * grid * grid,
+					"connected_grid needs a power of two and grid*grid variants per mask");
 			}
 		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
@@ -299,9 +310,18 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed) const
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed, unsigned cornerMask) const
 {
 	const auto &d = materials[id].decor;
+	if (!d.connected.empty())
+	{
+		if (cornerMask == 0 || cornerMask > 15) return -1;
+		const unsigned variants = unsigned(d.connected.size()) / 16;
+		const unsigned grid = unsigned(d.connectedGrid);
+		const unsigned variant = grid ? (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)) :
+			hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % variants;
+		return d.connected[cornerMask * variants + variant];
+	}
 	const auto &frames = edge ? d.edge : d.full;
 	if (frames.empty())
 		return -1;

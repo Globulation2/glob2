@@ -8,7 +8,8 @@ decor sprite per cell drawn with the resources in screen-row order, so objects
 overlap their neighbours and occlude each other. This tool renders those
 sprites from scratch.
 
-Each sprite is a 64x64 native frame (256x256 HD) centred on its 32x32 cell.
+Object sprites are 64x64 native (256x256 HD), centred on a 32x32 cell.
+Connected foliage uses cropped 32x48 native frames (128x192 HD).
 Objects stand on the lower part of their cell and rise up to sixteen native
 pixels into the cell above, as trees do; drawn back to front, interior cells
 overlap into one continuous mass. A frame
@@ -16,7 +17,10 @@ holds a small cluster of objects in the game's soft three-quarter view: a lit
 top, a darker front face below it, top-left light and a soft contact shadow to
 the lower right, drawn back to front. Frames come in two sizes: `full` for
 cells inside an obstacle region and `edge` (smaller, pulled toward the cell
-centre) for cells with open neighbours; the runtime picks by neighbour count.
+centre) for cells with open neighbours; the runtime picks by corner count.
+Hedge and thicket additionally have connected corner-mask surfaces: their
+interiors have no per-cell front face or ground shadow. Only the exposed
+contour is shaded, and leaf strokes inherit soft overlapping crown lighting.
 
 Usage (pinned encoder interpreter, as for terrain_synth.py):
 
@@ -26,7 +30,8 @@ Usage (pinned encoder interpreter, as for terrain_synth.py):
     "$ENC" tools/artwork/terrain_decor.py --check
 
 All sets share one sprite, `data/gfx/terrain-decorN.png`, with set k at
-frames 12k..12k+11 in `ORDER`, so the runtime can batch every decor draw like
+frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
+(16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
 provenance is written to `datasrc/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each material in tileset.json.
@@ -35,6 +40,7 @@ Pure Python 3 plus Pillow; no numpy.
 import argparse
 import concurrent.futures
 import hashlib
+import functools
 import json
 import math
 import os
@@ -44,7 +50,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import PIL
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageChops, ImageOps
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from material_tiles import ROOT, fnv1a32, pixel_sha256  # noqa: E402
@@ -507,6 +513,167 @@ def render_outcrop(rng, edge):
                              tall=1.5)
 
 
+# Connected foliage is a surface, not a collection of individually lit domes.
+# The corner field continues across cell boundaries. Only its actual contour
+# receives a shaded front; a full interior cell has no per-cell rim or shadow.
+CONNECTED = ("hedge", "thicket")
+CANOPY_GRID = 4
+CANOPY_VARIANTS = CANOPY_GRID * CANOPY_GRID
+
+
+def connected_first(name):
+    return len(ORDER) * FRAMES + CONNECTED.index(name) * 16 * CANOPY_VARIANTS
+
+
+def frame_count(name):
+    return FRAMES + (16 * CANOPY_VARIANTS if name in CONNECTED else 0)
+
+
+def frame_number(name, index):
+    return (first_frame(name) + index if index < FRAMES else
+            connected_first(name) + index - FRAMES)
+
+
+@functools.lru_cache(maxsize=1)
+def thicket_crowns():
+    """Asymmetric leafy sprays rather than circular shrub domes."""
+    kernels = []
+    for index in range(6):
+        rng = random.Random(fnv1a32(f"thicket-crown:{index}"))
+        outline = lumpy_outline(rng, 4, 0.35)
+        values = []
+        for y in range(128):
+            for x in range(128):
+                dx, dy = (x - 63.5) / 51, (y - 63.5) / 51
+                radius = outline(math.atan2(dy, dx))
+                h = max(0, 1 - math.hypot(dx, dy) / radius)
+                values.append(int(h ** 0.7 * 255))
+        image = Image.new("L", (128, 128))
+        image.putdata(values)
+        kernels.append(image)
+    return kernels
+
+
+@functools.lru_cache(maxsize=2)
+def canopy_texture(name):
+    """A continuous 128-native-pixel canopy, sliced into a 4x4 tile block.
+
+    Crown lighting, leaves and branches cross tile edges together. There is no
+    repeated edge band and no independently shaded mound per terrain cell.
+    """
+    size = CELL * CANOPY_GRID
+    rng = random.Random(fnv1a32(f"canopy:{name}"))
+    heights = Image.new("L", (size, size))
+    radial = ImageOps.invert(Image.radial_gradient("L")).point(lambda v: max(0, int((v - 80) * 255 / 175)))
+    for _ in range(165 if name == "hedge" else 190):
+        cx, cy = rng.randrange(size), rng.randrange(size)
+        rx = rng.randint(23, 48) if name == "hedge" else rng.randint(20, 58)
+        ry = int(rx * rng.uniform(0.65, 0.95))
+        kernel = radial if name == "hedge" else rng.choice(thicket_crowns())
+        crown = kernel.resize((rx * 2, ry * 2), Image.Resampling.BILINEAR)
+        crown = crown.point(lambda v: int(v * 0.95)).filter(ImageFilter.GaussianBlur(1.5))
+        layer = Image.new("L", (size, size))
+        for ox in (-size, 0, size):
+            for oy in (-size, 0, size):
+                layer.paste(crown, (cx - rx + ox, cy - ry + oy))
+        heights = ImageChops.lighter(heights, layer)
+    image = Image.new("RGB", (size, size))
+    pix, hp = image.load(), heights.load()
+    base = (68, 118, 46) if name == "hedge" else (99, 112, 51)
+    for y in range(size):
+        for x in range(size):
+            h = hp[x, y] / 255
+            lighting = (hp[(x - 3) % size, (y - 3) % size] -
+                        hp[(x + 3) % size, (y + 3) % size]) / 255
+            shade = (0.72 + h * 0.50 if name == "hedge" else 0.70 + h * 0.40) - lighting * 0.65
+            if name == "thicket" and h < 0.20:
+                # Woody gaps remain visible between irregular crowns.
+                colour = mix3((54, 60, 34), base, smoothstep(0.03, 0.20, h) * 0.70)
+            else:
+                colour = tuple(c * shade for c in base)
+            pix[x, y] = tuple(int(c) for c in colour)
+    draw = ImageDraw.Draw(image)
+    if name == "thicket":
+        for _ in range(100):
+            x, y = rng.randrange(size), rng.randrange(size)
+            dx, dy = rng.randint(-18, 18), rng.randint(16, 36)
+            for ox in (-size, 0, size):
+                for oy in (-size, 0, size):
+                    draw.line([(x + ox, y + oy), (x + dx + ox, y + dy + oy)],
+                              fill=(89, 75, 47), width=4)
+                    draw.line([(x + dx // 2 + ox, y + dy // 2 + oy),
+                               (x - dx // 2 + ox, y + dy + oy)], fill=(64, 57, 36), width=3)
+    # Larger quiet crown forms carry the volume. Leaves are selective accents,
+    # rather than hundreds of equally prominent little spheres per cell.
+    for _ in range(4600 if name == "hedge" else 3100):
+        x, y = rng.randrange(size), rng.randrange(size)
+        h0 = hp[x, y] / 255
+        if h0 < (0.12 if name == "hedge" else 0.24):
+            continue
+        w, h = rng.randint(4, 9), rng.randint(3, 5)
+        tone = rng.choice((-10, -5, 2, 6, 11, 17))
+        colour = tuple(max(0, min(255, c + tone)) for c in pix[x, y])
+        for ox in (-size, 0, size):
+            for oy in (-size, 0, size):
+                draw.polygon([(x + ox - w, y + oy), (x + ox, y + oy - h),
+                              (x + ox + w, y + oy - 1), (x + ox + 1, y + oy + h)], fill=colour)
+    return image.filter(ImageFilter.GaussianBlur(0.5)), heights
+
+
+@functools.lru_cache(maxsize=16)
+def canopy_corner_field(mask):
+    """Bilinear corner stencil with a halo for the front and contact shadow."""
+    bits = [(mask >> k) & 1 for k in range(4)]
+    image = Image.new("L", (CELL + 10, CELL + 64))
+    values = []
+    for y in range(-32, CELL + 32):
+        v = (y + 0.5) / CELL
+        for x in range(-5, CELL + 5):
+            u = (x + 0.5) / CELL
+            value = lerp(lerp(bits[0], bits[1], u), lerp(bits[2], bits[3], u), v)
+            if mask in (6, 9):
+                # Substantial joins avoid hourglass pinholes at diagonal corners.
+                value += 0.24 * math.sin(clamp(u) * math.pi) ** 2 * math.sin(clamp(v) * math.pi) ** 2
+            values.append(int(clamp(value) * 255))
+    image.putdata(values)
+    return image
+
+
+def render_connected(name, mask, variant):
+    # Cropped 32x48 native frame: its anchor still raises the canopy six pixels.
+    image = Image.new("RGBA", (CELL, CELL + 64))
+    if not mask:
+        return image
+    master, heights = canopy_texture(name)
+    ox, oy = (variant % CANOPY_GRID) * CELL, (variant // CANOPY_GRID) * CELL
+    # The periodic texture and crown field continue through the stencil's halo.
+    rough = ImageChops.offset(heights, -ox + 5, -oy + 32).crop((0, 0, CELL + 10, CELL + 64))
+    amplitude = 0.10 if name == "hedge" else 0.24
+    rough = rough.point(lambda v: int(128 + (v / 255 - 0.45) * amplitude * 255))
+    coverage = ImageChops.add(canopy_corner_field(mask), rough, offset=-128)
+    coverage = coverage.point(lambda v: int(smoothstep(0.48 * 255, 0.52 * 255, v) * 255))
+    depth = 12 if name == "hedge" else 16
+    height = CELL + depth + 12
+    current = coverage.crop((5, 32, CELL + 5, 32 + height))
+    front = ImageChops.subtract(coverage.crop((5, 32 - depth, CELL + 5, 32 - depth + height)), current)
+    shadow = ImageChops.subtract(coverage.crop((0, 32 - depth - 8, CELL, 32 - depth - 8 + height)), current)
+    shadow = shadow.point(lambda v: int(v * 0.28))
+    texture = ImageChops.offset(master, -ox, -oy).crop((0, 0, CELL, height))
+    # Only real contours get a front face or contact shadow. A full interior
+    # stencil remains opaque through the halo, so it never grows a tile rim.
+    layer = Image.new("RGBA", texture.size, (18, 24, 14, 255))
+    layer.putalpha(shadow)
+    image.alpha_composite(layer, (0, 8))
+    skirt = 0.48 if name == "hedge" else 0.62
+    layer = texture.point(lambda v: int(v * skirt)).convert("RGBA")
+    layer.putalpha(front)
+    image.alpha_composite(layer, (0, 8))
+    layer = texture.crop((0, 0, CELL, CELL)).convert("RGBA")
+    layer.putalpha(current.crop((0, 0, CELL, CELL)))
+    image.alpha_composite(layer, (0, 8))
+    return image
+
+
 # --------------------------------------------------------------------------
 # Frames, provenance and CLI
 # --------------------------------------------------------------------------
@@ -514,26 +681,30 @@ def render_outcrop(rng, edge):
 
 def render_frame(name, index):
     rng = random.Random(fnv1a32(f"decor:{name}:{index}"))
-    hd = SPECS[name].render(rng, index >= FULL).image()
-    native = hd.resize((NATIVE, NATIVE), Image.Resampling.BOX)
+    hd = (render_connected(name, (index - FRAMES) // CANOPY_VARIANTS,
+                           (index - FRAMES) % CANOPY_VARIANTS) if index >= FRAMES else
+          SPECS[name].render(rng, index >= FULL).image())
+    native = hd.resize((hd.width // SCALE, hd.height // SCALE), Image.Resampling.BOX)
     return native, hd
 
 
-def _job(args):
-    name, index = args
-    native, hd = render_frame(name, index)
-    return name, index, native.tobytes(), hd.tobytes()
+def _job(name):
+    # Keep a material on one worker so all masks reuse its four textures.
+    return [(name, index, native.tobytes(), hd.tobytes())
+            for index in range(frame_count(name))
+            for native, hd in (render_frame(name, index),)]
 
 
 def synthesize(names, jobs=None):
-    tasks = [(n, i) for n in names for i in range(FRAMES)]
-    jobs = jobs or min(32, os.cpu_count() or 1)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(tasks))) as pool:
-        rendered = list(pool.map(_job, tasks))
+    jobs = jobs or min(8, os.cpu_count() or 1)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(names))) as pool:
+        rendered = list(pool.map(_job, names))
     out = {}
-    for name, index, native, hd in rendered:
-        out.setdefault(name, [None] * FRAMES)[index] = (
-            Image.frombytes("RGBA", (NATIVE, NATIVE), native), Image.frombytes("RGBA", (S, S), hd))
+    for group in rendered:
+        for name, index, native, hd in group:
+            out.setdefault(name, [None] * frame_count(name))[index] = (
+                Image.frombytes("RGBA", (32, 48) if index >= FRAMES else (NATIVE, NATIVE), native),
+                Image.frombytes("RGBA", (128, 192) if index >= FRAMES else (S, S), hd))
     return out
 
 
@@ -562,7 +733,7 @@ def write(results, root):
     for name, frames in results.items():
         hashes, hd_hashes = {}, {}
         for i, (native, hd) in enumerate(frames):
-            n = first_frame(name) + i
+            n = frame_number(name, i)
             relative = f"{PREFIX}{n}.png"
             (root / relative).parent.mkdir(parents=True, exist_ok=True)
             native.save(root / relative, optimize=False)
@@ -575,6 +746,7 @@ def write(results, root):
             "seed": f'fnv1a32("decor:{name}:<frame>")',
             "full": [first_frame(name) + i for i in range(FULL)],
             "edge": [first_frame(name) + i for i in range(FULL, FRAMES)],
+            "connected": list(range(connected_first(name), connected_first(name) + 16 * CANOPY_VARIANTS)) if name in CONNECTED else [],
             "runtime_sha256": hashes,
             "highres_sha256": hd_hashes,
         }
@@ -585,6 +757,8 @@ def write(results, root):
         "generator_sha256": generator_sha(),
         "native_size": NATIVE,
         "render_size": S,
+        "connected_native_size": [32, 48],
+        "connected_grid": CANOPY_GRID,
         "pillow": PIL.__version__,
     })
     document["sets"] = {name: document["sets"][name] for name in ORDER if name in document["sets"]}
@@ -606,7 +780,7 @@ def check(results, root):
             problems.append(f"{name}: missing from provenance")
             continue
         for i, (native, hd) in enumerate(frames):
-            n = first_frame(name) + i
+            n = frame_number(name, i)
             for relative, image, table in ((f"{PREFIX}{n}.png", native, recorded["runtime_sha256"]),
                                            (f"{HD_PREFIX}{n}.png", hd, recorded["highres_sha256"])):
                 target = root / relative
@@ -627,6 +801,15 @@ def write_catalog(root):
 
     path = root / "data/terrain/tileset.json"
     document = json.loads(path.read_text())
+    # The canopy owns foliage irregularity and depth. A quiet underlay must
+    # not expose the old brush profile's spines below the raised surface.
+    canopy_profile = {"key": "canopy", "shape": "patch", "roughness_q8": 0,
+                      "amplitude_q8": 0, "feather_q8": 128, "speckle_q8": 0,
+                      "bridge_q8": 512, "contours_q12": [[0] * 9 for _ in range(32)]}
+    document["profiles"] = [p for p in document["profiles"] if p["key"] != "canopy"] + [canopy_profile]
+    for pair in document["pair_treatments"]:
+        if pair["a"] in CONNECTED or pair["b"] in CONNECTED:
+            pair["profile"] = "canopy"
     for material in document["materials"]:
         if material["key"] in SPECS:
             first = first_frame(material["key"])
@@ -635,7 +818,50 @@ def write_catalog(root):
                 "full": list(range(first, first + FULL)),
                 "edge": list(range(first + FULL, first + FRAMES)),
             }
+        if material["key"] in CONNECTED:
+            start = connected_first(material["key"])
+            material["decor"]["connected"] = list(range(start, start + 16 * CANOPY_VARIANTS))
+            material["decor"]["connected_grid"] = CANOPY_GRID
+            material["profile"] = "canopy"
     path.write_text(dump_catalog(document))
+
+
+def connected_sheet(results):
+    """Before/after patches, strips, corners, isolated vertices and a hole.
+
+    Reproduce row painter order and corner masks rather than arranging isolated
+    swatches. This makes grid stripes and directional joining errors visible.
+    """
+    width, height = 16, 12
+    panel_w, panel_h = width * 32, height * 32
+    out = Image.new("RGBA", (panel_w * 2, (panel_h + 28) * len(results)), (32, 35, 30, 255))
+    labels = ImageDraw.Draw(out)
+    grass = Image.open(ROOT / "data/gfx/terrain0.png").convert("RGBA")
+    for row, (name, frames) in enumerate(results.items()):
+        vertices = {(x, y) for y in range(4, 11) for x in range(2, 15)}
+        vertices -= {(x, y) for y in range(6, 9) for x in range(6, 9)}
+        vertices |= {(x, 2) for x in range(2, 11)} | {(12, y) for y in range(1, 5)} | {(14, 2)}
+        for after in (False, True):
+            patch = Image.new("RGBA", (panel_w, panel_h))
+            for y in range(height):
+                for x in range(width):
+                    patch.paste(grass, (x * 32, y * 32))
+            for y in range(height):
+                for x in range(width):
+                    mask = sum(1 << k for k, (dx, dy) in enumerate(((0, 0), (1, 0), (0, 1), (1, 1)))
+                               if (x + dx, y + dy) in vertices)
+                    count = mask.bit_count()
+                    if not count or (not after and count < 2):
+                        continue
+                    variant = (y % CANOPY_GRID) * CANOPY_GRID + x % CANOPY_GRID if after else fnv1a32(f"{name}:{x}:{y}")
+                    index = (FRAMES + mask * CANOPY_VARIANTS + variant % CANOPY_VARIANTS if after else
+                             variant % FULL if count == 4 else FULL + variant % EDGE)
+                    frame = frames[index][0]
+                    patch.alpha_composite(frame, (x * 32 - (frame.width - 32) // 2, y * 32 - (frame.height - 32) // 2))
+            oy = row * (panel_h + 28)
+            out.paste(patch, (int(after) * panel_w, oy + 28))
+            labels.text((int(after) * panel_w + 8, oy + 7), f"{name}: {'connected canopy' if after else 'previous bushes'}", fill="white")
+    return out
 
 
 def sheet(results, ground=None):
@@ -649,7 +875,7 @@ def sheet(results, ground=None):
     for name in names:
         frames = results[name]
         bg = (ground or {}).get(name)
-        for i, (native, _) in enumerate(frames):
+        for i, (native, _) in enumerate(frames[:FRAMES]):
             tile = Image.new("RGBA", (NATIVE, NATIVE), (82, 120, 64, 255))
             if bg:
                 for oy in range(0, NATIVE, 32):
@@ -691,7 +917,7 @@ def main(argv=None):
             if path.exists():
                 ground[name] = Image.open(path).convert("RGBA")
         args.sheet.parent.mkdir(parents=True, exist_ok=True)
-        sheet(results, ground).save(args.sheet)
+        (connected_sheet(results) if all(n in CONNECTED for n in names) else sheet(results, ground)).save(args.sheet)
         print(f"Wrote {args.sheet}")
         return
     if args.check:
@@ -705,7 +931,7 @@ def main(argv=None):
     write(results, root)
     if args.write_catalog:
         write_catalog(root)
-    print(f"Wrote {len(names)} decor sets of {FRAMES} frames")
+    print(f"Wrote {len(names)} decor sets ({sum(frame_count(n) for n in names)} frames)")
 
 
 if __name__ == "__main__":
