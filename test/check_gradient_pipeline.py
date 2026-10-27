@@ -53,15 +53,22 @@ def main():
     expected = detailed_tick_hashes(whole/'game.replay.checksums')
     for phase in range(8):
         checkpoint = output/f'checkpoint-{phase}'
-        execute(binary, ['--load-game',str(initial),'--ticks',str(32+phase),'--save','final'], checkpoint)
+        saved_result = execute(binary, ['--load-game',str(initial),'--ticks',str(32+phase),'--save','final'], checkpoint)
+        delay_args=['--load-game',str(checkpoint/'final.game'),'--gradient-delay','3','--ticks','1']
+        if saved_result['result']['gradient_pending']:
+            cases_delay = subprocess.run([str(binary),'game','run','--output-dir',str(output/f'delay-rejection-{phase}'),*delay_args],capture_output=True,text=True)
+            assert cases_delay.returncode != 0, 'delay change accepted with pending gradients'
+        else:
+            changed=execute(binary,delay_args,output/f'delay-change-{phase}')
+            assert changed['result']['gradient_delay']==3
+
         for workers in (0,1,2):
             dest = output/f'resumed-{phase}-{workers}'
             execute(binary, ['--load-game',str(checkpoint/'final.game'),'--ticks','80',
                              '--compute-threads',str(workers + 1),'--telemetry','checksums','--write-replay'], dest)
             ticks = detailed_tick_hashes(dest/'game.replay.checksums')
             assert ticks and all(expected[t] == value for t,value in ticks.items()), (phase, workers)
-    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0'],
-             ['--load-game',str(output/'checkpoint-0/final.game'),'--gradient-delay','3']]
+    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0']]
     for index, args in enumerate(cases):
         dest = output/f'rejection-{index}'
         run = subprocess.run([str(binary),'game', 'run','--output-dir',str(dest),*args],capture_output=True,text=True)

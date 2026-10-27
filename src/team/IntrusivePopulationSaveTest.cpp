@@ -173,6 +173,9 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);
         game.map.configureCompute(1);
         game.map.configureGradientPipeline(0,3);
+        for (auto* building:team->liveBuildings)
+            game.map.requestBuildingRefresh(building,building->routeSlot(0,BuildingRoute::Automatic));
+        game.map.updateMaterialGradient(0,WHEAT,0);
         game.observeCompletedWorld();
         REQUIRE(game.stepCounter==0);
         pendingFields=game.map.gradientPipelineStatus().pending;

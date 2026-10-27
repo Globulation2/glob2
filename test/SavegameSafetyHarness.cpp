@@ -765,10 +765,12 @@ static void checkRandomContinuation(bool text, bool ai)
 		REQUIRE(output.pipelineStart>output.runtimeStart);
 		// Reject invalid queue sizes, deadlines, destinations and cancellation flags.
 		const auto pipeline=output.pipelineStart;
-		// Format 174 batches pending fields: uint16 count, uint32 destination.
-		REQUIRE((static_cast<unsigned char>(bytes[pipeline+1])<<8 |
-		         static_cast<unsigned char>(bytes[pipeline+2]))>0);
-		const auto destination=pipeline+3;
+		// Unified gradients store a uint32 count followed by uint32 destinations.
+		REQUIRE((static_cast<unsigned char>(bytes[pipeline+1])<<24 |
+		         static_cast<unsigned char>(bytes[pipeline+2])<<16 |
+		         static_cast<unsigned char>(bytes[pipeline+3])<<8 |
+		         static_cast<unsigned char>(bytes[pipeline+4]))>0);
+		const auto destination=pipeline+5;
 		const auto remaining=destination+sizeof(Uint32);
 		for (const auto [offset,value] : std::vector<std::pair<size_t,unsigned char>>{
 			{pipeline,0}, {pipeline,17}, {pipeline+1,255},

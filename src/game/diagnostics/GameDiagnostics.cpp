@@ -254,10 +254,10 @@ void Session::publishCapture(const FieldSink& completed) noexcept
 }
 SimulationSnapshot::CaptureOptions Session::captureOptions(Uint32 tick) const
 {
-    if (!png || pending()) return {};
-    bool needed=!reservations.empty();
-    for (const auto& sink:sinks) needed|=sink->captured || tick>=sink->nextTick;
-    return {.presentation=needed};
+    // A completed observation cannot gain components later in the same tick.
+    // Output workers can finish between owner calls, so pending/reservation state
+    // must not change the payload requested by a PNG diagnostic session.
+    return {.presentation=png};
 }
 void Session::completeTick(const SimulationSnapshot::Handle& world) noexcept
 {

@@ -34,6 +34,12 @@ samples and missing inventories cannot establish improvements.
 
 ## Linux execution dependencies
 
+The container bootstrap replaces the runner image's HTTP Azure Ubuntu mirror
+with Ubuntu's HTTPS archive before installing dependencies. It retains immutable
+indexes, signature verification, package hashes, bounded network timeouts and the
+existing installation timeout. This avoids slow mirror transfers consuming the
+whole installation budget.
+
 GCC 13 builds its client and applicable transport programs once. Runtime consumers
 reuse same-run artifacts with matching source/configuration provenance. Compiler
 build jobs publish programs before separate CLI/scripting regressions; native and

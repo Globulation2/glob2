@@ -1883,10 +1883,10 @@ TEST_CASE("ordinary air service choices keep geometric ranking without allocatin
         // Exercise a flying worker's training using its normal learnable skills.
         if (purpose==WALK) unit->performance[FLY]=32;
         const char* kind=purpose==FEED ? "inn" : purpose==HEAL ? "hospital" : "racetrack";
-        auto* near=world.addBuilding(kind,20,8);
-        auto* far=world.addBuilding(kind,18,18);
-        REQUIRE(near); REQUIRE(far);
-        for (auto* building : {near,far}) {
+        auto* nearbyBuilding=world.addBuilding(kind,20,8);
+        auto* distantBuilding=world.addBuilding(kind,18,18);
+        REQUIRE(nearbyBuilding); REQUIRE(distantBuilding);
+        for (auto* building : {nearbyBuilding,distantBuilding}) {
             building->setMaterial(WHEAT,20);
             building->updateCallLists();
             REQUIRE(building->canOfferService(unit,purpose));
@@ -1899,8 +1899,8 @@ TEST_CASE("ordinary air service choices keep geometric ranking without allocatin
         for (bool painted : {false,true}) {
             if (painted) for (int y=0;y<map.getH();++y) map.addForbidden(15,y,0);
             REQUIRE_FALSE(map.hasAirRoutingConstraints());
-            CHECK(select()==near);
-            for (auto* building : {near,far}) {
+            CHECK(select()==nearbyBuilding);
+            for (auto* building : {nearbyBuilding,distantBuilding}) {
                 const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
                 CHECK(building->globalGradient[slot]==nullptr);
             }
@@ -1908,10 +1908,10 @@ TEST_CASE("ordinary air service choices keep geometric ranking without allocatin
         // A real terrain edit must switch selection to the shared route policy.
         map.paintCell(60,60,VOID_HOLE);
         REQUIRE(map.hasAirRoutingConstraints());
-        for (auto* building : {near,far})
+        for (auto* building : {nearbyBuilding,distantBuilding})
             glob2test::awaitBuildingGradient(world.game,building,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
         REQUIRE(select()!=nullptr);
-        for (auto* building : {near,far}) {
+        for (auto* building : {nearbyBuilding,distantBuilding}) {
             const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
             CHECK(building->globalGradient[slot]!=nullptr);
         }
@@ -2173,6 +2173,7 @@ TEST_CASE("stock changes during shared market work retain dirty demand through i
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,12,8,nullptr,true)==RouteResult::Reachable);
     // An explicit refresh captures old stock; passage of time alone does not
     // reserve a replacement. Complete its output without advancing publication.
+    game.stepCounter+=AdaptiveGradientState::MinimumInterval;
     map.updateMaterialGradient(0,WHEAT,0,true);
     boundary();
     bool pending=false;
@@ -2195,6 +2196,8 @@ TEST_CASE("stock changes during shared market work retain dirty demand through i
     }
     boundary(); // Original captured stock still publishes exactly at its deadline.
     CHECK(map.queryMaterialDistance(0,WHEAT,0,12,8,nullptr,true)==RouteResult::Reachable);
+    CHECK(map.gradientPipelineStatus().jobs==jobs);
+    for (unsigned i=8;i<AdaptiveGradientState::MinimumInterval;++i) boundary();
     CHECK(map.gradientPipelineStatus().jobs==jobs+1); // Dirty follow-up captured after publication.
     CHECK_FALSE(map.gradientRuntime->adaptive.fields.at(key).reactive);
     for (unsigned i=0;i<8;++i) boundary();

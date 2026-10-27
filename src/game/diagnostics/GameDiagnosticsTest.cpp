@@ -422,3 +422,21 @@ TEST_CASE("Delayed diagnostic offers cover planner ticks without duplicate captu
     fixture.game.stepCounter=503; session.beginTick(fixture.game);
     CHECK(session.reserveCapture(0,503)!=nullptr);
 }
+
+TEST_CASE("PNG diagnostics retain presentation requirements through repeated owner observations" * doctest::test_suite("GameDiagnostics"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    GameHeader header; header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    fixture.game.setGameHeader(header);
+    GameDiagnostics::Session session(fixture.game,(glob2test::artifactDir()/"retained-observation").string(),16,true);
+    const auto first=fixture.game.observeCompletedWorld(session.captureOptions(0));
+    CHECK(first.supportsPresentation());
+    // A later sample request must use the same completed observation.
+    session.beginTick(fixture.game);
+    REQUIRE(session.reserveCapture(0,0));
+    const auto repeated=fixture.game.observeCompletedWorld(session.captureOptions(0));
+    CHECK(repeated.supportsPresentation());
+    CHECK(first.observationRevision==repeated.observationRevision);
+}
