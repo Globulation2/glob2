@@ -1,0 +1,9 @@
+Get:1 file:/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/1801/apt-network/apt/apt-mirrors.txt Mirrorlist [34 B]
+Get:2 https://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+Get:3 https://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1401 kB]
+Get:4 https://archive.ubuntu.com/ubuntu noble/main Icons (48x48) [106 kB]
+Get:5 https://archive.ubuntu.com/ubuntu noble/main Icons (64x64) [156 kB]
+Get:6 https://archive.ubuntu.com/ubuntu noble/main Icons (64x64@2) [21.8 kB]
+Get:7 https://archive.ubuntu.com/ubuntu noble/main amd64 c-n-f Metadata [30.5 kB]
+Fetched 1971 kB in 11s (188 kB/s)
+Reading package lists...

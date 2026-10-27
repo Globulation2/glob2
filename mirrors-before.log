@@ -1,0 +1,57 @@
+FFFF
+======================================================================
+FAIL: test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources (test_ci_apt_mirrors.AptMirrorTest.test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources) (workflow='build.yml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/build_system/test_ci_apt_mirrors.py", line 39, in test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources
+    self.assertEqual((apt / path).read_text(), expected, path)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n' != 'deb https://archive.ubuntu.com/ubuntu jammy main\n'
+- deb https://azure.archive.ubuntu.com/ubuntu jammy main
+?             ------
++ deb https://archive.ubuntu.com/ubuntu jammy main
+ : sources.list.d/legacy.list
+
+======================================================================
+FAIL: test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources (test_ci_apt_mirrors.AptMirrorTest.test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources) (workflow='ci-linux-build.yml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/build_system/test_ci_apt_mirrors.py", line 39, in test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources
+    self.assertEqual((apt / path).read_text(), expected, path)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n' != 'deb https://archive.ubuntu.com/ubuntu jammy main\n'
+- deb https://azure.archive.ubuntu.com/ubuntu jammy main
+?             ------
++ deb https://archive.ubuntu.com/ubuntu jammy main
+ : sources.list.d/legacy.list
+
+======================================================================
+FAIL: test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources (test_ci_apt_mirrors.AptMirrorTest.test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources) (workflow='ci-linux-build.yml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/build_system/test_ci_apt_mirrors.py", line 39, in test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources
+    self.assertEqual((apt / path).read_text(), expected, path)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n' != 'deb https://archive.ubuntu.com/ubuntu jammy main\n'
+- deb https://azure.archive.ubuntu.com/ubuntu jammy main
+?             ------
++ deb https://archive.ubuntu.com/ubuntu jammy main
+ : sources.list.d/legacy.list
+
+======================================================================
+FAIL: test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources (test_ci_apt_mirrors.AptMirrorTest.test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources) (workflow='thread-sanitizer.yml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/build_system/test_ci_apt_mirrors.py", line 39, in test_all_bootstrap_blocks_rewrite_mirror_lists_and_direct_sources
+    self.assertEqual((apt / path).read_text(), expected, path)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n' != 'deb https://archive.ubuntu.com/ubuntu jammy main\n'
+- deb https://azure.archive.ubuntu.com/ubuntu jammy main
+?             ------
++ deb https://archive.ubuntu.com/ubuntu jammy main
+ : sources.list.d/legacy.list
+
+----------------------------------------------------------------------
+Ran 1 test in 0.052s
+
+FAILED (failures=4)

@@ -1,0 +1,1 @@
+deb [signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] mirror+file:/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/1801/apt-network/apt/apt-mirrors.txt noble main

@@ -1,0 +1,5 @@
+PASS Maxima.Implementation/strategy and maintenance share the deterministic queue (0.5s)
+PASS Maxima.Implementation/director execution regressions (0.5s)
+
+2 passed, 0 failed, 0 skipped (1.0s of test time)
+[run_tests] JUnit report: artifacts/ci-watch/1801/director.xml (2 cases)

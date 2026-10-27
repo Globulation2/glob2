@@ -1,0 +1,13 @@
+......s.........E.................................s...........
+======================================================================
+ERROR: test_dirty_plan_is_recomputed_before_scheduled_executors (MaximaDirectorAuthorityTest.MaximaDirectorAuthorityTest.test_dirty_plan_is_recomputed_before_scheduled_executors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/src/ai/maxima/MaximaDirectorAuthorityTest.py", line 99, in test_dirty_plan_is_recomputed_before_scheduled_executors
+    replan = tick.index("director.evaluate(*this, runtime);")
+ValueError: substring not found
+
+----------------------------------------------------------------------
+Ran 61 tests in 0.245s
+
+FAILED (errors=1, skipped=2)

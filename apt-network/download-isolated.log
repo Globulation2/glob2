@@ -1,0 +1,3 @@
+Get:1 file:/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/1801/apt-network/apt/apt-mirrors.txt Mirrorlist [34 B]
+Get:2 https://archive.ubuntu.com/ubuntu noble/main amd64 libasyncns0 amd64 0.8-6build4 [11.3 kB]
+Fetched 11.3 kB in 1s (13.7 kB/s)

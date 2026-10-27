@@ -1,0 +1,317 @@
+﻿2026-10-27T17:24:13.7758995Z Current runner version: '2.338.0'
+2026-10-27T17:24:13.7779963Z ##[group]Runner Image Provisioner
+2026-10-27T17:24:13.7780669Z Hosted Compute Agent
+2026-10-27T17:24:13.7781434Z Version: 20261021.618
+2026-10-27T17:24:13.7781980Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-27T17:24:13.7782728Z Build Date: 2026-10-21T00:45:21Z
+2026-10-27T17:24:13.7783359Z Worker ID: {3b24d1cd-2a35-4052-8347-13414b4c786e}
+2026-10-27T17:24:13.7783957Z Region: westus3
+2026-10-27T17:24:13.7784513Z Cloud: Azure
+2026-10-27T17:24:13.7784994Z ##[endgroup]
+2026-10-27T17:24:13.7786139Z ##[group]Operating System
+2026-10-27T17:24:13.7786728Z Ubuntu
+2026-10-27T17:24:13.7787200Z 24.04.5
+2026-10-27T17:24:13.7787708Z LTS
+2026-10-27T17:24:13.7788173Z ##[endgroup]
+2026-10-27T17:24:13.7788755Z ##[group]Runner Image
+2026-10-27T17:24:13.7789289Z Image: ubuntu-24.04
+2026-10-27T17:24:13.7789794Z Version: 20261012.334.1
+2026-10-27T17:24:13.7790911Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-27T17:24:13.7792539Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-27T17:24:13.7793391Z ##[endgroup]
+2026-10-27T17:24:13.7794301Z ##[group]GITHUB_TOKEN Permissions
+2026-10-27T17:24:13.7795921Z Contents: read
+2026-10-27T17:24:13.7796444Z Metadata: read
+2026-10-27T17:24:13.7797042Z ##[endgroup]
+2026-10-27T17:24:13.7798705Z Secret source: Actions
+2026-10-27T17:24:13.7799605Z Cache mode: write
+2026-10-27T17:24:13.7800203Z Prepare workflow directory
+2026-10-27T17:24:13.8111700Z Prepare all required actions
+2026-10-27T17:24:13.8152334Z Getting action download info
+2026-10-27T17:24:14.1426656Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-27T17:24:14.2413019Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-27T17:24:14.4762707Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-27T17:24:14.7914590Z Uses: Globulation2/glob2/.github/workflows/ci-linux-build.yml@refs/heads/master (d80e39b1521aeef0097df3a0e350748f33a2755f)
+2026-10-27T17:24:14.7918857Z ##[group] Inputs
+2026-10-27T17:24:14.7919357Z   revision: d80e39b1521aeef0097df3a0e350748f33a2755f
+2026-10-27T17:24:14.7919890Z   image: ubuntu:24.04
+2026-10-27T17:24:14.7920282Z   runner: ubuntu-24.04
+2026-10-27T17:24:14.7920674Z   compiler: g++-13
+2026-10-27T17:24:14.7921044Z   c_compiler: gcc-13
+2026-10-27T17:24:14.7922115Z   build_only: true
+2026-10-27T17:24:14.7922511Z   reuse_build: false
+2026-10-27T17:24:14.7922896Z   web_native: true
+2026-10-27T17:24:14.7923270Z   generator_only: false
+2026-10-27T17:24:14.7923681Z   coverage_profile: full
+2026-10-27T17:24:14.7924083Z   run_tests: false
+2026-10-27T17:24:14.7924460Z   run_regressions: true
+2026-10-27T17:24:14.7924848Z   test_shards: [1,2,3,4]
+2026-10-27T17:24:14.7925243Z   generator_suites: 
+2026-10-27T17:24:14.7925652Z   runtime_packages: false
+2026-10-27T17:24:14.7926071Z   map_generators: false
+2026-10-27T17:24:14.7926472Z   validate_runtime: false
+2026-10-27T17:24:14.7926875Z ##[endgroup]
+2026-10-27T17:24:14.7927408Z Complete job name: Primary Linux programs / linux build (ubuntu:24.04, g++-13)
+2026-10-27T17:24:14.8657601Z ##[group]Run # Fetch immutable package indexes to avoid mirror-sync mismatches,
+2026-10-27T17:24:14.8658566Z [36;1m# Fetch immutable package indexes to avoid mirror-sync mismatches,[0m
+2026-10-27T17:24:14.8659357Z [36;1m# and bound network stalls without weakening signature verification.[0m
+2026-10-27T17:24:14.8660097Z [36;1m# Runner images may point at a throttled Azure mirror. Use Ubuntu's[0m
+2026-10-27T17:24:14.8660848Z [36;1m# HTTPS archive while retaining signed indexes and package hashes.[0m
+2026-10-27T17:24:14.8662341Z [36;1mfor source in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do[0m
+2026-10-27T17:24:14.8663105Z [36;1m  if [ -f "$source" ]; then[0m
+2026-10-27T17:24:14.8663855Z [36;1m    sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"[0m
+2026-10-27T17:24:14.8664855Z [36;1m  fi[0m
+2026-10-27T17:24:14.8665205Z [36;1mdone[0m
+2026-10-27T17:24:14.8665729Z [36;1msudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'[0m
+2026-10-27T17:24:14.8666318Z [36;1mAcquire::By-Hash "force";[0m
+2026-10-27T17:24:14.8666758Z [36;1mAcquire::Retries "3";[0m
+2026-10-27T17:24:14.8667188Z [36;1mAcquire::http::Timeout "30";[0m
+2026-10-27T17:24:14.8667648Z [36;1mAcquire::https::Timeout "30";[0m
+2026-10-27T17:24:14.8668089Z [36;1mEOF[0m
+2026-10-27T17:24:14.8668452Z [36;1msudo apt-get update -qq[0m
+2026-10-27T17:24:14.8669139Z [36;1msudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \[0m
+2026-10-27T17:24:14.8670075Z [36;1m  ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev ccache \[0m
+2026-10-27T17:24:14.8671539Z [36;1m  cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \[0m
+2026-10-27T17:24:14.8672718Z [36;1m  libopusfile-dev libopus-dev libogg-dev libspeex-dev \[0m
+2026-10-27T17:24:14.8673287Z [36;1m  libboost-dev libssl-dev \[0m
+2026-10-27T17:24:14.8673773Z [36;1m  zlib1g-dev libfribidi-dev libpcre3-dev \[0m
+2026-10-27T17:24:14.8674631Z [36;1m  libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb[0m
+2026-10-27T17:24:14.8864036Z shell: /usr/bin/bash -e {0}
+2026-10-27T17:24:14.8864841Z env:
+2026-10-27T17:24:14.8865221Z   GLOB2_DEV_MODE: isolated
+2026-10-27T17:24:14.8865643Z   CCACHE: 1
+2026-10-27T17:24:14.8866005Z   CCACHE_DIR: /tmp/glob2-ccache
+2026-10-27T17:24:14.8866445Z   CCACHE_COMPILERCHECK: content
+2026-10-27T17:24:14.8866863Z   CCACHE_MAXSIZE: 5G
+2026-10-27T17:24:14.8867255Z   DEBIAN_FRONTEND: noninteractive
+2026-10-27T17:24:14.8867677Z ##[endgroup]
+2026-10-27T17:24:24.4652747Z Reading package lists...
+2026-10-27T17:24:24.6660017Z Building dependency tree...
+2026-10-27T17:24:24.6665837Z Reading state information...
+2026-10-27T17:24:24.8164226Z git is already the newest version (1:2.55.0-0ppa1~ubuntu24.04.2).
+2026-10-27T17:24:24.8165202Z git set to manually installed.
+2026-10-27T17:24:24.8165933Z g++-13 is already the newest version (13.3.0-6ubuntu2~24.04.1).
+2026-10-27T17:24:24.8166538Z python3 is already the newest version (3.12.3-0ubuntu2.1).
+2026-10-27T17:24:24.8167190Z python3-venv is already the newest version (3.12.3-0ubuntu2.1).
+2026-10-27T17:24:24.8167818Z pkg-config is already the newest version (1.8.1-2build1).
+2026-10-27T17:24:24.8168433Z libssl-dev is already the newest version (3.0.13-0ubuntu3.16).
+2026-10-27T17:24:24.8169151Z libgl1-mesa-dri is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-27T17:24:24.8169736Z libgl1-mesa-dri set to manually installed.
+2026-10-27T17:24:24.8170442Z xauth is already the newest version (1:1.1.2-1build1).
+2026-10-27T17:24:24.8171045Z xauth set to manually installed.
+2026-10-27T17:24:24.8171841Z The following additional packages will be installed:
+2026-10-27T17:24:24.8172383Z   brotli cmake-data fonts-urw-base35 gir1.2-glib-2.0 libasyncns0
+2026-10-27T17:24:24.8173360Z   libbabeltrace1 libblkid-dev libboost1.83-dev libbrotli-dev libbrotli1
+2026-10-27T17:24:24.8173824Z   libbz2-dev libdebuginfod-common libdebuginfod1t64 libegl-dev libegl-mesa0
+2026-10-27T17:24:24.8174303Z   libegl1 libflac12t64 libgif7 libgirepository-2.0-0 libgl-dev libgles-dev
+2026-10-27T17:24:24.8174754Z   libgles1 libgles2 libglib2.0-0t64 libglib2.0-bin libglib2.0-data
+2026-10-27T17:24:24.8175161Z   libglib2.0-dev libglib2.0-dev-bin libglu1-mesa libglvnd-core-dev
+2026-10-27T17:24:24.8175646Z   libglvnd-dev libglx-dev libgs-common libgs10 libgs10-common libhiredis1.1.0
+2026-10-27T17:24:24.8176123Z   libhwy1t64 libid3tag0 libidn12 libijs-0.35 libimlib2t64 libipt2 libjbig2dec0
+2026-10-27T17:24:24.8176568Z   libjsoncpp25 libjxl0.7 libmount-dev libmp3lame0 libmpg123-0t64
+2026-10-27T17:24:24.8177154Z   libobrender32v5 libobt2v5 libopengl-dev libopengl0 libopus0 libopusfile0
+2026-10-27T17:24:24.8177621Z   libpangoxft-1.0-0 libpaper1 libpcre16-3 libpcre3 libpcre32-3 libpcrecpp0v5
+2026-10-27T17:24:24.8178105Z   libpng-dev libpthread-stubs0-dev libpulse-mainloop-glib0 libpulse0 librhash0
+2026-10-27T17:24:24.8178580Z   librsvg2-2 libselinux1-dev libsepol-dev libset-scalar-perl libsndfile1
+2026-10-27T17:24:24.8179258Z   libsource-highlight-common libsource-highlight4t64 libspectre1 libspeex1
+2026-10-27T17:24:24.8179991Z   libstartup-notification0 libva-drm2 libva-glx2 libva-wayland2 libva-x11-2
+2026-10-27T17:24:24.8180517Z   libva2 libvorbisenc2 libwayland-bin libwayland-server0 libxau-dev
+2026-10-27T17:24:24.8180972Z   libxcb-shape0 libxcb-util1 libxcb1-dev libxdmcp-dev libxfixes-dev
+2026-10-27T17:24:24.8181507Z   libxrender-dev libxtst6 libxv1 libxxf86dga1 poppler-data uuid-dev
+2026-10-27T17:24:24.8182186Z   x11proto-dev xfonts-encodings xfonts-utils xorg-sgml-doctools xserver-common
+2026-10-27T17:24:24.8182753Z   xtrans-dev zlib1g
+2026-10-27T17:24:24.8183086Z Suggested packages:
+2026-10-27T17:24:24.8183545Z   distcc | icecc cmake-doc cmake-format elpa-cmake-mode ninja-build
+2026-10-27T17:24:24.8184203Z   fonts-freefont-otf | fonts-freefont-ttf fonts-texgyre gdb-doc gdbserver
+2026-10-27T17:24:24.8184862Z   libasound2-doc libboost-doc libboost1.83-doc libboost-atomic1.83-dev
+2026-10-27T17:24:24.8185497Z   libboost-chrono1.83-dev libboost-container1.83-dev libboost-context1.83-dev
+2026-10-27T17:24:24.8186096Z   libboost-contract1.83-dev libboost-coroutine1.83-dev
+2026-10-27T17:24:24.8186726Z   libboost-date-time1.83-dev libboost-exception1.83-dev libboost-fiber1.83-dev
+2026-10-27T17:24:24.8187382Z   libboost-filesystem1.83-dev libboost-graph-parallel1.83-dev
+2026-10-27T17:24:24.8188018Z   libboost-graph1.83-dev libboost-iostreams1.83-dev libboost-json1.83-dev
+2026-10-27T17:24:24.8188638Z   libboost-locale1.83-dev libboost-log1.83-dev libboost-math1.83-dev
+2026-10-27T17:24:24.8189101Z   libboost-mpi-python1.83-dev libboost-mpi1.83-dev libboost-nowide1.83-dev
+2026-10-27T17:24:24.8189530Z   libboost-numpy1.83-dev libboost-program-options1.83-dev
+2026-10-27T17:24:24.8189965Z   libboost-python1.83-dev libboost-random1.83-dev libboost-regex1.83-dev
+2026-10-27T17:24:24.8190391Z   libboost-serialization1.83-dev libboost-stacktrace1.83-dev
+2026-10-27T17:24:24.8190833Z   libboost-system1.83-dev libboost-test1.83-dev libboost-thread1.83-dev
+2026-10-27T17:24:24.8191433Z   libboost-timer1.83-dev libboost-type-erasure1.83-dev libboost-url1.83-dev
+2026-10-27T17:24:24.8191888Z   libboost-wave1.83-dev libboost1.83-tools-dev libmpfrc++-dev libntl-dev
+2026-10-27T17:24:24.8192331Z   freetype2-doc low-memory-monitor gir1.2-glib-2.0-dev libglib2.0-doc
+2026-10-27T17:24:24.8192780Z   libgdk-pixbuf2.0-bin libxml2-utils opus-tools pulseaudio librsvg2-bin speex
+2026-10-27T17:24:24.8193250Z   libwayland-doc libx11-doc libxcb-doc libxext-doc tint2 openbox-gnome-session
+2026-10-27T17:24:24.8193748Z   openbox-kde-session poppler-utils ghostscript fonts-japanese-mincho
+2026-10-27T17:24:24.8194196Z   | fonts-ipafont-mincho fonts-japanese-gothic | fonts-ipafont-gothic
+2026-10-27T17:24:24.8194808Z   fonts-arphic-ukai fonts-arphic-uming fonts-nanum scons-doc mesa-utils
+2026-10-27T17:24:24.8195168Z Recommended packages:
+2026-10-27T17:24:24.8195493Z   libc-dbg bzip2-doc fonts-droid-fallback libpaper-utils libpng-tools
+2026-10-27T17:24:24.8195934Z   librsvg2-common va-driver-all | va-driver obconf | obconf-qt scrot luit
+2026-10-27T17:24:24.8196292Z   xfonts-base
+2026-10-27T17:24:24.9186310Z The following NEW packages will be installed:
+2026-10-27T17:24:24.9187117Z   ccache cmake cmake-data fonts-urw-base35 gdb libasound2-dev libasyncns0
+2026-10-27T17:24:24.9187820Z   libbabeltrace1 libblkid-dev libboost-dev libboost1.83-dev libbrotli-dev
+2026-10-27T17:24:24.9188529Z   libbz2-dev libdebuginfod-common libdebuginfod1t64 libegl-dev libegl-mesa0
+2026-10-27T17:24:24.9189263Z   libegl1 libepoxy-dev libflac12t64 libfreetype-dev libfribidi-dev libgif7
+2026-10-27T17:24:24.9190207Z   libgirepository-2.0-0 libgl-dev libgl1-mesa-dev libgles-dev libgles1
+2026-10-27T17:24:24.9190853Z   libgles2 libglib2.0-dev libglib2.0-dev-bin libglu1-mesa libglu1-mesa-dev
+2026-10-27T17:24:24.9191667Z   libglvnd-core-dev libglvnd-dev libglx-dev libgs-common libgs10
+2026-10-27T17:24:24.9192298Z   libgs10-common libhiredis1.1.0 libhwy1t64 libid3tag0 libidn12 libijs-0.35
+2026-10-27T17:24:24.9192765Z   libimlib2t64 libipt2 libjbig2dec0 libjsoncpp25 libjxl0.7 libmount-dev
+2026-10-27T17:24:24.9193225Z   libmp3lame0 libmpg123-0t64 libobrender32v5 libobt2v5 libogg-dev
+2026-10-27T17:24:24.9193662Z   libopengl-dev libopengl0 libopus-dev libopus0 libopusfile-dev libopusfile0
+2026-10-27T17:24:24.9194127Z   libpangoxft-1.0-0 libpaper1 libpcre16-3 libpcre3 libpcre3-dev libpcre32-3
+2026-10-27T17:24:24.9194598Z   libpcrecpp0v5 libpng-dev libpthread-stubs0-dev libpulse-dev
+2026-10-27T17:24:24.9195260Z   libpulse-mainloop-glib0 libpulse0 librhash0 librsvg2-2 libselinux1-dev
+2026-10-27T17:24:24.9195859Z   libsepol-dev libset-scalar-perl libsndfile1 libsource-highlight-common
+2026-10-27T17:24:24.9196287Z   libsource-highlight4t64 libspectre1 libspeex-dev libspeex1
+2026-10-27T17:24:24.9196727Z   libstartup-notification0 libva-dev libva-drm2 libva-glx2 libva-wayland2
+2026-10-27T17:24:24.9197171Z   libva-x11-2 libva2 libvorbisenc2 libwayland-bin libwayland-dev
+2026-10-27T17:24:24.9197582Z   libwayland-server0 libx11-dev libxau-dev libxcb-shape0 libxcb-util1
+2026-10-27T17:24:24.9198026Z   libxcb1-dev libxcursor-dev libxdmcp-dev libxext-dev libxfixes-dev libxi-dev
+2026-10-27T17:24:24.9198490Z   libxkbcommon-dev libxrandr-dev libxrender-dev libxss-dev libxtst-dev libxv1
+2026-10-27T17:24:24.9198959Z   libxxf86dga1 mesa-vulkan-drivers nasm openbox poppler-data scons uuid-dev
+2026-10-27T17:24:24.9199596Z   x11-utils x11proto-dev xfonts-encodings xfonts-utils xorg-sgml-doctools
+2026-10-27T17:24:24.9200114Z   xtrans-dev
+2026-10-27T17:24:24.9200385Z The following packages will be upgraded:
+2026-10-27T17:24:24.9200953Z   brotli ca-certificates gir1.2-glib-2.0 libbrotli1 libglib2.0-0t64
+2026-10-27T17:24:24.9204780Z   libglib2.0-bin libglib2.0-data libxtst6 xserver-common xvfb zlib1g
+2026-10-27T17:24:24.9205285Z   zlib1g-dev
+2026-10-27T17:24:24.9384340Z 12 upgraded, 124 newly installed, 0 to remove and 92 not upgraded.
+2026-10-27T17:24:24.9385031Z Need to get 86.4 MB of archives.
+2026-10-27T17:24:24.9385529Z After this operation, 453 MB of additional disk space will be used.
+2026-10-27T17:24:24.9386096Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-27T17:24:25.4748872Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdebuginfod-common all 0.190-1.1ubuntu0.1 [14.6 kB]
+2026-10-27T17:24:26.2800242Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 poppler-data all 0.4.12-1 [2060 kB]
+2026-10-27T17:25:21.7696868Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 poppler-data all 0.4.12-1
+2026-10-27T17:25:35.0124092Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 zlib1g-dev amd64 1:1.3.dfsg-3.1ubuntu2.3 [894 kB]
+2026-10-27T17:25:50.7674675Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 zlib1g amd64 1:1.3.dfsg-3.1ubuntu2.3 [63.2 kB]
+2026-10-27T17:25:52.3235033Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 ca-certificates all 20260816ubuntu0.24.04.1 [139 kB]
+2026-10-27T17:25:55.3545096Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-data all 2.80.0-6ubuntu3.10 [50.2 kB]
+2026-10-27T17:25:56.6320473Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-bin amd64 2.80.0-6ubuntu3.10 [97.9 kB]
+2026-10-27T17:25:58.6876100Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-glib-2.0 amd64 2.80.0-6ubuntu3.10 [183 kB]
+2026-10-27T17:26:02.4748537Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0t64 amd64 2.80.0-6ubuntu3.10 [1548 kB]
+2026-10-27T17:26:31.5581666Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbrotli1 amd64 1.1.0-2ubuntu0.1 [331 kB]
+2026-10-27T17:26:38.4612759Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 brotli amd64 1.1.0-2ubuntu0.1 [70.8 kB]
+2026-10-27T17:26:40.2445205Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libhiredis1.1.0 amd64 1.2.0-6ubuntu3 [41.4 kB]
+2026-10-27T17:26:41.7257487Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ccache amd64 4.9.1-1 [592 kB]
+2026-10-27T17:26:54.0966575Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjsoncpp25 amd64 1.9.5-6build1 [82.8 kB]
+2026-10-27T17:26:56.1148987Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librhash0 amd64 1.4.3-3build1 [129 kB]
+2026-10-27T17:26:58.9598497Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake-data all 3.28.3-1build7 [2155 kB]
+2026-10-27T17:27:50.3985711Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake amd64 3.28.3-1build7 [11.2 MB]
+2026-10-27T17:31:58.9746446Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-27T17:32:12.7925229Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-27T17:32:15.7337551Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-urw-base35 all 20200910-8 [11.0 MB]
+2026-10-27T17:35:27.0821836Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libbabeltrace1 amd64 1.5.11-3build3 [164 kB]
+2026-10-27T17:35:29.9055802Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdebuginfod1t64 amd64 0.190-1.1ubuntu0.1 [17.1 kB]
+2026-10-27T17:35:30.3788253Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libipt2 amd64 2.0.6-1build1 [45.7 kB]
+2026-10-27T17:35:31.4436792Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsource-highlight-common all 3.1.9-4.3build1 [64.2 kB]
+2026-10-27T17:35:32.5146094Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsource-highlight4t64 amd64 3.1.9-4.3build1 [258 kB]
+2026-10-27T17:35:36.3126889Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gdb amd64 15.1-1ubuntu1~24.04.1 [4083 kB]
+2026-10-27T17:37:02.1100663Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2-dev amd64 1.2.11-1ubuntu0.3 [115 kB]
+2026-10-27T17:37:05.2079279Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libasyncns0 amd64 0.8-6build4 [11.3 kB]
+2026-10-27T17:37:05.8637888Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost1.83-dev amd64 1.83.0-2.1ubuntu3.2 [10.7 MB]
+2026-10-27T17:39:27.3623860Z ##[error]The action 'Install dependencies' has timed out after 15 minutes.
+2026-10-27T17:39:27.3794176Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-27T17:39:27.3794472Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-27T17:39:27.3851243Z shell: /usr/bin/bash -e {0}
+2026-10-27T17:39:27.3851478Z env:
+2026-10-27T17:39:27.3851658Z   GLOB2_DEV_MODE: isolated
+2026-10-27T17:39:27.3851847Z   CCACHE: 1
+2026-10-27T17:39:27.3852019Z   CCACHE_DIR: /tmp/glob2-ccache
+2026-10-27T17:39:27.3852235Z   CCACHE_COMPILERCHECK: content
+2026-10-27T17:39:27.3852440Z   CCACHE_MAXSIZE: 5G
+2026-10-27T17:39:27.3855606Z   CI_STEPS_JSON: {
+  "install_dependencies": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "failure"
+  },
+  "actions_checkout_v4_1": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "restore_the_compiler_cache": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "linux_compiler": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "restore_linux_object_tree": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "cache_ready": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "test_compiler_cache_integration": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "build_glob2_and_the_regression_harnesses": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "package_linux_test_programs": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_linux_test_programs": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "save_linux_object_tree": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "report_the_cache_statistics": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "drop_cache_entries_this_run_did_not_use": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "save_the_compiler_cache": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  }
+}
+2026-10-27T17:39:27.3859074Z ##[endgroup]
+2026-10-27T17:39:27.4043251Z python3: can't open file '/home/runner/work/glob2/glob2/test/ci_step_summary.py': [Errno 2] No such file or directory
+2026-10-27T17:39:27.4069174Z ##[error]Process completed with exit code 2.
+2026-10-27T17:39:27.4132232Z ##[group]Run actions/upload-artifact@v4
+2026-10-27T17:39:27.4132491Z with:
+2026-10-27T17:39:27.4132686Z   name: ci-observation-linux-g++-13
+2026-10-27T17:39:27.4132927Z   path: artifacts/ci-observation/
+2026-10-27T17:39:27.4133143Z   if-no-files-found: ignore
+2026-10-27T17:39:27.4133350Z   compression-level: 6
+2026-10-27T17:39:27.4133538Z   overwrite: false
+2026-10-27T17:39:27.4133720Z   include-hidden-files: false
+2026-10-27T17:39:27.4133917Z env:
+2026-10-27T17:39:27.4134077Z   GLOB2_DEV_MODE: isolated
+2026-10-27T17:39:27.4134262Z   CCACHE: 1
+2026-10-27T17:39:27.4134434Z   CCACHE_DIR: /tmp/glob2-ccache
+2026-10-27T17:39:27.4134645Z   CCACHE_COMPILERCHECK: content
+2026-10-27T17:39:27.4134837Z   CCACHE_MAXSIZE: 5G
+2026-10-27T17:39:27.4135014Z ##[endgroup]
+2026-10-27T17:39:27.6799465Z (node:2596) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-27T17:39:27.6800186Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-27T17:39:27.6819856Z No files were found with the provided path: artifacts/ci-observation/. No artifacts will be uploaded.
+2026-10-27T17:39:27.7058021Z Cleaning up orphan processes
+2026-10-27T17:39:27.7420063Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

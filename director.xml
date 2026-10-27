@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="director execution regressions" time="0.464968" status="run" />
+  <testcase classname="Maxima.Implementation" name="strategy and maintenance share the deterministic queue" time="0.438947" status="run" />
+  </testsuite></testsuites>

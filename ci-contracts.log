@@ -1,0 +1,30 @@
+...................................................CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+.CI predictor artifact unavailable; using bundled fallback (ValueError)
+.CI predictor artifact unavailable; using bundled fallback (ValueError)
+..CI predictor artifact unavailable; using bundled fallback (OSError)
+.CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+.CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+CI predictor artifact unavailable; using bundled fallback (ValueError)
+.....................................................................................ss...................
+----------------------------------------------------------------------
+Ran 163 tests in 3.192s
+
+OK (skipped=2)
+Measurement unavailable for 0; retry in a later batch
+Measurement unavailable for 1; retry in a later batch
+Measurement unavailable for 2; retry in a later batch
+Measurement unavailable for 3; retry in a later batch
+Measurement unavailable for 4; retry in a later batch
+Measurement unavailable for 5; retry in a later batch
+Measurement unavailable for 6; retry in a later batch
+Measurement unavailable for 7; retry in a later batch
+Measurement unavailable for 8; retry in a later batch
+Measurement unavailable for 9; retry in a later batch
