@@ -6644,3 +6644,13 @@ MCP 服务器
 静音：已静音的扬声器。声音：带有声波的扬声器。
 [library GL only]
 仅限 GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

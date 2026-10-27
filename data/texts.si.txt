@@ -6644,3 +6644,13 @@ Izbire ni bilo mogoče shraniti. Zvok ostaja izklopljen. Poskusite znova.
 Tišina: utišan zvočnik. Zvok: zvočnik z zvočnimi valovi.
 [library GL only]
 Samo GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

@@ -6644,3 +6644,13 @@ Je keuze kon niet worden opgeslagen. Het geluid blijft uit. Probeer het opnieuw.
 Stilte: een gedempte luidspreker. Geluid: een luidspreker met geluidsgolven.
 [library GL only]
 Alleen GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

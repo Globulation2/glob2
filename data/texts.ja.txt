@@ -6644,3 +6644,13 @@ Building Studio で作成
 無音：ミュートされたスピーカー。音あり：音波の付いたスピーカー。
 [library GL only]
 GL のみ
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

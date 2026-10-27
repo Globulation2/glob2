@@ -6644,3 +6644,13 @@ Pilihan Anda tidak dapat disimpan. Suara masih dimatikan. Silakan coba lagi.
 Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 [library GL only]
 Hanya GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

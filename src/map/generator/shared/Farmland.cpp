@@ -26,7 +26,7 @@ constexpr int kSeedSearch = 16;
 } // namespace
 
 std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
-									const std::vector<int> &corners, int margin)
+									const std::vector<int> &corners, int margin, TerrainType seal)
 {
 	margin = std::max(1, margin);
 	const std::set<int> inside(corners.begin(), corners.end());
@@ -41,7 +41,7 @@ std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
 			for (int dx = -margin; dx <= margin; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				sketch.at(t.at(t.remainderX(i) + dx, i / t.w + dy)) = SAND;
+				sketch.at(t.at(t.remainderX(i) + dx, i / t.w + dy)) = seal;
 			}
 		}
 	}
@@ -323,6 +323,7 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 {
 	if (int(plotOf.size()) != t.size() || (finiteWheat && int(finiteWheat->size()) != t.size()))
 		return "Contained plot labels have the wrong dimensions.";
+	const ResourceRegistry &registry = map.resourceRegistry();
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
@@ -330,10 +331,17 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 		const int type = map.getResource(x, y).type;
 		if (plotOf.at(i) < 0)
 		{
+			if (type == NO_RES_TYPE || !registry.valid(unsigned(type)))
+				continue;
+			// Wheat and trees, and every catalogue deposit that spreads over land like them.
+			// Uniform and shore crops regrow without the water probe, so dryness never frees them.
+			const auto &p = registry.properties(static_cast<ResourceId>(type));
+			if (!p.spreadRate || p.ecology == ResourceEcology::None || !(p.habitatMask & ResourceLand))
+				continue;
 			const bool finiteCrop =
-				dry && dry->at(x, y) == 0 &&
-				(type == WOOD || (type == WHEAT && finiteWheat && (*finiteWheat).at(i)));
-			if ((type == WHEAT || type == WOOD) && !finiteCrop)
+				dry && dry->at(x, y) == 0 && p.ecology == ResourceEcology::Land &&
+				(!p.farmable || (finiteWheat && (*finiteWheat).at(i)));
+			if (!finiteCrop)
 				return "A spreading crop was planted outside its contained plot.";
 			continue;
 		}

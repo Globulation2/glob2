@@ -6644,3 +6644,13 @@ Volbu se nepodařilo uložit. Zvuk je stále vypnutý. Zkuste to znovu.
 Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
 [library %0 · revision %1]
 %0 · revize %1
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

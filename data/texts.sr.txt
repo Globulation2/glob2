@@ -6644,3 +6644,13 @@ MCP сервер није доступан у овој апликацији
 Тишина: утишан звучник. Звук: звучник са звучним таласима.
 [library GL only]
 Само GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

@@ -6644,3 +6644,13 @@ Seçiminiz kaydedilemedi. Ses hâlâ kapalı. Lütfen tekrar deneyin.
 Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
 [library GL only]
 Yalnız GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount
