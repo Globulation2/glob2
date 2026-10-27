@@ -80,7 +80,7 @@ checks the redirects.
 `glob2online.com` is the public website, **Globulation 2 Online**: an Astro site
 in the separate
 [Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
-repository on Firebase Hosting (project `pharaoh-418820`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
+repository on Firebase Hosting (project `bradley-personal-20261027`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
 `app.glob2online.com` runs this stack and is the official instance origin
 (`scons/official_instance.py`; its former origin is `https://glob2online.com`).
 Website releases never restart platform services or matches. Public rating

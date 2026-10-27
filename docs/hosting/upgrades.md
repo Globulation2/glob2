@@ -217,7 +217,7 @@ GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
 ### Automatic deployment
 
 The official instance, `https://app.glob2online.com` (VM `glob2-staging` in project
-`pharaoh-418820`, zone `northamerica-northeast2-a`), is deployed by
+`bradley-personal-20261027`, zone `northamerica-northeast2-a`), is deployed by
 `.github/workflows/deploy-online.yml`. Like the store release workflows it is
 defined here but runs only in the owner's release mirror `genixpro/glob2-release`:
 every job is skipped in any other repository, for any other actor, and off the
@@ -301,8 +301,8 @@ on that service account only (better: move the VM to the dedicated
 `glob2-staging-host` account first). The commands that set this up:
 
 ```sh
-P=pharaoh-418820 Z=northamerica-northeast2-a SA=glob2-online-deployer@pharaoh-418820.iam.gserviceaccount.com
-POOL=projects/485653453075/locations/global/workloadIdentityPools/github-actions
+P=bradley-personal-20261027 Z=northamerica-northeast2-a SA=glob2-online-deployer@bradley-personal-20261027.iam.gserviceaccount.com
+POOL=projects/888234813688/locations/global/workloadIdentityPools/github-actions
 gcloud iam service-accounts create glob2-online-deployer --project $P
 gcloud iam workload-identity-pools providers create-oidc glob2-online-deploy --project $P \
     --location global --workload-identity-pool github-actions \
