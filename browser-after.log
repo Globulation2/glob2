@@ -1,0 +1,117 @@
+
+Running 7 tests using 1 worker
+
+(node:278690) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/generator-studio.spec.js:30:3 › generator Studio freezes a world and watches its colonies (serial) (388ms)
+(node:278772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (serial) (390ms)
+(node:278856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (threaded) (397ms)
+(node:278937) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (serial) (18.6s)
+  ✓  5 [chromium] › browser/tests/import.spec.js:99:1 › imports a complete replay and rejects a truncated command stream (threaded) (19.6s)
+  ✓  6 [chromium] › browser/tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (serial) @webgl2-reload-c (19.6s)
+  ✓  7 [chromium] › browser/tests/session-reload.spec.js:83:1 › an active replay can be loaded again through the scheduled loader (threaded) @webgl2-reload-c (19.4s)
+
+
+  1) [chromium] › browser/tests/generator-studio.spec.js:30:3 › generator Studio freezes a world and watches its colonies (serial) 
+
+    Error: ENOENT: no such file or directory, open '/home/bradley/.codex/worktrees/f4e3/glob2/build/emscripten/client/release/test-host-7fb51757-2bb8-44db-b69c-030ee38e8010.html'
+
+       at runtime-host.js:10
+
+       8 |   const directory = process.env.GLOB2_TEST_BUILD_DIR || path.resolve(__dirname, '../../build/emscripten/client/release');
+       9 |   const file = path.resolve(directory, name);
+    > 10 |   fs.writeFileSync(file, body);
+         |      ^
+      11 |   try { await page.goto('/' + name + search); }
+      12 |   finally { fs.unlinkSync(file); }
+      13 | };
+        at openRuntimeHost (/home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/runtime-host.js:10:6)
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/generator-studio.spec.js:34:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-generator-3e2b1-atches-its-colonies-serial--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/generator-studio-generator-3e2b1-atches-its-colonies-serial--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-generator-3e2b1-atches-its-colonies-serial--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/generator-studio-generator-3e2b1-atches-its-colonies-serial--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (serial) 
+
+    Error: ENOENT: no such file or directory, open '/home/bradley/.codex/worktrees/f4e3/glob2/build/emscripten/client/release/test-host-ea2b3b2a-cb8d-4809-96d4-35cc38ccc71e.html'
+
+       at runtime-host.js:10
+
+       8 |   const directory = process.env.GLOB2_TEST_BUILD_DIR || path.resolve(__dirname, '../../build/emscripten/client/release');
+       9 |   const file = path.resolve(directory, name);
+    > 10 |   fs.writeFileSync(file, body);
+         |      ^
+      11 |   try { await page.goto('/' + name + search); }
+      12 |   finally { fs.unlinkSync(file); }
+      13 | };
+        at openRuntimeHost (/home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/runtime-host.js:10:6)
+        at captureGame (/home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/generator-studio.spec.js:143:9)
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/generator-studio.spec.js:188:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-frozen-ge-657d4-ery-native-checksum-serial--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/generator-studio-frozen-ge-657d4-ery-native-checksum-serial--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-frozen-ge-657d4-ery-native-checksum-serial--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/generator-studio-frozen-ge-657d4-ery-native-checksum-serial--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (threaded) 
+
+    Error: ENOENT: no such file or directory, open '/home/bradley/.codex/worktrees/f4e3/glob2/build/emscripten/client/release/test-host-d36ecdf0-0922-4e17-8f3e-77f6091fa501.html'
+
+       at runtime-host.js:10
+
+       8 |   const directory = process.env.GLOB2_TEST_BUILD_DIR || path.resolve(__dirname, '../../build/emscripten/client/release');
+       9 |   const file = path.resolve(directory, name);
+    > 10 |   fs.writeFileSync(file, body);
+         |      ^
+      11 |   try { await page.goto('/' + name + search); }
+      12 |   finally { fs.unlinkSync(file); }
+      13 | };
+        at openRuntimeHost (/home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/runtime-host.js:10:6)
+        at captureGame (/home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/generator-studio.spec.js:143:9)
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/generator-studio.spec.js:188:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-frozen-ge-1e6ed-y-native-checksum-threaded--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/generator-studio-frozen-ge-1e6ed-y-native-checksum-threaded--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/generator-studio-frozen-ge-1e6ed-y-native-checksum-threaded--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/generator-studio-frozen-ge-1e6ed-y-native-checksum-threaded--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › browser/tests/generator-studio.spec.js:30:3 › generator Studio freezes a world and watches its colonies (serial) 
+    [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (serial) 
+    [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (threaded) 
+  4 passed (1.4m)

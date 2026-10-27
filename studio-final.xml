@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="1"><testsuite name="MapPreview"><testcase classname="MapPreview" name="generator Studio freezes playable worlds and preserves save continuation" time="7.51977" status="run" />
+  <testcase classname="MapPreview" name="preview geometry" time="1.07794" status="run" />
+  <testcase classname="MapPreview" name="threaded generator Studio finalizes its frozen report on the asset owner [artifacts]" time="10.7451" status="run" />
+  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="7.69257" status="run" />
+  <testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

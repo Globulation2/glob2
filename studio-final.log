@@ -1,0 +1,7 @@
+PASS MapPreview/preview geometry (1.1s)
+PASS MapPreview/generator Studio freezes playable worlds and preserves save continuation (7.6s)
+PASS MapPreview/thumbnail codec; envelope limits and corrupt input (7.7s)
+PASS MapPreview/threaded generator Studio finalizes its frozen report on the asset owner [artifacts] (10.8s)
+
+4 passed, 0 failed, 1 skipped (27.3s of test time)
+[run_tests] JUnit report: artifacts/ci-watch/2008/studio-final.xml (5 cases)

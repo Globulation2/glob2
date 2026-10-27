@@ -1,0 +1,8 @@
+{
+  "games/cross-replay.game.gz": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "browser/tests/fixtures/cross-replay.replay": "b3a790e27500b8c6ab0765d961f7b4ace74d4fbbc86fee2fd98651c0e2a323cf",
+  "browser/tests/fixtures/generator-studio-trace.json": "a63c3d5dc0a6b979bde94cb28a7cc1d9250d7f2bf3a38738756534450c56b94a",
+  "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2": "470aa323bc3c27b194f8d2953cf747415c67643be31ced48de670cc4f72d11bb",
+  "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/2008/web-client/index.wasm": "8e536cc31ba42395df7643d0f308606dc0b82369b1522b34abd4ccd27480c2fd",
+  "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/2008/web-client/threaded/index.wasm": "a5044d8d5e87f066dde5ddb53295fb0ef18749da21682a3240495a5575a76bcf"
+}
