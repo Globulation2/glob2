@@ -120,7 +120,9 @@ async function seed(owner: Player, other: Player) {
   const room = await db
     .insertInto('rooms')
     .values({
-      code: `EXP${Math.floor(Math.random() * 1e6).toString().padStart(6, '0')}`,
+      code: `EXP${Math.floor(Math.random() * 1e6)
+        .toString()
+        .padStart(6, '0')}`,
       name: 'Export room',
       visibility: 'link',
       host_account_id: owner.accountId,
