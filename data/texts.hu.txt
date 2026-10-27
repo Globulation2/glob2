@@ -6645,12 +6645,12 @@ Csend: némított hangszóró. Hang: hangszóró hanghullámokkal.
 [library GL only]
 Csak GL
 [Grassland]
-Grassland
+Füves terület
 [Kopjes]
-Kopjes
+Sziklás dombok
 [Game trails]
-Game trails
+Vadcsapások
 [Fish amount]
-Fish amount
+Halak mennyisége
 [Camp-site amount]
-Camp-site amount
+Táborhelyek száma

@@ -6645,12 +6645,12 @@ CPU (αυτόματα)
 [library GL only]
 Μόνο GL
 [Grassland]
-Grassland
+Λιβάδια
 [Kopjes]
-Kopjes
+Βραχώδεις λόφοι
 [Game trails]
-Game trails
+Μονοπάτια ζώων
 [Fish amount]
-Fish amount
+Ποσότητα ψαριών
 [Camp-site amount]
-Camp-site amount
+Αριθμός καταυλισμών

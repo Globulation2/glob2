@@ -6645,12 +6645,12 @@ Cisza: wyciszony głośnik. Dźwięk: głośnik z falami dźwiękowymi.
 [library GL only]
 Tylko GL
 [Grassland]
-Grassland
+Łąki
 [Kopjes]
-Kopjes
+Skaliste wzgórza
 [Game trails]
-Game trails
+Ścieżki zwierząt
 [Fish amount]
-Fish amount
+Ilość ryb
 [Camp-site amount]
-Camp-site amount
+Liczba obozowisk

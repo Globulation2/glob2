@@ -6645,12 +6645,12 @@ Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
 [library %0 · revision %1]
 %0 · revize %1
 [Grassland]
-Grassland
+Louky
 [Kopjes]
-Kopjes
+Skalnaté pahorky
 [Game trails]
-Game trails
+Zvířecí stezky
 [Fish amount]
-Fish amount
+Množství ryb
 [Camp-site amount]
-Camp-site amount
+Počet tábořišť

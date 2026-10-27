@@ -6645,12 +6645,12 @@ Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 [library GL only]
 Hanya GL
 [Grassland]
-Grassland
+Padang rumput
 [Kopjes]
-Kopjes
+Bukit berbatu
 [Game trails]
-Game trails
+Jalur satwa
 [Fish amount]
-Fish amount
+Jumlah ikan
 [Camp-site amount]
-Camp-site amount
+Jumlah perkemahan

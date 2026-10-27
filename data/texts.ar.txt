@@ -6645,12 +6645,12 @@ GL فقط
 [library %0 · revision %1]
 %0 · المراجعة %1
 [Grassland]
-Grassland
+المراعي
 [Kopjes]
-Kopjes
+التلال الصخرية
 [Game trails]
-Game trails
+دروب الحيوانات
 [Fish amount]
-Fish amount
+كمية الأسماك
 [Camp-site amount]
-Camp-site amount
+عدد المخيمات

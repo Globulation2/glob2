@@ -6645,12 +6645,12 @@ Silencio: un altavoz silenciado. Sonido: un altavoz con ondas sonoras.
 [library GL only]
 Solo GL
 [Grassland]
-Grassland
+Pradera
 [Kopjes]
-Kopjes
+Colinas rocosas
 [Game trails]
-Game trails
+Senderos de animales
 [Fish amount]
-Fish amount
+Cantidad de peces
 [Camp-site amount]
-Camp-site amount
+Número de campamentos

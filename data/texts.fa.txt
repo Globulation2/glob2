@@ -6645,12 +6645,12 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 [library %0 · revision %1]
 %0 · بازبینی %1
 [Grassland]
-Grassland
+علفزار
 [Kopjes]
-Kopjes
+تپه‌های سنگی
 [Game trails]
-Game trails
+مسیر جانوران
 [Fish amount]
-Fish amount
+مقدار ماهی
 [Camp-site amount]
-Camp-site amount
+تعداد اردوگاه‌ها

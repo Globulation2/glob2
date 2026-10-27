@@ -6645,12 +6645,12 @@ Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 [library GL only]
 Kun GL
 [Grassland]
-Grassland
+Græsland
 [Kopjes]
-Kopjes
+Klippebakker
 [Game trails]
-Game trails
+Dyrestier
 [Fish amount]
-Fish amount
+Fiskemængde
 [Camp-site amount]
-Camp-site amount
+Antal lejrpladser

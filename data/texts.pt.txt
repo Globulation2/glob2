@@ -6645,12 +6645,12 @@ Silêncio: um altifalante silenciado. Som: um altifalante com ondas sonoras.
 [library GL only]
 Só GL
 [Grassland]
-Grassland
+Pradaria
 [Kopjes]
-Kopjes
+Colinas rochosas
 [Game trails]
-Game trails
+Trilhos de animais
 [Fish amount]
-Fish amount
+Quantidade de peixes
 [Camp-site amount]
-Camp-site amount
+Número de acampamentos

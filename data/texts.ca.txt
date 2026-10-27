@@ -6645,12 +6645,12 @@ Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 [library GL only]
 Només GL
 [Grassland]
-Grassland
+Praderia
 [Kopjes]
-Kopjes
+Turons rocosos
 [Game trails]
-Game trails
+Corriols d’animals
 [Fish amount]
-Fish amount
+Quantitat de peixos
 [Camp-site amount]
-Camp-site amount
+Nombre de campaments

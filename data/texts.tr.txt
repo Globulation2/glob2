@@ -6645,12 +6645,12 @@ Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
 [library GL only]
 Yalnız GL
 [Grassland]
-Grassland
+Otlak
 [Kopjes]
-Kopjes
+Kayalık tepeler
 [Game trails]
-Game trails
+Hayvan patikaları
 [Fish amount]
-Fish amount
+Balık miktarı
 [Camp-site amount]
-Camp-site amount
+Kamp yeri sayısı

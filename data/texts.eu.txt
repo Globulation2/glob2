@@ -6645,12 +6645,12 @@ Isiltasuna: bozgorailu isildua. Soinua: soinu-uhinak dituen bozgorailua.
 [library %0 · revision %1]
 %0 · %1 berrikuspena
 [Grassland]
-Grassland
+Belardia
 [Kopjes]
-Kopjes
+Harkaitz-muinoak
 [Game trails]
-Game trails
+Animalien bidexkak
 [Fish amount]
-Fish amount
+Arrain kopurua
 [Camp-site amount]
-Camp-site amount
+Kanpaleku kopurua

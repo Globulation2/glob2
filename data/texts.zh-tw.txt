@@ -6645,12 +6645,12 @@ MCP 伺服器
 [library GL only]
 僅限 GL
 [Grassland]
-Grassland
+草原
 [Kopjes]
-Kopjes
+岩丘
 [Game trails]
-Game trails
+獸徑
 [Fish amount]
-Fish amount
+魚類數量
 [Camp-site amount]
-Camp-site amount
+營地數量
