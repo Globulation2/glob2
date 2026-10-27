@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="deferred terrain HD loads native first and bounds frame windows across toggles [display]" time="0.149647" status="run" />
+  <testcase classname="SpriteSheets" name="shipped animated water bank source frames draw through programmable GL [display][writes-preferences]" time="0.520152" status="run" />
+  <testcase classname="SpriteSheets" name="shipped animated water bank streams only requested HD endpoints [display]" time="0.448213" status="run" />
+  </testsuite></testsuites>

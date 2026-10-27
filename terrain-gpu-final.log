@@ -1,0 +1,4 @@
+PASS TerrainPresentation/GPU terrain pages match CPU composition through edits wrapping recovery and live switches [display][isolated][artifacts][writes-preferences] (45.1s)
+
+1 passed, 0 failed, 0 skipped (45.1s of test time)
+[run_tests] JUnit report: artifacts/terrain-rollout/terrain-gpu-final.xml (1 cases)

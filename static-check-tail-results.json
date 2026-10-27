@@ -1,0 +1,121 @@
+{
+  "generator_start": {
+    "tools/artwork/terrain_synth.py": "fd95d4054b31d9e19445a6e97bfce91c0150fbbea966ec28920ed4dfcb2d5fa7",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.41"
+  },
+  "materials": {
+    "dirt_track": {
+      "elapsed_seconds": 89.62,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "dirt_track: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "boardwalk": {
+      "elapsed_seconds": 45.49,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "boardwalk: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "loam": {
+      "elapsed_seconds": 89.19,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "moss": {
+      "elapsed_seconds": 57.81,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "spring_meadow": {
+      "elapsed_seconds": 46.73,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "dark_water": {
+      "elapsed_seconds": 39.0,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "void_hole": {
+      "elapsed_seconds": 28.86,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "chasm": {
+      "elapsed_seconds": 151.56,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "sand": {
+      "elapsed_seconds": 79.34,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "grass": {
+      "elapsed_seconds": 76.02,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "ice": {
+      "elapsed_seconds": 127.8,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "road": {
+      "elapsed_seconds": 80.64,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    }
+  },
+  "expected": [
+    "dirt_track",
+    "boardwalk",
+    "loam",
+    "moss",
+    "spring_meadow",
+    "dark_water",
+    "void_hole",
+    "chasm",
+    "sand",
+    "grass",
+    "ice",
+    "road"
+  ],
+  "elapsed_seconds": 912.75,
+  "generator_end": {
+    "tools/artwork/terrain_synth.py": "5875ba78481ca08ec761ec21ce7c94f30c1822f16fdcf3f44dcdf667b8ad3e0d",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "source_unchanged": false
+}

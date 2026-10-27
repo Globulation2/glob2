@@ -1,0 +1,54 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+EXCLUDED repeated synthesis identity: canonical reproduction checked separately
+Installed-frame contracts: generator entry points load published pixels; NOT reproduction evidence.
+test_alpha_rules (test_terrain_synth.TerrainSynth.test_alpha_rules) ... ok
+test_animated_phase_continuity (test_terrain_synth.TerrainSynth.test_animated_phase_continuity) ... ok
+test_catalog_fragment_is_well_formed (test_terrain_synth.TerrainSynth.test_catalog_fragment_is_well_formed) ... ok
+test_determinism_matches_committed_frames_and_provenance (test_terrain_synth.TerrainSynth.test_determinism_matches_committed_frames_and_provenance) ... ok
+test_every_catalogue_sprite_frame_has_registered_hd (test_terrain_synth.TerrainSynth.test_every_catalogue_sprite_frame_has_registered_hd)
+Native-only terrain is limited to legacy art without an HD source. ... ok
+test_every_catalogue_type_has_a_recipe (test_terrain_synth.TerrainSynth.test_every_catalogue_type_has_a_recipe) ... ok
+test_frames_are_native_rgba_and_distinct (test_terrain_synth.TerrainSynth.test_frames_are_native_rgba_and_distinct) ... ok
+test_grid_materials_continue_across_every_cell_edge (test_terrain_synth.TerrainSynth.test_grid_materials_continue_across_every_cell_edge)
+Each grid variant joins its block neighbours, and the block wraps: ... 
+  test_grid_materials_continue_across_every_cell_edge (test_terrain_synth.TerrainSynth.test_grid_materials_continue_across_every_cell_edge) (material='water', phase=0, hd=False, layout=0, axis='x', edge=63)
+Each grid variant joins its block neighbours, and the block wraps: ... FAIL
+test_ground_materials_stay_low_contrast_like_the_native_tiles (test_terrain_synth.TerrainSynth.test_ground_materials_stay_low_contrast_like_the_native_tiles) ... ok
+test_hd_frames_match_their_classic_downsample (test_terrain_synth.TerrainSynth.test_hd_frames_match_their_classic_downsample)
+HD frames are the 4x source of the classic tiles, not a separate look. ... ok
+test_interchangeable_layout_perimeters_match_and_interiors_differ (test_terrain_synth.TerrainSynth.test_interchangeable_layout_perimeters_match_and_interiors_differ) ... ok
+test_non_sibling_materials_are_separable (test_terrain_synth.TerrainSynth.test_non_sibling_materials_are_separable) ... ok
+test_perimeter_agreement_for_all_ordered_pairs (test_terrain_synth.TerrainSynth.test_perimeter_agreement_for_all_ordered_pairs) ... ok
+test_periodic_materials_share_their_outer_ring_and_wrap (test_terrain_synth.TerrainSynth.test_periodic_materials_share_their_outer_ring_and_wrap)
+Periodic variants join any variant: identical outer ring, and each ... ok
+test_preview_colors_follow_the_rendered_mean (test_terrain_synth.TerrainSynth.test_preview_colors_follow_the_rendered_mean) ... ok
+test_provenance_records_statistics_only_references (test_terrain_synth.TerrainSynth.test_provenance_records_statistics_only_references) ... ok
+test_runtime_blend_matches_the_compiler_border_preparation (test_terrain_synth.TerrainSynth.test_runtime_blend_matches_the_compiler_border_preparation) ... ok
+test_style_bands (test_terrain_synth.TerrainSynth.test_style_bands) ... ok
+test_tileability (test_terrain_synth.TerrainSynth.test_tileability) ... ok
+test_water_waves_travel_in_small_steps_around_the_loop (test_terrain_synth.TerrainSynth.test_water_waves_travel_in_small_steps_around_the_loop) ... ok
+test_committed_catalog_keeps_recipe_edge_contracts (test_terrain_synth.TerrainBlockContracts.test_committed_catalog_keeps_recipe_edge_contracts) ... ok
+test_domain_warp_keeps_full_block_coordinates (test_terrain_synth.TerrainBlockContracts.test_domain_warp_keeps_full_block_coordinates) ... ok
+test_indexed_worley_matches_exhaustive_search_and_tie_order (test_terrain_synth.TerrainBlockContracts.test_indexed_worley_matches_exhaustive_search_and_tie_order) ... ok
+test_interchangeable_validator_checks_edges_and_distinct_interiors (test_terrain_synth.TerrainBlockContracts.test_interchangeable_validator_checks_edges_and_distinct_interiors) ... ok
+test_positional_validator_accepts_recurring_pixel_phase_contrast (test_terrain_synth.TerrainBlockContracts.test_positional_validator_accepts_recurring_pixel_phase_contrast) ... ok
+test_positional_validator_rejects_native_and_hd_boundary_stripes (test_terrain_synth.TerrainBlockContracts.test_positional_validator_rejects_native_and_hd_boundary_stripes) ... ok
+test_render_phase_slices_one_block_without_changing_its_borders (test_terrain_synth.TerrainBlockContracts.test_render_phase_slices_one_block_without_changing_its_borders) ... ok
+test_sampling_uses_the_whole_block_and_wraps_at_512 (test_terrain_synth.TerrainBlockContracts.test_sampling_uses_the_whole_block_and_wraps_at_512) ... ok
+test_stamps_wrap_at_the_block_boundary (test_terrain_synth.TerrainBlockContracts.test_stamps_wrap_at_the_block_boundary) ... ok
+
+======================================================================
+FAIL: test_grid_materials_continue_across_every_cell_edge (test_terrain_synth.TerrainSynth.test_grid_materials_continue_across_every_cell_edge) (material='water', phase=0, hd=False, layout=0, axis='x', edge=63)
+Each grid variant joins its block neighbours, and the block wraps:
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/work/tools/artwork/test_terrain_synth.py", line 297, in test_grid_materials_continue_across_every_cell_edge
+    self.assertLessEqual(steps[edge], 1.5 * upper_decile + 0.25)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: np.float64(2.5042695312500003) not less than or equal to np.float64(2.3719609374999995)
+
+----------------------------------------------------------------------
+ELAPSED 181.42s tests=29 failures=1 errors=0
+Ran 29 tests in 181.420s
+
+FAILED (failures=1)

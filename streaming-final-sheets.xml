@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="16" failures="0" errors="0" skipped="0"><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="SDL GPU retains standalone HD authored mips [display]" time="0.121225" status="run" />
+  <testcase classname="SpriteSheets" name="deferred terrain HD loads native first and bounds frame windows across toggles [display]" time="0.171592" status="run" />
+  <testcase classname="SpriteSheets" name="failed published HD mip upgrade retains valid artwork without retry [display][writes-preferences]" time="0.275325" status="run" />
+  <testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.254967" status="run" />
+  <testcase classname="SpriteSheets" name="legacy HD without retained CPU levels restores authored mips on a live GL device switch [display][writes-preferences]" time="0.27423" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD prefetch upgrades across a live programmable GL switch [display][writes-preferences]" time="0.254657" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.178323" status="run" />
+  <testcase classname="SpriteSheets" name="programmable GL retains standalone HD authored mips [display]" time="0.225281" status="run" />
+  <testcase classname="SpriteSheets" name="published portable HD upgrades after a live GL switch and survives switching back [display][writes-preferences]" time="0.276137" status="run" />
+  <testcase classname="SpriteSheets" name="shipped animated water bank source frames draw through programmable GL [display][writes-preferences]" time="0.83818" status="run" />
+  <testcase classname="SpriteSheets" name="shipped animated water bank streams only requested HD endpoints [display]" time="0.753196" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.007346" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.007135" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.005649" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.00575" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.033533" status="run" />
+  </testsuite></testsuites>

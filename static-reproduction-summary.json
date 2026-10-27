@@ -1,0 +1,215 @@
+{
+  "method": "Fresh Linux x86_64 canonical render_phase, exact decoded native and HD pixel/provenance comparisons via check_material",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.41"
+  },
+  "materials": {
+    "boulders": {
+      "elapsed_seconds": 103.68,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "boulders: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "hedge": {
+      "elapsed_seconds": 99.56,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "hedge: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "thicket": {
+      "elapsed_seconds": 85.76,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "thicket: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "ridge_rock": {
+      "elapsed_seconds": 150.37,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "outcrop": {
+      "elapsed_seconds": 99.82,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "dirt": {
+      "elapsed_seconds": 89.72,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "clay": {
+      "elapsed_seconds": 139.27,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "gravel": {
+      "elapsed_seconds": 153.8,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "flower_meadow": {
+      "elapsed_seconds": 74.61,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "mud": {
+      "elapsed_seconds": 102.45,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "marsh": {
+      "elapsed_seconds": 86.85,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "deep_snow": {
+      "elapsed_seconds": 44.02,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "scree": {
+      "elapsed_seconds": 58.63,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "dirt_track": {
+      "elapsed_seconds": 89.62,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "dirt_track: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "boardwalk": {
+      "elapsed_seconds": 45.49,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "boardwalk: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "loam": {
+      "elapsed_seconds": 89.19,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "moss": {
+      "elapsed_seconds": 57.81,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "spring_meadow": {
+      "elapsed_seconds": 46.73,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "dark_water": {
+      "elapsed_seconds": 39.0,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "void_hole": {
+      "elapsed_seconds": 28.86,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "chasm": {
+      "elapsed_seconds": 151.56,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "sand": {
+      "elapsed_seconds": 79.34,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "grass": {
+      "elapsed_seconds": 76.02,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "ice": {
+      "elapsed_seconds": 127.8,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "road": {
+      "elapsed_seconds": 80.64,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    }
+  },
+  "material_count": 25,
+  "native_frames": 6400,
+  "hd_frames": 6400,
+  "head_elapsed_seconds": 1289.22,
+  "tail_elapsed_seconds": 912.75,
+  "total_render_process_seconds": 2200.6,
+  "generator_at_head_import": {
+    "tools/artwork/terrain_synth.py": "50dd0762ee3577f3358022c2342f646574a16c59e055b0512151a09d181fe33d",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "generator_at_tail_import": {
+    "tools/artwork/terrain_synth.py": "fd95d4054b31d9e19445a6e97bfce91c0150fbbea966ec28920ed4dfcb2d5fa7",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "generator_after_all_checks": {
+    "tools/artwork/terrain_synth.py": "5875ba78481ca08ec761ec21ce7c94f30c1822f16fdcf3f44dcdf667b8ad3e0d",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "source_change_note": "Coordinator-authorized automatic-worker memory bound and recipe comment edits occurred after imports; render algorithms unchanged. Early stale generator-fingerprint diagnostics were the only ignored failures. Pixel and native/HD provenance hash errors were never ignored. Final installed-frame contract checks verified refreshed fingerprints separately.",
+  "failures": {}
+}

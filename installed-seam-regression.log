@@ -1,0 +1,12 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+Installed-frame contracts: generator entry points load published pixels; NOT reproduction evidence.
+test_grid_materials_continue_across_every_cell_edge (test_terrain_synth.TerrainSynth.test_grid_materials_continue_across_every_cell_edge)
+Each grid variant joins its block neighbours, and the block wraps: ... ok
+test_positional_validator_accepts_a_broad_wave_slope_at_a_tile_cut (test_terrain_synth.TerrainBlockContracts.test_positional_validator_accepts_a_broad_wave_slope_at_a_tile_cut) ... ok
+test_positional_validator_rejects_native_and_hd_boundary_stripes (test_terrain_synth.TerrainBlockContracts.test_positional_validator_rejects_native_and_hd_boundary_stripes) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 87.355s
+
+OK
+ELAPSED 87.36s tests=3 failures=0 errors=0

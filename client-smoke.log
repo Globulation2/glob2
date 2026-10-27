@@ -1,0 +1,55 @@
+Globulation 2 — CLI 2
+
+Usage: glob2 COMMAND [OPTIONS]
+Run glob2 without arguments to launch the game. Supported launch URLs also work.
+
+Commands:
+  play  Launch the graphical game
+  replay  Watch a recorded replay
+  map generate  Generate a map at one exact seed
+  map study  Run a structured map-generation study
+  map generators  List generators or inspect controls
+  map preview  Preview a map or save without stepping simulation
+  map render  Render the complete game view
+  map import-image  Import a categorical terrain PNG
+  map export-image  Export categorical terrain and colony markers
+  map inspect-package  Inspect and canonicalize a generator package
+  map validate-set  Validate a terrain/resource set
+  game migrate  Convert a private adaptive174 file without advancing simulation
+  game run  Run or continue a structured headless game
+  game repeat  Repeat a saved game, optionally with normal presentation
+  match verify  Verify a multiplayer match record
+  online join  Join an invite link or code
+  online play-map  Play a catalog map locally
+  online host-map  Host a catalog map online
+  online turn-client  Play a relay assignment headlessly
+  ai check  Validate JavaScript AI startup, metadata and callbacks
+  script check  Compile a JavaScript map script
+  script attach  Attach a JavaScript map script
+  assets compose-buildings  Compose and validate building packages
+  assets render-skin  Bake transparent colony sprites
+  assets skin-info  Inspect native skin exporter capabilities
+  dev random-games  Exercise random AI games
+  dev stress-maps  Generate random maps indefinitely
+  dev textshots  Capture rendered translation texts
+  dev dump-resources  Dump map resource diagnostics
+  dev dump-wheat  Dump AI wheat-protection plans
+  dev dump-tiled  Dump a repeated map
+  dev hive-worker  Internal Hive JSON-lines worker
+  info version  Inspect the executable build
+  info sim-version  Inspect the simulation identity
+  info catalog  Inspect AI, generator and job capabilities
+  info paths  Inspect asset search paths
+  help  Describe commands without loading game assets
+  completion  Print a shell completion script
+
+Use glob2 COMMAND --help for complete options and examples.
+Use glob2 help --format json for the machine-readable command tree.
+
+Examples:
+  glob2 play --window-size 1280x720
+  glob2 map generators
+  glob2 map generate river --seed 713 --output artifacts/river.map
+  glob2 game run --help
+
+Exit codes: 0 success/help; 2 invalid arguments or rejected input; 3 operational failure.

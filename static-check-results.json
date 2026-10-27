@@ -1,0 +1,138 @@
+{
+  "generator_start": {
+    "tools/artwork/terrain_synth.py": "50dd0762ee3577f3358022c2342f646574a16c59e055b0512151a09d181fe33d",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.41"
+  },
+  "materials": {
+    "boulders": {
+      "elapsed_seconds": 103.68,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "boulders: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "hedge": {
+      "elapsed_seconds": 99.56,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "hedge: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "thicket": {
+      "elapsed_seconds": 85.76,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [
+        "thicket: generator sha256 differs; re-run terrain_synth.py to refresh provenance"
+      ],
+      "failures": []
+    },
+    "ridge_rock": {
+      "elapsed_seconds": 150.37,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "outcrop": {
+      "elapsed_seconds": 99.82,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "dirt": {
+      "elapsed_seconds": 89.72,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "clay": {
+      "elapsed_seconds": 139.27,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "gravel": {
+      "elapsed_seconds": 153.8,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "flower_meadow": {
+      "elapsed_seconds": 74.61,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "mud": {
+      "elapsed_seconds": 102.45,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "marsh": {
+      "elapsed_seconds": 86.85,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "deep_snow": {
+      "elapsed_seconds": 44.02,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    },
+    "scree": {
+      "elapsed_seconds": 58.63,
+      "frames": 256,
+      "hd_frames": 256,
+      "ignored_stale_generator": [],
+      "failures": []
+    }
+  },
+  "expected": [
+    "boulders",
+    "hedge",
+    "thicket",
+    "ridge_rock",
+    "outcrop",
+    "dirt",
+    "clay",
+    "gravel",
+    "flower_meadow",
+    "mud",
+    "marsh",
+    "deep_snow",
+    "scree",
+    "dirt_track",
+    "boardwalk",
+    "loam",
+    "moss",
+    "spring_meadow",
+    "dark_water",
+    "void_hole",
+    "chasm",
+    "sand",
+    "grass",
+    "ice",
+    "road"
+  ],
+  "elapsed_seconds": 1289.22
+}

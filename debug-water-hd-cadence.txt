@@ -1,0 +1,8 @@
+variants 256
+phase_polls 6
+measured_polls 96
+current_hd_average 123.323
+current_hd_fraction 0.48173
+current_hd_peak 256
+resident_peak 512
+asset_peak_working_bytes 1000865

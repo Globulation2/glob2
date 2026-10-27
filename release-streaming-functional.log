@@ -1,0 +1,6 @@
+PASS SpriteSheets/deferred terrain HD loads native first and bounds frame windows across toggles [display] (0.2s)
+PASS SpriteSheets/shipped animated water bank streams only requested HD endpoints [display] (0.5s)
+PASS SpriteSheets/shipped animated water bank source frames draw through programmable GL [display][writes-preferences] (0.5s)
+
+3 passed, 0 failed, 0 skipped (1.2s of test time)
+[run_tests] JUnit report: artifacts/terrain-rollout/release-streaming-functional.xml (3 cases)
