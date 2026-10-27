@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/f4e3/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests" errors="0" failures="0" tests="94720" time="271.964" timestamp="2026-10-27T13:28:27Z" doctest_version="2.4.11">
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="JavaScript current text saves validate unused generation counters" time="35.0079" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="1.37386" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="JavaScript pass assigns valid identities to released saves" time="1.63738" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="1.47821" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptCompatibilityTest.cpp" name="JavaScript current saves reject truncated generation tables" time="4.99001" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript compact population pagination preserves visibility and fixed query budgets" time="0.400103" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript observations visibility memory pagination and stale references" time="1.18618" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript orders execute and survive save load" time="1.78425" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript scenario effects commit atomically and resume" time="1.08496" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript AI state RNG and disabled state survive continuation" time="1.43231" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript large world observations respect work limits" time="1.35754" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript custom library atomic updates and frozen source" time="0.04343" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript profile two spatial cache and queued save continuity" time="0.378058" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript upgrade dispatch survives tracking record growth" time="0.360118" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript telemetry scene permissions and replay diagnostic roundtrip" time="0.381566" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript native distance fields match torus reference cold warm and reloaded [benchmark]" time="35.064" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" time="6.03383" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript native spatial answers exclude hidden terrain resources and enemies" time="0.397824" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript linked sources freeze once and removal retains external files" time="0.021258" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript queued edits preserve fairness cancellation and stale targets" time="0.612495" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript placement reserves footprints and explains impossible constraints" time="0.590115" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript solid attraction placement keeps both radius and footprint reservation" time="0.725643" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript services reject unsavable transactions without changing state" time="0.596154" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript farm areas: experiments query, farmArea order and tile field" time="0.948732" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="Online AI installs verify bytes and preserve provenance on rollback" time="0.023304" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript path fields use terrain travel costs and invalidate speed-only changes" time="0.384432" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript path diagonals retain the neutral strategic metric" time="0.396714" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript terrain registry exposes immutable property capabilities in both profiles" time="0.430491" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript material metadata and remembered multi-yield sources survive both stream formats" time="0.466388" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript legacy empty resource memories discard unused stock bytes" time="0.4078" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript custom building descriptors and orders follow services" time="0.797904" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript production updates retain developer recipes beyond the builtins" time="0.755106" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript managed controls use capabilities and independent bombing filter" time="0.766172" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript bound observations and order encoding remain isolated from live mutations" time="0.385612" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript ordered observations keep the first view of each logical tick" time="0.389345" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript projected boundary preserves history and spatial resources without ecology fields" time="0.676334" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" time="17.3417" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript building clearing materials retain full fixed slots and legacy view" time="0.554262" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptIntegrationTest.cpp" name="JavaScript flag orders use explicit custom attraction roles" time="0.700461" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="JavaScript presentation publishes only changed localized messages" time="1.22412" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="JavaScript load restores presentation without a callback or history entry" time="2.09389" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="Leaving a JavaScript scenario resets choices before loading a legacy map" time="1.66525" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="JavaScript leaves stored SGSL execution and victory conditions dormant" time="1.22207" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="JavaScript does not advance or display a retained SGSL timer" time="1.34065" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="Failed prepared map replacements preserve active globals and language" time="0.424852" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptPresentationTest.cpp" name="Prepared SGSL exchanges rebind stories in both runtimes" time="0.409829" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRealisticTest.cpp" name="JavaScript realistic economic planner and scenario survey" time="0.789599" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSessionTest.cpp" name="JavaScript fatal failure tears down a live engine session" time="2.19012" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSessionTest.cpp" name="JavaScript deterministic scenario failure ends the engine session" time="1.97362" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSessionTest.cpp" name="JavaScript initialization errors reach headless and UI load diagnostics" time="3.85988" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSimulationTest.cpp" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="15.8089" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSimulationTest.cpp" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="67.2308" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSimulationTest.cpp" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="17.1427" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptSimulationTest.cpp" name="JavaScript profile two actions fields telemetry and construction survive save resume and worker counts" time="21.5234" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting identity survives conversion and save load" time="0.980583" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting level reset preserves generation counters" time="0.373515" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting conversion allocates fresh identity in a reused destination slot" time="1.08124" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting editor deletion and reuse never revive a reference" time="1.02185" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting building completion upgrade and repair preserve identity" time="2.58813" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting conversion back never resurrects the original reference" time="1.05045" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Scripting normal death invalidates lookup before cleanup and slot reuse" time="0.979707" status="run"/>
+    <testcase classname="src/team/stats/TeamStatsSaveHarness.cpp" name="Compact identity tables preserve unused slots and reject invalid entries" time="2.6272" status="run"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,30 @@
+In file included from src/map/gradient/GradientRuntime.h:6,
+                 from test/support/LegacyPopulationOutput.h:10,
+                 from src/map/gradient/GradientPreparationTest.cpp:7:
+src/map/gradient/GradientPipeline.h: In static member function ‘static void GradientPipeline::runGPU(void*, std::size_t)’:
+src/map/gradient/GradientPipeline.h:160:67: warning: ‘void std::atomic_store_explicit(shared_ptr<_Tp>*, shared_ptr<_Tp>, memory_order) [with _Tp = gradient_kernel::OpenCLRequiredControl]’ is deprecated: use 'std::atomic<std::shared_ptr<T>>' instead [-Wdeprecated-declarations]
+  160 |                                         std::atomic_store_explicit(&device.control, device.field->requiredControl,
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  161 |                                                                                            std::memory_order_release);
+      |                                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/15/memory:83,
+                 from src/field/OpenCLGradient.h:7,
+                 from src/map/gradient/GradientPreparationTest.cpp:1:
+/usr/include/c++/15/bits/shared_ptr_atomic.h:173:5: note: declared here
+  173 |     atomic_store_explicit(shared_ptr<_Tp>* __p, shared_ptr<_Tp> __r,
+      |     ^~~~~~~~~~~~~~~~~~~~~
+src/map/gradient/GradientPipeline.h: In member function ‘void GradientPipeline::waitGPU(Job&, JoinContext)’:
+src/map/gradient/GradientPipeline.h:202:66: warning: ‘std::shared_ptr<_Tp> std::atomic_load_explicit(const shared_ptr<_Tp>*, memory_order) [with _Tp = gradient_kernel::OpenCLRequiredControl]’ is deprecated: use 'std::atomic<std::shared_ptr<T>>' instead [-Wdeprecated-declarations]
+  202 |                                         std::atomic_load_explicit(&job.device->control, std::memory_order_acquire))
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/c++/15/bits/shared_ptr_atomic.h:133:5: note: declared here
+  133 |     atomic_load_explicit(const shared_ptr<_Tp>* __p, memory_order)
+      |     ^~~~~~~~~~~~~~~~~~~~
+test/support/LegacyPopulationOutput.h: In static member function ‘static void glob2test::LegacyPopulationOutput::primeMaterialGradient(Map&, int, int, int)’:
+test/support/LegacyPopulationOutput.h:124:70: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+  124 |         if (team<0 || team>=Team::MAX_COUNT || material<0 || material>=MaterialCount
+      |                                                              ~~~~~~~~^~~~~~~~~~~~~~~
+src/map/gradient/GradientPreparationTest.cpp: In lambda function:
+src/map/gradient/GradientPreparationTest.cpp:900:39: warning: unused variable ‘request’ [-Wunused-variable]
+  900 |         gradient_preparation::Request request{gradient_preparation::Kind::Materials,0,material,0};
+      |                                       ^~~~~~~

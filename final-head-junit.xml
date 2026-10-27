@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="GameDiagnostics"><testcase classname="GameDiagnostics" name="PNG diagnostics retain presentation requirements through repeated owner observations" time="0.703882" status="run" />
+  </testsuite><testsuite name="JavaScriptSimulation"><testcase classname="JavaScriptSimulation" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="16.2591" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="generator Studio freezes playable worlds and preserves save continuation" time="6.96284" status="run" />
+  </testsuite></testsuites>

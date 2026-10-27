@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/accountExport.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/f4e3/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  09:32:45
+   Duration  8.37s (tests 55%, transform 24%, import 21%)
+

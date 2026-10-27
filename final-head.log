@@ -1,0 +1,6 @@
+PASS GameDiagnostics/PNG diagnostics retain presentation requirements through repeated owner observations (0.8s)
+PASS MapPreview/generator Studio freezes playable worlds and preserves save continuation (7.0s)
+PASS JavaScriptSimulation/JavaScript original fixture executes, resumes and replays 256 ticks (16.3s)
+
+3 passed, 0 failed, 0 skipped (24.1s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/final-head-junit.xml (3 cases)

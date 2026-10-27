@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="44" failures="0" errors="0" skipped="1"><testsuite name="GameDiagnostics"><testcase classname="GameDiagnostics" name="Delayed diagnostic offers cover planner ticks without duplicate captures" time="0.662095" status="run" />
+  <testcase classname="GameDiagnostics" name="PNG diagnostics retain presentation requirements through repeated owner observations" time="0.675299" status="run" />
+  <testcase classname="GameDiagnostics" name="capped scene export survives repeated graphics lifetimes and write failures [artifacts]" time="12.7215" status="run" />
+  <testcase classname="GameDiagnostics" name="controller capture follows simulation cadence and preserves unsigned values" time="0" status="run" />
+  <testcase classname="GameDiagnostics" name="controllers sharing a team publish distinct complete captures and recover after failures [artifacts]" time="0.722561" status="run" />
+  <testcase classname="GameDiagnostics" name="diagnostic budget counts private captures across the delay horizon [artifacts]" time="0.657022" status="run" />
+  <testcase classname="GameDiagnostics" name="field reader rejects malformed counts and retains unsigned food values [artifacts]" time="0.001697" status="run" />
+  <testcase classname="GameDiagnostics" name="pending diagnostic output does not block world advancement or alias later worker output [artifacts]" time="0.738299" status="run" />
+  <testcase classname="GameDiagnostics" name="portrait exports cover the whole map after dimension rounding [artifacts]" time="6.40614" status="run" />
+  <testcase classname="GameDiagnostics" name="private diagnostic reservation survives owner ticks and serialization [artifacts]" time="0.670775" status="run" />
+  <testcase classname="GameDiagnostics" name="offscreen pass restores transformed drawing after exceptions [display]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="stock changes during shared market work retain dirty demand through its fixed deadline" time="0.770276" status="run" />
+  </testsuite><testsuite name="IntrusivePopulationSave"><testcase classname="IntrusivePopulationSave" name="binary and text saves restore nonslot order scheduler and continuation" time="7.17544" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="format166 pending jobs and append order survive an immediate upgrade before observation" time="4.31253" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="formats164 through166 preserve population encoding and scheduler boundaries" time="3.64868" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="invalid population records fail without leaving broken membership" time="12.305" status="run" />
+  </testsuite><testsuite name="JavaScriptSimulation"><testcase classname="JavaScriptSimulation" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="16.8876" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="63.991" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="16.1817" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript profile two actions fields telemetry and construction survive save resume and worker counts" time="21.0785" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads" time="1.34817" status="run" />
+  <testcase classname="MapGradientInvalidation" name="explicit research demanded escape refresh publishes complete fields after every seed transition" time="15.2517" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden edits preserve published generations until delayed refresh" time="36.3076" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting delays complete routes across passable resources" time="2.38795" status="run" />
+  <testcase classname="MapGradientInvalidation" name="idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together" time="1.34097" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="generator Studio freezes playable worlds and preserves save continuation" time="7.12544" status="run" />
+  </testsuite><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/deliverer stays attached and fetches the next market delivery" time="0.443773" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="7.17225" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/stocked markets are resource goals, depleted markets are not" time="1.14003" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="13.6324" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="explicit market refresh publishes depletion and restocking after the minimum interval" time="0.665037" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="5.20601" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="107.189" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.303835" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]" time="23.6707" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="2.3179" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="11.5967" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains admitted material work before replacing stocks" time="1.00523" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="direct flying carriers retain priced overlay and direct stock destinations" time="1.34171" status="run" />
+  <testcase classname="UnitCustomization" name="direct flying clearers retain shared goals and clearing claims" time="1.00493" status="run" />
+  <testcase classname="UnitCustomization" name="flying carriers steer directly between shared destination queries" time="0.662853" status="run" />
+  <testcase classname="UnitCustomization" name="ground and airborne couriers collect mixed kinds and deliver through the engine" time="1.44163" status="run" />
+  <testcase classname="UnitCustomization" name="legacy flying targets retain direct angular steering through forbidden paint" time="0.680535" status="run" />
+  <testcase classname="UnitCustomization" name="ordinary flying couriers export a deterministic direct flight setup [artifacts]" time="0.83748" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (1159 cases) (156.9s)
+
+1 passed, 0 failed, 89 skipped (156.9s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/verified-unit-junit.xml (1248 cases)
