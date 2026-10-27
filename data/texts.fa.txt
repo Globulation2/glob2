@@ -6644,3 +6644,13 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 سکوت: بلندگوی بی‌صدا. صدا: بلندگو همراه با موج‌های صوتی.
 [library %0 · revision %1]
 %0 · بازبینی %1
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

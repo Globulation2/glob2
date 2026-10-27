@@ -6644,3 +6644,13 @@ Discord відкрито. Ви можете повернутися до гри �
 Тиша: вимкнений динамік. Звук: динамік зі звуковими хвилями.
 [library GL only]
 Лише GL
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount
