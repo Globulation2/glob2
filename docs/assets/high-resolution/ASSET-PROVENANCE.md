@@ -14,10 +14,10 @@ Generated terrain combines selected generated materials with deterministic masks
 | Non-AI mask resampling | 38 |
 | Original-based terrain with deterministic grain and tiling | 256 |
 | Procedural resource painting | 120 |
-| Procedural terrain synthesis | 1036 |
+| Procedural terrain synthesis | 1100 |
 | Recovered original | 2076 |
 
-Total: **3665 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
+Total: **3729 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -788,6 +788,38 @@ Total: **3665 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-dirt_track7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dirt_track |
 | `terrain-dirt_track8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dirt_track |
 | `terrain-dirt_track9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dirt_track |
+| `terrain-dry_grass0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass11` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass12` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dry_grass9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dry_grass |
+| `terrain-dune_sand0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand11` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand12` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
+| `terrain-dune_sand9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dune_sand |
 | `terrain-ember_field0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ember_field |
 | `terrain-ember_field1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ember_field |
 | `terrain-ember_field10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ember_field |
@@ -980,6 +1012,22 @@ Total: **3665 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-loam7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: loam |
 | `terrain-loam8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: loam |
 | `terrain-loam9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: loam |
+| `terrain-lush_grass0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass11` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass12` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
+| `terrain-lush_grass9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: lush_grass |
 | `terrain-marsh0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: marsh |
 | `terrain-marsh1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: marsh |
 | `terrain-marsh10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: marsh |
@@ -1044,6 +1092,22 @@ Total: **3665 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-outcrop7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: outcrop |
 | `terrain-outcrop8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: outcrop |
 | `terrain-outcrop9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: outcrop |
+| `terrain-pale_sand0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand11` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand12` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand13` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand14` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand15` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand2` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand3` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand4` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand5` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand6` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
+| `terrain-pale_sand9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: pale_sand |
 | `terrain-ridge_rock0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ridge_rock |
 | `terrain-ridge_rock1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ridge_rock |
 | `terrain-ridge_rock10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: ridge_rock |

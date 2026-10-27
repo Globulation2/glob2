@@ -1,0 +1,183 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "0b4d0178747f57963b3fda0330aad333ed8009cc5f1527f212aa9b22e1247bc5",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "dune_sand",
+  "group": "sand",
+  "label": "Dune sand",
+  "recipe": {
+    "name": "dune_sand",
+    "group": "sand",
+    "label": "Dune sand",
+    "profile": "sand",
+    "seam": {
+      "height": 2,
+      "cast_q8": 40,
+      "cast_width_q8": 448
+    },
+    "palette": {
+      "dark": [
+        176,
+        120,
+        60
+      ],
+      "mid": [
+        206,
+        152,
+        84
+      ],
+      "light": [
+        230,
+        186,
+        118
+      ]
+    },
+    "style": {
+      "luma": 158,
+      "std": 20,
+      "grain_max": 26,
+      "match": 0.5
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "periodic": false,
+    "grid": 0,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"dune_sand:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-dune_sand",
+  "preview": [
+    204,
+    151,
+    85
+  ],
+  "minimap": [
+    204,
+    151,
+    85
+  ],
+  "mean_color": [
+    204,
+    151,
+    85
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 159.4,
+      "std": 19.2,
+      "grain": 15.5,
+      "sat": 0.59,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.7",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "darwin",
+    "machine": "arm64",
+    "libc": null
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-dune_sand0.png": "d76b76e516310a7fb09903e160dce1bb980396644964a70cb4543a1b36563f6f",
+    "data/gfx/terrain-dune_sand1.png": "84f29c4f44c21c719c8193b219621226ee63f09d6d2f7e27206c8f829c70d131",
+    "data/gfx/terrain-dune_sand2.png": "9be1c87468bede7131296f9b1625c7a4f2bf4e515d1724e34dfb2589a7c85fac",
+    "data/gfx/terrain-dune_sand3.png": "0baf41ed03a2fe666ff7756c219ebd02512d0b2f3313f44ce6764b5ca0023411",
+    "data/gfx/terrain-dune_sand4.png": "5b31aacdc13bcf88ceb1a85bc8288bd302ddc3d41957665d7e29844d87f4d1d7",
+    "data/gfx/terrain-dune_sand5.png": "80f72b85f63955e1bea2b1d8d7f46b3fb61908ee80a81be4eb5ba990c69345fc",
+    "data/gfx/terrain-dune_sand6.png": "96020a31b93eccc825b2f63b7c82d991691dc506400f5a2bc9904f0fdb724f6a",
+    "data/gfx/terrain-dune_sand7.png": "9427a0cc3d5eef51cec2eac2f374520f3aabb993273e209c4666993cfa710ac8",
+    "data/gfx/terrain-dune_sand8.png": "247cee9bd0b34a7ac0554ec1a38ad998f03506a5b189c51bfdd5a785bb644768",
+    "data/gfx/terrain-dune_sand9.png": "dcc18525e2b78cdd5ff1359b541e3e5ef89c80535f1fd33d41baaafc8343a7cd",
+    "data/gfx/terrain-dune_sand10.png": "9022985a49ccc820b2262992b48bb911ea786e619a9d06e3b88a801875885372",
+    "data/gfx/terrain-dune_sand11.png": "b529459d665068fe8ae84c876ee8c12880c4e123c76674aee70056da492dd662",
+    "data/gfx/terrain-dune_sand12.png": "a994d60fb6eaafa3a2d91dd4b990d17a8425c6485a9a69c10a0d71b929bd5aee",
+    "data/gfx/terrain-dune_sand13.png": "f59e0a324af637a45729c75ac96e1d41dd73cf8c89dbf0072d1e3cdadfbca4bd",
+    "data/gfx/terrain-dune_sand14.png": "0165598dc1fb6d167e837ff3569fcfd05ae3c244e642497ed0c30cf253337b03",
+    "data/gfx/terrain-dune_sand15.png": "fb85d881447ad99a444bfed670bbad52fdec89f550a73b22ede9774836b1703c"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-dune_sand0.png": "06fbcff344385df6c5bb44420b19fbfa17c4bff2afb8388801c160de00242c03",
+    "data/highres/v1/terrain-dune_sand1.png": "df6283d495aa5ad22f020c464f30fde3c6801d2e748f3f7d18e265d2650de8e3",
+    "data/highres/v1/terrain-dune_sand2.png": "ad1f7810cf4552593e3696d7e6ac7e8dc5d0a65ff67eb7e8e0ffb5a54923f789",
+    "data/highres/v1/terrain-dune_sand3.png": "86e47ccd3d28b6b4fed488edea15628e47cd9e8b176c02c0571b87cdae97146e",
+    "data/highres/v1/terrain-dune_sand4.png": "16fa6cec627dd33d74deb674cddaf8b1e017501c95f2b89a83d40b09deba1d80",
+    "data/highres/v1/terrain-dune_sand5.png": "0f3cfd6d9aae559f1b81b3fd558a9edcbd6a78bd473b45a0e0569cbaff3a9b2c",
+    "data/highres/v1/terrain-dune_sand6.png": "2b5a05e6cb1baacd7c26a1d1c96b705adcb6117cb9139d0a33685e3a5db26f41",
+    "data/highres/v1/terrain-dune_sand7.png": "dbedb35c7c9fd809d61f0841dbc5d404da2c72dce72885d275787473380ae211",
+    "data/highres/v1/terrain-dune_sand8.png": "9257c22a9f636d9c4932cae318b72fcda8b0a3920c77e7f1a6a55f598a82767f",
+    "data/highres/v1/terrain-dune_sand9.png": "509628a4c84659dc496e8a24a90e34715214577bca47192e4c898d56ec6ba0f7",
+    "data/highres/v1/terrain-dune_sand10.png": "23fce727f7f731f29eec535ec68d71076db6a0e387895765b1bbc6aff871f9d8",
+    "data/highres/v1/terrain-dune_sand11.png": "d39b4b586fa269d772905f0da3af76d4189f6736f9018dc027f099412b36c960",
+    "data/highres/v1/terrain-dune_sand12.png": "2f8e24f102bf040d545a7647b5d9c04c6fdb6618e29578b2289cf587ce2e7f17",
+    "data/highres/v1/terrain-dune_sand13.png": "1376b16342be8741971b4d6ee803820cb8b5a5517b32ca2595f0128d8381ae33",
+    "data/highres/v1/terrain-dune_sand14.png": "622524cc6eaa75c407b035c56ac1792f70869163cdc1dd4591f1f2df1ccdea29",
+    "data/highres/v1/terrain-dune_sand15.png": "fda06b4b0ed84fefd64eacf8be7617dac69540e3f631d5295b17ac83ddfca98c"
+  }
+}

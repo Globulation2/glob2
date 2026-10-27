@@ -4,10 +4,11 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-The twenty-four catalogue materials (`boulders`, `hedge`, `thicket`, `ridge_rock`,
+The twenty-eight catalogue materials (`boulders`, `hedge`, `thicket`, `ridge_rock`,
 `outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
 `scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
-`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`) ship as
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, and the grass and
+sand looks `lush_grass`, `dry_grass`, `dune_sand`, `pale_sand`) ship as
 `data/gfx/terrain-<name>0..15.png`, sixteen 32×32 RGBA variants per material, with
 a provenance record in `datasrc/gfx/<name>/provenance.json`. Two production
 methods share the tile code in `tools/artwork/material_tiles.py` (sheet cutting,
@@ -70,7 +71,11 @@ structure (hedge, scree, chasm, lava's placeholder) still show a faint seam at
 recipes: obstacles are lit from the top left and cast onto grass, hazards warm
 and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
-and light, void near black with a cast onto every neighbour.
+and light, void near black with a cast onto every neighbour. The grass and sand
+looks keep the grain of the classic tile they stand in for and change only its
+colour: lush and dry grass are soft like grass, dune and pale sand speckled at the
+native pixel like sand. They take the same pair treatments as classic grass and
+sand (`GRASS_LOOKS` and `SAND_LOOKS` in the synthesiser).
 
 ### Raised obstacle decor
 

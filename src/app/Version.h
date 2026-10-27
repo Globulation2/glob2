@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 186
+#define VERSION_MINOR 187
+// version 187 adds four built-in grass and sand looks; custom terrain IDs move up by four.
 // version 186 admits four building gradients per team per tick and widens pending counts.
 // version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
 // Existing saves retain their masks and committed jobs; counts rebuild on load.

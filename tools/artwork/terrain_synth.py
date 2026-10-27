@@ -1157,6 +1157,67 @@ def render_spring_meadow(ctx):
     return rgb, None
 
 
+# Grass and sand looks: the same ground as the classic grass and sand, so they
+# keep their soft (grass) and speckled (sand) grain and only shift the colour.
+
+@recipe(name="lush_grass", group="grass", label="Lush grass", profile="sand",
+        seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
+        palette={"dark": (14, 80, 40), "mid": (26, 104, 52), "light": (48, 128, 64), "clump": (10, 66, 34)},
+        style=Style(luma=72, std=6, grain_max=6))
+def render_lush_grass(ctx):
+    p = RECIPES["lush_grass"].palette
+    rgb, _ = ground(ctx, 7, 4, (p["dark"], p["mid"], p["light"]), warp=6, grit=0.10)
+    # Darker clumps about two native pixels across give it body.
+    clumps, _, _ = soft_blobs(ctx, 18, 4.0, 6.0)
+    rgb = mix(rgb, p["clump"], clumps, 0.45)
+    return rgb, None
+
+
+@recipe(name="dry_grass", group="grass", label="Dry grass", profile="sand",
+        seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
+        palette={"dark": (92, 100, 36), "mid": (120, 124, 52), "light": (150, 146, 74), "straw": (176, 164, 96)},
+        style=Style(luma=114, std=7, grain_max=7))
+def render_dry_grass(ctx):
+    p = RECIPES["dry_grass"].palette
+    rgb, _ = ground(ctx, 6, 4, (p["dark"], p["mid"], p["light"]), warp=8, grit=0.10)
+    # Short pale straw strokes leaning one way, kept off the perimeter.
+    rng = ctx.rng
+    straw = [0.0] * (N * N)
+    for _ in range(26):
+        x, y = ctx.interior_point(STAMP_MARGIN + 10)
+        stamp_stroke(straw, x, y, -0.9 + 0.5 * rng.random(), 5 + 4 * rng.random(), 1.6, 1.0)
+    rgb = mix(rgb, p["straw"], straw, 0.5)
+    return rgb, None
+
+
+@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand",
+        seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"dark": (176, 120, 60), "mid": (206, 152, 84), "light": (230, 186, 118)},
+        style=Style(luma=158, std=20, grain_max=26, match=0.5))
+def render_dune_sand(ctx):
+    p = RECIPES["dune_sand"].palette
+    rng = ctx.rng
+    f = normalize(domain_warp(fbm(rng, 8, 3), fbm(rng, 3, 2), fbm(rng, 3, 2), 6))
+    rgb = ramp(f, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    # Speckle at the native pixel, like the classic sand.
+    rgb = grain(rgb, rng, 0.22, cells=32)
+    return rgb, None
+
+
+@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand",
+        seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"dark": (190, 180, 146), "mid": (214, 204, 170), "light": (234, 226, 196), "shell": (250, 246, 232)},
+        style=Style(luma=198, std=14, grain_max=24, match=0.5))
+def render_pale_sand(ctx):
+    p = RECIPES["pale_sand"].palette
+    rng = ctx.rng
+    rgb, _ = ground(ctx, 8, 3, (p["dark"], p["mid"], p["light"]), grit=0.0)
+    rgb = grain(rgb, rng, 0.16, cells=32)
+    shells, _ = scatter(ctx, 10, 1.4, 2.0, softness=0.4)
+    rgb = mix(rgb, p["shell"], shells, 0.7)
+    return rgb, None
+
+
 # Water: opaque animated tiles in the colour of the retired scrolling ocean
 # backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74). Water
 # and deep water are cells of one 4x4-cell periodic block (`variant_grid`), so
@@ -1494,9 +1555,12 @@ def render_ember_field(ctx):
 assert set(SYNTH_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
 
 # Pair treatments (B5): boundary families chosen for specific contacts.
+# The grass and sand looks take the same edges as classic grass and sand.
+GRASS_LOOKS = ("grass", "lush_grass", "dry_grass")
+SAND_LOOKS = ("sand", "dune_sand", "pale_sand")
 PAIR_TREATMENTS = (
-    [{"a": name, "b": "grass", "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop")]
-    + [{"a": name, "b": "grass", "profile": "brush"} for name in ("hedge", "thicket")]
+    [{"a": name, "b": look, "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop") for look in GRASS_LOOKS]
+    + [{"a": name, "b": look, "profile": "brush"} for name in ("hedge", "thicket") for look in GRASS_LOOKS]
     + [
         {"a": "water", "b": "deep_water", "profile": "soft"},
         {"a": "deep_water", "b": "dark_water", "profile": "soft"},
@@ -1504,7 +1568,7 @@ PAIR_TREATMENTS = (
     + [
         {"a": name, "b": ground_name, "profile": "fractured"}
         for name in ("lava", "ember_field")
-        for ground_name in ("grass", "sand", "dirt", "gravel")
+        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "gravel")
     ]
     + [
         {"a": name, "b": other, "profile": "crisp"}

@@ -10,7 +10,8 @@
 // colours. TerrainProperties.h, TerrainPresentation.h and TerrainExperiments.h
 // all derive from this table, so
 // adding a look is one enumerator in TerrainType.h, one row here, one string-table
-// label and one material binding in data/terrain/tileset.json.
+// label and one material binding in data/terrain/tileset.json, plus a file-format
+// gate, since custom terrain IDs follow the built-ins (TerrainRegistry::currentTerrainId).
 struct TerrainColor
 {
 	std::uint8_t r, g, b;
@@ -72,6 +73,10 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(DARK_WATER, G::DeepWater, "dark_water", "[dark_water]", {10, 30, 64}, {14, 38, 78}),
 		authored(VOID_HOLE, G::Void, "void_hole", "[void_hole]", {8, 8, 12}, {10, 10, 14}),
 		authored(CHASM, G::Void, "chasm", "[chasm]", {18, 14, 20}, {24, 18, 26}),
+		authored(LUSH_GRASS, G::Grass, "lush_grass", "[lush_grass]", {25, 101, 49}, {25, 101, 49}),
+		authored(DRY_GRASS, G::Grass, "dry_grass", "[dry_grass]", {120, 123, 52}, {120, 123, 52}),
+		authored(DUNE_SAND, G::Sand, "dune_sand", "[dune_sand]", {204, 151, 85}, {204, 151, 85}),
+		authored(PALE_SAND, G::Sand, "pale_sand", "[pale_sand]", {211, 202, 168}, {211, 202, 168}),
 	}};
 	return rows;
 }();
