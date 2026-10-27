@@ -1,0 +1,7 @@
+d772bf735 Revamp Savannah with red earth, grassland, kopjes and living watering holes (#1269)
+5c691899d Demolish inaccessible Maxima buildings and refresh checksum fixtures (#1260)
+f0104aab5 Keep Econo buildings and flags and simplify its selector label (#1241)
+c9198b854 Reduce Maxima planning stalls and profile executor job tails (#1230)
+5a7b684f6 Admit four building gradients per team per tick (#1220)
+495e39db8 Make shared gradient refresh demand-driven with family models (#1224)
+ac041f1e7 Initialize building gradients lazily and steer units while pending (#1197)

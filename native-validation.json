@@ -1,0 +1,24 @@
+{
+  "producer_revision": "697ad9d29ed4c2c7d5c965c71dd4ad54395e8306",
+  "trace_bytes": 2083950,
+  "trace_sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c",
+  "full_ticks": 1024,
+  "native_worker_counts": [
+    1,
+    4
+  ],
+  "initial_load_detailed_records_match": true,
+  "map_header_upgrade": [
+    133,
+    186
+  ],
+  "expected_header_xor_delta": 132120576,
+  "current_format_full_traces_match_across_workers": true,
+  "midpoint_full_tick_records_match": true,
+  "midpoint_tick": 512,
+  "resume_worker_counts": [
+    1,
+    4
+  ],
+  "current_native_full_trace_matches": true
+}

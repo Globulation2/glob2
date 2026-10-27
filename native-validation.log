@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/artifacts/ci-watch/2205/native-validation.py", line 30, in <module>
+    assert (other/'game.replay.checksums').read_bytes()==reference
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

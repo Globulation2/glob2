@@ -1,0 +1,32 @@
+[
+  {
+    "runtime": "chromium-serial",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  },
+  {
+    "runtime": "chromium-threaded",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  },
+  {
+    "runtime": "firefox-serial",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  },
+  {
+    "runtime": "firefox-threaded",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  },
+  {
+    "runtime": "webkit-serial",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  },
+  {
+    "runtime": "webkit-threaded",
+    "bytes": 2083950,
+    "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+  }
+]

@@ -1,0 +1,210 @@
+
+Running 6 tests using 1 worker
+
+(node:293476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (16.6s)
+(node:293629) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (17.4s)
+(node:294663) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (19.6s)
+(node:295124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (20.9s)
+(node:295525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (17.5s)
+(node:295697) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (19.3s)
+
+
+  1) [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-serial--webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2085598
+    Received: 2083950
+
+      139 |     // The reference was produced by native execution, then matched by both browser
+      140 |     // runtimes. Checking all bytes covers every recorded per-tick checksum.
+    > 141 |     expect(trace.length).toBe(fixture.traceBytes);
+          |                          ^
+      142 |     expect(sha256(trace)).toBe(fixture.traceSha256);
+      143 |     fs.writeFileSync(
+      144 |       path.join(directory, "run.log"),
+        at /home/bradley/.codex/worktrees/f4e3/glob2/browser/tests/studio.spec.js:141:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-watch/2205/browser-before/studio-Studio-source-produces-deterministic-trace-threaded--webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6 failed
+    [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+    [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 
+    [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+    [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 
+    [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) 
+    [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) 

@@ -1,0 +1,285 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+
+#pragma once
+#include "FileFormatVersions.h"
+
+// This is the version of map and savegame format, and all of the recorded data on the server
+#define VERSION_MAJOR 0
+#define MINIMUM_VERSION_MINOR 58
+#define VERSION_MINOR 186
+// version 186 admits four building gradients per team per tick and widens pending counts.
+// version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
+// Existing saves retain their masks and committed jobs; counts rebuild on load.
+// version 184 deploys Adaptive24 with a 32-tick minimum refresh interval.
+// The saved layout remains version 178; existing committed jobs keep their deadlines.
+// version 183 selects per-family Adaptive16 models with a combined fallback and
+// demanded capture-age 1024 safety refresh. The saved layout remains version 178.
+// version 182 refits the validated twelve-input Adaptive16 model. The saved layout
+// remains version 178; earlier replay execution has different coefficients.
+// version 181 tested a seven-input Adaptive16 model. The saved layout
+// remains version 178; older replay execution uses different coefficients.
+// version 180 refits Adaptive16 on cumulative unified training data. The
+// saved layout remains version 178; replay execution uses the new coefficients.
+// version 179 uses Adaptive16 with the refitted unified movement model. The
+// saved layout remains version 178; older replays use different movement decisions.
+// version 178 persists unified demand-driven gradient state and capture identities.
+// version 177 refreshes the adaptive movement model; serialized state remains version 176.
+// version 176 combines capture-aligned adaptive movement evidence with lazy building routing.
+// version 175 integrates lazy initial building fields with ground/air routing.
+// version 173 integrates delayed ground guidance with the air routing layout.
+// version 172 combines air routing with tagged snapshot checksum metadata.
+// version 171 appends one shared air routing class and preserves released save layouts.
+// Version 169 is released delayed ground guidance; draft format 170 is rejected.
+
+// version 168 uses delayed snapshot checksums and tagged order checksum metadata.
+// version 167 uses one completed observation per owner boundary and saves boundary phase markers.
+// version 166 saves append-ordered entity populations and the live task cursor.
+// version 165 changes routine checksum coverage/mixing, not save encodings.
+// version 164 publishes hiring after one tick; four-tick hiring saves are no longer accepted.
+// version 163 drops turret source signatures and epochs; live firing revalidates lists.
+// version 162 persists cached hiring suggestions; older saves start with none.
+// version 161 safely cancels unfunded service visits and defers explorer rebound until exit.
+// Save encodings are unchanged; earlier replay trajectories are no longer accepted.
+// version 160 caps private building stock at 255 and cached unit performance at 65535.
+// Existing wide save encodings remain; format-159 saves load with normalization.
+// version 159 uses persisted cached turret targeting; older saves start with an empty cache.
+// version 158 persists completed pending statistics frames.
+// version 157 persists worker-finalized approximate statistics aggregates.
+// version 156 removes the redundant pending statistics input digest.
+// version 155 schedules team statistics from shared world snapshots.
+// version 154 restores mature resource stock oscillation; replay trajectories change.
+// version 153 embeds immutable unit catalogs and composed unit continuation.
+// version 152 gives world operations and legacy stories private streams.
+// version 151 gives units and buildings salted private PCG32 streams.
+// version 150 preserves building area-effect funding and fractional services.
+// version 149 adds delayed resource growth to vertex terrain and scheduled building gradients.
+// version 148 adds the match-wide building gradient delay rule and pending scheduled
+//             building gradient state.
+// version 147 removes round-trip resource fetching: workers always fetch greedily, and
+//             saves drop the round-trip fields that earlier formats carry and the loader discards.
+// version 146 stores terrain once per map vertex.
+// version 145 embeds immutable custom building artwork; older save readers remain supported.
+// version 144 embeds custom terrain/resource artwork and set attribution in maps and saves.
+// version 143 adds engine snapshots, scheduled AI decision streams and pending command state.
+// version 142 rebuilds pre-penalty terrain route caches; replay trajectories change.
+// version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
+// version 140 separates fixed materials from embedded runtime resource definitions.
+// version 139 moves periodic gradient preparation to the completed-tick observation phase.
+// version 138 saves the map's terrain look seed; older maps load with seed 0.
+// version 137 embeds building catalogs and independent capability state.
+// version 136 embeds immutable terrain registries before map tile identities.
+// version 135 adds optional market resource gradients and their scheduling state.
+// version 134 adds canonical terrain properties and calibrated ecology.
+// version 133 adds worker time use, combat-death places and the defence snapshot to team statistics.
+// version 132 preserves legacy AI clocks, specialist caches and learned policy state.
+// version 131 adds the optional win-probability winning-condition tag.
+// version 130 adds Tile::farmArea, the per-tile mask of the farm-areas experiment.
+//             Older saves load with no farm painted; replays from 127 to 129 still play.
+// version 129 adds profile-2 AI services and named/replay AI diagnostics.
+// version 128 losslessly packs map, routing, statistics and Maxima save state.
+// version 127 supports 16 teams and counts Maxima opponents and script generation planes.
+// Older saves remain loadable; Warrush probes all sixteen slots within 32 ticks.
+// version 126 preserves Castor boot progress, projects and decision caches on save/load.
+// version 125 adds optional deterministic JavaScript scripts and entity identities.
+// version 124 adds the experiments list to GameHeader (Settings > Experiments), baked into
+//             every new game. The default simulation is unchanged, so replays from 123 still play.
+// version 123 scopes invalidation and bounds escape refresh; Numbi uses its AI RNG.
+// version 122 gives each shared-runtime controller a private gradient manager.
+// Econo and Nicowar decisions no longer depend on another controller's cache.
+// version 121 gives each AI controller a saved random stream derived from the
+// game seed and player number. AI decisions and replay/network behavior change.
+// version 120 preserves pending periodic gradients and eight-tick publication.
+// version 119 preserves shared AI runtime gradient caches and construction scheduling.
+// version 118 removes the obsolete Maxima rolling maturity cache.
+// version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
+// version 116 preserves Maxima wave delivery and its permanent streaming fallback.
+// version 115 requires the current Maxima strategy and continuation schema.
+// version 114 preserves the team construction cooldown.
+// version 113 preserves unit clearing/idle state and ordered building/service lists.
+// version 112 persists Maxima offensive waves and their strategy controls.
+// version 111 persists Maxima fitted force beliefs and their observation cadence.
+// version 110 persists Maxima reachable fruit supply configuration.
+// version 109 persists Maxima labour observations, budgets and swarm allowances.
+// version 108 persists extended diagnostic gameplay measurements.
+// version 107 persists Maxima relocation relationships and fractional food supply.
+// version 101 persists resolved per-player runtime AI configuration in all header forms
+//             and Cortex queued orders, settle clocks and policy debounce for continuation.
+// version 105 preserves diagnostic gameplay measurements and damage attribution.
+// version 106 persists per-player AI telemetry schemas and samples.
+// version 91 saves the live RNG and routing state for deterministic continuation.
+// version 10 adds script saved in game
+// version 11 the gamesfiles do saves which building has been seen under fog of war.
+// version 12 saves map name into SessionGame instead of BaseMap.
+// version 13 adds construction state into buildings
+// version 14 adds the save of the end of game stats in Team.
+// version 15 and 16 remove old compatibility because of major core engine changes.
+// version 17 change the resource system, move sore hardcoded resource stuff to external file.
+// version 18 adds fruit mask for unit happyness.
+// version 19 removed optimisation parameters
+// version 20 removed useless variable in Unit, used by old pathfinding. And added new Units-states.
+// version 21 added real support for ClearingFlags with the gradient system.
+// version 22 added MOV_RANDOM_FLY to support exiting of forbidden flags.
+// version 23 added support for the exchange building.
+// version 24 added Building::bullets
+// version 25 added Multiple AI support
+// version 26 added saved type of player (human/ai) in Team
+// version 27 adding clearingMaterials[] to allow flags to clear specific resources
+// version 28 changed eternal resources way to count the amount.
+// version 29 added Team::startPosSet for easy map editing.
+// version 30 *added version for AI implementations*
+// version 31 changed saved files signatures in Game.
+// version 32 add more stats to end of game stats (total HP, attack Power, defense Power)
+// version 33 added Building::minLevelToFlag to allow to request a minimum level of warriors in war flags.
+// version 34 added Race::hungriness to have it cleaner.
+// version 35 saving AINumbi endian safely.
+// version 36 save number of unit lost/gained because of conversion and add guard areas
+// version 37 added campaign in game
+// version 38 added the clear area
+// version 39 added UnitType::harvestDamage and UnitType::armorReductionPerHappyness.
+// version 40 added experience and experienceLevel to Unit
+// version 41 added magic abilities
+// version 42 added AIWarrush
+// version 43 added AINicowar
+// version 44 added Bullet:revealX/Y/W/H into the saved file
+// version 45 added teamMaterials to Team for shared resources among markets
+// version 46 added Unit::validTarget
+// version 47 added new map generation system
+// version 48 added script state load/save
+// version 49 added units skinning and per-unit hungriness
+// version 50 changed TeamStat code to use std::vector
+// version 51 added script areas to Map
+// version 52 changed the shared AI runtime API
+// version 53 added no-growth areas, to limit resources growth
+// version 54 removed campaign map linking for the new campaign system
+// version 55 froze current Nicowar to OldNicowar in preparation of new nicowar system
+// version 56 rewrote the unit allocation system, and added "hidden" forbidden zone to Map
+// version 57 added custom prestige settings
+// version 58 made significant, irreversible changes to how the map headers work in the game
+//            all old versions have been rendered unreadable
+// version 59 added complete saving/loading to Nicowar
+// version 60 updated the saving for Nicowar for the new changes
+// version 61 added an under attack countdown to buildings and units
+// version 62 removed hidden forbidden
+// version 63 added fertility to map
+// version 64 removed syncRandSeedA/B/C and replaced with Boost.Random, seed stored in GameHeader and automatically seeded
+// version 65 added maxUnitWorkingPrevious to Building to recover previous assigned unit count when cancelling construction or delete
+// version 66 added new defense and explorer attack code to nicowar
+// version 67 added checksum to map header
+// version 68 changed checksum in map header to md5
+// version 69 started saving GameGUIDefaultAssignManager
+// version 70 added maxUnitWorkingFuture to be saved in Building
+// version 71 added pre-game alliances in the form of ally-team numbers in GameHeader, and added system for winning conditions
+// version 72 added pre-game option for map-discovery
+// version 73 moved the race variable from BaseTeam down to team to shrink the size of MapHeader
+// version 74 added unitsFailingRequirements to Building
+// version 75 added description to Campaign, GameObjectives to Game, and removed campaignText from Game
+// version 76 added mission complete/incomplete to Campaigns, added mission briefing, added mission hints, added ability to fail game objective
+// version 77 removed unitsFailingRequirements, expanding it into more requirements
+// version 78 added defaultFlagRadius to the Order class
+// version 79 added priority to the Building class
+//TODO: verion conflicts in beta4 and default??
+//beta4:
+// version 80 added unitsHarvesting list to the Building class
+// version 81 added canNotConvertUnitTimer to the Building class
+//default:
+//beta5:
+// version 82 integrated new map script system
+// version 83 added a description to campaigns
+// version 84 dropped per-unit skinName (skin is now derived from typeNum)
+// version 85 added Bullet::ticksInitial to the saved file
+// version 86 widened BasePlayer::playerID from Uint16 to Uint32 in the saved file
+// version 87 widened the replay inter-order step counter from Uint16 to Uint32
+// version 88 added the per-team Map::exploredArea to saved games
+// version 89 preserves live team statistics and their sampling cadence
+// version 90 marks the weighted per-swim-class pathfinding and sqrt(2) diagonal timing (#184):
+//            the simulation changed, so replays recorded before it diverge and are refused
+// version 92 walks the hiring buckets by building instead of by index, so a bucket
+//            resized mid-pass no longer skips or repeats a building
+// version 93 eliminates a colony whose remaining units are all trapped (#180)
+// version 94 apportions fetch jobs across the resources a building wants instead of
+//            letting the nearest one take every slot, and prices a loaded candidate
+//            rather than refusing it: the simulation changed again
+// version 95 routes and hires by round trip (fetch plus carry) and saves the
+//            round-trip fields with the map runtime state: the simulation changed again
+// version 96 saves AISharedRuntime::Construction::BuildingOrder::id, which was assigned at
+//            runtime and never serialised, so every pending building order restored
+//            from a save carried an uninitialised heap value as its register key
+// version 97 rebuilds route fields from a map topology generation instead of a proximity
+//            walk, and saves the generation so a loaded game rebuilds on the same ticks:
+//            the simulation changed again
+// version 98 adds AI::ImplementationID::CABINO, a resurrected port of the original
+//            (2005-2007) Nicowar: independent specialist modules (defense, attack,
+//            construction, upgrades, unit/swarm management) that cooperate rather
+//            than a phase-driven strategy. Purely additive: older clients simply
+//            can't load a save that names this AI (see AI::load's default case).
+// version 99 reads one worker level (build) where hiring used to read harvest and
+//            the upgrade menu build, and evens the two out on load
+// version 100 adds AI::ImplementationID::MAXIMA, a standalone AI that develops a colony
+//            and attacks relentlessly, with its saved execution state. Purely additive,
+//            like Cabino. Maxima's save gates read the numbers its development saves
+//            used (98 for the current offense state, 99 for the retired swarm records,
+//            100 for relocation), so it starts at 100 to satisfy all of them.
+// version 102 adds the custom-game economy rules: no resource growth, scarce resources,
+//             instant construction, stockpile start and no hunger
+// version 103 adds the custom-game combat rules: no upgrades, glass cannon, fearless,
+//             no permadeath, peaceful mode and fortress buildings
+// version 104 adds the custom-game sudden-death timer win condition (a new winning-condition
+//             type in the existing list; no new GameHeader field)
+
+//This must be updated when there are changes to MapHeader, GameHeader, BasePlayer, BaseTeam,
+//NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
+//the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
+//(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
+#define NET_PROTOCOL_VERSION 72
+// Protocol 72 adds explicit presence and source ticks to order checksum envelopes.
+// Protocol 71 applies private-stock and cached-performance caps (format 160).
+// Protocol 70 transfers complete delayed measurement frames (format 158).
+// Protocol 68 transfers area-effect funding and fractional services.
+// Protocol 67 combines scheduled building gradients and delayed resource growth.
+// protocol 61 requires format-143 AI decision scheduling and the match-wide AI order delay.
+// protocol 60 requires damage-weighted routing and safe idle movement.
+// protocol 59 requires readers of format-140 runtime resource and material snapshots.
+// protocol 58 requires readers of version-138 map snapshots (terrain look seed).
+// protocol 54 transfers the format-132 AI continuation fields.
+// version 53 supports the optional win-probability winning condition.
+// version 52 adds ORDER_ALTER_FARM_AREA and requires readers of version-130 map snapshots.
+// version 51 requires readers of compact version-128 map snapshots.
+// version 50 requires clients that understand all sixteen team/controller slots.
+// version 49 requires native WSS endpoints and versioned mutual-TLS router registration.
+// Transport-only: save and replay version gates follow the existing simulation formats.
+// version 48 adds JavaScript controllers, map scripts and serialized entity identities.
+// version 47 GameHeader carries the experiments list; older clients would misread it.
+// version 46 uses scoped invalidation, escape refresh and corrected Numbi RNG.
+// version 45 separates shared-runtime gradient caches in mixed-client games.
+// version 44 keeps clients with different AI random streams out of mixed games.
+// version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
+// version 22 added ConfigCheckSum to check if all use has the same file config.
+// version 23 updated to allow custom prestige settings
+// version 24 rewrote YOG
+// version 25 changed YOGGameInfo to include game state information so that running games aren't shown
+// version 26 changed heavy updates to YOG in general
+// version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
+// version 28 Nicowar's behavior was changed
+// version 29 the pathfinding simulation changed (#184); older clients would desync, so they are refused
+// version 30 GameHeader carries resolved per-player runtime AI configuration
+// version 31 GameHeader carries the custom-game economy rules; older clients would misread it
+// version 32 GameHeader carries the custom-game combat rules; older clients would misread it
+// version 33 GameHeader can carry the sudden-death winning condition, which older clients can't decode
+
+// version 34 changes Maxima labour and combat decisions; peers run AIs locally.
+// version 35 enables Maxima reachable fruit supply; peers run AIs locally.
+// version 36 enables Maxima fitted force inference; peers run AIs locally.
+
+// version 37 adds Maxima army growth and gathered attack waves; peers run AIs locally.
+
+// version 38 transfers the complete continuation state when joining saved games.
+
+// version 39 transfers construction cooldown state when joining saved games.
+// version 40 changes Maxima wave fallback decisions and their saved state.
+
+// version 41 adds symmetric version admission and the versioned YOG server greeting.
+
+// version 42 transfers shared AI runtime continuation fields when joining saved games.
+
+// version 43 uses delayed gradient publication and transfers its pending fields.
