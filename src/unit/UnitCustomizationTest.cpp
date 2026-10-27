@@ -1260,6 +1260,11 @@ TEST_SUITE("UnitCustomization")
                 deposit(world.game.map,position[0],position[1],WOOD,1);
             deposit(world.game.map,7,9,WHEAT,3);
             world.game.map.setMapDiscovered();
+            // The scenario tests mixed cargo, so make both destination queries
+            // available before travel; a cold second field may deliver wood first.
+            for (int material:{WOOD,WHEAT}) glob2test::awaitGradient(world.game,[&] {
+                return world.game.map.getMaterialGradientSlot(0,material,unit->movementClass(),false,inn);
+            });
             unit->destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
@@ -1269,7 +1274,7 @@ TEST_SUITE("UnitCustomization")
                 world.game.step(0);
                 sawMixed |= unit->hasCarriedMaterial(WOOD) && unit->hasCarriedMaterial(WHEAT);
             }
-            CAPTURE(key);
+            CAPTURE(std::string(key));
             CHECK(sawMixed);
             CHECK(inn->material(WOOD)==1); CHECK(inn->material(WHEAT)==3);
             CHECK(world.team->stats.events().materialSpillageEvents==0);
@@ -3559,6 +3564,7 @@ TEST_CASE("flying carriers steer directly between shared destination queries" * 
     flyer->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
     inn->unitsWorking.push_back(flyer);
     deposit(map,18,11,WHEAT,1);
+    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,false,inn); });
     flyer->setValidTarget(false);
     flyer->handleMovementGoingToResource();
     REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
@@ -3569,6 +3575,10 @@ TEST_CASE("flying carriers steer directly between shared destination queries" * 
     CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
     CHECK(flyer->attachedBuilding==inn); // Keep the job until shared guidance refreshes.
     map.updateMaterialGradient(0,WHEAT,AIR_MOVEMENT_CLASS,false);
+    glob2test::awaitGradient(world.game,[&] {
+        const auto* field=map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,false,inn);
+        return field && field[map.coordToIndex(18,9)]==GRADIENT_AT_GOAL ? field : nullptr;
+    });
     flyer->handleMovementGoingToResource();
     REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
     CHECK(flyer->targetX==18); CHECK(flyer->targetY==9);
@@ -3598,8 +3608,10 @@ TEST_CASE("direct flying clearers retain shared goals and clearing claims" * doc
         if (attached) {
             flyer->subscriptionSuccess(flag,false,true,UnitJobPurpose::Clear);
             flag->unitsWorking.push_back(flyer);
+            glob2test::awaitBuildingGradient(world.game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
             flyer->handleMovementClearingResources();
         } else {
+            glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS); });
             flyer->handleMovementRandom();
             CHECK(map.isClearingAreaClaimed(18,12,0)==flyer->gid);
         }
@@ -3695,6 +3707,9 @@ TEST_CASE("direct flying carriers retain priced overlay and direct stock destina
         flyer->setValidTarget(false);
         REQUIRE_FALSE(map.hasAirRoutingConstraints());
         REQUIRE(map.getBuilding(18,12)==NOGBID);
+        glob2test::awaitGradient(game,[&] {
+            return map.getMaterialGradientSlot(0,WOOD,AIR_MOVEMENT_CLASS,consumer->fetchesFromMarkets(),consumer);
+        });
         flyer->handleMovementGoingToResource();
         REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
         CHECK(flyer->targetX>=18); CHECK(flyer->targetX<18+supplier->type->width);

@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from build_provenance import build_issues, source_identity
 from check_javascript_evidence import provenance_issues, inventory
-from check_javascript import save_header, header_checksum_delta, continuation_matches, adjust_header_checksum
+from check_javascript import CURRENT_SAVE_VERSION, save_header, header_checksum_delta, continuation_matches, adjust_header_checksum
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'mobile/android_device_tests.py')
@@ -258,7 +258,7 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 159, 167, 168, 169, 171, 172, 173):
+        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 159, 167, 168, 169, 171, 172, 173, *range(174, CURRENT_SAVE_VERSION + 1)):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
@@ -315,7 +315,7 @@ class SaveHeaderTests(unittest.TestCase):
                     self.parse(gzip.compress(malformed))
         with self.assertRaises(AssertionError):
             self.parse(self.fixture(168, statistics_delay=9))
-        for version in (170, 174):
+        for version in (170, CURRENT_SAVE_VERSION + 1):
             with self.subTest(version=version), self.assertRaises(AssertionError):
                 self.parse(self.fixture(version))
 

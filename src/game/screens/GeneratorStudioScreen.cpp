@@ -143,7 +143,13 @@ void GeneratorStudioScreen::generate()
 		if (!terrain.isLoaded())
 			throw std::runtime_error("Cannot create map preview");
 		details["playable"] = playable;
-		details["checksum"] = game->checkSum(nullptr, nullptr, nullptr, true);
+		// A map snapshot intentionally omits match runtime caches. Report the
+        // checksum of the frozen world that Play and external readers load.
+        Game frozen(nullptr);
+        BinaryInputStream frozenInput(new MemoryStreamBackend(snapshot->data(),snapshot->size()));
+        frozenInput.seekFromStart(0);
+        if (!frozen.load(&frozenInput)) throw std::runtime_error("Cannot reload frozen map preview");
+        details["checksum"] = frozen.checkSum(nullptr, nullptr, nullptr, true);
 		details["seconds"] =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count();
 		report = details.dump();
