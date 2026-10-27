@@ -1,0 +1,9 @@
+../Users/bradley/glob2/tools/artwork/test_terrain_decor.py:77: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  self.assertEqual(sum(hd.getchannel("A").getdata()), decor.CELL ** 2 * 255)
+../Users/bradley/glob2/tools/artwork/test_terrain_decor.py:60: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  coverage.append(sum(alpha.getdata()) / 255)
+..
+----------------------------------------------------------------------
+Ran 6 tests in 41.217s
+
+OK

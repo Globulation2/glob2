@@ -1,0 +1,4 @@
+PASS TerrainMaterials/catalogue boundary profiles keep their reviewed geometry (8.4s)
+
+1 passed, 0 failed, 0 skipped (8.4s of test time)
+[run_tests] JUnit report: artifacts/terrain/baseline-final-test.xml (1 cases)

@@ -1,0 +1,34 @@
+{
+  "revision": "ddfa81a405e0c47442e1787ccdf7d4e95ca57d6e",
+  "master_base": "ddfa81a405e0c47442e1787ccdf7d4e95ca57d6e",
+  "working_diff_sha256": "5fcbe0237e6d5938352e8f0d78e54b14fae217b563fea01b57a89d24aa9533bc",
+  "new_artwork_attestation": "data/highres/v1/manifest.json records the source and native PNG hashes for all 512 connected frames",
+  "manifest_sha256": "c40e099721481cc4669a0823c818929d5940801d91478f1a8fc2d9c335317747",
+  "environment": "macOS arm64; Apple clang 21.0.0; dev_fast=1 (-O0 -g1); pinned artwork Python 3.14 / Pillow 12.2.0",
+  "validation": {
+    "native_selected_cases_passed": 53,
+    "artwork_tests_passed": 6,
+    "catalogue_tests_passed": 3,
+    "packaging_check": "passed",
+    "diff_check": "passed"
+  },
+  "commands": [
+    "PYTHONPATH=/Users/bradley/glob2 python3 tools/dev_build.py --build=build/overview-icon-order -Q engine-tests build/overview-icon-order/src/glob2",
+    "python3 test/run_tests.py --build-dir build/overview-icon-order --binary engine --filter 'TerrainMaterials/*' --filter 'TerrainValidation/*' --filter 'BrushCatalog/*' --filter 'MapSets/*' --artifacts artifacts/terrain/final -j 4 --display-jobs 1 --junit artifacts/terrain/native-final-tests.xml",
+    "python3 test/run_tests.py --build-dir build/overview-icon-order --binary engine --filter 'TerrainMaterials/catalogue boundary profiles keep their reviewed geometry' --artifacts artifacts/terrain/final --junit artifacts/terrain/baseline-final-test.xml",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s tools/artwork -p test_terrain_decor.py",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s tools -p test_terrain_tileset.py -k connected_decor -k invalid_catalogs -k registered_materials",
+    "/opt/homebrew/opt/python@3.14/bin/python3.14 tools/artwork/package_runtime.py --check"
+  ],
+  "baseline_update": "Broad run passed 52/53; intentional new canopy ground geometry required replacing the reviewed digest 11045336540448780839 with 2507281759612371885. The updated case passed separately. No production changes followed the broad run.",
+  "visual_review": "Two independent subagents reviewed comparison sheets and native captures. Their feedback led to larger continuous crowns, irregular merged thicket foliage, perimeter depth, mixed-material joins, and removal of duplicate underlay shadows/spikes. Both found no remaining visual blocker in final gallery.",
+  "gallery": "artifacts/terrain/final/TerrainValidation/connected_foliage_corners_strips_and_filled_patches_display_artifacts/connected-foliage.png",
+  "coverage_rationale": "Presentation-only asset and renderer change. Covered corner masks, diagonal joins, torus wrapping, mixed foliage, native/HD frame loading, compositor contracts, editor swatches and custom map save/load. Simulation code and state formats are unchanged.",
+  "limitations": [
+    "macOS validation only; Windows, Linux, browser and mobile builds were not run",
+    "Fast development build, not release performance evidence",
+    "Very large canopy texture repetition and abrupt foliage colour transitions remain optional polish"
+  ],
+  "committed_revision": "53110681a31d08423568afe26d5b8d8f9ac45dd1",
+  "tested_source_matches_commit": true
+}
