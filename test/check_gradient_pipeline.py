@@ -149,13 +149,18 @@ def building_pass(binary, initial, output):
     # A save with fields in flight cannot be forked to another delay.
     delay, pending = pending_saves[0]
     cases.append(['--load-game', str(pending), '--fork-rule', f'buildingGradientDelay={9-delay}', '--ticks', str(RESUME_TICKS)])
-    for index, args in enumerate(cases):
+    expected_errors = ['invalid game rule: buildingGradientDelay=0',
+                       'invalid game rule: buildingGradientDelay=9'] * 2
+    expected_errors += ['--rule cannot override a saved game',
+                        '--fork-rule accepts only buildingGradientDelay=N',
+                        '--fork-rule requires --load-game',
+                        'cannot fork a saved game with pending building gradients']
+    for index, (args, expected_error) in enumerate(zip(cases, expected_errors, strict=True)):
         dest = output/f'rejection-{index}'
         run = subprocess.run([str(binary), 'game', 'run', '--output-dir', str(dest), *args], capture_output=True, text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
-        if '--load-game' in args:
-            assert 'cannot change the delay with pending gradients' in run.stdout + run.stderr
+        assert expected_error in run.stdout + run.stderr, (args, run.stdout, run.stderr)
         assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args
     print(f'PASS building gradient delays {BUILDING_DELAYS}: worker-count traces, {len(pending_saves)} in-flight saves resumed, delay 0/9 rejected')
 
