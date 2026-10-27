@@ -1,0 +1,6 @@
+gen   units wheat wood bld starve dead | units by AI | best/worst start mean per map (seeds 101,202,303)
+r5     25.4   229   38 8.0   0.9    1 | {'nicowar': 24.4, 'cortex': 16.9, 'cabino': 30.7, 'maxima': 29.7} | [1.38, 1.67, 1.83]
+r6     27.3   254   51 8.8   1.5    0 | {'nicowar': 24.1, 'cortex': 19.6, 'cabino': 32.8, 'maxima': 32.6} | [1.93, 2.19, 1.07]
+qf     23.7   217   36 7.6   2.0    2 | {'nicowar': 17.9, 'cortex': 14.4, 'cabino': 32.2, 'maxima': 30.3} | [1.29, 1.38, 1.25]
+ff     30.3   278   55 9.1   1.6    0 | {'nicowar': 27, 'cortex': 19.8, 'cabino': 37.6, 'maxima': 37} | [1.33, 2.05, 1.25]
+door   30.1   277   53 9.3   1.4    0 | {'nicowar': 26.9, 'cortex': 20.8, 'cabino': 36.8, 'maxima': 36.1} | [1.54, 1.12, 1.07]

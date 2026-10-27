@@ -1,0 +1,96 @@
+{
+ "generator": "anthill",
+ "revision": 6,
+ "map_seed": 101,
+ "chosen_seed": 410280833,
+ "candidates": 5,
+ "request": {
+  "method": 32,
+  "width": 8,
+  "height": 8,
+  "teams": 4,
+  "workers": 4,
+  "options": {
+   "algae-amount": 100,
+   "chamber-size": 7,
+   "chamber-spacing": 28,
+   "fruit-amount": 100,
+   "loops": 20,
+   "queen-room": 60,
+   "sand-roads": 1,
+   "stone-amount": 100,
+   "tunnel-width": 3,
+   "wheat-amount": 100,
+   "wood-amount": 100
+  }
+ },
+ "quality": {
+  "score": 0.911418,
+  "fairness": 0.911418,
+  "worst_fitness": 0.134313,
+  "best_fitness": 0.461233,
+  "mean_fitness": 0.253955,
+  "colonies": [
+   {
+    "start": 0,
+    "wheat_distance": 2,
+    "food_distance": 2,
+    "wood_distance": 4,
+    "catchment_tiles": 568,
+    "build_sites": 44,
+    "resource_amount": 241,
+    "material_amount": 241,
+    "rival_distance": 278,
+    "rivals_within_threat": 0,
+    "mean_fertility": 459.389,
+    "fitness": 0.461233,
+    "win_probability": 0.305118
+   },
+   {
+    "start": 1,
+    "wheat_distance": 2,
+    "food_distance": 2,
+    "wood_distance": 3,
+    "catchment_tiles": 417,
+    "build_sites": 39,
+    "resource_amount": 123,
+    "material_amount": 123,
+    "rival_distance": 181,
+    "rivals_within_threat": 0,
+    "mean_fertility": 68.3525,
+    "fitness": 0.232233,
+    "win_probability": 0.242669
+   },
+   {
+    "start": 2,
+    "wheat_distance": 2,
+    "food_distance": 2,
+    "wood_distance": 2,
+    "catchment_tiles": 393,
+    "build_sites": 47,
+    "resource_amount": 109,
+    "material_amount": 109,
+    "rival_distance": 189,
+    "rivals_within_threat": 0,
+    "mean_fertility": 20.0814,
+    "fitness": 0.134313,
+    "win_probability": 0.220033
+   },
+   {
+    "start": 3,
+    "wheat_distance": 5,
+    "food_distance": 5,
+    "wood_distance": 2,
+    "catchment_tiles": 480,
+    "build_sites": 47,
+    "resource_amount": 166,
+    "material_amount": 166,
+    "rival_distance": 181,
+    "rivals_within_threat": 0,
+    "mean_fertility": 201.975,
+    "fitness": 0.188042,
+    "win_probability": 0.232179
+   }
+  ]
+ }
+}

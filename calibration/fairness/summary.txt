@@ -1,0 +1,8 @@
+r5        30 fairness median 0.932 p10 0.853 min 0.822 | catchment mean 341 CV 0.094 | max/mean fert 1.78
+r6        30 fairness median 0.891 p10 0.832 min 0.68 | catchment mean 515 CV 0.157 | max/mean fert 1.95
+noface    30 fairness median 0.914 p10 0.855 min 0.766 | catchment mean 361 CV 0.1 | max/mean fert 1.95
+noquarry  30 fairness median 0.897 p10 0.813 min 0.68 | catchment mean 510 CV 0.149 | max/mean fert 1.95
+queenface 30 fairness median 0.913 p10 0.865 min 0.747 | catchment mean 462 CV 0.091 | max/mean fert 1.8
+halfface  30 fairness median 0.911 p10 0.846 min 0.743 | catchment mean 481 CV 0.117 | max/mean fert 1.91
+farmface  30 fairness median 0.89 p10 0.821 min 0.689 | catchment mean 501 CV 0.154 | max/mean fert 1.98
+door      30 fairness median 0.918 p10 0.843 min 0.758 | catchment mean 521 CV 0.157 | max/mean fert 1.8

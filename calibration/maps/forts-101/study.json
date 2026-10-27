@@ -1,0 +1,95 @@
+{
+ "generator": "forts",
+ "revision": 8,
+ "map_seed": 101,
+ "chosen_seed": 2643610860,
+ "candidates": 5,
+ "request": {
+  "method": 35,
+  "width": 8,
+  "height": 8,
+  "teams": 4,
+  "workers": 4,
+  "options": {
+   "algae-amount": 100,
+   "fruit-amount": 100,
+   "gate-width": 6,
+   "home-size": 22,
+   "lakes": 1,
+   "river-width": 9,
+   "stone-amount": 100,
+   "village-size": 10,
+   "wheat-amount": 100,
+   "wood-amount": 100
+  }
+ },
+ "quality": {
+  "score": 0.951699,
+  "fairness": 0.951699,
+  "worst_fitness": 0.276597,
+  "best_fitness": 0.430007,
+  "mean_fitness": 0.352613,
+  "colonies": [
+   {
+    "start": 0,
+    "wheat_distance": 5,
+    "food_distance": 5,
+    "wood_distance": 21,
+    "catchment_tiles": 1484,
+    "build_sites": 261,
+    "resource_amount": 171,
+    "material_amount": 171,
+    "rival_distance": 123,
+    "rivals_within_threat": 0,
+    "mean_fertility": 965.98,
+    "fitness": 0.430007,
+    "win_probability": 0.269478
+   },
+   {
+    "start": 1,
+    "wheat_distance": 5,
+    "food_distance": 5,
+    "wood_distance": 19,
+    "catchment_tiles": 1569,
+    "build_sites": 273,
+    "resource_amount": 194,
+    "material_amount": 194,
+    "rival_distance": 124,
+    "rivals_within_threat": 0,
+    "mean_fertility": 849.134,
+    "fitness": 0.276597,
+    "win_probability": 0.231152
+   },
+   {
+    "start": 2,
+    "wheat_distance": 6,
+    "food_distance": 6,
+    "wood_distance": 19,
+    "catchment_tiles": 1544,
+    "build_sites": 277,
+    "resource_amount": 170,
+    "material_amount": 170,
+    "rival_distance": 124,
+    "rivals_within_threat": 0,
+    "mean_fertility": 1807.14,
+    "fitness": 0.291926,
+    "win_probability": 0.234723
+   },
+   {
+    "start": 3,
+    "wheat_distance": 6,
+    "food_distance": 6,
+    "wood_distance": 19,
+    "catchment_tiles": 1550,
+    "build_sites": 280,
+    "resource_amount": 174,
+    "material_amount": 174,
+    "rival_distance": 123,
+    "rivals_within_threat": 0,
+    "mean_fertility": 881.524,
+    "fitness": 0.41192,
+    "win_probability": 0.264648
+   }
+  ]
+ }
+}
