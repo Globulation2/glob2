@@ -37,4 +37,5 @@ class GeneratorStudioScreen : public GAGGUI::Screen
 	MapThumbnail terrain;
 	std::vector<MapStart> starts;
 	void generate();
+    void finalizeReport();
 };

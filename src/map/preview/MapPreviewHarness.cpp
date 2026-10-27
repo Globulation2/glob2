@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapThumbnail.h"
 #include "GeneratorStudioScreen.h"
+#include <ThreadSupport.h>
 #include "Game.h"
 #include <nlohmann/json.hpp>
 #include <vector>
@@ -110,7 +111,13 @@ struct MapPreviewHarness
 				 {"params", {{"width", 7}, {"height", 7}, {"teams", 4}, {"workers", 4}}}};
 		std::ofstream(settingsPath) << settings;
 		GeneratorStudioScreen screen(packagePath, settingsPath);
-		screen.generate();
+        // Match the threaded Studio: generation runs away from the asset owner.
+        if constexpr (GAGCore::ThreadSupport::available) {
+            auto generation=GAGCore::ThreadSupport::launch([&] { screen.generate(); });
+            generation.join();
+        } else screen.generate();
+        screen.started=true;
+        screen.updateExecution(0); // Deliver and finalize through the real owner path.
 		INFO(screen.error);
 		REQUIRE(screen.error.empty());
 		REQUIRE(screen.playable);
@@ -158,6 +165,7 @@ struct MapPreviewHarness
 					{"params", {{"width", 6}, {"height", 7}, {"teams", 4}, {"workers", 4}}}};
 		GeneratorStudioScreen different(packagePath, settingsPath);
 		different.generate();
+        different.finalizeReport();
 		INFO(different.error);
 		REQUIRE(different.error.empty());
 		REQUIRE(different.snapshot);
@@ -173,6 +181,7 @@ struct MapPreviewHarness
 									   "mask(c.torus.size(),2));}"}}}};
 		GeneratorStudioScreen terrainOnly(packagePath, settingsPath);
 		terrainOnly.generate();
+        terrainOnly.finalizeReport();
 		INFO(terrainOnly.error);
 		REQUIRE(terrainOnly.error.empty());
 		REQUIRE_FALSE(terrainOnly.playable);
@@ -568,6 +577,14 @@ TEST_SUITE("MapPreview")
 {
     TEST_CASE("generator Studio freezes playable worlds and preserves save continuation") {
         glob2test::HeadlessGlobals globals({.loadStrings = true});
+        MapPreviewHarness::generatorStudio();
+    }
+    TEST_CASE("threaded generator Studio finalizes its frozen report on the asset owner [artifacts]") {
+        glob2test::HeadlessGlobals globals({.loadStrings = true});
+        // Exercise presentation asset requests with an owner initialized here;
+        // a real window is unnecessary for the loader's thread contract.
+        (void)Toolkit::assets();
+        globalContainer->runNoX = false;
         MapPreviewHarness::generatorStudio();
     }
 	TEST_CASE("preview geometry")
