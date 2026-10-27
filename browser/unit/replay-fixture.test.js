@@ -16,12 +16,14 @@ test('browser replay fixture stays within the engine replay acceptance boundary'
     `Replay fixture ${version} is outside ${minimum}..${current}; re-record it using fixtures/README.md`);
 });
 
-test('Studio native reference tracks the engine and simulation revisions', () => {
-  const fixture = JSON.parse(fs.readFileSync(path.join(root, 'browser/tests/fixtures/generator-studio-trace.json')));
-  const versions = fs.readFileSync(path.join(root, 'src/app/Version.h'), 'utf8');
-  const simulation = fs.readFileSync(path.join(root, 'src/game/SimRevision.h'), 'utf8');
-  assert.equal(fixture.versionMinor, Number(versions.match(/#define VERSION_MINOR\s+(\d+)/)[1]),
-    'Refresh the native Studio reference after reviewing the version change');
-  assert.equal(fixture.simRevision, Number(simulation.match(/#define SIM_REVISION\s+(\d+)/)[1]),
-    'Refresh the native Studio reference after reviewing the simulation change');
-});
+for (const name of ['generator-studio-trace.json', 'studio-trace.json']) {
+  test(`${name} tracks the engine and simulation revisions`, () => {
+    const fixture = JSON.parse(fs.readFileSync(path.join(root, 'browser/tests/fixtures', name)));
+    const versions = fs.readFileSync(path.join(root, 'src/app/Version.h'), 'utf8');
+    const simulation = fs.readFileSync(path.join(root, 'src/game/SimRevision.h'), 'utf8');
+    assert.equal(fixture.versionMinor, Number(versions.match(/#define VERSION_MINOR\s+(\d+)/)[1]),
+      'Refresh the native Studio reference after reviewing the version change');
+    assert.equal(fixture.simRevision, Number(simulation.match(/#define SIM_REVISION\s+(\d+)/)[1]),
+      'Refresh the native Studio reference after reviewing the simulation change');
+  });
+}
