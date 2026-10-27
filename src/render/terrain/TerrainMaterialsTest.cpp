@@ -56,19 +56,46 @@ TEST_SUITE("TerrainMaterials")
 			const auto id = c.find(key);
 			const auto &frames = c.materials[id].decor.connected;
 			REQUIRE(frames.size() == 256);
-			for (unsigned mask = 0; mask < 16; ++mask)
-				for (unsigned seed : {0u, 73u})
-					for (int y = 0; y < 4; ++y)
-						for (int x = 0; x < 4; ++x)
-						{
-							const int frame = c.decorFrame(id, x, y, mask != 15, seed, mask);
-							if (!mask) CHECK(frame == -1);
-							else
-							{
-								CHECK(frame == frames[mask * 16 + (unsigned(y) & 3) * 4 + (unsigned(x) & 3)]);
-							}
-						}
+			const auto &interior = c.materials[id].decor.connectedInterior;
+			REQUIRE(c.materials[id].decor.connectedCorners);
+			REQUIRE(interior.size() == 16 * 7);
+			for (unsigned mask = 0; mask < 15; ++mask)
+				for (unsigned colours = 0; colours < 16; ++colours)
+				{
+					const int frame = c.decorFrame(id, 3, 5, true, 73, mask, colours);
+					if (!mask) CHECK(frame == -1);
+					else CHECK(frame == frames[mask * 16 + colours]);
+				}
+			// Filled cells pick among the colour's base frame and its interiors.
+			for (unsigned colours = 0; colours < 16; ++colours)
+			{
+				std::set<int> seen;
+				for (int y = 0; y < 16; ++y)
+					for (int x = 0; x < 16; ++x)
+					{
+						const int frame = c.decorFrame(id, x, y, false, 73, 15, colours);
+						seen.insert(frame);
+						const auto first = interior.begin() + colours * 7;
+						CHECK((frame == frames[15 * 16 + colours] || std::find(first, first + 7, frame) != first + 7));
+					}
+				CHECK(seen.size() == 8);
+			}
 		}
+		// Neighbouring cells read the same bit for each shared vertex, including
+		// across the toroidal seam, and both colours occur.
+		unsigned seen = 0;
+		for (unsigned seed : {0u, 73u})
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+				{
+					const auto here = TerrainVisual::cornerColours(x, y, 31, 31, seed);
+					const auto right = TerrainVisual::cornerColours((x + 1) & 31, y, 31, 31, seed);
+					const auto below = TerrainVisual::cornerColours(x, (y + 1) & 31, 31, 31, seed);
+					CHECK(((here >> 1) & 5u) == (right & 5u));
+					CHECK(((here >> 2) & 3u) == (below & 3u));
+					seen |= 1u << here;
+				}
+		CHECK(seen == 0xffffu);
 		const auto id = c.find("boulders");
 		for (bool edge : {false, true})
 		{

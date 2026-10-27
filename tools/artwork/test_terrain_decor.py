@@ -25,6 +25,19 @@ class TerrainDecor(unittest.TestCase):
     def setUpClass(cls):
         cls.results = decor.synthesize(decor.ORDER)
 
+    def test_vertex_clusters_stay_out_of_neighbouring_halos(self):
+        # Frames sharing an edge must compute the same heights there.
+        for name in decor.CONNECTED:
+            for colour in (0, 1):
+                heights, _ = decor.canopy_cluster(name, colour)
+                box = heights.getbbox()
+                self.assertGreaterEqual(min(box[:2]), 0)
+                self.assertLessEqual(max(box[2:]), 2 * decor.REACH)
+            for interior in range(decor.CANOPY_INTERIORS):
+                box = decor.canopy_interior(name, interior)[0].getbbox()
+                self.assertGreaterEqual(min(box[:2]), 8)
+                self.assertLessEqual(max(box[2:]), decor.CELL - 8)
+
     def test_committed_frames_match_a_fresh_synthesis(self):
         self.assertEqual(decor.check(self.results, ROOT), [])
 
@@ -45,6 +58,9 @@ class TerrainDecor(unittest.TestCase):
                         self.assertEqual(pair["profile"], "canopy")
                 start = decor.connected_first(name)
                 self.assertEqual(block["connected"], list(range(start, start + 16 * decor.CANOPY_VARIANTS)))
+                self.assertEqual(block["connected_interior"],
+                                 list(range(start + 16 * decor.CANOPY_VARIANTS, start + decor.CONNECTED_FRAMES)))
+                self.assertIs(block["connected_corners"], True)
 
     def test_frames_stay_inside_the_sprite_and_edges_are_smaller(self):
         for name, frames in self.results.items():
@@ -66,15 +82,18 @@ class TerrainDecor(unittest.TestCase):
     def test_connected_interiors_have_no_tile_rim_or_shadow(self):
         for name in decor.CONNECTED:
             frames = self.results[name]
-            for variant in range(decor.CANOPY_VARIANTS):
-                hd = frames[decor.FRAMES + 15 * decor.CANOPY_VARIANTS + variant][1]
-                lift = 24
-                core = hd.crop((0, decor.PAD // 2 - lift,
-                                decor.CELL, decor.PAD // 2 - lift + decor.CELL))
-                self.assertEqual(core.getchannel("A").getextrema(), (255, 255))
-                # Full canopy is exactly a continuous surface. No shadow or
-                # repeated front face extends below each row of interior cells.
-                self.assertEqual(sum(hd.getchannel("A").getdata()), decor.CELL ** 2 * 255)
+            filled = [decor.FRAMES + 15 * decor.CANOPY_VARIANTS + v for v in range(decor.CANOPY_VARIANTS)]
+            filled += range(decor.FRAMES + 16 * decor.CANOPY_VARIANTS, decor.FRAMES + decor.CONNECTED_FRAMES)
+            for index in filled:
+                hd = frames[index][1]
+                top = decor.CANOPY_TOP - decor.RAISE
+                # A filled cell is one opaque block: the raised top and the wall
+                # band the next row covers. Nothing spills above, below or
+                # sideways, so no rim or shadow repeats from cell to cell.
+                self.assertEqual(hd.crop((0, top, decor.CELL, decor.CANOPY_TOP + decor.CELL))
+                                 .getchannel("A").getextrema(), (255, 255))
+                self.assertEqual(sum(hd.getchannel("A").getdata()),
+                                 decor.CELL * (decor.CELL + decor.RAISE) * 255)
             empty = frames[decor.FRAMES][1]
             self.assertIsNone(empty.getbbox())
 
@@ -85,8 +104,14 @@ class TerrainDecor(unittest.TestCase):
                 alpha = self.results[name][decor.FRAMES + mask * decor.CANOPY_VARIANTS][1].getchannel("A")
                 for k, (x, y) in enumerate(((2, 2), (decor.CELL - 3, 2),
                                             (2, decor.CELL - 3), (decor.CELL - 3, decor.CELL - 3))):
-                    self.assertEqual(alpha.getpixel((x, decor.PAD // 2 - lift + y)),
-                                     255 if mask & (1 << k) else 0)
+                    if mask & (1 << k):
+                        self.assertEqual(alpha.getpixel((x, decor.PAD // 2 - lift + y)), 255)
+                    else:
+                        # An open corner shows at most the soft ground shadow. Probe
+                        # top corners where their raised top would be, and bottom
+                        # corners on the ground, clear of nearby crowns' walls.
+                        row = decor.PAD // 2 - lift + y if k < 2 else decor.CANOPY_TOP + y
+                        self.assertLess(alpha.getpixel((x, row)), 128)
                 if mask in (6, 9):
                     self.assertGreater(alpha.getpixel((decor.CELL // 2, decor.PAD // 2 - lift + decor.CELL // 2)), 240)
 

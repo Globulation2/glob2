@@ -97,12 +97,16 @@ A material opts in with a `decor` block:
   bit 8. Mask zero draws nothing. These frames override `full`/`edge`; those
   arrays remain available for older catalogs and standalone object decor.
 - The variant is chosen by a coordinate hash salted with the map's terrain seed,
-  unless `connected_grid` supplies a power-of-two texture block size. A grid of
-  four uses sixteen positional texture slices per mask, repeating every 128
-  native pixels. This keeps crown lighting, leaves and branches continuous
-  across cells without a repeated edge band. Connected foliage also joins
-  other connected foliage materials, avoiding bare strips between hedge and
-  thicket.
+  unless `connected_corners` is true. Then each mask holds 16 corner tiles: every
+  map vertex has one seeded colour bit, shared by all materials, and a cell
+  draws the tile for its four corner colours. Crown clusters are anchored on
+  vertices and keep within a band along the cell edges, so neighbouring frames
+  agree wherever they meet and large patches neither seam nor repeat
+  periodically. Optional `connected_interior` frames (colour-major, the same
+  count per colour) give filled cells alternative interior crowns, chosen by a
+  cell hash; interior crowns stay clear of the cell edge. Connected foliage
+  also joins other connected foliage materials, avoiding bare strips between
+  hedge and thicket.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
 - Frames are at most 64×64 and centred on the 32×32 cell. Connected foliage

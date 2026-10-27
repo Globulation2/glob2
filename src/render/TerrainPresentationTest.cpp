@@ -1698,12 +1698,13 @@ TEST_SUITE("TerrainValidation")
 				const int x = panel * 16 + 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
 				const auto id = catalog.find(panel ? "thicket" : "hedge");
 				CHECK(compositor.decorFrame(scene, x, y) ==
-					catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask));
+					catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask,
+						TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
 			}
-		CHECK(compositor.decorFrame(scene, 31, 31) ==
-			catalog.decorFrame(catalog.find("hedge"), 31, 31, false, scene.terrainSeed(), 15));
-		CHECK(compositor.decorFrame(scene, 15, 27) ==
-			catalog.decorFrame(catalog.find("hedge"), 15, 27, false, scene.terrainSeed(), 15));
+		for (const auto [x, y] : {std::pair{31, 31}, std::pair{15, 27}})
+			CHECK(compositor.decorFrame(scene, x, y) ==
+				catalog.decorFrame(catalog.find("hedge"), x, y, false, scene.terrainSeed(), 15,
+					TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
 
 		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
@@ -1790,7 +1791,9 @@ TEST_SUITE("TerrainValidation")
 				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
 				continue;
 			}
-			const auto &full = decor.connected.empty() ? decor.full : decor.connected;
+			// Filled connected cells may also choose an alternative interior.
+			auto full = decor.connected.empty() ? decor.full : decor.connected;
+			full.insert(full.end(), decor.connectedInterior.begin(), decor.connectedInterior.end());
 			const auto &edge = decor.connected.empty() ? decor.edge : decor.connected;
 			CHECK(contains(full, compositor.decorFrame(scene, ox + 1, oy + 1)));
 			// Painted cells cover vertices ox..ox+3, so the cells just outside
@@ -1849,7 +1852,10 @@ TEST_SUITE("TerrainValidation")
 			{
 				auto *decor = GAGCore::Toolkit::getSprite(material.decor.sprite);
 				REQUIRE(decor);
-				for (int frame : material.decor.connected)
+				auto frames = material.decor.connected;
+				frames.insert(frames.end(), material.decor.connectedInterior.begin(),
+					material.decor.connectedInterior.end());
+				for (int frame : frames)
 				{
 					auto *hd = decor->baseFrame(frame);
 					REQUIRE(hd);

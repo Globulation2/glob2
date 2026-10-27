@@ -46,7 +46,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
-			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected})
+			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
@@ -297,7 +297,8 @@ int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 	for (unsigned k = 0; k < corners.size(); ++k)
 		if (const auto id = materialFor(map, corners[k]); id == best ||
 			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask);
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
+		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -364,7 +365,8 @@ std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) con
     for (const auto &material : definitions.materials)
         bytes += material.key.capacity() + material.sprite.capacity() +
                  material.variants.capacity() * sizeof(Variant) + material.decor.sprite.capacity() +
-                 (material.decor.full.capacity() + material.decor.edge.capacity() + material.decor.connected.capacity()) * sizeof(int) +
+                 (material.decor.full.capacity() + material.decor.edge.capacity() + material.decor.connected.capacity() +
+                  material.decor.connectedInterior.capacity()) * sizeof(int) +
                  256;
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;

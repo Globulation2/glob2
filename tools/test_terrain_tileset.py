@@ -77,11 +77,14 @@ class TerrainTileset(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(self.document)
         hedge["decor"]["connected"] = original
-        for grid in (0, 2, 3, 8, True):
-            hedge["decor"]["connected_grid"] = grid
-            with self.assertRaises(ValueError):
-                validate(self.document)
-        hedge["decor"]["connected_grid"] = 4
+        hedge["decor"]["connected_corners"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original[:128]
+        hedge["decor"]["connected_corners"] = True
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original
         validate(self.document)
 
     def test_invalid_catalogs(self):

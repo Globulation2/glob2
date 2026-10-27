@@ -187,11 +187,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge", "connected"})
+			for (const auto *key : {"full", "edge", "connected", "connected_interior"})
 			{
-				if (std::string(key) == "connected" && !d.contains(key)) continue;
-				auto &frames = std::string(key) == "full" ? v.decor.full :
-					std::string(key) == "edge" ? v.decor.edge : v.decor.connected;
+				const std::string name = key;
+				if (name.starts_with("connected") && !d.contains(key)) continue;
+				auto &frames = name == "full" ? v.decor.full : name == "edge" ? v.decor.edge :
+					name == "connected" ? v.decor.connected : v.decor.connectedInterior;
 				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
@@ -199,13 +200,16 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			}
 			require(v.decor.connected.empty() || v.decor.connected.size() % 16 == 0,
 				"connected decor needs equal variant counts for all 16 corner masks");
-			if (d.contains("connected_grid"))
+			if (d.contains("connected_corners"))
 			{
-				v.decor.connectedGrid = integerInRange(d.at("connected_grid"), 1, 4);
-				const auto grid = unsigned(v.decor.connectedGrid);
-				require((grid & (grid - 1)) == 0 && v.decor.connected.size() == 16 * grid * grid,
-					"connected_grid needs a power of two and grid*grid variants per mask");
+				require(d.at("connected_corners").is_boolean(), "connected_corners must be a boolean");
+				v.decor.connectedCorners = d.at("connected_corners").get<bool>();
+				require(!v.decor.connectedCorners || v.decor.connected.size() == 16 * 16,
+					"connected_corners needs 16 corner-colour variants per mask");
 			}
+			require(v.decor.connectedInterior.empty() ||
+				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
+				"connected_interior needs connected_corners and equal variants per colour");
 		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
@@ -310,15 +314,29 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed, unsigned cornerMask) const
+unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed)
+{
+	const auto salt = mapSeedSalt(seed) ^ 0xca70b1u;
+	const auto bit = [&](unsigned vx, unsigned vy) { return hash(vx & maskW, vy & maskH, salt) >> 16 & 1u; };
+	const unsigned ux = unsigned(x), uy = unsigned(y);
+	return bit(ux, uy) | bit(ux + 1, uy) << 1 | bit(ux, uy + 1) << 2 | bit(ux + 1, uy + 1) << 3;
+}
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed, unsigned cornerMask,
+	unsigned colours) const
 {
 	const auto &d = materials[id].decor;
 	if (!d.connected.empty())
 	{
 		if (cornerMask == 0 || cornerMask > 15) return -1;
+		if (cornerMask == 15 && !d.connectedInterior.empty())
+		{
+			// Interiors never reach a cell edge, so filled cells choose freely.
+			const unsigned extra = unsigned(d.connectedInterior.size()) / 16;
+			if (const unsigned v = hash(x, y, mapSeedSalt(seed) ^ 0x1e7e10u) % (extra + 1))
+				return d.connectedInterior[(colours & 15u) * extra + v - 1];
+		}
 		const unsigned variants = unsigned(d.connected.size()) / 16;
-		const unsigned grid = unsigned(d.connectedGrid);
-		const unsigned variant = grid ? (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)) :
+		const unsigned variant = d.connectedCorners ? colours & 15u :
 			hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % variants;
 		return d.connected[cornerMask * variants + variant];
 	}
