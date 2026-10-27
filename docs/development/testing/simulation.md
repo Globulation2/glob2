@@ -315,6 +315,10 @@ and threaded Wasm harnesses, run from `browser/`:
 npx playwright test determinism.spec.js --grep 'ground gradient publication'
 ```
 
+The test queries each compiled runtime for its complete selected case inventory
+and requires the executed JUnit names to match exactly, with no failures or skips.
+New cases expand coverage without a fixed case-count assertion.
+
 This runs the same corpus in each browser runtime and exports JUnit, per-boundary
 checksum traces and named owner/worker kernel counters under
 `artifacts/browser-determinism/gradient-publication/`. Binary/text save fixtures
