@@ -112,10 +112,15 @@ class Canvas:
     def __init__(self):
         self.rgb = [[0.0, 0.0, 0.0] for _ in range(S * S)]
         self.a = [0.0] * (S * S)
+        # Coverage by object bodies alone, so a shadow can tell an object it
+        # darkens from earlier shadow on the ground it should deepen.
+        self.body = [0.0] * (S * S)
 
-    def over(self, i, color, alpha):
+    def over(self, i, color, alpha, body=True):
         if alpha <= 0:
             return
+        if body:
+            self.body[i] = alpha + self.body[i] * (1 - alpha)
         a0 = self.a[i]
         out = alpha + a0 * (1 - alpha)
         if out <= 0:
@@ -194,9 +199,9 @@ def cast_shadow(canvas, footprint, strength, spread, offset):
     for i, v in enumerate(img.getdata()):
         if v:
             a = strength * v / 255
-            if canvas.a[i] > 0:
-                canvas.darken(i, a * 0.8)
-            canvas.over(i, (12, 14, 10), a * 0.85)
+            b = canvas.body[i]
+            canvas.darken(i, a * 0.8 * b)
+            canvas.over(i, (12, 14, 10), a * 0.85 * (1 - b), body=False)
 
 
 def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
@@ -208,11 +213,12 @@ def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
     img = img.filter(ImageFilter.GaussianBlur(max(2.0, ry * 0.35)))
     for i, v in enumerate(img.getdata()):
         if v:
+            # Darken the objects it falls on; deepen shadow already on the
+            # ground rather than stopping at its faint rim.
             a = strength * v / 255
-            if canvas.a[i] > 0:
-                canvas.darken(i, a * 0.6)
-            else:
-                canvas.over(i, (14, 16, 12), a * 0.8)
+            b = canvas.body[i]
+            canvas.darken(i, a * 0.6 * b)
+            canvas.over(i, (14, 16, 12), a * 0.8 * (1 - b), body=False)
 
 
 def shade_dome(canvas, pixels, color_at, *, light=0.55, rim=0.35, front=0.0, face_color=None,
@@ -293,28 +299,149 @@ def stone_palette(rng):
     return tuple(c + j + rng.uniform(-5, 5) for c in base)
 
 
-@spec("boulders", "rounded weathered boulders, three-quarter view")
+LIGHT3 = tuple(c / math.hypot(LIGHT[0], LIGHT[1], 0.9) for c in (LIGHT[0], LIGHT[1], 0.9))
+
+
+def facet_rock(rng, cx, cy, r, squash=0.8, height=0.95):
+    """A convex faceted rock: the soft minimum of jittered sloped planes and a
+    tilted top, so the outline is angular and each facet catches the light on
+    its own. Planes facing the viewer (down-screen) are steeper, giving the
+    rock a narrow front face in the three-quarter view.
+
+    Returns [(i, alpha, nx, ny, nz, rim)] for its silhouette, where rim is
+    how far toward the outline the pixel lies (0 inside, 1 at the edge)."""
+    base = rng.uniform(0, math.tau)
+    facets = rng.randint(6, 9)
+    planes = []
+    for k in range(facets):
+        a = base + k * math.tau / facets + rng.gauss(0, 0.22)
+        reach = rng.uniform(0.8, 1.12)
+        steep = 1 + 1.8 * max(0.0, math.sin(a)) ** 2
+        planes.append((steep, math.cos(a) / reach, math.sin(a) / reach))
+    top = rng.uniform(0.6, 0.78)
+    tilt = (rng.uniform(-0.2, -0.04), rng.uniform(-0.18, -0.02))
+    soft = 0.05
+    ry = r * squash
+    out = []
+    for y in range(max(0, int(cy - ry * 1.4)), min(S, int(cy + ry * 1.4) + 1)):
+        v = (y + 0.5 - cy) / ry
+        for x in range(max(0, int(cx - r * 1.4)), min(S, int(cx + r * 1.4) + 1)):
+            u = (x + 0.5 - cx) / r
+            hs = [(s * (1 - (u * pu + v * pv)), -s * pu, -s * pv) for s, pu, pv in planes]
+            hs.append((top + tilt[0] * u + tilt[1] * v, tilt[0], tilt[1]))
+            m = min(h for h, _, _ in hs)
+            if m <= 0:
+                continue
+            ws = [math.exp(-(h - m) / soft) for h, _, _ in hs]
+            total = sum(ws)
+            h = m - soft * math.log(total)
+            if h <= 0:
+                continue
+            gu = sum(w * g for w, (_, g, _) in zip(ws, hs)) / total
+            gv = sum(w * g for w, (_, _, g) in zip(ws, hs)) / total
+            nx, ny, nz = -height * gu, -height * gv / squash, 1.0
+            n = math.sqrt(nx * nx + ny * ny + nz * nz)
+            out.append((y * S + x, clamp(h / 0.03), nx / n, ny / n, nz / n, 1 - smoothstep(0, 0.14, h)))
+    return out
+
+
+def place_rocks(rng, sizes, edge):
+    """Base points for rocks of the given radii, largest first, around a
+    cluster centre that wanders off the cell centre so neighbouring cells do
+    not line up in rows. Sorted back to front by base."""
+    spread = 0.24 if edge else 0.42
+    wander = 0.12 if edge else 0.2
+    ox = S / 2 + rng.uniform(-1, 1) * CELL * wander
+    oy = S / 2 + CELL * 0.14 + rng.uniform(-1, 1) * CELL * wander * 1.2
+    items = []
+    for r, kind in sorted(sizes, key=lambda t: -t[0]):
+        ry = r * 0.8
+        lo_x, hi_x = r * 1.45 + 6, S - r * 1.45 - 6
+        lo_y, hi_y = ry * 2.0 + 8, S - ry * 0.9 - 16
+        for _ in range(60):
+            cx = clamp(ox + rng.uniform(-1, 1) * CELL * spread, lo_x, hi_x)
+            cy = clamp(oy + rng.uniform(-1, 1) * CELL * spread * 0.9, lo_y, hi_y)
+            # Rocks may lean on each other but not sink into one another.
+            if all(math.hypot(cx - x, (cy - y) * 1.2) > 0.72 * (r + rr) for x, y, rr, _ in items):
+                break
+        items.append((cx, cy, r, kind))
+    return sorted(items, key=lambda t: t[1])
+
+
+def boulder_sizes(rng, edge):
+    """A size hierarchy: one dominant rock or a few medium ones, plus rubble."""
+    def rubble(n, lo=10, hi=18):
+        return [(rng.uniform(lo, hi), "rubble") for _ in range(n)]
+    if edge:
+        rocks = [(rng.uniform(30, 40), "rock")] + [(rng.uniform(18, 26), "rock")] * rng.randint(0, 1)
+        return rocks + rubble(rng.randint(1, 2), 9, 15)
+    kind = rng.choice(("anchor", "anchor", "pair", "cluster", "heap"))
+    if kind == "anchor":
+        return [(rng.uniform(56, 66), "rock"), (rng.uniform(28, 36), "rock")] + rubble(rng.randint(2, 3))
+    if kind == "pair":
+        return [(rng.uniform(42, 52), "rock") for _ in range(2)] + rubble(rng.randint(1, 3))
+    if kind == "cluster":
+        return [(rng.uniform(34, 42), "rock") for _ in range(3)] + rubble(rng.randint(1, 2))
+    return [(rng.uniform(26, 36), "rock") for _ in range(4)] + rubble(rng.randint(1, 2))
+
+
+def boulder_palette(rng):
+    """Warm greys that sit with the dusty ground rather than turning blue
+    against it."""
+    tones = [(142, 136, 126), (126, 121, 114), (152, 142, 124), (116, 112, 106), (138, 130, 118)]
+    return rng.choice(tones)
+
+
+@spec("boulders", "faceted weathered boulders and rubble, three-quarter view")
 def render_boulders(rng, edge):
     canvas = Canvas()
-    count = rng.choice((1, 2, 2)) if edge else rng.choice((2, 3, 3, 4))
-    items = layout(rng, count, (34, 48), edge, extent=(1.4, 1.0))
     grit = fbm(rng, 12, 3)
-    for bx, by, r in items:
-        outline = lumpy_outline(rng, 4, 0.1)
-        rx, ry = r * rng.uniform(1.0, 1.15), r * rng.uniform(1.05, 1.25)
-        cy = by - ry * 0.75  # the body rises above its base
-        ground_shadow(canvas, bx, by, rx * 1.05, ry * 0.45)
-        pixels = dome(bx, cy, rx, ry, outline, power=0.5)
-        tone = stone_palette(rng)
-        dark = tuple(c * 0.55 for c in tone)
-        warm = (tone[0] + 14, tone[1] + 6, tone[2] - 6)
-
-        def color(x, y, h, tone=tone, warm=warm):
+    lichen = fbm(rng, 18, 2)
+    family = boulder_palette(rng)  # one rock type per frame, varied per stone
+    owner = [-1] * (S * S)
+    rocks = place_rocks(rng, boulder_sizes(rng, edge), edge)
+    for k, (bx, by, r, kind) in enumerate(rocks):
+        squash = rng.uniform(0.72, 0.86)
+        cy = by - r * squash * 0.55  # the body rises above its base
+        ground_shadow(canvas, bx + r * 0.1, by, r * 1.05, r * squash * 0.42, 0.55)
+        j = rng.uniform(-9, 9)
+        tone = tuple(c + j + rng.uniform(-2, 2) for c in family)
+        face = (tone[0] * 0.5, tone[1] * 0.5, tone[2] * 0.52)
+        speck = random.Random(rng.random())
+        for i, alpha, nx, ny, nz, rim in facet_rock(rng, bx, cy, r, squash,
+                                                    0.7 if kind == "rubble" else 0.95):
+            x, y = i % S, i // S
+            lam = max(0.0, nx * LIGHT3[0] + ny * LIGHT3[1] + nz * LIGHT3[2])
             g = grit(x, y)
-            c = mix3(tone, warm, smoothstep(0.55, 0.8, g) * 0.6)
-            return tuple(v * (0.82 + 0.36 * g) for v in c)
-
-        shade_dome(canvas, pixels, color, light=0.65, rim=0.35, front=0.7, face_color=dark)
+            c = mix3(tone, face, smoothstep(0.25, 0.75, ny) * 0.6)
+            if nz > 0.8 and lichen(x, y) > 0.72:
+                c = mix3(c, (128, 128, 92), smoothstep(0.72, 0.82, lichen(x, y)) * 0.3)
+            value = (0.4 + 0.8 * lam) * (0.86 + 0.28 * g) * speck.uniform(0.96, 1.04)
+            # A dark line on the outline turned from the light separates stones.
+            away = clamp(0.5 + 0.5 * (nx * -LIGHT[0] + ny * -LIGHT[1]) / max(1e-6, math.hypot(nx, ny)))
+            value *= 1 - 0.35 * rim * away
+            canvas.over(i, tuple(v * value for v in c), alpha)
+            if alpha > 0.5:
+                owner[i] = k
+    # Crevices where stones meet, and each stone's shade on the others.
+    seam = Image.new("L", (S, S), 0)
+    seam.putdata([255 if o >= 0 and ((i % S + 1 < S and owner[i + 1] not in (-1, o)) or
+                                     (i + S < S * S and owner[i + S] not in (-1, o))) else 0
+                  for i, o in enumerate(owner)])
+    seam = list(seam.filter(ImageFilter.GaussianBlur(3.5)).getdata())
+    shade = [0.0] * (S * S)
+    for k, (bx, by, r, _) in enumerate(rocks):
+        mask = Image.new("L", (S, S), 0)
+        mask.putdata([255 if o == k else 0 for o in owner])
+        d = r * 0.3
+        mask = mask.transform(mask.size, Image.Transform.AFFINE,
+                              (1, 0, -d * SHADOW[0], 0, 1, -d * SHADOW[1]))
+        for i, v in enumerate(mask.filter(ImageFilter.GaussianBlur(r * 0.12)).getdata()):
+            if v and owner[i] not in (-1, k):
+                shade[i] = max(shade[i], v / 255)
+    for i in range(S * S):
+        if owner[i] >= 0:
+            canvas.darken(i, min(0.7, seam[i] / 255 * 2.2 * 0.6 + shade[i] * 0.35))
     return canvas
 
 
