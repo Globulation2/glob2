@@ -1,0 +1,7 @@
+The primary GCC 13 CLI job fails translation validation on the five new Savannah controls: all 32 non-English catalogs still contain the English labels. Translate Grassland, Kopjes, Game trails, Fish amount and Camp-site amount throughout the supported catalogs. Meanings follow the generator documentation: grassy plain, rocky hills, animal paths, fish quantity and camp-site count. Brazilian Portuguese and Slovenian are retained as their catalog languages.
+
+French `Silence` is the normal native spelling of the audio label. Record that single word in the existing French shared-vocabulary list, with its linguistic rationale. No general fallback exemption or test logic changes.
+
+Tested head `7a2edbc255404784f663ad13827e90fbc36f3f67`, base `8596b663d18c7f88fd4c481ceeeadb0450f310f8`, Ubuntu 26.04 x86_64/Python 3.14.4: all 10 translation tests pass; the catalog checker reports zero structural errors and zero untranslated new controls; bundled-font glyph coverage passes using the pinned SDL3_ttf prefix. Documentation and diff checks pass. The original failure reproduces with 161 failed assertions. No simulation logic, runtime dependencies, save/replay gates or generator controls change. Rendered layout checks and native-speaker review in all locales were not performed.
+
+Draft while immutable validation evidence is published. Hosted full master recovery remains pending. [Failed hosted check](https://github.com/Globulation2/glob2/actions/runs/40556771805/job/122432017865).

@@ -1,0 +1,1454 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF........
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Silence]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Silence' == 'Silence' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[Grassland]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Grassland' == 'Grassland' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[Kopjes]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Kopjes' == 'Kopjes' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[Game trails]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game trails' == 'Game trails' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[Fish amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Fish amount' == 'Fish amount' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[Camp-site amount]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/f4e3/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Camp-site amount' == 'Camp-site amount' : English fallback
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.128s
+
+FAILED (failures=161)
