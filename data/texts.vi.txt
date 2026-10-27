@@ -6645,12 +6645,12 @@ Im lặng: loa bị tắt tiếng. Âm thanh: loa có sóng âm.
 [library GL only]
 Chỉ GL
 [Grassland]
-Grassland
+Đồng cỏ
 [Kopjes]
-Kopjes
+Đồi đá
 [Game trails]
-Game trails
+Đường mòn thú rừng
 [Fish amount]
-Fish amount
+Lượng cá
 [Camp-site amount]
-Camp-site amount
+Số khu cắm trại

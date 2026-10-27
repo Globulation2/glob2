@@ -6645,12 +6645,12 @@ MCP сервер није доступан у овој апликацији
 [library GL only]
 Само GL
 [Grassland]
-Grassland
+Травњаци
 [Kopjes]
-Kopjes
+Каменита брда
 [Game trails]
-Game trails
+Животињске стазе
 [Fish amount]
-Fish amount
+Количина рибе
 [Camp-site amount]
-Camp-site amount
+Број кампова

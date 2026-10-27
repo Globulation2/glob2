@@ -6645,12 +6645,12 @@ Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
 [library GL only]
 Bara GL
 [Grassland]
-Grassland
+Gräsmark
 [Kopjes]
-Kopjes
+Klippkullar
 [Game trails]
-Game trails
+Djurstigar
 [Fish amount]
-Fish amount
+Mängd fisk
 [Camp-site amount]
-Camp-site amount
+Antal lägerplatser

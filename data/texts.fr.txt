@@ -6645,12 +6645,12 @@ Silence : un haut-parleur muet. Son : un haut-parleur avec des ondes sonores.
 [library GL only]
 GL uniquement
 [Grassland]
-Grassland
+Prairie
 [Kopjes]
-Kopjes
+Collines rocheuses
 [Game trails]
-Game trails
+Pistes d’animaux
 [Fish amount]
-Fish amount
+Quantité de poissons
 [Camp-site amount]
-Camp-site amount
+Nombre de campements

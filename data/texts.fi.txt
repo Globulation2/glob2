@@ -6645,12 +6645,12 @@ Hiljaisuus: mykistetty kaiutin. Ääni: kaiutin ja ääniaaltoja.
 [library GL only]
 Vain GL
 [Grassland]
-Grassland
+Ruohomaa
 [Kopjes]
-Kopjes
+Kalliokukkulat
 [Game trails]
-Game trails
+Eläinpolut
 [Fish amount]
-Fish amount
+Kalojen määrä
 [Camp-site amount]
-Camp-site amount
+Leiripaikkojen määrä

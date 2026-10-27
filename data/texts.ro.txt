@@ -6645,12 +6645,12 @@ Liniște: un difuzor dezactivat. Sunet: un difuzor cu unde sonore.
 [library GL only]
 Doar GL
 [Grassland]
-Grassland
+Pajiști
 [Kopjes]
-Kopjes
+Dealuri stâncoase
 [Game trails]
-Game trails
+Poteci de animale
 [Fish amount]
-Fish amount
+Cantitate de pește
 [Camp-site amount]
-Camp-site amount
+Număr de tabere

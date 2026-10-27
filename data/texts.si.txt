@@ -6645,12 +6645,12 @@ Tišina: utišan zvočnik. Zvok: zvočnik z zvočnimi valovi.
 [library GL only]
 Samo GL
 [Grassland]
-Grassland
+Travišča
 [Kopjes]
-Kopjes
+Skalnati griči
 [Game trails]
-Game trails
+Živalske steze
 [Fish amount]
-Fish amount
+Količina rib
 [Camp-site amount]
-Camp-site amount
+Število taborišč

@@ -6645,12 +6645,12 @@ Stilte: een gedempte luidspreker. Geluid: een luidspreker met geluidsgolven.
 [library GL only]
 Alleen GL
 [Grassland]
-Grassland
+Grasland
 [Kopjes]
-Kopjes
+Rotsheuvels
 [Game trails]
-Game trails
+Wildpaden
 [Fish amount]
-Fish amount
+Hoeveelheid vis
 [Camp-site amount]
-Camp-site amount
+Aantal kampeerplaatsen

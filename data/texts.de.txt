@@ -6645,12 +6645,12 @@ Stille: ein stummgeschalteter Lautsprecher. Ton: ein Lautsprecher mit Schallwell
 [library GL only]
 Nur GL
 [Grassland]
-Grassland
+Grasland
 [Kopjes]
-Kopjes
+Felshügel
 [Game trails]
-Game trails
+Wildwechsel
 [Fish amount]
-Fish amount
+Fischmenge
 [Camp-site amount]
-Camp-site amount
+Anzahl der Lagerplätze

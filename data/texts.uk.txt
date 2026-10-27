@@ -6645,12 +6645,12 @@ Discord відкрито. Ви можете повернутися до гри �
 [library GL only]
 Лише GL
 [Grassland]
-Grassland
+Луки
 [Kopjes]
-Kopjes
+Скелясті пагорби
 [Game trails]
-Game trails
+Звірині стежки
 [Fish amount]
-Fish amount
+Кількість риби
 [Camp-site amount]
-Camp-site amount
+Кількість стоянок

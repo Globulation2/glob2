@@ -6645,12 +6645,12 @@ Building Studio で作成
 [library GL only]
 GL のみ
 [Grassland]
-Grassland
+草原
 [Kopjes]
-Kopjes
+岩山
 [Game trails]
-Game trails
+獣道
 [Fish amount]
-Fish amount
+魚の量
 [Camp-site amount]
-Camp-site amount
+野営地の数
