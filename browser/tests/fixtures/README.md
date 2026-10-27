@@ -25,6 +25,8 @@ tooling and must not be replaced just to keep browser import tests current.
 `studio-trace.json` pins the map, source, seed, opponent and tick count for the
 Studio determinism test. Its trace digest comes from native execution; both the
 serial and threaded browser runtime must match every byte of that checksum trace.
+Its engine/save and simulation revision fields are checked by the cheap Node
+contracts, so version advances require a reviewed native reference refresh.
 It is a compatibility assertion, not a browser-generated snapshot.
 
 For an intentional source, fixture or simulation change, build the native engine
