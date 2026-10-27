@@ -69,12 +69,21 @@ def main():
                              '--compute-threads',str(workers + 1),'--telemetry','checksums','--write-replay'], dest)
             ticks = detailed_tick_hashes(dest/'game.replay.checksums')
             assert ticks and all(expected[t] == value for t,value in ticks.items()), (phase, workers)
-    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0']]
+    # The initial delayed AI wave admits cold fields before the idle checkpoints
+    # above. Keep an asserted busy checkpoint so rejection coverage cannot vanish
+    # when adaptive scheduling leaves the later eight phases empty.
+    busy = output/'pending-checkpoint'
+    pending = execute(binary, ['--load-game',str(initial),'--ticks','8','--save','final'], busy)
+    assert pending['result']['gradient_pending'] > 0, 'fixture must retain pending gradients'
+    cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0'],
+             ['--load-game',str(busy/'final.game'),'--gradient-delay','3','--ticks','9']]
     for index, args in enumerate(cases):
         dest = output/f'rejection-{index}'
         run = subprocess.run([str(binary),'game', 'run','--output-dir',str(dest),*args],capture_output=True,text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
+        if '--load-game' in args:
+            assert 'cannot change the delay with pending gradients' in run.stdout + run.stderr
         assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args
     print('PASS pipeline defaults, trace determinism, eight-phase save continuation and invalid option rejection')
     if not a.skip_building:
@@ -145,6 +154,8 @@ def building_pass(binary, initial, output):
         run = subprocess.run([str(binary), 'game', 'run', '--output-dir', str(dest), *args], capture_output=True, text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
+        if '--load-game' in args:
+            assert 'cannot change the delay with pending gradients' in run.stdout + run.stderr
         assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args
     print(f'PASS building gradient delays {BUILDING_DELAYS}: worker-count traces, {len(pending_saves)} in-flight saves resumed, delay 0/9 rejected')
 
