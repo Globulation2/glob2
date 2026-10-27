@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:288084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/render-fps.spec.js:11:3 › render FPS selection persists (compact) (25.9s)
+  ✓  2 [chromium] › browser/tests/responsive-presentation.spec.js:19:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (20.9s)
+  ✓  3 [chromium] › browser/tests/viewport.spec.js:23:1 › menus follow the viewport and keep their controls clickable (15.9s)
+
+  3 passed (1.1m)

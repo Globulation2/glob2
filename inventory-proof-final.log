@@ -1,0 +1,16 @@
+firefox serial PASS exact 26-case registry/hosted execution inventory
+firefox serial rejects missing
+firefox serial rejects extra
+firefox serial rejects malformed
+firefox threaded PASS exact 26-case registry/hosted execution inventory
+firefox threaded rejects missing
+firefox threaded rejects extra
+firefox threaded rejects malformed
+webkit serial PASS exact 26-case registry/hosted execution inventory
+webkit serial rejects missing
+webkit serial rejects extra
+webkit serial rejects malformed
+webkit threaded PASS exact 26-case registry/hosted execution inventory
+webkit threaded rejects missing
+webkit threaded rejects extra
+webkit threaded rejects malformed

@@ -1,0 +1,23 @@
+
+Running 15 tests using 1 worker
+
+(node:284508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › browser/tests/render-fps.spec.js:11:3 › render FPS selection persists (desktop) (23.6s)
+  ✓   2 [chromium] › browser/tests/render-fps.spec.js:11:3 › render FPS selection persists (compact) (27.2s)
+  ✓   3 [chromium] › browser/tests/render-fps.spec.js:49:1 › painting does not dispatch browser text actions (11.8s)
+  ✓   4 [chromium] › browser/tests/responsive-presentation.spec.js:19:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (20.8s)
+  ✓   5 [chromium] › browser/tests/responsive-presentation.spec.js:50:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (28.7s)
+  ✓   6 [chromium] › browser/tests/responsive-presentation.spec.js:102:3 › responsive mixed input › touch browser editor retains its dock across phone rotation (18.5s)
+  -   7 [chromium] › browser/tests/responsive-presentation.spec.js:132:8 › responsive mixed input › touch tablet dock publishes its brush cards
+  ✓   8 [chromium] › browser/tests/viewport.spec.js:23:1 › menus follow the viewport and keep their controls clickable (14.0s)
+  ✓   9 [chromium] › browser/tests/viewport.spec.js:32:1 › a running match survives resize and its open menu follows the new center (20.0s)
+  ✓  10 [chromium] › browser/tests/viewport.spec.js:54:1 › editor dialogs and discard controls follow viewport changes (17.5s)
+  ✓  11 [chromium] › browser/tests/viewport.spec.js:67:1 › small viewports retain the active screen and continue rendering (12.1s)
+  ✓  12 [chromium] › browser/tests/viewport.spec.js:77:3 › initial small viewport › starts at the actual browser dimensions (10.9s)
+  ✓  13 [chromium] › browser/tests/viewport.spec.js:87:3 › initial wide viewport › fills the page before any resize (9.7s)
+  ✓  14 [chromium] › browser/tests/viewport.spec.js:96:3 › high density display › uses the renderer-appropriate backing resolution (11.5s)
+  ✓  15 [chromium] › browser/tests/viewport.spec.js:109:1 › interface scale survives resizing and keeps settings controls clickable (12.2s)
+
+  1 skipped
+  14 passed (4.0m)

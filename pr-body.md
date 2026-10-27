@@ -1,0 +1,14 @@
+Compact/touch browser tests stop at the new AudioPreferenceScreen because they still expect handedness to be the first prompt. Make the real silence choice before the existing handedness choice. Keep the subsequent settings persistence, Unicode editing, touch/mouse, resizing and rendered-pixel assertions intact.
+
+The gradient browser check executes all 26 current cases successfully but then fails an obsolete three-case assertion. Query the selected registry from a separate instance of the exact serial/threaded Wasm binary, retain the XML inventory and require the completed JUnit names to match exactly. Existing nonzero-exit, failure, error, skip, trace and participant-kernel checks remain. New cases expand verification without refreshing a hard-coded count; missing/extra cases still fail.
+
+Tested final head `d7895a77ee6e375b857c993c05831b4d63c7a138`, branch base `842a208e65ac7c9f6ee9fa633504d5525a277bda`. Current master also contains unrelated hosting-documentation #1278; no affected test/runtime components changed. Local Ubuntu 26.04, Playwright 1.63.0 cached Chromium/Firefox/WebKit:
+
+- All 14 applicable Chromium software-renderer tests pass, with 1 pre-existing skipped tablet case unchanged. Three focused WebGL2/SwiftShader cases pass (compact FPS persistence, touch Unicode editing/rotation, viewport menus).
+- Live compiled-registry queries pass for Firefox and WebKit, serial and threaded, with all 26 selected cases exactly matching captured hosted JUnit. Missing/extra cases and malformed XML are rejected.
+- Repeated the complete unchanged gradient corpus on the retained clean 697ad9d29ed4c2c7d5c965c71dd4ad54395e8306 Wasm producer: 26 cases per browser/runtime, zero failures/skips, all 10 boundary traces and participant kernel records retained; serial/threaded traces match. Original current-source provenance guards in the committed browser test are unchanged. This probe records and verifies the retained producer explicitly and does not impersonate a final-revision Wasm build.
+- Browser Node tests (138), CI contracts (163, 2 existing skips), documentation, JavaScript syntax and diff checks pass.
+
+Draft until immutable evidence is published. Final-revision full hosted browser/master verification remains pending. No production behavior, engine tests, simulation logic, dependencies, test selection or version gates change. No runner-time or full-checkpoint claim. Focused evidence covers the actual JavaScript changes against the retained runtime; new Wasm source compilation was not performed locally.
+
+[Onboarding failure](https://github.com/Globulation2/glob2/actions/runs/40556771805/job/122436268606), [Firefox inventory failure](https://github.com/Globulation2/glob2/actions/runs/40556771805/job/122436268709), [WebKit inventory failure](https://github.com/Globulation2/glob2/actions/runs/40556771805/job/122436268901).

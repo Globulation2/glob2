@@ -1,0 +1,7 @@
+{
+  "artifacts/ci-watch/2008/web-client/script-tests.js": "ba06b79af99db38777a4c8319646611bbe4eab3f9ce893e4a9d9e41edb05693b",
+  "artifacts/ci-watch/2008/web-client/script-tests.wasm": "93844545e90613f0e40aa68d78b828f69acad8206e0825d329bb62e15a3ccd49",
+  "artifacts/ci-watch/2008/web-client/script-tests.data": "3703ccdf2120105ddc77ec101c063efc45068e12cc26af6704207b13cddd1a96",
+  "artifacts/ci-watch/2008/web-client/threaded/script-tests.js": "9351a66ba0e4ecd6ddde6a225184dd1806f5490e32938bd55c1de283ca5913b2",
+  "artifacts/ci-watch/2008/web-client/threaded/script-tests.wasm": "28995901a79276a40537fdf0a098d6c913a4c15931d9acc0a6ff352c672d83a2"
+}
