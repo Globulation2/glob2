@@ -1,0 +1,350 @@
+﻿2026-10-28T01:42:52.2266399Z Current runner version: '2.338.0'
+2026-10-28T01:42:52.2285312Z ##[group]Runner Image Provisioner
+2026-10-28T01:42:52.2286115Z Hosted Compute Agent
+2026-10-28T01:42:52.2286638Z Version: 20261021.618
+2026-10-28T01:42:52.2287151Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-28T01:42:52.2287771Z Build Date: 2026-10-21T00:45:21Z
+2026-10-28T01:42:52.2288324Z Worker ID: {ecd3fb93-c4ec-488c-8790-6fd411d1718e}
+2026-10-28T01:42:52.2288883Z Region: westus3
+2026-10-28T01:42:52.2289356Z Cloud: Azure
+2026-10-28T01:42:52.2289820Z ##[endgroup]
+2026-10-28T01:42:52.2290890Z ##[group]Operating System
+2026-10-28T01:42:52.2291403Z Ubuntu
+2026-10-28T01:42:52.2291850Z 24.04.5
+2026-10-28T01:42:52.2292319Z LTS
+2026-10-28T01:42:52.2292735Z ##[endgroup]
+2026-10-28T01:42:52.2293179Z ##[group]Runner Image
+2026-10-28T01:42:52.2294000Z Image: ubuntu-24.04
+2026-10-28T01:42:52.2294527Z Version: 20261025.353.1
+2026-10-28T01:42:52.2295745Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-28T01:42:52.2296997Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-28T01:42:52.2297766Z ##[endgroup]
+2026-10-28T01:42:52.2298812Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T01:42:52.2300498Z Actions: read
+2026-10-28T01:42:52.2300958Z Contents: read
+2026-10-28T01:42:52.2301425Z Metadata: read
+2026-10-28T01:42:52.2301867Z ##[endgroup]
+2026-10-28T01:42:52.2303692Z Secret source: Actions
+2026-10-28T01:42:52.2304466Z Cache mode: write
+2026-10-28T01:42:52.2305000Z Prepare workflow directory
+2026-10-28T01:42:52.2609943Z Prepare all required actions
+2026-10-28T01:42:52.2651740Z Getting action download info
+2026-10-28T01:42:52.5550451Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-28T01:42:52.6984566Z Complete job name: Relevant checks passed
+2026-10-28T01:42:52.7628040Z ##[group]Run actions/checkout@v4
+2026-10-28T01:42:52.7628763Z with:
+2026-10-28T01:42:52.7629236Z   ref: afab6e9b28fa5c7a6accb6d04fa94cc84851b76f
+2026-10-28T01:42:52.7629819Z   repository: Globulation2/glob2
+2026-10-28T01:42:52.7633109Z   token: ***
+2026-10-28T01:42:52.7633751Z   ssh-strict: true
+2026-10-28T01:42:52.7634216Z   ssh-user: git
+2026-10-28T01:42:52.7634656Z   persist-credentials: true
+2026-10-28T01:42:52.7635125Z   clean: true
+2026-10-28T01:42:52.7635597Z   sparse-checkout-cone-mode: true
+2026-10-28T01:42:52.7636094Z   fetch-depth: 1
+2026-10-28T01:42:52.7636517Z   fetch-tags: false
+2026-10-28T01:42:52.7636958Z   show-progress: true
+2026-10-28T01:42:52.7637411Z   lfs: false
+2026-10-28T01:42:52.7637830Z   submodules: false
+2026-10-28T01:42:52.7638297Z   set-safe-directory: true
+2026-10-28T01:42:52.7638772Z   allow-unsafe-pr-checkout: false
+2026-10-28T01:42:52.7639424Z env:
+2026-10-28T01:42:52.7639845Z   GLOB2_DEV_MODE: isolated
+2026-10-28T01:42:52.7640316Z ##[endgroup]
+2026-10-28T01:42:52.9982751Z Syncing repository: Globulation2/glob2
+2026-10-28T01:42:52.9984980Z ##[group]Getting Git version info
+2026-10-28T01:42:52.9986058Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-28T01:42:52.9986979Z [command]/usr/bin/git version
+2026-10-28T01:42:53.0067292Z git version 2.56.0
+2026-10-28T01:42:53.0097738Z ##[endgroup]
+2026-10-28T01:42:53.0104864Z Temporarily overriding HOME='/home/runner/work/_temp/7feb0c37-6036-4bfc-8a4a-e776c3bced87' before making global git config changes
+2026-10-28T01:42:53.0106754Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T01:42:53.0110671Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-28T01:42:53.0151122Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-28T01:42:53.0155319Z ##[group]Initializing the repository
+2026-10-28T01:42:53.0157393Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-28T01:42:53.0262299Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T01:42:53.0263790Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T01:42:53.0264914Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T01:42:53.0265618Z hint: call:
+2026-10-28T01:42:53.0266080Z hint:
+2026-10-28T01:42:53.0266621Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T01:42:53.0267231Z hint:
+2026-10-28T01:42:53.0267820Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T01:42:53.0268674Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T01:42:53.0269399Z hint:
+2026-10-28T01:42:53.0269855Z hint: 	git branch -m <name>
+2026-10-28T01:42:53.0270365Z hint:
+2026-10-28T01:42:53.0270987Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T01:42:53.0280896Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-28T01:42:53.0291057Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-28T01:42:53.0327452Z ##[endgroup]
+2026-10-28T01:42:53.0328536Z ##[group]Disabling automatic garbage collection
+2026-10-28T01:42:53.0330724Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T01:42:53.0356322Z ##[endgroup]
+2026-10-28T01:42:53.0357307Z ##[group]Setting up auth
+2026-10-28T01:42:53.0362316Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T01:42:53.0389597Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T01:42:53.0726469Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T01:42:53.0755961Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T01:42:53.0930076Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T01:42:53.0958659Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T01:42:53.1122436Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T01:42:53.1157347Z ##[endgroup]
+2026-10-28T01:42:53.1158412Z ##[group]Fetching the repository
+2026-10-28T01:42:53.1169342Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin afab6e9b28fa5c7a6accb6d04fa94cc84851b76f
+2026-10-28T01:43:01.5615827Z From https://github.com/Globulation2/glob2
+2026-10-28T01:43:01.5618312Z  * branch              afab6e9b28fa5c7a6accb6d04fa94cc84851b76f -> FETCH_HEAD
+2026-10-28T01:43:01.5623272Z ##[endgroup]
+2026-10-28T01:43:01.5625574Z ##[group]Determining the checkout info
+2026-10-28T01:43:01.5627827Z ##[endgroup]
+2026-10-28T01:43:01.5629281Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T01:43:01.5678481Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T01:43:01.5708655Z ##[group]Checking out the ref
+2026-10-28T01:43:01.5711267Z [command]/usr/bin/git checkout --progress --force afab6e9b28fa5c7a6accb6d04fa94cc84851b76f
+2026-10-28T01:43:02.7808729Z Updating files:  51% (11113/21776)
+2026-10-28T01:43:02.7838274Z Updating files:  52% (11324/21776)
+2026-10-28T01:43:02.8534854Z Updating files:  53% (11542/21776)
+2026-10-28T01:43:02.8953646Z Updating files:  54% (11760/21776)
+2026-10-28T01:43:02.9062171Z Updating files:  55% (11977/21776)
+2026-10-28T01:43:02.9180106Z Updating files:  56% (12195/21776)
+2026-10-28T01:43:02.9309011Z Updating files:  57% (12413/21776)
+2026-10-28T01:43:02.9456850Z Updating files:  58% (12631/21776)
+2026-10-28T01:43:02.9574147Z Updating files:  59% (12848/21776)
+2026-10-28T01:43:02.9691467Z Updating files:  60% (13066/21776)
+2026-10-28T01:43:02.9801764Z Updating files:  61% (13284/21776)
+2026-10-28T01:43:02.9922104Z Updating files:  62% (13502/21776)
+2026-10-28T01:43:03.0034901Z Updating files:  63% (13719/21776)
+2026-10-28T01:43:03.0130389Z Updating files:  64% (13937/21776)
+2026-10-28T01:43:03.0229322Z Updating files:  65% (14155/21776)
+2026-10-28T01:43:03.0354948Z Updating files:  66% (14373/21776)
+2026-10-28T01:43:03.0460573Z Updating files:  67% (14590/21776)
+2026-10-28T01:43:03.0557354Z Updating files:  68% (14808/21776)
+2026-10-28T01:43:03.0641841Z Updating files:  69% (15026/21776)
+2026-10-28T01:43:03.0828869Z Updating files:  70% (15244/21776)
+2026-10-28T01:43:03.0942897Z Updating files:  71% (15461/21776)
+2026-10-28T01:43:03.0981703Z Updating files:  72% (15679/21776)
+2026-10-28T01:43:03.1039242Z Updating files:  73% (15897/21776)
+2026-10-28T01:43:03.1093356Z Updating files:  74% (16115/21776)
+2026-10-28T01:43:03.1135633Z Updating files:  75% (16332/21776)
+2026-10-28T01:43:03.1408629Z Updating files:  76% (16550/21776)
+2026-10-28T01:43:03.1521254Z Updating files:  77% (16768/21776)
+2026-10-28T01:43:03.1674283Z Updating files:  78% (16986/21776)
+2026-10-28T01:43:03.1794164Z Updating files:  79% (17204/21776)
+2026-10-28T01:43:03.1953218Z Updating files:  80% (17421/21776)
+2026-10-28T01:43:03.2090260Z Updating files:  81% (17639/21776)
+2026-10-28T01:43:03.6248656Z Updating files:  82% (17857/21776)
+2026-10-28T01:43:03.8222038Z Updating files:  82% (17952/21776)
+2026-10-28T01:43:03.8320123Z Updating files:  83% (18075/21776)
+2026-10-28T01:43:03.8636935Z Updating files:  84% (18292/21776)
+2026-10-28T01:43:03.8694648Z Updating files:  85% (18510/21776)
+2026-10-28T01:43:03.8748809Z Updating files:  86% (18728/21776)
+2026-10-28T01:43:03.8896299Z Updating files:  87% (18946/21776)
+2026-10-28T01:43:03.9035400Z Updating files:  88% (19163/21776)
+2026-10-28T01:43:03.9149040Z Updating files:  89% (19381/21776)
+2026-10-28T01:43:03.9279585Z Updating files:  90% (19599/21776)
+2026-10-28T01:43:03.9437988Z Updating files:  91% (19817/21776)
+2026-10-28T01:43:03.9574129Z Updating files:  92% (20034/21776)
+2026-10-28T01:43:03.9679363Z Updating files:  93% (20252/21776)
+2026-10-28T01:43:03.9799991Z Updating files:  94% (20470/21776)
+2026-10-28T01:43:04.0116005Z Updating files:  95% (20688/21776)
+2026-10-28T01:43:04.0983685Z Updating files:  96% (20905/21776)
+2026-10-28T01:43:04.1212963Z Updating files:  97% (21123/21776)
+2026-10-28T01:43:04.1405819Z Updating files:  98% (21341/21776)
+2026-10-28T01:43:04.1547601Z Updating files:  99% (21559/21776)
+2026-10-28T01:43:04.1548184Z Updating files: 100% (21776/21776)
+2026-10-28T01:43:04.1548492Z Updating files: 100% (21776/21776), done.
+2026-10-28T01:43:04.1683358Z Note: switching to 'afab6e9b28fa5c7a6accb6d04fa94cc84851b76f'.
+2026-10-28T01:43:04.1684173Z 
+2026-10-28T01:43:04.1684818Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-28T01:43:04.1685561Z changes and commit them, and you can discard any commits you make in this
+2026-10-28T01:43:04.1686358Z state without impacting any branches by switching back to a branch.
+2026-10-28T01:43:04.1686743Z 
+2026-10-28T01:43:04.1687084Z If you want to create a new branch to retain commits you create, you may
+2026-10-28T01:43:04.1687767Z do so (now or later) by using -c with the switch command. Example:
+2026-10-28T01:43:04.1688205Z 
+2026-10-28T01:43:04.1688377Z   git switch -c <new-branch-name>
+2026-10-28T01:43:04.1688691Z 
+2026-10-28T01:43:04.1688900Z Or undo this operation with:
+2026-10-28T01:43:04.1689158Z 
+2026-10-28T01:43:04.1689332Z   git switch -
+2026-10-28T01:43:04.1689516Z 
+2026-10-28T01:43:04.1689840Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-28T01:43:04.1690210Z 
+2026-10-28T01:43:04.1690651Z HEAD is now at afab6e9b Refresh AI Studio reference from matching native and Wasm traces (#1280)
+2026-10-28T01:43:04.1727782Z ##[endgroup]
+2026-10-28T01:43:04.1768304Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T01:43:04.1791941Z afab6e9b28fa5c7a6accb6d04fa94cc84851b76f
+2026-10-28T01:43:04.2007836Z ##[group]Run python3 .github/scripts/ci_verify_selection.py
+2026-10-28T01:43:04.2008505Z [36;1mpython3 .github/scripts/ci_verify_selection.py[0m
+2026-10-28T01:43:04.2024908Z shell: /usr/bin/bash -e {0}
+2026-10-28T01:43:04.2025294Z env:
+2026-10-28T01:43:04.2025580Z   GLOB2_DEV_MODE: isolated
+2026-10-28T01:43:04.2090149Z   NEEDS_JSON: {
+  "changes": {
+    "result": "success",
+    "outputs": {
+      "android": "true",
+      "macos": "true",
+      "secondary_profile": "full",
+      "gcc11_shards": "[1,2,3,4]",
+      "run_linux_map_generators": "true",
+      "deployment": "true",
+      "music": "true",
+      "gcc11_generators": "[\"sweep-a\",\"sweep-b\",\"telemetry\"]",
+      "clang_regressions": "true",
+      "run_native_coverage": "true",
+      "run_linux_variants": "true",
+      "run_web_deploy": "true",
+      "run_platform_stack": "true",
+      "windows": "true",
+      "variants": "true",
+      "verification_mode": "full",
+      "run_linux_gcc11": "true",
+      "run_linux_map_generators_standalone": "false",
+      "gcc13_generators": "[\"sweep-a\",\"sweep-b\",\"telemetry\"]",
+      "map_generators": "true",
+      "browser_matrix": "{\"include\":[{\"name\":\"chromium 1/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 2/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 3/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 4/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium torus\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test torus.spec.js --project=chromium\"},{\"name\":\"chromium 5/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium webgl2 match reload\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'\"},{\"name\":\"chromium webgl2 replay reload\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'\"},{\"name\":\"chromium webgl2 viewport\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test viewport.spec.js --project=chromium\"},{\"name\":\"chromium webgl2 damaged load\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'\"},{\"name\":\"lifecycle\",\"browsers\":\"chromium\",\"command\":\"python3 ../test/ci_run_commands.py \\\\\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\\\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\\\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\\n\"},{\"name\":\"chromium settings storage\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium\"},{\"name\":\"chromium webgl2 responsive and startup\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium\"},{\"name\":\"webkit\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=webkit\"},{\"name\":\"webkit scripting\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'\"},{\"name\":\"chromium rendering\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test rendering.spec.js --project=chromium\"},{\"name\":\"firefox\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=firefox\"},{\"name\":\"firefox WSS and simulation\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'\"},{\"name\":\"webkit WSS and simulation\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'\"},{\"name\":\"firefox scripting\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'\"},{\"name\":\"chromium webgl2 input\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test input.spec.js --project=chromium\"},{\"name\":\"chromium threaded colony skins\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium\"},{\"name\":\"firefox replay import and reload\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'\"},{\"name\":\"webkit replay import and reload\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'\"},{\"name\":\"chromium serial renderer 1/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3\"},{\"name\":\"chromium serial renderer 2/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3\"},{\"name\":\"chromium serial renderer 3/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3\"},{\"name\":\"chromium threaded renderer\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1\"}]}",
+      "tsan": "true",
+      "full_matrix": "true",
+      "draft": "false",
+      "variants_matrix": "{\"include\":[{\"image\":\"ubuntu:22.04\",\"runner\":\"ubuntu-22.04\",\"compiler\":\"g++-11\"},{\"image\":\"ubuntu:24.04\",\"runner\":\"ubuntu-24.04\",\"compiler\":\"g++-13\"}]}",
+      "run_android": "true",
+      "gcc13_shards": "[1,2,3,4]",
+      "compatibility": "true",
+      "browsers_all": "true",
+      "android_arches": "[\"arm64-v8a\",\"armeabi-v7a\",\"x86_64\"]",
+      "run_macos": "true",
+      "run_tsan": "true",
+      "run_linux_gcc13": "true",
+      "run_web_test": "true",
+      "platform_stack": "true",
+      "coverage": "true",
+      "job_plan": "{\"schema\":1,\"ranked_ids\":[\"android/arm64-v8a\",\"android/armeabi-v7a\",\"android/x86_64\",\"browser/chromium-1-5\",\"browser/chromium-2-5\",\"browser/chromium-3-5\",\"browser/chromium-4-5\",\"browser/chromium-5-5\",\"browser/chromium-rendering\",\"browser/chromium-serial-renderer-1-3\",\"browser/chromium-serial-renderer-2-3\",\"browser/chromium-serial-renderer-3-3\",\"browser/chromium-settings-storage\",\"browser/chromium-threaded-colony-skins\",\"browser/chromium-threaded-renderer\",\"browser/chromium-torus\",\"browser/chromium-webgl2-damaged-load\",\"browser/chromium-webgl2-input\",\"browser/chromium-webgl2-match-reload\",\"browser/chromium-webgl2-replay-reload\",\"browser/chromium-webgl2-responsive-and-startup\",\"browser/chromium-webgl2-viewport\",\"browser/firefox\",\"browser/firefox-replay-import-and-reload\",\"browser/firefox-scripting\",\"browser/firefox-wss-and-simulation\",\"browser/lifecycle\",\"browser/webkit\",\"browser/webkit-replay-import-and-reload\",\"browser/webkit-scripting\",\"browser/webkit-wss-and-simulation\",\"coverage\",\"cross-platform\",\"macos\",\"music\",\"native/clang/build\",\"native/clang/regressions\",\"native/gcc11/build\",\"native/gcc11/generators-sweep-a\",\"native/gcc11/generators-sweep-b\",\"native/gcc11/generators-telemetry\",\"native/gcc11/regressions\",\"native/gcc11/shard-1\",\"native/gcc11/shard-2\",\"native/gcc11/shard-3\",\"native/gcc11/shard-4\",\"native/gcc13/build\",\"native/gcc13/generators-sweep-a\",\"native/gcc13/generators-sweep-b\",\"native/gcc13/generators-telemetry\",\"native/gcc13/regressions\",\"native/gcc13/shard-1\",\"native/gcc13/shard-2\",\"native/gcc13/shard-3\",\"native/gcc13/shard-4\",\"platform\",\"platform-stack\",\"tsan\",\"variants/ubuntu-22.04\",\"variants/ubuntu-24.04\",\"web-build\",\"web-deploy\",\"web-native\",\"windows\"],\"executed_ids\":[\"android/arm64-v8a\",\"android/armeabi-v7a\",\"android/x86_64\",\"browser/chromium-1-5\",\"browser/chromium-2-5\",\"browser/chromium-3-5\",\"browser/chromium-4-5\",\"browser/chromium-5-5\",\"browser/chromium-rendering\",\"browser/chromium-serial-renderer-1-3\",\"browser/chromium-serial-renderer-2-3\",\"browser/chromium-serial-renderer-3-3\",\"browser/chromium-settings-storage\",\"browser/chromium-threaded-colony-skins\",\"browser/chromium-threaded-renderer\",\"browser/chromium-torus\",\"browser/chromium-webgl2-damaged-load\",\"browser/chromium-webgl2-input\",\"browser/chromium-webgl2-match-reload\",\"browser/chromium-webgl2-replay-reload\",\"browser/chromium-webgl2-responsive-and-startup\",\"browser/chromium-webgl2-viewport\",\"browser/firefox\",\"browser/firefox-replay-import-and-reload\",\"browser/firefox-scripting\",\"browser/firefox-wss-and-simulation\",\"browser/lifecycle\",\"browser/webkit\",\"browser/webkit-replay-import-and-reload\",\"browser/webkit-scripting\",\"browser/webkit-wss-and-simulation\",\"coverage\",\"cross-platform\",\"macos\",\"music\",\"native/clang/build\",\"native/clang/regressions\",\"native/gcc11/build\",\"native/gcc11/generators-sweep-a\",\"native/gcc11/generators-sweep-b\",\"native/gcc11/generators-telemetry\",\"native/gcc11/regressions\",\"native/gcc11/shard-1\",\"native/gcc11/shard-2\",\"native/gcc11/shard-3\",\"native/gcc11/shard-4\",\"native/gcc13/build\",\"native/gcc13/generators-sweep-a\",\"native/gcc13/generators-sweep-b\",\"native/gcc13/generators-telemetry\",\"native/gcc13/regressions\",\"native/gcc13/shard-1\",\"native/gcc13/shard-2\",\"native/gcc13/shard-3\",\"native/gcc13/shard-4\",\"platform\",\"platform-stack\",\"tsan\",\"variants/ubuntu-22.04\",\"variants/ubuntu-24.04\",\"web-build\",\"web-deploy\",\"web-native\",\"windows\"],\"dependency_ids\":[],\"jobs\":{\"android\":true,\"macos\":true,\"tsan\":true,\"native-coverage\":true,\"linux-gcc11\":true,\"linux-gcc13-producer\":true,\"linux-gcc13\":true,\"linux-build\":true,\"linux-clang\":true,\"linux\":true,\"linux-variants\":true,\"linux-map-generators-standalone\":false,\"linux-map-generators\":true,\"windows\":true,\"web-build\":true,\"web-native\":true,\"web-deploy\":true,\"web-test\":true,\"browser-determinism\":true,\"platform\":true,\"platform-stack\":true,\"music\":true},\"options\":{\"gcc11_shards\":[1,2,3,4],\"gcc11_generators\":[\"sweep-a\",\"sweep-b\",\"telemetry\"],\"gcc11_regressions\":true,\"gcc13_shards\":[1,2,3,4],\"gcc13_generators\":[\"sweep-a\",\"sweep-b\",\"telemetry\"],\"gcc13_regressions\":true,\"clang_regressions\":true,\"browser_matrix\":{\"include\":[{\"name\":\"chromium 1/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 2/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 3/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium 4/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium torus\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test torus.spec.js --project=chromium\"},{\"name\":\"chromium 5/5\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\\\.spec\\\\.js|torus\\\\.spec\\\\.js|rendering\\\\.spec\\\\.js|settings-storage\\\\.spec\\\\.js'\"},{\"name\":\"chromium webgl2 match reload\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'\"},{\"name\":\"chromium webgl2 replay reload\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'\"},{\"name\":\"chromium webgl2 viewport\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test viewport.spec.js --project=chromium\"},{\"name\":\"chromium webgl2 damaged load\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'\"},{\"name\":\"lifecycle\",\"browsers\":\"chromium\",\"command\":\"python3 ../test/ci_run_commands.py \\\\\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\\\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\\\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\\n\"},{\"name\":\"chromium settings storage\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium\"},{\"name\":\"chromium webgl2 responsive and startup\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium\"},{\"name\":\"webkit\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=webkit\"},{\"name\":\"webkit scripting\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'\"},{\"name\":\"chromium rendering\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test rendering.spec.js --project=chromium\"},{\"name\":\"firefox\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=firefox\"},{\"name\":\"firefox WSS and simulation\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'\"},{\"name\":\"webkit WSS and simulation\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'\"},{\"name\":\"firefox scripting\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'\"},{\"name\":\"chromium webgl2 input\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"xvfb-run -a npx playwright test input.spec.js --project=chromium\"},{\"name\":\"chromium threaded colony skins\",\"browsers\":\"chromium\",\"renderer\":\"webgl2\",\"command\":\"GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium\"},{\"name\":\"firefox replay import and reload\",\"browsers\":\"firefox\",\"command\":\"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'\"},{\"name\":\"webkit replay import and reload\",\"browsers\":\"webkit\",\"command\":\"xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'\"},{\"name\":\"chromium serial renderer 1/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3\"},{\"name\":\"chromium serial renderer 2/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3\"},{\"name\":\"chromium serial renderer 3/3\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3\"},{\"name\":\"chromium threaded renderer\",\"browsers\":\"chromium\",\"command\":\"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1\"}]},\"android_arches\":[\"arm64-v8a\",\"armeabi-v7a\",\"x86_64\"],\"variants_matrix\":{\"include\":[{\"image\":\"ubuntu:22.04\",\"runner\":\"ubuntu-22.04\",\"compiler\":\"g++-11\"},{\"image\":\"ubuntu:24.04\",\"runner\":\"ubuntu-24.04\",\"compiler\":\"g++-13\"}]}},\"expected_checks\":[{\"id\":\"android/arm64-v8a\",\"name\":\"Android release APK (arm64-v8a)\",\"history_names\":[\"Android release APK (arm64-v8a)\"]},{\"id\":\"android/armeabi-v7a\",\"name\":\"Android release APK (armeabi-v7a)\",\"history_names\":[\"Android release APK (armeabi-v7a)\"]},{\"id\":\"android/x86_64\",\"name\":\"Android release APK (x86_64)\",\"history_names\":[\"Android release APK (x86_64)\"]},{\"id\":\"browser/chromium-1-5\",\"name\":\"browser tests (chromium 1/5)\",\"history_names\":[\"browser tests (chromium 1/5)\"]},{\"id\":\"browser/chromium-2-5\",\"name\":\"browser tests (chromium 2/5)\",\"history_names\":[\"browser tests (chromium 2/5)\"]},{\"id\":\"browser/chromium-3-5\",\"name\":\"browser tests (chromium 3/5)\",\"history_names\":[\"browser tests (chromium 3/5)\"]},{\"id\":\"browser/chromium-4-5\",\"name\":\"browser tests (chromium 4/5)\",\"history_names\":[\"browser tests (chromium 4/5)\"]},{\"id\":\"browser/chromium-5-5\",\"name\":\"browser tests (chromium 5/5)\",\"history_names\":[\"browser tests (chromium 5/5)\"]},{\"id\":\"browser/chromium-rendering\",\"name\":\"browser tests (chromium rendering)\",\"history_names\":[\"browser tests (chromium rendering)\"]},{\"id\":\"browser/chromium-serial-renderer-1-3\",\"name\":\"browser tests (chromium serial renderer 1/3)\",\"history_names\":[\"browser tests (chromium serial renderer 1/3)\"]},{\"id\":\"browser/chromium-serial-renderer-2-3\",\"name\":\"browser tests (chromium serial renderer 2/3)\",\"history_names\":[\"browser tests (chromium serial renderer 2/3)\"]},{\"id\":\"browser/chromium-serial-renderer-3-3\",\"name\":\"browser tests (chromium serial renderer 3/3)\",\"history_names\":[\"browser tests (chromium serial renderer 3/3)\"]},{\"id\":\"browser/chromium-settings-storage\",\"name\":\"browser tests (chromium settings storage)\",\"history_names\":[\"browser tests (chromium settings storage)\"]},{\"id\":\"browser/chromium-threaded-colony-skins\",\"name\":\"browser tests (chromium threaded colony skins)\",\"history_names\":[\"browser tests (chromium threaded colony skins)\"]},{\"id\":\"browser/chromium-threaded-renderer\",\"name\":\"browser tests (chromium threaded renderer)\",\"history_names\":[\"browser tests (chromium threaded renderer)\"]},{\"id\":\"browser/chromium-torus\",\"name\":\"browser tests (chromium torus)\",\"history_names\":[\"browser tests (chromium torus)\"]},{\"id\":\"browser/chromium-webgl2-damaged-load\",\"name\":\"browser tests (chromium webgl2 damaged load)\",\"history_names\":[\"browser tests (chromium webgl2 damaged load)\"]},{\"id\":\"browser/chromium-webgl2-input\",\"name\":\"browser tests (chromium webgl2 input)\",\"history_names\":[\"browser tests (chromium webgl2 input)\"]},{\"id\":\"browser/chromium-webgl2-match-reload\",\"name\":\"browser tests (chromium webgl2 match reload)\",\"history_names\":[\"browser tests (chromium webgl2 match reload)\"]},{\"id\":\"browser/chromium-webgl2-replay-reload\",\"name\":\"browser tests (chromium webgl2 replay reload)\",\"history_names\":[\"browser tests (chromium webgl2 replay reload)\"]},{\"id\":\"browser/chromium-webgl2-responsive-and-startup\",\"name\":\"browser tests (chromium webgl2 responsive and startup)\",\"history_names\":[\"browser tests (chromium webgl2 responsive and startup)\"]},{\"id\":\"browser/chromium-webgl2-viewport\",\"name\":\"browser tests (chromium webgl2 viewport)\",\"history_names\":[\"browser tests (chromium webgl2 viewport)\"]},{\"id\":\"browser/firefox\",\"name\":\"browser tests (firefox)\",\"history_names\":[\"browser tests (firefox)\"]},{\"id\":\"browser/firefox-replay-import-and-reload\",\"name\":\"browser tests (firefox replay import and reload)\",\"history_names\":[\"browser tests (firefox replay import and reload)\"]},{\"id\":\"browser/firefox-scripting\",\"name\":\"browser tests (firefox scripting)\",\"history_names\":[\"browser tests (firefox scripting)\"]},{\"id\":\"browser/firefox-wss-and-simulation\",\"name\":\"browser tests (firefox WSS and simulation)\",\"history_names\":[\"browser tests (firefox WSS and simulation)\"]},{\"id\":\"browser/lifecycle\",\"name\":\"browser tests (lifecycle)\",\"history_names\":[\"browser tests (lifecycle)\"]},{\"id\":\"browser/webkit\",\"name\":\"browser tests (webkit)\",\"history_names\":[\"browser tests (webkit)\"]},{\"id\":\"browser/webkit-replay-import-and-reload\",\"name\":\"browser tests (webkit replay import and reload)\",\"history_names\":[\"browser tests (webkit replay import and reload)\"]},{\"id\":\"browser/webkit-scripting\",\"name\":\"browser tests (webkit scripting)\",\"history_names\":[\"browser tests (webkit scripting)\"]},{\"id\":\"browser/webkit-wss-and-simulation\",\"name\":\"browser tests (webkit WSS and simulation)\",\"history_names\":[\"browser tests (webkit WSS and simulation)\"]},{\"id\":\"coverage\",\"name\":\"Native Clang coverage\",\"history_names\":[\"Native Clang coverage\"]},{\"id\":\"cross-platform\",\"name\":\"browser/native simulation equivalence\",\"history_names\":[\"browser/native simulation equivalence\"]},{\"id\":\"macos\",\"name\":\"macOS native build and checks\",\"history_names\":[\"macOS native build and checks\",\"macOS build and tests\",\"native\"]},{\"id\":\"music\",\"name\":\"music pipeline (Python)\",\"history_names\":[\"music pipeline (Python)\"]},{\"id\":\"native/clang/build\",\"name\":\"linux build (ubuntu:24.04, clang-18)\",\"history_names\":[\"linux build (ubuntu:24.04, clang-18)\"]},{\"id\":\"native/clang/regressions\",\"name\":\"Linux CLI and compatibility evidence (clang-18)\",\"history_names\":[\"Linux CLI and compatibility evidence (clang-18)\"]},{\"id\":\"native/gcc11/build\",\"name\":\"linux build (ubuntu:22.04, g++-11)\",\"history_names\":[\"linux build (ubuntu:22.04, g++-11)\"]},{\"id\":\"native/gcc11/generators-sweep-a\",\"name\":\"Map generators (ubuntu-22.04, sweep-a)\",\"history_names\":[\"Map generators (ubuntu-22.04, sweep-a)\"]},{\"id\":\"native/gcc11/generators-sweep-b\",\"name\":\"Map generators (ubuntu-22.04, sweep-b)\",\"history_names\":[\"Map generators (ubuntu-22.04, sweep-b)\"]},{\"id\":\"native/gcc11/generators-telemetry\",\"name\":\"Map generators (ubuntu-22.04, telemetry)\",\"history_names\":[\"Map generators (ubuntu-22.04, telemetry)\"]},{\"id\":\"native/gcc11/regressions\",\"name\":\"Linux CLI and compatibility evidence (g++-11)\",\"history_names\":[\"Linux CLI and compatibility evidence (g++-11)\"]},{\"id\":\"native/gcc11/shard-1\",\"name\":\"Linux tests (ubuntu-22.04, shard 1/4)\",\"history_names\":[\"Linux tests (ubuntu-22.04, shard 1/4)\"]},{\"id\":\"native/gcc11/shard-2\",\"name\":\"Linux tests (ubuntu-22.04, shard 2/4)\",\"history_names\":[\"Linux tests (ubuntu-22.04, shard 2/4)\"]},{\"id\":\"native/gcc11/shard-3\",\"name\":\"Linux tests (ubuntu-22.04, shard 3/4)\",\"history_names\":[\"Linux tests (ubuntu-22.04, shard 3/4)\"]},{\"id\":\"native/gcc11/shard-4\",\"name\":\"Linux tests (ubuntu-22.04, shard 4/4)\",\"history_names\":[\"Linux tests (ubuntu-22.04, shard 4/4)\"]},{\"id\":\"native/gcc13/build\",\"name\":\"linux build (ubuntu:24.04, g++-13)\",\"history_names\":[\"linux build (ubuntu:24.04, g++-13)\"]},{\"id\":\"native/gcc13/generators-sweep-a\",\"name\":\"Map generators (ubuntu-24.04, sweep-a)\",\"history_names\":[\"Map generators (ubuntu-24.04, sweep-a)\"]},{\"id\":\"native/gcc13/generators-sweep-b\",\"name\":\"Map generators (ubuntu-24.04, sweep-b)\",\"history_names\":[\"Map generators (ubuntu-24.04, sweep-b)\"]},{\"id\":\"native/gcc13/generators-telemetry\",\"name\":\"Map generators (ubuntu-24.04, telemetry)\",\"history_names\":[\"Map generators (ubuntu-24.04, telemetry)\"]},{\"id\":\"native/gcc13/regressions\",\"name\":\"Linux CLI and compatibility evidence (g++-13)\",\"history_names\":[\"Linux CLI and compatibility evidence (g++-13)\"]},{\"id\":\"native/gcc13/shard-1\",\"name\":\"Linux tests (ubuntu-24.04, shard 1/4)\",\"history_names\":[\"Linux tests (ubuntu-24.04, shard 1/4)\"]},{\"id\":\"native/gcc13/shard-2\",\"name\":\"Linux tests (ubuntu-24.04, shard 2/4)\",\"history_names\":[\"Linux tests (ubuntu-24.04, shard 2/4)\"]},{\"id\":\"native/gcc13/shard-3\",\"name\":\"Linux tests (ubuntu-24.04, shard 3/4)\",\"history_names\":[\"Linux tests (ubuntu-24.04, shard 3/4)\"]},{\"id\":\"native/gcc13/shard-4\",\"name\":\"Linux tests (ubuntu-24.04, shard 4/4)\",\"history_names\":[\"Linux tests (ubuntu-24.04, shard 4/4)\"]},{\"id\":\"platform\",\"name\":\"platform (TypeScript)\",\"history_names\":[\"platform (TypeScript)\"]},{\"id\":\"platform-stack\",\"name\":\"self-hosted platform stack\",\"history_names\":[\"self-hosted platform stack\"]},{\"id\":\"tsan\",\"name\":\"ThreadSanitizer\",\"history_names\":[\"ThreadSanitizer\",\"thread-sanitizer\",\"Thread sanitizer\",\"thread sanitizer (threaded games)\"]},{\"id\":\"variants/ubuntu-22.04\",\"name\":\"linux variants (ubuntu:22.04)\",\"history_names\":[\"linux variants (ubuntu:22.04)\"]},{\"id\":\"variants/ubuntu-24.04\",\"name\":\"linux variants (ubuntu:24.04)\",\"history_names\":[\"linux variants (ubuntu:24.04)\"]},{\"id\":\"web-build\",\"name\":\"browser build (WebAssembly)\",\"history_names\":[\"browser build (WebAssembly)\"]},{\"id\":\"web-deploy\",\"name\":\"browser self-hosting deployment\",\"history_names\":[\"browser self-hosting deployment\"]},{\"id\":\"web-native\",\"name\":\"browser native WSS server, router and transport\",\"history_names\":[\"browser native WSS server, router and transport\"]},{\"id\":\"windows\",\"name\":\"windows (mingw-w64)\",\"history_names\":[\"windows (mingw-w64)\"]}],\"mode\":\"full\",\"requested_budget\":0.12,\"predictor\":null,\"exceptions\":[],\"inventory_count\":64,\"ranked_count\":64,\"executed_count\":64,\"full_matrix\":true}",
+      "gcc11_regressions": "true",
+      "run_web_native": "true",
+      "run_browser_determinism": "true",
+      "native": "true",
+      "run_linux_clang": "true",
+      "run_windows": "true",
+      "run_web_build": "true",
+      "run_platform": "true",
+      "run_music": "true",
+      "browser": "true",
+      "platform": "true",
+      "gcc13_regressions": "true",
+      "run_linux_gcc13_producer": "true",
+      "run_linux_build": "true",
+      "run_linux": "true",
+      "cross_platform": "true"
+    }
+  },
+  "android": {
+    "result": "success",
+    "outputs": {}
+  },
+  "macos": {
+    "result": "success",
+    "outputs": {}
+  },
+  "tsan": {
+    "result": "success",
+    "outputs": {}
+  },
+  "native-coverage": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-gcc11": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-gcc13-producer": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-gcc13": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-build": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-clang": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-variants": {
+    "result": "success",
+    "outputs": {}
+  },
+  "linux-map-generators-standalone": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "linux-map-generators": {
+    "result": "success",
+    "outputs": {}
+  },
+  "windows": {
+    "result": "success",
+    "outputs": {}
+  },
+  "web-build": {
+    "result": "success",
+    "outputs": {}
+  },
+  "web-native": {
+    "result": "success",
+    "outputs": {}
+  },
+  "web-deploy": {
+    "result": "success",
+    "outputs": {}
+  },
+  "web-test": {
+    "result": "success",
+    "outputs": {}
+  },
+  "browser-determinism": {
+    "result": "success",
+    "outputs": {}
+  },
+  "platform": {
+    "result": "success",
+    "outputs": {}
+  },
+  "platform-stack": {
+    "result": "success",
+    "outputs": {}
+  },
+  "music": {
+    "result": "success",
+    "outputs": {}
+  }
+}
+2026-10-28T01:43:04.2196533Z   CI_JOB_PLAN: {"schema":1,"ranked_ids":["android/arm64-v8a","android/armeabi-v7a","android/x86_64","browser/chromium-1-5","browser/chromium-2-5","browser/chromium-3-5","browser/chromium-4-5","browser/chromium-5-5","browser/chromium-rendering","browser/chromium-serial-renderer-1-3","browser/chromium-serial-renderer-2-3","browser/chromium-serial-renderer-3-3","browser/chromium-settings-storage","browser/chromium-threaded-colony-skins","browser/chromium-threaded-renderer","browser/chromium-torus","browser/chromium-webgl2-damaged-load","browser/chromium-webgl2-input","browser/chromium-webgl2-match-reload","browser/chromium-webgl2-replay-reload","browser/chromium-webgl2-responsive-and-startup","browser/chromium-webgl2-viewport","browser/firefox","browser/firefox-replay-import-and-reload","browser/firefox-scripting","browser/firefox-wss-and-simulation","browser/lifecycle","browser/webkit","browser/webkit-replay-import-and-reload","browser/webkit-scripting","browser/webkit-wss-and-simulation","coverage","cross-platform","macos","music","native/clang/build","native/clang/regressions","native/gcc11/build","native/gcc11/generators-sweep-a","native/gcc11/generators-sweep-b","native/gcc11/generators-telemetry","native/gcc11/regressions","native/gcc11/shard-1","native/gcc11/shard-2","native/gcc11/shard-3","native/gcc11/shard-4","native/gcc13/build","native/gcc13/generators-sweep-a","native/gcc13/generators-sweep-b","native/gcc13/generators-telemetry","native/gcc13/regressions","native/gcc13/shard-1","native/gcc13/shard-2","native/gcc13/shard-3","native/gcc13/shard-4","platform","platform-stack","tsan","variants/ubuntu-22.04","variants/ubuntu-24.04","web-build","web-deploy","web-native","windows"],"executed_ids":["android/arm64-v8a","android/armeabi-v7a","android/x86_64","browser/chromium-1-5","browser/chromium-2-5","browser/chromium-3-5","browser/chromium-4-5","browser/chromium-5-5","browser/chromium-rendering","browser/chromium-serial-renderer-1-3","browser/chromium-serial-renderer-2-3","browser/chromium-serial-renderer-3-3","browser/chromium-settings-storage","browser/chromium-threaded-colony-skins","browser/chromium-threaded-renderer","browser/chromium-torus","browser/chromium-webgl2-damaged-load","browser/chromium-webgl2-input","browser/chromium-webgl2-match-reload","browser/chromium-webgl2-replay-reload","browser/chromium-webgl2-responsive-and-startup","browser/chromium-webgl2-viewport","browser/firefox","browser/firefox-replay-import-and-reload","browser/firefox-scripting","browser/firefox-wss-and-simulation","browser/lifecycle","browser/webkit","browser/webkit-replay-import-and-reload","browser/webkit-scripting","browser/webkit-wss-and-simulation","coverage","cross-platform","macos","music","native/clang/build","native/clang/regressions","native/gcc11/build","native/gcc11/generators-sweep-a","native/gcc11/generators-sweep-b","native/gcc11/generators-telemetry","native/gcc11/regressions","native/gcc11/shard-1","native/gcc11/shard-2","native/gcc11/shard-3","native/gcc11/shard-4","native/gcc13/build","native/gcc13/generators-sweep-a","native/gcc13/generators-sweep-b","native/gcc13/generators-telemetry","native/gcc13/regressions","native/gcc13/shard-1","native/gcc13/shard-2","native/gcc13/shard-3","native/gcc13/shard-4","platform","platform-stack","tsan","variants/ubuntu-22.04","variants/ubuntu-24.04","web-build","web-deploy","web-native","windows"],"dependency_ids":[],"jobs":{"android":true,"macos":true,"tsan":true,"native-coverage":true,"linux-gcc11":true,"linux-gcc13-producer":true,"linux-gcc13":true,"linux-build":true,"linux-clang":true,"linux":true,"linux-variants":true,"linux-map-generators-standalone":false,"linux-map-generators":true,"windows":true,"web-build":true,"web-native":true,"web-deploy":true,"web-test":true,"browser-determinism":true,"platform":true,"platform-stack":true,"music":true},"options":{"gcc11_shards":[1,2,3,4],"gcc11_generators":["sweep-a","sweep-b","telemetry"],"gcc11_regressions":true,"gcc13_shards":[1,2,3,4],"gcc13_generators":["sweep-a","sweep-b","telemetry"],"gcc13_regressions":true,"clang_regressions":true,"browser_matrix":{"include":[{"name":"chromium 1/5","browsers":"chromium","command":"xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"},{"name":"chromium 2/5","browsers":"chromium","command":"xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"},{"name":"chromium 3/5","browsers":"chromium","command":"xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"},{"name":"chromium 4/5","browsers":"chromium","command":"xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"},{"name":"chromium torus","browsers":"chromium","command":"xvfb-run -a npx playwright test torus.spec.js --project=chromium"},{"name":"chromium 5/5","browsers":"chromium","command":"xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"},{"name":"chromium webgl2 match reload","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'"},{"name":"chromium webgl2 replay reload","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'"},{"name":"chromium webgl2 viewport","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test viewport.spec.js --project=chromium"},{"name":"chromium webgl2 damaged load","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'"},{"name":"lifecycle","browsers":"chromium","command":"python3 ../test/ci_run_commands.py \\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\n"},{"name":"chromium settings storage","browsers":"chromium","command":"xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium"},{"name":"chromium webgl2 responsive and startup","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium"},{"name":"webkit","browsers":"webkit","command":"xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=webkit"},{"name":"webkit scripting","browsers":"webkit","command":"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'"},{"name":"chromium rendering","browsers":"chromium","command":"xvfb-run -a npx playwright test rendering.spec.js --project=chromium"},{"name":"firefox","browsers":"firefox","command":"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js studio.spec.js --project=firefox"},{"name":"firefox WSS and simulation","browsers":"firefox","command":"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"},{"name":"webkit WSS and simulation","browsers":"webkit","command":"xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"},{"name":"firefox scripting","browsers":"firefox","command":"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'"},{"name":"chromium webgl2 input","browsers":"chromium","renderer":"webgl2","command":"xvfb-run -a npx playwright test input.spec.js --project=chromium"},{"name":"chromium threaded colony skins","browsers":"chromium","renderer":"webgl2","command":"GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium"},{"name":"firefox replay import and reload","browsers":"firefox","command":"GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=firefox --grep='imports a complete replay|an active replay'"},{"name":"webkit replay import and reload","browsers":"webkit","command":"xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'"},{"name":"chromium serial renderer 1/3","browsers":"chromium","command":"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3"},{"name":"chromium serial renderer 2/3","browsers":"chromium","command":"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3"},{"name":"chromium serial renderer 3/3","browsers":"chromium","command":"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3"},{"name":"chromium threaded renderer","browsers":"chromium","command":"xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1"}]},"android_arches":["arm64-v8a","armeabi-v7a","x86_64"],"variants_matrix":{"include":[{"image":"ubuntu:22.04","runner":"ubuntu-22.04","compiler":"g++-11"},{"image":"ubuntu:24.04","runner":"ubuntu-24.04","compiler":"g++-13"}]}},"expected_checks":[{"id":"android/arm64-v8a","name":"Android release APK (arm64-v8a)","history_names":["Android release APK (arm64-v8a)"]},{"id":"android/armeabi-v7a","name":"Android release APK (armeabi-v7a)","history_names":["Android release APK (armeabi-v7a)"]},{"id":"android/x86_64","name":"Android release APK (x86_64)","history_names":["Android release APK (x86_64)"]},{"id":"browser/chromium-1-5","name":"browser tests (chromium 1/5)","history_names":["browser tests (chromium 1/5)"]},{"id":"browser/chromium-2-5","name":"browser tests (chromium 2/5)","history_names":["browser tests (chromium 2/5)"]},{"id":"browser/chromium-3-5","name":"browser tests (chromium 3/5)","history_names":["browser tests (chromium 3/5)"]},{"id":"browser/chromium-4-5","name":"browser tests (chromium 4/5)","history_names":["browser tests (chromium 4/5)"]},{"id":"browser/chromium-5-5","name":"browser tests (chromium 5/5)","history_names":["browser tests (chromium 5/5)"]},{"id":"browser/chromium-rendering","name":"browser tests (chromium rendering)","history_names":["browser tests (chromium rendering)"]},{"id":"browser/chromium-serial-renderer-1-3","name":"browser tests (chromium serial renderer 1/3)","history_names":["browser tests (chromium serial renderer 1/3)"]},{"id":"browser/chromium-serial-renderer-2-3","name":"browser tests (chromium serial renderer 2/3)","history_names":["browser tests (chromium serial renderer 2/3)"]},{"id":"browser/chromium-serial-renderer-3-3","name":"browser tests (chromium serial renderer 3/3)","history_names":["browser tests (chromium serial renderer 3/3)"]},{"id":"browser/chromium-settings-storage","name":"browser tests (chromium settings storage)","history_names":["browser tests (chromium settings storage)"]},{"id":"browser/chromium-threaded-colony-skins","name":"browser tests (chromium threaded colony skins)","history_names":["browser tests (chromium threaded colony skins)"]},{"id":"browser/chromium-threaded-renderer","name":"browser tests (chromium threaded renderer)","history_names":["browser tests (chromium threaded renderer)"]},{"id":"browser/chromium-torus","name":"browser tests (chromium torus)","history_names":["browser tests (chromium torus)"]},{"id":"browser/chromium-webgl2-damaged-load","name":"browser tests (chromium webgl2 damaged load)","history_names":["browser tests (chromium webgl2 damaged load)"]},{"id":"browser/chromium-webgl2-input","name":"browser tests (chromium webgl2 input)","history_names":["browser tests (chromium webgl2 input)"]},{"id":"browser/chromium-webgl2-match-reload","name":"browser tests (chromium webgl2 match reload)","history_names":["browser tests (chromium webgl2 match reload)"]},{"id":"browser/chromium-webgl2-replay-reload","name":"browser tests (chromium webgl2 replay reload)","history_names":["browser tests (chromium webgl2 replay reload)"]},{"id":"browser/chromium-webgl2-responsive-and-startup","name":"browser tests (chromium webgl2 responsive and startup)","history_names":["browser tests (chromium webgl2 responsive and startup)"]},{"id":"browser/chromium-webgl2-viewport","name":"browser tests (chromium webgl2 viewport)","history_names":["browser tests (chromium webgl2 viewport)"]},{"id":"browser/firefox","name":"browser tests (firefox)","history_names":["browser tests (firefox)"]},{"id":"browser/firefox-replay-import-and-reload","name":"browser tests (firefox replay import and reload)","history_names":["browser tests (firefox replay import and reload)"]},{"id":"browser/firefox-scripting","name":"browser tests (firefox scripting)","history_names":["browser tests (firefox scripting)"]},{"id":"browser/firefox-wss-and-simulation","name":"browser tests (firefox WSS and simulation)","history_names":["browser tests (firefox WSS and simulation)"]},{"id":"browser/lifecycle","name":"browser tests (lifecycle)","history_names":["browser tests (lifecycle)"]},{"id":"browser/webkit","name":"browser tests (webkit)","history_names":["browser tests (webkit)"]},{"id":"browser/webkit-replay-import-and-reload","name":"browser tests (webkit replay import and reload)","history_names":["browser tests (webkit replay import and reload)"]},{"id":"browser/webkit-scripting","name":"browser tests (webkit scripting)","history_names":["browser tests (webkit scripting)"]},{"id":"browser/webkit-wss-and-simulation","name":"browser tests (webkit WSS and simulation)","history_names":["browser tests (webkit WSS and simulation)"]},{"id":"coverage","name":"Native Clang coverage","history_names":["Native Clang coverage"]},{"id":"cross-platform","name":"browser/native simulation equivalence","history_names":["browser/native simulation equivalence"]},{"id":"macos","name":"macOS native build and checks","history_names":["macOS native build and checks","macOS build and tests","native"]},{"id":"music","name":"music pipeline (Python)","history_names":["music pipeline (Python)"]},{"id":"native/clang/build","name":"linux build (ubuntu:24.04, clang-18)","history_names":["linux build (ubuntu:24.04, clang-18)"]},{"id":"native/clang/regressions","name":"Linux CLI and compatibility evidence (clang-18)","history_names":["Linux CLI and compatibility evidence (clang-18)"]},{"id":"native/gcc11/build","name":"linux build (ubuntu:22.04, g++-11)","history_names":["linux build (ubuntu:22.04, g++-11)"]},{"id":"native/gcc11/generators-sweep-a","name":"Map generators (ubuntu-22.04, sweep-a)","history_names":["Map generators (ubuntu-22.04, sweep-a)"]},{"id":"native/gcc11/generators-sweep-b","name":"Map generators (ubuntu-22.04, sweep-b)","history_names":["Map generators (ubuntu-22.04, sweep-b)"]},{"id":"native/gcc11/generators-telemetry","name":"Map generators (ubuntu-22.04, telemetry)","history_names":["Map generators (ubuntu-22.04, telemetry)"]},{"id":"native/gcc11/regressions","name":"Linux CLI and compatibility evidence (g++-11)","history_names":["Linux CLI and compatibility evidence (g++-11)"]},{"id":"native/gcc11/shard-1","name":"Linux tests (ubuntu-22.04, shard 1/4)","history_names":["Linux tests (ubuntu-22.04, shard 1/4)"]},{"id":"native/gcc11/shard-2","name":"Linux tests (ubuntu-22.04, shard 2/4)","history_names":["Linux tests (ubuntu-22.04, shard 2/4)"]},{"id":"native/gcc11/shard-3","name":"Linux tests (ubuntu-22.04, shard 3/4)","history_names":["Linux tests (ubuntu-22.04, shard 3/4)"]},{"id":"native/gcc11/shard-4","name":"Linux tests (ubuntu-22.04, shard 4/4)","history_names":["Linux tests (ubuntu-22.04, shard 4/4)"]},{"id":"native/gcc13/build","name":"linux build (ubuntu:24.04, g++-13)","history_names":["linux build (ubuntu:24.04, g++-13)"]},{"id":"native/gcc13/generators-sweep-a","name":"Map generators (ubuntu-24.04, sweep-a)","history_names":["Map generators (ubuntu-24.04, sweep-a)"]},{"id":"native/gcc13/generators-sweep-b","name":"Map generators (ubuntu-24.04, sweep-b)","history_names":["Map generators (ubuntu-24.04, sweep-b)"]},{"id":"native/gcc13/generators-telemetry","name":"Map generators (ubuntu-24.04, telemetry)","history_names":["Map generators (ubuntu-24.04, telemetry)"]},{"id":"native/gcc13/regressions","name":"Linux CLI and compatibility evidence (g++-13)","history_names":["Linux CLI and compatibility evidence (g++-13)"]},{"id":"native/gcc13/shard-1","name":"Linux tests (ubuntu-24.04, shard 1/4)","history_names":["Linux tests (ubuntu-24.04, shard 1/4)"]},{"id":"native/gcc13/shard-2","name":"Linux tests (ubuntu-24.04, shard 2/4)","history_names":["Linux tests (ubuntu-24.04, shard 2/4)"]},{"id":"native/gcc13/shard-3","name":"Linux tests (ubuntu-24.04, shard 3/4)","history_names":["Linux tests (ubuntu-24.04, shard 3/4)"]},{"id":"native/gcc13/shard-4","name":"Linux tests (ubuntu-24.04, shard 4/4)","history_names":["Linux tests (ubuntu-24.04, shard 4/4)"]},{"id":"platform","name":"platform (TypeScript)","history_names":["platform (TypeScript)"]},{"id":"platform-stack","name":"self-hosted platform stack","history_names":["self-hosted platform stack"]},{"id":"tsan","name":"ThreadSanitizer","history_names":["ThreadSanitizer","thread-sanitizer","Thread sanitizer","thread sanitizer (threaded games)"]},{"id":"variants/ubuntu-22.04","name":"linux variants (ubuntu:22.04)","history_names":["linux variants (ubuntu:22.04)"]},{"id":"variants/ubuntu-24.04","name":"linux variants (ubuntu:24.04)","history_names":["linux variants (ubuntu:24.04)"]},{"id":"web-build","name":"browser build (WebAssembly)","history_names":["browser build (WebAssembly)"]},{"id":"web-deploy","name":"browser self-hosting deployment","history_names":["browser self-hosting deployment"]},{"id":"web-native","name":"browser native WSS server, router and transport","history_names":["browser native WSS server, router and transport"]},{"id":"windows","name":"windows (mingw-w64)","history_names":["windows (mingw-w64)"]}],"mode":"full","requested_budget":0.12,"predictor":null,"exceptions":[],"inventory_count":64,"ranked_count":64,"executed_count":64,"full_matrix":true}
+2026-10-28T01:43:04.2241115Z   GH_TOKEN: ***
+2026-10-28T01:43:04.2241482Z ##[endgroup]
+2026-10-28T01:43:10.4908804Z {"errors": [], "mode": "full", "ok": true, "verified_ids": ["android/arm64-v8a", "android/armeabi-v7a", "android/x86_64", "browser/chromium-1-5", "browser/chromium-2-5", "browser/chromium-3-5", "browser/chromium-4-5", "browser/chromium-5-5", "browser/chromium-rendering", "browser/chromium-serial-renderer-1-3", "browser/chromium-serial-renderer-2-3", "browser/chromium-serial-renderer-3-3", "browser/chromium-settings-storage", "browser/chromium-threaded-colony-skins", "browser/chromium-threaded-renderer", "browser/chromium-torus", "browser/chromium-webgl2-damaged-load", "browser/chromium-webgl2-input", "browser/chromium-webgl2-match-reload", "browser/chromium-webgl2-replay-reload", "browser/chromium-webgl2-responsive-and-startup", "browser/chromium-webgl2-viewport", "browser/firefox", "browser/firefox-replay-import-and-reload", "browser/firefox-scripting", "browser/firefox-wss-and-simulation", "browser/lifecycle", "browser/webkit", "browser/webkit-replay-import-and-reload", "browser/webkit-scripting", "browser/webkit-wss-and-simulation", "coverage", "cross-platform", "macos", "music", "native/clang/build", "native/clang/regressions", "native/gcc11/build", "native/gcc11/generators-sweep-a", "native/gcc11/generators-sweep-b", "native/gcc11/generators-telemetry", "native/gcc11/regressions", "native/gcc11/shard-1", "native/gcc11/shard-2", "native/gcc11/shard-3", "native/gcc11/shard-4", "native/gcc13/build", "native/gcc13/generators-sweep-a", "native/gcc13/generators-sweep-b", "native/gcc13/generators-telemetry", "native/gcc13/regressions", "native/gcc13/shard-1", "native/gcc13/shard-2", "native/gcc13/shard-3", "native/gcc13/shard-4", "platform", "platform-stack", "tsan", "variants/ubuntu-22.04", "variants/ubuntu-24.04", "web-build", "web-deploy", "web-native", "windows"]}
+2026-10-28T01:43:10.5115605Z Post job cleanup.
+2026-10-28T01:43:10.5858150Z [command]/usr/bin/git version
+2026-10-28T01:43:10.5895549Z git version 2.56.0
+2026-10-28T01:43:10.5933934Z Temporarily overriding HOME='/home/runner/work/_temp/c7f1a8ce-c6cb-47a3-8374-93b3cf85c5bf' before making global git config changes
+2026-10-28T01:43:10.5935138Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T01:43:10.5939059Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-28T01:43:10.5976136Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T01:43:10.6009453Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T01:43:10.6224195Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T01:43:10.6243888Z http.https://github.com/.extraheader
+2026-10-28T01:43:10.6252580Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-28T01:43:10.6288753Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T01:43:10.6513046Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T01:43:10.6535631Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T01:43:10.6855251Z Cleaning up orphan processes
+2026-10-28T01:43:10.7141557Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
