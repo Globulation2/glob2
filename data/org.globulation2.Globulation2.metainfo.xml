@@ -2,23 +2,39 @@
 <component type="desktop-application">
   <id>org.globulation2.Globulation2</id>
   <name>Globulation 2</name>
-  <summary>Real time strategy with automatic unit task assignment</summary>
+  <summary>Build a thriving colony</summary>
   <developer id="org.globulation2">
     <name>Globulation 2 contributors</name>
   </developer>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <description>
-    <p>Globulation 2 is a real time strategy game that lets players assign units to tasks instead of directing each unit individually. Play against computer opponents, edit maps, or play with others over a local network.</p>
+    <p>Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.</p>
+    <p>Grow an economy that can sustain your ambitions. Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.</p>
+    <p>Make the map part of your strategy. Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.</p>
+    <p>Defend what you've built. Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.</p>
+    <p>Globulation 2 is free and open source.</p>
   </description>
   <launchable type="desktop-id">org.globulation2.Globulation2.desktop</launchable>
-  <url type="homepage">https://globulation2.org/</url>
+  <url type="homepage">https://glob2online.com/</url>
   <url type="bugtracker">https://github.com/Globulation2/glob2/issues</url>
   <url type="vcs-browser">https://github.com/Globulation2/glob2</url>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/Globulation2/glob2/edf45675b3652371ee3293c78482a312d8bc7daf/data/screenshots/globulation2-gameplay.png</image>
-      <caption>An AI-controlled colony with active buildings and units</caption>
+      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/01-colony.png</image>
+      <caption>A growing colony with workers, buildings and food supplies</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/02-river-battle.png</image>
+      <caption>Blue and gold warriors clash on River</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/03-four-squares-strategic.png</image>
+      <caption>Developed colonies and armies in the Four Squares strategic view</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/04-lava-shield-terrain.png</image>
+      <caption>Colony activity and routes around the Lava Shield terrain</caption>
     </screenshot>
   </screenshots>
   <releases>

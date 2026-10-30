@@ -74,9 +74,23 @@ price Free, and disable optional Amazon DRM. Select only Fire tablets that pass
 qualification. Complete the privacy questionnaire based on the actual network
 and account behavior, link the [Fire tablet privacy policy](../mobile/amazon-privacy-policy.md),
 and supply a support contact, icon, and Fire-device
-screenshots. Draft listing copy: **Globulation 2** — “Build and guide a colony in
-an open-source real-time strategy game. Set priorities for your workers, gather
-resources, construct buildings, explore maps, and compete with other colonies.”
+screenshots. Listing headline: **Build a thriving colony in contested territory.** Full description:
+
+Build a thriving colony in contested territory.
+
+Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+
+Grow an economy that can sustain your ambitions.
+Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+
+Make the map part of your strategy.
+Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+
+Defend what you've built.
+Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+
+Globulation 2 is free and open source.
+
 Review this copy against the final Fire build and Amazon's listing fields before
 submission. Amazon requires the first version through the console; the API can
 submit later versions. Keep the first signed APK and its certificate identity
