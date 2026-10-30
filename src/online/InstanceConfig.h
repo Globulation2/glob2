@@ -23,9 +23,8 @@ class OnlineStorage;
 #endif
 inline constexpr const char *OFFICIAL_INSTANCE_ORIGIN = GLOB2_OFFICIAL_INSTANCE_ORIGIN;
 // Origins the official instance used before, space-separated (the same build
-// setting; empty for builds with another official origin). The official
-// glob2online.com app moved to app.glob2online.com when the apex became the
-// public website.
+// setting; empty for builds with another official origin). Both the former
+// glob2online.com apex and app origins map to app.glob2.online.
 #ifndef GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS
 #define GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS ""
 #endif

@@ -63,7 +63,7 @@ RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp'
           'libgag/src/SDLGPUDevice.cpp', 'libgag/src/WebGPUDevice.cpp'}
 
 
-# The mirror-only deployment of app.glob2online.com (deploy-online.yml runs
+# The mirror-only deployment of app.glob2.online (deploy-online.yml runs
 # nothing in this repository) and its scripts, which no image build or CI job runs.
 # Their tests run with the rest of test/deployment whenever those are selected.
 MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-deploy.sh',
