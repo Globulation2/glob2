@@ -23,8 +23,10 @@ spread, neighbour grain, saturation) that keep the new art low-contrast and
 painterly beside them.
 
 Ground materials render periodic grid blocks, sliced into 128x128 positional
-tiles (`variant_grid`) and box-downsampled to 32x32. All 29 materials use
-8x8 blocks with four seeded interiors and common boundaries. Feature
+tiles (`variant_grid`) and box-downsampled to 32x32. Static materials use
+8x8 blocks with four seeded interiors and common boundaries; lava and ember
+field use one 8x8 block, and water and deep water one 4x4 block, to keep their
+animated frame banks small. Feature
 counts and noise frequencies scale with canvas size to keep their native density.
 Gravel, flower meadow and marsh instead share periodic outer object bands.
 The interchangeable blocks preserve shared edge geometry while varying their
@@ -1635,7 +1637,7 @@ def render_spring_meadow(ctx):
 # read.
 
 OCEAN = (69, 52, 200)
-WAVE_GRID = 8
+WAVE_GRID = 4
 WAVE_PHASES = 16
 WAVE_SIZE = WAVE_GRID * N
 # Whole-period sine table: wave numbers and the per-phase shift are integers,
@@ -1737,7 +1739,7 @@ def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
         seam={"height": 5, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (50, 36, 168), "base": (68, 52, 198), "light": (86, 72, 216), "glint": (156, 150, 244)},
         style=Style(luma=74, std=8, grain_max=8, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
-        periodic=True, grid=WAVE_GRID, blocks=4, block_group="ocean", preview=(70, 50, 191), minimap=(0, 40, 120))
+        periodic=True, grid=WAVE_GRID, preview=(70, 50, 191), minimap=(0, 40, 120))
 def render_water(ctx):
     return render_waves(ctx, RECIPES["water"].palette, 0.35, 0.2, 0.55, 0.2), None
 
@@ -1746,7 +1748,7 @@ def render_water(ctx):
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (40, 28, 132), "base": (52, 38, 152), "light": (62, 48, 170), "glint": (110, 96, 214)},
         style=Style(luma=56, std=6, grain_max=7, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
-        periodic=True, grid=WAVE_GRID, blocks=4, block_group="ocean", preview=(44, 34, 120), minimap=(24, 18, 84))
+        periodic=True, grid=WAVE_GRID, preview=(44, 34, 120), minimap=(24, 18, 84))
 def render_deep_water(ctx):
     return render_waves(ctx, RECIPES["deep_water"].palette, 0.4, 0.12, 0.3, 0.15), None
 
@@ -2031,7 +2033,7 @@ def thicket_fields(rng, size):
         palette={"crust_dark": (36, 18, 16), "crust": (50, 24, 20), "crust_warm": (96, 42, 26),
                  "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
         style=Style(luma=58, std=17, grain_max=13, match=0.8), phases=4, animation_ticks=8,
-        periodic=True, grid=8, blocks=4,
+        periodic=True, grid=8,
         preview=(168, 72, 30), minimap=(176, 68, 28),
         note="placeholder until the image-generated lava lands")
 def render_lava(ctx):
@@ -2070,7 +2072,7 @@ def render_lava(ctx):
         palette={"dark": (50, 28, 24), "mid": (60, 34, 28), "light": (80, 44, 32),
                  "ember_dim": (120, 50, 30), "ember": (230, 120, 40), "ember_core": (250, 200, 80)},
         style=Style(luma=48, std=10, grain_max=9, match=0.7), phases=4, animation_ticks=8,
-        periodic=True, grid=8, blocks=4,
+        periodic=True, grid=8,
         preview=(110, 52, 36), minimap=(120, 48, 30),
         note="placeholder until the image-generated ember field lands")
 def render_ember_field(ctx):
