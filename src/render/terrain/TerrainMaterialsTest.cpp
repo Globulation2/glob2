@@ -47,6 +47,110 @@ std::array<unsigned, 64> materialWeights(const TerrainVisual::Coverage &coverage
 } // namespace
 TEST_SUITE("TerrainMaterials")
 {
+	TEST_CASE("connected foliage selects the requested corner mask and keeps legacy decor")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		for (const auto *key : {"hedge", "thicket"})
+		{
+			const auto id = c.find(key);
+			const auto &frames = c.materials[id].decor.connected;
+			REQUIRE(frames.size() == 256);
+			const auto &interior = c.materials[id].decor.connectedInterior;
+			REQUIRE(c.materials[id].decor.connectedCorners);
+			REQUIRE(interior.size() == 16 * 7);
+			for (unsigned mask = 0; mask < 15; ++mask)
+				for (unsigned colours = 0; colours < 16; ++colours)
+				{
+					const int frame = c.decorFrame(id, 3, 5, true, 73, mask, colours);
+					if (!mask) CHECK(frame == -1);
+					else CHECK(frame == frames[mask * 16 + colours]);
+				}
+			// Filled cells pick among the colour's base frame and its interiors.
+			for (unsigned colours = 0; colours < 16; ++colours)
+			{
+				std::set<int> seen;
+				for (int y = 0; y < 16; ++y)
+					for (int x = 0; x < 16; ++x)
+					{
+						const int frame = c.decorFrame(id, x, y, false, 73, 15, colours);
+						seen.insert(frame);
+						const auto first = interior.begin() + colours * 7;
+						CHECK((frame == frames[15 * 16 + colours] || std::find(first, first + 7, frame) != first + 7));
+					}
+				CHECK(seen.size() == 8);
+			}
+		}
+		// Neighbouring cells read the same bit for each shared vertex, including
+		// across the toroidal seam, and both colours occur.
+		unsigned seen = 0;
+		for (unsigned seed : {0u, 73u})
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+				{
+					const auto here = TerrainVisual::cornerColours(x, y, 31, 31, seed);
+					const auto right = TerrainVisual::cornerColours((x + 1) & 31, y, 31, 31, seed);
+					const auto below = TerrainVisual::cornerColours(x, (y + 1) & 31, 31, 31, seed);
+					CHECK(((here >> 1) & 5u) == (right & 5u));
+					CHECK(((here >> 2) & 3u) == (below & 3u));
+					seen |= 1u << here;
+				}
+		CHECK(seen == 0xffffu);
+		const auto id = c.find("boulders");
+		for (bool edge : {false, true})
+		{
+			const auto &frames = edge ? c.materials[id].decor.edge : c.materials[id].decor.full;
+			const auto frame = c.decorFrame(id, 3, 7, edge);
+			CHECK(std::find(frames.begin(), frames.end(), frame) != frames.end());
+		}
+	}
+
+	TEST_CASE("connected foliage rejects incomplete corner groups")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto document = nlohmann::json::parse(catalog().serialized);
+		for (auto &material : document["materials"])
+			if (material["key"] == "hedge")
+			{
+				for (unsigned count : {0u, 1u, 15u, 17u, 272u})
+				{
+					material["decor"]["connected"] = std::vector<int>(count, 0);
+					CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				}
+			}
+	}
+
+	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		const auto c = catalog();
+		const auto grass = c.find("grass"), hedge = c.find("hedge");
+		auto unshadowed = c, legacy = c;
+		unshadowed.materials[hedge].seam.cast = 0;
+		legacy.materials[hedge].decor.connected.clear();
+		TerrainVisual::Compositor canopy(c), ground(unshadowed), oldGround(legacy);
+		canopy.prepare(false, 0); ground.prepare(false, 0); oldGround.prepare(false, 0);
+		TerrainVisual::Recipe r;
+		r.corners = {grass, hedge, grass, hedge}; r.width = r.height = 16;
+		GAGCore::DrawableSurface actual(32, 32), expected(32, 32), old(32, 32);
+		canopy.compose(r, actual.getSDLSurface(), 0, 0, 1);
+		ground.compose(r, expected.getSDLSurface(), 0, 0, 1);
+		oldGround.compose(r, old.getSDLSurface(), 0, 0, 1);
+		unsigned legacyDifferences = 0;
+		for (int y = 0; y < 32; ++y)
+		{
+			const auto row = [y](SDL_Surface *surface) {
+				return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch);
+			};
+			for (int x = 0; x < 32; ++x)
+			{
+				CHECK(row(actual.getSDLSurface())[x] == row(expected.getSDLSurface())[x]);
+				legacyDifferences += row(actual.getSDLSurface())[x] != row(old.getSDLSurface())[x];
+			}
+		}
+		CHECK(legacyDifferences > 0);
+	}
+
 	TEST_CASE("contextual borders preserve seams and normalization across both wrapped axes")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -783,7 +887,8 @@ TEST_SUITE("TerrainMaterials")
 							int shade = 256, tint = 0;
 							if (mask.neighbor != mask.material[dominant])
 							{
-								if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
+								if (c.materials[mask.neighbor].decor.connected.empty() && other.cast &&
+									other.height > self.height && int(mask.margin) < other.castWidth)
 									shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
 								if (other.fringe && int(mask.margin) < other.fringeWidth)
 									tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
@@ -935,7 +1040,7 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		const auto definitions = catalog();
-		// One material per new profile: rock, soft, crisp and brush, beside grass.
+		// Reviewed representatives for rock, soft, crisp and the smooth canopy underlay.
 		const std::array<TerrainVisual::MaterialId, 4> samples{
 			definitions.find("boulders"), definitions.find("mud"), definitions.find("void_hole"),
 			definitions.find("hedge")};
@@ -964,7 +1069,7 @@ TEST_SUITE("TerrainMaterials")
 					}
 		}
 		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 11045336540448780839ull);
+		CHECK(digest == 2507281759612371885ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
