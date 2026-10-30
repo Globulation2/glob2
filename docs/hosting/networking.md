@@ -100,7 +100,13 @@ publisher from `/api/v1/leaderboards/<queue>`.
    relay origin allow-list defaults to `GLOB2_PUBLIC_ORIGIN`. During a recovery
    window, put both browser origins in `instance.web.allowedOrigins` and set
    `GLOB2_RELAY_ALLOWED_ORIGINS=https://app.glob2.online,https://app.glob2online.com`
-   (comma-separated) before recreating the relays. Native access tokens issued
+   (comma-separated) before recreating the relays. Set
+   `GLOB2_AUTH_REDIRECT_DOMAIN=app.glob2online.com` for Caddy: GET `/signin`,
+   `/signin/*` and `/auth/*/start` then redirect temporarily to `GLOB2_PUBLIC_ORIGIN`
+   with their path and query intact. This starts OAuth on the same hostname that
+   receives its callback; the old API, realtime, browser client and mobile
+   association routes keep serving directly. Leave the setting unset outside
+   the transition and never set it to the canonical hostname. Native access tokens issued
    for the old origin will need refreshing; opaque refresh tokens and guest
    device credentials remain valid in the same database. Do not mix active
    old-origin matches with a relay restart.
