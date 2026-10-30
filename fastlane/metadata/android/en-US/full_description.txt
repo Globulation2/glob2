@@ -1,6 +1,19 @@
-Globulation 2 is a real time strategy game built around assigning units to tasks rather than directing each unit individually.
+Build a thriving colony in contested territory.
 
-Build a colony, manage resources, play against computer opponents, and create maps in the editor. The Android edition uses the same game sources and SDL renderer as the desktop edition.
+Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+
+Grow an economy that can sustain your ambitions.
+Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+
+Make the map part of your strategy.
+Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+
+Defend what you've built.
+Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+
+Globulation 2 is free and open source.
+
+The Android edition uses the same game sources and SDL renderer as the desktop edition.
 
 Play with others on your local network, or online at app.glob2online.com: rooms with invite links, quick match, ratings and match history, against players on Android, iOS, desktop and the browser. Online play runs on the project's own free-software server and starts with a guest account that needs no e-mail address; you can link a sign-in method later and delete your account from the game's settings. Single-player games, the campaign, the map editor and LAN games need no account and send no data to the project.
 
