@@ -7,6 +7,16 @@ sandboxed app. Direct-distribution DMGs use `scons release=1 package` and are no
 used for App Store uploads. Apple requires the App Sandbox entitlement and a
 signed installer package for the Mac App Store.
 
+## Store page
+
+Use the [approved colony/economy presentation](https://github.com/Globulation2/glob2-marketing/blob/b759591/planning/approved-storefront-rollout.md)
+for the game description and supporting message. The
+[desktop gallery and key-art sources](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
+retain capture context and dimensions. Check the actual Mac release candidate,
+App Store image fields and crop preview before upload. Keep gameplay screenshots
+separate from promotional illustration and use the compiled app's approved icon;
+store presentation changes do not select a build or release the product.
+
 ## Local build check
 
 On macOS, run:

@@ -44,7 +44,7 @@ and rate limits), plus first-party online account activity (90-day identifiable
 markers and 24-month anonymous daily totals). It is sent over TLS; nothing is used
 for advertising or tracking across apps or sites. Players can download their data
 and delete their account at
-`https://app.glob2online.com/account`. Single-player, editor and LAN play collect
+`https://app.glob2.online/account`. Single-player, editor and LAN play collect
 nothing. The game has no minimum age; the Play Console target-audience and content
 answers must match the policy's [children](../mobile/privacy-policy.md#children) section. Invite links open the app only after the official instance publishes the Play
 app-signing fingerprint ([mobile app links](../hosting/networking.md#mobile-app-links)).

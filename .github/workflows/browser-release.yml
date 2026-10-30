@@ -134,7 +134,7 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GLOB2_BROWSER_WIF_PROVIDER }}
           service_account: ${{ vars.GLOB2_BROWSER_SERVICE_ACCOUNT }}
-          project_id: pharaoh-418820
+          project_id: bradley-personal-20261027
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
       - name: Upload assets then publish entry point
         run: |

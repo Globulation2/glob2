@@ -253,7 +253,8 @@ function browserInstanceConfig(text, origin) {
   try { config = JSON.parse(text); } catch (_) { return null; }
   if (!config || config.version !== 1 || typeof config.selected !== 'string' ||
       !config.instances || typeof config.instances !== 'object' || Array.isArray(config.instances)) return null;
-  if (origin !== 'https://app.glob2online.com' || config.selected !== 'https://glob2online.com') return null;
+  const formerOrigins = ['https://glob2online.com', 'https://app.glob2online.com'];
+  if (origin !== 'https://app.glob2.online' || !formerOrigins.includes(config.selected)) return null;
   config.selected = origin;
   return JSON.stringify(config);
 }

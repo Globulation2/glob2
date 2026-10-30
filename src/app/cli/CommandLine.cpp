@@ -734,7 +734,7 @@ const std::vector<Command> &commands()
 					 "glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file "
 					 "maps/FourSquares1.map.gz --output-dir artifacts/verified"},
 					{"online join",
-					 "glob2 online join ABCDEF --instance https://app.glob2online.com"},
+					 "glob2 online join ABCDEF --instance https://app.glob2.online"},
 					{"online play-map",
 					 "glob2 online play-map MAP_ID --hash SHA256 --title 'Catalog map'"},
 					{"online host-map",

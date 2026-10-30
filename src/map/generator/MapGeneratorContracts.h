@@ -530,8 +530,10 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 45 && definition.revision == 3);
+	assert(definition.legacyId == 45 && definition.revision == 4);
 	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
+	assert(request.option("grassland") == 70 && request.option("kopjes") == 1 &&
+		   request.option("game-trails") == 1);
 	GenerationService service;
 	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
 		for (int teams : {1, 3, 4})
@@ -594,6 +596,13 @@ inline void savannahContracts()
 	r.seed = 1001;
 	Game narrowGap(nullptr);
 	assert(service.generate(narrowGap, r));
+	// Without tall grass or trails the map is still a savannah: the plain is open, not refused.
+	r = request;
+	r.wDec = r.hDec = 7;
+	r.options["grassland"] = 0;
+	r.options["game-trails"] = 0;
+	Game bare(nullptr);
+	assert(service.generate(bare, r));
 	puts("PASS Savannah: envelope, resource-independent terrain, contained unattended growth");
 }
 

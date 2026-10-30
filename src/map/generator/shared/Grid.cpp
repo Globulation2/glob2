@@ -180,9 +180,11 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			::MapGeneration::generationCheckpoint();
-			open.at(size_t(y) * map.getW() + x) = map.terrainPropertiesAt(x, y).walkable &&
-												  !map.isResource(x, y) &&
-												  map.getBuilding(x, y) == NOGBID;
+			// A deposit that does not block ground units (tall grass, scrub) is walked through,
+			// as stepCost and the engine treat it.
+			open.at(size_t(y) * map.getW() + x) =
+				map.terrainPropertiesAt(x, y).walkable &&
+				!map.resourceBlocksGround(map.coordToIndex(x, y)) && map.getBuilding(x, y) == NOGBID;
 		}
 	}
 	return open;

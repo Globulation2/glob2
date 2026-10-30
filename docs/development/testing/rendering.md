@@ -120,8 +120,9 @@ out of `opengl=0` builds.
 
 ## Pre-game map preview regression
 
-Run `python3 test/run_tests.py --filter 'MapPreview/*'`: three headless cases (geometry,
-codec, network) and one `[display][artifacts]` case that writes the native software
+Run `python3 test/run_tests.py --filter 'MapPreview/*'`: four headless cases (geometry,
+codec, and frozen Studio worlds with and without presentation asset requests)
+and one `[display][artifacts]` case that writes the native software
 captures into its artifact directory. Fixtures exercise rectangular
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.

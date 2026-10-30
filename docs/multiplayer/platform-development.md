@@ -97,7 +97,7 @@ components or tokens, change the shared repository and test its candidate SHA he
 See its examples and downstream guide for HTML, Astro and React integrations.
 
 The external `/theme.js` bootstrap runs before paint. HTTPS production sites share
-`glob2-theme` on `glob2online.com` (one year, Secure, SameSite=Lax, Path=/), including
+`glob2-theme` on `glob2.online` (one year, Secure, SameSite=Lax, Path=/), including
 an explicit `system` choice. It migrates the previous localStorage key after successful
 persistence. Localhost and unrelated previews use origin-local storage. Returning to
 a tab, restoring a page or navigating within the SPA re-reads the preference;

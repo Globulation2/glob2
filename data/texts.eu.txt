@@ -6644,3 +6644,13 @@ Ezin izan da zure aukera gorde. Soinua itzalita dago oraindik. Saiatu berriro.
 Isiltasuna: bozgorailu isildua. Soinua: soinu-uhinak dituen bozgorailua.
 [library %0 · revision %1]
 %0 · %1 berrikuspena
+[Grassland]
+Belardia
+[Kopjes]
+Harkaitz-muinoak
+[Game trails]
+Animalien bidexkak
+[Fish amount]
+Arrain kopurua
+[Camp-site amount]
+Kanpaleku kopurua

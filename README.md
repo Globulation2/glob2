@@ -8,9 +8,9 @@ clients, content tools, and the online multiplayer platform.
 
 ## Play
 
-Visit [glob2online.com](https://glob2online.com/) for downloads, gameplay guides,
+Visit [glob2.online](https://glob2.online/) for downloads, gameplay guides,
 and community information. Play in your browser or use the online app at
-[app.glob2online.com](https://app.glob2online.com/).
+[app.glob2.online](https://app.glob2.online/).
 
 ## Build and contribute
 
