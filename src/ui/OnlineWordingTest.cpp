@@ -115,7 +115,7 @@ TEST_SUITE("OnlineWording")
 		unrated.presentSearching(casual, status, now - 65000);
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
 		const auto texts = paintedTexts(std::make_unique<QuickMatchScreen>(stack, unrated, OnlineUIFixtures::queues(),
-																			"https://app.glob2online.com", "Bradley"));
+																			"https://app.glob2.online", "Bradley"));
 		INFO(joined(texts));
 		CHECK_FALSE(anyContains(texts, "rated 1430"));
 		CHECK_FALSE(anyContains(texts, "1601"));
@@ -128,7 +128,7 @@ TEST_SUITE("OnlineWording")
 		auto &ranked = OnlineUIFixtures::model(8);
 		ranked.presentSearching(OnlineUIFixtures::queues()[0], OnlineUIFixtures::status(now), now - 42000);
 		const auto rankedTexts = paintedTexts(std::make_unique<QuickMatchScreen>(stack, ranked, OnlineUIFixtures::queues(),
-																				  "https://app.glob2online.com", "Bradley"));
+																				  "https://app.glob2.online", "Bradley"));
 		INFO(joined(rankedTexts));
 		CHECK(anyContains(rankedTexts, "Opponents rated 1430 to 1630"));
 		CHECK(anyContains(rankedTexts, "1 vs 1 ranked"));

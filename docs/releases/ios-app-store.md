@@ -17,7 +17,7 @@ release until the maintainer chooses to publish it.
 | Promotional text | Build a thriving colony in contested territory. Balance food, workers and expansion, shape a sprawling base, and compete with rival colonies for land and resources. |
 | Keywords | strategy,RTS,colony,simulation,skirmish,offline,empire,map editor |
 | Support URL | https://github.com/Globulation2/glob2 |
-| Marketing URL | https://glob2online.com/ |
+| Marketing URL | https://glob2.online/ |
 
 **Description**
 

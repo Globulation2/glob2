@@ -1,9 +1,9 @@
 # Globulation 2 privacy policy
 
-This policy covers the public website at [glob2online.com](https://glob2online.com/),
+This policy covers the public website at [glob2.online](https://glob2.online/),
 the Globulation 2 apps for Android and iOS (`org.globulation2.glob2`), the desktop
 and browser game, and the official online service at
-[app.glob2online.com](https://app.glob2online.com/). The Amazon Appstore edition for
+[app.glob2.online](https://app.glob2.online/). The Amazon Appstore edition for
 Fire tablets has no online service accounts; its specific practices are in
 [Fire tablet edition](#fire-tablet-edition). Website browsing, offline play and
 online play have different data practices, described separately below.
@@ -28,7 +28,7 @@ terms are not sent to an account service. The competition page downloads a
 public ratings snapshot from Google Cloud Storage without sending account
 credentials. Published ratings include public usernames, ratings and game counts.
 
-Choosing Play or Log in opens the separate online app at app.glob2online.com.
+Choosing Play or Log in opens the separate online app at app.glob2.online.
 The public website does not store your login credentials. Links to GitHub, the
 legacy wiki and other community services take you to those services, where
 their own privacy policies apply. Contact us privately using the address above;
@@ -51,7 +51,7 @@ avoid posting private information in public repository issues.
   no real name and no account details at all.
 - You can download a copy of your data and delete your account yourself: in the
   game, **Settings > Online > Download or delete my data** opens your account page,
-  [app.glob2online.com/account](https://app.glob2online.com/account).
+  [app.glob2.online/account](https://app.glob2.online/account).
 
 ## On your device
 
@@ -125,7 +125,7 @@ account deletion removes profile photos too.
   match record is available to the match's players and moderators.
 
 Public leaderboard data is also published on the website
-[glob2online.com](https://glob2online.com/).
+[glob2.online](https://glob2.online/).
 
 ### How long we keep it
 
@@ -149,7 +149,7 @@ Public leaderboard data is also published on the website
 ### Deleting your account
 
 Open **Settings > Online > Download or delete my data** in the game, or go to
-[app.glob2online.com/account](https://app.glob2online.com/account) and sign in. Confirm
+[app.glob2.online/account](https://app.glob2.online/account) and sign in. Confirm
 by typing your display name. Deletion takes effect at once and cannot be undone. It:
 
 - signs you out everywhere, and deletes your sign-in methods (with your e-mail address
@@ -251,13 +251,13 @@ play. The Fire tablet edition does not include these online features.
 - **Sign-in providers.** If you choose to sign in with a provider, you sign in on that
   provider's own page, under its privacy policy, and it tells us its identifier for you
   and, if it shares them, your e-mail address and name. The providers offered are
-  listed on the sign-in page. On app.glob2online.com that is **Google**, besides
+  listed on the sign-in page. On app.glob2.online that is **Google**, besides
   a username and password kept by the service itself. Google gives us its
   identifier for you, your e-mail address and your name; Google's
   [privacy policy](https://policies.google.com/privacy) applies to signing in there.
 - **Your browser.** Signing in, the account page, and links to matches, players and
   maps open in your device's browser, under its own privacy terms. The website
-  [glob2online.com](https://glob2online.com/) is a separate static site hosted on
+  [glob2.online](https://glob2.online/) is a separate static site hosted on
   Firebase Hosting.
 
 Apart from the service providers described here, we do not share your data
@@ -362,7 +362,7 @@ Globulation 2 project.
 ### No online play
 
 This edition leaves out online play: it has no online accounts or sign-in, does
-not connect to the Globulation 2 online service at app.glob2online.com, and does
+not connect to the Globulation 2 online service at app.glob2.online, and does
 not open invite links. The game does not send gameplay
 or diagnostic data to a project-operated server. The online service, and the
 editions that use it, are described in the

@@ -30,8 +30,8 @@ references so you can start with an overview and follow the task you need.
 - **Content creators:** assets, map generators, and scripting; feature references
   explain the behavior your content can configure.
 - **Operators:** hosting, multiplayer, and releases.
-- **Players:** [public guides and downloads](https://glob2online.com/) and the
-  [browser game](https://app.glob2online.com/). In-repo feature pages explain current
+- **Players:** [public guides and downloads](https://glob2.online/) and the
+  [browser game](https://app.glob2.online/). In-repo feature pages explain current
   capabilities and experimental controls.
 
 ## Maintain the library

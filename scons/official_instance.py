@@ -14,12 +14,13 @@ that issued them. Builds for another official origin carry no former origins.
 
 from urllib.parse import urlsplit
 
-DEFAULT_ORIGIN = 'https://app.glob2online.com'
+DEFAULT_ORIGIN = 'https://app.glob2.online'
 
 # Official origin -> origins it replaced. The apex became the public website
 # (static, no platform) when the multiplayer app moved to the app subdomain.
+# Keep both old-domain origins when moving the official app to glob2.online.
 FORMER_ORIGINS = {
-    'https://app.glob2online.com': ('https://glob2online.com',),
+    'https://app.glob2.online': ('https://glob2online.com', 'https://app.glob2online.com'),
 }
 
 
