@@ -97,13 +97,19 @@ publisher from `/api/v1/leaderboards/<queue>`.
 2. When no matches are running, set `GLOB2_DOMAIN` and `GLOB2_PUBLIC_ORIGIN` to the
    new name, update provider redirect URIs, and recreate `platform-api` and the
    relays. `/api/v1/instance` then advertises `wss://<new name>/realtime`, and the
-   relay origin allow-list follows `GLOB2_PUBLIC_ORIGIN`. Do not mix old-origin
-   sessions with new-origin relay URLs.
+   relay origin allow-list defaults to `GLOB2_PUBLIC_ORIGIN`. During a recovery
+   window, put both browser origins in `instance.web.allowedOrigins` and set
+   `GLOB2_RELAY_ALLOWED_ORIGINS=https://app.glob2.online,https://app.glob2online.com`
+   (comma-separated) before recreating the relays. Native access tokens issued
+   for the old origin will need refreshing; opaque refresh tokens and guest
+   device credentials remain valid in the same database. Do not mix active
+   old-origin matches with a relay restart.
 3. After sign-in and a real match pass on the new name, remove the old name
    from `GLOB2_ADDITIONAL_DOMAIN` and add it to `GLOB2_REDIRECT_DOMAINS`. Keep its
    DNS on this edge so Caddy renews its certificate and permanently redirects
    requests to the canonical app origin with the path and query preserved.
    The old public website domain redirects separately through Firebase Hosting.
+   Remove the old origin from both allow-lists when retiring its recovery host.
 
 A redirect does not migrate existing clients or browser data. Shipped native
 builds may still use the previous official origin, API clients may not follow
