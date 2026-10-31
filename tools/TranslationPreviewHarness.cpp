@@ -51,6 +51,8 @@ struct TranslationPreviewAccess
     }
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
+    static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
+    static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -510,6 +512,19 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h}});
         };
+
+        if (tutorial) {
+            // A tick-12 automatic briefing can cover the current lesson model.
+            // Preserve that real opening state, then expose the actual guidance.
+            const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+            if (briefing) capture(captureKind + "-briefing");
+            const auto before = gui.game.checkSum();
+            if (briefing) TranslationPreviewAccess::closeMenu(gui);
+            require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");
+            require(before == gui.game.checkSum(), "Dismissing briefing must preserve simulation state");
+            result["automatic_briefing_dismissed"] = briefing;
+            result["tutorial_capture_dialog_free"] = true;
+        }
         capture(captureKind);
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;

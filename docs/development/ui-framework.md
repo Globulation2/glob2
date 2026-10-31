@@ -221,7 +221,9 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 (`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
-lesson catalog. Inputs are
+lesson catalog. When a lesson opens its automatic briefing, the harness saves
+that state separately, dismisses it and captures the uncovered guidance panel.
+A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the
@@ -241,6 +243,28 @@ exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Hindi, Urdu and Swahili terminology
+
+Use these concept anchors across the game, lessons and online messages. Inflect
+words naturally in sentences rather than substituting labels mechanically.
+Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
+order, and Swahili uses standard Latin-script Kiswahili.
+
+| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- |
+| Worker | श्रमिक | کارکن | Mfanyakazi |
+| Explorer | खोजी | کھوجی | Mgunduzi |
+| Warrior | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | چھتہ | Kiota |
+| Market | बाज़ार | بازار | Soko |
+
+An assigned worker target requests workers; it does not count workers already
+present. Construction and operating supply use separate targets. Keep those
+meanings distinct in instructions. Reviewed product names, technical terms and
+loanwords belong in the existing shared-value exception contracts; an exception
+for one key does not justify leaving unrelated prose in English.
 
 ## Anatomy of a screen
 
