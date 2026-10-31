@@ -401,6 +401,9 @@ main:focus {
   .app-sidebar .sidebar-utilities {
     flex-direction: column-reverse;
   }
+  .app-sidebar .language-preference {
+    display: none;
+  }
   .app-sidebar .app-about summary {
     font-size: var(--text-xs);
   }

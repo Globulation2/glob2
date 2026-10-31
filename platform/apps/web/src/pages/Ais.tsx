@@ -123,7 +123,7 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
             )
           }
         >
-          {tag}
+          {t(tag)}
         </button>
       ))}
     </div>
@@ -334,9 +334,9 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                           {ai.description || t('A community-created colony controller.')}
                         </p>
                         <div className="ai-tags">
-                          {ai.tags.map((t) => (
-                            <span className="badge" key={t}>
-                              {t}
+                          {ai.tags.map((tag) => (
+                            <span className="badge" key={tag}>
+                              {t(tag)}
                             </span>
                           ))}
                         </div>
@@ -483,9 +483,9 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
       <div className="ai-detail-grid">
         <section className="card">
           <div className="ai-tags">
-            {ai.tags.map((t) => (
-              <span className="badge" key={t}>
-                {t}
+            {ai.tags.map((tag) => (
+              <span className="badge" key={tag}>
+                {t(tag)}
               </span>
             ))}
           </div>

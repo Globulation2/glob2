@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { AI_TAGS } from '@glob2/protocol';
 import { locales } from '../../../packages/i18n/src/locales.ts';
 
 for (const locale of locales) {
@@ -18,6 +19,8 @@ for (const locale of locales) {
     await expect(page.locator('html')).toHaveAttribute('lang', locale.code);
     await expect(page.locator('html')).toHaveAttribute('dir', locale.dir);
     await expect(page.getByTestId('language-selector').first()).toHaveValue(locale.code);
+    if ((page.viewportSize()?.width ?? 1280) < 1100)
+      await expect(page.locator('.app-sidebar [data-testid="language-selector"]')).toBeHidden();
     const catalog = JSON.parse(
       readFileSync(
         new URL(`../../../packages/i18n/locales/${locale.code}.json`, import.meta.url),
@@ -104,6 +107,11 @@ test('Bengali libraries, account and room invitations fit the viewport', async (
   const catalog = JSON.parse(
     readFileSync(new URL('../../../packages/i18n/locales/bn.json', import.meta.url), 'utf8'),
   ) as Record<string, string>;
+  const translated = (source: string): string => {
+    const value = catalog[source];
+    if (!value) throw new Error(`Missing Bengali message: ${source}`);
+    return value;
+  };
   for (const [path, heading, name] of [
     ['/maps', 'Maps', 'maps'],
     ['/ais', 'AI Library', 'ais'],
@@ -112,10 +120,17 @@ test('Bengali libraries, account and room invitations fit the viewport', async (
     ['/account', 'Your account', 'account'],
     ['/signin', 'Sign in', 'signin'],
     ['/j/GLOBJOIN', 'You’re invited', 'invite'],
-  ]) {
-    await page.goto(path!);
+  ] as const) {
+    await page.goto(path);
     await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(catalog[heading!]!);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated(heading));
+    if (path === '/ais') {
+      const tags = page.getByRole('group', { name: translated('AI tags'), exact: true });
+      for (const tag of AI_TAGS)
+        await expect(
+          tags.getByRole('button', { name: translated(tag), exact: true }),
+        ).toBeVisible();
+    }
     const search = page.locator('main input[type="search"]').first();
     if (await search.count()) {
       await search.fill('নদী');
