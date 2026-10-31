@@ -16,3 +16,11 @@ Archive SHA-256: `f4353030838d2d2acf290d68e9dd61d97235a470fef39442d3273c4c13d2f8
 Translation contracts and bundled-font coverage passed. Rendering, real-browser startup, and platform verification are still in progress; pending gates are retained as pending in the review record. Additional validation evidence will be added before the PR becomes ready.
 
 Extract the archive and inspect `kit/reviews/fil.json`, `kit/reviews/fil-provenance.json`, and the original per-stage evidence. Temporary helper scripts are included only as review evidence.
+
+## Website validation
+
+Source commit: `091b6ef5120fc0d6aa37ac9570e2cc61c9f878c2`. `filipino-web-validation.tar.gz` contains eight reviewed English/Filipino screenshots, pre-fix examples, six passing Chromium website tests, 40 passing i18n tests, type checks, and asset contracts. Long Home labels now wrap inside their three-card strip and narrow section headings use the available width. Native game and WebAssembly game captures remain in progress.
+
+The full browser unit suite passed 147 tests; its three replay/Studio fixture version failures reproduce on identical unchanged baseline inputs. The archive includes that baseline reproduction.
+
+Web archive SHA-256: `9f2b98e5c91a55cfa1bbb0df86c663d7fa7b5180cfaf2696575ad4fb1402789c`.
