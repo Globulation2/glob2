@@ -1,4 +1,3 @@
-#include "tutorial/Introduction.h"
 #include "tutorial/TutorialModel.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later

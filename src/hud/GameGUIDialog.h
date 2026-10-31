@@ -45,7 +45,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		pauseLabel = std::move(label);
 		pauseEnabled = enabled;
 	}
-	void setTutorial(bool value) { introduction=value; }
+    void setTutorial(bool value) { tutorial=value; }
 	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
@@ -54,7 +54,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false, hiveMind = false, introduction = false;
+	bool networked = false, hiveMind = false, tutorial = false;
 	std::string pauseLabel;
 	bool pauseEnabled = true;
 };

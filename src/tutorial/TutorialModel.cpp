@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TutorialModel.h"
-#include "Introduction.h"
+#include "sim/snapshot/ObservationRecords.h"
 #include "scripting/javascript/ScriptValue.h"
 #include <algorithm>
 #include <cmath>
@@ -80,25 +80,6 @@ std::shared_ptr<const Model> parse(const Script::Value &v)
 }
 std::shared_ptr<const Model> view(const SimulationSnapshot::Session &s)
 {
-    if (s.tutorial) return s.tutorial;
-    // Old self-contained scripts keep running unchanged. Never reinterpret their
-    // saved globals using a new lesson definition or runner.
-    if (!Introduction::active(s)) return {};
-    auto m=std::make_shared<Model>();
-    m->lessonId="introduction-prototype";m->restartMap=Introduction::Map;
-    m->index=Introduction::stage(s);m->count=5;m->stepId="prototype-"+std::to_string(m->index);
-    m->completionTitle="[intro complete]";m->completionBody="[intro complete body]";
-    if (!m->complete()) {
-        const auto i=m->index;
-        m->title=Introduction::Goals[i];m->instruction=Introduction::Instructions[i];
-        m->touchInstruction=Introduction::TouchInstructions[i];m->help=Introduction::Help[i];m->touchHelp=Introduction::TouchHelp[i];
-        const std::vector<std::vector<std::string>> anchors={{"palette","flag:exploration"},{"palette","build:inn"},{"workers"},{"workers","production"},{"flag:war"}};
-        m->highlights=anchors[i];
-        if (i==0) m->destination=Destination{34.5,32.5,"[intro scout destination]"};
-        if (i==4) m->destination=Destination{49.5,33.5,"[intro attack destination]"};
-    }
-    if (s.hints) for (int i=0;i<s.hints->getNumberOfHints();++i)
-        if (s.hints->isHintVisible(i)) {m->hint=s.hints->getGameHintText(i);break;}
-    return m;
+    return s.tutorial;
 }
 }

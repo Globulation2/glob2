@@ -13,8 +13,6 @@ void drawDestination(GameGUI &gui);
 // A nonmodal, client-owned card. No callbacks enter the scenario interpreter.
 class Guidance : public Glob2UI::InGameDialog
 {
-    int current = -1;
-    std::string recovery;
     std::shared_ptr<const Model> lesson;
     bool collapsed = false, help = false;
     std::set<std::pair<SDL_TouchID,SDL_FingerID>> capturedFingers;
@@ -34,12 +32,15 @@ class Guidance : public Glob2UI::InGameDialog
         if (!lesson || lesson->lessonId!=next->lessonId || lesson->stepId!=next->stepId) {
             collapsed=false; help=false;
         }
-        lesson=std::move(next);current=lesson->index;recovery=lesson->hint;invalidate();
+        else if (!next->hint.empty() && lesson->hint!=next->hint) collapsed=false;
+        lesson=std::move(next);invalidate();
     }
     Glob2UI::Element build(const Glob2UI::Presentation &p) override
     {
         using namespace Glob2UI;
         if (!lesson) return empty();
+        const int current=lesson->index;
+        const auto &recovery=lesson->hint;
         const std::string title=lesson->complete() ? tr(lesson->completionTitle) :
             std::to_string(current+1)+" / "+std::to_string(lesson->count)+"  "+tr(lesson->title);
         if (p.touch && !lesson->complete()) {
@@ -58,7 +59,15 @@ class Guidance : public Glob2UI::InGameDialog
             if (collapsed) return heading;
             auto instruction=paragraph(tr(lesson->touchInstruction),{FontRole::Support});
             instruction->key="intro/instruction";
-            if (!help) return column({heading,instruction},{p.pt(4)});
+            if (!help) {
+                if (recovery.empty()) return column({heading,instruction},{p.pt(4)});
+                // Inactivity/recovery hints must be visible without discovering
+                // Help first. Prioritize the hint; Help retains the instruction.
+                auto hintText=paragraph(tr(recovery),{FontRole::Support});
+                hintText->key="tutorial/hint";
+                return column({heading,height(p.pt(p.shortLandscape() ? 72 : 120),
+                    scroll("tutorial/hint/"+lesson->stepId+"/"+recovery,hintText))},{p.pt(4)});
+            }
             auto explanation=paragraph(tr(lesson->touchHelp),{FontRole::Support});
             explanation->key="intro/help-text";
             std::vector<Element> details{instruction,explanation};
@@ -77,7 +86,7 @@ class Guidance : public Glob2UI::InGameDialog
             body.push_back(button("intro/replay", tr("[intro play again]"), [this] { navigate(0); },options));
             body.push_back(button("tutorial/lessons",tr("[tutorial lessons]"),[this]{navigate(Lessons);},options));
             body.push_back(button("intro/menu", tr("[goto main menu]"), [this] { navigate(MainMenu); },options));
-        } else if (!lesson->complete()) {
+        } else {
             body.push_back(paragraph(tr(lesson->instruction)));
             if (lesson->destination) body.push_back(button("intro/destination",tr("[intro show destination]"),[this]{navigate(ShowDestination);}));
             if (!recovery.empty()) body.push_back(paragraph(tr(recovery)));
@@ -91,16 +100,21 @@ class Guidance : public Glob2UI::InGameDialog
         if (e.type==SDL_EVENT_KEY_DOWN && (e.key.key==SDLK_TAB ||
             (host().keyboardFocused() && (e.key.key==SDLK_RETURN || e.key.key==SDLK_SPACE))))
             return eventLogical(e);
-        if (e.type==SDL_EVENT_KEY_DOWN && e.key.key==SDLK_ESCAPE && help) {
-            help=false; invalidate(); return true;
+        if (e.type==SDL_EVENT_KEY_DOWN && e.key.key==SDLK_ESCAPE) {
+            if (help) { help=false; invalidate(); return true; }
+            // Leaving the nonmodal card gives Return/Space back to gameplay.
+            host().focus("");
         }
         if (e.type==SDL_EVENT_WINDOW_FOCUS_LOST) {
-            capturedFingers.clear(); capturedMouseButtons.clear(); cancelInput(); return false;
+            capturedFingers.clear(); capturedMouseButtons.clear(); cancelInput(); host().focus(""); return false;
         }
         if (e.type == SDL_EVENT_FINGER_DOWN || e.type == SDL_EVENT_FINGER_MOTION || e.type == SDL_EVENT_FINGER_UP) {
             const auto key=std::make_pair(e.tfinger.touchID,e.tfinger.fingerID);
             const GAGGUI::ui::Point point{int(e.tfinger.x*presentation().viewport.w),int(e.tfinger.y*presentation().viewport.h)};
-            if (e.type==SDL_EVENT_FINGER_DOWN && panelBounds().contains(point)) capturedFingers.insert(key);
+            if (e.type==SDL_EVENT_FINGER_DOWN) {
+                if (panelBounds().contains(point)) capturedFingers.insert(key);
+                else host().focus("");
+            }
             if (!capturedFingers.contains(key)) return false;
             eventLogical(e);
             if (e.type==SDL_EVENT_FINGER_UP) capturedFingers.erase(key);
@@ -108,7 +122,10 @@ class Guidance : public Glob2UI::InGameDialog
         } else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN || e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
             const auto key=std::make_pair(e.button.which,e.button.button);
             const GAGGUI::ui::Point point{int(e.button.x),int(e.button.y)};
-            if (e.type==SDL_EVENT_MOUSE_BUTTON_DOWN && panelBounds().contains(point)) capturedMouseButtons.insert(key);
+            if (e.type==SDL_EVENT_MOUSE_BUTTON_DOWN) {
+                if (panelBounds().contains(point)) capturedMouseButtons.insert(key);
+                else host().focus("");
+            }
             if (!capturedMouseButtons.contains(key)) return false;
             eventLogical(e);
             if (e.type==SDL_EVENT_MOUSE_BUTTON_UP) capturedMouseButtons.erase(key);

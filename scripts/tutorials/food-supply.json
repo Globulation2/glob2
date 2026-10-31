@@ -10,18 +10,6 @@
   "confirmTicks": 90,
   "hintTicks": 1350,
   "targets": {
-    "landmark": {
-      "kind": "area",
-      "region": "landmark"
-    },
-    "enemyBase": {
-      "kind": "area",
-      "region": "enemyOutpost"
-    },
-    "attackRoute": {
-      "kind": "area",
-      "region": "enemyApproach"
-    },
     "workers": {
       "kind": "unit",
       "team": 0,
@@ -38,37 +26,6 @@
           "value": 0
         }
       ]
-    },
-    "productiveSwarm": {
-      "kind": "building",
-      "from": "swarm",
-      "filters": [
-        {
-          "field": "workers",
-          "op": "gte",
-          "value": 2
-        },
-        {
-          "field": "production.0",
-          "op": "gte",
-          "value": 1
-        },
-        {
-          "field": "production.1",
-          "op": "eq",
-          "value": 0
-        },
-        {
-          "field": "production.2",
-          "op": "eq",
-          "value": 0
-        }
-      ]
-    },
-    "newWorkers": {
-      "kind": "unit",
-      "from": "workers",
-      "baseline": "step"
     },
     "newInns": {
       "kind": "building",
@@ -108,50 +65,6 @@
           "value": 1
         }
       ]
-    },
-    "scoutFlags": {
-      "kind": "building",
-      "team": 0,
-      "type": 8,
-      "filters": [
-        {
-          "field": "workers",
-          "op": "gte",
-          "value": 1
-        }
-      ]
-    },
-    "scoutsAtLandmark": {
-      "kind": "unit",
-      "team": 0,
-      "type": 1,
-      "within": "landmark",
-      "assignedTo": "scoutFlags"
-    },
-    "warFlags": {
-      "kind": "building",
-      "team": 0,
-      "type": 9,
-      "within": "enemyBase",
-      "filters": [
-        {
-          "field": "workers",
-          "op": "gte",
-          "value": 1
-        }
-      ]
-    },
-    "directedWarriors": {
-      "kind": "unit",
-      "team": 0,
-      "type": 2,
-      "within": "attackRoute",
-      "assignedTo": "warFlags"
-    },
-    "enemySwarm": {
-      "kind": "building",
-      "team": 1,
-      "type": 0
     }
   },
   "steps": [

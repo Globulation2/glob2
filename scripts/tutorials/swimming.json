@@ -27,10 +27,6 @@
       "type": 0,
       "bind": "lesson"
     },
-    "buildArea": {
-      "kind": "area",
-      "region": "home"
-    },
     "poolArea": {
       "kind": "area",
       "region": "lakeShore"

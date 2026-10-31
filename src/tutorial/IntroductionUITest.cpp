@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
-#include "Introduction.h"
 #include "LessonCatalogScreen.h"
 #include "TutorialGuidance.h"
 #include "Engine.h"
@@ -14,6 +13,90 @@
 #include "ui/FrontendUI.h"
 #include <GraphicContext.h>
 #include <Toolkit.h>
+
+TEST_CASE("guidance releases keyboard focus when returning to gameplay [display]" * doctest::test_suite("IntroductionUI"))
+{
+    for (const bool touch : {false,true}) {
+        const int width=touch ? 400 : 1024,height=touch ? 800 : 768;
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI",touch ? "1" : "0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=width,.height=height});
+        int destinations=0;
+        Tutorial::Guidance card([&](int navigation){if(navigation==Tutorial::ShowDestination) ++destinations;});
+        auto model=std::make_shared<Tutorial::Model>();
+        model->lessonId="focus-test";model->stepId="first";model->count=1;
+        model->title="[intro goal scout]";model->instruction="[intro instruction scout]";
+        model->touchInstruction="[intro compact scout]";
+        model->destination=Tutorial::Destination{0,0,""};
+        card.attach(*globals->gfx);card.model(model);card.update(0);
+        const auto key=[&](SDL_Keycode code) {
+            SDL_Event event{};event.type=SDL_EVENT_KEY_DOWN;event.key.key=code;
+            return card.handle(event);
+        };
+        const auto focus=[&] {CHECK(key(SDLK_TAB));CHECK(card.host().keyboardFocused());};
+        const auto gameplayKeys=[&] {
+            CHECK_FALSE(card.host().keyboardFocused());
+            CHECK_FALSE(key(SDLK_RETURN));CHECK_FALSE(key(SDLK_SPACE));
+        };
+        focus();
+        SDL_Event mouse{};mouse.type=SDL_EVENT_MOUSE_BUTTON_DOWN;mouse.button.button=SDL_BUTTON_LEFT;
+        mouse.button.x=width-1;mouse.button.y=height-1;
+        REQUIRE_FALSE(card.panelBounds().contains(GAGGUI::ui::Point{width-1,height-1}));
+        CHECK_FALSE(card.handle(mouse));gameplayKeys();
+        mouse.type=SDL_EVENT_MOUSE_BUTTON_UP;CHECK_FALSE(card.handle(mouse));
+        focus();
+        SDL_Event finger{};finger.type=SDL_EVENT_FINGER_DOWN;finger.tfinger.touchID=19;finger.tfinger.fingerID=1;
+        finger.tfinger.x=float(width-1)/width;finger.tfinger.y=float(height-1)/height;
+        CHECK_FALSE(card.handle(finger));gameplayKeys();
+        finger.type=SDL_EVENT_FINGER_UP;CHECK_FALSE(card.handle(finger));
+        focus();CHECK_FALSE(key(SDLK_ESCAPE));gameplayKeys();
+        focus();SDL_Event lost{};lost.type=SDL_EVENT_WINDOW_FOCUS_LOST;
+        CHECK_FALSE(card.handle(lost));gameplayKeys();
+        card.update(1);CHECK(destinations==0);
+        // Returning focus to the card still allows ordinary keyboard activation.
+        card.host().focus("intro/destination",true);CHECK(key(SDLK_RETURN));
+        card.update(2);CHECK(destinations==1);
+    }
+}
+
+TEST_CASE("mobile guidance announces recovery hints without opening Help [display]" * doctest::test_suite("IntroductionUI"))
+{
+    for (const auto &[width,height,textSize] : {std::tuple{400,800,100},std::tuple{800,400,100},
+                                               std::tuple{400,800,150},std::tuple{800,400,150}}) {
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI","1");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=width,.height=height});
+        globals->settings.setTextSizePercent(textSize);
+        Tutorial::Guidance card([](int){});
+        card.mobileBounds({8,64,width-16,height-128});
+        auto model=std::make_shared<Tutorial::Model>();
+        model->lessonId="hint-test";model->stepId="first";model->count=5;
+        model->title="[intro goal scout]";model->touchInstruction="[intro compact scout]";
+        model->destination=Tutorial::Destination{0,0,""};
+        card.attach(*globals->gfx);card.model(model);card.update(0);
+        REQUIRE(card.host().find("intro/instruction"));
+        const auto collapse=card.host().bounds("intro/collapse");
+        SDL_Event event{};event.type=SDL_EVENT_MOUSE_BUTTON_DOWN;event.button.button=SDL_BUTTON_LEFT;
+        event.button.x=collapse.x+collapse.w/2;event.button.y=collapse.y+collapse.h/2;
+        REQUIRE(card.handle(event));event.type=SDL_EVENT_MOUSE_BUTTON_UP;REQUIRE(card.handle(event));
+        card.update(1);CHECK_FALSE(card.host().find("intro/instruction"));
+        auto hinted=std::make_shared<Tutorial::Model>(*model);hinted->hint="[intro hint retry]";
+        card.model(hinted);card.update(2);
+        REQUIRE(card.host().find("tutorial/hint"));
+        CHECK_FALSE(card.host().find("intro/help-text"));
+        const auto panel=card.panelBounds(),body=card.host().bounds("tutorial/hint/first/[intro hint retry]");
+        const auto hint=card.host().bounds("tutorial/hint");
+        CHECK(body.h>0);CHECK(body.y>=panel.y);CHECK(body.y+body.h<=panel.y+panel.h);
+        CHECK(hint.y>=body.y);CHECK(hint.y<body.y+body.h);
+        CHECK(panel.h<height*.5);
+        for(const auto *action: {"intro/destination","intro/help","intro/collapse"}) {
+            const auto bounds=card.host().bounds(action);
+            CHECK(bounds.w>=44);CHECK(bounds.h>=44);
+            CHECK(bounds.x>=panel.x);CHECK(bounds.x+bounds.w<=panel.x+panel.w);
+        }
+        // Removing the hint restores the same compact instruction-only body.
+        card.model(model);card.update(3);
+        CHECK(card.host().find("intro/instruction"));CHECK_FALSE(card.host().find("tutorial/hint"));
+    }
+}
 
 TEST_CASE("guidance preserves pointer ownership across map drags and concurrent touches [display]" * doctest::test_suite("IntroductionUI"))
 {
@@ -83,7 +166,7 @@ TEST_CASE("guidance adapts to desktop touch and large text without consuming map
         glob2test::HeadlessGlobals globals(options);
         globals->settings.setTextSizePercent(textSize);
         Engine engine;
-        REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/Introduction::Map).string()).run());
+        REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/Tutorial::IntroductionMap).string()).run());
         engine.prepareRun(); engine.beginSession(0);
         CHECK(engine.gui.game.teams[0]->liveUnits.size()==13);
         engine.gui.game.setWaitingOnMask(0);
@@ -92,8 +175,8 @@ TEST_CASE("guidance adapts to desktop touch and large text without consuming map
         const auto &session=engine.gui.drawnScene().panels.hud.state();
         INFO("briefing=" << engine.gui.game.missionBriefing << " objectives=" << engine.gui.game.objectives.getNumberOfObjectives()
             << " local=" << engine.gui.localTeamNo << " session=" << (session.missionBriefing ? *session.missionBriefing : "absent"));
-        REQUIRE(Introduction::active(session));
         REQUIRE(session.tutorial);
+        CHECK(session.tutorial->lessonId=="introduction");
         auto *card=engine.gui.tutorialGuidance.get(); REQUIRE(card);
         const auto capture=[&](const char *suffix) {
             glob2test::drawGUI(engine.gui,0);
@@ -158,7 +241,8 @@ TEST_CASE("guidance adapts to desktop touch and large text without consuming map
         REQUIRE(engine.gui.game.mapscript.replaceSource(MapScript::JavaScript,completionSource,error));
         for(int i=0;i<32;++i) engine.gui.game.step(0);
         capture("complete");
-        CHECK(Introduction::stage(engine.gui.drawnScene().panels.hud.state())==5);
+        REQUIRE(engine.gui.drawnScene().panels.hud.state().tutorial);
+        CHECK(engine.gui.drawnScene().panels.hud.state().tutorial->complete());
         card->host().scrollIntoView("intro/replay");card->update(3);
         click("intro/replay");
         REQUIRE(engine.gui.inGameMenu==GameGUI::IGM_TUTORIAL_RESTART);
@@ -173,7 +257,7 @@ TEST_CASE("guidance adapts to desktop touch and large text without consuming map
         engine.gui.gameMenuScreen->finish(InGameConfirmScreen::CONFIRM);
         engine.gui.processGameMenu(nullptr);
         CHECK(engine.gui.flushOutgoingAndExit);
-        CHECK(engine.gui.toLoadGameFileName==Introduction::Map);
+        CHECK(engine.gui.toLoadGameFileName==Tutorial::IntroductionMap);
     }
 }
 

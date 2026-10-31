@@ -9,8 +9,11 @@ from collections import Counter
 import json
 from pathlib import Path
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / 'tools'))
+from tutorials.content import CATALOG, catalog_lessons
 # Building descriptions occupy two separate rows. The second may be empty in
 # any language, even when English needs both rows (and vice versa).
 OPTIONAL_BLANKS = {
@@ -226,6 +229,19 @@ def invalid_percent(text):
     return bool(re.search(r'%[^0-9 %]', text))
 
 
+def lesson_translation_keys(root):
+    """Translation keys used by the current JavaScript lesson catalog."""
+    root = Path(root)
+    if not (root / CATALOG).exists():
+        return {}
+    def keys(value):
+        if isinstance(value, str):
+            return {value} if KEY.fullmatch(value) else set()
+        values = value.values() if isinstance(value, dict) else value if isinstance(value, list) else []
+        return set().union(*(keys(item) for item in values))
+    return {entry['definition']: keys(definition) for entry, definition in catalog_lessons(root)}
+
+
 def audit(root=ROOT):
     listing = read_lines(root / 'data/texts.list.txt')
     errors = []
@@ -337,34 +353,28 @@ def audit(root=ROOT):
                 if key not in key_set:
                     errors.append(f'rulesets.json: unknown translation key {key!r} ({field} of {entry.get("id")!r})')
     tutorials = {}
-    # SGSL is a separate authored-content localization system. Inventory it
-    # explicitly; catalog completeness must never imply tutorial completeness.
-    for path in sorted((root / 'scripts').glob('tutorial_part*.sgsl')):
-        counts = Counter()
-        for line in path.read_text(encoding='utf-8').splitlines():
-            match = re.match(r'\s*show\(".*"\s*(?:,\s*([a-z-]+))?\s*\)', line)
-            if match:
-                counts[match[1] or 'en'] += 1
-        tutorials[str(path.relative_to(root))] = {
-            'message_counts': dict(sorted(counts.items())),
-            'legacy_languages_without_messages': sorted(codes - counts.keys()),
-            'display_catalog_gaps': {name: [f'[tutorial part{path.stem.removeprefix("tutorial_part")} message {i}]'
-                for i in range(1, counts['en'] + 1)
-                if not table.get(f'[tutorial part{path.stem.removeprefix("tutorial_part")} message {i}]', '').strip()]
-                for name, table in tables.items()},
-        }
+    try:
+        for definition, keys in lesson_translation_keys(root).items():
+            errors.extend(f'{definition}: unknown translation key {key}' for key in sorted(keys - key_set))
+            tutorials[definition] = {
+                'key_count': len(keys),
+                'display_catalog_gaps': {name: sorted(key for key in keys if not table.get(key, '').strip())
+                                         for name, table in tables.items()},
+            }
+    except (ValueError, KeyError, TypeError, OSError) as error:
+        errors.append(f'{CATALOG}: {error}')
     coverage = {
         'native_source_files': source_files,
         'native_key_references': source_references,
         'checked_key_families': ['literal bracketed C++ keys', 'settings helpers and categories',
             'musicText', 'customAIText', 'libraryText', 'statistics metrics', 'experiments',
-            'shipped theme IDs', 'ruleset names and descriptions', 'direct frontend UI prose'],
+            'shipped theme IDs', 'ruleset names and descriptions', 'JS lesson definition keys', 'direct frontend UI prose'],
         'tutorials': tutorials,
         'limits': [
             'Lexical scanning does not prove every rendered string is translated; hard-coded prose and new wrappers require UI review.',
             'Computed generator, building, resource and keyboard names require contextual review.',
             'Online/platform locales and browser shell bindings use the platform i18n checker.',
-            'SGSL coverage describes any custom authored scripts still present. Retired tutorial aliases are verified against test-only archives; active JS lesson keys are checked by the lesson authoring tool. Linguistic freshness still needs review.',
+            'JS lesson coverage reports current catalog key gaps. Old SGSL saves retain their embedded language blocks; linguistic freshness still needs review.',
             'Font coverage, text fitting and visual layout require rendered language checks.',
         ],
     }

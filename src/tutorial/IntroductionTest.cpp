@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
-#include "Introduction.h"
 #include "TutorialModel.h"
 #include "scripting/javascript/ScriptValue.h"
 #include "scripting/javascript/ScriptOrders.h"
@@ -258,22 +257,31 @@ TEST_CASE("recommendation migrates existing profiles and persists an explicit ch
     CHECK(settings.introductionOffered);
 }
 
-TEST_CASE("guidance accepts only the authored lesson objectives" * doctest::test_suite("Introduction"))
+TEST_CASE("only published scenario presentation activates tutorial guidance" * doctest::test_suite("Introduction"))
 {
-    SimulationSnapshot::Session session;
-    CHECK(Introduction::stage(session)==-1);
-    session.missionBriefing=std::make_shared<const std::string>(Introduction::Briefing);
-    auto objectives=std::make_shared<GameObjectives>();
-    objectives->removeObjective(0);
-    for (int i=0;i<5;++i) objectives->addNewObjective(Introduction::Goals[i],i!=0,false,false,GameObjectives::Primary,i+1);
-    session.objectives=objectives;
-    for (int i=0;i<5;++i) {
-        CHECK(Introduction::stage(session)==i);
-        objectives->setObjectiveComplete(i);
-    }
-    CHECK(Introduction::stage(session)==5);
-    objectives->setGameObjectiveText(0,"Custom objective");
-    CHECK_FALSE(Introduction::active(session));
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
+    setup(w);
+    auto frame=w.game.observeCompletedWorld({.presentation=true});
+    REQUIRE(frame.session->objectives);
+    REQUIRE(frame.session->objectives->getNumberOfObjectives()==5);
+    // The shipped map has the same briefing/objective captions as the retired
+    // prototype. They must not manufacture its old 64x64 guidance or targets
+    // while the new scenario is waiting for its first callback.
+    CHECK_FALSE(frame.session->tutorial);
+    CHECK_FALSE(Tutorial::view(*frame.session));
+    w.step(32);
+    frame=w.game.observeCompletedWorld({.presentation=true});
+    REQUIRE(frame.session->tutorial);
+    CHECK(Tutorial::view(*frame.session)==frame.session->tutorial);
+    CHECK(frame.session->tutorial->lessonId=="introduction");
+    REQUIRE(frame.session->tutorial->destination);
+    CHECK(frame.session->tutorial->destination->x==101);
+    CHECK(frame.session->tutorial->destination->y==95);
+
+    auto captionsOnly=*frame.session;
+    captionsOnly.tutorial.reset();
+    CHECK_FALSE(Tutorial::view(captionsOnly));
 }
 
 TEST_CASE("second lesson completes and resumes with the shared runner" * doctest::test_suite("Introduction"))
@@ -299,7 +307,7 @@ TEST_CASE("second lesson completes and resumes with the shared runner" * doctest
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"food-supply.trace");
 }
 
-TEST_CASE("prototype map scripts retain progress and legacy guidance after save load" * doctest::test_suite("Introduction"))
+TEST_CASE("prototype saves retain embedded source objectives and hints without special guidance" * doctest::test_suite("Introduction"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
@@ -311,15 +319,34 @@ TEST_CASE("prototype map scripts retain progress and legacy guidance after save 
     REQUIRE(gzclose(file)==Z_OK);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);REQUIRE(w.game.load(&input));w.game.setWaitingOnMask(0);
+    const auto embeddedSource=w.game.mapscript.getMapScript();
     w.step(32);CHECK_FALSE(w.game.mapscript.tutorialView());
     auto frame=w.game.observeCompletedWorld({.presentation=true});
-    auto legacy=Tutorial::view(*frame.session);REQUIRE(legacy);
-    CHECK(legacy->lessonId=="introduction-prototype");CHECK(legacy->index==0);
+    CHECK_FALSE(Tutorial::view(*frame.session));
+    REQUIRE(frame.session->objectives);REQUIRE(frame.session->hints);
+    CHECK_FALSE(frame.session->objectives->isObjectiveComplete(0));
     create(w.game,"explorationflag",34,32,1);
     until(w,[&]{return w.game.objectives.isObjectiveComplete(0);});
+    REQUIRE(w.game.gameHints.getNumberOfHints()>0);
+    w.game.gameHints.setHintVisible(0);
+    auto *checkpoint=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream saved(checkpoint);
+    w.game.save(&saved,false,"Prototype save compatibility");saved.flush();
+    const std::string state(checkpoint->getBuffer(),checkpoint->getPosition());
+    GameGUI restored(false);
+    GAGCore::BinaryInputStream reload(new GAGCore::MemoryStreamBackend(state.data(),state.size()));
+    reload.seekFromStart(0);REQUIRE(restored.game.load(&reload));
+    CHECK(restored.game.mapscript.getMapScript()==embeddedSource);
+    CHECK(restored.game.objectives.isObjectiveComplete(0));
+    CHECK_FALSE(restored.game.objectives.isObjectiveComplete(1));
+    CHECK(restored.game.gameHints.isHintVisible(0));
+    CHECK(restored.game.gameHints.getGameHintText(0)==w.game.gameHints.getGameHintText(0));
+    CHECK_FALSE(Tutorial::view(*restored.game.observeCompletedWorld({.presentation=true}).session));
     continuation(w);
     frame=w.game.observeCompletedWorld({.presentation=true});
-    legacy=Tutorial::view(*frame.session);REQUIRE(legacy);CHECK(legacy->index==1);
+    CHECK_FALSE(Tutorial::view(*frame.session));
+    CHECK(frame.session->objectives->isObjectiveComplete(0));
+    CHECK_FALSE(frame.session->objectives->isObjectiveComplete(1));
     CHECK_FALSE(w.game.mapscript.tutorialView());
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"prototype.trace");
 }
@@ -334,6 +361,40 @@ TEST_CASE("tutorial metadata is validated atomically with scenario effects" * do
     REQUIRE(model->destination);CHECK(model->destination->x==101);CHECK(model->destination->y==95);
     const auto retained=w.game.observeCompletedWorld({.presentation=true});
     REQUIRE(retained.session->tutorial);CHECK(retained.session->tutorial==model);
+    const std::string view=R"({schema:1,lessonId:'test',version:1,stepId:'step',index:0,count:1,
+        restartMap:'campaigns/introduction.map.gz',title:'',instruction:'',touchInstruction:'',
+        help:'',touchHelp:'',completionTitle:'',completionBody:'',hint:'',highlights:[],destination:null})";
+    Script::JavaScriptMap repeated;
+    const std::string repeatedSource="function step(){return [{type:'tutorial',view:"+view+"}];}";
+    repeated.step(repeatedSource,w.game,w.gui);
+    const auto repeatedModel=repeated.tutorialView();REQUIRE(repeatedModel);
+    repeated.step(repeatedSource,w.game,w.gui);
+    CHECK(repeated.tutorialView()==repeatedModel);
+    const auto serialized=[](const Script::JavaScriptMap &backend) {
+        auto *memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        backend.save(&output);output.flush();
+        return std::string(memory->getBuffer(),memory->getPosition());
+    };
+    for(const std::string noEffects:{"null","undefined","[]"}) {
+        Script::JavaScriptMap idle;
+        const auto initialTick=w.game.stepCounter;
+        const std::string idleSource="function step(ctx){if(ctx.tick==="+std::to_string(initialTick)+
+            ")return [{type:'tutorial',view:"+view+"}];return "+noEffects+";}";
+        idle.step(idleSource,w.game,w.gui);
+        const auto idleModel=idle.tutorialView();REQUIRE(idleModel);
+        const auto beforeIdle=serialized(idle);
+        w.step();
+        idle.step(idleSource,w.game,w.gui);
+        CHECK(idle.tutorialView()==idleModel);
+        CHECK(serialized(idle)==beforeIdle);
+    }
+    Script::JavaScriptMap overwritten;
+    const auto beforeOverwrite=w.game.checkSum();
+    CHECK_THROWS_AS(overwritten.step("function step(){return [{type:'objective',id:0,action:'complete'},"
+        "{type:'tutorial',view:{schema:2}},{type:'tutorial',view:"+view+"}];}",w.game,w.gui),Script::ScenarioFailure);
+    CHECK(w.game.checkSum()==beforeOverwrite);
+    CHECK_FALSE(w.game.objectives.isObjectiveComplete(0));
     // Unknown controls, malformed coordinates and unsupported schema versions
     // fail before committing even an earlier objective effect in the same batch.
     for(const std::string bad:{"{schema:2}","{schema:1}","null"}) {
@@ -487,52 +548,38 @@ TEST_CASE("scenario area and queued-building orders need no local presentation p
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"scripted-areas.trace");
 }
 
-TEST_CASE("original tutorial scripts compile and available checkpoints roundtrip" * doctest::test_suite("Introduction"))
+TEST_CASE("archived SGSL save retains embedded source and continuation" * doctest::test_suite("Introduction"))
 {
     glob2test::HeadlessGlobals globals({.loadStrings=true});
     glob2test::writeFile(glob2test::artifactDir()/"introduction.trace","");
-    for(int part=1;part<=4;++part) {
-        CAPTURE(part);
-        glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
-        const auto path=glob2test::sourceRoot()/("test/fixtures/tutorial/legacy/tutorial-part"+std::to_string(part)+".map.gz");
-        gzFile file=gzopen(path.string().c_str(),"rb");REQUIRE(file);
-        std::string bytes;char buffer[4096];int count;
-        while((count=gzread(file,buffer,sizeof(buffer)))>0)bytes.append(buffer,count);
-        REQUIRE(gzclose(file)==Z_OK);
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-        input.seekFromStart(0);
-        const bool loaded=w.game.load(&input);
-        if(!loaded && part==3) {
-            // The existing SGSL state loader rejects this archived chapter
-            // checkpoint before JavaScript runs. Keep that repair separate.
-            std::cout<<"LEGACY_CHECKPOINT_UNAVAILABLE chapter="<<part<<" (unchanged SGSL loader); source compile checked separately\n";
-            CHECK_FALSE(w.game.sgslScript.sourceCode.empty());
-            CHECK(w.game.sgslScript.compileScript(&w.game).type==ErrorReport::ET_OK);
-            std::ofstream trace(glob2test::artifactDir()/"introduction.trace",std::ios::app);
-            trace<<"# Legacy chapter "<<part<<" checkpoint unavailable; source compiles\n";
-            continue;
-        }
-        REQUIRE(loaded);w.game.setWaitingOnMask(0);w.step(32);
-        CHECK_FALSE(w.game.mapscript.tutorialView());
-        const auto script=w.game.sgslScript.sourceCode;
-        const auto progress=w.game.sgslScript.checkSum();
-        auto *saved=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(saved);w.game.save(&output,false,"Legacy tutorial continuity");output.flush();
-        const std::string state(saved->getBuffer(),saved->getPosition());
-        // Archived maps require existing coordinate/cache repairs. Compare two
-        // ordinary loads, not an assertion that this migration is a no-op.
-        GameGUI baseline(false),restored(false);
-        GAGCore::BinaryInputStream a(new GAGCore::MemoryStreamBackend(state.data(),state.size())),
-            b(new GAGCore::MemoryStreamBackend(state.data(),state.size()));
-        a.seekFromStart(0);b.seekFromStart(0);REQUIRE(baseline.game.load(&a));REQUIRE(restored.game.load(&b));
-        CHECK(restored.game.sgslScript.sourceCode==script);CHECK(restored.game.sgslScript.checkSum()==progress);
-        baseline.game.setWaitingOnMask(0);restored.game.setWaitingOnMask(0);
-        std::ofstream trace(glob2test::artifactDir()/"introduction.trace",std::ios::app);
-        for(int i=0;i<96;++i) {
-            baseline.game.step(0);restored.game.step(0);
-            REQUIRE(baseline.game.checkSum()==restored.game.checkSum());
-            trace<<baseline.game.stepCounter<<" "<<baseline.game.checkSum()<<"\n";
-        }
+    glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
+    const auto path=glob2test::fixture("tutorial/legacy/tutorial-part1.map.gz");
+    gzFile file=gzopen(path.string().c_str(),"rb");REQUIRE(file);
+    std::string bytes;char buffer[4096];int count;
+    while((count=gzread(file,buffer,sizeof(buffer)))>0)bytes.append(buffer,count);
+    REQUIRE(gzclose(file)==Z_OK);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);REQUIRE(w.game.load(&input));w.game.setWaitingOnMask(0);w.step(32);
+    CHECK_FALSE(w.game.mapscript.tutorialView());
+    const auto script=w.game.sgslScript.sourceCode;REQUIRE_FALSE(script.empty());
+    const auto progress=w.game.sgslScript.checkSum();
+    auto *saved=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(saved);w.game.save(&output,false,"Archived SGSL continuity");output.flush();
+    const std::string state(saved->getBuffer(),saved->getPosition());
+    // An ordinary old-save load repairs historical coordinates and caches.
+    // Compare two normal loads of that same checkpoint after the repair.
+    GameGUI baseline(false),restored(false);
+    GAGCore::BinaryInputStream a(new GAGCore::MemoryStreamBackend(state.data(),state.size())),
+        b(new GAGCore::MemoryStreamBackend(state.data(),state.size()));
+    a.seekFromStart(0);b.seekFromStart(0);REQUIRE(baseline.game.load(&a));REQUIRE(restored.game.load(&b));
+    CHECK(restored.game.sgslScript.sourceCode==script);CHECK(restored.game.sgslScript.checkSum()==progress);
+    CHECK_FALSE(Tutorial::view(*restored.game.observeCompletedWorld({.presentation=true}).session));
+    baseline.game.setWaitingOnMask(0);restored.game.setWaitingOnMask(0);
+    std::ofstream trace(glob2test::artifactDir()/"introduction.trace",std::ios::app);
+    for(int i=0;i<96;++i) {
+        baseline.game.step(0);restored.game.step(0);
+        REQUIRE(baseline.game.checkSum()==restored.game.checkSum());
+        trace<<baseline.game.stepCounter<<" "<<baseline.game.checkSum()<<"\n";
     }
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"legacy-campaign.trace");
 }

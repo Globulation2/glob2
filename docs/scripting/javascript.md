@@ -546,9 +546,10 @@ Every map/save embeds its exact generated source, definition and runner. Loading
 an older lesson therefore executes that original version, rather than migrating
 saved globals to today's source. Definition changes affect newly packaged maps;
 manual source replacement has no implicit progress migration. Unsupported
-presentation schemas fail explicitly. The original introduction prototype is
-covered by a separate compatibility adapter and fixture, preserving its saved
-script/progress and guidance. No save-format floor is raised.
+presentation schemas fail explicitly. Old introduction-prototype saves retain
+their embedded script, objectives and hints through the ordinary scenario/save
+interfaces. They do not synthesize a current tutorial card from old briefing
+text. A frozen fixture verifies that continuity; no save-format floor is raised.
 
 Continue novice playtests to establish independent completion and skill transfer.
 Keep playtest observations, screenshots, saves and

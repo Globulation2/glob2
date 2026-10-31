@@ -21,16 +21,6 @@
       "team": 0,
       "type": 0
     },
-    "trainees": {
-      "kind": "unit",
-      "team": 0,
-      "type": 0,
-      "bind": "lesson"
-    },
-    "buildArea": {
-      "kind": "area",
-      "region": "home"
-    },
     "enemyWarriors": {
       "kind": "unit",
       "team": 1,

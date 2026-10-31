@@ -178,7 +178,6 @@ void GameGUI::init()
 
 
 	campaign=NULL;
-	legacyTutorialScript = false;
 	missionName="";
 
 

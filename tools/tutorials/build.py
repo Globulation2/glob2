@@ -4,10 +4,14 @@ import argparse
 import json
 import gzip
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from tutorials.content import catalog_lessons
+
 CONTROL_ANCHORS = {'palette', 'flag:clearing', 'build:inn', 'production', 'zone:clear', 'brush', 'build:barracks', 'flag:war', 'flag:exploration', 'zone:forbidden', 'build:racetrack', 'build:market', 'build:hospital', 'zone:guard', 'build:swimmingpool', 'upgrade', 'build:defencetower', 'build:school', 'build:swarm', 'workers', 'build:stonewall'}
 
 def validate(d):
@@ -130,19 +134,25 @@ def main():
     parser.add_argument('--lessons',nargs='+',help='Restrict map generation to lesson IDs')
     args=parser.parse_args()
     if args.maps and not args.binary: parser.error('--maps requires --binary')
-    catalog=json.loads((ROOT/'scripts/tutorials/catalog.json').read_text())
+    if args.lessons and not args.maps: parser.error('--lessons requires --maps')
     ids=set()
     setups=set()
-    for entry in catalog:
+    prepared=[]
+    for entry,d in catalog_lessons(ROOT):
         selector=entry.get('setup')
         if not isinstance(selector,int) or isinstance(selector,bool) or selector<0 or selector in setups:
             raise ValueError('Lesson setup selectors must be explicit, unique nonnegative integers')
         setups.add(selector)
-        d=json.loads((ROOT/entry['definition']).read_text())
         if d['id'] in ids:
             raise ValueError('Duplicate lesson ID in catalog')
         ids.add(d['id'])
         text=bundle(d)
+        prepared.append((entry,d,selector,text))
+    unknown=set(args.lessons or [])-ids
+    if unknown:
+        parser.error('Unknown lesson IDs: '+', '.join(sorted(unknown)))
+    # Validate the complete selection before changing bundles or invoking generation.
+    for entry,d,selector,text in prepared:
         output=ROOT/entry['script']
         if args.check:
             if not output.exists() or output.read_text()!=text:

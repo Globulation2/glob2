@@ -79,13 +79,15 @@ struct PreparedEffects
 {
 	Value presentation;
 	std::vector<WorldEffect> world;
-    std::vector<std::pair<std::shared_ptr<Order>,int>> orders;
+    std::vector<std::shared_ptr<Order>> orders;
+    std::shared_ptr<const Tutorial::Model> tutorial;
 };
-PreparedEffects prepareEffects(const Value &effects, const Value &presentation, Game &game, const AIEngine::AIWorldView &world)
+PreparedEffects prepareEffects(const Value &effects, const Value &presentation, Game &game,
+    const AIEngine::AIWorldView &world, const std::shared_ptr<const Tutorial::Model> &tutorial)
 {
-	PreparedEffects prepared{presentation, {}};
+	PreparedEffects prepared{presentation, {}, {}, tutorial};
 	if (effects.kind == Value::Null)
-		return PreparedEffects{presentation, {}};
+		return prepared;
 	if (effects.kind != Value::Array || effects.items.size() > 256)
 		throw std::runtime_error("Map callback requires at most 256 effects");
 	Value &nextPresentation = prepared.presentation;
@@ -145,13 +147,19 @@ PreparedEffects prepareEffects(const Value &effects, const Value &presentation, 
             command->sender=sender;
             if(OrderValidation::validate(game,sender,*command).verdict!=OrderValidation::Verdict::Accepted)
                 throw std::runtime_error("Scenario order failed ordinary order validation");
-            prepared.orders.emplace_back(std::move(command),sender);
+            prepared.orders.push_back(std::move(command));
             prepared.world.push_back({int(prepared.orders.size()-1),Action::ScenarioOrder});
         }
         else if (type == "tutorial")
         {
-            Tutorial::parse(effect.get("view"));
-            nextPresentation.set("tutorial",effect.get("view"));
+            const auto &view=effect.get("view");
+            auto parsed=Tutorial::parse(view);
+            // Every effect is validated, including an overwritten view. Keep
+            // identity for an unchanged final value without reparsing it after
+            // preparation, or serializing it on callbacks with no view effect.
+            prepared.tutorial=view.encode()==presentation.get("tutorial").encode()
+                ? tutorial : std::move(parsed);
+            nextPresentation.set("tutorial",view);
         }
         else if (type == "hint")
 		{
@@ -189,7 +197,7 @@ void commitEffects(const PreparedEffects &prepared, Game &game)
 		switch (effect.action)
 		{
         case Action::ScenarioOrder:
-            game.executeOrder(prepared.orders[effect.id].first,-1,false);
+            game.executeOrder(prepared.orders[effect.id],-1,false);
             break;
 		case Action::HintVisible:
 			game.gameHints.setHintVisible(effect.id);
@@ -317,15 +325,13 @@ void JavaScriptMap::step(const std::string &source, Game &game, ClientCommandSin
 			return observations.query(name, args, budget);
 		};
 		auto result = runtime->invoke(source, state, !initialized, host);
-		auto prepared = prepareEffects(result.effects, presentation, game,observations.world());
+		auto prepared = prepareEffects(result.effects, presentation, game,observations.world(),tutorial);
 		auto shown = prepareInterface(prepared.presentation);
-        auto nextTutorial=prepared.presentation.get("tutorial").encode()==presentation.get("tutorial").encode()
-            ? tutorial : Tutorial::parse(prepared.presentation.get("tutorial"));
 		// Publish the validated callback through the ordinary simulation order path.
 		commitEffects(prepared, game);
 		state = std::move(result.state);
 		presentation = std::move(prepared.presentation);
-        tutorial=std::move(nextTutorial);
+        tutorial=std::move(prepared.tutorial);
 		initialized = true;
 		applyInterface(std::move(shown), client, true);
 	}

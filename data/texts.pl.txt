@@ -3102,8 +3102,6 @@ Wymaż
 Puść nad odpowiednim terenem, aby umieścić
 [Paint on the map; two fingers move]
 Maluj na mapie; przesuwaj dwoma palcami
-[Tutorial ▸]
-Samouczek ▸
 [Back to tools]
 Wróć do narzędzi
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Nie udało się wyeksportować nagrania.
 Usuń nagranie
 [recording refresh]
 Odśwież
-[tutorial part1 message 1]
-Witaj w Globulation 2! Ten samouczek uczy zarządzania kolonią w czterech misjach. Możesz zapisać postęp w menu gry i później wczytać go z menu głównego. Naciśnij Spację, aby kontynuować, lub dotknij Ok na ekranie dotykowym. Niektóre komunikaty potem znikają; możesz je ponownie przeczytać w historii wiadomości.
-[tutorial part1 message 2]
-Zaczynasz z Rojem i jednym robotnikiem. Zobaczmy, jak współpracują.
-[tutorial part1 message 3]
-Robotnik zbiera pszenicę i zanosi ją do Roju. Rój zużywa ją na tworzenie nowych jednostek, dlatego jest niezbędny dla kolonii.
-[tutorial part1 message 4]
-Wybierz swojego globula, czyli poruszającą się jednostkę, lewym kliknięciem lub dotknięciem.
-[tutorial part1 message 5]
-Informacje o jednostce pokazują, że jej zapas jedzenia z czasem maleje. Globul staje się głodny. Gdy paski żywności są widoczne, niebieski pasek pod jednostką pokazuje pozostały zapas.
-[tutorial part1 message 6]
-Globule jedzą w Gospodach. Anuluj wybór prawym kliknięciem lub dotknij pustej ziemi na ekranie dotykowym.
-[tutorial part1 message 7]
-Otwórz narzędzia budowania, wybierz Gospodę i umieść ją blisko pszenicy. Jeśli nie widzisz pola, śledź trasę robotnika. Na ekranie dotykowym użyj opcji «Budowa» i potwierdź prawidłowe miejsce. Następnie wyjdź z rozmieszczania prawym kliknięciem lub dotykowym przyciskiem Anuluj.
-[tutorial part1 message 8]
-Dobrze! Plac budowy Gospody jest gotowy.
-[tutorial part1 message 9]
-Robotnik z Roju może teraz zbudować Gospodę. Zbiera drewno z pobliskich drzew i zanosi je na budowę. Poczekaj na zakończenie.
-[tutorial part1 message 10]
-Gotowa Gospoda potrzebuje pszenicy. Przydzielony robotnik będzie ją zbierać, podobnie jak przy zaopatrywaniu Roju.
-[tutorial part1 message 11]
-Żółty pasek zasobów Gospody rośnie wraz z dostawami pszenicy. Pokazuje jej zapas.
-[tutorial part1 message 12]
-Teraz nauczymy się przydzielać pracę.
-[tutorial part1 message 13]
-Jeden robotnik zaopatruje Rój, a drugi Gospodę. Obaj mogą robić przerwy na jedzenie w Gospodzie. To normalne.
-[tutorial part1 message 14]
-Wybierz Rój i znajdź ustawienie przydziału robotników. Na komputerze jest oznaczone jako Pracuje; na ekranie dotykowym użyj liczby przydzielonych robotników i wartości docelowej. Cel określa, ilu robotników chcesz przy tym budynku.
-[tutorial part1 message 15]
-Ustaw docelową liczbę robotników Roju na 0. Następnie wybierz Gospodę i tam również ustaw 0.
-[tutorial part1 message 16]
-Robotnicy są teraz bezczynni, ale nadal potrzebują jedzenia. Gospodzie bez przydzielonych robotników w końcu zabraknie pszenicy.
-[tutorial part1 message 17]
-Globul, który nie znajdzie jedzenia, traci zdrowie i może umrzeć. Szpital leczy ranne globule, ale Gospody także trzeba zaopatrywać.
-[tutorial part1 message 18]
-Zbuduj Szpital za pomocą narzędzi budowania. Nie potrzebuje pszenicy, więc postaw go przy drewnie lub w centralnym miejscu obok Roju.
-[tutorial part1 message 19]
-Wybierz plac budowy Szpitala i ustaw docelową liczbę robotników na 2. Dwaj robotnicy skończą szybciej.
-[tutorial part1 message 20]
-Szpital jest gotowy. Ranne globule mogą go odwiedzać, aby odzyskać zdrowie.
-[tutorial part1 message 21]
-Czarne obszary są niezbadane. Poruszające się jednostki odkrywają pobliski teren. Robotnicy podążają za zadaniami, więc trudno używać ich do zwiadu. Do tego służą zwiadowcy.
-[tutorial part1 message 22]
-Wybierz Rój i znajdź proporcje produkcji robotników, zwiadowców i wojowników. Zwiększ proporcję zwiadowców do 1.
-[tutorial part1 message 23]
-Gdy obie proporcje wynoszą 1, Rój z czasem wytwarza tyle samo robotników i zwiadowców. Ustaw robotników na 0, aby na razie tworzyć tylko zwiadowców.
-[tutorial part1 message 24]
-Przywróć docelowy przydział robotników Roju do 1, aby robotnik mógł dostarczać pszenicę.
-[tutorial part1 message 25]
-Wybierz Gospodę i również ustaw docelową liczbę robotników na 1. Rosnąca kolonia potrzebuje stałych dostaw jedzenia.
-[tutorial part1 message 26]
-Teraz poczekaj, aż Rój wytworzy zwiadowcę.
-[tutorial part1 message 27]
-Zwiadowca lata wokół kolonii, odkrywając teren. Zanim przejdziesz dalej, zaczekaj na drugiego zwiadowcę.
-[tutorial part1 message 28]
-Ponownie wybierz Rój. Ustaw proporcję zwiadowców na 0, a robotników na 1, aby wznowić produkcję robotników.
-[tutorial part2 message 1]
-Na wschód od bazy jest kamień. Zapamiętaj to miejsce; przyda się później.
-[tutorial part2 message 2]
-Drzewa na południe od kamienia to drzewa pomarańczowe. Wybierz je, aby zobaczyć informacje o zasobach. Do owoców wrócimy później; teraz skup się na Roju.
-[tutorial part2 message 3]
-Ustaw produkcję wyłącznie robotników: proporcja robotników 1, zwiadowców i wojowników 0.
-[tutorial part2 message 4]
-Przyspieszmy rozwój kolonii. Wybierz Rój i ustaw docelową liczbę robotników na 6. Możesz jeszcze tylu nie mieć; nowi robotnicy zajmą wolne miejsca, gdy będą dostępni.
-[tutorial part2 message 5]
-Kolejne zadania zaczną się, gdy będziesz mieć 8 robotników. Utrzymuj zaopatrzenie Roju i Gospody podczas wzrostu populacji.
-[tutorial part2 message 6]
-Kilku robotników zaopatruje teraz Rój. Więcej pszenicy pozwala szybciej tworzyć jednostki.
-[tutorial part2 message 7]
-Nowy robotnik kosztuje 5 pszenicy. Dostawa z dalekiego pola trwa, dlatego Rój często potrzebuje więcej dostawców niż Gospoda. Jeśli to możliwe, buduj obiekty zależne od jedzenia blisko pszenicy.
-[tutorial part2 message 8]
-Masz już co najmniej 8 robotników. Wybierz Rój i obniż docelową liczbę robotników do 1, aby spowolnić wzrost populacji na czas budowy.
-[tutorial part2 message 9]
-Kolonia potrzebuje więcej miejsc do jedzenia. Zbuduj drugą Gospodę na północ od istniejącej.
-[tutorial part2 message 10]
-Przydziel wolnych robotników do nowej budowy. Potrzeba tylko 3 drewna, więc więcej niż 3 budowniczych niewiele pomoże.
-[tutorial part2 message 11]
-Gotowa Gospoda wraca do przydziału robotników na czas działania, zwykle 1. Budowa i codzienne zaopatrzenie mają oddzielne ustawienia przydziału.
-[tutorial part2 message 12]
-Robotnicy mogą nauczyć się szybszego poruszania. Służy do tego Tor wyścigowy.
-[tutorial part2 message 13]
-Otwórz narzędzia budowania i znajdź Tor wyścigowy. Na komputerze najedź na ikonę, by sprawdzić opis i koszt. Na ekranie dotykowym wybierz go w opcji «Budowa», przygotowując rozmieszczenie. Jeszcze go nie stawiaj.
-[tutorial part2 message 14]
-Tor wyścigowy wymaga dużo drewna i trochę kamienia. Wybierz centralne miejsce, łatwo dostępne dla jednostek.
-[tutorial part2 message 15]
-Zbuduj Tor wyścigowy, na przykład na południe od Roju. Zostaw wolne miejsce wokół: budynki szkoleniowe powiększają się przy ulepszaniu.
-[tutorial part2 message 16]
-Ustaw docelową liczbę robotników na budowie Toru wyścigowego między 5 a 7. Łącznie potrzeba 7 jednostek materiałów budowlanych.
-[tutorial part2 message 17]
-Gotowy Tor wyścigowy szkoli odwiedzające jednostki bez stałych dostaw materiałów budowlanych lub pszenicy.
-[tutorial part2 message 18]
-Globule wchodzą na Tor wyścigowy, aby trenować. Po szkoleniu potrafią biegać szybciej.
-[tutorial part2 message 19]
-Wybierz Tor wyścigowy, aby sprawdzić szkolenie. Wskaźniki postępu pokazują, ile brakuje jednostkom wewnątrz do ukończenia.
-[tutorial part2 message 20]
-Wyszkoleni robotnicy szybciej podróżują i dostarczają zasoby. Obserwuj zapasy jedzenia podczas rozwoju kolonii: szybkie dostawy pomagają tylko wtedy, gdy dość Gospód jest zaopatrywanych.
-[tutorial part2 message 21]
-Znajdź licznik robotników w interfejsie gry. Łączna liczba pokazuje populację; dostępni robotnicy pomagają dostrzec wolną siłę roboczą i nieobsadzone zadania. Wykorzystuj ich, nie przydzielając więcej prac, niż kolonia może wykonać.
-[tutorial part2 message 22]
-Interfejs pokazuje też liczby zwiadowców i wojowników. Sprawdzaj je podczas planowania produkcji i przydzielania jednostek do flag.
-[tutorial part2 message 23]
-Masz 2 Gospody. Każda podstawowa Gospoda karmi 4 jednostki naraz, więc łącznie mają 8 miejsc. Głód może dotknąć więcej niż 8 jednostek, więc zostaw zapas na kolejki.
-[tutorial part2 message 24]
-Dwie Gospody nie wystarczą rosnącej kolonii na zawsze. Dodawaj miejsca do jedzenia, zanim niedobory doprowadzą do głodu.
-[tutorial part2 message 25]
-Zbuduj jeszcze 3 Gospody blisko pszenicy. Głodni robotnicy przestają pracować, a długotrwały głód ich zabija. Przydzielaj dostępnych robotników do budowy, utrzymując dotychczasowe dostawy jedzenia.
-[tutorial part2 message 26]
-Ukończ jeszcze 3 Gospody, aby mieć łącznie 5.
-[tutorial part2 message 27]
-Po budowie nowe Gospody używają normalnego przydziału, zwykle po 1 robotniku. Sprawdź, czy mają dostawców i dość pszenicy.
-[tutorial part2 message 28]
-Tor wyścigowy usprawnił podróże po lądzie. Teraz nauczymy kolonię pływać.
-[tutorial part2 message 29]
-Basen uczy jednostki pływać i wymaga drewna do budowy. Umieść go na dużej polanie na północny wschód od bazy, na północ od kamienia. Zostaw miejsce na ulepszenia i wzrost zasobów oraz przydziel dostępnych robotników do budowy.
-[tutorial part2 message 30]
-Basen uczy jednostki pływać i wymaga drewna do budowy. Umieść go na dużej polanie na północny wschód od bazy, na północ od kamienia. Zostaw miejsce na ulepszenia i wzrost zasobów oraz przydziel dostępnych robotników do budowy.
-[tutorial part2 message 31]
-Basen jest gotowy. Globule mogą teraz wejść i nauczyć się pływać.
-[tutorial part2 message 32]
-Wybierz Basen, aby sprawdzić szkolenie. Podstawowy Basen szkoli 2 globule jednocześnie, tak jak podstawowy Tor wyścigowy.
-[tutorial part2 message 33]
-Wyszkolone globule potrafią teraz pływać. Wkrótce damy im pracę wymagającą przeprawy przez wodę.
-[tutorial part2 message 34]
-Zostało jeszcze wiele nauki. Jeśli potrzebujesz przerwy, zapisz postęp w menu gry i wróć później.
-[tutorial part2 message 35]
-Kolonia ma jedzenie i trening fizyczny. Szkoła nauczy robotników umiejętności potrzebnych do lepszych budynków.
-[tutorial part2 message 36]
-Szkoła poprawia zbieranie zasobów i budowanie. Do jej budowy potrzeba glonów rosnących w wodzie. Pływający robotnicy mogą je zebrać.
-[tutorial part2 message 37]
-Chroń ważne budynki szkoleniowe. Szkoła nie musi stać nad wodą; osłonięte miejsce w głębi lądu lepiej chroni przed atakiem.
-[tutorial part2 message 38]
-Zbuduj Szkołę w osłoniętym miejscu, na przykład za Basenem lub na południowy zachód od Roju, obok Toru wyścigowego. Przydziel dostępnych robotników.
-[tutorial part2 message 39]
-Wybierz budynek, aby zobaczyć przydzielonych robotników. Na komputerze konfigurowalna akcja pokazywania ścieżek jednostek wyświetla też linie do ich celów; aktualny skrót znajdziesz w Ustawieniach, Sterowanie. Poczekaj na ukończenie Szkoły.
-[tutorial part3 message 1]
-Kolonia ma już Gospody, Szpital, Tor wyścigowy, Basen i Szkołę. Czas przygotować obronę.
-[tutorial part3 message 2]
-Nie wytworzyliśmy jeszcze wojowników. Bez nich kolonia jest słabo chroniona przed atakiem.
-[tutorial part3 message 3]
-Wybierz Rój i ustaw proporcję produkcji wojowników na 2. Robotników pozostaw na 1, aby nadal ich tworzyć.
-[tutorial part3 message 4]
-Rój będzie tworzyć około 2 wojowników na każdego robotnika. Przydziel więcej robotników do zaopatrzenia, jeśli chcesz szybszej produkcji.
-[tutorial part3 message 5]
-Pierwszy wojownik jest gotowy i zacznie trening. Przed kontynuacją poczekaj na drugiego.
-[tutorial part3 message 6]
-Wojownicy również korzystają z Toru wyścigowego i Basenu. W Barakach mogą dodatkowo trenować atak.
-[tutorial part3 message 7]
-Baraki poprawiają siłę i szybkość ataku. Siła zwiększa obrażenia na uderzenie, szybkość — częstotliwość uderzeń. Dobrze wyszkoleni wojownicy pokonają znacznie większe grupy niewyszkolonych wrogów.
-[tutorial part3 message 8]
-Zbuduj Baraki blisko drewna potrzebnego do budowy.
-[tutorial part3 message 9]
-Przydziel dostępnych robotników do budowy Baraków. Zachowaj dość ludzi przy zaopatrzeniu w żywność i nie twórz więcej zadań, niż mogą obsadzić.
-[tutorial part3 message 10]
-Baraki są gotowe. Wojownicy mogą teraz trenować w nich atak.
-[tutorial part3 message 11]
-Nasza kolonia może stać się silniejsza dzięki ulepszaniu budynków.
-[tutorial part3 message 12]
-Robotnicy wyszkoleni w Szkole mogą budować ulepszenia. Wybierz odpowiedni budynek i znajdź opcję «Rozbudowa» w jego sterowaniu. Uszkodzone budynki mogą najpierw wymagać użycia opcji «Napraw».
-[tutorial part3 message 13]
-Zdecydujmy, co ulepszyć najpierw. Gospody mają jeszcze wolne miejsca, więc mogą poczekać.
-[tutorial part3 message 14]
-Szpital także ma wolne miejsca. Możemy zająć się Szkołą, Torem wyścigowym, Basenem lub Barakami.
-[tutorial part3 message 15]
-Najpierw ulepsz Tor wyścigowy, aby jednostki nauczyły się poruszać jeszcze szybciej.
-[tutorial part3 message 16]
-Wybierz Tor wyścigowy i opcję «Rozbudowa». Jednostki wewnątrz muszą wyjść przed rozpoczęciem prac, więc zmiana może nie być natychmiastowa.
-[tutorial part3 message 17]
-Przydziel dostępnych robotników do ulepszenia Toru wyścigowego. Tylko robotnicy z wymaganym szkoleniem w Szkole mogą budować obiekt poziomu 2.
-[tutorial part3 message 18]
-Poczekaj na ukończenie ulepszenia Toru. Budynki wyższych poziomów wymagają więcej zasobów i czasu.
-[tutorial part3 message 19]
-Tor wyścigowy poziomu 2 jest gotowy. Zajmuje więcej ziemi, dlatego zostawiliśmy odstęp. Budynku nie da się ulepszyć bez miejsca na rozbudowę.
-[tutorial part3 message 20]
-Teraz ulepsz Baraki i Basen do poziomu 2. Kontynuujemy, gdy oba będą gotowe.
-[tutorial part3 message 21]
-Ulepszone budynki zwykle obsługują więcej globuli lub oferują lepsze szkolenie. Na przykład Gospoda poziomu 2 ma 7 miejsc i karmi szybciej niż podstawowa.
-[tutorial part3 message 22]
-Wróg jest blisko. Przygotujmy się do ataku.
-[tutorial part3 message 23]
-Wieże strzelają do wrogów w zasięgu. Mury pomagają je chronić. Użyjemy obu do obrony wąskiego dojścia do kolonii.
-[tutorial part3 message 24]
-Jeśli jest miejsce, stawiaj wieże parami. Mury mogą osłaniać trzy strony, ale zostaw drogę robotnikom dostarczającym kamień na amunicję.
-[tutorial part3 message 25]
-Spójrz na wschód od Basenu, na północ od innych drzew owocowych. Wąska przeprawa prowadzi na inną wyspę. To dobre miejsce do obrony.
-[tutorial part3 message 26]
-Zaplanuj miejsce na 2 wieże między drzewami a brzegiem. Zostaw dostęp z tyłu dla dostaw kamienia i miejsce po innych stronach na mury. Nie odgradzaj robotnikom drogi.
-[tutorial part3 message 27]
-Zbuduj tam 2 wieże. Przydziel po 2 lub 3 robotników na budowę, zależnie od dostępnej liczby w licznikach interfejsu.
-[tutorial part3 message 28]
-Rozmieść mury wokół trzech zewnętrznych stron wież za pomocą narzędzi budowania. Stronę od kolonii zostaw otwartą dla robotników.
-[tutorial part3 message 29]
-Każdy odcinek muru tworzy zadanie budowy i kosztuje 1 kamień. Jeśli robotnicy nie obsadzą wszystkich zadań naraz, ukończą odcinki kolejno.
-[tutorial part3 message 30]
-Poczekaj na ukończenie obu wież i kilku odcinków muru. Wieże potrzebują też kamiennej amunicji; odległy kamieniołom spowalnia dostawy. Zwiększ docelową liczbę robotników przy wieżach, jeśli masz wolnych.
-[tutorial part4 message 1]
-Kolonia ma żywność, szkolenie i obronę. Budynki można jeszcze rozwinąć do poziomu 3, aby zwiększyć pojemność i poprawić szkolenie. Ulepszaj je w miarę dostępności zasobów i umiejętności robotników.
-[tutorial part4 message 2]
-Poszukaj wrogiej kolonii na północny zachód od bazy. Przesuń tam widok.
-[tutorial part4 message 3]
-Zbadany teren nadal może być ukryty przez mgłę wojny. Aby zobaczyć bieżące działania wroga, potrzebujemy pobliskiego zwiadowcy.
-[tutorial part4 message 4]
-Otwórz Flagi. Flagi i strefy pozwalają kierować jednostkami bez osobnego kontrolowania każdego globula.
-[tutorial part4 message 5]
-Wybierz Flagę eksploracji z symbolem latawca. Flagi można umieszczać na lądzie, wodzie, zasobach i niezbadanym terenie.
-[tutorial part4 message 6]
-Umieść Flagę eksploracji nad przypuszczalną bazą wroga. Przybliżona lokalizacja wystarczy do rozpoczęcia zwiadu. Wyjdź z rozmieszczania prawym kliknięciem lub zakończ je przyciskami dotykowymi.
-[tutorial part4 message 7]
-Obrys wokół flagi pokazuje promień działania. Przydzielony zwiadowca zbada ten obszar. Jeśli nikt nie przybywa, sprawdź liczbę zwiadowców i w razie potrzeby wytwórz nowego w Roju. Naciśnij Spację lub dotknij Ok, gdy zwiadowca dotrze na miejsce.
-[tutorial part4 message 8]
-Wróg ma wielu robotników i zgromadzoną armię. Przygotujmy obronę, zanim zaatakuje.
-[tutorial part4 message 9]
-Otwórz Flagi i wybierz niebieską strefę Straży. Użyj trybu dodawania terenu do strefy, a nie usuwania. Na ekranie dotykowym wybierz Maluj zamiast Wymaż.
-[tutorial part4 message 10]
-Wybierz kształt i rozmiar pędzla. Duży kwadrat przydaje się do zwartego obszaru obrony.
-[tutorial part4 message 11]
-Namaluj strefę Straży tuż za wieżami, gdzie wróg prawdopodobnie podejdzie. Kliknij lub dotknij, aby pomalować punkt, albo przeciągnij, aby objąć większy teren. Na ekranie dotykowym używaj opcji «Przesuwaj», gdy podczas malowania trzeba przemieścić widok.
-[tutorial part4 message 12]
-Dostępni wojownicy wejdą do strefy Straży. Zrób ją dostatecznie dużą dla obrońców, ale małą na tyle, by skupili się przy przeprawie. Teraz czekaj na atak.
-[tutorial part4 message 13]
-Wróg zbliża się do przeprawy!
-[tutorial part4 message 14]
-Jesteśmy atakowani. Obserwuj, jak wyszkoleni wojownicy i wieże bronią pozycji.
-[tutorial part4 message 15]
-Udało ci się przetrwać! Otwórz Flagi i wybierz kolczastą Flagę wojenną. Umieść ją nad wrogim Rojem, aby skierować tam atak.
-[tutorial part4 message 16]
-Wyjdź z rozmieszczania i wybierz Flagę wojenną. Przydziel więcej niż 1 wojownika, a następnie zmniejsz promień, aby skupić atak wokół wrogiego Roju. Poczekaj na przybycie wojowników.
-[tutorial part4 message 17]
-Atak się rozpoczął. Wojownicy muszą minąć wrogie wieże, aby dotrzeć do Roju.
-[tutorial part4 message 18]
-Wojownicy dotarli do bazy wroga. Skupiaj atak na Roju.
-[tutorial part4 message 19]
-Zniszczyłeś wrogi Rój. Gratulacje! Samouczek ukończony: znasz podstawy zaopatrzenia w żywność, przydziałów, szkolenia, ulepszeń, zwiadu i walki.
-[tutorial mission basics]
-Wprowadzenie i podstawy
-[tutorial mission development]
-Budynki i szkoły
-[tutorial mission training]
-Wojownicy, szkolenie i ulepszenia
-[tutorial mission flags]
-Flagi i zakończenie
 [library  Could not restore the previous library: %0]
  Nie udało się przywrócić poprzedniej biblioteki: %0
 [library  The previous library is retained.]
@@ -6647,8 +6405,6 @@ Cisza: wyciszony głośnik. Dźwięk: głośnik z falami dźwiękowymi.
 [intro briefing]
 
 [intro try]
-
-[intro start]
 
 [intro preflight]
 
@@ -7070,5 +6826,7 @@ Skaliste wzgórza
 Ścieżki zwierząt
 [Fish amount]
 Ilość ryb
+[scenario messages]
+
 [Camp-site amount]
 Liczba obozowisk

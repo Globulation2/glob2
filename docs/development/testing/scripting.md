@@ -133,6 +133,8 @@ BUILD_DIRECTORY/src/glob2`. Add `--check` to verify deterministic regeneration o
 all packaged map bytes. Creation-only JS APIs and the fixed training package use
 the normal map-generation command; test fixtures do not author production maps.
 The prototype compatibility fixture must not be regenerated as new lesson data.
+It checks embedded source, objectives, hints and saved continuation through the
+ordinary scenario interfaces, without a prototype-specific guidance adapter.
 
 `browser/tests/introduction.spec.js` runs this same suite in serial and threaded
 WebAssembly. Set `GLOB2_TEST_BUILD_DIR` and `GLOB2_TEST_URL` for a development
@@ -152,14 +154,14 @@ restart routing, the ten-entry catalog, and all new lessons in both phone
 orientations at normal and enlarged text sizes. Keep captures, traces and human playtest observations under
 `artifacts/`.
 
-The archived third legacy chapter currently fails the unchanged SGSL checkpoint-state
-validation. Its source still compiles; the compatibility case reports that
-checkpoint separately and roundtrips chapters 1, 2 and 4. Do not loosen SGSL
-validation or rewrite legacy maps as a side effect of authoring new JS lessons.
+The single archived SGSL checkpoint at
+`test/fixtures/tutorial/legacy/tutorial-part1.map.gz` verifies its embedded source
+and deterministic save/load continuation through the ordinary SGSL reader. It is
+not shipped, and no standalone old tutorial sources or display-remapping table
+are needed. The JS prototype fixture likewise retains source, objectives, hints
+and continuation without a special guidance adapter.
 
-The retired tutorial maps and SGSL sources are test-only archives under
-`test/fixtures/tutorial/legacy/`. They are excluded from shipped campaigns and
-scripts. Ordinary campaign UI and persistence checks use
+Ordinary campaign UI and persistence checks use
 `test/fixtures/campaign/Browser_Test_Campaign.txt`; Tutorial opens the JS lesson
 catalog and cannot launch old campaign progress. Existing progress files are not
 deleted.

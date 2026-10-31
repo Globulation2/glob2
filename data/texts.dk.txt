@@ -3102,8 +3102,6 @@ Slet
 Slip på gyldigt terræn for at placere
 [Paint on the map; two fingers move]
 Mal på kortet; flyt med to fingre
-[Tutorial ▸]
-Vejledning ▸
 [Back to tools]
 Tilbage til værktøjer
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Kunne ikke eksportere optagelsen.
 Slet optagelse
 [recording refresh]
 Opdatér
-[tutorial part1 message 1]
-Velkommen til Globulation 2! Fire missioner lærer dig at styre en koloni. Gem i spilmenuen, og fortsæt senere fra hovedmenuen. Tryk på mellemrum eller OK på en berøringsskærm for at fortsætte. Find tidligere tekster i beskedhistorikken.
-[tutorial part1 message 2]
-Du begynder med en Sværm og en arbejder. Lad os se dem arbejde sammen.
-[tutorial part1 message 3]
-Arbejderen høster hvede og bringer det til Sværmen. Den bruger hvede til at skabe nye enheder og er afgørende for kolonien.
-[tutorial part1 message 4]
-Vælg din globule, den bevægelige enhed, med et venstreklik eller et tryk.
-[tutorial part1 message 5]
-Enhedens oplysninger viser, at madlageret falder: den bliver sulten. Når madbjælker vises, angiver den blå bjælke under enheden dens resterende mad.
-[tutorial part1 message 6]
-Globuler spiser på Kroer. Ryd markeringen med et højreklik, eller tryk på tomt terræn på en berøringsskærm.
-[tutorial part1 message 7]
-Åbn byggekontrollerne, vælg Kro, og placér den nær hvede. Følg arbejderens høstrute, hvis du ikke kan finde hveden. På berøringsskærme bruges Byg og bekræftelse af en gyldig placering. Afslut placeringen med højreklik eller Afbryd.
-[tutorial part1 message 8]
-Godt! Kroens byggeplads er placeret.
-[tutorial part1 message 9]
-En arbejder fra Sværmen kan bygge Kroen. Arbejderen henter træ fra nærliggende træer og bringer det til byggepladsen. Vent på færdiggørelsen.
-[tutorial part1 message 10]
-Den færdige Kro har brug for hvede. En tildelt arbejder høster det ligesom til Sværmen.
-[tutorial part1 message 11]
-Kroens gule lagerbjælke stiger, når hvede leveres. Den viser hvedelageret.
-[tutorial part1 message 12]
-Nu lærer vi at fordele arbejdet.
-[tutorial part1 message 13]
-En arbejder forsyner Sværmen og en anden Kroen. De kan holde spisepause undervejs. Det er normalt.
-[tutorial part1 message 14]
-Vælg Sværmen, og find tildelingen af arbejdere: Arbejder på computer, eller tildelte arbejdere og måltal på berøringsskærm. Måltallet er det ønskede antal arbejdere.
-[tutorial part1 message 15]
-Sæt Sværmens måltal for arbejdere til 0. Vælg derefter Kroen, og gør det samme.
-[tutorial part1 message 16]
-Arbejderne er ledige, men spiser stadig. En Kro uden tildelte arbejdere løber efterhånden tør for hvede.
-[tutorial part1 message 17]
-En globule uden mad mister helbred og kan dø. Et Hospital helbreder skader, men Kroerne skal også forsynes.
-[tutorial part1 message 18]
-Byg et Hospital. Det behøver ikke hvede, så placér det nær træ eller centralt ved Sværmen.
-[tutorial part1 message 19]
-Vælg Hospitalets byggeplads, og sæt måltallet til 2 arbejdere, så byggeriet går hurtigere.
-[tutorial part1 message 20]
-Hospitalet er færdigt. Sårede globuler kan nu blive raske dér.
-[tutorial part1 message 21]
-Sorte områder er uudforskede. Enheder afslører nærliggende terræn, når de bevæger sig. Arbejdere følger deres opgaver; udforskere egner sig bedre til spejderarbejde.
-[tutorial part1 message 22]
-Vælg Sværmen, og find produktionsforholdene for arbejdere, udforskere og krigere. Sæt udforskere til 1.
-[tutorial part1 message 23]
-Med både arbejdere og udforskere på 1 skaber Sværmen lige mange over tid. Sæt arbejdere til 0 for kun at skabe udforskere.
-[tutorial part1 message 24]
-Sæt Sværmens måltal for tildelte arbejdere tilbage til 1, så den får hvede.
-[tutorial part1 message 25]
-Sæt også Kroens måltal til 1 arbejder. Kolonien behøver en stabil madforsyning.
-[tutorial part1 message 26]
-Vent nu på, at Sværmen skaber en udforsker.
-[tutorial part1 message 27]
-Udforskeren flyver rundt om kolonien og afslører terræn. Lad Sværmen skabe en anden udforsker, før du fortsætter.
-[tutorial part1 message 28]
-Vælg Sværmen. Sæt udforskernes produktionsforhold til 0 og arbejdernes til 1 for igen at skabe arbejdere.
-[tutorial part2 message 1]
-Der er sten øst for basen. Husk stedet; du får brug for sten senere.
-[tutorial part2 message 2]
-Træerne syd for stenene er appelsintræer. Vælg dem for at se ressourceoplysninger. Vi vender tilbage til frugt senere; fokusér nu på Sværmen.
-[tutorial part2 message 3]
-Indstil Sværmen til kun at skabe arbejdere: arbejdere 1, udforskere og krigere 0.
-[tutorial part2 message 4]
-Lad os øge væksten. Sæt Sværmens måltal til 6 arbejdere. Nye arbejdere kan fylde de ledige pladser, når de kommer til.
-[tutorial part2 message 5]
-Vi går videre til nye opgaver ved 8 arbejdere. Hold Sværmen og Kroen forsynet imens.
-[tutorial part2 message 6]
-Flere arbejdere forsyner nu Sværmen. Flere hvedeleverancer betyder hurtigere produktion af enheder.
-[tutorial part2 message 7]
-En arbejder koster 5 hvede. Lange transportveje tager tid, så en Sværm behøver ofte flere leverandører end en Kro. Byg hvedeafhængige bygninger tæt på hvede, hvis muligt.
-[tutorial part2 message 8]
-Du har mindst 8 arbejdere. Sænk Sværmens måltal til 1 for at bremse væksten, mens vi bygger.
-[tutorial part2 message 9]
-Kolonien behøver flere spisepladser. Byg endnu en Kro nord for den første.
-[tutorial part2 message 10]
-Tildel ledige arbejdere til den nye byggeplads. Den kræver kun 3 træ; over 3 bygningsarbejdere hjælper kun lidt.
-[tutorial part2 message 11]
-Den færdige Kro bruger sit driftsmåltal, normalt 1 arbejder. Byggeri og daglig forsyning har hver sit måltal.
-[tutorial part2 message 12]
-Arbejdere kan lære at løbe hurtigere på Træningsbanen.
-[tutorial part2 message 13]
-Find Træningsbanen i byggekontrollerne. Hold musemarkøren over ikonet på computer for at se beskrivelse og pris. Vælg den under Byg på berøringsskærm. Placér den ikke endnu.
-[tutorial part2 message 14]
-Træningsbanen behøver meget træ og lidt sten. Vælg et centralt sted, som er let at nå.
-[tutorial part2 message 15]
-Byg en Træningsbane, for eksempel syd for Sværmen. Lad plads være fri omkring den til senere udvidelser.
-[tutorial part2 message 16]
-Tildel mellem 5 og 7 arbejdere til byggepladsen. Den kræver 7 byggematerialer i alt.
-[tutorial part2 message 17]
-Den færdige Træningsbane træner enheder uden fortsat levering af byggematerialer eller hvede.
-[tutorial part2 message 18]
-Globuler går ind på Træningsbanen. Efter træning kan de løbe hurtigere.
-[tutorial part2 message 19]
-Vælg Træningsbanen for at følge træningen. Indikatorerne viser, hvor tæt enhederne er på at være færdige.
-[tutorial part2 message 20]
-Trænede arbejdere leverer ressourcer hurtigere. Hold stadig øje med madlagrene, og sørg for nok forsynede Kroer, mens kolonien vokser.
-[tutorial part2 message 21]
-Find arbejdertælleren i spilvisningen. Totalen viser befolkningen; tilgængeligheden afslører ledige arbejdere eller ubesatte job. Tildel ikke mere arbejde, end kolonien kan klare.
-[tutorial part2 message 22]
-Spilvisningen viser også udforskere og krigere. Brug tallene ved produktionsplanlægning og tildeling til flag.
-[tutorial part2 message 23]
-Du har 2 almindelige Kroer med 4 spisepladser hver: 8 i alt. Flere end 8 enheder kan blive sultne, så sørg for kapacitet til køer.
-[tutorial part2 message 24]
-To Kroer er ikke nok for altid. Udvid kapaciteten, før mangel bliver til hungersnød.
-[tutorial part2 message 25]
-Byg 3 Kroer mere nær hvede. Sultne arbejdere holder op med at arbejde og kan dø. Brug ledige arbejdere uden at forsømme den eksisterende madforsyning.
-[tutorial part2 message 26]
-Færdiggør 3 ekstra Kroer, så du har 5 i alt.
-[tutorial part2 message 27]
-De nye Kroer bruger driftsmåltallet, normalt 1 arbejder hver. Kontrollér leverandører og hvedelagre.
-[tutorial part2 message 28]
-Træningsbanen letter færdsel på land. Nu skal vi lære at svømme.
-[tutorial part2 message 29]
-Et Svømmebassin lærer enheder at svømme og kræver træ. Byg et i den store lysning nordøst for basen, nord for stenene. Lad plads være fri til opgraderinger og voksende ressourcer, og tildel ledige arbejdere.
-[tutorial part2 message 30]
-Et Svømmebassin lærer enheder at svømme og kræver træ. Byg et i den store lysning nordøst for basen, nord for stenene. Lad plads være fri til opgraderinger og voksende ressourcer, og tildel ledige arbejdere.
-[tutorial part2 message 31]
-Svømmebassinet er færdigt. Globuler kan nu lære at svømme dér.
-[tutorial part2 message 32]
-Vælg Svømmebassinet for at følge træningen. Et almindeligt Svømmebassin træner 2 globuler ad gangen, ligesom en almindelig Træningsbane.
-[tutorial part2 message 33]
-De trænede globuler kan nu svømme. Snart får de en opgave, der kræver at krydse vand.
-[tutorial part2 message 34]
-Der er mere at lære. Hvis du behøver en pause, så gem fremskridtet i spilmenuen.
-[tutorial part2 message 35]
-Kolonien har mad og fysisk træning. En Skole lærer arbejderne at opføre bedre bygninger.
-[tutorial part2 message 36]
-Skolen forbedrer høst- og byggefærdigheder. Byggeriet kræver alger fra vandet. Arbejdere, der kan svømme, kan høste dem.
-[tutorial part2 message 37]
-Beskyt vigtige træningsbygninger. En Skole behøver ikke stå ved vandet; en beskyttet placering inde i landet er sikrere.
-[tutorial part2 message 38]
-Byg Skolen beskyttet, for eksempel bag Svømmebassinet eller sydvest for Sværmen ved Træningsbanen. Tildel tilgængelige arbejdere.
-[tutorial part2 message 39]
-Vælg en bygning for at se dens arbejdere. På computer kan den indstillelige handling til enhedsruter vise linjer mod destinationerne. Find den aktuelle genvej under Indstillinger, Spilkontrol. Vent på den færdige Skole.
-[tutorial part3 message 1]
-Kolonien har Kroer, Hospital, Træningsbane, Svømmebassin og Skole. Nu forbereder vi forsvaret.
-[tutorial part3 message 2]
-Vi har endnu ikke skabt krigere. Uden dem har kolonien kun ringe beskyttelse mod angreb.
-[tutorial part3 message 3]
-Vælg Sværmen, og sæt krigernes produktionsforhold til 2. Lad arbejderne stå på 1, så de fortsat bliver produceret.
-[tutorial part3 message 4]
-Sværmen skaber omtrent 2 krigere for hver arbejder. Tildel flere leverandører for at øge produktionen.
-[tutorial part3 message 5]
-Din første kriger er klar og begynder at træne. Vent på en anden, før du fortsætter.
-[tutorial part3 message 6]
-Krigere bruger også Træningsbanen og Svømmebassinet. På Kasernen kan de desuden træne angreb.
-[tutorial part3 message 7]
-Kasernen forbedrer angrebsstyrke og angrebshastighed: skade pr. slag og slagfrekvens. Veltrænede krigere kan besejre langt større utrænede grupper.
-[tutorial part3 message 8]
-Byg en Kaserne nær det træ, byggeriet behøver.
-[tutorial part3 message 9]
-Tildel tilgængelige arbejdere til Kasernen. Bevar madforsyningen, og undgå at skabe for mange job.
-[tutorial part3 message 10]
-Kasernen er færdig. Krigere kan nu træne deres angreb dér.
-[tutorial part3 message 11]
-Opgraderede bygninger gør også kolonien stærkere.
-[tutorial part3 message 12]
-Skoletrænede arbejdere kan bygge opgraderinger. Vælg en egnet bygning og Opgradér i dens kontroller. Beskadigede bygninger kan kræve reparation først.
-[tutorial part3 message 13]
-Hvad skal vi opgradere først? Kroerne har stadig ledige pladser og kan vente.
-[tutorial part3 message 14]
-Hospitalet har også plads. Vi kan fokusere på Skolen, Træningsbanen, Svømmebassinet eller Kasernen.
-[tutorial part3 message 15]
-Opgradér Træningsbanen først, så enhederne kan lære at løbe endnu hurtigere.
-[tutorial part3 message 16]
-Vælg Træningsbanen og Opgradér. Enhederne indenfor skal først ud; derfor starter arbejdet måske ikke straks.
-[tutorial part3 message 17]
-Tildel ledige arbejdere til opgraderingen. Kun arbejdere med den nødvendige skoletræning kan arbejde på en byggeplads på niveau 2.
-[tutorial part3 message 18]
-Vent på færdiggørelsen. Bygninger på højere niveauer kræver flere ressourcer og mere tid.
-[tutorial part3 message 19]
-Træningsbanen på niveau 2 er færdig og større. Derfor lod vi plads være fri: uden udvidelsesplads kan en bygning ikke opgraderes.
-[tutorial part3 message 20]
-Opgradér nu Kasernen og Svømmebassinet til niveau 2. Vi fortsætter, når begge er færdige.
-[tutorial part3 message 21]
-Opgraderede bygninger kan normalt betjene flere globuler eller give bedre træning. En Kro på niveau 2 har 7 spisepladser og bespiser hurtigere.
-[tutorial part3 message 22]
-Fjenden er nær. Lad os forberede os på et angreb.
-[tutorial part3 message 23]
-Forsvarstårne skyder mod fjender inden for rækkevidde. Mure beskytter tårnene. Vi bruger begge dele ved en smal passage.
-[tutorial part3 message 24]
-Placér tårne i par, hvis der er plads. Mure kan beskytte tre sider, men arbejdere behøver adgang med stenammunition.
-[tutorial part3 message 25]
-Øst for Svømmebassinet, nord for de andre frugttræer, fører en smal passage til en anden ø. Forsvar dette sted.
-[tutorial part3 message 26]
-Planlæg 2 tårne mellem træerne og kysten. Bevar adgang bag dem til stenleverancer og plads på de andre sider til Mure. Spær ikke arbejderne ude.
-[tutorial part3 message 27]
-Byg 2 tårne dér. Tildel 2 eller 3 arbejdere til hver byggeplads efter den viste tilgængelighed.
-[tutorial part3 message 28]
-Placér Mure langs tårnenes tre udadvendte sider. Hold siden mod kolonien åben.
-[tutorial part3 message 29]
-Hvert murstykke skaber et job og kræver 1 sten. Hvis der mangler arbejdere, kan de færdiggøre stykkerne efter tur.
-[tutorial part3 message 30]
-Vent på begge tårne og flere murstykker. Tårnene behøver også stenammunition; det fjerne stenbrud gør leveringen langsom. Øg deres måltal, hvis der er ledige arbejdere.
-[tutorial part4 message 1]
-Kolonien har mad, træning og forsvar. Bygninger kan nå niveau 3 med større kapacitet og bedre træning. Fortsæt opgraderingerne efter ressourcer og færdigheder.
-[tutorial part4 message 2]
-Find fjendens koloni nordvest for din base. Flyt visningen dertil.
-[tutorial part4 message 3]
-Krigståge kan skjule udforsket terræn. En udforsker i nærheden viser fjendens aktuelle aktivitet.
-[tutorial part4 message 4]
-Åbn Flag. Flag og zoner styrer enheder uden at kontrollere hver globule enkeltvis.
-[tutorial part4 message 5]
-Vælg Udforskningsflaget med dragesymbolet. Flag kan placeres over land, vand, ressourcer og uudforsket terræn.
-[tutorial part4 message 6]
-Placér det ved den formodede fjendebase. En omtrentlig placering er nok. Afslut med højreklik eller berøringskontrollerne.
-[tutorial part4 message 7]
-Omridset viser flagets radius. En tildelt udforsker undersøger området. Kontrollér udforskertallet, hvis ingen kommer, og skab om nødvendigt en ved Sværmen. Tryk på mellemrum eller OK, når den ankommer.
-[tutorial part4 message 8]
-Fjenden har mange arbejdere og en samlet hær. Lad os forberede forsvaret.
-[tutorial part4 message 9]
-Åbn Flag, og vælg den blå bevogtningszone. Brug tilføjelse frem for fjernelse. På berøringsskærme vælges Mal frem for Slet.
-[tutorial part4 message 10]
-Vælg penselform og størrelse. Den store firkant er god til et kompakt forsvarsområde.
-[tutorial part4 message 11]
-Mal en bevogtningszone bag tårnene på fjendens sandsynlige rute. Klik eller tryk for et punkt, eller træk for et større område. På berøringsskærme bruges Panorer til at flytte visningen under malingen.
-[tutorial part4 message 12]
-Ledige krigere besætter zonen. Giv dem plads, men hold forsvaret samlet ved passagen. Vent på angrebet.
-[tutorial part4 message 13]
-Fjenden nærmer sig passagen!
-[tutorial part4 message 14]
-Vi bliver angrebet. Se, hvordan trænede krigere og tårne forsvarer stillingen.
-[tutorial part4 message 15]
-Du overlevede! Åbn Flag, og vælg det spidse Krigsflag. Placér det over fjendens Sværm for at lede angrebet dertil.
-[tutorial part4 message 16]
-Afslut placeringen, og vælg Krigsflaget. Tildel mere end 1 kriger, og mindsk radius for at samle angrebet ved Sværmen. Vent på deres ankomst.
-[tutorial part4 message 17]
-Angrebet er begyndt. Krigerne skal forbi fjendens tårne for at nå Sværmen.
-[tutorial part4 message 18]
-Krigerne har nået fjendebasen. Hold angrebet rettet mod Sværmen.
-[tutorial part4 message 19]
-Du ødelagde fjendens Sværm! Du har gennemført øvelsen og lært grundlaget for madforsyning, tildeling, træning, opgraderinger, udforskning og kamp.
-[tutorial mission basics]
-Introduktion og grundlæggende spil
-[tutorial mission development]
-Bygninger og skoler
-[tutorial mission training]
-Krigere, træning og opgraderinger
-[tutorial mission flags]
-Flag og afslutning
 [library  Could not restore the previous library: %0]
  Kunne ikke gendanne det tidligere bibliotek: %0
 [library  The previous library is retained.]
@@ -6647,8 +6405,6 @@ Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 [intro briefing]
 
 [intro try]
-
-[intro start]
 
 [intro preflight]
 
@@ -7070,5 +6826,7 @@ Klippebakker
 Dyrestier
 [Fish amount]
 Fiskemængde
+[scenario messages]
+
 [Camp-site amount]
 Antal lejrpladser

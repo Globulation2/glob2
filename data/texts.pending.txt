@@ -1,7 +1,6 @@
 [intro menu]
 [intro briefing]
 [intro try]
-[intro start]
 [intro preflight]
 [intro preflight save]
 [intro preference failed]
@@ -207,3 +206,4 @@
 [lesson defensive-tactics guard compact]
 [lesson defensive-tactics repel compact]
 [lesson defensive-tactics counterattack compact]
+[scenario messages]

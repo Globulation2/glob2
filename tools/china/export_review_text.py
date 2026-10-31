@@ -3,12 +3,11 @@
 import argparse
 import csv
 from pathlib import Path
-import json
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'data'))
-from check_translations import read_table  # noqa: E402
+from check_translations import read_table, lesson_translation_keys  # noqa: E402
 
 
 
@@ -22,18 +21,12 @@ def rows():
     english, errors = read_table(ROOT / 'data/texts.en.txt')
     if errors:
         raise ValueError('\n'.join(errors))
-    def keys(value):
-        if isinstance(value, str):
-            return {value} if value.startswith('[') and value.endswith(']') else set()
-        values = value.values() if isinstance(value, dict) else value if isinstance(value, list) else []
-        return set().union(*(keys(item) for item in values))
-    for entry in json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text()):
-        path = ROOT / entry['definition']
-        for key in sorted(keys(json.loads(path.read_text()))):
+    for definition, keys in lesson_translation_keys(ROOT).items():
+        for key in sorted(keys):
             chinese = table.get(key, '')
             if not chinese:
                 missing += 1
-            result.append(('tutorial', entry['definition'], '', english.get(key, key),
+            result.append(('tutorial', definition, '', english.get(key, key),
                            chinese, 'missing zh-cn' if not chinese else ''))
     return result, missing
 

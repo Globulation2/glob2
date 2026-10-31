@@ -3102,8 +3102,6 @@ CPU %0%
 在有效地形上放開以放置
 [Paint on the map; two fingers move]
 在地圖上繪製；雙指移動
-[Tutorial ▸]
-教學 ▸
 [Back to tools]
 返回工具
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ MCP 伺服器
 刪除錄影
 [recording refresh]
 重新整理
-[tutorial part1 message 1]
-歡迎來到 Globulation 2！本教學會透過四個任務介紹殖民地管理。你可以從遊戲選單儲存進度，稍後從主選單載入。按空白鍵繼續，觸控螢幕則點選「確定」。部分訊息會在繼續後消失；可開啟訊息歷史重新閱讀。
-[tutorial part1 message 2]
-一開始你有一座孢子堆和一名工人。來看看他們如何合作。
-[tutorial part1 message 3]
-工人會收割小麥並運往孢子堆。孢子堆消耗小麥生產新單位，是殖民地的重要核心。
-[tutorial part1 message 4]
-以滑鼠左鍵或觸控點選你的球球，也就是正在移動的單位。
-[tutorial part1 message 5]
-單位資訊顯示食物存量會隨時間下降，代表球球正在變餓。顯示食物條時，單位下方的藍條表示剩餘食物。
-[tutorial part1 message 6]
-球球會在客棧進食。按滑鼠右鍵取消選取；觸控螢幕則點選空地。
-[tutorial part1 message 7]
-開啟建築控制項，選擇客棧，放在小麥附近。找不到小麥時，可沿工人的採集路線尋找。觸控螢幕請使用「建造」，並確認有效的位置。完成後按右鍵或觸控的「取消」，離開放置模式。
-[tutorial part1 message 8]
-很好！客棧的工地已經設置好了。
-[tutorial part1 message 9]
-孢子堆的一名工人現在可以建造客棧。工人會從附近樹木採集木材並運到工地。等待施工完成。
-[tutorial part1 message 10]
-完工的客棧需要小麥。指派的工人會去採集，就像供應孢子堆一樣。
-[tutorial part1 message 11]
-小麥送達時，客棧的黃色資源條會上升，表示目前庫存的小麥量。
-[tutorial part1 message 12]
-現在來學習如何分派工作。
-[tutorial part1 message 13]
-一名工人供應孢子堆，另一名供應客棧。他們都可能暫停工作，到客棧進食，這是正常的。
-[tutorial part1 message 14]
-選取孢子堆，找到工人指派控制項。桌面介面標為「工作中」；觸控螢幕則使用已指派工人與目標數量控制項。目標值代表你希望這座建築使用多少工人。
-[tutorial part1 message 15]
-用指派控制項將孢子堆的工人目標設為 0，再選取客棧，也將其目標設為 0。
-[tutorial part1 message 16]
-工人現在閒置了，但仍需要食物。沒有指派工人的客棧，遲早會耗盡小麥。
-[tutorial part1 message 17]
-找不到食物的球球會損失生命，甚至死亡。醫院可以治療受傷的球球，但你仍須維持客棧供應。
-[tutorial part1 message 18]
-使用建築控制項建造醫院。醫院不需要小麥，可放在木材附近，或孢子堆附近的中心位置。
-[tutorial part1 message 19]
-選取醫院工地，將工人目標設為 2。兩名工人能更快完成建造。
-[tutorial part1 message 20]
-醫院完工了。受傷的球球現在可以來恢復生命。
-[tutorial part1 message 21]
-黑色區域尚未探索。單位移動時會揭露附近地形。工人依工作移動，不適合偵察；探索者才是專門負責這項工作的單位。
-[tutorial part1 message 22]
-選取孢子堆，找到工人、探索者與戰士的生產比例。將探索者比例提高到 1。
-[tutorial part1 message 23]
-工人與探索者比例均為 1 時，孢子堆長期下來會生產相同數量的兩種單位。將工人比例設為 0，暫時只生產探索者。
-[tutorial part1 message 24]
-將孢子堆的工人指派目標恢復為 1，讓一名工人為它運送小麥。
-[tutorial part1 message 25]
-選取客棧，也將工人目標設為 1。成長中的殖民地需要穩定的食物供應。
-[tutorial part1 message 26]
-現在等待孢子堆生產一名探索者。
-[tutorial part1 message 27]
-探索者會在殖民地上空飛行，揭露更多地形。繼續之前，先讓孢子堆生產第二名探索者。
-[tutorial part1 message 28]
-再次選取孢子堆，將探索者比例設為 0、工人比例設為 1，恢復生產工人。
-[tutorial part2 message 1]
-基地東邊有石頭。記住這個位置，稍後會需要石頭。
-[tutorial part2 message 2]
-石頭南邊的樹是橘子樹。選取它們可查看資源資訊。稍後會介紹水果，現在先專心管理孢子堆。
-[tutorial part2 message 3]
-將孢子堆設為只生產工人：工人比例為 1，探索者與戰士比例為 0。
-[tutorial part2 message 4]
-來加快殖民地的成長。選取孢子堆，將工人指派目標設為 6。目前不足六名也沒關係；新工人出現後就能填補職缺。
-[tutorial part2 message 5]
-工人達到 8 名後，我們再開始下一項工作。人口成長時，持續供應孢子堆與客棧。
-[tutorial part2 message 6]
-現在有數名工人供應孢子堆。送達的小麥越多，生產單位的速度就越快。
-[tutorial part2 message 7]
-生產一名工人需要 5 單位小麥。從遠處田地運送小麥需要時間，所以孢子堆通常比客棧需要更多供應工人。盡可能將需要食物的建築放在小麥附近。
-[tutorial part2 message 8]
-你已有至少 8 名工人。選取孢子堆，將工人指派目標降為 1，在建造期間放慢人口成長。
-[tutorial part2 message 9]
-殖民地需要更多用餐空間。在現有客棧北邊再建一座客棧。
-[tutorial part2 message 10]
-把空閒工人指派到新客棧的工地。它只需要 3 單位木材，所以超過 3 名建築工人的幫助不大。
-[tutorial part2 message 11]
-客棧完工後會恢復營運用的工人目標，通常是 1。施工與日常供應各有獨立的指派目標。
-[tutorial part2 message 12]
-工人可以學會加快移動。跑道就是提供這種訓練的地方。
-[tutorial part2 message 13]
-開啟建築控制項並找到跑道。桌面版可將滑鼠停在圖示上查看說明與成本；觸控螢幕則在「建造」中選取，準備放置。先不要放置。
-[tutorial part2 message 14]
-跑道需要大量木材與少量石頭。選擇中心位置，讓單位容易抵達。
-[tutorial part2 message 15]
-建造一座跑道，例如放在孢子堆南邊。周圍留出空地：訓練建築升級時需要擴建空間。
-[tutorial part2 message 16]
-將跑道工地的工人目標設為 5 到 7。它總共需要 7 單位建材。
-[tutorial part2 message 17]
-跑道完工後，會訓練前來的單位，無須持續供應建材或小麥。
-[tutorial part2 message 18]
-球球正在進入跑道訓練。訓練完成後就能跑得更快。
-[tutorial part2 message 19]
-選取跑道查看訓練進度。進度指示會顯示裡面的單位距離完成還有多久。
-[tutorial part2 message 20]
-受訓工人移動更快，能更早送達資源。殖民地成長時仍須注意食物庫存；只有客棧供應充足，運送加速才有幫助。
-[tutorial part2 message 21]
-在遊戲資訊介面找到工人人口計數。總數表示人口；可用工人數則有助於發現閒置人力或未填補的職缺。善用空閒工人，但不要分派超出殖民地負荷的工作。
-[tutorial part2 message 22]
-資訊介面也會顯示探索者與戰士數量。規劃生產或指派單位到旗幟時，記得查看。
-[tutorial part2 message 23]
-你有 2 座客棧。每座基本客棧可同時供 4 個單位進食，合計有 8 個用餐位置。但飢餓的單位可能超過 8 個，請預留排隊所需的容量。
-[tutorial part2 message 24]
-兩座客棧無法永遠支撐持續成長的殖民地。在食物短缺變成飢荒前，先增加用餐容量。
-[tutorial part2 message 25]
-在小麥附近再建 3 座客棧。飢餓的工人會停止工作，長期挨餓則會死亡。指派可用工人施工，同時維持現有的食物供應。
-[tutorial part2 message 26]
-完成新增的 3 座客棧，讓總數達到 5 座。
-[tutorial part2 message 27]
-新客棧完工後會使用營運指派目標，通常每座 1 名工人。確認它們有供應工人與足夠的小麥。
-[tutorial part2 message 28]
-跑道改善了陸上移動。現在來教殖民地游泳。
-[tutorial part2 message 29]
-游泳池教單位游泳，建造需要木材。請放在基地東北方、石頭北邊的大片空地。周圍預留升級與資源生長的空間，並指派可用工人施工。
-[tutorial part2 message 30]
-游泳池教單位游泳，建造需要木材。請放在基地東北方、石頭北邊的大片空地。周圍預留升級與資源生長的空間，並指派可用工人施工。
-[tutorial part2 message 31]
-游泳池完工了。球球現在可以進入學習游泳。
-[tutorial part2 message 32]
-選取游泳池查看訓練進度。基本游泳池和基本跑道一樣，每次可訓練 2 個球球。
-[tutorial part2 message 33]
-受訓的球球現在會游泳了。不久就會有需要渡水的工作。
-[tutorial part2 message 34]
-還有更多內容可以學習。需要休息時，可從遊戲選單儲存進度，稍後再回來。
-[tutorial part2 message 35]
-殖民地已有食物與體能訓練。學校能教工人建造更好建築所需的技能。
-[tutorial part2 message 36]
-學校提升工人的採集與建造技能。建造學校需要生長在水中的藻類，會游泳的工人可以採集。
-[tutorial part2 message 37]
-保護重要的訓練建築。學校不必緊鄰水邊，放在有掩護的內陸位置更能免受攻擊。
-[tutorial part2 message 38]
-在受保護的位置建造學校，例如游泳池後方，或孢子堆西南方、跑道旁邊。指派可用工人施工。
-[tutorial part2 message 39]
-選取建築可查看指派給它的工人。桌面版還可用可設定的「切換單位路徑顯示」動作，顯示單位通往目的地的線；目前快捷鍵請見「設定」的「遊戲控制」。等待學校完工。
-[tutorial part3 message 1]
-殖民地已有客棧、醫院、跑道、游泳池與學校。該準備防禦了。
-[tutorial part3 message 2]
-我們還沒生產戰士。缺少戰士，殖民地遭受攻擊時就缺乏保護。
-[tutorial part3 message 3]
-選取孢子堆，將戰士生產比例設為 2。工人比例維持 1，繼續生產工人。
-[tutorial part3 message 4]
-現在孢子堆大致每生產一名工人，就會生產 2 名戰士。若想加快生產，可指派更多工人供應它。
-[tutorial part3 message 5]
-第一名戰士已就緒，接下來會開始訓練。繼續前請等待第二名戰士。
-[tutorial part3 message 6]
-戰士也使用跑道與游泳池，還能在兵營訓練攻擊技能。
-[tutorial part3 message 7]
-兵營提升攻擊力與攻擊速度。攻擊力增加每次命中的傷害；速度增加攻擊頻率。訓練有素的戰士可以擊敗數量遠多於自己的未受訓敵軍。
-[tutorial part3 message 8]
-在木材附近建造兵營，因為施工需要木材。
-[tutorial part3 message 9]
-指派可用工人到兵營工地。保留足夠工人供應食物，避免建立超出人力負荷的工作。
-[tutorial part3 message 10]
-兵營完工了。戰士現在可以在這裡訓練攻擊技能。
-[tutorial part3 message 11]
-升級建築可以讓殖民地更加強大。
-[tutorial part3 message 12]
-在學校受訓的工人才能進行升級施工。選取可升級的建築，在建築控制項中找到「升級」。受損建築可能需要先「修復」。
-[tutorial part3 message 13]
-先決定升級哪一座。我們的客棧仍有多餘容量，可以再等一等。
-[tutorial part3 message 14]
-醫院也還有空間。我們可以優先考慮學校、跑道、游泳池或兵營。
-[tutorial part3 message 15]
-先升級跑道，讓單位學會移動得更快。
-[tutorial part3 message 16]
-選取跑道，在建築控制項中選擇「升級」。裡面的單位必須先離開才能施工，所以變更可能不會立刻開始。
-[tutorial part3 message 17]
-指派可用工人升級跑道。只有在學校完成所需訓練的工人，才能建造 2 級工地。
-[tutorial part3 message 18]
-等待跑道升級完成。等級越高的建築，需要越多資源與施工時間。
-[tutorial part3 message 19]
-2 級跑道完成了。它占地比原本更大，這就是先前預留空隙的原因。沒有足夠擴建空間，就無法升級。
-[tutorial part3 message 20]
-現在將兵營與游泳池升到 2 級。兩者完成後再繼續。
-[tutorial part3 message 21]
-升級建築通常能容納更多球球，或提供更好的訓練。例如 2 級客棧有 7 個用餐位置，進食速度也比基本客棧快。
-[tutorial part3 message 22]
-敵人就在附近。來準備迎戰。
-[tutorial part3 message 23]
-防禦塔會射擊範圍內的敵人，石牆可協助保護它們。我們將用兩者守住通往殖民地的狹窄通道。
-[tutorial part3 message 24]
-空間允許時，成對放置防禦塔。用牆保護三側，但要留下通路，讓工人運送石頭彈藥。
-[tutorial part3 message 25]
-看看游泳池東邊、其他果樹北邊。這裡有一條通往另一座島的狹窄通道，很適合防守。
-[tutorial part3 message 26]
-在樹木與岸邊之間預留 2 座塔的位置。後方留下運送石頭的通路，其他側面留給石牆。不要把工人擋在牆外。
-[tutorial part3 message 27]
-在那裡建造 2 座塔。依資訊介面顯示的可用工人數，每個工地指派 2 或 3 名工人。
-[tutorial part3 message 28]
-使用建築控制項，在塔朝外的三側放置牆段。朝殖民地的一側保持開放，供工人進出。
-[tutorial part3 message 29]
-每段牆會產生一項施工工作，並需要 1 單位石頭。若工人無法同時填滿所有工作，可以依序完成。
-[tutorial part3 message 30]
-等待兩座塔與數段牆完工。塔也需要石頭彈藥，但採石處較遠，運送緩慢。若有空閒工人，可提高塔的工人目標。
-[tutorial part4 message 1]
-殖民地已有食物、訓練與防禦。建築還能再升到 3 級，提供更強訓練與更大容量。依資源與工人技能，持續改善它們。
-[tutorial part4 message 2]
-敵方殖民地位於基地西北方。現在把視野移過去。
-[tutorial part4 message 3]
-已探索的地形仍可能被戰爭迷霧遮蔽。要看見敵人目前的活動，需要附近有探索者。
-[tutorial part4 message 4]
-開啟「旗幟」。你可以用旗幟與區域引導單位，不必逐一控制每個球球。
-[tutorial part4 message 5]
-選擇帶有風箏形符號的探索旗幟。旗幟可以放在陸地、水域、資源及未探索的地形上。
-[tutorial part4 message 6]
-在疑似敵方基地的位置放置探索旗幟。大概位置就足以開始偵察。按右鍵離開放置模式，或使用觸控控制項完成放置。
-[tutorial part4 message 7]
-旗幟周圍的輪廓表示工作半徑。指派的探索者會偵察該區域。若沒有人前來，請檢查探索者數量，必要時在孢子堆再生產一名。探索者抵達後，按空白鍵或點選「確定」。
-[tutorial part4 message 8]
-敵人有許多工人與集結的軍隊。在他們進攻前，先準備好防禦。
-[tutorial part4 message 9]
-開啟「旗幟」，選擇藍色的守衛區域。使用新增區域的模式，不要移除。觸控螢幕請選「繪製」而非「擦除」。
-[tutorial part4 message 10]
-選擇筆刷形狀與大小。大正方形適合塗繪集中的防守區域。
-[tutorial part4 message 11]
-在塔的正後方、敵人可能接近的地方塗繪守衛區域。點按可塗一處，拖曳可涵蓋更多地形。觸控螢幕上，塗繪時需要移動視野，請使用「平移」。
-[tutorial part4 message 12]
-可用戰士會前往守衛區域。大小要足以容納防守者，但也要讓他們集中在通道口。現在等待進攻。
-[tutorial part4 message 13]
-敵人正在接近通道！
-[tutorial part4 message 14]
-我們遭受攻擊了。看看受訓戰士與防禦塔如何守住陣地。
-[tutorial part4 message 15]
-你守住了！現在開啟「旗幟」，選擇帶尖刺的攻擊旗幟。放在敵方孢子堆上，引導軍隊進攻。
-[tutorial part4 message 16]
-離開放置模式，選取攻擊旗幟。指派超過 1 名戰士，再縮小半徑，將攻擊集中在敵方孢子堆周圍。等待戰士抵達。
-[tutorial part4 message 17]
-進攻開始了。戰士必須突破敵方防禦塔，才能抵達孢子堆。
-[tutorial part4 message 18]
-戰士已抵達敵方基地。繼續將攻擊集中在孢子堆。
-[tutorial part4 message 19]
-你摧毀了敵方孢子堆，恭喜！你已完成教學，學會食物供應、工作分派、訓練、升級、偵察與戰鬥的基本知識。
-[tutorial mission basics]
-入門與基礎
-[tutorial mission development]
-建築與學校
-[tutorial mission training]
-戰士、訓練與升級
-[tutorial mission flags]
-旗幟與結業
 [library  Could not restore the previous library: %0]
  無法還原先前的收藏庫： %0
 [library  The previous library is retained.]
@@ -6647,8 +6405,6 @@ MCP 伺服器
 [intro briefing]
 
 [intro try]
-
-[intro start]
 
 [intro preflight]
 
@@ -7070,5 +6826,7 @@ MCP 伺服器
 獸徑
 [Fish amount]
 魚類數量
+[scenario messages]
+
 [Camp-site amount]
 營地數量

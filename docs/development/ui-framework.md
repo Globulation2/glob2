@@ -110,18 +110,14 @@ and map-overlay text is also rejected. A successful
 catalog check cannot detect every string assembled through variables or new helpers.
 
 The JSON `coverage` field records checked families and remaining review surfaces.
-Archived tutorial saves retain their legacy translation blocks, but the desktop
-message overlay, touch scenario-message panel and history translate recognized tutorial
-text through the current catalogs. `src/ui/TutorialTextAliases.h` contains exact
-frozen aliases from retired authored scripts and map-embedded copies. They are
-save-reader compatibility data, not an active tutorial authoring system. Archived
-inputs live only under `test/fixtures/tutorial/legacy/`; the translation tests and
-`python3 test/support/legacy_tutorial_aliases.py --check` verify the table.
-Full-source fingerprints identify the four authored and four map-embedded tutorial
-scripts when loading a client session, treating LF and CRLF line endings equally. Generic phrases in custom scenarios are
-left untouched. This display mapping also covers old saved tutorial text without rewriting map
-scripts, execution offsets, campaign IDs or progress. Two legacy Spanish pool
-steps share an alias; keep their current combined English instruction identical.
+Current tutorial text is authored as registered keys in the JavaScript lesson
+catalog; localization audits report its per-language gaps. Old SGSL saves use
+their own embedded language blocks through the ordinary scenario-message overlay
+and history. No source fingerprinting or retired-tutorial text alias table is
+maintained. Loading a save preserves its script bytes, execution offsets and
+progress; old displayed messages may retain their original wording or language
+fallback until the script emits another message.
+
 Campaign mission titles are localized for display while selection still uses
 original mission IDs. Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
 history messages use the shared UTF-8 wrapper, including unspaced CJK text and

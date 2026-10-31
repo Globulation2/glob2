@@ -4,6 +4,9 @@ import importlib.util
 import json
 import os
 import runpy
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 import unittest
 ROOT=Path(__file__).resolve().parents[1]
@@ -18,6 +21,36 @@ class TutorialContentTest(unittest.TestCase):
         for entry in json.loads((ROOT/'scripts/tutorials/catalog.json').read_text()):
             definition=json.loads((ROOT/entry['definition']).read_text())
             self.assertEqual(builder.bundle(definition),(ROOT/entry['script']).read_text())
+
+    def test_shipped_lessons_have_no_unreachable_target_definitions(self):
+        # Hooks may refer to targets through code; ordinary shipped definitions
+        # should only retain targets reachable from authored behavior.
+        from tutorials.content import catalog_lessons
+        for entry,definition in catalog_lessons(ROOT):
+            if definition.get('hooks'):
+                continue
+            reachable=set()
+            def visit(name):
+                if name in reachable:
+                    return
+                reachable.add(name)
+                target=definition['targets'][name]
+                for key in ('from','within','assignedTo'):
+                    if target.get(key):
+                        visit(target[key])
+            def roots(value):
+                if isinstance(value,dict):
+                    for key,item in value.items():
+                        if key in ('target','area','destination','buildingTarget') and isinstance(item,str):
+                            visit(item)
+                        else:
+                            roots(item)
+                elif isinstance(value,list):
+                    for item in value:
+                        roots(item)
+            for key in ('steps','recovery','onStart'):
+                roots(definition.get(key,[]))
+            self.assertEqual(set(definition['targets']),reachable,entry['definition'])
     def test_dangling_and_cyclic_targets_are_rejected(self):
         for change in ('missing','cycle'):
             d=copy.deepcopy(self.lesson)
@@ -67,5 +100,37 @@ class TutorialContentTest(unittest.TestCase):
         paths={row[1] for row in rows if row[0]=='tutorial'}
         self.assertEqual(paths,{entry['definition'] for entry in json.loads((ROOT/'scripts/tutorials/catalog.json').read_text())})
         self.assertFalse(any(path.endswith('.sgsl') for path in paths))
+
+    def test_invalid_lesson_selection_fails_before_generation_or_bundle_writes(self):
+        for options,message in [(['--check','--maps','--lessons','swiming','--binary','/not/a/binary'], 'Unknown lesson IDs: swiming'),
+                                (['--lessons','introduction'], '--lessons requires --maps')]:
+            result=subprocess.run([sys.executable,str(ROOT/'tools/tutorials/build.py'),*options],
+                                  capture_output=True,text=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertIn(message,result.stderr)
+            self.assertEqual(result.stdout,'')
+
+    def test_source_archive_keeps_the_build_tools_shared_inventory(self):
+        packed=[]
+        old=Path.cwd()
+        try:
+            os.chdir(ROOT/'tools')
+            runpy.run_path('SConscript',init_globals={'env':{'TARFILE':'source.tar'},
+                'Import':lambda *args:None,
+                'PackTar':lambda archive,paths:packed.extend(paths if isinstance(paths,list) else [paths]),
+                'COMMAND_LINE_TARGETS':['dist']})
+        finally:
+            os.chdir(old)
+        self.assertIn('tutorials/build.py',packed)
+        self.assertIn('tutorials/content.py',packed)
+
+    def test_shared_inventory_rejects_empty_catalogs(self):
+        from tutorials.content import packaged_assets
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'scripts/tutorials').mkdir(parents=True)
+            (root/'scripts/tutorials/catalog.json').write_text('[]')
+            with self.assertRaisesRegex(ValueError,'catalog entries'):
+                packaged_assets(root)
 
 if __name__=='__main__': unittest.main()

@@ -20,9 +20,10 @@ struct Model
     bool complete() const { return index==count; }
 };
 inline constexpr int MainMenu=702, ShowDestination=703, Lessons=704;
+inline constexpr const char *IntroductionMap="campaigns/introduction.map.gz";
 // Strict validation is part of the map callback's atomic effect transaction.
 Script::Value contentJson(const std::string &text);
 std::shared_ptr<const Model> parse(const Script::Value &value);
-// Includes an explicit compatibility adapter for prototype maps/saves.
+// Only a scenario's published presentation can activate tutorial guidance.
 std::shared_ptr<const Model> view(const SimulationSnapshot::Session &session);
 }

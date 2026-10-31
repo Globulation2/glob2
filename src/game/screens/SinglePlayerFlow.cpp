@@ -7,7 +7,6 @@
 #include "GameSessionScreen.h"
 #include "MessageScreen.h"
 #include "GlobalContainer.h"
-#include "tutorial/Introduction.h"
 #include "tutorial/TutorialModel.h"
 #include "tutorial/LessonCatalogScreen.h"
 #include <Toolkit.h>
@@ -159,7 +158,7 @@ void SinglePlayerFlow::generatorStudio()
 
 void SinglePlayerFlow::introduction()
 {
-    launch([](Engine &engine) { return engine.initCampaignTask(Introduction::Map); },ReturnTo::Lessons);
+    launch([](Engine &engine) { return engine.initCampaignTask(Tutorial::IntroductionMap); },ReturnTo::Lessons);
 }
 
 void SinglePlayerFlow::lessons()
