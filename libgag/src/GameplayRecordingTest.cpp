@@ -324,7 +324,10 @@ TEST_SUITE("GameplayRecording")
 		recorder.screen("multiplayer_game");
 		SDL_FillSurfaceRect(pixels.get(), nullptr,
 							SDL_MapSurfaceRGBA(pixels.get(), 20, 200, 10, 255));
-		draw(recorder, pixels.get(), 200);
+		drawUntil(recorder, pixels.get(), [&] {
+			return read(path.string()+".recording/events.jsonl").find(
+				"\"screen\":\"multiplayer_game\"") != std::string::npos;
+		});
 		recorder.beginMatch("multiplayer", "chapter test", 2, 15000);
 		recorder.matchFrame(15000, false, 40);
 		const auto journal = path.string() + ".recording/events.jsonl";
