@@ -201,7 +201,11 @@ class GpuTerrainPageCache
                 data->materials[slot]=material(compositor,recipe,palette[slot]);
                 const auto &seam=compositor.catalog().materials[palette[slot]].seam;
                 data->seams[slot]={seam.height,seam.cast,seam.castWidth,seam.fringe,seam.fringeWidth,seam.fringeColor};
+                const auto &surf=compositor.catalog().materials[palette[slot]].surf;
+                data->surfs[slot]={surf.period,surf.reach,surf.foam,surf.foamWidth,surf.shallow,surf.shallowWidth,
+                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks};
             }
+            data->surfOriginX=recipe.x*8192;data->surfOriginY=recipe.y*8192;data->surfTime=compositor.surfTime();
             DrawPacket packet;packet.kind=DrawPacket::Kind::WeightedCompose;packet.blend=DrawPacket::Blend::Opaque;
             packet.weightedCompose=std::move(data);packets.push_back(std::move(packet));
         }

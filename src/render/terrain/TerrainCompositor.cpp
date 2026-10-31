@@ -187,9 +187,14 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 void Compositor::prepare(bool hd, int time)
 {
 	int nextResolution = 1;
+	// Surf moves once per `ticks`, so entering a new step invalidates its pages
+	// too, also when the texture itself is still (dark water).
+	const unsigned previousTime = preparedTime;
+	preparedTime = unsigned(time);
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
+		const auto revision = materialRevisions[id];
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
 		auto &animation = animationTextures[id];
 		if (animation.current.empty())
@@ -246,6 +251,10 @@ void Compositor::prepare(bool hd, int time)
 				}
 			}
 		}
+		const unsigned ticks = unsigned(m.surf.ticks);
+		if (m.surf.period && unsigned(time) / ticks != previousTime / ticks &&
+			materialRevisions[id] == revision)
+			++materialRevisions[id];
 		for (const auto &texture : textures[id])
 			if (texture.size > 32) nextResolution = 4;
 	}
@@ -410,6 +419,7 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
         }
     }
     next->bytes = cpuMaterialBytes(needed);
+    next->surfTime = preparedTime;
     publishedRevisions = materialRevisions;
     publishedCpu = next;
     return next;
@@ -438,7 +448,7 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         buildMask(*definitions, recipe, scale, scratch.mask);
         mask = &scratch.mask;
     }
-    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask);
+    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask, surfTime);
 }
 Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
 {
@@ -456,11 +466,12 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
         sources[id] = preparedMaterial(r, id);
         sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
     }
-    composePixels(definitions, r, target, ox, oy, scale, sources, mask);
+    composePixels(definitions, r, target, ox, oy, scale, sources, mask, preparedTime);
 }
 void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_Surface *target,
                                int ox, int oy, int scale,
-                               std::span<const PreparedMaterialView> prepared, const CellMask *mask)
+                               std::span<const PreparedMaterialView> prepared, const CellMask *mask,
+                               unsigned surfTime)
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
@@ -578,8 +589,18 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 				unsigned value = blended * shade >> 8;
 				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 			};
-			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
-				 channel(2);
+			unsigned value[3] = {channel(0), channel(1), channel(2)};
+			const auto &selfSurf = definitions.materials[dominant].surf;
+			const auto &otherSurf = definitions.materials[neighbor].surf;
+			if ((selfSurf.period > 0) != (otherSurf.period > 0))
+			{
+				// Q8 world pixels of the sample centre, as the coverage samples it.
+				const int wx = r.x * 8192 + (2 * x + 1) * 4096 / size;
+				const int wy = r.y * 8192 + (2 * y + 1) * 4096 / size;
+				applySurf(selfSurf.period ? selfSurf : otherSurf, selfSurf.period > 0, margin, wx,
+						  wy, surfTime, value);
+			}
+			*p = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
 		}
 }
 Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const

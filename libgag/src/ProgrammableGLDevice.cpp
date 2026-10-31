@@ -163,7 +163,7 @@ class ProgrammableGLDevice final : public RenderDevice
     std::map<unsigned,ScratchAllocation> scratchTargets;
     std::size_t scratchBytes=0;
     std::shared_ptr<const CoverageData> uniformCoverage;
-    struct ComposeProgram {GLuint program=0;GLint viewport=-1,params=-1,geometry=-1,fringe=-1;};
+    struct ComposeProgram {GLuint program=0;GLint viewport=-1,params=-1,geometry=-1,fringe=-1,surfPlace=-1,surfShape=-1,surfBand=-1,surfColor=-1;};
     ComposeProgram composeProgram,reduceProgram;
     bool supportsTerrain=false;
     struct MeshAllocation { std::weak_ptr<const GeometryRevision> geometry; GLuint vertices = 0, indices = 0, vao = 0;
@@ -671,6 +671,8 @@ class ProgrammableGLDevice final : public RenderDevice
         ComposeProgram result;result.program=materialProgram(vertexFile,fragmentFile).program;
         result.viewport=gl.glGetUniformLocation(result.program,"viewport");result.params=gl.glGetUniformLocation(result.program,"params");
         result.geometry=gl.glGetUniformLocation(result.program,"seamGeometry");result.fringe=gl.glGetUniformLocation(result.program,"seamFringe");
+        result.surfPlace=gl.glGetUniformLocation(result.program,"surfPlace");result.surfShape=gl.glGetUniformLocation(result.program,"surfShape");
+        result.surfBand=gl.glGetUniformLocation(result.program,"surfBand");result.surfColor=gl.glGetUniformLocation(result.program,"surfColor");
         gl.glUseProgram(result.program);
         if(reduction)gl.glUniform1i(gl.glGetUniformLocation(result.program,"rawImage"),0);
         else{
@@ -695,6 +697,9 @@ class ProgrammableGLDevice final : public RenderDevice
             geometry[slot*4]=seam.height;geometry[slot*4+1]=seam.cast;geometry[slot*4+2]=seam.castWidth;geometry[slot*4+3]=seam.fringe;
             fringe[slot*4]=seam.fringeWidth;for(unsigned channel=0;channel<3;++channel)fringe[slot*4+channel+1]=seam.fringeColor[channel];}
         gl.glUniform4iv(composeProgram.geometry,4,geometry.data());gl.glUniform4iv(composeProgram.fringe,4,fringe.data());
+        const auto surf=surfUniforms(data);
+        gl.glUniform4iv(composeProgram.surfPlace,1,surf.data());gl.glUniform4iv(composeProgram.surfShape,4,surf.data()+4);
+        gl.glUniform4iv(composeProgram.surfBand,4,surf.data()+20);gl.glUniform4iv(composeProgram.surfColor,4,surf.data()+36);
         check("Set terrain composition uniforms");
         for(unsigned slot=0;slot<4;++slot){gl.glActiveTexture(GL_TEXTURE0+slot);gl.glBindTexture(GL_TEXTURE_2D,images[slot]?images[slot]:whiteTexture);}
         gl.glActiveTexture(GL_TEXTURE4);gl.glBindTexture(GL_TEXTURE_2D,mask.weights);gl.glActiveTexture(GL_TEXTURE5);gl.glBindTexture(GL_TEXTURE_2D,mask.selectors);

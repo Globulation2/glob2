@@ -37,6 +37,9 @@ Each material supplies:
   and `variant_grid`, see [Positional variants](terrain-production.md#positional-variants);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](terrain-rendering.md#seams).
+- optional `surf` (version 3) with `period`, `ticks`, `reach_q8`, `shallow`, `shallow_q8`,
+  `shallow_width_q8`, `wet_q8`, `wet_width_q8`, `foam`, `foam_q8` and
+  `foam_width_q8`, see [Surf](terrain-rendering.md#surf).
 
 Every material, regular water included, is an ordinary opaque tile set. The
 retired `ocean` and `backdrop` keys are rejected: water used to be a transparent
