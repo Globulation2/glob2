@@ -1,0 +1,9 @@
+{
+  "code_revision": "0b51aab5fd61425227c53ff92ff36f6754e64e17",
+  "phase": "Complete linguistic review; final native/browser captures and platform gates pending.",
+  "files": 688,
+  "archive_bytes": 3830078,
+  "archive_sha256": "c850d4a28b78723d4437764b4e63809af176891126e7d1c404475b698beccda3",
+  "translation_request_characters": 188663,
+  "certification": "Agent-reviewed; not native-human-certified"
+}
