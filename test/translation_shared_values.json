@@ -758,6 +758,53 @@
       "%0 KB",
       "256 × 256",
       "CPU %0%"
+    ],
+    "texts.hi.txt": [
+      "%0 KB",
+      "%0/%1  >",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "Globulation 2 Discord",
+      "Hive Mind",
+      "P %0/%1/%2",
+      "–"
+    ],
+    "texts.ur.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "%0/%1  >",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "Globulation 2 Discord",
+      "HP ≤25/50/75%",
+      "Hive Mind",
+      "P %0/%1/%2",
+      "sim %0",
+      "–"
+    ],
+    "texts.sw.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "%0/%1  >",
+      "256 × 256",
+      "AI: %0",
+      "Apr",
+      "Asia",
+      "CPU %0%",
+      "Feb",
+      "HP ≤25/50/75%",
+      "Hive Mind",
+      "Jan",
+      "Jul",
+      "Jun",
+      "Lava",
+      "Nov",
+      "P %0/%1/%2",
+      "Ping",
+      "Sep",
+      "–"
     ]
   }
 }

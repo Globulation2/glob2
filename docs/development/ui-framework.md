@@ -242,6 +242,28 @@ not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
+### Hindi, Urdu and Swahili terminology
+
+Use these concept anchors across the game, lessons and online messages. Inflect
+words naturally in sentences rather than substituting labels mechanically.
+Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
+order, and Swahili uses standard Latin-script Kiswahili.
+
+| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- |
+| Worker | श्रमिक | کارکن | Mfanyakazi |
+| Explorer | खोजी | کھوجی | Mgunduzi |
+| Warrior | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | چھتہ | Kiota |
+| Market | बाज़ार | بازار | Soko |
+
+An assigned worker target requests workers; it does not count workers already
+present. Construction and operating supply use separate targets. Keep those
+meanings distinct in instructions. Reviewed product names, technical terms and
+loanwords belong in the existing shared-value exception contracts; an exception
+for one key does not justify leaving unrelated prose in English.
+
 ## Anatomy of a screen
 
 ```cpp
