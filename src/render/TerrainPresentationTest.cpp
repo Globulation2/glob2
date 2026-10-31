@@ -35,6 +35,8 @@
 #endif
 #endif
 #include <algorithm>
+#include <cstdio>
+#include <filesystem>
 #include <cstring>
 #include <cmath>
 #include <string_view>
@@ -410,6 +412,8 @@ TEST_SUITE("TerrainPresentation")
         glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.discovered=true});auto &map=fixture.game.map;
         for(int y=0;y<32;++y)for(int x=0;x<32;++x)
             map.setVertexTerrain(x,y,((x+y)%5==0)?WATER:((x*3+y)%7==0)?SAND:GRASS);
+        // Dark water's surf advances in steps; times 19 and 25 fall inside one.
+        for(int y=10;y<14;++y)for(int x=20;x<24;++x)map.setVertexTerrain(x,y,DARK_WATER);
         SceneMap scene;glob2test::observeMap(map,scene);
         SoftwareTerrainCache retained;
         unsigned comparisons=0;
@@ -1654,6 +1658,51 @@ TEST_SUITE("TerrainPresentation")
 #include <chrono>
 TEST_SUITE("TerrainValidation")
 {
+	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5,
+										 .hDec = 5,
+										 .discovered = true,
+										 .loadDefaultRace = true,
+										 .header = true,
+										 .seed = 7331});
+		auto &map = fixture.game.map;
+		// A sand-rimmed grass island with an irregular coast, a deep-water
+		// channel and a dark-water pool, all in open water.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const double dx = x - 15.5, dy = (y - 11.5) * 1.3;
+				const double angle = std::atan2(dy, dx), distance = std::sqrt(dx * dx + dy * dy);
+				const double coast = 9 + 1.6 * std::sin(3 * angle) + 0.9 * std::cos(5 * angle + 1);
+				map.paintCell(x, y, distance < coast ? (distance < coast - 3 ? GRASS : SAND)
+													 : x > 27 ? DEEP_WATER : WATER);
+				if (x >= 2 && x < 5 && y >= 17 && y < 21)
+					map.paintCell(x, y, DARK_WATER);
+				if (x >= 5 && x < 7 && y >= 17 && y < 21)
+					map.paintCell(x, y, SAND);
+			}
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto &catalog = compositor.catalog();
+		const int period = catalog.materials[catalog.find("water")].surf.period;
+		REQUIRE(period > 0);
+		const auto directory = glob2test::artifactDir() / "surf";
+		std::filesystem::create_directories(directory);
+		constexpr int frames = 24;
+		for (int frame = 0; frame < frames; ++frame)
+		{
+			fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene,
+										frame * period / frames);
+			char name[32];
+			std::snprintf(name, sizeof name, "surf-%02d.png", frame);
+			REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(), (directory / name).string().c_str()));
+		}
+	}
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(

@@ -178,11 +178,12 @@ class WebGPUDevice final:public RenderDevice {
                 if(p.target->descriptor.alpha==TextureDescriptor::Alpha::Opaque)throw std::invalid_argument("WebGPU terrain explicit alpha required");
                 if(compose.coverage)for(const auto&sample:compose.coverage->samples)if(sample.slots>=64||(sample.slots&3)>=compose.paletteCount||((sample.slots>>2)&3)>=compose.paletteCount||((sample.slots>>4)&3)>=compose.paletteCount)throw std::invalid_argument("WebGPU terrain selector");
                 if(compose.coverage&&(compose.coverage->width!=size||compose.coverage->height!=size))throw std::invalid_argument("WebGPU coverage size mismatch");
-                draw.kind=4;std::memcpy(draw.viewport,&r,sizeof r);std::array<std::uint32_t,36> params{};params[0]=size;params[1]=compose.paletteCount;params[3]=compose.coverage?1:0;
+                draw.kind=4;std::memcpy(draw.viewport,&r,sizeof r);std::array<std::uint32_t,88> params{};params[0]=size;params[1]=compose.paletteCount;params[3]=compose.coverage?1:0;
                 const bool pma=p.target->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied;if(divisor==1&&pma)params[3]|=2;
                 for(unsigned i=0;i<4;++i){const auto&source=compose.materials[i];if(source&&i<compose.paletteCount){if(source->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied)throw std::invalid_argument("WebGPU terrain straight source required");if(source->handle==p.target->handle)throw std::invalid_argument("WebGPU terrain target alias");auto&a=allocation(source,false,false);if(a.target)throw std::invalid_argument("WebGPU terrain immutable source required");const auto id=a.identity;std::memcpy(draw.world+i,&id,4);params[2]|=1u<<i;}
                     const auto&seam=compose.seams[i];const std::int32_t geometry[]{seam.height,seam.cast,seam.castWidth,seam.fringe},fringe[]{seam.fringeWidth,seam.fringeColor[0],seam.fringeColor[1],seam.fringeColor[2]};std::memcpy(params.data()+4+i*4,geometry,16);std::memcpy(params.data()+20+i*4,fringe,16);
                 }
+                const auto surf=surfUniforms(compose);std::memcpy(params.data()+36,surf.data(),sizeof surf);
                 const std::uint32_t fields[]{compose.coverage?mask(compose.coverage).identity:0,size,divisor,unsigned(pma)};std::memcpy(draw.world+4,fields,sizeof fields);
                 const std::uint32_t offset=uniforms.size();std::memcpy(draw.bounds,&offset,4);const auto*data=reinterpret_cast<const std::byte*>(params.data());uniforms.insert(uniforms.end(),data,data+sizeof params);
             }

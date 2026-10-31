@@ -37,6 +37,28 @@ struct Seam
 	int fringe = 0, fringeWidth = 0; // Q8 tint strength and Q8 pixel width.
 	std::array<unsigned char, 3> fringeColor{255, 255, 255};
 };
+// Animated shoreline where a liquid ("surf") material meets any material
+// without surf: lighter shallows on the liquid side, a darker wet band on the
+// land side, and a foam line that washes up the land and back. Widths and reach
+// are Q8 logical pixels from the coverage margin, which is exact only within
+// eight pixels of the edge, so every band must end inside that distance.
+struct Surf
+{
+	int period = 0;                  // Animation ticks per wash; zero disables surf.
+	int ticks = 1;                   // Animation ticks per surf update (and page re-blend).
+	int reach = 0;                   // Q8 pixels the wash climbs onto the land.
+	int shallow = 0, shallowWidth = 0; // Q8 tint strength and Q8 pixel width.
+	int wet = 0, wetWidth = 0;         // Q8 darkening strength and Q8 pixel width.
+	int foam = 0, foamWidth = 0;       // Q8 strength and Q8 pixel half-width.
+	std::array<unsigned char, 3> shallowColor{}, foamColor{255, 255, 255};
+};
+// Applies surf to one composed sample. value holds the composed channels and
+// is updated in place. surfSide is true when the sample's dominant material is
+// the surf one. wx and wy are the sample's non-negative Q8 world pixel
+// coordinates. The integer arithmetic is mirrored exactly by
+// libgag/shaders/terrain-compose-fragment.glsl.
+void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
+			   unsigned value[3]);
 // Raised objects drawn over a material's cells with the resources, in screen
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames
@@ -65,6 +87,7 @@ struct Material
 	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
+	Surf surf;
 };
 struct PairTreatment
 {
@@ -143,7 +166,14 @@ class PreparedCoverage
 	bool hasBorder = false;
 	std::array<MaterialId, 2> borderMaterials{};
 	float borderBlendScale = 65536;
+	// Nearest contour segment (1-based, 0 when beyond the seam reach) at two-pixel
+	// lattice points from -4 to 36 logical pixels. Samples search only the
+	// segments their lattice corners name, not the whole curve.
+	static constexpr int NearestLattice = 21;
+	std::array<std::uint8_t, NearestLattice * NearestLattice> nearestSegment{};
 	void prepareBorders(const Catalog &, const Recipe &);
+	void prepareNearestSegments();
+	unsigned borderMargin(Point sample) const;
 	Coverage patchCoverage(int px, int py, const std::array<int, 2> *displacement = nullptr) const;
 	struct WarpLayer
 	{

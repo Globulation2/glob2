@@ -24,6 +24,46 @@ vec4 terrainUnpack(uint packedColor) {
     if ((params.w & 2u) != 0u) bytes.rgb = (bytes.rgb * bytes.a + 127u) / 255u;
     return vec4(bytes) / 255.0;
 }
+int terrainSurfBump(int u) {
+    int x = u < 512 ? u : 1024 - u;
+    return x * x * (1536 - 2 * x) / 524288;
+}
+uvec3 terrainSurfMix(uvec3 value, int packedColor, int amount) {
+    uvec3 surfColor = uvec3((uint(packedColor) >> 16u) & 255u,
+        (uint(packedColor) >> 8u) & 255u, uint(packedColor) & 255u);
+    return (value * uint(256 - amount) + surfColor * uint(amount)) / 256u;
+}
+// CPU reference: TerrainVisual::applySurf in src/render/terrain/TerrainMaterials.cpp.
+uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value) {
+    ivec4 shape = surfShape[slot], band = surfBand[slot], colors = surfColor[slot];
+    if (margin >= (surfSide ? max(band.y, shape.w) : max(band.w, shape.y + shape.w))) return value;
+    uint time = uint(surfPlace.z) - uint(surfPlace.z) % uint(colors.z);
+    int phase = int(time % uint(shape.x) * 1024u / uint(shape.x));
+    int offset = terrainSurfBump((world.x >> 7) & 1023) + terrainSurfBump((world.y >> 7) & 1023) +
+        terrainSurfBump(((world.x + world.y) >> 6) & 1023);
+    int u = (phase + offset) & 1023;
+    int rise = u < 320 ? u * 512 / 320 : 512 + (u - 320) * 512 / 704;
+    int run = shape.y * terrainSurfBump(rise) / 256;
+    value = min(value, uvec3(255u));
+    int front;
+    if (surfSide) {
+        if (margin < band.y)
+            value = terrainSurfMix(value, colors.x, band.x * (band.y - margin) / band.y);
+        front = margin + run;
+    } else {
+        if (margin < band.w)
+            value = value * uint(256 - band.z * (band.w - margin) / band.w) / 256u;
+        if (margin < run)
+            value = terrainSurfMix(value, colors.x, band.x * (run - margin) / (2 * run));
+        front = margin < run ? run - margin : margin - run;
+    }
+    if (front < shape.w) {
+        int breakup = 96 + (terrainSurfBump(((world.x * 5) >> 7) & 1023) +
+            terrainSurfBump((((world.y * 7) >> 7) + phase) & 1023)) * 160 / 512;
+        value = terrainSurfMix(value, colors.y, shape.z * (shape.w - front) / shape.w * breakup / 256);
+    }
+    return value;
+}
 void main() {
     ivec2 pixel = clamp(ivec2(uv * float(params.x)), ivec2(0), ivec2(int(params.x)-1));
     if ((params.w & 1u) == 0u) {
@@ -69,6 +109,13 @@ void main() {
     // Preserve unsigned subtraction/multiplication wrapping and packed-ARGB OR:
     // legacy fringe overflow may carry into neighboring channels or alpha.
     value += (uvec3(fringe.yzw) - value) * uint(tintAmount) / 256u;
+    bool surfSelf = surfShape[dominant].x > 0, surfOther = surfShape[neighbor].x > 0;
+    if (surfSelf != surfOther) {
+        // Q8 world pixels of the sample centre, as the coverage samples it.
+        int size = int(params.x);
+        ivec2 world = surfPlace.xy + (2 * pixel + 1) * 4096 / size;
+        value = terrainSurf(surfSelf ? dominant : neighbor, surfSelf, margin, world, value);
+    }
     uint packedColor = (((alpha + 32768u) / 65536u) << 24u) |
         (value.r << 16u) | (value.g << 8u) | value.b;
     color = terrainUnpack(packedColor);
