@@ -137,7 +137,7 @@ route by language code; changing languages invalidates affected font caches.
 Do not send presentation-form Arabic through the logical shaping route. The
 FontKerning suite checks raster sizes, reloads and language switching.
 
-Tutorial panels use the active font’s measured line height. Desktop instructions
+Legacy scenario-message panels use the active font’s measured line height. Desktop messages
 retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
 width and text-size inputs. Drawing, scroll limits and hit areas share the same
@@ -219,7 +219,9 @@ Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
 wrapper at several authored sizes and raster scales. `screen` adds a screen name
 (`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
-`gameplay` or `tutorial` and captures the real engine and menu dialog. Inputs are
+`gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
+the real engine and menu dialog. Tutorial IDs must belong to the current shipped
+lesson catalog. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the

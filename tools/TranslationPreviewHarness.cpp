@@ -404,6 +404,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             if (readJson(root / entry["definition"].get<std::string>())["id"] == lesson) found = true;
         require(found, "Known production tutorial lesson");
     }
+    const std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
     require(SDL_setenv_unsafe("GLOB2_SIM_THREAD", "0", 1) == 0, "Use serial scripted preview execution");
     GlobalContainer globals("glob2-translation-game-preview");
     globalContainer = &globals;
@@ -509,7 +510,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h}});
         };
-        capture(kind);
+        capture(captureKind);
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -530,7 +531,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             require(box.plus() == afterPlus.plus() && box.middleWidth == afterPlus.middleWidth &&
                 box.x == afterPlus.x && box.y == afterPlus.y && box.width == afterPlus.width,
                 "Zoom button hit geometry stays stable after zoom changes");
-            capture(kind + "-zoom-plus");
+            capture(captureKind + "-zoom-plus");
             require(clickZoom(plusX, hitY), "Repeated plus uses same screen point");
             require(std::abs(gui.camera.zoom - std::min(MapCamera::MAX_ZOOM, zoom * 1.21)) < 1e-8,
                 "Repeated plus keeps targeting plus");
@@ -539,7 +540,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             require(gui.camera.zoom == 1.0, "Middle control restores100 percent");
             require(clickZoom(middleX, hitY), "Fit stop click");
             require(std::abs(gui.camera.zoom - gui.camera.minimumZoom()) < 1e-8, "Middle control fits whole map");
-            capture(kind + "-zoom-fit");
+            capture(captureKind + "-zoom-fit");
             result["zoom_control_probe"] = {{"x", box.x}, {"y", box.y}, {"width", box.width},
                 {"height", box.height}, {"middle_width", box.middleWidth}, {"plus_offset", box.plus()},
                 {"repeated_plus_point", {plusX, hitY}}, {"fit_zoom", gui.camera.zoom},
@@ -552,21 +553,21 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             TranslationPreviewAccess::rebaseViewport(gui);
         }
         TranslationPreviewAccess::openMenu(gui);
-        capture(kind + "-dialog");
+        capture(captureKind + "-dialog");
         TranslationPreviewAccess::closeMenu(gui);
         gui.isRunning = false;
         engine.finishSession();
         abort.active = false;
         engine.restoreCursor();
     }
-    writeJson(output / (kind + ".json"), result);
+    writeJson(output / (captureKind + ".json"), result);
     globalContainer = nullptr;
 }
 } // namespace
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|tutorial");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
