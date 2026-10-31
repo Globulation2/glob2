@@ -5546,14 +5546,6 @@ Limigu desegnadon en la tuta aplikaĵo. Pli malaltaj valoroj reduktas la desegna
 Glacio
 [road]
 Pado
-[experiment ice-terrain]
-Glacia tereno
-[experiment ice-terrain help]
-Aldonas glacion al la mapredaktilo. Teraj unuoj moviĝas je duona rapido kaj perdas unu sanpoenton ĉiun 32-an simulpaŝon sur glacio. Glacio ne povas enhavi konstruaĵojn aŭ rimedojn.
-[experiment road-terrain]
-Pada tereno
-[experiment road-terrain help]
-Aldonas eluzitajn padojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapideco. Padoj permesas konstruaĵojn, sed ne rimedojn. Flugantaj unuoj ne estas influataj.
 [experiment markets-v2]
 Merkatoj V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Fekunda grundo
 Profunda akvo
 [terrain group void]
 Malpleno
-[experiment obstacle-terrain]
-Obstakla tereno
-[experiment obstacle-terrain help]
-Aldonas rokegojn, heĝojn kaj densejojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, kaj ili haltigas pafaĵojn; flugantaj unuoj pasas super ili. Ili enhavas nek konstruaĵojn nek rimedojn.
-[experiment ridge-terrain]
-Kresta tereno
-[experiment ridge-terrain help]
-Aldonas rokajn krestojn kaj elstarajn rokojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, sed turoj pafas super ili kaj flugantaj unuoj pasas. Ili enhavas nek konstruaĵojn nek rimedojn.
-[experiment barren-terrain]
-Malfekunda grundo
-[experiment barren-terrain help]
-Aldonas teron, argilon, gruzon kaj florajn herbejojn al la mapredaktilo. Konstruaĵoj povas stari sur ili, nenio kreskas sur aŭ apud ili, kaj ili ne kalkuliĝas kiel bordo.
-[experiment rough-terrain]
-Malglata grundo
-[experiment rough-terrain help]
-Aldonas koton, marĉon, profundan neĝon kaj rokrompaĵojn al la mapredaktilo. Teraj unuoj moviĝas je ĉirkaŭ du trionoj de la rapido. Malglata grundo enhavas nek konstruaĵojn nek rimedojn.
-[experiment path-terrain]
-Pada tereno
-[experiment path-terrain help]
-Aldonas terpadojn kaj tabulpadojn al la mapredaktilo. Kiel sur vojetoj, teraj unuoj moviĝas je duobla rapido kaj konstruaĵoj estas permesataj, sed nenio kreskas.
-[experiment lava-terrain]
-Lafa tereno
-[experiment lava-terrain help]
-Aldonas lafon kaj braĝokampojn al la mapredaktilo. Teraj unuoj ne povas eniri ilin; flugantaj unuoj rapide perdas sanon dum la transiro. Pafaĵoj pasas super ili.
-[experiment fertile-terrain]
-Fekunda grundo
-[experiment fertile-terrain help]
-Aldonas argilhumusan grundon, muskon kaj printempajn herbejojn al la mapredaktilo. Ili subtenas konstruaĵojn kaj kultivaĵojn kaj irigacias la ĉirkaŭan teron pli forte ol akvo.
-[experiment deep-water-terrain]
-Profunda akvo
-[experiment deep-water-terrain help]
-Aldonas profundan kaj malhelan akvon al la mapredaktilo. Naĝantoj transiras ĝin pli malrapide, neniuj algoj kreskas en ĝi, kaj ĝi ankoraŭ irigacias proksimajn kampojn.
-[experiment void-terrain]
-Malplena tereno
-[experiment void-terrain help]
-Aldonas truojn kaj abismojn al la mapredaktilo. Nenio povas trairi ilin, eĉ ne flugantaj unuoj, kaj pafaĵoj haltas ĉe ilia rando.
 [terrain group custom]
 Propra
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Vundas flugantajn unuojn
 Elektu penikon. La terenoj en ĉiu grupo havas la samajn regulojn kaj malsamas nur laŭ aspekto.
 [terrain rule algae grow]
 Algoj kreskas
-[terrain palette experiments hint]
-Elektu penikon. Pliaj terengrupoj aperas ĉi tie kiam iliaj eksperimentoj estas ŝaltitaj sub Agordoj > Eksperimentoj.
 [brush valid on %0]
 Valida sur: %0
 [brush valid nowhere]

@@ -150,7 +150,6 @@ class MapGeneratorDefaultsTest
 						++lava;
 				}
 			REQUIRE(lava > 0);
-			REQUIRE(repeat.map.requiredTerrainExperiments().has(ExperimentId::LavaTerrain));
 			for (int y = 0; y < repeat.map.getH(); ++y)
 				for (int x = 0; x < repeat.map.getW(); ++x)
 					if (repeat.map.vertexTerrainAt(x, y) == LAVA ||

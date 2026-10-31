@@ -13,6 +13,9 @@ class TextMeasurer
 	virtual ~TextMeasurer() = default;
 	virtual int width(FontRole role, const std::string &text) const = 0;
 	virtual int lineHeight(FontRole role) const = 0;
+	// Positive UTF-8 byte ends of indivisible shaping clusters. Test measurers
+	// default to code points; production adapters use the actual shaped font.
+	virtual std::vector<std::size_t> clusterEnds(FontRole role, const std::string &text) const;
 };
 
 // Fixed-advance measurer for tests: every glyph is `glyphWidth` wide.
@@ -30,13 +33,15 @@ class FixedTextMeasurer : public TextMeasurer
 	int glyphWidth, height;
 };
 
-// UTF-8 glyph stepping shared by every text control.
+// UTF-8 code-point stepping used by existing text controls. Shaping-cluster
+// boundaries for wrapping/ellipsis are queried separately through the measurer.
 std::size_t nextGlyph(const std::string &text, std::size_t at);
 std::size_t previousGlyph(const std::string &text, std::size_t at);
 std::size_t glyphCount(const std::string &text);
 
-// Word wrap that also breaks unspaced runs and keeps CJK closing punctuation
-// with its preceding character. Explicit newlines always break.
+// Word wrap that breaks unspaced runs at shaping-cluster boundaries and keeps CJK closing punctuation
+// with its preceding character. Explicit newlines always break. A cluster wider
+// than the available width remains whole and can overflow; layout reports that width.
 std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 								  const std::string &text, int width);
 // Truncate with an ellipsis when the text is wider than `width`.

@@ -2,8 +2,6 @@
 
 #include "Game.h"
 #include "ExperimentalFeatures.h"
-#include "TerrainExperiments.h"
-#include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
@@ -34,8 +32,6 @@ void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPl
 		if (!game.map.validTerrainType(material) ||
 			!game.map.terrainPresentation(material).editorSelectable)
 			return;
-		if (const auto requirement=terrainExperimentKey(material);
-            requirement && !experimentEnabled(*requirement)) return;
         type = TerrainSelector::selectorFor(material);
     }
     else

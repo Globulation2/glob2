@@ -144,5 +144,55 @@ class TtfKerningPatchTests(unittest.TestCase):
             self.assertNotIn('pos->x_offset += delta.x;', text)
 
 
+class ShapingBuildTests(unittest.TestCase):
+    def test_emscripten_c_and_cxx_agree_on_wasm_longjmp(self):
+        # HarfBuzz is C++, unlike the previous SDL dependencies. A C-only
+        # SUPPORT_LONGJMP flag leaves C++ at Emscripten SjLj, incompatible with
+        # -fwasm-exceptions before HarfBuzz can compile.
+        for threaded in (False, True):
+            with self.subTest(threaded=threaded), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                lock = root / 'sdl3-versions.json'
+                lock.write_text(json.dumps({'harfbuzz': {'archive': 'harfbuzz-10.1.0.tar.xz'}}))
+                (root / 'sdl3-vendored.json').write_text('{}')
+                work = root / 'work'
+                (work / 'harfbuzz-10.1.0').mkdir(parents=True)
+                with mock.patch.object(module, 'LOCK', lock), \
+                        mock.patch.object(module, 'download'), \
+                        mock.patch.object(module.subprocess, 'run') as run:
+                    module.build(root / 'prefix', work, emscripten='/sdk', threaded=threaded)
+                configure = next(call.args[0] for call in run.call_args_list
+                                 if isinstance(call.args[0], list) and call.args[0][0] == '/sdk/emcmake')
+                cflags = next(arg.split('=', 1)[1] for arg in configure if arg.startswith('-DCMAKE_C_FLAGS='))
+                cxxflags = next(arg.split('=', 1)[1] for arg in configure if arg.startswith('-DCMAKE_CXX_FLAGS='))
+                self.assertIn('-sSUPPORT_LONGJMP=wasm', cflags.split())
+                self.assertIn('-sSUPPORT_LONGJMP=wasm', cxxflags.split())
+                self.assertIn('-fwasm-exceptions', cxxflags.split())
+                self.assertEqual('-pthread' in cflags.split(), threaded)
+                self.assertEqual('-pthread' in cxxflags.split(), threaded)
+                self.assertIn('-DSDLTTF_HARFBUZZ=ON', configure)
+
+    def test_native_shaper_can_link_into_shared_sdl_ttf(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            lock = root / 'sdl3-versions.json'
+            lock.write_text(json.dumps({'harfbuzz': {'archive': 'harfbuzz-10.1.0.tar.xz'}}))
+            work = root / 'work'
+            (work / 'harfbuzz-10.1.0').mkdir(parents=True)
+            with mock.patch.object(module, 'LOCK', lock), \
+                    mock.patch.object(module, 'download'), \
+                    mock.patch.object(module.platform, 'system', return_value='Linux'), \
+                    mock.patch.object(module.subprocess, 'run') as run:
+                module.build(root / 'prefix', work)
+            configure = next(call.args[0] for call in run.call_args_list
+                             if call.args[0][:1] == ['cmake'] and '-S' in call.args[0])
+            self.assertIn('-DCMAKE_POSITION_INDEPENDENT_CODE=ON', configure)
+
+    def test_shaper_is_built_before_sdl_ttf(self):
+        versions = json.loads(module.LOCK.read_text())
+        self.assertLess(list(versions).index('harfbuzz'), list(versions).index('SDL_ttf'))
+        self.assertEqual(versions['harfbuzz']['version'], '10.1.0')
+
+
 if __name__ == '__main__':
     unittest.main()

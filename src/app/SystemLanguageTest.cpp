@@ -72,11 +72,43 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("").empty());
 	}
 
+	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
+	{
+		CHECK(code("hi", "IN") == "hi");
+		CHECK(code("tl", "PH") == "fil");
+		CHECK(code("jw") == "jv");
+		CHECK(code("yo", "NG") == "yo");
+		CHECK(code("pa", "PK") == "pa-arab");
+		CHECK(code("pa", "IN") == "pa-guru");
+		CHECK(code("pa-Guru", "PK") == "pa-guru");
+		CHECK(code("pa-Arab", "IN") == "pa-arab");
+		CHECK(code("pa", "Arab_PK") == "pa-arab");
+		CHECK(code("pa-Deva").empty());
+		CHECK(code("pa-Arab-Guru").empty());
+		CHECK(code("fuc-Latn") == "fuc");
+		CHECK(code("ff-Latn", "SN") == "fuc");
+		CHECK(code("ff", "MR") == "fuc");
+		CHECK(code("ff", "Latn_SN") == "fuc");
+		CHECK(code("ff", "NG").empty());
+		CHECK(code("ff-Adlm", "SN").empty());
+		CHECK(code("ff-Arab", "SN").empty());
+		CHECK(code("fuc-Arab").empty());
+		CHECK(code("jv-Java").empty());
+		CHECK(code("su-Sund").empty());
+		CHECK(code("hi-Latn").empty());
+		CHECK(code("hi-u-nu-latn") == "hi");
+		CHECK(code("hi-x-latn") == "hi");
+		CHECK(code("pa-IN-u-nu-arab") == "pa-guru");
+		CHECK(code("uz-Cyrl").empty());
+		CHECK(code("sd-Deva").empty());
+	}
+
 	TEST_CASE("the first available preference wins, then English")
 	{
 		auto all = [](const std::string &) { return true; };
-		CHECK(SystemLanguage::choose({{"hi", "IN"}, {"de", "DE"}, {"fr", ""}}, all) == "de");
-		CHECK(SystemLanguage::choose({{"hi", "IN"}}, all) == "en");
+		CHECK(SystemLanguage::choose({{"xx", ""}, {"de", "DE"}, {"fr", ""}}, all) == "de");
+		CHECK(SystemLanguage::choose({{"xx", ""}}, all) == "en");
+		CHECK(SystemLanguage::choose({{"hi", "IN"}, {"de", "DE"}}, [](const std::string &c) { return c == "de"; }) == "de");
 		CHECK(SystemLanguage::choose({}, all) == "en");
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}

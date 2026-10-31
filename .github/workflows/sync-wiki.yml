@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish wiki updates using the configured bot credentials
+        description: Publish wiki updates using the configured wiki credentials
         type: boolean
         default: false
 
@@ -42,6 +42,6 @@ jobs:
           (github.event_name == 'schedule' && vars.WIKI_PUBLISH_ENABLED == 'true') ||
           (github.event_name == 'workflow_dispatch' && inputs.publish)
         env:
-          WIKI_BOT_USERNAME: ${{ secrets.WIKI_BOT_USERNAME }}
-          WIKI_BOT_PASSWORD: ${{ secrets.WIKI_BOT_PASSWORD }}
+          WIKI_USERNAME: ${{ secrets.WIKI_USERNAME }}
+          WIKI_PASSWORD: ${{ secrets.WIKI_PASSWORD }}
         run: python3 tools/release/sync_wiki.py --publish

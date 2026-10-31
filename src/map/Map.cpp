@@ -182,33 +182,6 @@ bool Map::projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const
 	});
 }
 
-ExperimentSet Map::requiredTerrainExperiments() const
-{
-	ExperimentSet required;
-	const auto &registry = terrainRegistry();
-	for (unsigned t = 0; t < registry.size(); ++t)
-	{
-		if (!terrainCounts[t])
-			continue;
-		auto type = static_cast<TerrainType>(t);
-		// A runtime definition with a gated group's exact profile plays that
-		// group's mechanic, so it declares the same experiment. Definitions with
-		// their own profile stay ungated, as every custom type was before.
-		if (t >= TERRAIN_COUNT)
-		{
-			unsigned builtin = 0;
-			while (builtin < TERRAIN_COUNT &&
-				   registry.propertyIndex(static_cast<TerrainType>(builtin)) != registry.propertyIndex(type))
-				++builtin;
-			if (builtin == TERRAIN_COUNT)
-				continue;
-			type = static_cast<TerrainType>(builtin);
-		}
-		if (const auto experiment = terrainExperiment(type)) required.set(*experiment);
-	}
-	return required;
-}
-
 void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 {
 	const auto &rule = cellRuleData[ruleIndex];
@@ -462,12 +435,6 @@ void Map::finishTerrainEdit()
 			}
 	}
 	terrainEditChanged = terrainRoutesChanged = false;
-	if (game)
-	{
-		game->mapHeader.requiredTerrainExperiments = requiredTerrainExperiments();
-		for (const auto& definition : experimentDefinitions())
-			if (game->mapHeader.requiredTerrainExperiments.has(definition.id)) game->gameHeader.getExperiments().set(definition.id);
-	}
 }
 
 void Map::paintCell(size_t index, TerrainType type)

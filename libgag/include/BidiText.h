@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace GAGCore
 {
@@ -13,4 +14,9 @@ namespace GAGCore
 	//! (implicit levels only, one line, mirrored brackets) orders the result for
 	//! display. Text without right-to-left characters is returned unchanged.
 	std::string visualOrder(const std::string &logical);
+
+	//! Logical UTF-8 runs in visual order, for a shaper that handles RTL itself.
+	//! Unlike visualOrder this never converts Arabic to presentation forms.
+	struct LogicalBidiRun { std::string text; bool rtl; };
+	std::vector<LogicalBidiRun> logicalBidiRuns(const std::string &logical);
 }

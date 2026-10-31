@@ -71,7 +71,7 @@ def objects(entries, prefix):
             compile_env.Append(CPPDEFINES=options.get('defines', []))
         name = source.lstrip('#').replace('/', '_').rsplit('.', 1)[0]
         targets = compile_env.Object(prefix + name + '.o', source_node(source))
-        if source.endswith('TestMain.cpp'):
+        if source.endswith(('TestMain.cpp', 'TranslationPreviewHarness.cpp')):
             compile_env.Depends(targets, provenance_header)
         out += targets
     return out
