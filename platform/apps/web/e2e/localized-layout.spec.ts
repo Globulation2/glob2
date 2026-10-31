@@ -52,6 +52,28 @@ test('long localized controls fit phone columns and preserve desktop layout', as
         await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
         await expect(page.locator('html')).toHaveAttribute('lang', 'bg');
+        if (route === '/sets/new') {
+          const addLabel = (key: string) => {
+            const template = messages['Add {slot0}'];
+            const kind = messages[key];
+            if (!template || !kind) throw new Error('Missing translated set-entry label');
+            return template.replace('{slot0}', kind);
+          };
+          await expect(
+            page.getByRole('button', { name: addLabel('Terrain'), exact: true }),
+          ).toBeVisible();
+          await page
+            .locator('.set-tabs')
+            .getByRole('button', { name: messages['Resources'], exact: true })
+            .click();
+          await expect(
+            page.getByRole('button', { name: addLabel('Resource'), exact: true }),
+          ).toBeVisible();
+          await page
+            .locator('.set-tabs')
+            .getByRole('button', { name: messages['Terrain'], exact: true })
+            .click();
+        }
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
         ).toBeLessThanOrEqual(1);

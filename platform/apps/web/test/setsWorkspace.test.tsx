@@ -72,9 +72,19 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+it('adds terrain and resource entries to their canonical package collections', async () => {
+  open();
+  fireEvent.click(await screen.findByRole('button', { name: 'Add Terrain' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Resources', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'Add Resource' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
+  await waitFor(() => expect(draft?.package.terrains).toHaveLength(1));
+  expect(draft?.package.resources).toHaveLength(1);
+});
+
 it('does not reuse a remaining terrain key after deletion and addition', async () => {
   open();
-  const add = await screen.findByRole('button', { name: 'Add terrain' });
+  const add = await screen.findByRole('button', { name: 'Add Terrain' });
   fireEvent.click(add);
   fireEvent.click(add);
   fireEvent.click(screen.getAllByRole('button', { name: 'Custom Grass' })[0]!);
@@ -95,7 +105,7 @@ it('keeps a typed comma while entering multiple tags', async () => {
 });
 it('retains invalid JSON across entry switches and prevents saving hidden invalid text', async () => {
   open();
-  const add = await screen.findByRole('button', { name: 'Add terrain' });
+  const add = await screen.findByRole('button', { name: 'Add Terrain' });
   fireEvent.click(add);
   fireEvent.change(screen.getByLabelText('Name', { exact: true }), {
     target: { value: 'First terrain' },
@@ -108,7 +118,7 @@ it('retains invalid JSON across entry switches and prevents saving hidden invali
   const json = within(details).getByRole('textbox');
   fireEvent.change(json, { target: { value: '[unfinished' } });
   expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Add terrain' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Add Terrain' }));
   fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
   await screen.findByText('Correct the invalid JSON before saving.');
   fireEvent.click(screen.getByRole('button', { name: 'First terrain' }));

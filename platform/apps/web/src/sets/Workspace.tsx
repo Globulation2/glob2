@@ -598,7 +598,10 @@ export function SetEditor({
               </select>
             </label>
             <button disabled={busy || published} onClick={addEntry}>
-              <RichMessage source={'Add {slot0}'} slots={{ slot0: kind }} />
+              <RichMessage
+                source={'Add {slot0}'}
+                slots={{ slot0: kind === 'terrain' ? t('Terrain') : t('Resource') }}
+              />
             </button>
             <ul className="set-entry-list">
               {entries.map((e, i) => (
