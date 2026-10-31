@@ -264,7 +264,8 @@ the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the
 whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures the
 production map editor, terrain controls and menu on a blank map without stepping
-the simulation. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
+the simulation. Setup and menu navigation use controlled harness friend access;
+captures use the production editor drawing path. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
 inspect the phone presentation. These resized desktop captures do not establish
 rendering on an actual mobile device.
 

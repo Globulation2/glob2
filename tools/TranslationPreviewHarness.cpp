@@ -65,6 +65,22 @@ struct TranslationPreviewAccess
         gui.viewportY = gui.camera.tileY();
         rebaseViewport(gui);
     }
+    static void initializeBlankEditor(MapEdit &editor) {
+        // Same owner-side blank-map setup as EditorActionCoverageTest.
+        editor.game.map.setSize(5, 5, GRASS);
+        editor.game.map.setGame(&editor.game);
+        editor.game.addTeam();
+        editor.game.teams[0]->race.loadDefault();
+        for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
+            editor.game.map.clearImmobileUnit(x, y);
+        editor.viewportX = editor.viewportY = 0;
+        editor.updateCamera();
+        editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+        editor.preparePresentation();
+    }
+    static void showEditorTerrain(MapEdit &editor) { editor.performAction("switch to terrain view"); }
+    static void openEditorMenu(MapEdit &editor) { editor.performAction("open menu screen"); }
+    static void closeEditorMenu(MapEdit &editor) { editor.performAction("close menu screen"); }
 };
 namespace
 {
@@ -428,24 +444,14 @@ void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         {"map_setup", "32 by 32 grass tiles, one default-race team; no simulation steps"},
         {"captures", Json::array()},
         {"limits", {"Production MapEdit drawEditing on a local blank map; not a native mobile-platform claim.",
-            "Menu actions are invoked through public performAction, not physical pointer input.",
+            "Setup and menu navigation use controlled preview friend access, not physical pointer input.",
             "Dock/dialog control bounds do not independently establish text fitting; phone tray bounds are not inventoried.",
             "No save/load, map generation, brush placement or online service is exercised."}}};
     {
         FrontendTheme theme;
         FrontendScope editorTheme(false);
         MapEdit editor;
-        // Same owner-side blank-map setup as EditorActionCoverageTest.
-        editor.game.map.setSize(5, 5, GRASS);
-        editor.game.map.setGame(&editor.game);
-        editor.game.addTeam();
-        editor.game.teams[0]->race.loadDefault();
-        for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
-            editor.game.map.clearImmobileUnit(x, y);
-        editor.viewportX = editor.viewportY = 0;
-        editor.updateCamera();
-        editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
-        editor.preparePresentation();
+        TranslationPreviewAccess::initializeBlankEditor(editor);
         editor.beginEditing();
         require(!GAGCore::phonePresentationRequested() || editor.usesPhone(),
             "Requested phone editor presentation must be active");
@@ -491,12 +497,12 @@ void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         };
         capture("editor");
         const auto beforeNavigation = editor.game.checkSum();
-        editor.performAction("switch to terrain view");
+        TranslationPreviewAccess::showEditorTerrain(editor);
         capture("editor-terrain");
-        editor.performAction("open menu screen");
+        TranslationPreviewAccess::openEditorMenu(editor);
         require(editor.hasDialog(), "Production editor menu opened");
         capture("editor-dialog");
-        editor.performAction("close menu screen");
+        TranslationPreviewAccess::closeEditorMenu(editor);
         require(beforeNavigation == editor.game.checkSum(), "Editor UI navigation must preserve simulation checksum");
     }
     writeJson(output / "editor.json", result);
