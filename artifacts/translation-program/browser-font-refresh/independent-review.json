@@ -1,0 +1,28 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "candidate_sha256": {
+    "font": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+    "metadata": "aaf60a742f428dda4c5eabd459e9a11482d19c9e9fd4d6961ba72a3484c09b52"
+  },
+  "font_byte_identical": true,
+  "exact_diff": [
+    [
+      "browser/assets/sans-core.ttf",
+      "languageNames",
+      "dc369c70b19b6901dd8cc6977bf74a9bd92ac264e7064b15a4e3d803baa42e1d",
+      "52510009061facfcc55faf77bf0f38b6f086eb43f86fba480c34b7fe11ddef6b"
+    ]
+  ],
+  "source_root_unchanged": true,
+  "test_method": "4realpreviouslyfailing unittestcases; onlytestmoduleROOT reboundtoignoredvirtualroot whose solecandidateoverrideis browser/assets/sources.json. Productionfiles untouched.",
+  "tests": [
+    "BrowserCopyTests.test_a_copy_stands_in_for_a_re_encoded_export_when_smaller",
+    "BrowserCopyTests.test_a_stale_copy_falls_back_to_the_original",
+    "BrowserCopyTests.test_png_derivative_is_rejected_and_original_profile_keeps_font",
+    "WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font"
+  ],
+  "run": 4,
+  "failures": 0,
+  "errors": 0,
+  "status": "passed"
+}

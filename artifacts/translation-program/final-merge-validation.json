@@ -1,0 +1,93 @@
+{
+  "status": "merged; agent-reviewed catalogs with explicit platform limits",
+  "language_pr": {
+    "number": 1305,
+    "merge_commit": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1"
+  },
+  "infrastructure_pr": {
+    "number": 1304,
+    "merge_commit": "a4dfcf9bf82bb128554581a6adba676e8cca644f"
+  },
+  "tested_language_head": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+  "source_tree_sha256": "a8423830108845eb0a57490c8edc45e860f71608cea177ce47ce67624ca323f7",
+  "locales": [
+    "hi",
+    "ur",
+    "sw"
+  ],
+  "keys_per_locale": {
+    "native": 3393,
+    "online": 2836
+  },
+  "semantic_review": {
+    "status": "complete agent author/reviewer/editor/recheck chains; no unresolved critical or major findings",
+    "evidence": {
+      "path": "artifacts/translation-program/release-mainline/independent-source-semantic-readiness.json",
+      "sha256": "42ef6e07703d6f9ea7ada7e6b69163e7b2650720fb1088a08d1b54302b34c809"
+    }
+  },
+  "native_final_build": {
+    "path": "artifacts/translation-program/mainline-native-build-proof.json",
+    "sha256": "faa791523e33a9a2773815d6a785bc1e4f58ce5abbbd872de446d7f905f0c64e"
+  },
+  "native_final_capture_results": {
+    "path": "artifacts/translation-program/native-preview/release-mainline/results.json",
+    "sha256": "35332e076a298c154dc4ada5858ab70316d8fc9bddff049593a39d538686f9e3"
+  },
+  "native_final_independent_review": {
+    "path": "artifacts/translation-program/reviews/sw-native-current/mainline-lobby-refresh-review.json",
+    "sha256": "4cba6e8af52a13cec7bb7aa289c70e0428df280ca8059b5625f4232c9c288259"
+  },
+  "full_online_final_run": {
+    "path": "artifacts/translation-program/linux-platform-validation/final-validation-mainline.json",
+    "sha256": "6949dde1badb1b6886c622faf12e37ba78ce5ad90f286ef8226dcb6db398c328"
+  },
+  "online_result": {
+    "path": "artifacts/translation-program/linux-platform-validation/attempt-3/result.json",
+    "sha256": "9d55104cd4db2906b9f1eb10785308f4039b0a26633dc34b48f223684d2672bf"
+  },
+  "online_tests": {
+    "passed": 1172,
+    "opt_in_skips": 15,
+    "producing_revision": "1d731f121bed15a4e0cd61368446a02b953cc52e",
+    "carry_to_final_head": "Only changed content is browser/assets/sources.json languageNames input hash; no online/protocol/catalog or executable source changed. No claim that the full online run produced at a later revision."
+  },
+  "browser_asset_final_tests": {
+    "path": "artifacts/translation-program/browser-font-refresh/final-canonical-review.json",
+    "sha256": "1acd17d439dd25d26175fe35cf186ed9c4c3a2d4e189455b427a9faa1e5762e4"
+  },
+  "linux_shared_ttf_link": {
+    "path": "artifacts/translation-program/hosted-ci-review/pic-actual-link-verification.json",
+    "sha256": "511cc423f8ebf484326c26afb495c745abc08f102fdbf04a6e15319adb535e31"
+  },
+  "native_strict": {
+    "path": "artifacts/translation-program/merge-final-native-strict.json",
+    "sha256": "829c4173958517cf0027d5f41e02b5733ed4164c242ef7fa6c1fd6edb7a04cb0"
+  },
+  "full_font_coverage": {
+    "path": "artifacts/translation-program/mainline-font-coverage.log",
+    "sha256": "890cd7025dd2a845d30e0a3b2511b1ad438c3fb463a02bda96a1149cb4f155dc"
+  },
+  "prior_actual_visual_evidence": {
+    "native_jobs": 102,
+    "native_revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "wasm_cases": 6,
+    "wasm_screenshots": 66,
+    "online_screenshots": 66,
+    "current_source_retention_proof": {
+      "path": "artifacts/translation-program/release-mainline/mainline-retirement-proof.json",
+      "sha256": "836d3404d31c2460c98957622fb8a3d3b213d24914321850a191c712284f5186"
+    },
+    "method": "Earlier actual reviews retain their producing revision. Final refresh covers affected lobby at both widths and all three locales; no retrospective relabelling."
+  },
+  "platform_limits": [
+    "Native visual evidence: macOS arm64 fast-development builds, not release certification.",
+    "Browser actual runtime evidence: Chromium serial game and online app at desktop and phone dimensions; new-base full browser rebuild deferred to hosted CI, not claimed passed. Metadata refresh preserves exact existing subset font bytes.",
+    "Android emulator: inspected Hindi setup/main/settings with documented local debug packaging workarounds; complete Android Urdu/Swahili/native-IME coverage not verified.",
+    "iOS and native Windows/Linux visual rendering unverified; no claim that these platforms passed.",
+    "Initial tutorial guidance/help/dialog capture coverage, not every possible lesson state.",
+    "Agent-reviewed, not native-human certified."
+  ],
+  "hosted_ci": "Full master matrix remains asynchronous; cancelled/pending jobs are not recorded as passed.",
+  "deferred_scope": "All other proposed languages remain deferred."
+}

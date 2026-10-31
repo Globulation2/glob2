@@ -1,0 +1,31 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "run_id": 41240737793,
+  "job_id": 124656896570,
+  "tested_revision": "1c8785b878a8a635fb9ce05831a1842e4b0539a2",
+  "overall_job": "cancelled; not passed",
+  "specific_boundary": "actual Linux GCC13 shared SDL3_ttf link/install PASSED before cancellation",
+  "log_sha256": "9936cae5932707ed44ab87f2a3a3d676609ba03ca76600fbda1469ecf7b82723",
+  "proof": [
+    {
+      "line": 2753,
+      "text": "2026-10-31T21:07:02.4094697Z [100%] Linking C shared library libSDL3_ttf.so"
+    },
+    {
+      "line": 2754,
+      "text": "2026-10-31T21:07:02.4612426Z [100%] Built target SDL3_ttf-shared"
+    },
+    {
+      "line": 2756,
+      "text": "2026-10-31T21:07:02.4669237Z -- Installing: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libSDL3_ttf.so.0.2.2"
+    }
+  ],
+  "follow_on": "Native compilation began after dependency install; cancellation21:09 means no full native suite success claimed.",
+  "previous_failed_boundary": "BeforePICfix libharfbuzz.a relocation R_X86_64_PC32 stderr failed same sharedtarget; exactfailure evidenceindependent-review.json.",
+  "master_successor_run": 41242300896,
+  "master_successor_revision": "a4dfcf9bf82bb128554581a6adba676e8cca644f",
+  "limits": [
+    "Link/build boundary only; no Linux script pixel or allengine tests verified by canceled job.",
+    "Infraselector and sharedbuildcontracts passed; no full hostedcheckpoint claim."
+  ]
+}

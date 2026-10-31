@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "before_after_native_inputs_equal": true,
+  "native_input_scope": "Whole tracked source tree identity frozen before final production-preview target build and verified afterward.",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a8423830108845eb0a57490c8edc45e860f71608cea177ce47ce67624ca323f7"
+  },
+  "source_identity": {
+    "revision": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "a8423830108845eb0a57490c8edc45e860f71608cea177ce47ce67624ca323f7"
+  },
+  "executable_sha256": "f8649d56696919439a2ec4874c739455ed7b9042b1c7e983f14c9d1f196a6e31",
+  "compiled_header_sha256": "cc89f2e5e70ec331089d3123f218ce0bb3daa21d4e036a499e1a6b2ad28c8acf",
+  "build_log": "merge-final-native-build.log",
+  "build_log_sha256": "cb55acc0e995810d25131d1adaa734448588f2212a1ef867789801f8220fed18",
+  "build_exit_code": 0,
+  "command": "PYTHONPATH=$PWD python3 tools/dev_build.py translation-preview-harness -j6",
+  "runtime_prefix": "artifacts/translation-program/script-support/prefix",
+  "limits": [
+    "macOS arm64 fast-development production preview target, not release certification.",
+    "Entire native test inventory rebuild intentionally not used as merge prerequisite; earlier component tests and102captures retain actual producing revisions.",
+    "Actual executing binary producer and pinned font/library hashes are checked again for every capture."
+  ]
+}

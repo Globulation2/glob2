@@ -1,0 +1,20 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "run_id": 41241043051,
+  "job_id": 124654824126,
+  "tested_revision": "1d731f121bed15a4e0cd61368446a02b953cc52e",
+  "log_sha256": "a9909aedc73868165122aab75085cc535e0e3e9ae99b4d90a9a672633f5f8ba1",
+  "status": "four introduced browserfont derivedmetadata failures; downstream skipped, not executed",
+  "test_count": 679,
+  "failures": 4,
+  "skips": 11,
+  "cause": "browser/assets/sources.json sans-core.ttf languageNames records33localecharacterhash dc369c70b19b6901dd8cc6977bf74a9bd92ac264e7064b15a4e3d803baa42e1d. AddedHiUrSw selfnames change derive.language_names\u219252510009061facfcc55faf77bf0f38b6f086eb43f86fba480c34b7fe11ddef6b. derived_assets correctly rejects stalefontcopy and fallsbacktooriginalfont, invalidating4expectedsubset tests.",
+  "recommended_fix": "Regenerate font_subset(ROOT) using pinnedencoderPython intoignoredcandidate, updateONLY browser/assets/sans-core.ttf andits sources.json source/output/languageNames record ifneeded, preserveimageoutputs/records. Do notrelax stale-detection/tests. LANGUAGEbranchonly:infra33namesremaincorrect.",
+  "validation_required": [
+    "Confirmcandidatefontbinaryequalorinspectactualfontdelta.",
+    "Verifycurrentlanguage_names exacthash, sourcefont/outputhashes, image2records/bytesunchanged.",
+    "Run4failingBrowserCopy/WebAssetPlanfocusedtests andalltest_web_assets suite againstcandidateoverlay.",
+    "Ifbinarychanges, refreshactualbrowserfontpixels/packagingevidence appropriately."
+  ],
+  "read_only": true
+}

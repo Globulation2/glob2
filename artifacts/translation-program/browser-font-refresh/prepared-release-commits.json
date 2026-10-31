@@ -1,0 +1,11 @@
+{
+  "frozen_revision": "1d731f121bed15a4e0cd61368446a02b953cc52e",
+  "merged_master": "a4dfcf9bf82bb128554581a6adba676e8cca644f",
+  "equivalent_tree_merge": "1ee814a13b29ea9284092a5e83fdf4f24553eeca",
+  "release_head": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+  "only_content_change": "browser/assets/sources.json languageNames hash",
+  "font_binary_changed": false,
+  "squashed_master_tree_identical_to_already_integrated_infra": "1c8785b878a8a635fb9ce05831a1842e4b0539a2",
+  "conflict_resolution": "Retain current language improvements to generated roster, guide, runtime tests and preview harness; all squashed infrastructure source is already present through infra ancestor. Merge tree deliberately identical to frozen HEAD.",
+  "live_source_unchanged": true
+}

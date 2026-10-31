@@ -1,0 +1,95 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "status": "passed",
+  "revision": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+  "sourceTreeSha256": "a8423830108845eb0a57490c8edc45e860f71608cea177ce47ce67624ca323f7",
+  "tracked_worktree_clean": true,
+  "commands": [
+    "python3 -m unittest discover -s test/build_system -p test_web_assets.py -v",
+    "PYTHONPATH=$PWD/test/build_system:$PWD/artifacts/translation-program/browser-font-refresh/venv/lib/python3.14/site-packages python3 -m unittest test_web_assets.BrowserCopyTests.test_the_core_font_has_every_glyph_but_the_appended_cjk_ones -v"
+  ],
+  "actual_python": "3.14.7",
+  "fontTools": "4.66.1",
+  "full_module": {
+    "tests": 28,
+    "passed": 27,
+    "skipped": 1,
+    "elapsed_s": 206.956,
+    "log_sha256": "fa36026ee3acb174cf41b76b324edb643cdecf61db1468fc73bf32cb84ec5c0e"
+  },
+  "previously_skipped_font_test": {
+    "tests": 1,
+    "passed": 1,
+    "skipped": 0,
+    "elapsed_s": 1.128,
+    "log_sha256": "f8c71464d832cbf1a7deaa8d448cc8f02313af26391a2dadf1ee324c0249a8a5"
+  },
+  "combined_unique_tests_passed": 28,
+  "derived_aliases": {
+    "data/gfx/menu-colony.png": "browser/assets/menu-colony.webp",
+    "data/gfx/menu-wordmark.png": "browser/assets/menu-wordmark.webp",
+    "data/fonts/sans.ttf": "browser/assets/sans-core.ttf"
+  },
+  "sans_core_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+  "sans_core_byte_identical_to_reviewed_candidate": true,
+  "canonical_metadata_sha256": "aaf60a742f428dda4c5eabd459e9a11482d19c9e9fd4d6961ba72a3484c09b52",
+  "script_font_pins": [
+    {
+      "name": "NotoSansDevanagari",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    },
+    {
+      "name": "NotoSansBengali",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+    },
+    {
+      "name": "NotoSansGujarati",
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+    },
+    {
+      "name": "NotoSansGurmukhi",
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+    },
+    {
+      "name": "NotoSansTamil",
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+    },
+    {
+      "name": "NotoSansTelugu",
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+    },
+    {
+      "name": "NotoSansKannada",
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+    },
+    {
+      "name": "NotoSansMalayalam",
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+    },
+    {
+      "name": "NotoSansOriya",
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+    },
+    {
+      "name": "NotoSansThai",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    {
+      "name": "NotoSansMyanmar",
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+    },
+    {
+      "name": "NotoSansEthiopic",
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+    },
+    {
+      "name": "NotoSansArabic",
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+    }
+  ],
+  "fixture_import_failure_preserved": "final-canonical-font-import-failure.log (stdlib test package shadowsrepo testdirectory; correctedPYTHONPATH, no productchange)",
+  "limits": [
+    "Only requestedbrowserassetmodule andsinglemissingdependencytest; no fullplatform/native/hostedCI passclaimed.",
+    "Canonicalrepo testROOT used with no virtualoverlay. No trackededits."
+  ]
+}

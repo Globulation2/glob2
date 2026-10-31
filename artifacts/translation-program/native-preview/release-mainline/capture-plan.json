@@ -1,0 +1,333 @@
+{
+  "status": "prepared only; no native invocation",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "hi": {
+      "native": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  },
+  "inputs": {
+    "hi": {
+      "full": {
+        "path": "artifacts/translation-program/render-inputs-mainline/hi-full",
+        "sha256": {
+          "native.json": "d7e124ac54cf044cead1964b0729d7a1106871ed6b29147efc80eae6ddce2716",
+          "online.json": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+          "metadata.json": "6353e2ab28df48d982014e2c4eb79133282bf4fa22e22be48ee648e07d289f70"
+        }
+      },
+      "matrix": {
+        "path": "artifacts/translation-program/render-inputs-mainline/hi-matrix",
+        "sha256": {
+          "native.json": "1c116526276f7aa2b796cd6dff705f3302e8730c74f6acbab4ad9400256e58f6",
+          "online.json": "c9478cbf1664d7dda3c5ae54a4503f623580b8c69bb930cd11a69e56d77eba8f",
+          "metadata.json": "b868fa035bc91f711d1361f20b1eb2bb6c9bc3d4a6fe3f8e5aaa1e28b48c50f9"
+        }
+      }
+    },
+    "ur": {
+      "full": {
+        "path": "artifacts/translation-program/render-inputs-mainline/ur-full",
+        "sha256": {
+          "native.json": "18e1c5b411c899e734afe620826f27efd83861ef2733072f06f6c4ac2e49ca39",
+          "online.json": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+          "metadata.json": "9b0bc6f80c48c18cdc752590313a15ec1b76843de51d17ba3cab855e182cca76"
+        }
+      },
+      "matrix": {
+        "path": "artifacts/translation-program/render-inputs-mainline/ur-matrix",
+        "sha256": {
+          "native.json": "99b27a4043b5ed117fc383aac9d252f04715304ce3bd0e61d49c3e5f1f1401cc",
+          "online.json": "848b5fbd2e214a2f4b914d4d3670d15f63f68c757693126ccd8a6a03da36c6b5",
+          "metadata.json": "5529cdf10a267c583ec56d3506a28efe2e668f4efbfa331b712d2220af9269d9"
+        }
+      }
+    },
+    "sw": {
+      "full": {
+        "path": "artifacts/translation-program/render-inputs-mainline/sw-full",
+        "sha256": {
+          "native.json": "506daca17fe28ff2bd63c13a12995a5b1a07581b7d9e0193aca26b78c5df0281",
+          "online.json": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+          "metadata.json": "a6ad0c012604dcebf76766bea6d3ac002875ecc5a5b9a68e1252282a85958293"
+        }
+      },
+      "matrix": {
+        "path": "artifacts/translation-program/render-inputs-mainline/sw-matrix",
+        "sha256": {
+          "native.json": "87074d135b9721a75ad2f452111b581e8727ccabd50604ad00e7b2398bb17615",
+          "online.json": "38945bd0425cfaf8e987cb41039acf631b1f39db43cde17eefdabc865b4bdd26",
+          "metadata.json": "8e6137e5f51d47e3f54f4829d6b8d17ec7c5e48d7bba584b065fbba5d5f5339b"
+        }
+      }
+    }
+  },
+  "lessons": [
+    {
+      "id": "introduction",
+      "definition": "scripts/tutorials/introduction.json",
+      "definition_sha256": "0decd2a83899e9863b7364032f2df841498959514eaeed265d63450bebbb11a2",
+      "script": "scripts/introduction.js",
+      "script_sha256": "04a37caf7cd7c21b62395861626bf93eaf1b49c983e1a8f2c57b306fd4c27769",
+      "map": "campaigns/introduction.map.gz",
+      "map_sha256": "ec37f18bc7b9e67e15a887f58ab4e43ff56dd5e375ed54fd1bdcb72bd3659688",
+      "step_count": 5
+    },
+    {
+      "id": "food-supply",
+      "definition": "scripts/tutorials/food-supply.json",
+      "definition_sha256": "44f94a25d59cfa525087b40a4af838a6fe54153e34c9652581017274a4d2daff",
+      "script": "scripts/food-supply.js",
+      "script_sha256": "7f92897987b08b9da462b2e282bdd43853548699ca406fb51a51f1a6c41c5bfd",
+      "map": "campaigns/food-supply.map.gz",
+      "map_sha256": "615a5a0a24acc595f70bc064f337d53d014e0d07bfb1847d980d31226f8ec39c",
+      "step_count": 2
+    },
+    {
+      "id": "healing",
+      "definition": "scripts/tutorials/healing.json",
+      "definition_sha256": "54d72efe481a8c7f854607077b1e5165f3588d10cf90e14230f22dddb7afcfde",
+      "script": "scripts/healing.js",
+      "script_sha256": "8fc12e722b82565c38683ceccb5e5bee9bc870618c5b504a6f52366441aea5c0",
+      "map": "campaigns/healing.map.gz",
+      "map_sha256": "098b7e0baa4609c55a35039fb68e962be8ae77cea77f58c7535d6725acfcf9fb",
+      "step_count": 2
+    },
+    {
+      "id": "walking-training",
+      "definition": "scripts/tutorials/walking-training.json",
+      "definition_sha256": "3ad30989585ae26d9efd03aee8092a6cf2eae540f5ade0ca4cc0f4a2475ac683",
+      "script": "scripts/walking-training.js",
+      "script_sha256": "437e7a5f47ebb8cc33711a59426701be6514bd07bc243fa2d0b938fc3c4aee24",
+      "map": "campaigns/walking-training.map.gz",
+      "map_sha256": "9ee2940613dccbdf7964d2c48423f66be4cc914dee02bcd9dbb3e4264c2f224d",
+      "step_count": 2
+    },
+    {
+      "id": "swimming",
+      "definition": "scripts/tutorials/swimming.json",
+      "definition_sha256": "1ed9b1d90a8f7902b8bbe8c5cf8d57f316288f77cf979cae5c77b68606fa0bb6",
+      "script": "scripts/swimming.js",
+      "script_sha256": "b049824b8a90295dfcf7619d8c59fd66421b139c3b51d0f17f843c650c7f3d6a",
+      "map": "campaigns/swimming.map.gz",
+      "map_sha256": "1a3314067acc61c37f4786d5a3385f887d698335533918f9311473b530e4cea8",
+      "step_count": 3
+    },
+    {
+      "id": "schools",
+      "definition": "scripts/tutorials/schools.json",
+      "definition_sha256": "779ebdbc4d5238adc970ea94aef5c958852d6d6a10048be6ba529ec7eb06a3d6",
+      "script": "scripts/schools.js",
+      "script_sha256": "6cef011ca1cdb7b071c3b1e9d418690a8d88d1da5d019a888b0fcfe3d60679e6",
+      "map": "campaigns/schools.map.gz",
+      "map_sha256": "a3cae2d538bcbc64cca1abcbe544c3d38f8b5cf281943deec58741d3c495b6c8",
+      "step_count": 2
+    },
+    {
+      "id": "upgrades",
+      "definition": "scripts/tutorials/upgrades.json",
+      "definition_sha256": "1ffb1085e770b48c9691008c3a8c308a6fc18876b6ee00d61ff826f089de79f1",
+      "script": "scripts/upgrades.js",
+      "script_sha256": "b998903ad942387e973b94cf72a2401b313e8672d12718f5bb3b260a1ae5356f",
+      "map": "campaigns/upgrades.map.gz",
+      "map_sha256": "e672c0f16387505f0797b5caaad2e42110d5944b4a5a1ba4bc4a856262710f3a",
+      "step_count": 2
+    },
+    {
+      "id": "warrior-training",
+      "definition": "scripts/tutorials/warrior-training.json",
+      "definition_sha256": "169434e29911c9e4bb6c4eff7af550c0f50c67382ba87ea8484a8bab4e848f6f",
+      "script": "scripts/warrior-training.js",
+      "script_sha256": "ccef8026d94a905b82ee1cacae552fc225d79363f47080d10207c4c7e0a75123",
+      "map": "campaigns/warrior-training.map.gz",
+      "map_sha256": "4b2a708e4b94327f93e667dcfdd4acd14fbedaa4adff6906ee08d69a3f872502",
+      "step_count": 3
+    },
+    {
+      "id": "fortifications",
+      "definition": "scripts/tutorials/fortifications.json",
+      "definition_sha256": "ec5fd7a07e2e2e8352b62507fa79149776191994f595ebfacf1b85565c859276",
+      "script": "scripts/fortifications.js",
+      "script_sha256": "49ecf1573d785cb38b0bf9637a715657215020c20d76d0d4d95e992a529f6216",
+      "map": "campaigns/fortifications.map.gz",
+      "map_sha256": "7cf3efb299f411e0e31b87642f5213c174a0f5b4f267287b85690da0e411f6d0",
+      "step_count": 4
+    },
+    {
+      "id": "defensive-tactics",
+      "definition": "scripts/tutorials/defensive-tactics.json",
+      "definition_sha256": "be3a7ead9293e00fc15d49c24d7e880ffd6985c717a75a8d3f091c4806bae9a2",
+      "script": "scripts/defensive-tactics.js",
+      "script_sha256": "3a87add25c63443d44b5baf70a94d86c8cf94b63b64605e76253942cc0997909",
+      "map": "campaigns/defensive-tactics.map.gz",
+      "map_sha256": "0a3f8bec0360b2624849726f9ca5e63e15afcc19e6a68d6625f70fd551a663fb",
+      "step_count": 4
+    }
+  ],
+  "gameplay_map": {
+    "path": "maps/balanced.map.gz",
+    "sha256": "d996f169dd07e6526f16d7a7e1aad1aeaf556d0135591efa9a4c3ea31cfaea63"
+  },
+  "diagnostic_native_keys": [
+    "[intro compact scout]",
+    "[intro compact build]",
+    "[intro compact attack]",
+    "[lesson healing build compact]",
+    "[lesson walking-training build compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson schools build compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson warrior-training produce compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics counterattack compact]",
+    "[intro help build]",
+    "[intro help attack]",
+    "[intro help touch build]",
+    "[intro help touch attack]",
+    "[intro preflight save]",
+    "[intro goal attack]",
+    "[lesson defensive-tactics counterattack hint]",
+    "[lesson fortifications walls hint]",
+    "[lesson fortifications tower title]",
+    "[lesson schools build help]",
+    "[lesson upgrades train hint]",
+    "[lesson walking-training train title]",
+    "[lesson swimming title]",
+    "[intro show destination]",
+    "[scenario messages]",
+    "[intro help supply]"
+  ],
+  "corrected_urdu_keys": [
+    "[intro compact scout]",
+    "[intro compact build]",
+    "[intro compact attack]",
+    "[lesson healing build compact]",
+    "[lesson walking-training build compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson schools build compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson warrior-training produce compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics counterattack compact]"
+  ],
+  "diagnostic_selection_method": "All16correctedUrdukeys plus16representative keys from prior32; identical32keys across3locales.",
+  "diagnostic_online_keys": [
+    "Game text field",
+    "Language",
+    "Password",
+    "Sign in",
+    "Rooms",
+    "Matches",
+    "Cancel",
+    "Save"
+  ],
+  "jobs": [
+    {
+      "id": "hi-1200-lobby",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/hi/1200",
+      "metadata": "lobby.json"
+    },
+    {
+      "id": "hi-390-lobby",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/hi/390",
+      "metadata": "lobby.json"
+    },
+    {
+      "id": "ur-1200-lobby",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/ur/1200",
+      "metadata": "lobby.json"
+    },
+    {
+      "id": "ur-390-lobby",
+      "locale": "ur",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/ur/390",
+      "metadata": "lobby.json"
+    },
+    {
+      "id": "sw-1200-lobby",
+      "locale": "sw",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/sw-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/sw/1200",
+      "metadata": "lobby.json"
+    },
+    {
+      "id": "sw-390-lobby",
+      "locale": "sw",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/sw-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/sw/390",
+      "metadata": "lobby.json"
+    }
+  ],
+  "invocation_count": 6,
+  "formula": "3locales ×2widths ×1actual lobby screen after mainline terrain integration",
+  "limits": [
+    "All real screens/games use complete3393native+2836online overlay; matrix is explicitly partial.",
+    "This integrated refresh captures lobby only. Earlier full102 native run and unchanged-value provenance remain separate immutable evidence.",
+    "Game views expose simulation draw/zoom checksums; menu screen mode provides control bounds and PNG evidence, not simulation checksums.",
+    "macOS native desktop at phone dimensions does not verify Android/iOS.",
+    "Driver author performs technical identity checks only, not independent full-Swahili visual signoff; root assigns independent image reviewers.",
+    "Do not invoke --run until root supplies final producer proof and signals readiness."
+  ]
+}

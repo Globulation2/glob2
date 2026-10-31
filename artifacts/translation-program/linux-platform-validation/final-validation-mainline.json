@@ -1,0 +1,203 @@
+{
+  "environment": {
+    "image": "glob2-translation-check-tools:local",
+    "image_id": "sha256:f75af305d6881b1889bd8566dcd7a84f071101ccd12d16b683bcb33dda656510",
+    "base_image_id": "sha256:f5d93c14a0c3ac9997a4980cb44fc1d84d98de2323209d755eb1d3b987d58aad",
+    "Dockerfile_sha256": "8a1d93449aaecd47b9758a3466ad8ede6e323ea7e8e32ef9c038805d521ccd6d",
+    "package_versions_log_sha256": "3c72c3b9a271a2ab38176e29198fa4171b7b11eba77246b37e188b29556790bc",
+    "all_installed_packages_sha256": "2879d8bdf920125c2411796a65fde1f8f5353ac35c3f64c7d649635ef2549499",
+    "tmpfs": "/tmp:rw,exec,size=4g",
+    "development_only": true
+  },
+  "node": "22.23.4",
+  "postgres": "16.15",
+  "commands": [
+    "npm run lint",
+    "npm run typecheck",
+    "npm run i18n:check",
+    "npm test -- --maxWorkers=3"
+  ],
+  "full_check_equivalence": "All four npmcheck stages executed sequentially; finaltest command explicitlyboundsVitestworkers. No duplicate npmcheckrerun asserted.",
+  "skipped_inventory": [
+    " ✓ apps/ai-terrain-worker/test/pipeline.test.ts (8 tests | 1 skipped) 21080ms",
+    " ✓ apps/ai-building-worker/test/pipeline.test.ts (13 tests | 2 skipped) 17258ms",
+    " ✓ apps/ai-music-worker/test/runner.test.ts (3 tests | 2 skipped) 43ms",
+    " ↓ apps/engine-agent/test/generator-real.test.ts (1 test | 1 skipped)",
+    " ↓ apps/ai-map-worker/test/pipeline.test.ts (1 test | 1 skipped)",
+    " ↓ apps/api/test/generator-real-flow.test.ts (1 test | 1 skipped)",
+    " ↓ apps/engine-agent/test/real-binary.test.ts (5 tests | 5 skipped)",
+    " ↓ apps/skin-render-worker/test/native.test.ts (2 tests | 2 skipped)"
+  ],
+  "skip_limit": "5wholefiles/10tests and5othercases requireopt-inrealnativebinaries/provider/evidenceconfiguration. No GLOB2_BINARY/GLOB2_GENERATOR_SCRATCH/GLOB2_SKIN_RENDER_TEST_BINARY supplied; notclaimedexecuted. This is fullstandardconfiguredVitestsuite,notallopt-inengineintegration/platformverification.",
+  "optional_skip_guards": {
+    "realengine/generator/nativefiles": [
+      "GLOB2_BINARY",
+      "GLOB2_GENERATOR_SCRATCH",
+      "GLOB2_SKIN_RENDER_TEST_BINARY"
+    ],
+    "ai-building-two-cases": [
+      "BUILDING_NATIVE_BINARY",
+      "BUILDING_VALIDATION_IMAGE",
+      "BUILDING_OPENAI_API_KEY",
+      "BUILDING_LIVE_TEXT_MODEL",
+      "BUILDING_LIVE_IMAGE_MODEL"
+    ],
+    "ai-terrain-one-case": [
+      "TERRAIN_NATIVE_BINARY"
+    ],
+    "ai-music-two-cases": [
+      "MUSIC_SANDBOX_TEST=1",
+      "MUSIC_RENDER_TEST=1",
+      "MUSIC_ASSETS",
+      "MUSIC_SCRATCH",
+      "MUSIC_PYTHON"
+    ]
+  },
+  "status": "passed-with-explicit-opt-in-skip-coverage",
+  "reviewer_runner": "/root/pilot_context",
+  "source_revision": "1d731f121bed15a4e0cd61368446a02b953cc52e",
+  "source_tree_sha256": "14955adcd792eab298027b8c3c08f263999a9a61e5915726791d5947340d2659",
+  "source_before_after_equal": true,
+  "result_sha256": "9d55104cd4db2906b9f1eb10785308f4039b0a26633dc34b48f223684d2672bf",
+  "result_path": "attempt-3/result.json",
+  "attempt3_archive_manifest_sha256": "17d3d69027d419a5a6073d5dbceeba228bf879448757191363078cebffbbb640",
+  "stages": [
+    {
+      "step": "lint",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T20:57:50Z",
+      "finished_utc": "2026-10-31T20:59:21Z"
+    },
+    {
+      "step": "typecheck",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T20:59:21Z",
+      "finished_utc": "2026-10-31T21:03:09Z"
+    },
+    {
+      "step": "i18n",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T21:03:09Z",
+      "finished_utc": "2026-10-31T21:03:14Z"
+    },
+    {
+      "step": "vitest",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T21:03:14Z",
+      "finished_utc": "2026-10-31T21:11:12Z"
+    }
+  ],
+  "test_summary": {
+    "files_passed": 167,
+    "files_skipped": 5,
+    "files_total": 172,
+    "tests_passed": 1172,
+    "tests_skipped": 15,
+    "tests_total": 1187,
+    "tests_failed": 0,
+    "unhandled_errors": 0,
+    "duration_seconds": 476.5
+  },
+  "i18n": {
+    "locales": 36,
+    "online_keys_each": 2836,
+    "native_keys_each": 3393,
+    "command_exit_code": 0
+  },
+  "evidence_log_sha256": {
+    "logs/lint.log": "23f417c96f402762b2a28986136ea6dc0a94d7dfb2aa4a6d13a39b965b6283fd",
+    "logs/typecheck.log": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+    "logs/i18n.log": "1a5f683840f3d4d963a96cc27cf146ace61ac1b048f119c6a51df6cc09547735",
+    "logs/vitest.log": "8814f71963e96d9c53525dae847694b0ceae504be84afd4a392ee9cbf76935e2"
+  },
+  "source_input_catalog_sha256": {
+    "data/texts.vi.txt": "dd2b825a6e8344ec47dd9a1ed6e9aa0f9733fe7ea8cfebbecea42c288e08804a",
+    "data/texts.ur.txt": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1",
+    "data/texts.nl.txt": "13b55a97dd2180ca81012f1ad5fcb0ab49bd6797bd813a39b90d9913f9f964db",
+    "data/texts.pending.txt": "47d8c7b23a9147cd74be85aba2f6095a64c050d3790891af4b1c281fc87d0e7c",
+    "data/texts.ar.txt": "5a4024a62cd140c5ba1369b8e48ccb8f4fdaff49ae76f6ce4fd2cbbf056caab8",
+    "data/texts.cz.txt": "913059a94d5edfe5801ab88185f675b7b4c59bda793785b247f132b909ae1d31",
+    "data/texts.tr.txt": "b6e7e1a54b79c5499695025ad775ee6fd4a45ed045b7dd2253fb890f5ef72ac8",
+    "data/texts.ru.txt": "e0541523a17e6f7d8fe452bb159da09ecb2c4fe78cd77faf15b778476caca4c8",
+    "data/texts.incomplete.txt": "be208bdc895e62d6abf7829055001fec13aa87f699e7b1fde84a9c6e597bdc0b",
+    "data/texts.sr.txt": "1ce8257f7053c4ebfd613c9cb86cc5b15fac934923bda5fda075af832d796bc3",
+    "data/texts.zh-tw.txt": "64c2bb86e1246a09be42a8df13d8908ae3f6c8adaffacfcfea483dafe53a9154",
+    "data/texts.fr.txt": "925273bf6cf08eac6095f30d1e539a0781fe307ffb42fe42b28803224b1aed2c",
+    "data/texts.gr.txt": "24a878056792cd976603d809e2b408cdcd218305a4c69ce99979097f12397812",
+    "data/texts.fa.txt": "a664184ef89de8d0a450a33e21161631106c8dbcd8636316f8856e3d9434ee85",
+    "data/texts.pl.txt": "52ab2088189c276cadef9faa5701972bb493b6acbfdcac3e9bcdd4ec6a2c0a51",
+    "data/texts.sw.txt": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef",
+    "data/texts.sv.txt": "6b68b36080ea7e7dc67b23888a1a447c62fc577492af03b9cb296b4b09ad817a",
+    "data/texts.hi.txt": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6",
+    "data/texts.ja.txt": "4a635fd10ebe20d01ce50ec2148a670d958a08f914682f6fa526d64a9590449f",
+    "data/texts.en.txt": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92",
+    "data/texts.zh-cn.txt": "d6d23376c210dd82ae5a78d9f7a595ebf56be5d89c6f0f009a1f5ba230e6f5a6",
+    "data/texts.dk.txt": "ff01b838e6df20e2159dcb99f1d4212962ea2240ab0b9eebf28738b6d652bf0a",
+    "data/texts.eo.txt": "2edf0f0e121747d94c48c7463fad6b7abfb3f0ba4334abbffe351edf06aaed77",
+    "data/texts.eu.txt": "683bbb168e6f1bab80bf2561624447c61863f14f7ef20baaaa4f10736e5630f0",
+    "data/texts.pt.txt": "e7192b5030f638941f2366f0bbd73251ea6665892d6259a6c1d60edaa8f641a2",
+    "data/texts.de.txt": "7d927ded9072f9b97dc1a9a298d3776d4e0973b2a3833d16be83123938f311ec",
+    "data/texts.it.txt": "7c40726bab7470f67e84b0062e1d09c1d160b8c8658f34fadcc685a50b308225",
+    "data/texts.ko.txt": "e87d7551d10e73fcdecb19198d68ce710d8f48ac1c87653b248e27d9294d0b80",
+    "data/texts.es.txt": "66690cc062766ebdabe55518763ea819d135b1771389a4b9a47a586d12d40fa6",
+    "data/texts.si.txt": "21e56fa65e1d5f76f55bbbabdaac46941d2680eb16aa45192bfd760c5673e98b",
+    "data/texts.fi.txt": "1f54f040623055519ec7cca360efea18e73b153160ad9d4c057c400552e84f22",
+    "data/texts.hu.txt": "ad4d67b79e50211386d3f7352d126ee9c4524e336acc17920ff116861bdeae9f",
+    "data/texts.id.txt": "2e2b9a71160fe6e24f5c451c36a5d0358052d0fdd66ce2fcb142e0b41d7efa9d",
+    "data/texts.ro.txt": "0b15a62d29f2327c580394c3eb9494cba81118b65ee592af37b3ef2bb2c5e9bc",
+    "data/texts.sk.txt": "0ece1e1efa14d529ccb164a64c0a0e04957403e3657b32ef18ec472c164a276a",
+    "data/texts.keys.txt": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
+    "data/texts.ca.txt": "471b4b783afddb282c4bf6bf3b14f2d8962f8675b54d5d83b99d46670e5a79a9",
+    "data/texts.br.txt": "a0425045ed4202664b67e1d6fa58ea1e1fbf870f6930620d983c9efb87d95fd3",
+    "data/texts.list.txt": "60c1fa33d28b58af5012935cde72833cf725cd69cd492d49017f1a7ab7544c60",
+    "data/texts.uk.txt": "d90b8b06b8faa080c778874e15549e9bdfa7460ee676039adf562e7711055461",
+    "platform/packages/i18n/locales/tr.json": "a3d3eeebfe345c2b318a89687aaffa61a322867f5c233da71feb7d2623531d85",
+    "platform/packages/i18n/locales/sl.json": "37ef6b3ec8b6d3a7a3ed0e6dd45b67ae7b5d8b2aae73a03bac93835d14ccd6a9",
+    "platform/packages/i18n/locales/hu.json": "e7da88f554212bb0ee88531806a94cebdf116326af5944041e6f580156db78cd",
+    "platform/packages/i18n/locales/nl.json": "c5db9ca9aa7e1b4b7e619d0c04b07ea85b641159f44a9e04b62071ca3dcd8f87",
+    "platform/packages/i18n/locales/ja.json": "431c022790fe3ee138d4f09182d248ebc78b6c57488d39b780538fb91ebe567e",
+    "platform/packages/i18n/locales/de.json": "c91758129b5f99a9a6c1e04dffcf8ec66da0700b7a8fba8ddf499f30c8a9ff51",
+    "platform/packages/i18n/locales/ru.json": "b810d55a4b30eb2f0cd2f220c84f3484ef7ffe32556ceed559f9affc30e71d9f",
+    "platform/packages/i18n/locales/pl.json": "24c4654c9091b6f706ff9b5a1f01c8b9a7fb1a0acb3128715f5ac160b30a297c",
+    "platform/packages/i18n/locales/uk.json": "8764fced9c30957298ab086a98e61579b27e5fb5de15fff17ad57c3a3656d513",
+    "platform/packages/i18n/locales/fi.json": "93497b9ef9357c45d262a6944b8dde556bce65fb4444d6c21f58894aa3557560",
+    "platform/packages/i18n/locales/eo.json": "caf1f7bb27aca7c12569a57ebd5d375b50f09ac3ac1282b6b3332cc2c10b6cb5",
+    "platform/packages/i18n/locales/ur.json": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+    "platform/packages/i18n/locales/sk.json": "d25bca73b099b445beb953af76d8aaacf507750207361a5d9ab5af001d540f97",
+    "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "platform/packages/i18n/locales/pt-PT.json": "19c0b70804cfc757aad4edd52fd6ecf2932f4e59211209562daea57fee011d1d",
+    "platform/packages/i18n/locales/it.json": "5e6ac9d22cb225a6248f60e3ef9ade20a953b3aaf32699010f6d811778c59454",
+    "platform/packages/i18n/locales/zh-Hans.json": "7e2f5ad15e03e06e4894ae0ea897a63b1ad514f45c227f615295fcfc0621bb2d",
+    "platform/packages/i18n/locales/fr.json": "f566190aae13406da136e1b370ca62acac364aaa6442dedb122bc890de72481d",
+    "platform/packages/i18n/locales/el.json": "4ac52da8f82b0218792703482c86211609b0050aa59a939be5aa117b70bb645f",
+    "platform/packages/i18n/locales/ro.json": "bab9e71d5eeb66f10c23660da5115e962a522f4076fbc1ffb2f7e093a5750226",
+    "platform/packages/i18n/locales/hi.json": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+    "platform/packages/i18n/locales/ca.json": "649ff2b1c00267e1158ba23bee590521c220c7b1011187b0426323967d587859",
+    "platform/packages/i18n/locales/pt-BR.json": "ab31781ab41ccf0204c6ff06fce75efbc3f71bbd3683b1e578699f695171f85b",
+    "platform/packages/i18n/locales/ko.json": "aa905367b5dc5d25245d15b01cf497a9fd6c40704f843a0d78bdc2f55a1f05c0",
+    "platform/packages/i18n/locales/eu.json": "f3da8ec167d2c89faa8fc8289a071afaff123bd887a9d9c8718f189ebb866a32",
+    "platform/packages/i18n/locales/vi.json": "3677487abd631dee9d14b415821a5fb417f5b856fac5666f4d15995c50f7a445",
+    "platform/packages/i18n/locales/fa.json": "5f77acfcfe58fd14324f00881f66dbf8bb809c20b7882fe8d6846d0c1e66d88d",
+    "platform/packages/i18n/locales/sr-Cyrl.json": "ce26b146a95a1168622ce315240f64c7f11bef1406cec7d2231567380dfe0fa1",
+    "platform/packages/i18n/locales/cs.json": "0a6e66d79871c47a74cea688ba96fe0644c2c300dff3893665f5f44ae89f41a7",
+    "platform/packages/i18n/locales/id.json": "b8291c76b15c1561ef7c6aa0b347156507d32088c8941378fe95d81d606f5a4e",
+    "platform/packages/i18n/locales/sw.json": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+    "platform/packages/i18n/locales/da.json": "b7b91abddc548e5e4b95289b917a93e71a4a4d6ff8fdeede23a9903d8ee18ec9",
+    "platform/packages/i18n/locales/sv.json": "0927d4173718854805a69761dd41293f1a7d3d04d8f23e3cc4029808c52e5bd2",
+    "platform/packages/i18n/locales/es.json": "f73e1353032c0f06ae2a9de2a18f793964a22b236b6d39ecca6ea76254d20507",
+    "platform/packages/i18n/locales/ar.json": "06d1a3703ac65e932c25155ba4e2e38d96ba066b1e3a5372d9fc5b8a7a502f9a",
+    "platform/packages/i18n/locales/zh-Hant.json": "77c8ad90c0ca80ddd2d3a230b25ea14dd5ef8a3fba3fa0aa13331458a0f1a14f"
+  },
+  "prior_attempts_preserved": [
+    "attempt-1",
+    "attempt-2",
+    "before-final-attempt-3"
+  ],
+  "rerun_reason": "Master integration changed online protocol/matchSetup plus23retirednativekeys; full final check authorized. No test/source mutations during run.",
+  "limits": [
+    "Configured complete npm lint/typecheck/i18n/Vitest passes;15 opt-in native/live-provider/sandbox tests remain skipped for absent explicit environment inputs. No alloptional-test or crossplatform runtime claim.",
+    "LinuxDocker arm64 development testtools image; repository readonly, separateLinuxnode_modulesvolume andPostgres16 localDB, exec4GiBtmpfs,3Vitestworkers.",
+    "Proof exact1d731f/tree14955, no retrospective latercommit claim. Parent may establish latermetadata-only equivalence separately.",
+    "No shippingrelease/mobile/IME/performance or simulationdeterminism certification from platformunit suite."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "image": "glob2-translation-check-tools:local",
+  "image_id": "sha256:f75af305d6881b1889bd8566dcd7a84f071101ccd12d16b683bcb33dda656510",
+  "base_image_id": "sha256:f5d93c14a0c3ac9997a4980cb44fc1d84d98de2323209d755eb1d3b987d58aad",
+  "Dockerfile_sha256": "8a1d93449aaecd47b9758a3466ad8ede6e323ea7e8e32ef9c038805d521ccd6d",
+  "package_versions_log_sha256": "3c72c3b9a271a2ab38176e29198fa4171b7b11eba77246b37e188b29556790bc",
+  "all_installed_packages_sha256": "2879d8bdf920125c2411796a65fde1f8f5353ac35c3f64c7d649635ef2549499",
+  "tmpfs": "/tmp:rw,exec,size=4g",
+  "development_only": true
+}

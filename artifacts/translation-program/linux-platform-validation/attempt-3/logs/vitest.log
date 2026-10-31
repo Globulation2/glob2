@@ -1,0 +1,547 @@
+
+> test
+> vitest run --maxWorkers=3
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90m/app/platform[39m
+
+ [32m✓[39m apps/web/test/skin-projection.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 21619[2mms[22m[39m
+   [32m✓[39m skin projection [2m(11)[22m
+     [33m[2m✓[22m[39m paints shared UVs at every projected position without accumulating opacity[33m 469[2mms[22m[39m
+     [33m[2m✓[22m[39m rotates upright around model Z through a fixed camera basis[33m 468[2mms[22m[39m
+     [33m[2m✓[22m[39m tilts the inspection camera within bounds without turning the model[33m 493[2mms[22m[39m
+     [33m[2m✓[22m[39m retains zero-angle framing and makes true 3D rotations[33m 811[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps every swarm angle inside the standardized frame[33m 11208[2mms[22m[39m
+     [33m[2m✓[22m[39m curated fill masks follow every model topology and stay fixed across views[33m 7908[2mms[22m[39m
+ [32m✓[39m apps/api/test/catalog.test.ts [2m([22m[2m19 tests[22m[2m)[22m[33m 24580[2mms[22m[39m
+   [32m✓[39m creating maps and uploading versions [2m(8)[22m
+     [33m[2m✓[22m[39m validates and previews a version with engine jobs, then shows it as the latest[33m 794[2mms[22m[39m
+     [33m[2m✓[22m[39m marks files the engine cannot load invalid and hides them from everyone but the owner[33m 309[2mms[22m[39m
+     [33m[2m✓[22m[39m accepts the game’s own .map.gz files and stores the bytes the game loads[33m 304[2mms[22m[39m
+     [33m[2m✓[22m[39m reuses the verdict of a file checked before its map was created[33m 320[2mms[22m[39m
+     [33m[2m✓[22m[39m reuses a validation of the same bytes and refuses other owners, bad versions and empty bodies[33m 573[2mms[22m[39m
+     [33m[2m✓[22m[39m limits version uploads per account[33m 2258[2mms[22m[39m
+   [32m✓[39m browsing [2m(1)[22m
+     [33m[2m✓[22m[39m filters by teams, size, how a map was made and title, and pages by sort order[33m 1627[2mms[22m[39m
+   [32m✓[39m likes, reports and moderation [2m(3)[22m
+     [33m[2m✓[22m[39m counts likes of registered accounts once each[33m 501[2mms[22m[39m
+     [33m[2m✓[22m[39m takes reports, lists them for moderators and resolves them, hiding the map if asked[33m 680[2mms[22m[39m
+     [33m[2m✓[22m[39m lets owners edit and delete their maps, and administrators but not moderators delete others[33m 842[2mms[22m[39m
+   [32m✓[39m counts and rooms [2m(3)[22m
+     [33m[2m✓[22m[39m counts downloads once per downloader and day, never the owner[33m 654[2mms[22m[39m
+     [33m[2m✓[22m[39m lets rooms use a catalog version by hash and counts the play when the match ends[33m 684[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses private maps of others and versions saved by a newer engine[33m 489[2mms[22m[39m
+ [32m✓[39m apps/api/test/studio.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 28349[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps studio history and previews private while supporting owner download, room play and selected publication[33m 1532[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the signed payment webhook after disabling generation and removing sale packs[33m 373[2mms[22m[39m
+   [33m[2m✓[22m[39m streams durable progress, resumes by event id and closes after authorization is revoked[33m 15898[2mms[22m[39m
+   [33m[2m✓[22m[39m accepts idempotent conversation turns with fixed settings while enforcing ownership and schema[33m 899[2mms[22m[39m
+ [32m✓[39m packages/db/test/schema.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 54834[2mms[22m[39m
+   [32m✓[39m migrations [2m(8)[22m
+     [33m[2m✓[22m[39m preserves both linked and standalone working drafts in the skin collection migration[33m 8469[2mms[22m[39m
+     [33m[2m✓[22m[39m upgrades the online foundation without replacing account data[33m 9994[2mms[22m[39m
+     [33m[2m✓[22m[39m apply from an empty database and are idempotent[33m 8258[2mms[22m[39m
+     [33m[2m✓[22m[39m upgrades an existing platform database through all skin migrations[33m 7836[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps published skin versions on the classic swarm and keys versions by mesh[33m 3715[2mms[22m[39m
+     [33m[2m✓[22m[39m replaces colony-v1 skins with colony-v2, keeping purchases and preset products[33m 6469[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves legacy skin content at angle zero and keys new versions by validated angle[33m 8195[2mms[22m[39m
+ [32m✓[39m apps/skin-render-worker/test/process.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 21577[2mms[22m[39m
+   [33m[2m✓[22m[39m valid output publishes all references atomically and an already-ready retry is a no-op[33m 8876[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinBilling.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 49954[2mms[22m[39m
+   [33m[2m✓[22m[39m fulfills once, rejects mismatches, and reconciles delayed/refunded/disputed payments[33m 6389[2mms[22m[39m
+   [33m[2m✓[22m[39m durably schedules missed-payment recovery across concurrent replicas and backs off failures[33m 8192[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses a known pending session and replaces expired checkout only for a new request[33m 10498[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers an unrecorded checkout across paginated restart without creating a second session[33m 14336[2mms[22m[39m
+   [33m[2m✓[22m[39m allows a replacement only after a complete scan finds no old checkout[33m 10537[2mms[22m[39m
+ [32m✓[39m apps/api/test/music.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 26358[2mms[22m[39m
+   [33m[2m✓[22m[39m processes real uploads, retains sources for inspection, cleans them after conversion, and retries idempotently[33m 9289[2mms[22m[39m
+   [33m[2m✓[22m[39m cleans technically failed jobs and safely ignores cancelled jobs[33m 736[2mms[22m[39m
+   [33m[2m✓[22m[39m cancels an active decoder and removes its nested temporary PCM[33m 1339[2mms[22m[39m
+   [33m[2m✓[22m[39m retains sources across transient processing failures and cleans only a final failed attempt[33m 1796[2mms[22m[39m
+   [33m[2m✓[22m[39m includes music in account exports and removes owned releases on account deletion[33m 548[2mms[22m[39m
+ [32m✓[39m apps/api/test/matches.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 22805[2mms[22m[39m
+   [32m✓[39m AccessPolicy [2m(2)[22m
+     [33m[2m✓[22m[39m denies hosting, joining and queueing through an injected policy[33m 798[2mms[22m[39m
+     [33m[2m✓[22m[39m checks every seated player again at start[33m 814[2mms[22m[39m
+   [32m✓[39m uploads [2m(3)[22m
+     [33m[2m✓[22m[39m stores a private map, validates it with an engine job and lets the owner use it in a room[33m 315[2mms[22m[39m
+   [32m✓[39m relays [2m(3)[22m
+     [33m[2m✓[22m[39m places matches on healthy, non-draining relays and moves a refused match to another[33m 925[2mms[22m[39m
+   [32m✓[39m match-end intake [2m(6)[22m
+     [33m[2m✓[22m[39m stores the record, records the report once, reopens the room and queues verification[33m 653[2mms[22m[39m
+     [33m[2m✓[22m[39m cancels matches nobody reached and reopens their rooms[33m 439[2mms[22m[39m
+     [33m[2m✓[22m[39m aborts running matches its relay stopped reporting, without a rating change[33m 534[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses an end report before the record and marks leavers of an abandoned game[33m 407[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps a verified winner who left at the end won; only early leavers abandoned[33m 396[2mms[22m[39m
+     [33m[2m✓[22m[39m does not mark a seat that left at the final tick as abandoned[33m 678[2mms[22m[39m
+   [32m✓[39m PlatformMatchStarter [2m(2)[22m
+     [33m[2m✓[22m[39m is idempotent per proposal, generates the map and places the match[33m 482[2mms[22m[39m
+   [32m✓[39m queue methods and NOTIFY forwarding [2m(6)[22m
+     [33m[2m✓[22m[39m joins, refuses duplicates and guests in rated queues, and leaves[33m 500[2mms[22m[39m
+     [33m[2m✓[22m[39m joins several queues as one search (queue.multi) and leaves them together[33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m opens one unrated rematch room for the players of a quick match[33m 728[2mms[22m[39m
+ [32m✓[39m apps/worker/test/matchmaker.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 65563[2mms[22m[39m
+   [32m✓[39m grouping (pure) [2m(5)[22m
+     [33m[2m✓[22m[39m always chooses a region, minimising the worst round trip[33m 2307[2mms[22m[39m
+     [33m[2m✓[22m[39m relaxes the region preference with wait time[33m 2726[2mms[22m[39m
+     [33m[2m✓[22m[39m widens the rating window with wait time[33m 1879[2mms[22m[39m
+     [33m[2m✓[22m[39m pairs each anchor with the closest compatible rating[33m 1683[2mms[22m[39m
+     [33m[2m✓[22m[39m balances 2v2 sides by summed skill[33m 2989[2mms[22m[39m
+   [32m✓[39m matchmaker [2m(17)[22m
+     [33m[2m✓[22m[39m only groups players of the same sim version[33m 2734[2mms[22m[39m
+     [33m[2m✓[22m[39m plays on the region with the lowest worst-case round trip[33m 871[2mms[22m[39m
+     [33m[2m✓[22m[39m still matches players whose only relay is far away[33m 965[2mms[22m[39m
+     [33m[2m✓[22m[39m matches tickets without RTT measurements at once, on any region[33m 1060[2mms[22m[39m
+     [33m[2m✓[22m[39m prefers a partner on a good shared relay early, and any partner later[33m 1020[2mms[22m[39m
+     [33m[2m✓[22m[39m applies the opt-in hard RTT cap only when an operator sets it[33m 1319[2mms[22m[39m
+     [33m[2m✓[22m[39m widens the rating window as tickets wait[33m 1622[2mms[22m[39m
+     [33m[2m✓[22m[39m backfills with the closest-rated AI after the delay, rated and without an accept step[33m 2049[2mms[22m[39m
+     [33m[2m✓[22m[39m never backfills players who opted out[33m 2270[2mms[22m[39m
+     [33m[2m✓[22m[39m fills a 2v2 with humans first and AIs for the rest after the delay[33m 1718[2mms[22m[39m
+     [33m[2m✓[22m[39m starts a ranked all-human match only after both players accept[33m 1438[2mms[22m[39m
+     [33m[2m✓[22m[39m changes "Allow an AI opponent" without losing the queue position[33m 1871[2mms[22m[39m
+     [33m[2m✓[22m[39m removes a decliner with a cooldown and requeues the others at their original position[33m 2618[2mms[22m[39m
+     [33m[2m✓[22m[39m times out players who do not answer[33m 1799[2mms[22m[39m
+     [33m[2m✓[22m[39m treats leaving during an accept prompt as declining[33m 1297[2mms[22m[39m
+     [33m[2m✓[22m[39m requeues players when the match cannot start after retries[33m 1324[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps guests out of rated queues and allows one active ticket per account[33m 1179[2mms[22m[39m
+   [32m✓[39m searches in several queues [2m(5)[22m
+     [33m[2m✓[22m[39m holds the other queues while one is in a prompt and closes them when its match starts[33m 2480[2mms[22m[39m
+     [33m[2m✓[22m[39m resumes the other queues, in place, when the prompt falls through[33m 2483[2mms[22m[39m
+     [33m[2m✓[22m[39m ends the whole search when the player declines[33m 1016[2mms[22m[39m
+     [33m[2m✓[22m[39m leaves and updates every queue of the search[33m 1540[2mms[22m[39m
+     [33m[2m✓[22m[39m allows one search per account, and keeps guests out of it when it has a rated queue[33m 1763[2mms[22m[39m
+   [32m✓[39m matchmaker liveness [2m(2)[22m
+     [33m[2m✓[22m[39m keeps grouping while a start waits for its map, and starts each proposal once[33m 910[2mms[22m[39m
+     [33m[2m✓[22m[39m commits nothing once the leader lease is lost[33m 1458[2mms[22m[39m
+   [32m✓[39m matchmaker leader failover [2m(1)[22m
+     [33m[2m✓[22m[39m runs on one leader at a time and a new leader resumes open proposals[33m 2108[2mms[22m[39m
+ [32m✓[39m apps/api/test/accountExport.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 14997[2mms[22m[39m
+   [32m✓[39m downloading my data [2m(8)[22m
+     [33m[2m✓[22m[39m returns everything stored about the account and nothing secret[33m 1038[2mms[22m[39m
+     [33m[2m✓[22m[39m exports newly canonical WebP drafts with their exact stored bytes and media type[33m 407[2mms[22m[39m
+     [33m[2m✓[22m[39m exports owned Hive credits and sessions without live capabilities[33m 1116[2mms[22m[39m
+     [33m[2m✓[22m[39m exports owned Studio conversations, revisions and separate credits without leases[33m 967[2mms[22m[39m
+     [33m[2m✓[22m[39m exports a self-contained private building revision with its exact archive bytes[33m 985[2mms[22m[39m
+     [33m[2m✓[22m[39m is rate limited per account[33m 2710[2mms[22m[39m
+ [32m✓[39m apps/ai-terrain-worker/test/pipeline.test.ts [2m([22m[2m8 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 15823[2mms[22m[39m
+   [33m[2m✓[22m[39m delivers a validated pack through real artwork processing and settles one credit[33m 1078[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps a question conversational without image generation or a build reservation[33m 334[2mms[22m[39m
+   [33m[2m✓[22m[39m retains uncertain image outcomes without automatic duplicate dispatch[33m 511[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses completed provider stages after a worker restart[33m 1045[2mms[22m[39m
+   [33m[2m✓[22m[39m repairs definitions within the original scope without buying the same image again[33m 1545[2mms[22m[39m
+   [33m[2m✓[22m[39m pauses at the current daily capacity without an extra dispatch and allows cancellation[33m 559[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the previous custom artwork as a reference when revising its appearance[33m 1810[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinCollection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 14502[2mms[22m[39m
+   [33m[2m✓[22m[39m saves independent private designs without an unlock or creating match snapshots[33m 449[2mms[22m[39m
+   [33m[2m✓[22m[39m applies atomically, deduplicates snapshots, and keeps edits unapplied until requested[33m 787[2mms[22m[39m
+[90mstdout[2m | apps/api/test/historyScaling.test.ts[2m > [22m[2mmatch page[2m > [22m[2mreads only the match players’ history for the economy curves
+[22m[39mmatch_team_stats rows read for one match's economy: function 8, view 1204 (1200 stored)
+
+[90mstdout[2m | apps/api/test/historyScaling.test.ts[2m > [22m[2mmatch page[2m > [22m[2mserves the whole match detail quickly
+[22m[39mmatch detail on 600 seeded matches: 28.8 ms
+
+ [32m✓[39m apps/api/test/avatars.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 16560[2mms[22m[39m
+   [32m✓[39m account avatars [2m(11)[22m
+     [33m[2m✓[22m[39m uploads, replaces and removes photos without retaining old blobs[33m 398[2mms[22m[39m
+     [33m[2m✓[22m[39m finds the first linked Gravatar, caches it, and invalidates when identities change[33m 391[2mms[22m[39m
+     [33m[2m✓[22m[39m bounds upstream concurrency while allowing a page of uncached photos to finish[33m 456[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces concurrent refreshes and enforces the upstream timeout[33m 3057[2mms[22m[39m
+     [33m[2m✓[22m[39m deletion stops serving the image and cleans stored bytes[33m 388[2mms[22m[39m
+ [32m✓[39m apps/api/test/historyScaling.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 13517[2mms[22m[39m
+   [32m✓[39m match page [2m(4)[22m
+     [33m[2m✓[22m[39m reads only the match players’ history for the economy curves[33m 357[2mms[22m[39m
+ [32m✓[39m packages/map-studio/test/studio.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 12429[2mms[22m[39m
+   [33m[2m✓[22m[39m bounds history, omits conversation snapshots and retrieves older pages privately[33m 760[2mms[22m[39m
+   [33m[2m✓[22m[39m atomically completes a turn and reserves exactly one linked build across concurrent retries[33m 664[2mms[22m[39m
+   [33m[2m✓[22m[39m does not generate for discussion turns or retroactively authorize legacy chat[33m 343[2mms[22m[39m
+ [32m✓[39m apps/ai-building-worker/test/pipeline.test.ts [2m([22m[2m13 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[33m 15698[2mms[22m[39m
+   [33m[2m✓[22m[39m delivers normalized artwork in a validated immutable archive and charges one credit[33m 606[2mms[22m[39m
+   [33m[2m✓[22m[39m returns a provider rejection without spending a design repair call and releases the credit[33m 353[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps stock camera references when all four player reference slots are used[33m 621[2mms[22m[39m
+   [33m[2m✓[22m[39m creates the finished structure first and reuses its source for construction identity[33m 905[2mms[22m[39m
+   [33m[2m✓[22m[39m repairs once without purchasing the same image twice[33m 675[2mms[22m[39m
+   [33m[2m✓[22m[39m retains unknown provider outcomes without duplicate dispatch[33m 310[2mms[22m[39m
+   [33m[2m✓[22m[39m resumes a completed design stage after a restart[33m 1153[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a repair that expands gameplay during an appearance-only request[33m 645[2mms[22m[39m
+   [33m[2m✓[22m[39m revises properties without dispatching image generation[33m 416[2mms[22m[39m
+ [32m✓[39m apps/api/test/reliability.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 14787[2mms[22m[39m
+   [32m✓[39m member expiry races [2m(2)[22m
+     [33m[2m✓[22m[39m preserves a reconnected member after the sweep snapshots expired members[33m 843[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves a recently disconnected member after the sweep snapshots expired members[33m 462[2mms[22m[39m
+   [32m✓[39m rooms stuck in starting [2m(2)[22m
+     [33m[2m✓[22m[39m reopens a room whose start was interrupted before its match existed, with a notice[33m 615[2mms[22m[39m
+     [33m[2m✓[22m[39m resumes a room whose match was created before the crash; players get match.start again[33m 634[2mms[22m[39m
+   [32m✓[39m realtime after a pub/sub reconnect [2m(2)[22m
+     [33m[2m✓[22m[39m re-sends room state the sockets missed and match tickets of starting matches[33m 1944[2mms[22m[39m
+   [32m✓[39m re-verification [2m(2)[22m
+     [33m[2m✓[22m[39m lets an administrator list failed verifications and re-run one[33m 404[2mms[22m[39m
+ [32m✓[39m apps/ai-music-worker/test/pipeline.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 33884[2mms[22m[39m
+   [33m[2m✓[22m[39m repairs failed candidates, retains evidence, and edits the exact parent source[33m 3335[2mms[22m[39m
+   [33m[2m✓[22m[39m validates and renders a written score without another provider call, even at the call limit[33m 1075[2mms[22m[39m
+   [33m[2m✓[22m[39m stops after three failed renders and refunds the reservation[33m 2768[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses a passing headline with missing mandatory checks[33m 2019[2mms[22m[39m
+   [33m[2m✓[22m[39m never dispatches an uncertain provider request twice[33m 678[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers completed candidate bytes without repeating a render or provider call[33m 1434[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the three-cycle limit across repeated worker deaths during rendering[33m 1976[2mms[22m[39m
+   [33m[2m✓[22m[39m selects the discussion response schema for chat without rendering or charging[33m 758[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects inconsistent audio bytes and unfinished validation[33m 10170[2mms[22m[39m
+   [33m[2m✓[22m[39m validates automatic turn decision discuss before enqueueing a generation[33m 410[2mms[22m[39m
+   [33m[2m✓[22m[39m validates automatic turn decision build before enqueueing a generation[33m 434[2mms[22m[39m
+   [33m[2m✓[22m[39m validates automatic turn decision invalid before enqueueing a generation[33m 429[2mms[22m[39m
+ [32m✓[39m apps/api/test/abuse.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 18911[2mms[22m[39m
+   [32m✓[39m local passwords [2m(3)[22m
+     [33m[2m✓[22m[39m lock a username after repeated failures on any replica, even for the right password[33m 527[2mms[22m[39m
+     [33m[2m✓[22m[39m lock an address that guesses many usernames[33m 409[2mms[22m[39m
+     [33m[2m✓[22m[39m lock the browser sign-in form the same way[33m 321[2mms[22m[39m
+   [32m✓[39m uploads [2m(2)[22m
+     [33m[2m✓[22m[39m refuse decompression bombs by ratio, and keep real compressed maps[33m 1631[2mms[22m[39m
+     [33m[2m✓[22m[39m take the quota before unpacking, on every replica[33m 6686[2mms[22m[39m
+ [32m✓[39m apps/api/test/webpRendition.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 11208[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps old published sources immutable and deduplicates persistent lossless wire renditions[33m 3883[2mms[22m[39m
+ [32m✓[39m apps/api/test/generators.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 16257[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces visibility, exact downloads and immutable releases[33m 323[2mms[22m[39m
+   [33m[2m✓[22m[39m reserves package IDs after deletion and requires increasing revisions[33m 459[2mms[22m[39m
+   [33m[2m✓[22m[39m pins room releases, rejects older clients and ignores stale generation results[33m 1086[2mms[22m[39m
+   [33m[2m✓[22m[39m labels supplied map provenance as a claim and verifies recognized generated bytes independently[33m 363[2mms[22m[39m
+   [33m[2m✓[22m[39m removes deleted-account uploads and social data while permanently retaining ID reservations[33m 450[2mms[22m[39m
+   [33m[2m✓[22m[39m restores member support after an older socket closes and rejects legacy room reconnects[33m 329[2mms[22m[39m
+ [32m✓[39m apps/api/test/rooms.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 17293[2mms[22m[39m
+   [32m✓[39m rooms [2m(10)[22m
+     [33m[2m✓[22m[39m creates a room on a generated map that becomes ready when generation finishes[33m 501[2mms[22m[39m
+     [33m[2m✓[22m[39m lets a player on another replica join by code and fans changes out to both[33m 333[2mms[22m[39m
+     [33m[2m✓[22m[39m leaves a joiner unseated when every seat is taken or locked, and lists them as a member[33m 508[2mms[22m[39m
+     [33m[2m✓[22m[39m starts: every seated player gets match.start with a ticket that verifies against the JWKS[33m 303[2mms[22m[39m
+     [33m[2m✓[22m[39m closes the room for everyone when the host leaves[33m 384[2mms[22m[39m
+     [33m[2m✓[22m[39m lets the host kick a player, who cannot rejoin that room for ten minutes[33m 615[2mms[22m[39m
+   [32m✓[39m sim versions and invite codes [2m(2)[22m
+     [33m[2m✓[22m[39m rate-limits failed invite-code lookups[33m 305[2mms[22m[39m
+   [32m✓[39m room REST and the invite page [2m(4)[22m
+     [33m[2m✓[22m[39m serves a landing page that opens the app, offers the browser client and has OpenGraph tags[33m 434[2mms[22m[39m
+   [32m✓[39m presence and sweeps [2m(4)[22m
+     [33m[2m✓[22m[39m disconnects the members whose sockets were on a replica that stopped heartbeating[33m 343[2mms[22m[39m
+     [33m[2m✓[22m[39m records its sockets again when its own registration expired[33m 341[2mms[22m[39m
+ [32m✓[39m packages/hive/test/sessions.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 11116[2mms[22m[39m
+ [32m✓[39m apps/api/test/generatorStudioRoutes.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 9994[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps generator authoring and tools disabled until the instance opts in[33m 429[2mms[22m[39m
+   [33m[2m✓[22m[39m owns private drafts, runs and check receipts and exports the complete project[33m 675[2mms[22m[39m
+ [32m✓[39m apps/api/test/buildingLibrary.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 9160[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces private visibility, invalid validation and idempotent social actions[33m 371[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinPublishing.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 10072[2mms[22m[39m
+   [33m[2m✓[22m[39m publishes canonical paint, retains old versions, equips and serves verified content[33m 961[2mms[22m[39m
+   [33m[2m✓[22m[39m validates and canonicalizes material maps[33m 787[2mms[22m[39m
+ [32m✓[39m apps/api/test/ais.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 9899[2mms[22m[39m
+   [32m✓[39m AI library [2m(8)[22m
+     [33m[2m✓[22m[39m preserves exact bytes, immutable versions, AI-wide likes and private favourites[33m 452[2mms[22m[39m
+ [32m✓[39m apps/api/test/adminConsole.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 9813[2mms[22m[39m
+   [33m[2m✓[22m[39m supports inspect, hide, resolve, revisit and restore for every library[33m 550[2mms[22m[39m
+   [33m[2m✓[22m[39m exports retained activity and erases markers even when recording races with deletion[33m 351[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves microsecond cursors for content, audit, accounts and operations[33m 464[2mms[22m[39m
+ [32m✓[39m apps/api/test/musicStudio.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 12056[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps drafts and studio evidence private, publishes only a selected immutable release[33m 700[2mms[22m[39m
+   [33m[2m✓[22m[39m deleting an account refunds uncertain work and fences its worker without restoring provider capacity[33m 309[2mms[22m[39m
+ [32m✓[39m apps/worker/test/worker.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 7841[2mms[22m[39m
+   [32m✓[39m maintenance [2m(2)[22m
+     [33m[2m✓[22m[39m retains a building release verdict until the family is removed[33m 350[2mms[22m[39m
+ [32m✓[39m apps/api/test/buildingDrafts.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 8953[2mms[22m[39m
+   [33m[2m✓[22m[39m includes portable draft bytes in account exports and removes them on soft deletion[33m 512[2mms[22m[39m
+ [32m✓[39m apps/api/test/realtime.test.ts [2m([22m[2m19 tests[22m[2m)[22m[33m 12852[2mms[22m[39m
+   [32m✓[39m realtime envelope [2m(5)[22m
+     [33m[2m✓[22m[39m drops sockets that stop answering pings[33m 656[2mms[22m[39m
+   [32m✓[39m browser sign-in handoff [2m(13)[22m
+     [33m[2m✓[22m[39m reports an identity owned by another account as a conflict, then switches on request[33m 621[2mms[22m[39m
+ [32m✓[39m packages/core/test/engineJobs.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 7909[2mms[22m[39m
+ [32m✓[39m packages/building-studio/test/studio.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 8370[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps discussion free and refunds failed builds[33m 342[2mms[22m[39m
+ [32m✓[39m apps/api/test/generatorStudio.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 6656[2mms[22m[39m
+ [32m✓[39m apps/api/test/history.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 10073[2mms[22m[39m
+   [32m✓[39m app links [2m(2)[22m
+     [33m[2m✓[22m[39m answers 404 on instances without app links[33m 372[2mms[22m[39m
+ [32m✓[39m apps/api/test/terrainStudio.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 7791[2mms[22m[39m
+ [32m✓[39m apps/api/test/identity.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 9712[2mms[22m[39m
+   [32m✓[39m local accounts [2m(3)[22m
+     [33m[2m✓[22m[39m upgrades a guest in place and signs in with the password[33m 402[2mms[22m[39m
+   [32m✓[39m administration [2m(3)[22m
+     [33m[2m✓[22m[39m grants roles from the CLI and guards admin endpoints by role[33m 615[2mms[22m[39m
+     [33m[2m✓[22m[39m deletes accounts from the CLI and the admin API, freeing the username[33m 717[2mms[22m[39m
+   [32m✓[39m rate limits [2m(1)[22m
+     [33m[2m✓[22m[39m limits sign-in requests and new guests per address[33m 393[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/queue.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 9192[2mms[22m[39m
+   [32m✓[39m engine jobs over the internal API [2m(3)[22m
+     [33m[2m✓[22m[39m registers the agent, then generates, validates and previews a pool map[33m 922[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinDrafts.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 9811[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps drafts private, canonical and independent of paid publishing, and rejects stale writes[33m 877[2mms[22m[39m
+   [33m[2m✓[22m[39m retains an owned design in a draft and rejects another account or a disabled design[33m 623[2mms[22m[39m
+ [32m✓[39m apps/api/test/deletion.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 9764[2mms[22m[39m
+   [32m✓[39m deleting my account [2m(5)[22m
+     [33m[2m✓[22m[39m purges private studio history, fences leased work, and retains financial audit records[33m 1274[2mms[22m[39m
+     [33m[2m✓[22m[39m cannot recreate a project while account deletion races an authenticated request[33m 440[2mms[22m[39m
+     [33m[2m✓[22m[39m removes private drafts and disables published skins while preserving immutable versions[33m 368[2mms[22m[39m
+     [33m[2m✓[22m[39m signs out everywhere and scrubs the name, keeping ids[33m 624[2mms[22m[39m
+ [32m✓[39m packages/hive/test/checkout.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 8120[2mms[22m[39m
+ [32m✓[39m packages/terrain-studio/test/studio.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 8176[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates submissions and settles a validated private delivery exactly once[33m 447[2mms[22m[39m
+ [32m✓[39m apps/worker/test/reliability.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 8137[2mms[22m[39m
+   [32m✓[39m blob garbage collection [2m(2)[22m
+     [33m[2m✓[22m[39m deletes unreferenced old blobs and unrecorded files, and keeps everything in use[33m 781[2mms[22m[39m
+ [32m✓[39m packages/billing/test/products.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 9317[2mms[22m[39m
+ [32m✓[39m apps/api/test/publicShutdown.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 8111[2mms[22m[39m
+ [32m✓[39m apps/api/test/playersScaling.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 10685[2mms[22m[39m
+ [32m✓[39m packages/hive/test/credits.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 7424[2mms[22m[39m
+ [32m✓[39m apps/api/test/app.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 6893[2mms[22m[39m
+ [32m✓[39m apps/api/test/sets.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 7632[2mms[22m[39m
+   [33m[2m✓[22m[39m publishes exact immutable bytes, likes once, pages, and withdraws future downloads[33m 518[2mms[22m[39m
+ [32m✓[39m packages/music-studio/test/studio.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 9485[2mms[22m[39m
+   [33m[2m✓[22m[39m orders events, records repair cycles, and protects artifacts[33m 319[2mms[22m[39m
+   [33m[2m✓[22m[39m retries and replayed turn completions enqueue exactly one paid build with its persisted identity[33m 304[2mms[22m[39m
+ [32m✓[39m packages/play/test/ratings.test.ts [2m([22m[2m35 tests[22m[2m)[22m[33m 8157[2mms[22m[39m
+   [32m✓[39m rating application [2m(12)[22m
+     [33m[2m✓[22m[39m applies a verified 1v1 once, even when the verdict is delivered twice[33m 362[2mms[22m[39m
+     [33m[2m✓[22m[39m previews exactly the change a verified result then applies[33m 307[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/fixtures.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 9395[2mms[22m[39m
+   [32m✓[39m protocol fixtures [2m(5)[22m
+     [33m[2m✓[22m[39m are current (run `npm run fixtures` after changing schemas or cases)[33m 2224[2mms[22m[39m
+     [33m[2m✓[22m[39m validate as declared, using the TypeScript validators[33m 437[2mms[22m[39m
+     [33m[2m✓[22m[39m validate as declared with an independent JSON Schema 2020-12 validator[33m 6685[2mms[22m[39m
+ [32m✓[39m apps/ai-map-worker/test/attempts.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 7577[2mms[22m[39m
+ [32m✓[39m packages/play/test/warmMaps.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 7131[2mms[22m[39m
+   [32m✓[39m WarmMapPool [2m(6)[22m
+     [33m[2m✓[22m[39m keeps N maps per entry for every served sim version and refills what is taken[33m 482[2mms[22m[39m
+     [33m[2m✓[22m[39m hands each ready map to exactly one concurrent taker[33m 325[2mms[22m[39m
+ [32m✓[39m apps/api/test/aiStudioRoutes.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 8781[2mms[22m[39m
+   [33m[2m✓[22m[39m persists private revisions, resumes events, binds checks and runs to source, and exports data[33m 1462[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps owned saved projects readable but blocks edits and generation when disabled[33m 612[2mms[22m[39m
+ [32m✓[39m packages/db/test/upgrades.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 6706[2mms[22m[39m
+   [32m✓[39m 0019_warm_maps_over_generated [2m(1)[22m
+     [33m[2m✓[22m[39m keeps taken pool rows and drops the rest, which the next refill replaces[33m 4906[2mms[22m[39m
+ [32m✓[39m apps/api/test/engine.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 7475[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinModeration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 7239[2mms[22m[39m
+   [33m[2m✓[22m[39m reports exact versions, resolves atomically, preserves content and restricts disabled paint review[33m 339[2mms[22m[39m
+ [32m✓[39m apps/api/test/aiStudio.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 8068[2mms[22m[39m
+ [32m✓[39m packages/db/test/migrationBranches.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 14520[2mms[22m[39m
+   [33m[2m✓[22m[39m integrates missing 0053_studio_draft_history.sql without renaming deployed migrations[33m 7840[2mms[22m[39m
+   [33m[2m✓[22m[39m integrates missing 0053_admin_console.sql, 0054_admin_analytics.sql, 0055_admin_finances.sql, 0056_admin_rollup_state.sql without renaming deployed migrations[33m 6674[2mms[22m[39m
+ [32m✓[39m packages/db/test/roles.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 14801[2mms[22m[39m
+   [32m✓[39m service roles on a fresh database [2m(3)[22m
+     [33m[2m✓[22m[39m give the API and the worker data access but no DDL or server-side programs[33m 937[2mms[22m[39m
+   [32m✓[39m upgrading a database the superuser migrated [2m(1)[22m
+     [33m[2m✓[22m[39m hands every object to the migrator, then migrates and serves as the roles[33m 5833[2mms[22m[39m
+ [32m✓[39m packages/billing/test/reporting.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 5529[2mms[22m[39m
+ [32m✓[39m packages/map-studio/test/queue.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 7772[2mms[22m[39m
+ [32m✓[39m packages/hive/test/load.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 7972[2mms[22m[39m
+   [33m[2m✓[22m[39m fences 50 competing clients and conserves credit under 100 reservations[33m 833[2mms[22m[39m
+ [32m✓[39m apps/api/test/hive.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 7058[2mms[22m[39m
+ [32m✓[39m apps/api/test/skins.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 7539[2mms[22m[39m
+   [32m✓[39m colony skin equipment [2m(2)[22m
+     [33m[2m✓[22m[39m requires ownership, honors revocation, and keeps published content immutable[33m 343[2mms[22m[39m
+ [32m✓[39m apps/api/test/creditWebhooks.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 6272[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinWebhook.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 6396[2mms[22m[39m
+ [32m✓[39m apps/web/test/studio.test.tsx [2m([22m[2m15 tests[22m[2m)[22m[33m 5796[2mms[22m[39m
+   [33m[2m✓[22m[39m releases a definitively rejected submission so the draft can be corrected[33m 1051[2mms[22m[39m
+   [33m[2m✓[22m[39m does not offer to resubmit an accepted message when refreshing history fails[33m 456[2mms[22m[39m
+   [33m[2m✓[22m[39m lets a rejected first project use corrected prompt and settings[33m 352[2mms[22m[39m
+   [33m[2m✓[22m[39m shows private versions and submits edits through a single server-directed turn[33m 890[2mms[22m[39m
+   [33m[2m✓[22m[39m submits feedback once with its snapshotted build context and stores a recoverable draft[33m 317[2mms[22m[39m
+   [33m[2m✓[22m[39m pins stage inspection without losing the selected generation[33m 487[2mms[22m[39m
+   [33m[2m✓[22m[39m persists revision settings through a reload and resets the parent when size changes[33m 391[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps saved maps accessible without credits and opens credits without losing the prompt[33m 301[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks replacement generation after an unknown submission outcome and retries the same ID[33m 457[2mms[22m[39m
+ [32m✓[39m packages/db/test/reliability.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 11951[2mms[22m[39m
+   [32m✓[39m notify [2m(4)[22m
+     [33m[2m✓[22m[39m is the only place that sends NOTIFY[33m 2719[2mms[22m[39m
+ [32m✓[39m apps/ai-map-worker/test/progress.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 12150[2mms[22m[39m
+   [33m[2m✓[22m[39m retains failed native artifacts and streams rejected checks before refunding once: null[33m 822[2mms[22m[39m
+   [33m[2m✓[22m[39m retains failed native artifacts and streams rejected checks before refunding once: {not valid JSON[33m 650[2mms[22m[39m
+   [33m[2m✓[22m[39m retains failed native artifacts and streams rejected checks before refunding once: {"schema_version":2,"map":{"width":128,"height":128,"player_slots":2}}[33m 805[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/runners.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 3933[2mms[22m[39m
+   [32m✓[39m validate-map [2m(7)[22m
+     [33m[2m✓[22m[39m rejects corrupt, future, oversized and oversided files[33m 491[2mms[22m[39m
+   [32m✓[39m render-preview [2m(3)[22m
+     [33m[2m✓[22m[39m kills a hung engine at the timeout and lets the queue retry[33m 652[2mms[22m[39m
+   [33m[2m✓[22m[39m routes uploaded map inspection, rendering and verification through the configured launcher[33m 589[2mms[22m[39m
+ [32m✓[39m apps/web/test/forms.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 3576[2mms[22m[39m
+   [32m✓[39m map play choices [2m(2)[22m
+     [33m[2m✓[22m[39m opens a modal with browser and installed-app links for both choices[33m 1095[2mms[22m[39m
+   [32m✓[39m map upload [2m(5)[22m
+     [33m[2m✓[22m[39m waits for the game’s verdict and keeps an invalid file out of the catalog[33m 1208[2mms[22m[39m
+[90mstderr[2m | apps/web/test/pages.test.tsx[2m > [22m[2mpreserves earlier matches and retries only the failed history page
+[22m[39mEncountered two children with the same key, `7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+
+ [32m✓[39m apps/web/test/pages.test.tsx [2m([22m[2m14 tests[22m[2m)[22m[33m 4244[2mms[22m[39m
+   [32m✓[39m routing [2m(4)[22m
+     [33m[2m✓[22m[39m keeps every navigation route when group labels change language[33m 358[2mms[22m[39m
+   [32m✓[39m pages [2m(6)[22m
+     [33m[2m✓[22m[39m player page shows ratings, rating graph and matches[33m 516[2mms[22m[39m
+     [33m[2m✓[22m[39m match page shows players, timelines, refused orders and Watch in browser[33m 443[2mms[22m[39m
+     [33m[2m✓[22m[39m shows sign-in state and guards moderation[33m 319[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves earlier matches and retries only the failed history page[33m 541[2mms[22m[39m
+ [32m✓[39m apps/api/test/buildingStudio.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 10062[2mms[22m[39m
+   [33m[2m✓[22m[39m creates an idempotent private project on an ordinary building draft[33m 945[2mms[22m[39m
+ [32m✓[39m apps/web/test/skin-shapes.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 4456[2mms[22m[39m
+   [32m✓[39m GSB1 shared conformance [2m(8)[22m
+     [33m[2m✓[22m[39m drives Studio projection through the mesh adapter with a fixed chart[33m 1176[2mms[22m[39m
+   [33m[2m✓[22m[39m installed worker-walk decodes and stays close to its baked clip[33m 771[2mms[22m[39m
+   [33m[2m✓[22m[39m installed worker-swim decodes and stays close to its baked clip[33m 836[2mms[22m[39m
+   [33m[2m✓[22m[39m installed worker-harvest decodes and stays close to its baked clip[33m 476[2mms[22m[39m
+   [33m[2m✓[22m[39m installed warrior-walk decodes and stays close to its baked clip[33m 363[2mms[22m[39m
+   [33m[2m✓[22m[39m installed warrior-swim decodes and stays close to its baked clip[33m 365[2mms[22m[39m
+   [33m[2m✓[22m[39m installed warrior-fight decodes and stays close to its baked clip[33m 401[2mms[22m[39m
+ [32m✓[39m apps/web/test/skins-workspace.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 4223[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves the document, model and tool when opening and closing paint copying[33m 2055[2mms[22m[39m
+   [33m[2m✓[22m[39m final angle is an explicit undoable document change[33m 845[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps shortcuts out of text fields and modified browser commands[33m 1125[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicStudio.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 3615[2mms[22m[39m
+   [33m[2m✓[22m[39m shows measured checks and requires an explicit selected-version publication[33m 774[2mms[22m[39m
+   [33m[2m✓[22m[39m aligns comparisons only when both duration and musical timeline match[33m 900[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves mood, volume, mute and authorized playback through A/B switching[33m 373[2mms[22m[39m
+ [32m✓[39m packages/hive/test/commander.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 11424[2mms[22m[39m
+   [33m[2m✓[22m[39m meters each call, settles actual usage and persists reports[33m 379[2mms[22m[39m
+ [32m✓[39m packages/core/test/analytics.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 10255[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioReview.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 2951[2mms[22m[39m
+   [33m[2m✓[22m[39m compares delivered previews and keeps both versions pinned when a newer generation arrives[33m 1146[2mms[22m[39m
+   [33m[2m✓[22m[39m pins a detail image and its stage when live progress advances[33m 680[2mms[22m[39m
+   [33m[2m✓[22m[39m selects the native image when a validation check is opened after a crop detail[33m 627[2mms[22m[39m
+   [33m[2m✓[22m[39m waits for the final preview to decode before starting the completion reveal[33m 339[2mms[22m[39m
+ [32m✓[39m apps/web/test/ais.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 3349[2mms[22m[39m
+   [33m[2m✓[22m[39m requires a passing checklist and invalidates it when the file changes[33m 2028[2mms[22m[39m
+   [33m[2m✓[22m[39m searches and filters the shared catalogue with a useful empty state[33m 557[2mms[22m[39m
+   [33m[2m✓[22m[39m continues beyond the bounded restored page count using cursor navigation[33m 588[2mms[22m[39m
+[90mstdout[2m | packages/play/test/history.test.ts[2m > [22m[2mverified history[2m > [22m[2mstores team statistics, timelines and artifacts, and aggregates them in views
+[22m[39morderBy(array) is deprecated, use multiple orderBy calls instead.
+
+ [32m✓[39m packages/play/test/history.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 12476[2mms[22m[39m
+   [32m✓[39m verified history [2m(2)[22m
+     [33m[2m✓[22m[39m stores team statistics, timelines and artifacts, and aggregates them in views[33m 607[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicPlayer.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 2963[2mms[22m[39m
+   [33m[2m✓[22m[39m applies a preselected mood and seek before starting; uses one volume gain[33m 1216[2mms[22m[39m
+ [32m✓[39m apps/web/test/generators.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 1782[2mms[22m[39m
+   [33m[2m✓[22m[39m gates publication on bound validation and invalidates it after changing example settings[33m 1069[2mms[22m[39m
+   [33m[2m✓[22m[39m exposes exact releases and sampled refusals without claiming balance certification[33m 350[2mms[22m[39m
+   [33m[2m✓[22m[39m searches tags and separates playable generators from editor tools[33m 361[2mms[22m[39m
+ [32m✓[39m apps/web/test/setsWorkspace.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 2861[2mms[22m[39m
+   [33m[2m✓[22m[39m does not reuse a remaining terrain key after deletion and addition[33m 990[2mms[22m[39m
+   [33m[2m✓[22m[39m retains invalid JSON across entry switches and prevents saving hidden invalid text[33m 1100[2mms[22m[39m
+   [33m[2m✓[22m[39m waits for new-draft validation before replacing the workspace route[33m 385[2mms[22m[39m
+ [32m✓[39m packages/db/test/coordination.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 2325[2mms[22m[39m
+   [32m✓[39m LeaderElection [2m(1)[22m
+     [33m[2m✓[22m[39m elects exactly one leader and fails over when it stops or dies[33m 524[2mms[22m[39m
+ [32m✓[39m apps/web/test/players.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1590[2mms[22m[39m
+   [33m[2m✓[22m[39m debounces search, discards stale results, and navigates by keyboard[33m 1001[2mms[22m[39m
+   [33m[2m✓[22m[39m shows empty and error states and resets pagination when filters change[33m 368[2mms[22m[39m
+ [32m✓[39m apps/web/test/generatorStudio.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 756[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps a frozen preview independent of settings and ignores stale messages[33m 509[2mms[22m[39m
+ [32m✓[39m apps/web/test/skin-rig.test.ts [2m([22m[2m51 tests[22m[2m)[22m[33m 1887[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the same displayed rig pose for Studio projection and a fixed rest chart[33m 1028[2mms[22m[39m
+   [33m[2m✓[22m[39m installed explorer-fly decodes and produces finite unit normals[33m 692[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioPrimitives.test.tsx [2m([22m[2m17 tests[22m[2m)[22m[33m 1342[2mms[22m[39m
+   [33m[2m✓[22m[39m sends on Enter, preserves Shift+Enter and IME composition, and guards unavailable actions[33m 519[2mms[22m[39m
+ [32m✓[39m apps/web/test/i18n.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 534[2mms[22m[39m
+   [32m✓[39m web localization [2m(12)[22m
+     [33m[2m✓[22m[39m updates text and document language while preserving an editor draft[33m 325[2mms[22m[39m
+ [32m✓[39m apps/web/test/skin-color-picker.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 790[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps partial hex edits local and accepts valid colors without an OS picker[33m 331[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves chosen hue at black and adjusts both axes with the keyboard[33m 390[2mms[22m[39m
+ [32m✓[39m packages/i18n/test/build-browser.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1836[2mms[22m[39m
+   [33m[2m✓[22m[39m browser check rejects stale copies without rewriting or creating development outputs[33m 1832[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioViewer.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 2501[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the last decoded image and zoom during delayed stage loads, then retires the old layer[33m 2078[2mms[22m[39m
+ [32m✓[39m apps/web/test/admin.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 2063[2mms[22m[39m
+   [32m✓[39m admin report presentation [2m(6)[22m
+     [33m[2m✓[22m[39m shows a single observed day as a mark and splits missing-day gaps[33m 784[2mms[22m[39m
+   [33m[2m✓[22m[39m requires inspected evidence and explicit verified usage before reconciliation[33m 543[2mms[22m[39m
+   [33m[2m✓[22m[39m copies verified cache-write usage and prevents cache counts exceeding total input[33m 636[2mms[22m[39m
+ [32m✓[39m apps/web/test/buildingStudioUx.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 1330[2mms[22m[39m
+   [33m[2m✓[22m[39m opens Building credits on zero-balance click without dispatching or losing the prompt[33m 1179[2mms[22m[39m
+ [32m✓[39m apps/web/test/libraryFeedback.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 991[2mms[22m[39m
+   [33m[2m✓[22m[39m announces completion outside the busy gallery and restores pagination to the first new card[33m 698[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/generatorValidation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 1718[2mms[22m[39m
+   [33m[2m✓[22m[39m isolates inspection, every repeated matrix run and saved-world inspection[33m 965[2mms[22m[39m
+   [33m[2m✓[22m[39m shows legitimate refusals but rejects invalid worlds and non-repeatable accepted requests[33m 488[2mms[22m[39m
+ [32m✓[39m apps/web/test/mapPreview.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 462[2mms[22m[39m
+   [33m[2m✓[22m[39m fits rectangular previews and allows keyboard exploration and reset[33m 387[2mms[22m[39m
+ [32m✓[39m apps/api/test/pages.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 357[2mms[22m[39m
+   [33m[2m✓[22m[39m serves shared bootstrap, rebased CSS, fonts and notices under the form CSP[33m 343[2mms[22m[39m
+ [32m✓[39m apps/web/test/skin-document.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 668[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/setValidation.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 408[2mms[22m[39m
+   [33m[2m✓[22m[39m advertises set checks only with isolation and binds results to the input hash[33m 405[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/engineCli.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 394[2mms[22m[39m
+   [32m✓[39m process limits [2m(2)[22m
+     [33m[2m✓[22m[39m kills the whole process group on timeout[33m 313[2mms[22m[39m
+ [32m✓[39m apps/web/test/aiStudioPlaytest.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 439[2mms[22m[39m
+   [33m[2m✓[22m[39m records map-fetch launch failures once instead of only changing the label[33m 303[2mms[22m[39m
+ [32m✓[39m apps/ai-building-worker/test/artwork.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 1224[2mms[22m[39m
+   [33m[2m✓[22m[39m extracts team-color accents into matching mint-base layers without losing alpha[33m 562[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/aiValidation.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 165[2mms[22m[39m
+ [32m✓[39m apps/web/test/icons.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 302[2mms[22m[39m
+ [32m✓[39m apps/api/test/buildingImages.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 148[2mms[22m[39m
+ [32m✓[39m apps/api/test/publicFeatures.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 223[2mms[22m[39m
+ [32m✓[39m apps/api/test/skinStripe.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 159[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicValidation.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 243[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicStudioStream.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 172[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioStream.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 204[2mms[22m[39m
+ [32m✓[39m packages/core/test/core.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 160[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicCatalogue.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 158[2mms[22m[39m
+ [32m✓[39m apps/api/test/studioEvents.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 123[2mms[22m[39m
+ [32m✓[39m packages/engine/test/buildings.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 133[2mms[22m[39m
+ [32m✓[39m packages/i18n/test/runtime.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m packages/play/test/stored.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 224[2mms[22m[39m
+ [32m✓[39m packages/terrain-studio/test/assembly.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 113[2mms[22m[39m
+ [32m✓[39m apps/ai-building-worker/test/references.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+ [32m✓[39m packages/core/test/queueConfig.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/buildingPackage.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+ [32m✓[39m apps/api/test/network.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/protocol.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 85[2mms[22m[39m
+ [32m✓[39m apps/web/test/aiStudioDraft.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 111[2mms[22m[39m
+ [32m✓[39m apps/web/test/librarySearch.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+ [32m✓[39m packages/i18n/test/source-contract.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 120[2mms[22m[39m
+ [32m✓[39m packages/hive/test/contract.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m packages/core/test/mapFile.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioChecks.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m packages/engine/test/sets.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 148[2mms[22m[39m
+ [32m✓[39m apps/ai-music-worker/test/runner.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 67[2mms[22m[39m
+ [32m✓[39m apps/web/test/studioCodeEditor.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m apps/api/test/generatorStudioProvider.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m apps/api/test/keys.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m apps/api/test/ratingNotes.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/resourceExperiments.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+ [32m✓[39m apps/ai-terrain-worker/test/rejection.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m apps/ai-map-worker/test/playability.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/agent.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/buildingValidation.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/unitCatalog.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m apps/api/test/roomSeats.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/skinMaterials.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicPlayback.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/buildingCatalog.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m apps/skin-render-worker/test/bundle.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m apps/ai-terrain-worker/test/artwork.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m packages/building-studio/test/assembly.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m apps/web/test/setModel.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m apps/engine-agent/test/assetSandbox.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m apps/ai-building-worker/test/provider.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m apps/web/test/skin-detail-uv.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m apps/ai-terrain-worker/test/provider.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m apps/ai-music-worker/test/provider.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m apps/web/test/aiBrowse.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m packages/protocol/test/connectionQuality.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m apps/api/test/aiStudioProvider.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m packages/engine/test/unitCatalog.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m apps/web/test/aiStudioConversation.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m apps/api/test/errors.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m apps/web/test/musicStudioDraft.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m apps/web/test/features.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m apps/web/test/charts.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [2m[90m↓[39m[22m apps/engine-agent/test/generator-real.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m apps/ai-map-worker/test/pipeline.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m apps/api/test/generator-real-flow.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m apps/engine-agent/test/real-binary.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m5 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m apps/skin-render-worker/test/native.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m167 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (172)[39m
+[2m      Tests [22m [1m[32m1172 passed[39m[22m[2m | [22m[33m15 skipped[39m[90m (1187)[39m
+[2m   Start at [22m 21:03:15
+[2m   Duration [22m 476.50s[2m (tests 78%, import 14%, environment 4%, transform 3%)[22m
+
+[2m    Isolate [22m [33m172 workers spawned[39m[2m · ~532ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~29.98s faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+

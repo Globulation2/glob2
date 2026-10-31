@@ -522,6 +522,26 @@
       "bytes": 802
     },
     {
+      "path": "artifacts/translation-program/browser-font-refresh/final-canonical-review.json",
+      "sha256": "1acd17d439dd25d26175fe35cf186ed9c4c3a2d4e189455b427a9faa1e5762e4",
+      "bytes": 3635
+    },
+    {
+      "path": "artifacts/translation-program/browser-font-refresh/independent-review.json",
+      "sha256": "035d4f91cb2daf8d9eb6351e995fa40d0b1e4db30f127a6e205d3ad38afc148a",
+      "bytes": 1146
+    },
+    {
+      "path": "artifacts/translation-program/browser-font-refresh/prepared-release-commits.json",
+      "sha256": "4871b94844743be57ed87cffba73e37b906c477ca1e99e084965099f3211baba",
+      "bytes": 768
+    },
+    {
+      "path": "artifacts/translation-program/browser-font-refresh/sources.json",
+      "sha256": "aaf60a742f428dda4c5eabd459e9a11482d19c9e9fd4d6961ba72a3484c09b52",
+      "bytes": 1596
+    },
+    {
       "path": "artifacts/translation-program/browser-wasm-current/final-preflight-changes.json",
       "sha256": "93462abd43f1b98ae5eb2ea51add302c4b4520e9a7f547c7ff80492145be860d",
       "bytes": 868
@@ -907,6 +927,11 @@
       "bytes": 98
     },
     {
+      "path": "artifacts/translation-program/final-merge-validation.json",
+      "sha256": "f6b7db5e08fa5ff95757a85357205f3aea642a21c18aedc5ee49aae8fab2da3c",
+      "bytes": 4722
+    },
+    {
       "path": "artifacts/translation-program/final-native-strict.json",
       "sha256": "595f047fb98bf5485678584ef7fabccddfc4700eb28a2fdb6031d57aaeb2a653",
       "bytes": 969473
@@ -922,6 +947,16 @@
       "bytes": 94271
     },
     {
+      "path": "artifacts/translation-program/hosted-ci-review/language-font-metadata-diagnosis.json",
+      "sha256": "e1e15c81aff7a0fbd8a23f306efed4de144d73ce46e1361af7492b7c852bb272",
+      "bytes": 1529
+    },
+    {
+      "path": "artifacts/translation-program/hosted-ci-review/pic-actual-link-verification.json",
+      "sha256": "511cc423f8ebf484326c26afb495c745abc08f102fdbf04a6e15319adb535e31",
+      "bytes": 1427
+    },
+    {
       "path": "artifacts/translation-program/hosted-ci-review/prepared-infra-commits.json",
       "sha256": "906232a273ac739d8f593f609eff381ad03833a82f73618221d56934d6ec2398",
       "bytes": 280
@@ -932,14 +967,139 @@
       "bytes": 13463
     },
     {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/Dockerfile.tools",
+      "sha256": "8a1d93449aaecd47b9758a3466ad8ede6e323ea7e8e32ef9c038805d521ccd6d",
+      "bytes": 652
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/archive-sha256.json",
+      "sha256": "17d3d69027d419a5a6073d5dbceeba228bf879448757191363078cebffbbb640",
+      "bytes": 1056
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/logs/i18n.log",
+      "sha256": "1a5f683840f3d4d963a96cc27cf146ace61ac1b048f119c6a51df6cc09547735",
+      "bytes": 224
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/logs/lint.log",
+      "sha256": "23f417c96f402762b2a28986136ea6dc0a94d7dfb2aa4a6d13a39b965b6283fd",
+      "bytes": 316
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/logs/typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+      "bytes": 107
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/logs/vitest.log",
+      "sha256": "8814f71963e96d9c53525dae847694b0ceae504be84afd4a392ee9cbf76935e2",
+      "bytes": 60394
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/result.json",
+      "sha256": "9d55104cd4db2906b9f1eb10785308f4039b0a26633dc34b48f223684d2672bf",
+      "bytes": 10369
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/run-checks.sh",
+      "sha256": "e7c127077379b7bc249d9ffad5fd59e7d804a112ceb8d66326404f0b871920a2",
+      "bytes": 1036
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/run-frozen.py",
+      "sha256": "5c7ca0c3fe1be97e2541f1410ea14666b15a14c1c550ff7f99e07c86408a5dae",
+      "bytes": 3369
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/runner.log",
+      "sha256": "6548c3683e1c0e47d8fd949f6c3d634a93854dade65c8cafeedea2a9dc611928",
+      "bytes": 350
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/steps.csv",
+      "sha256": "4da174e1bbf07fe2a13c298915ec91bd83a7f0e3dbe906491f2205c5bbd23e4b",
+      "bytes": 243
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/tools-image.json",
+      "sha256": "0fddf1b1ebd9c42f10024cd7f6e5fe950291ffc82f8370f2911ca23a07e737eb",
+      "bytes": 594
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/attempt-3/tools-packages.tsv",
+      "sha256": "2879d8bdf920125c2411796a65fde1f8f5353ac35c3f64c7d649635ef2549499",
+      "bytes": 9376
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/archive-sha256.json",
+      "sha256": "a540bfde5b6684ea62bdf3e993a2af82d71073a9ae7a0637b6b48c94581f394b",
+      "bytes": 879
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/final-validation.json",
+      "sha256": "0752cabb4d1af49d5c6b2d8722835750a91a3efa973dbe9d35a404eff3f64a96",
+      "bytes": 6466
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/logs/i18n.log",
+      "sha256": "1a5f683840f3d4d963a96cc27cf146ace61ac1b048f119c6a51df6cc09547735",
+      "bytes": 224
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/logs/lint.log",
+      "sha256": "23f417c96f402762b2a28986136ea6dc0a94d7dfb2aa4a6d13a39b965b6283fd",
+      "bytes": 316
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/logs/typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+      "bytes": 107
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/logs/vitest.log",
+      "sha256": "87de5fa09cb76f739d7ca02426f618f38fe76adab77861115d822536197cc177",
+      "bytes": 67218
+    },
+    {
       "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/result.json",
       "sha256": "133708a9acaed206645d2e5c52ef04f6f2813ebcc5c66100695778a58661d917",
       "bytes": 10369
     },
     {
-      "path": "artifacts/translation-program/linux-platform-validation/final-validation.json",
-      "sha256": "0752cabb4d1af49d5c6b2d8722835750a91a3efa973dbe9d35a404eff3f64a96",
-      "bytes": 6466
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/run-checks.sh",
+      "sha256": "e7c127077379b7bc249d9ffad5fd59e7d804a112ceb8d66326404f0b871920a2",
+      "bytes": 1036
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/run-frozen.py",
+      "sha256": "5c7ca0c3fe1be97e2541f1410ea14666b15a14c1c550ff7f99e07c86408a5dae",
+      "bytes": 3369
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/runner.log",
+      "sha256": "f1a051125622a51282c1d31ecf45001de7b84f6dbddded1cb7a5f17b5d58bd62",
+      "bytes": 350
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/before-final-attempt-3/steps.csv",
+      "sha256": "b919bc6cf8fcff78649983633a3394abe325ac191a7678a04bc53ed5615cb08a",
+      "bytes": 243
+    },
+    {
+      "path": "artifacts/translation-program/linux-platform-validation/final-validation-mainline.json",
+      "sha256": "6949dde1badb1b6886c622faf12e37ba78ce5ad90f286ef8226dcb6db398c328",
+      "bytes": 13292
+    },
+    {
+      "path": "artifacts/translation-program/mainline-font-coverage.log",
+      "sha256": "890cd7025dd2a845d30e0a3b2511b1ad438c3fb463a02bda96a1149cb4f155dc",
+      "bytes": 98
+    },
+    {
+      "path": "artifacts/translation-program/mainline-native-build-proof.json",
+      "sha256": "faa791523e33a9a2773815d6a785bc1e4f58ce5abbbd872de446d7f905f0c64e",
+      "bytes": 2158
     },
     {
       "path": "artifacts/translation-program/mainline-native-strict.json",
@@ -960,6 +1120,16 @@
       "path": "artifacts/translation-program/mainline-translation-unit.log",
       "sha256": "5155f4503aee2bf7795909becce50ef13daad5be95e70dc383203212e4bf7953",
       "bytes": 121
+    },
+    {
+      "path": "artifacts/translation-program/merge-final-native-strict.json",
+      "sha256": "829c4173958517cf0027d5f41e02b5733ed4164c242ef7fa6c1fd6edb7a04cb0",
+      "bytes": 969473
+    },
+    {
+      "path": "artifacts/translation-program/merge-final-source-freeze.json",
+      "sha256": "b812b9cf776c37297e47fa71c7c8cc5e3fcb204830b99c9a6f8a0fd1185608d4",
+      "bytes": 191
     },
     {
       "path": "artifacts/translation-program/native-final-build-proof.json",
@@ -3277,6 +3447,116 @@
       "bytes": 370180
     },
     {
+      "path": "artifacts/translation-program/native-preview/release-mainline/capture-plan.json",
+      "sha256": "75c89baac0d13195dbb3ed21576abdd0f4dc385b7e65bba85d99267eceacbbb4",
+      "bytes": 13773
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/execution.log",
+      "sha256": "ed61696b02a814f74d55734cdd208b743fb6285e6f53ffb7d1da0580112b3430",
+      "bytes": 231
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.json",
+      "sha256": "9c92f2542d8ab935200511eb83bc462452c578f3fbdd0dacf7c9879dddb43421",
+      "bytes": 13245
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.png",
+      "sha256": "cd5ead87ffac814b6f63f7a6c82ff2170944264ba27a2b785483d5279a5e5c9a",
+      "bytes": 232475
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.json",
+      "sha256": "a57bad654eafbfac6ee82fd772f946080d8d085a3de832e97050974268b232b3",
+      "bytes": 13248
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.png",
+      "sha256": "d024c0e1e99e23d7669e41c74f5cdb1e3d129ba78151a804d55fdc3bacbcde05",
+      "bytes": 38799
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/results.json",
+      "sha256": "35332e076a298c154dc4ada5858ab70316d8fc9bddff049593a39d538686f9e3",
+      "bytes": 12510
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.json",
+      "sha256": "27a05aece0671147ff19821e2744c7e8d6d900ccbada61745a199450048e222f",
+      "bytes": 13245
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.png",
+      "sha256": "0c88841441d75ebbeebb384bf1f347e44f000eda2522beed3798c54c89f80429",
+      "bytes": 229051
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.json",
+      "sha256": "2ce04a7f93c7fc65b83008036274055fa282c3c29313a775668c9572841323fc",
+      "bytes": 13248
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.png",
+      "sha256": "246c1bd9b7f9e40c423c7b936895058ff81e129f0ede1a476251c967549b5b8c",
+      "bytes": 36116
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.json",
+      "sha256": "ccda3beb6f6760d478affbfb999877f9adbe661e2359c2c56b86306832bf263a",
+      "bytes": 13245
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.png",
+      "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+      "bytes": 231773
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.json",
+      "sha256": "ef61d15f8a8d20741217f13c0735427821ce91c3622c99091bb7bd00898af83a",
+      "bytes": 13250
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.log",
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.png",
+      "sha256": "6c30018246ad9db2b1c2e82863ad5cadfcf48471186a1bf0056bdd7cce2f46f3",
+      "bytes": 29707
+    },
+    {
+      "path": "artifacts/translation-program/public-evidence-delta-safety-review.json",
+      "sha256": "6a13169d4e947b78fe7afd64649a153ec09326ad1b2656d2920cec066663d4b9",
+      "bytes": 369330
+    },
+    {
       "path": "artifacts/translation-program/public-evidence-safety-review.json",
       "sha256": "eb4f9d9ac5b098d26080290cd12c37ab76bc95e0385103bd99f44783a2da51df",
       "bytes": 1980
@@ -4647,6 +4927,131 @@
       "bytes": 1106
     },
     {
+      "path": "artifacts/translation-program/reviews/hi-native/english-equality-dispositions.json",
+      "sha256": "fe2ba77d1ad065a13c790b0c42266ebcb4632e9bb774e1f5cdded0c8bbb656e5",
+      "bytes": 9080
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-colony-001.json",
+      "sha256": "be140fd6fe7cb47bd23ba858ddcbea4bf7b6bccf27834905b8a3041facfa4bca",
+      "bytes": 9440
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-colony-002.json",
+      "sha256": "3e59e7875955ee16ac9c654a0f0b35e8e5e15c7abf6fc31f444a16425b36675f",
+      "bytes": 1149
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-001.json",
+      "sha256": "73137c2349b09aefe48f49b47aa1af057ac75f9fce1919f47cd63e09b1b8d0e6",
+      "bytes": 9931
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-002.json",
+      "sha256": "3852f453d8ecc197c22b8d30cfe2a80c962e03a864dcab7ee84e6c87c337df9c",
+      "bytes": 8110
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-003.json",
+      "sha256": "3618aa4f2f8c3cbcf94d624a65445c54338fcfe0fe599fbe4cdadb3e2336f47f",
+      "bytes": 16008
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-004.json",
+      "sha256": "bfe3d15d4ce6eab05edf885d76d63eaad81eb0a278e5bbafbc5b4d5ae1ef5eb6",
+      "bytes": 6332
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-005.json",
+      "sha256": "9c244229c86ad4c622ad526afe0a5f4040ba1a905313fa679ea57f85157429f2",
+      "bytes": 7060
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-006.json",
+      "sha256": "b786b37c46089715e5fa6023cad40bda504a205fe221e69cb178aeb4a4b14a67",
+      "bytes": 5854
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-007.json",
+      "sha256": "120e760c7cf46dcbbd1733a7bdf1873ea16b3031dbfb4e09d04e0621d6c661e2",
+      "bytes": 6553
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-008.json",
+      "sha256": "12c761e928e57c636cafab79f98022e899809e0a1a1f5c237cca37d549a48e37",
+      "bytes": 8982
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-009.json",
+      "sha256": "ffe9dd987a4942317c7db4d18e5c1605a4888329a882788a59adb5520d928ea6",
+      "bytes": 5449
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-010.json",
+      "sha256": "1ded333f3754a5abc58b080b70fbf6dac5c99510b7bb7b6415aefaa2bc01d046",
+      "bytes": 5446
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-011.json",
+      "sha256": "fb901e9c58272e0dc1f362cbd9d0bb4195ed1cfe05d6d1c3f928713c3342583f",
+      "bytes": 5583
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-012.json",
+      "sha256": "29b7802f3a14b0e2c96ba31d97afda12ad5788bcc563285f8747010ef00bc378",
+      "bytes": 9196
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-013.json",
+      "sha256": "f301a15d31d9307d5d9a647ab3c6df899e2264d01238db3ab08f789ff1bb2e2f",
+      "bytes": 10814
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-014.json",
+      "sha256": "dcf1d652984ed4dc261a2df8698d49450a5d322f5ef9cb2d43c384e6e9e83266",
+      "bytes": 5841
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-015.json",
+      "sha256": "f7ac9e3431abf0512396fdb84ad73bc622417adba3c647287f13771f531ac209",
+      "bytes": 8164
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-general-016.json",
+      "sha256": "fd29c9ef7aeec556f3daa8edfeb31233ff48c1869a00e90f61dc59f29d820ac3",
+      "bytes": 2166
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-maps-001.json",
+      "sha256": "470627c18f73d5245d9fcd9814a65132e984ebf55baab092859a797e553fccb0",
+      "bytes": 13600
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-maps-002.json",
+      "sha256": "d77779b2f8fe93fbca8036a9852d658af427af90be15c4c4c8af24c00c90abdc",
+      "bytes": 3328
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-settings-001.json",
+      "sha256": "ac6db9cb852b15ce63a423c9d31fdc35e562af80b3c8dafb0424dfd950fda425",
+      "bytes": 12404
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-settings-002.json",
+      "sha256": "86ef007f4ad12d710daba9543ffaca80d793f951b18f7f99cd2204e603ec4521",
+      "bytes": 9810
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-settings-003.json",
+      "sha256": "2cb62d15052c293d71613012c53f156ab4ab02303324e0771ccfc68821d31edb",
+      "bytes": 7211
+    },
+    {
+      "path": "artifacts/translation-program/reviews/hi-native/native-tutorial-001.json",
+      "sha256": "7929b4771ae6a0639947b28e4882a2ad69663f0931d6f20c1a3b33e5a02e8b12",
+      "bytes": 10163
+    },
+    {
       "path": "artifacts/translation-program/reviews/hi-native-edit/before.txt",
       "sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
       "bytes": 358444
@@ -5497,129 +5902,114 @@
       "bytes": 50132
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/english-equality-dispositions.json",
-      "sha256": "fe2ba77d1ad065a13c790b0c42266ebcb4632e9bb774e1f5cdded0c8bbb656e5",
-      "bytes": 9080
+      "path": "artifacts/translation-program/reviews/hi-online/coverage-check.json",
+      "sha256": "7dc2163d05c0698efdfc9808c446deeb30a72af70396a6e251f70fd1740bfd60",
+      "bytes": 684
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-colony-001.json",
-      "sha256": "be140fd6fe7cb47bd23ba858ddcbea4bf7b6bccf27834905b8a3041facfa4bca",
-      "bytes": 9440
+      "path": "artifacts/translation-program/reviews/hi-online/editor-recheck.json",
+      "sha256": "fa41bf65bfed3b15a68098d0cb5dd941b33e59181aa2285e39f9e32be7dd93df",
+      "bytes": 4437
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-colony-002.json",
-      "sha256": "3e59e7875955ee16ac9c654a0f0b35e8e5e15c7abf6fc31f444a16425b36675f",
-      "bytes": 1149
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-001.json",
+      "sha256": "15a11e952dbd94283d1f93781b60aa714a411bad618488b66eb0b4fe42d360ff",
+      "bytes": 24269
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-001.json",
-      "sha256": "73137c2349b09aefe48f49b47aa1af057ac75f9fce1919f47cd63e09b1b8d0e6",
-      "bytes": 9931
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-002.json",
+      "sha256": "b4227512a4bb16dc1888493cf5a0ff752a46b10430612e70243a6161ea5a5240",
+      "bytes": 18846
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-002.json",
-      "sha256": "3852f453d8ecc197c22b8d30cfe2a80c962e03a864dcab7ee84e6c87c337df9c",
-      "bytes": 8110
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-003.json",
+      "sha256": "2d96dfdd249517b1a13c027f8a62e5994a500547f0a0f60e2cc7f2a4a166c8ee",
+      "bytes": 10250
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-003.json",
-      "sha256": "3618aa4f2f8c3cbcf94d624a65445c54338fcfe0fe599fbe4cdadb3e2336f47f",
-      "bytes": 16008
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-004.json",
+      "sha256": "a28a5e923ba4b6198f1f8ad9c3cf826e72942781966ebde610cf0e709c782307",
+      "bytes": 11132
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-004.json",
-      "sha256": "bfe3d15d4ce6eab05edf885d76d63eaad81eb0a278e5bbafbc5b4d5ae1ef5eb6",
-      "bytes": 6332
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-005.json",
+      "sha256": "5ce1a1d671ea256adc5a133b8a48d2b4d9b2c04e8d6596c1a615e54693fd2496",
+      "bytes": 12980
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-005.json",
-      "sha256": "9c244229c86ad4c622ad526afe0a5f4040ba1a905313fa679ea57f85157429f2",
-      "bytes": 7060
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-006.json",
+      "sha256": "b9c5bff958beb276740b4ac213e35a786bc8938ea937fdfee0446cc61f2cbb14",
+      "bytes": 12641
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-006.json",
-      "sha256": "b786b37c46089715e5fa6023cad40bda504a205fe221e69cb178aeb4a4b14a67",
-      "bytes": 5854
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-007.json",
+      "sha256": "d50e016e52fdb76b47e0a3948e78a955b190075915e52618d45d800b2ac695c5",
+      "bytes": 10367
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-007.json",
-      "sha256": "120e760c7cf46dcbbd1733a7bdf1873ea16b3031dbfb4e09d04e0621d6c661e2",
-      "bytes": 6553
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-008.json",
+      "sha256": "f738a849e0cbff1bbc3cede5fbc2e2741796d8fc0d7135592f25bc5e1d2cb191",
+      "bytes": 13569
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-008.json",
-      "sha256": "12c761e928e57c636cafab79f98022e899809e0a1a1f5c237cca37d549a48e37",
-      "bytes": 8982
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-009.json",
+      "sha256": "6e41f5aba212be47c7757be6c7fcebfa25e7de7a03a46c8647b9d9e0a68f5bf7",
+      "bytes": 9776
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-009.json",
-      "sha256": "ffe9dd987a4942317c7db4d18e5c1605a4888329a882788a59adb5520d928ea6",
-      "bytes": 5449
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-010.json",
+      "sha256": "c887ba4c8e3cfe310ebb25d911a6a4d3edfdb86b5f902d16ef80b7c13dc11299",
+      "bytes": 12595
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-010.json",
-      "sha256": "1ded333f3754a5abc58b080b70fbf6dac5c99510b7bb7b6415aefaa2bc01d046",
-      "bytes": 5446
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-011.json",
+      "sha256": "f63d24a85f213f1ac17ad7a88d5938d19361eeac1dee54020a73029838d69c59",
+      "bytes": 15938
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-011.json",
-      "sha256": "fb901e9c58272e0dc1f362cbd9d0bb4195ed1cfe05d6d1c3f928713c3342583f",
-      "bytes": 5583
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-012.json",
+      "sha256": "c17525bdab7a905670ee1bf81358d20713c6012e147633fc1a677eeddc57e772",
+      "bytes": 10009
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-012.json",
-      "sha256": "29b7802f3a14b0e2c96ba31d97afda12ad5788bcc563285f8747010ef00bc378",
-      "bytes": 9196
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-013.json",
+      "sha256": "15a3769fb4b6f0def42699f3cd7b52fd29b898fa1fd3823104fa1c3d00ac2577",
+      "bytes": 13291
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-013.json",
-      "sha256": "f301a15d31d9307d5d9a647ab3c6df899e2264d01238db3ab08f789ff1bb2e2f",
-      "bytes": 10814
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-014.json",
+      "sha256": "3994e6a71f20b6dbc3807ce4378c8952ef0a3f2fb038313a0a7a5be401dd4f1a",
+      "bytes": 12984
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-014.json",
-      "sha256": "dcf1d652984ed4dc261a2df8698d49450a5d322f5ef9cb2d43c384e6e9e83266",
-      "bytes": 5841
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-015.json",
+      "sha256": "5fc7e55107f9e732a21c57b1b076c1ad61f987696c7c13ac8b8833b1b8cbaf79",
+      "bytes": 17705
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-015.json",
-      "sha256": "f7ac9e3431abf0512396fdb84ad73bc622417adba3c647287f13771f531ac209",
-      "bytes": 8164
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-016.json",
+      "sha256": "ab1016d575f48cba3dc888b9f530e815682727cd21a7440f78fa2303d082e8f7",
+      "bytes": 28638
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-general-016.json",
-      "sha256": "fd29c9ef7aeec556f3daa8edfeb31233ff48c1869a00e90f61dc59f29d820ac3",
-      "bytes": 2166
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-017.json",
+      "sha256": "b01b5cdfebc9964bec5ba0fdf8c8672335900206d00e721c10939f36af045147",
+      "bytes": 35452
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-maps-001.json",
-      "sha256": "470627c18f73d5245d9fcd9814a65132e984ebf55baab092859a797e553fccb0",
-      "bytes": 13600
+      "path": "artifacts/translation-program/reviews/hi-online/online-online-018.json",
+      "sha256": "381c8cb2d0c5512b1d64101bf97056b2fe3548f353f31abcb4375a3f5f586509",
+      "bytes": 14524
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-maps-002.json",
-      "sha256": "d77779b2f8fe93fbca8036a9852d658af427af90be15c4c4c8af24c00c90abdc",
-      "bytes": 3328
+      "path": "artifacts/translation-program/reviews/hi-online/rich-message-code-review.json",
+      "sha256": "27fce2abdf3d02c2337bc0cb54a8e7bb8d6ff61ca211c8092cae261c4f929585",
+      "bytes": 1462
     },
     {
-      "path": "artifacts/translation-program/reviews/hi-native/native-settings-001.json",
-      "sha256": "ac6db9cb852b15ce63a423c9d31fdc35e562af80b3c8dafb0424dfd950fda425",
-      "bytes": 12404
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-native/native-settings-002.json",
-      "sha256": "86ef007f4ad12d710daba9543ffaca80d793f951b18f7f99cd2204e603ec4521",
-      "bytes": 9810
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-native/native-settings-003.json",
-      "sha256": "2cb62d15052c293d71613012c53f156ab4ab02303324e0771ccfc68821d31edb",
-      "bytes": 7211
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-native/native-tutorial-001.json",
-      "sha256": "7929b4771ae6a0639947b28e4882a2ad69663f0931d6f20c1a3b33e5a02e8b12",
-      "bytes": 10163
+      "path": "artifacts/translation-program/reviews/hi-online/summary.json",
+      "sha256": "3ace4bd665968004e213988a43411e9e1ae8383b63ad733ae191824e9197ab82",
+      "bytes": 3175
     },
     {
       "path": "artifacts/translation-program/reviews/hi-online-edit/before.json",
@@ -5815,116 +6205,6 @@
       "path": "artifacts/translation-program/reviews/hi-online-visual/summary.json",
       "sha256": "a9f9d5d2b405c8dd646b50fd1624b8c6d8168d4d813c8442db891a42e04ef3e7",
       "bytes": 29622
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/coverage-check.json",
-      "sha256": "7dc2163d05c0698efdfc9808c446deeb30a72af70396a6e251f70fd1740bfd60",
-      "bytes": 684
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/editor-recheck.json",
-      "sha256": "fa41bf65bfed3b15a68098d0cb5dd941b33e59181aa2285e39f9e32be7dd93df",
-      "bytes": 4437
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-001.json",
-      "sha256": "15a11e952dbd94283d1f93781b60aa714a411bad618488b66eb0b4fe42d360ff",
-      "bytes": 24269
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-002.json",
-      "sha256": "b4227512a4bb16dc1888493cf5a0ff752a46b10430612e70243a6161ea5a5240",
-      "bytes": 18846
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-003.json",
-      "sha256": "2d96dfdd249517b1a13c027f8a62e5994a500547f0a0f60e2cc7f2a4a166c8ee",
-      "bytes": 10250
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-004.json",
-      "sha256": "a28a5e923ba4b6198f1f8ad9c3cf826e72942781966ebde610cf0e709c782307",
-      "bytes": 11132
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-005.json",
-      "sha256": "5ce1a1d671ea256adc5a133b8a48d2b4d9b2c04e8d6596c1a615e54693fd2496",
-      "bytes": 12980
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-006.json",
-      "sha256": "b9c5bff958beb276740b4ac213e35a786bc8938ea937fdfee0446cc61f2cbb14",
-      "bytes": 12641
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-007.json",
-      "sha256": "d50e016e52fdb76b47e0a3948e78a955b190075915e52618d45d800b2ac695c5",
-      "bytes": 10367
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-008.json",
-      "sha256": "f738a849e0cbff1bbc3cede5fbc2e2741796d8fc0d7135592f25bc5e1d2cb191",
-      "bytes": 13569
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-009.json",
-      "sha256": "6e41f5aba212be47c7757be6c7fcebfa25e7de7a03a46c8647b9d9e0a68f5bf7",
-      "bytes": 9776
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-010.json",
-      "sha256": "c887ba4c8e3cfe310ebb25d911a6a4d3edfdb86b5f902d16ef80b7c13dc11299",
-      "bytes": 12595
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-011.json",
-      "sha256": "f63d24a85f213f1ac17ad7a88d5938d19361eeac1dee54020a73029838d69c59",
-      "bytes": 15938
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-012.json",
-      "sha256": "c17525bdab7a905670ee1bf81358d20713c6012e147633fc1a677eeddc57e772",
-      "bytes": 10009
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-013.json",
-      "sha256": "15a3769fb4b6f0def42699f3cd7b52fd29b898fa1fd3823104fa1c3d00ac2577",
-      "bytes": 13291
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-014.json",
-      "sha256": "3994e6a71f20b6dbc3807ce4378c8952ef0a3f2fb038313a0a7a5be401dd4f1a",
-      "bytes": 12984
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-015.json",
-      "sha256": "5fc7e55107f9e732a21c57b1b076c1ad61f987696c7c13ac8b8833b1b8cbaf79",
-      "bytes": 17705
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-016.json",
-      "sha256": "ab1016d575f48cba3dc888b9f530e815682727cd21a7440f78fa2303d082e8f7",
-      "bytes": 28638
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-017.json",
-      "sha256": "b01b5cdfebc9964bec5ba0fdf8c8672335900206d00e721c10939f36af045147",
-      "bytes": 35452
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/online-online-018.json",
-      "sha256": "381c8cb2d0c5512b1d64101bf97056b2fe3548f353f31abcb4375a3f5f586509",
-      "bytes": 14524
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/rich-message-code-review.json",
-      "sha256": "27fce2abdf3d02c2337bc0cb54a8e7bb8d6ff61ca211c8092cae261c4f929585",
-      "bytes": 1462
-    },
-    {
-      "path": "artifacts/translation-program/reviews/hi-online/summary.json",
-      "sha256": "3ace4bd665968004e213988a43411e9e1ae8383b63ad733ae191824e9197ab82",
-      "bytes": 3175
     },
     {
       "path": "artifacts/translation-program/reviews/hi-wasm-visual/http-verification.json",
@@ -6142,6 +6422,141 @@
       "bytes": 1106
     },
     {
+      "path": "artifacts/translation-program/reviews/sw-native/coverage-check.json",
+      "sha256": "c48c53efd47d0cbb0c5f89799fefea23e6c30c60265ec9522f06a2c8878e3854",
+      "bytes": 482
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/font-alpha-code-review.json",
+      "sha256": "1b1bc7b5b5c56b5b54cf1d33438e57f47b6e41536e25a201aa7cdb17e2c319dd",
+      "bytes": 1233
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-colony-001.json",
+      "sha256": "2fd871b7575edd5afa9f584d43e004bc830ede229d304a10c557c4fdf76da20b",
+      "bytes": 7891
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-colony-002.json",
+      "sha256": "319facce578f5db6737982c8f00d5463916693bca88b52d386731e76ef7e06a5",
+      "bytes": 1255
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-001.json",
+      "sha256": "ce15b472e564c0d659deee639dbdeaa09936978e06b792c4c60d79642739ec17",
+      "bytes": 13170
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-002.json",
+      "sha256": "328ff02f53f952b6a4f15f65230d036dfd88393a3f7309162013222f2d73db5f",
+      "bytes": 7303
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-003.json",
+      "sha256": "7b986e73b433e36211ecc6689e891d1559e30538e22e29a2d46caf8542b380d4",
+      "bytes": 8645
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-004.json",
+      "sha256": "defcfdfc8285d61a593e1472264732275274311ec40b87f0cb63af5898860bb1",
+      "bytes": 7784
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-005.json",
+      "sha256": "b583f4d06b5b0896e9ad430ee79b12bec3b1b381defb03e30297047ab6ba3597",
+      "bytes": 8391
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-006.json",
+      "sha256": "11de98fad1fbc4295bfdc7e529a4029eb78f71074e74831411f6a9d3c9ec610a",
+      "bytes": 8599
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-007.json",
+      "sha256": "9f744de6aa93f172e9cacbde728f9ab26675b43ab641721dadabebf2c68f2eb9",
+      "bytes": 7520
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-008.json",
+      "sha256": "8aeae07ca977cdf46e833e7f9b2b9cffcec2b3d1a71ebfd811d49224295b8bb2",
+      "bytes": 9846
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-009.json",
+      "sha256": "999575ceb9bd86ebc7ffcccba2412eb1e3447b95614484b13308b33f97471144",
+      "bytes": 9368
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-010.json",
+      "sha256": "5d25ec0e1b2570cc6b9f372d5edd4306f922ca6b6184ce188756951edb28c0d4",
+      "bytes": 12379
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-011.json",
+      "sha256": "6e8b64a6ddebb318ed041f46c8139a1704594dd94b95a4d36ecd52dc572bcc80",
+      "bytes": 7687
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-012.json",
+      "sha256": "555d5e984cdafc0f0e6af377962542d509ff02d86a79be573a53eeb7c0868528",
+      "bytes": 7127
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-013.json",
+      "sha256": "bf417fbd05097cff38e598339c8e2c3a0b364b9dd8785c982e601c8d6278172f",
+      "bytes": 11374
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-014.json",
+      "sha256": "c7c6a5491714d69ab0cb5b3f12fdf712f51cb1902c1ab2d731a96bc407391020",
+      "bytes": 7202
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-015.json",
+      "sha256": "a54bde83e9f93ea9425d37e2b38b958b4ae4d71f0b3f516e27c8fbdad2c945be",
+      "bytes": 9059
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-general-016.json",
+      "sha256": "0c9eea865f0506996cbb9260510779e8b61da21c29eeb5c0569a8473a579dffa",
+      "bytes": 1646
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-maps-001.json",
+      "sha256": "17df8274db160367aac4edf9b8340feb86d27507f33b9d512c4e934fadf16406",
+      "bytes": 10465
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-maps-002.json",
+      "sha256": "df374918c7adf83af7ae313e4e74b103f9c1dd9e0ca61ed463ce28d9bb067897",
+      "bytes": 3188
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-settings-001.json",
+      "sha256": "ec395adc028213f7a4bcb8a6d4e6652f72af586f5bd10ff9e55112a9673a2bc1",
+      "bytes": 10147
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-settings-002.json",
+      "sha256": "429f2778b16c4ee3cc1ec41c62207b7cf79ad5b381716b9cfc2abd2aa3e5b8cd",
+      "bytes": 10809
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-settings-003.json",
+      "sha256": "33eaef45c32086c9a565b49c30aa1b25aa35e89d60e28666d4c8b568d326c16c",
+      "bytes": 6521
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/native-tutorial-001.json",
+      "sha256": "ac815a6d4ffc48f05d38b96932926ecaedc40fca456dab49f7e9353186714164",
+      "bytes": 8200
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native/summary.json",
+      "sha256": "6d32e2f352d35c504f9f4e0ff1d6cd0e9834c4cbd6c5bb3a85137820a0a8c4ba",
+      "bytes": 3532
+    },
+    {
       "path": "artifacts/translation-program/reviews/sw-native-current/final-image-reads.json",
       "sha256": "97bec791ab54bbbd07a62f5195dfb6548ccefa863891e67726d7f6cccba7efde",
       "bytes": 51827
@@ -6155,6 +6570,11 @@
       "path": "artifacts/translation-program/reviews/sw-native-current/final-wasm-review.json",
       "sha256": "c7c1574c8677b3e7652a82e89b41d565c076717d00f744c29a80fa74659c6c7d",
       "bytes": 9530
+    },
+    {
+      "path": "artifacts/translation-program/reviews/sw-native-current/mainline-lobby-refresh-review.json",
+      "sha256": "4cba6e8af52a13cec7bb7aa289c70e0428df280ca8059b5625f4232c9c288259",
+      "bytes": 5802
     },
     {
       "path": "artifacts/translation-program/reviews/sw-native-current/studio-fixture-independent-review.json",
@@ -6487,139 +6907,109 @@
       "bytes": 249575
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/coverage-check.json",
-      "sha256": "c48c53efd47d0cbb0c5f89799fefea23e6c30c60265ec9522f06a2c8878e3854",
-      "bytes": 482
+      "path": "artifacts/translation-program/reviews/sw-online/coverage-check.json",
+      "sha256": "940d75bacd770eb395d3fd47866328c9f35a4c677abc1a32de5f9ec64cc20592",
+      "bytes": 524
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/font-alpha-code-review.json",
-      "sha256": "1b1bc7b5b5c56b5b54cf1d33438e57f47b6e41536e25a201aa7cdb17e2c319dd",
-      "bytes": 1233
+      "path": "artifacts/translation-program/reviews/sw-online/editor-recheck.json",
+      "sha256": "1269564dc5e3974e36d845911c341c2f0818b9ecb5fa10cbb3c4059c43925de8",
+      "bytes": 21910
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-colony-001.json",
-      "sha256": "2fd871b7575edd5afa9f584d43e004bc830ede229d304a10c557c4fdf76da20b",
-      "bytes": 7891
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-001.json",
+      "sha256": "66b3889b3e47d23f7190a78363072d7eda61a56d0c42551b8d0b02ffb541fa52",
+      "bytes": 17656
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-colony-002.json",
-      "sha256": "319facce578f5db6737982c8f00d5463916693bca88b52d386731e76ef7e06a5",
-      "bytes": 1255
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-002.json",
+      "sha256": "4a61faeaf08518ca0247ed433b322ab141d8d5868eff8d25a48a8b74a216039e",
+      "bytes": 14801
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-001.json",
-      "sha256": "ce15b472e564c0d659deee639dbdeaa09936978e06b792c4c60d79642739ec17",
-      "bytes": 13170
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-003.json",
+      "sha256": "ca98f91f0fdde6111a2ad943decca8af7ab06eddd603566fd86071d3efbb9554",
+      "bytes": 8976
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-002.json",
-      "sha256": "328ff02f53f952b6a4f15f65230d036dfd88393a3f7309162013222f2d73db5f",
-      "bytes": 7303
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-004.json",
+      "sha256": "1623c3229d5d3cc95dd14fb56b24bb850ed619b971467499c7b04b6af0bf09dc",
+      "bytes": 10018
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-003.json",
-      "sha256": "7b986e73b433e36211ecc6689e891d1559e30538e22e29a2d46caf8542b380d4",
-      "bytes": 8645
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-005.json",
+      "sha256": "4c2833a7153b02533f18b2ff5b23d264444c58cdedbaba46d961dcf8fd5f6949",
+      "bytes": 10278
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-004.json",
-      "sha256": "defcfdfc8285d61a593e1472264732275274311ec40b87f0cb63af5898860bb1",
-      "bytes": 7784
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-006.json",
+      "sha256": "30d6cdc1179cd43e83f438e87b3e943a94094d0acede6de28114974d0b70b994",
+      "bytes": 10459
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-005.json",
-      "sha256": "b583f4d06b5b0896e9ad430ee79b12bec3b1b381defb03e30297047ab6ba3597",
-      "bytes": 8391
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-007.json",
+      "sha256": "7ac7e532b239bb01bd25061222296e0f46c830a6f83596d47a9a25c95b27ba3c",
+      "bytes": 9753
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-006.json",
-      "sha256": "11de98fad1fbc4295bfdc7e529a4029eb78f71074e74831411f6a9d3c9ec610a",
-      "bytes": 8599
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-008.json",
+      "sha256": "4a6300c61acd38075b6826e3ec5fa65a61d00ff2ce492f9b485e1ac86af356fa",
+      "bytes": 10675
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-007.json",
-      "sha256": "9f744de6aa93f172e9cacbde728f9ab26675b43ab641721dadabebf2c68f2eb9",
-      "bytes": 7520
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-009.json",
+      "sha256": "9145a7bf57785f6faa55f0ef7f65749c579c0f792ab8178210c62053647a3631",
+      "bytes": 8984
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-008.json",
-      "sha256": "8aeae07ca977cdf46e833e7f9b2b9cffcec2b3d1a71ebfd811d49224295b8bb2",
-      "bytes": 9846
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-010.json",
+      "sha256": "44af300d56c45c525b151ccd3b222ed8b01a7f48b0620845392ea7efa48ae3d3",
+      "bytes": 9637
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-009.json",
-      "sha256": "999575ceb9bd86ebc7ffcccba2412eb1e3447b95614484b13308b33f97471144",
-      "bytes": 9368
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-011.json",
+      "sha256": "3af69cdca2470b32f7e0338ef42194bfedbf67a9f5d310a1f9d52a6fb45dcc58",
+      "bytes": 8337
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-010.json",
-      "sha256": "5d25ec0e1b2570cc6b9f372d5edd4306f922ca6b6184ce188756951edb28c0d4",
-      "bytes": 12379
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-012.json",
+      "sha256": "6504d518b100e7272be73bf07502171970fc5b35432c949860412a686752f29f",
+      "bytes": 8742
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-011.json",
-      "sha256": "6e8b64a6ddebb318ed041f46c8139a1704594dd94b95a4d36ecd52dc572bcc80",
-      "bytes": 7687
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-013.json",
+      "sha256": "f605ab3c43517a9173f4db362193b59b656f4af5eea46ff6b15c7db1cee389f9",
+      "bytes": 11482
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-012.json",
-      "sha256": "555d5e984cdafc0f0e6af377962542d509ff02d86a79be573a53eeb7c0868528",
-      "bytes": 7127
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-014.json",
+      "sha256": "fbbf7da14c838761e684ff5efeef9196e6fe596385e1b1e1d80ecb8cdf079ea7",
+      "bytes": 10386
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-013.json",
-      "sha256": "bf417fbd05097cff38e598339c8e2c3a0b364b9dd8785c982e601c8d6278172f",
-      "bytes": 11374
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-015.json",
+      "sha256": "18071511edac494112b4d7e20ecb7d5c6939a44ac62e35da393285b214a008f8",
+      "bytes": 10820
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-014.json",
-      "sha256": "c7c6a5491714d69ab0cb5b3f12fdf712f51cb1902c1ab2d731a96bc407391020",
-      "bytes": 7202
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-016.json",
+      "sha256": "2555393362c024f30c77402efb7c8d60b2ce2c1343fae13712e746c7d16fe29e",
+      "bytes": 18103
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-015.json",
-      "sha256": "a54bde83e9f93ea9425d37e2b38b958b4ae4d71f0b3f516e27c8fbdad2c945be",
-      "bytes": 9059
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-017.json",
+      "sha256": "1a18424d8840ef56e5fdb60f351abc3c406234aa3d768bb58c8d12f5a8b4a33c",
+      "bytes": 25231
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-general-016.json",
-      "sha256": "0c9eea865f0506996cbb9260510779e8b61da21c29eeb5c0569a8473a579dffa",
-      "bytes": 1646
+      "path": "artifacts/translation-program/reviews/sw-online/online-online-018.json",
+      "sha256": "a045dd2cc996a6ed52655482aa4962394e2c1c7f3663d71366a6136de61df7ef",
+      "bytes": 10084
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-native/native-maps-001.json",
-      "sha256": "17df8274db160367aac4edf9b8340feb86d27507f33b9d512c4e934fadf16406",
-      "bytes": 10465
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/native-maps-002.json",
-      "sha256": "df374918c7adf83af7ae313e4e74b103f9c1dd9e0ca61ed463ce28d9bb067897",
-      "bytes": 3188
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/native-settings-001.json",
-      "sha256": "ec395adc028213f7a4bcb8a6d4e6652f72af586f5bd10ff9e55112a9673a2bc1",
-      "bytes": 10147
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/native-settings-002.json",
-      "sha256": "429f2778b16c4ee3cc1ec41c62207b7cf79ad5b381716b9cfc2abd2aa3e5b8cd",
-      "bytes": 10809
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/native-settings-003.json",
-      "sha256": "33eaef45c32086c9a565b49c30aa1b25aa35e89d60e28666d4c8b568d326c16c",
-      "bytes": 6521
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/native-tutorial-001.json",
-      "sha256": "ac815a6d4ffc48f05d38b96932926ecaedc40fca456dab49f7e9353186714164",
-      "bytes": 8200
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-native/summary.json",
-      "sha256": "6d32e2f352d35c504f9f4e0ff1d6cd0e9834c4cbd6c5bb3a85137820a0a8c4ba",
-      "bytes": 3532
+      "path": "artifacts/translation-program/reviews/sw-online/summary.json",
+      "sha256": "821bfe0f7ac5fbd8a14dc6522105cede366ab66d926541feef07649a58f0cb63",
+      "bytes": 3548
     },
     {
       "path": "artifacts/translation-program/reviews/sw-online-edit/before.json",
@@ -6802,111 +7192,6 @@
       "bytes": 23752
     },
     {
-      "path": "artifacts/translation-program/reviews/sw-online/coverage-check.json",
-      "sha256": "940d75bacd770eb395d3fd47866328c9f35a4c677abc1a32de5f9ec64cc20592",
-      "bytes": 524
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/editor-recheck.json",
-      "sha256": "1269564dc5e3974e36d845911c341c2f0818b9ecb5fa10cbb3c4059c43925de8",
-      "bytes": 21910
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-001.json",
-      "sha256": "66b3889b3e47d23f7190a78363072d7eda61a56d0c42551b8d0b02ffb541fa52",
-      "bytes": 17656
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-002.json",
-      "sha256": "4a61faeaf08518ca0247ed433b322ab141d8d5868eff8d25a48a8b74a216039e",
-      "bytes": 14801
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-003.json",
-      "sha256": "ca98f91f0fdde6111a2ad943decca8af7ab06eddd603566fd86071d3efbb9554",
-      "bytes": 8976
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-004.json",
-      "sha256": "1623c3229d5d3cc95dd14fb56b24bb850ed619b971467499c7b04b6af0bf09dc",
-      "bytes": 10018
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-005.json",
-      "sha256": "4c2833a7153b02533f18b2ff5b23d264444c58cdedbaba46d961dcf8fd5f6949",
-      "bytes": 10278
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-006.json",
-      "sha256": "30d6cdc1179cd43e83f438e87b3e943a94094d0acede6de28114974d0b70b994",
-      "bytes": 10459
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-007.json",
-      "sha256": "7ac7e532b239bb01bd25061222296e0f46c830a6f83596d47a9a25c95b27ba3c",
-      "bytes": 9753
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-008.json",
-      "sha256": "4a6300c61acd38075b6826e3ec5fa65a61d00ff2ce492f9b485e1ac86af356fa",
-      "bytes": 10675
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-009.json",
-      "sha256": "9145a7bf57785f6faa55f0ef7f65749c579c0f792ab8178210c62053647a3631",
-      "bytes": 8984
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-010.json",
-      "sha256": "44af300d56c45c525b151ccd3b222ed8b01a7f48b0620845392ea7efa48ae3d3",
-      "bytes": 9637
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-011.json",
-      "sha256": "3af69cdca2470b32f7e0338ef42194bfedbf67a9f5d310a1f9d52a6fb45dcc58",
-      "bytes": 8337
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-012.json",
-      "sha256": "6504d518b100e7272be73bf07502171970fc5b35432c949860412a686752f29f",
-      "bytes": 8742
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-013.json",
-      "sha256": "f605ab3c43517a9173f4db362193b59b656f4af5eea46ff6b15c7db1cee389f9",
-      "bytes": 11482
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-014.json",
-      "sha256": "fbbf7da14c838761e684ff5efeef9196e6fe596385e1b1e1d80ecb8cdf079ea7",
-      "bytes": 10386
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-015.json",
-      "sha256": "18071511edac494112b4d7e20ecb7d5c6939a44ac62e35da393285b214a008f8",
-      "bytes": 10820
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-016.json",
-      "sha256": "2555393362c024f30c77402efb7c8d60b2ce2c1343fae13712e746c7d16fe29e",
-      "bytes": 18103
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-017.json",
-      "sha256": "1a18424d8840ef56e5fdb60f351abc3c406234aa3d768bb58c8d12f5a8b4a33c",
-      "bytes": 25231
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/online-online-018.json",
-      "sha256": "a045dd2cc996a6ed52655482aa4962394e2c1c7f3663d71366a6136de61df7ef",
-      "bytes": 10084
-    },
-    {
-      "path": "artifacts/translation-program/reviews/sw-online/summary.json",
-      "sha256": "821bfe0f7ac5fbd8a14dc6522105cede366ab66d926541feef07649a58f0cb63",
-      "bytes": 3548
-    },
-    {
       "path": "artifacts/translation-program/reviews/sw-wasm-visual/http-verification.json",
       "sha256": "2233fbefd1a4eaafec5983f4e2c1d41cfc029404b29bae0e46a9b47525e18847",
       "bytes": 464
@@ -6950,6 +7235,156 @@
       "path": "artifacts/translation-program/reviews/th.json",
       "sha256": "6d2ef0c447708c9c46b93c6329f607100b419611ebfea64181c5ad2e090db0f0",
       "bytes": 1106
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/consulted-evidence.json",
+      "sha256": "ca9d4ed5d0a41e1709d617951950fbd9bd79899703cc07df69386274f5020157",
+      "bytes": 2483
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/coverage-check.json",
+      "sha256": "bbd2c7cb9265837d6f78564f97efcfbd9771a8da8bc2a1b1578779ced7a8fd73",
+      "bytes": 457
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/english-equality-dispositions.json",
+      "sha256": "613a0dd28fa22f36678bff02e34aa831e86379f811d43373f4650f9b76aba690",
+      "bytes": 10427
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/latin-retention-dispositions.json",
+      "sha256": "3f863febc4f7b58780b5831720dbc4ea24da931958365e1644cc6aa95038d7a3",
+      "bytes": 114384
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-colony-001.json",
+      "sha256": "d57f93059e9770fabf165e976600ac968f1ff8edd01fe51215d26cdc8e1ab603",
+      "bytes": 9534
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-colony-002.json",
+      "sha256": "951d337a1d9368efcefb1ae030cd4133edc3fad8be6f2ff961de5eff24fe0685",
+      "bytes": 1252
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-001.json",
+      "sha256": "5b573ac63b97eee543632ad83eb1c97e81585241263713efc328e074707bc700",
+      "bytes": 7329
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-002.json",
+      "sha256": "dcdd204e831decff588655caf55437d5b7038b6d43f46d71c780919f56e85450",
+      "bytes": 6163
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-003.json",
+      "sha256": "df94b1eb8fdf7264b5c70eab492aab45b6ed3bfac0014604702aed14e7cc6347",
+      "bytes": 32494
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-004.json",
+      "sha256": "6622c1f46354532ca6cda7961216066cb866b719e3a501cba3767da07bde2d63",
+      "bytes": 7067
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-005.json",
+      "sha256": "1cf36621aab6c47223722735190642e5cffc760147456d436bc8ce2ccdd2b817",
+      "bytes": 8390
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-006.json",
+      "sha256": "76401041e52ad8cf61ed5b10d4cf81393746762e55703e87f0ad45a631105418",
+      "bytes": 6841
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-007.json",
+      "sha256": "ae0074d23dff6bde2bd864b65dcf30214e9e173291328b13f907964dfc00900e",
+      "bytes": 14382
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-008.json",
+      "sha256": "ca309c15531b0d1ac1bd33b4e7db14adeeccdbf3eed4bee6c8073b87b68c5775",
+      "bytes": 8384
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-009.json",
+      "sha256": "bffb88d41483e65c019202774d940ac2469536a649c46abb57b08b2e9975591a",
+      "bytes": 7397
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-010.json",
+      "sha256": "754157fea0cb81172182b54491996287b1812323c80476501c19a04effa0c5ef",
+      "bytes": 6661
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-011.json",
+      "sha256": "b37c8defcef24cf4d3f13b24f0692488ea26b46e181d03d9066d345fd578e6b5",
+      "bytes": 6547
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-012.json",
+      "sha256": "5c88bfa16c890f56cd984baceb5e792ee683c17295d213e90e19f75a435a00b4",
+      "bytes": 11682
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-013.json",
+      "sha256": "71681b60fdfb450a813785ec1758356f206dace65753436a99cf143606bfc948",
+      "bytes": 10742
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-014.json",
+      "sha256": "ee9e920d3de4115b5df87a73dfa61ee3022f2b3ca72971db8bbae51e402b8252",
+      "bytes": 6892
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-015.json",
+      "sha256": "6a071f4e364dcc094ee4f5f2dcc0bcdecc66694b7b908eb0cf78ff4d4e747f10",
+      "bytes": 7205
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-general-016.json",
+      "sha256": "38ecc8ba1dc8e52a7b20bef0a3ecc80a29ce3ff7dcc64287f8de51b4b49ed6c7",
+      "bytes": 1716
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-maps-001.json",
+      "sha256": "bba94df617f48646e57903fbe3345f284d071fe70aab5f537b7f63e92bcc7f68",
+      "bytes": 9569
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-maps-002.json",
+      "sha256": "d4f25bc8c6454350b4df17485b512c8512798b4afec1077a3ae21ad48ecc626a",
+      "bytes": 3098
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-settings-001.json",
+      "sha256": "04edc563476d145d8c8e3057246b490a602fa5753fd03c66ff0bfead33ec88f6",
+      "bytes": 10218
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-settings-002.json",
+      "sha256": "541ce124c4cb46f900a1abf0f81461bd03a9561e99307e955956c9b85a427bb7",
+      "bytes": 10649
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-settings-003.json",
+      "sha256": "8a4d629c319fd0483a98d93a30a6c0d5fb069d8e5004ed18a1141b8bac98bdba",
+      "bytes": 8765
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/native-tutorial-001.json",
+      "sha256": "7a20bd2a625ceae27d824459654ea12f5b8714b6230afe03e7556285a732840b",
+      "bytes": 15524
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/review-snapshot.txt",
+      "sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+      "bytes": 270219
+    },
+    {
+      "path": "artifacts/translation-program/reviews/ur-native/summary.json",
+      "sha256": "0ccf51001660fa35696f50278767c50ed630a9b6238695d78345eff1c51b77f5",
+      "bytes": 2185
     },
     {
       "path": "artifacts/translation-program/reviews/ur-native-current-visual/before-native.txt",
@@ -7672,154 +8107,134 @@
       "bytes": 51088
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/consulted-evidence.json",
-      "sha256": "ca9d4ed5d0a41e1709d617951950fbd9bd79899703cc07df69386274f5020157",
-      "bytes": 2483
+      "path": "artifacts/translation-program/reviews/ur-online/consulted-evidence.json",
+      "sha256": "3d6b7af72b057f5f0390d807967398222d9c50d5289dacc0b7e737f6fe40cc63",
+      "bytes": 6911
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/coverage-check.json",
-      "sha256": "bbd2c7cb9265837d6f78564f97efcfbd9771a8da8bc2a1b1578779ced7a8fd73",
-      "bytes": 457
+      "path": "artifacts/translation-program/reviews/ur-online/coverage-check.json",
+      "sha256": "4ac05ec9f1db1c65c28a93fcb656b98a54aa0cb8892d4c8928bedbaf1dbad5cf",
+      "bytes": 729
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/english-equality-dispositions.json",
-      "sha256": "613a0dd28fa22f36678bff02e34aa831e86379f811d43373f4650f9b76aba690",
-      "bytes": 10427
+      "path": "artifacts/translation-program/reviews/ur-online/english-equality-dispositions.json",
+      "sha256": "2c9521c07fd4dcf188f94a30470f4a63386ed4749ccc77020446fffe00301bfc",
+      "bytes": 43156
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/latin-retention-dispositions.json",
-      "sha256": "3f863febc4f7b58780b5831720dbc4ea24da931958365e1644cc6aa95038d7a3",
-      "bytes": 114384
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-001.json",
+      "sha256": "2d4d9b48e7289dafc1e382ba9759f85581a2e7cf27167edd64fd5343ef39e9e0",
+      "bytes": 15301
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-colony-001.json",
-      "sha256": "d57f93059e9770fabf165e976600ac968f1ff8edd01fe51215d26cdc8e1ab603",
-      "bytes": 9534
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-002.json",
+      "sha256": "36317f239b9c05a0e706ba38277c3f9f1312685442816c66470362ab212bec4b",
+      "bytes": 14348
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-colony-002.json",
-      "sha256": "951d337a1d9368efcefb1ae030cd4133edc3fad8be6f2ff961de5eff24fe0685",
-      "bytes": 1252
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-003.json",
+      "sha256": "04d58fa16db2639fbc5663a3a78e8e426c4aa9f8187bfacae2ea3134d1ca32d6",
+      "bytes": 14451
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-001.json",
-      "sha256": "5b573ac63b97eee543632ad83eb1c97e81585241263713efc328e074707bc700",
-      "bytes": 7329
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-004.json",
+      "sha256": "4cf77809085cf33bf9f6dad6738d6cd5edf86df3a6ecf8338e1420626014639b",
+      "bytes": 17196
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-002.json",
-      "sha256": "dcdd204e831decff588655caf55437d5b7038b6d43f46d71c780919f56e85450",
-      "bytes": 6163
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-005.json",
+      "sha256": "a337166d5ff25c0e0f7cd6cfb359c30fa5c0221492e8177f40dd75b89e2fa15f",
+      "bytes": 15432
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-003.json",
-      "sha256": "df94b1eb8fdf7264b5c70eab492aab45b6ed3bfac0014604702aed14e7cc6347",
-      "bytes": 32494
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-006.json",
+      "sha256": "0be7337e184514216b7fe8ecceaccb03cdcbe75a9c8ad9f7903f4df15a3396fa",
+      "bytes": 12840
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-004.json",
-      "sha256": "6622c1f46354532ca6cda7961216066cb866b719e3a501cba3767da07bde2d63",
-      "bytes": 7067
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-007.json",
+      "sha256": "6546942bc8da2a0c2280bd557e161fc65dc09fd3a75f91cbb864c8d5d50c016e",
+      "bytes": 12700
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-005.json",
-      "sha256": "1cf36621aab6c47223722735190642e5cffc760147456d436bc8ce2ccdd2b817",
-      "bytes": 8390
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-008.json",
+      "sha256": "5689015f7a7ac520c02f1400d88b2196c715fed18e5a111e03fd027ad9fdf9cc",
+      "bytes": 14381
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-006.json",
-      "sha256": "76401041e52ad8cf61ed5b10d4cf81393746762e55703e87f0ad45a631105418",
-      "bytes": 6841
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-009.json",
+      "sha256": "25ca7ed27297b81464cbaf01c6e94f6ceada9eec0b00122ee9bbbf56eae5d8b1",
+      "bytes": 15520
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-007.json",
-      "sha256": "ae0074d23dff6bde2bd864b65dcf30214e9e173291328b13f907964dfc00900e",
-      "bytes": 14382
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-010.json",
+      "sha256": "a32f29d537da193b749bf96e773a15a20a65d90dac2177b2c4146dd1d3bfebd0",
+      "bytes": 18612
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-008.json",
-      "sha256": "ca309c15531b0d1ac1bd33b4e7db14adeeccdbf3eed4bee6c8073b87b68c5775",
-      "bytes": 8384
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-011.json",
+      "sha256": "e0e2becbf8d0ffb0ca9502a67f9080f24fca8730fdac9a33a2fba5fe1206a2e5",
+      "bytes": 15682
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-009.json",
-      "sha256": "bffb88d41483e65c019202774d940ac2469536a649c46abb57b08b2e9975591a",
-      "bytes": 7397
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-012.json",
+      "sha256": "2fc6182f84029c01a630f02c627f9c1b2fd3bcdd47e633bca5df55df7dc7e650",
+      "bytes": 16304
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-010.json",
-      "sha256": "754157fea0cb81172182b54491996287b1812323c80476501c19a04effa0c5ef",
-      "bytes": 6661
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-013.json",
+      "sha256": "9ff9eb76c786c3f86e3391680bac83ee81fcfbf885f9b953afca13fc67dc418b",
+      "bytes": 18591
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-011.json",
-      "sha256": "b37c8defcef24cf4d3f13b24f0692488ea26b46e181d03d9066d345fd578e6b5",
-      "bytes": 6547
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-014.json",
+      "sha256": "5b7736535c0eabaf14202a1b19a3873354f54d58a3498b8192140296c2dd863b",
+      "bytes": 18213
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-012.json",
-      "sha256": "5c88bfa16c890f56cd984baceb5e792ee683c17295d213e90e19f75a435a00b4",
-      "bytes": 11682
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-015.json",
+      "sha256": "9b8d9b886c44b2e72e9d2516c3c7c7f24718f5ba2ab7407df35f433c4896910c",
+      "bytes": 19147
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-013.json",
-      "sha256": "71681b60fdfb450a813785ec1758356f206dace65753436a99cf143606bfc948",
-      "bytes": 10742
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-016.json",
+      "sha256": "fedf22aa23978e235b51b09d9589a92966024b6213eb9e14658d0f607e84444f",
+      "bytes": 18184
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-014.json",
-      "sha256": "ee9e920d3de4115b5df87a73dfa61ee3022f2b3ca72971db8bbae51e402b8252",
-      "bytes": 6892
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-017.json",
+      "sha256": "61dd2824cb16498f4e08934e0c1d85ee4f9cc3c518b34306a0f5f1270d84e02e",
+      "bytes": 15651
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-015.json",
-      "sha256": "6a071f4e364dcc094ee4f5f2dcc0bcdecc66694b7b908eb0cf78ff4d4e747f10",
-      "bytes": 7205
+      "path": "artifacts/translation-program/reviews/ur-online/online-online-018.json",
+      "sha256": "6091152efea9d86265acd1f7f5d7623708fecdcb02aefc8257ab585256ccf3f1",
+      "bytes": 17520
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-general-016.json",
-      "sha256": "38ecc8ba1dc8e52a7b20bef0a3ecc80a29ce3ff7dcc64287f8de51b4b49ed6c7",
-      "bytes": 1716
+      "path": "artifacts/translation-program/reviews/ur-online/plural-branch-review.json",
+      "sha256": "17be7102fabeec980ccc365f75aa69773ce1200be662c937f3342994464cdacc",
+      "bytes": 16388
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-maps-001.json",
-      "sha256": "bba94df617f48646e57903fbe3345f284d071fe70aab5f537b7f63e92bcc7f68",
-      "bytes": 9569
+      "path": "artifacts/translation-program/reviews/ur-online/provider/response.json",
+      "sha256": "9e2ed28a2b057a5082f8bb3b79650822a8778e6e5c35ddf20fd9b62962619395",
+      "bytes": 783
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-maps-002.json",
-      "sha256": "d4f25bc8c6454350b4df17485b512c8512798b4afec1077a3ae21ad48ecc626a",
-      "bytes": 3098
+      "path": "artifacts/translation-program/reviews/ur-online/provider/source.txt",
+      "sha256": "34662e8f81b076625df4cdea0aba78f115b605d941abba8af8a74ad79222adeb",
+      "bytes": 398
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-settings-001.json",
-      "sha256": "04edc563476d145d8c8e3057246b490a602fa5753fd03c66ff0bfead33ec88f6",
-      "bytes": 10218
+      "path": "artifacts/translation-program/reviews/ur-online/review-snapshot.json",
+      "sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+      "bytes": 260594
     },
     {
-      "path": "artifacts/translation-program/reviews/ur-native/native-settings-002.json",
-      "sha256": "541ce124c4cb46f900a1abf0f81461bd03a9561e99307e955956c9b85a427bb7",
-      "bytes": 10649
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-native/native-settings-003.json",
-      "sha256": "8a4d629c319fd0483a98d93a30a6c0d5fb069d8e5004ed18a1141b8bac98bdba",
-      "bytes": 8765
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-native/native-tutorial-001.json",
-      "sha256": "7a20bd2a625ceae27d824459654ea12f5b8714b6230afe03e7556285a732840b",
-      "bytes": 15524
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-native/review-snapshot.txt",
-      "sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
-      "bytes": 270219
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-native/summary.json",
-      "sha256": "0ccf51001660fa35696f50278767c50ed630a9b6238695d78345eff1c51b77f5",
-      "bytes": 2185
+      "path": "artifacts/translation-program/reviews/ur-online/summary.json",
+      "sha256": "1b3061fc649e7bf19d833d9b12150d9fa539531f5803a380c454f151e668593d",
+      "bytes": 3565
     },
     {
       "path": "artifacts/translation-program/reviews/ur-online-edit/before.json",
@@ -8245,136 +8660,6 @@
       "path": "artifacts/translation-program/reviews/ur-online-visual/supplemental-results.json",
       "sha256": "ec8cea904001334cd6d5aa7482183c7619fdde487ceb0335fd4830c5d99f944f",
       "bytes": 133468
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/consulted-evidence.json",
-      "sha256": "3d6b7af72b057f5f0390d807967398222d9c50d5289dacc0b7e737f6fe40cc63",
-      "bytes": 6911
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/coverage-check.json",
-      "sha256": "4ac05ec9f1db1c65c28a93fcb656b98a54aa0cb8892d4c8928bedbaf1dbad5cf",
-      "bytes": 729
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/english-equality-dispositions.json",
-      "sha256": "2c9521c07fd4dcf188f94a30470f4a63386ed4749ccc77020446fffe00301bfc",
-      "bytes": 43156
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-001.json",
-      "sha256": "2d4d9b48e7289dafc1e382ba9759f85581a2e7cf27167edd64fd5343ef39e9e0",
-      "bytes": 15301
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-002.json",
-      "sha256": "36317f239b9c05a0e706ba38277c3f9f1312685442816c66470362ab212bec4b",
-      "bytes": 14348
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-003.json",
-      "sha256": "04d58fa16db2639fbc5663a3a78e8e426c4aa9f8187bfacae2ea3134d1ca32d6",
-      "bytes": 14451
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-004.json",
-      "sha256": "4cf77809085cf33bf9f6dad6738d6cd5edf86df3a6ecf8338e1420626014639b",
-      "bytes": 17196
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-005.json",
-      "sha256": "a337166d5ff25c0e0f7cd6cfb359c30fa5c0221492e8177f40dd75b89e2fa15f",
-      "bytes": 15432
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-006.json",
-      "sha256": "0be7337e184514216b7fe8ecceaccb03cdcbe75a9c8ad9f7903f4df15a3396fa",
-      "bytes": 12840
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-007.json",
-      "sha256": "6546942bc8da2a0c2280bd557e161fc65dc09fd3a75f91cbb864c8d5d50c016e",
-      "bytes": 12700
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-008.json",
-      "sha256": "5689015f7a7ac520c02f1400d88b2196c715fed18e5a111e03fd027ad9fdf9cc",
-      "bytes": 14381
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-009.json",
-      "sha256": "25ca7ed27297b81464cbaf01c6e94f6ceada9eec0b00122ee9bbbf56eae5d8b1",
-      "bytes": 15520
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-010.json",
-      "sha256": "a32f29d537da193b749bf96e773a15a20a65d90dac2177b2c4146dd1d3bfebd0",
-      "bytes": 18612
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-011.json",
-      "sha256": "e0e2becbf8d0ffb0ca9502a67f9080f24fca8730fdac9a33a2fba5fe1206a2e5",
-      "bytes": 15682
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-012.json",
-      "sha256": "2fc6182f84029c01a630f02c627f9c1b2fd3bcdd47e633bca5df55df7dc7e650",
-      "bytes": 16304
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-013.json",
-      "sha256": "9ff9eb76c786c3f86e3391680bac83ee81fcfbf885f9b953afca13fc67dc418b",
-      "bytes": 18591
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-014.json",
-      "sha256": "5b7736535c0eabaf14202a1b19a3873354f54d58a3498b8192140296c2dd863b",
-      "bytes": 18213
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-015.json",
-      "sha256": "9b8d9b886c44b2e72e9d2516c3c7c7f24718f5ba2ab7407df35f433c4896910c",
-      "bytes": 19147
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-016.json",
-      "sha256": "fedf22aa23978e235b51b09d9589a92966024b6213eb9e14658d0f607e84444f",
-      "bytes": 18184
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-017.json",
-      "sha256": "61dd2824cb16498f4e08934e0c1d85ee4f9cc3c518b34306a0f5f1270d84e02e",
-      "bytes": 15651
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/online-online-018.json",
-      "sha256": "6091152efea9d86265acd1f7f5d7623708fecdcb02aefc8257ab585256ccf3f1",
-      "bytes": 17520
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/plural-branch-review.json",
-      "sha256": "17be7102fabeec980ccc365f75aa69773ce1200be662c937f3342994464cdacc",
-      "bytes": 16388
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/provider/response.json",
-      "sha256": "9e2ed28a2b057a5082f8bb3b79650822a8778e6e5c35ddf20fd9b62962619395",
-      "bytes": 783
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/provider/source.txt",
-      "sha256": "34662e8f81b076625df4cdea0aba78f115b605d941abba8af8a74ad79222adeb",
-      "bytes": 398
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/review-snapshot.json",
-      "sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
-      "bytes": 260594
-    },
-    {
-      "path": "artifacts/translation-program/reviews/ur-online/summary.json",
-      "sha256": "1b3061fc649e7bf19d833d9b12150d9fa539531f5803a380c454f151e668593d",
-      "bytes": 3565
     },
     {
       "path": "artifacts/translation-program/reviews/ur-wasm-visual/identity.json",

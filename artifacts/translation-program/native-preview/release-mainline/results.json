@@ -1,0 +1,281 @@
+{
+  "proof_sha256": "faa791523e33a9a2773815d6a785bc1e4f58ce5abbbd872de446d7f905f0c64e",
+  "executable_sha256": "f8649d56696919439a2ec4874c739455ed7b9042b1c7e983f14c9d1f196a6e31",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "hi": {
+      "native": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  },
+  "started_utc": "2026-10-31T21:21:05Z",
+  "scheduled_invocations": 6,
+  "completed_invocations": 6,
+  "verified_invocations": 6,
+  "complete": true,
+  "results": [
+    {
+      "id": "hi-1200-lobby",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/hi/1200",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/hi/1200",
+        "1200",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:21:06Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.json",
+      "metadata_sha256": "9c92f2542d8ab935200511eb83bc462452c578f3fbdd0dacf7c9879dddb43421",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.png",
+          "sha256": "cd5ead87ffac814b6f63f7a6c82ff2170944264ba27a2b785483d5279a5e5c9a",
+          "bytes": 232475,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 13.623,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-lobby",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/hi/390",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/hi/390",
+        "390",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:21:20Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.json",
+      "metadata_sha256": "a57bad654eafbfac6ee82fd772f946080d8d085a3de832e97050974268b232b3",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.png",
+          "sha256": "d024c0e1e99e23d7669e41c74f5cdb1e3d129ba78151a804d55fdc3bacbcde05",
+          "bytes": 38799,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 6,
+      "verified": true,
+      "elapsed_s": 11.94,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-lobby",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/ur/1200",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/ur/1200",
+        "1200",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:21:32Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.json",
+      "metadata_sha256": "ccda3beb6f6760d478affbfb999877f9adbe661e2359c2c56b86306832bf263a",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.png",
+          "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+          "bytes": 231773,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 11.722,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-390-lobby",
+      "locale": "ur",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/ur/390",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/ur/390",
+        "390",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:21:45Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.json",
+      "metadata_sha256": "ef61d15f8a8d20741217f13c0735427821ce91c3622c99091bb7bd00898af83a",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.png",
+          "sha256": "6c30018246ad9db2b1c2e82863ad5cadfcf48471186a1bf0056bdd7cce2f46f3",
+          "bytes": 29707,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 7,
+      "verified": true,
+      "elapsed_s": 12.187,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "sw-1200-lobby",
+      "locale": "sw",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/sw-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/sw/1200",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/sw-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/sw/1200",
+        "1200",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:21:57Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.json",
+      "metadata_sha256": "27a05aece0671147ff19821e2744c7e8d6d900ccbada61745a199450048e222f",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.png",
+          "sha256": "0c88841441d75ebbeebb384bf1f347e44f000eda2522beed3798c54c89f80429",
+          "bytes": 229051,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 12.138,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "sw-390-lobby",
+      "locale": "sw",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-mainline/sw-full",
+      "output": "artifacts/translation-program/native-preview/release-mainline/sw/390",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-mainline/sw-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-mainline/sw/390",
+        "390",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T21:22:10Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.json",
+      "metadata_sha256": "2ce04a7f93c7fc65b83008036274055fa282c3c29313a775668c9572841323fc",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.png",
+          "sha256": "246c1bd9b7f9e40c423c7b936895058ff81e129f0ede1a476251c967549b5b8c",
+          "bytes": 36116,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 6,
+      "verified": true,
+      "elapsed_s": 11.228,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    }
+  ],
+  "limits": [
+    "All real screens/games use complete3393native+2836online overlay; matrix is explicitly partial.",
+    "This integrated refresh captures lobby only. Earlier full102 native run and unchanged-value provenance remain separate immutable evidence.",
+    "Game views expose simulation draw/zoom checksums; menu screen mode provides control bounds and PNG evidence, not simulation checksums.",
+    "macOS native desktop at phone dimensions does not verify Android/iOS.",
+    "Driver author performs technical identity checks only, not independent full-Swahili visual signoff; root assigns independent image reviewers.",
+    "Do not invoke --run until root supplies final producer proof and signals readiness.",
+    "Image hashes/checksums do not constitute visual, linguistic or native-mobile approval."
+  ]
+}

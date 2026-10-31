@@ -1,0 +1,123 @@
+{
+  "reviewer": "/root/sw_visual_independent",
+  "status": "passed-focused-mainline-lobby-refresh",
+  "scope": "All6actual lobby PNGs freshly read: hi/ur/sw×1200/390",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "e25f93c66f3bf1448b074fe97543a5c3875f8670",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a8423830108845eb0a57490c8edc45e860f71608cea177ce47ce67624ca323f7"
+  },
+  "binary_sha256": "f8649d56696919439a2ec4874c739455ed7b9042b1c7e983f14c9d1f196a6e31",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "hi": {
+      "native": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  },
+  "results_path": "artifacts/translation-program/native-preview/release-mainline/results.json",
+  "results_sha256": "35332e076a298c154dc4ada5858ab70316d8fc9bddff049593a39d538686f9e3",
+  "proof_path": "artifacts/translation-program/mainline-native-build-proof.json",
+  "proof_sha256": "faa791523e33a9a2773815d6a785bc1e4f58ce5abbbd872de446d7f905f0c64e",
+  "images": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/1200/lobby.png",
+      "sha256": "cd5ead87ffac814b6f63f7a6c82ff2170944264ba27a2b785483d5279a5e5c9a",
+      "bytes": 232475,
+      "width": 1200,
+      "height": 844,
+      "locale": "hi",
+      "logical_width": 1200,
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/hi/390/lobby.png",
+      "sha256": "d024c0e1e99e23d7669e41c74f5cdb1e3d129ba78151a804d55fdc3bacbcde05",
+      "bytes": 38799,
+      "width": 390,
+      "height": 844,
+      "locale": "hi",
+      "logical_width": 390,
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/1200/lobby.png",
+      "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+      "bytes": 231773,
+      "width": 1200,
+      "height": 844,
+      "locale": "ur",
+      "logical_width": 1200,
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/ur/390/lobby.png",
+      "sha256": "6c30018246ad9db2b1c2e82863ad5cadfcf48471186a1bf0056bdd7cce2f46f3",
+      "bytes": 29707,
+      "width": 390,
+      "height": 844,
+      "locale": "ur",
+      "logical_width": 390,
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/1200/lobby.png",
+      "sha256": "0c88841441d75ebbeebb384bf1f347e44f000eda2522beed3798c54c89f80429",
+      "bytes": 229051,
+      "width": 1200,
+      "height": 844,
+      "locale": "sw",
+      "logical_width": 1200,
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-mainline/sw/390/lobby.png",
+      "sha256": "246c1bd9b7f9e40c423c7b936895058ff81e129f0ede1a476251c967549b5b8c",
+      "bytes": 36116,
+      "width": 390,
+      "height": 844,
+      "locale": "sw",
+      "logical_width": 390,
+      "manually_read": true,
+      "result": "pass"
+    }
+  ],
+  "observations": [
+    "All6lobby screenshot visible labels/buttons/dropdowns/context help read. Hindi Devanagari shapes, Urdu Arabic joining/RTL lines and Sw Latin words present without missing-glyph boxes or unexpected clipping/overlap.",
+    "256×256 /4counts retain order. Desktop width/height/colonies controls and terrain/resource/layout accordions fit; phone uses intentional scroll area with offscreen continuation and clear footer Back/Next controls.",
+    "Sw lobby meanings retain width/height/colonies, prepared/random map, terrain/resources/layout, map rotation/zoom help and playable-map controls. This is a focused integration visual recheck, not fresh fullHi/Uridiomcertification.",
+    "Blank native preview panel is still generating in this fixture; captures do not establish completed generated-map-preview behavior. Prior realWASMcompleted-preview evidence remains separately bound."
+  ],
+  "findings": [],
+  "open_blockers": 0,
+  "source_after_checks_passed": true,
+  "exit_code": 0,
+  "limits": [
+    "Only affected integrated native lobby surface refreshed; earlier102fullrun remains immutable92205evidence, not relabeled e25.",
+    "macOS native desktop software at1200/390; no Android/iOS/Windows/Linux/physicalmobile claims.",
+    "Complete3393native+2836online overlay identity verified; only visible lobby text rendered.",
+    "No simulationdraw/checksum evidence from menu-only screen mode.",
+    "Native-human language certification and broaderplatformgates not inferred."
+  ]
+}

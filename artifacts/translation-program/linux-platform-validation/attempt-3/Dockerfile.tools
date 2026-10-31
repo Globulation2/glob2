@@ -1,0 +1,13 @@
+# Development validation image only; never shipped.
+# Base image ID recorded and checked before build:
+# sha256:f5d93c14a0c3ac9997a4980cb44fc1d84d98de2323209d755eb1d3b987d58aad
+FROM glob2-translation-check-deps:local
+RUN apt-get update -qq \
+ && apt-get install -y --no-install-recommends \
+    ffmpeg=7:5.1.9-0+deb12u1 \
+    python3=3.11.2-1+b1 \
+    python3-pil=9.4.0-1.1+deb12u1 \
+ && dpkg-query -W > /usr/local/share/glob2-validation-packages.txt \
+ && rm -rf /var/lib/apt/lists/*
+LABEL org.glob2.scope="development-only-platform-validation" \
+      org.glob2.base-image-id="sha256:f5d93c14a0c3ac9997a4980cb44fc1d84d98de2323209d755eb1d3b987d58aad"

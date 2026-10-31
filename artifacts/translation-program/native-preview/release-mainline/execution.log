@@ -1,0 +1,8 @@
+Prepared 6 invocations; no native run unless --run
+hi-1200-lobby verified
+hi-390-lobby verified
+ur-1200-lobby verified
+ur-390-lobby verified
+sw-1200-lobby verified
+sw-390-lobby verified
+PASS 6 serialized native capture invocations
