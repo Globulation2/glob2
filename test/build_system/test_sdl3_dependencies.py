@@ -172,6 +172,22 @@ class ShapingBuildTests(unittest.TestCase):
                 self.assertEqual('-pthread' in cxxflags.split(), threaded)
                 self.assertIn('-DSDLTTF_HARFBUZZ=ON', configure)
 
+    def test_native_shaper_can_link_into_shared_sdl_ttf(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            lock = root / 'sdl3-versions.json'
+            lock.write_text(json.dumps({'harfbuzz': {'archive': 'harfbuzz-10.1.0.tar.xz'}}))
+            work = root / 'work'
+            (work / 'harfbuzz-10.1.0').mkdir(parents=True)
+            with mock.patch.object(module, 'LOCK', lock), \
+                    mock.patch.object(module, 'download'), \
+                    mock.patch.object(module.platform, 'system', return_value='Linux'), \
+                    mock.patch.object(module.subprocess, 'run') as run:
+                module.build(root / 'prefix', work)
+            configure = next(call.args[0] for call in run.call_args_list
+                             if call.args[0][:1] == ['cmake'] and '-S' in call.args[0])
+            self.assertIn('-DCMAKE_POSITION_INDEPENDENT_CODE=ON', configure)
+
     def test_shaper_is_built_before_sdl_ttf(self):
         versions = json.loads(module.LOCK.read_text())
         self.assertLess(list(versions).index('harfbuzz'), list(versions).index('SDL_ttf'))
