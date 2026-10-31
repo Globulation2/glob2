@@ -346,7 +346,7 @@ export function ConversationPane({
   useEffect(() => {
     if (completionId && completionId !== announcedCompletion.current) {
       announcedCompletion.current = completionId;
-      setAnnouncement({ id: completionId, text: completionText ?? 'Response ready.' });
+      setAnnouncement({ id: completionId, text: completionText ?? t('Ready') });
     }
   }, [completionId, completionText]);
   return (

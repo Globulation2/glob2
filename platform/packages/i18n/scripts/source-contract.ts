@@ -15,6 +15,14 @@ export function sourceErrors(
     );
   const calls = new Set(['t', 'translate', 'tp', 'sourceMessage', 'message', 'validationMessage']);
   const attributes = new Set(['alt', 'title', 'aria-label', 'placeholder']);
+  const componentAttributes: Record<string, readonly string[]> = {
+    ChatComposer: ['label', 'target', 'disabledReason', 'pricing'],
+    NewStudio: ['disabledReason', 'pricing'],
+    RevisionControls: ['viewed', 'target'],
+    ConversationPane: ['label', 'completion'],
+    StudioWorkspace: ['attention', 'result'],
+    SharedWorkspace: ['attention', 'result'],
+  };
   // This syntax example is entered literally into the technical terrain filter.
   const technicalText = new Set(['terrain:natural,feature:lakes', 'ai.js', 'CC-BY-4.0']);
   for (const file of files(root).filter((file) => /\.tsx?$/.test(file))) {
@@ -32,6 +40,14 @@ export function sourceErrors(
       if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
       return undefined;
     };
+    const renderedAttribute = (node: ts.JsxAttribute): boolean => {
+      if (attributes.has(node.name.getText(tree))) return true;
+      const opening = node.parent.parent;
+      return (
+        (ts.isJsxOpeningElement(opening) || ts.isJsxSelfClosingElement(opening)) &&
+        !!componentAttributes[opening.tagName.getText(tree)]?.includes(node.name.getText(tree))
+      );
+    };
     const renderedCopy = (node: ts.Expression): void => {
       if (ts.isConditionalExpression(node)) {
         renderedCopy(node.whenTrue);
@@ -43,6 +59,11 @@ export function sourceErrors(
       } else if (ts.isParenthesizedExpression(node)) renderedCopy(node.expression);
       else if (ts.isArrayLiteralExpression(node)) {
         for (const item of node.elements) if (ts.isExpression(item)) renderedCopy(item);
+      } else if (ts.isObjectLiteralExpression(node)) {
+        // Status/result IDs and execution states are technical; only text is copy.
+        for (const property of node.properties)
+          if (ts.isPropertyAssignment(property) && property.name.getText(tree) === 'text')
+            renderedCopy(property.initializer);
       } else if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
         if (/[a-zA-Z]{2}/.test(node.text) && !technicalText.has(node.text))
           report(node, node.text, 'unlocalized JSX text');
@@ -102,10 +123,10 @@ export function sourceErrors(
       }
       let text: string | undefined;
       if (ts.isJsxText(node)) text = node.text.trim();
-      if (ts.isJsxAttribute(node) && attributes.has(node.name.getText(tree)) && node.initializer)
+      if (ts.isJsxAttribute(node) && renderedAttribute(node) && node.initializer)
         text = literal(node.initializer);
       if (ts.isJsxExpression(node) && node.expression) {
-        if (!ts.isJsxAttribute(node.parent) || attributes.has(node.parent.name.getText(tree)))
+        if (!ts.isJsxAttribute(node.parent) || renderedAttribute(node.parent))
           renderedCopy(node.expression);
       }
       if (text && /[a-zA-Z]{2}/.test(text) && !technicalText.has(text))

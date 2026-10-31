@@ -168,15 +168,11 @@ export function MusicWorkspace(p: Props) {
           ? {
               id: `${latestGeneration.id}:${latestGeneration.status}`,
               status: latestGeneration.status,
-              text:
-                latestGeneration.status === 'ready'
-                  ? 'Music creation ready in Preview.'
-                  : 'Music creation needs attention in Preview.',
             }
           : undefined
       }
       attention={
-        active ? 'Working' : inspected?.status === 'failed' ? 'Needs attention' : undefined
+        active ? t('Working…') : inspected?.status === 'failed' ? t('Needs attention') : undefined
       }
       conversation={
         <>
@@ -238,18 +234,20 @@ export function MusicWorkspace(p: Props) {
                 ? t('Editing version {value0}', {
                     value0: generations.findIndex((v) => v.id === p.parent) + 1,
                   })
-                : 'New soundtrack'
+                : t('New soundtrack')
             }
             disabledReason={
               !canSend
                 ? active || p.busy
-                  ? 'Wait for the current request to finish.'
+                  ? t('Wait for the current request to finish.')
                   : !p.wallet?.enabled
-                    ? 'Generation is unavailable. Saved music remains accessible.'
-                    : 'An available Music credit is needed to chat or build.'
+                    ? t('Generation is unavailable. Saved music remains accessible.')
+                    : t('An available Music credit is needed to chat or build.')
                 : undefined
             }
-            pricing="Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods."
+            pricing={t(
+              'Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.',
+            )}
             tools={
               <>
                 {p.parent && (
@@ -395,7 +393,7 @@ export function MusicWorkspace(p: Props) {
                   {inspected
                     ? t('Version {value0}{value1}', {
                         value0: generations.indexOf(inspected) + 1,
-                        value1: compare ? ' · comparing' : '',
+                        value1: compare ? t(' · comparing') : '',
                       })
                     : t('Your music takes shape here')}
                 </h2>

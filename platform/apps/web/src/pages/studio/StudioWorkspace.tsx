@@ -156,14 +156,12 @@ export function StudioWorkspace(p: Props) {
           ? {
               id: `${latestGeneration.id}:${latestGeneration.status}`,
               status: latestGeneration.status,
-              text:
-                latestGeneration.status === 'ready'
-                  ? 'Map creation ready in Preview.'
-                  : 'Map creation needs attention in Preview.',
             }
           : undefined
       }
-      attention={active ? 'Working' : current?.status === 'failed' ? 'Needs attention' : undefined}
+      attention={
+        active ? t('Working…') : current?.status === 'failed' ? t('Needs attention') : undefined
+      }
       conversation={
         <>
           <Conversation
@@ -277,18 +275,20 @@ export function StudioWorkspace(p: Props) {
               target={
                 parentVersion
                   ? t('Editing version {value0}', { value0: versions.indexOf(parentVersion) + 1 })
-                  : 'New map'
+                  : t('New map')
               }
               disabledReason={
                 p.busy || active
-                  ? 'Wait for the current request to finish.'
+                  ? t('Wait for the current request to finish.')
                   : !p.wallet?.enabled
-                    ? 'Generation is unavailable. Saved projects remain accessible.'
+                    ? t('Generation is unavailable. Saved projects remain accessible.')
                     : !p.wallet.available
-                      ? 'An available Map credit is needed to chat or build.'
+                      ? t('An available Map credit is needed to chat or build.')
                       : undefined
               }
-              pricing="Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery."
+              pricing={t(
+                'Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.',
+              )}
             />
           </div>
         </>
@@ -431,7 +431,7 @@ export function StudioWorkspace(p: Props) {
                   onClick={() => {
                     p.setDraft(
                       t('Please try building the map again and address this issue: {value0}', {
-                        value0: current.error ?? 'The last build did not complete.',
+                        value0: current.error ?? t('The last build did not complete.'),
                       }),
                     );
                     focusComposer();

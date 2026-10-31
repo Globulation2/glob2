@@ -45,6 +45,19 @@ describe('localized source contract', () => {
     expect(check("throw new MessageError('Sign in');")).toEqual([]);
     expect(check("throw new Error('Private diagnostic');")).toEqual([]);
   });
+  it('checks caller-owned studio copy and announcements without translating user content or URLs', () => {
+    const errors = check(`
+      <ChatComposer target="New soundtrack" disabledReason={busy ? 'Wait for completion' : undefined} pricing="One credit" />;
+      <RevisionControls viewed={title ?? 'Current draft'} target={t('Sign in')} />;
+      <SharedWorkspace attention={busy ? 'Working' : undefined} result={done ? {id: 'technical-id', status: 'ready', text: 'Build ready'} : undefined} />;
+      <ConversationPane label={t('Sign in')} completion={{id: 'technical-id', text: t('Sign in')}} />;
+      <a target="_blank" href="/api/private">{title}</a>;
+      <StudioTabs items={[{id: 'preview', label: 'Preview'}]} />;
+    `);
+    expect(errors).toHaveLength(6);
+    expect(errors.every((error) => error.includes('unlocalized JSX text'))).toBe(true);
+    expect(errors.some((error) => error.includes('technical-id'))).toBe(false);
+  });
   it('allows localized labels, dynamic slots and technical editor syntax', () => {
     expect(
       check(

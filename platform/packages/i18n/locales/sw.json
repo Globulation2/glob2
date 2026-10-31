@@ -2915,5 +2915,21 @@
   "Clear filters": "Futa vichujio",
   "No results match these filters.": "Hakuna matokeo yanayolingana na vichujio hivi.",
   "Results: {value0}": "Matokeo: {value0}",
-  "Game text field": "Sehemu ya kuingiza maandishi mchezoni"
+  "Game text field": "Sehemu ya kuingiza maandishi mchezoni",
+  "Saving your project…": "Saving your project…",
+  "Generation is unavailable.": "Generation is unavailable.",
+  "Wait for the current request to finish.": "Wait for the current request to finish.",
+  "Generation is unavailable. Saved projects remain accessible.": "Generation is unavailable. Saved projects remain accessible.",
+  "Generation is unavailable. Saved music remains accessible.": "Generation is unavailable. Saved music remains accessible.",
+  "An available Map credit is needed to chat or build.": "An available Map credit is needed to chat or build.",
+  "An available Music credit is needed to chat or build.": "An available Music credit is needed to chat or build.",
+  "New soundtrack": "New soundtrack",
+  "Finish active work or resolve the revision conflict first.": "Finish active work or resolve the revision conflict first.",
+  "Choose a valid request cap.": "Choose a valid request cap.",
+  " · comparing": " · comparing",
+  "The last build did not complete.": "The last build did not complete.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+  "Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.": "Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
 }

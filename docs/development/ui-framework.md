@@ -127,7 +127,12 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
-bindings, and render representative screens in each language to check font
+bindings. Fixed studio copy passed through `ChatComposer`, `NewStudio`,
+`RevisionControls` and conversation/status props must be translated by the caller;
+project titles, prompts and generated responses remain user content. Newly
+cataloged legacy English UI may retain explicit English values and scoped
+`shared-values.json` exceptions in existing locales until translated; a completed
+new locale must translate those messages. Render representative screens in each language to check font
 coverage, text fitting and layout. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.

@@ -2888,5 +2888,21 @@
   "Clear filters": "ล้างตัวกรอง",
   "No results match these filters.": "ไม่พบผลลัพธ์ที่ตรงกับตัวกรองเหล่านี้",
   "Results: {value0}": "ผลลัพธ์ : {value0}",
-  "Game text field": "ช่องข้อความเกม"
+  "Game text field": "ช่องข้อความเกม",
+  "Saving your project…": "กำลังบันทึกโครงการ…",
+  "Generation is unavailable.": "สร้างผลงานไม่ได้",
+  "Wait for the current request to finish.": "รอจนกว่าคำขอปัจจุบันจะเสร็จสิ้น",
+  "Generation is unavailable. Saved projects remain accessible.": "สร้างผลงานไม่ได้ แต่ยังเปิดโครงการที่บันทึกไว้ได้",
+  "Generation is unavailable. Saved music remains accessible.": "สร้างเพลงไม่ได้ แต่ยังเปิดเพลงที่บันทึกไว้ได้",
+  "An available Map credit is needed to chat or build.": "ต้องมีเครดิตแผนที่เหลืออยู่จึงจะแชทหรือสร้างแผนที่ได้",
+  "An available Music credit is needed to chat or build.": "ต้องมีเครดิตเพลงเหลืออยู่จึงจะแชทหรือสร้างเพลงได้",
+  "New soundtrack": "ชุดเพลงประกอบใหม่",
+  "Finish active work or resolve the revision conflict first.": "ทำงานที่กำลังดำเนินอยู่ให้เสร็จ หรือแก้ข้อขัดแย้งระหว่างฉบับแก้ไขก่อน",
+  "Choose a valid request cap.": "เลือกเพดานเครดิตต่อคำขอที่ถูกต้อง",
+  " · comparing": " · กำลังเปรียบเทียบ",
+  "The last build did not complete.": "การสร้างครั้งล่าสุดไม่เสร็จสมบูรณ์",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตแผนที่เหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตเพลงเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ รวมเพลงทั้งสามอารมณ์",
+  "Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตอาคารเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตภูมิประเทศเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ"
 }
