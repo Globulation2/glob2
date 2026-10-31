@@ -1195,8 +1195,8 @@ class GameGUITouchHarness
 		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
 		std::ofstream(labels.path / "tutorial.keys.txt") << "[language-code]\n[scenario messages]\n";
 		std::ofstream(labels.path / "tutorial.list.txt") << "tutorial.keys.txt\ntutorial.en.txt\ntutorial.ur.txt\n";
-		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[scenario messages]\nTutorial ▸\n";
-		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[scenario messages]\nتربیت ▸\n";
+		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[scenario messages]\nMessages ▸\n";
+		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[scenario messages]\nپیغامات ▸\n";
 		restore.stringsReplaced = true;
 		REQUIRE(strings->load("tutorial.list.txt"));
 		strings->setLang(strings->getLangCode("ur"));
