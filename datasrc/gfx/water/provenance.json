@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "0b4d0178747f57963b3fda0330aad333ed8009cc5f1527f212aa9b22e1247bc5",
+    "tools/artwork/terrain_synth.py": "8db5a59bc3b22d0a4c542046efb340f58cd3fefb92d1db099bba8c57b0780029",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "water",
@@ -65,14 +65,17 @@
     "placeholder_only": false,
     "periodic": true,
     "grid": 4,
+    "blocks": 1,
+    "block_group": "",
     "note": ""
   },
   "seed": "fnv1a32(\"water:<variant>:<phase>\")",
   "render_size": 128,
+  "block_render_size": 512,
   "tile_size": 32,
   "variants": 16,
   "phases": 16,
-  "frame_layout": "variant + 16 * phase",
+  "frame_layout": "cell + 16 * block + 16 * phase",
   "sprite": "data/gfx/terrain-water",
   "preview": [
     70,
@@ -255,12 +258,12 @@
       }
     }
   },
-  "python": "3.13.16",
+  "python": "3.14.4",
   "pillow": "12.2.0",
   "platform": {
     "system": "linux",
     "machine": "x86_64",
-    "libc": "glibc 2.39"
+    "libc": "glibc 2.43"
   },
   "runtime_sha256": {
     "data/gfx/terrain-water0.png": "f0cb851561569a4aed3b4fad570dfa60880cb444ab14b54672ce242e9c16211f",

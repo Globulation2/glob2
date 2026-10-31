@@ -6652,3 +6652,13 @@ Nie udało się zapisać wyboru. Dźwięk pozostaje wyłączony. Spróbuj ponown
 Cisza: wyciszony głośnik. Dźwięk: głośnik z falami dźwiękowymi.
 [library GL only]
 Tylko GL
+[Grassland]
+Łąki
+[Kopjes]
+Skaliste wzgórza
+[Game trails]
+Ścieżki zwierząt
+[Fish amount]
+Ilość ryb
+[Camp-site amount]
+Liczba obozowisk

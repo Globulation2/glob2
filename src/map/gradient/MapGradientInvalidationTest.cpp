@@ -240,7 +240,7 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         // untrained fixture declares research behavior before demanding work.
         map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();
         map.gradientRuntime->exploration->intervals={8};
-        for(unsigned idle=0;idle<8;++idle)boundary(f,true);
+        for(unsigned idle=0;idle<AdaptiveGradientState::MinimumInterval;++idle)boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs);
         int dx=0,dy=0;map.queryForbiddenStep(nullptr,0,swim,20,20,&dx,&dy);
         boundary(f,true);

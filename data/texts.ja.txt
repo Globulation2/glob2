@@ -6652,3 +6652,13 @@ Building Studio で作成
 無音：ミュートされたスピーカー。音あり：音波の付いたスピーカー。
 [library GL only]
 GL のみ
+[Grassland]
+草原
+[Kopjes]
+岩山
+[Game trails]
+獣道
+[Fish amount]
+魚の量
+[Camp-site amount]
+野営地の数

@@ -3,7 +3,7 @@
 Use the [Globulation 2 issue tracker](https://github.com/Globulation2/glob2/issues)
 for reproducible bugs, contributor questions, and proposals. Search existing
 issues before opening a new one. Player guides and community information are on
-[glob2online.com](https://glob2online.com/).
+[glob2.online](https://glob2.online/).
 
 ## Report a problem
 

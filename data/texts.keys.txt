@@ -3325,3 +3325,8 @@
 [audio preference change later]
 [audio preference save failed]
 [audio choices description]
+[Grassland]
+[Kopjes]
+[Game trails]
+[Fish amount]
+[Camp-site amount]

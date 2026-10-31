@@ -6652,3 +6652,13 @@ You can change this anytime in Settings → Audio.
 Your choice could not be saved. Audio is still off. Please try again.
 [audio choices description]
 Silence: a muted speaker. Sound: a speaker with sound waves.
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

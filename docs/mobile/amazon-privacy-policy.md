@@ -2,5 +2,5 @@
 
 The Fire tablet policy is now part of the [unified Globulation 2 privacy policy](privacy-policy.md#fire-tablet-edition).
 
-Published website: [glob2online.com/privacy](https://glob2online.com/privacy/#fire-tablet-edition).
+Published website: [glob2.online/privacy](https://glob2.online/privacy/#fire-tablet-edition).
 This file is a compatibility link, not a separate policy copy.

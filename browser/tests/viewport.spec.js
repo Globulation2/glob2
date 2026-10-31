@@ -12,7 +12,11 @@ async function resize(page,width,height,backingScale=1) {
 }
 test.beforeEach(async ({page}) => {
   await page.goto(gameURL());
-  await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen/);
+  await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen/);
+  if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
+    await clickControl(page,'audio.silence');
+    await screen(page,'HandPreferenceScreen');
+  }
   if ((await snapshot(page)).screen.includes('HandPreferenceScreen')) await clickControl(page,'hand.right');
   await screen(page,'MainMenuScreen');
 });

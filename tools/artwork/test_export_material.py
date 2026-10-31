@@ -23,9 +23,20 @@ from material_tiles import ROOT, pixel_sha256  # noqa: E402
 
 
 def synthetic_material(name, size=512):
-    """A square stand-in for generated art: a procedural render, upscaled."""
-    image = terrain_synth.render_phase(name, 0)[1][3]
-    return image.resize((size, size), Image.Resampling.BICUBIC)
+    """A square stand-in for generated art: a procedural render, resized.
+
+    Positional recipes contribute their whole first block, since one cell of
+    a block is a fragment whose statistics need not match the material's.
+    """
+    tiles = terrain_synth.render_phase(name, 0)[1]
+    grid = terrain_synth.RECIPES[name].grid
+    if not grid:
+        return tiles[3].resize((size, size), Image.Resampling.BICUBIC)
+    cell = tiles[0].width
+    image = Image.new("RGBA", (grid * cell, grid * cell))
+    for v, tile in enumerate(tiles[:grid * grid]):
+        image.paste(tile, ((v % grid) * cell, (v // grid) * cell))
+    return image.resize((size, size), Image.Resampling.BOX)
 
 
 @unittest.skipUnless(PIL.__version__ == terrain_synth.PILLOW_VERSION, "needs the pinned Pillow")
@@ -109,7 +120,7 @@ class ExportMaterial(unittest.TestCase):
         )
 
     def test_committed_materials_validate(self):
-        for name in terrain_synth.BUILTIN_ORDER:
+        for name in terrain_synth.SYNTH_ORDER:
             with self.subTest(material=name):
                 method = validate_material.validate(name)["method"]
                 if terrain_synth.RECIPES[name].placeholder_only:

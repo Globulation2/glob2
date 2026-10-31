@@ -6652,3 +6652,13 @@ No s’ha pogut desar la tria. El so continua desactivat. Torna-ho a provar.
 Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 [library GL only]
 Només GL
+[Grassland]
+Praderia
+[Kopjes]
+Turons rocosos
+[Game trails]
+Corriols d’animals
+[Fish amount]
+Quantitat de peixos
+[Camp-site amount]
+Nombre de campaments

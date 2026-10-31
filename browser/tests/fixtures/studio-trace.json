@@ -6,6 +6,8 @@
   "seed": 19,
   "opponent": "numbi",
   "ticks": 1024,
-  "traceBytes": 2085598,
-  "traceSha256": "84b33275aab202badd6fd6bec1e5aed87af8068dac9019d9d9413433e5f3659e"
+  "traceBytes": 2083950,
+  "traceSha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c",
+  "versionMinor": 186,
+  "simRevision": 100
 }

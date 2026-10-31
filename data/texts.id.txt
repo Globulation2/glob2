@@ -6652,3 +6652,13 @@ Pilihan Anda tidak dapat disimpan. Suara masih dimatikan. Silakan coba lagi.
 Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 [library GL only]
 Hanya GL
+[Grassland]
+Padang rumput
+[Kopjes]
+Bukit berbatu
+[Game trails]
+Jalur satwa
+[Fish amount]
+Jumlah ikan
+[Camp-site amount]
+Jumlah perkemahan

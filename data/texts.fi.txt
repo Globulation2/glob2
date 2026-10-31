@@ -6652,3 +6652,13 @@ Valintaa ei voitu tallentaa. Ääni on yhä pois päältä. Yritä uudelleen.
 Hiljaisuus: mykistetty kaiutin. Ääni: kaiutin ja ääniaaltoja.
 [library GL only]
 Vain GL
+[Grassland]
+Ruohomaa
+[Kopjes]
+Kalliokukkulat
+[Game trails]
+Eläinpolut
+[Fish amount]
+Kalojen määrä
+[Camp-site amount]
+Leiripaikkojen määrä

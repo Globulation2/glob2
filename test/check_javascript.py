@@ -3,6 +3,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import re
 import subprocess
 import struct
 from pathlib import Path
@@ -10,6 +11,8 @@ from check_telemetry_simulation import detailed_ticks
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / 'test/fixtures/javascript'
+CURRENT_SAVE_VERSION = int(re.search(r'^#define VERSION_MINOR (\d+)',
+    (ROOT / 'src/app/Version.h').read_text(), re.MULTILINE).group(1))
 
 
 def complete_ticks(data):
@@ -51,7 +54,7 @@ def compare_payloads(whole, resumed):
 
 
 def save_header(path):
-    """Read bounded format-73..173 MapHeader framing and the player-count prefix.
+    """Read bounded format-73..current MapHeader framing and the player-count prefix.
 
     Unit definitions in format 153 follow the GameHeader players and resource
     declarations; they do not add MapHeader fields or change this prefix.
@@ -91,7 +94,7 @@ def save_header(path):
 
     text(1024 * 1024, 'map name', allow_empty=True)
     major, minor, teams = word('major version'), word('minor version'), word('team count')
-    assert major == 0 and 73 <= minor <= 173 and minor != 170, 'unsupported fixture header version'
+    assert major == 0 and 73 <= minor <= CURRENT_SAVE_VERSION and minor != 170, 'unsupported fixture header version'
     assert 0 < teams <= 32, 'invalid team count'
     skip(4, 'map offset')
     assert byte('saved-game flag') <= 1, 'invalid saved-game flag'

@@ -385,6 +385,38 @@ TEST_SUITE("EntityRandomLifecycle")
         eraseSections("worldRandom");
         eraseSections("entityRandom");
         eraseSections("unitCatalog");
+        // Unified routing (format 178) stopped writing these legacy flags.
+        // A format-150 fixture must restore them: reading an absent text flag
+        // is malformed input and may appear to work on only some standard libraries.
+        auto addLegacyFlags = [&](const std::vector<std::string>& path, const std::string& flags) {
+            std::size_t position=0;
+            for (std::size_t depth=0; depth<path.size(); ++depth) {
+                const std::string indent(depth, '\t');
+                const auto marker=indent+path[depth]+"\n"+indent+"{\n";
+                position=bytes.find(marker,position);
+                REQUIRE(position!=std::string::npos);
+                position+=marker.size();
+            }
+            bytes.insert(position,flags);
+        };
+        REQUIRE_FALSE(world.game.map.marketsV2Enabled());
+        for (int team=0; team<world.game.teamsCount(); ++team)
+            for (int swim=0; swim<LEGACY_SWIM_CLASS_COUNT; ++swim) {
+                const std::vector<std::string> base={"Game","mapRuntime","teams",
+                    std::to_string(team),"swimClasses",std::to_string(swim)};
+                for (int resource=0; resource<MaterialSlotCount; ++resource) {
+                    auto path=base;
+                    path.insert(path.end(),{"resources",std::to_string(resource)});
+                    addLegacyFlags(path,"updated = 0;\n");
+                    path.push_back("markets");
+                    addLegacyFlags(path,"dirty = 0;\nupdated = 0;\n");
+                }
+                for (const char* family:{"guard","clear"}) {
+                    auto path=base;
+                    path.push_back(family);
+                    addLegacyFlags(path,"updated = 0;\n");
+                }
+            }
         // Historical Race tables were twelve flat UnitType records in Team,
         // before format 153 introduced a catalog-sized nested collection.
         const auto count=bytes.find("unitTypeCount = 3;");

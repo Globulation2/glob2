@@ -6652,3 +6652,13 @@ MCP 伺服器
 靜音：已靜音的喇叭。聲音：帶有聲波的喇叭。
 [library GL only]
 僅限 GL
+[Grassland]
+草原
+[Kopjes]
+岩丘
+[Game trails]
+獸徑
+[Fish amount]
+魚類數量
+[Camp-site amount]
+營地數量

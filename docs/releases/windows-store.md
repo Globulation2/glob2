@@ -105,7 +105,7 @@ product's `Main` branch before submitting for certification:
    submitting; use a manual hold if certification should finish before launch.
 2. **Properties:** Strategy is the primary genre; Simulation is an additional
    genre. Declare PC single-player and online multiplayer. Use
-   `https://glob2online.com/privacy/` for privacy, `https://glob2online.com/` for the
+   `https://glob2.online/privacy/` for privacy, `https://glob2.online/` for the
    website, and the current support contact published in that privacy policy.
    Review the customer-visible contact address and phone: Partner Center can use
    the developer account's contact details when product fields are blank.
@@ -114,13 +114,15 @@ product's `Main` branch before submitting for certification:
 3. **Store listings:** maintain an English (United States) listing using the copy
    below. Upload genuine desktop screenshots from the release candidate. At least
    one PNG is required; Partner Center recommends four, at 1366 × 768 or larger.
-   The current gameplay screenshot at
-   `https://glob2online.com/images/glob2-first-colony.webp` is an approved source;
-   convert it to PNG without changing its content. Add more screenshots of
-   gameplay, colony management, campaigns and the editor when available. Do not reuse
-   mobile screenshots or the legacy `data/screenshots/globulation2-gameplay.png`
-   showing version 0.9.5 as evidence of the current Windows release. Package logos
-   are the default; optional Store poster and box artwork can improve presentation.
+   The [approved storefront gallery](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
+   supplies PNG exports of the River battle, developed Four Squares strategic
+   view and Lava Shield terrain at 2560 × 1440. Keep their full HUDs and inspect
+   them against the Windows release candidate before submission. The colony
+   image remains 1280 × 720; do not upscale it to imply a new capture. Keep
+   illustrated key art separate from gameplay screenshots. Do not reuse mobile
+   frames or the historical 0.9.5 screenshot as evidence of the current Windows
+   release. Package logos are the default; optional Store poster and box artwork
+   can use the approved illustration after checking the destination crop.
 4. **Age ratings:** reuse an applicable existing IARC certificate if available,
    otherwise complete the questionnaire accurately. Disclose cartoon/fantasy
    combat and native online communication. Review the included content and whether
@@ -144,27 +146,29 @@ GPL source and license accessible for every distributed version.
 
 **Short description**
 
-Guide a colony of autonomous globs. Build, explore, and compete in a free,
-open-source real-time strategy game with single-player campaigns, multiplayer,
-and a map editor.
+Build a thriving colony in contested territory. Balance food, workers and expansion, shape a sprawling base, and compete with rival colonies for land and resources.
 
 **Description**
 
-Globulation 2 is a free, open-source real-time strategy game about guiding a
-colony rather than directing every unit. Set priorities, choose where to build,
-and assign globs to work. Your globs carry out those jobs while you focus on the
-shape of your settlement and your next move.
+Build a thriving colony in contested territory.
 
-Grow your economy, explore the map, and adapt your strategy as rival colonies
-expand. Play against computer opponents, try the included maps and campaigns,
-or compete with other players online or over a local network. Use the map editor
-to create your own challenges.
+Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+
+Grow an economy that can sustain your ambitions.
+Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+
+Make the map part of your strategy.
+Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+
+Defend what you've built.
+Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+
+Globulation 2 is free and open source.
 
 Single-player games can be played offline without an account. Online multiplayer
 requires an internet connection.
 
-**Product feature:** Guide autonomous workers by setting priorities and assigning
-jobs.
+**Product feature:** Balance food, workers and expansion while guiding autonomous creatures.
 
 **Developed by:** Globulation 2 contributors.
 

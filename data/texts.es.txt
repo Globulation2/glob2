@@ -6652,3 +6652,13 @@ No se pudo guardar tu elección. El sonido sigue desactivado. Vuelve a intentarl
 Silencio: un altavoz silenciado. Sonido: un altavoz con ondas sonoras.
 [library GL only]
 Solo GL
+[Grassland]
+Pradera
+[Kopjes]
+Colinas rocosas
+[Game trails]
+Senderos de animales
+[Fish amount]
+Cantidad de peces
+[Camp-site amount]
+Número de campamentos

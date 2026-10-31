@@ -6652,3 +6652,13 @@ Votre choix n’a pas pu être enregistré. Le son reste désactivé. Veuillez r
 Silence : un haut-parleur muet. Son : un haut-parleur avec des ondes sonores.
 [library GL only]
 GL uniquement
+[Grassland]
+Prairie
+[Kopjes]
+Collines rocheuses
+[Game trails]
+Pistes d’animaux
+[Fish amount]
+Quantité de poissons
+[Camp-site amount]
+Nombre de campements

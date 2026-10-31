@@ -12,7 +12,8 @@ async function touchMatch(page,x,y) {await page.touchscreen.tap(x,y);await match
 test.describe('responsive mixed input',()=>{
   test.use({viewport:{width:1024,height:768},hasTouch:true});
   test.beforeEach(async({page})=>{
-    await page.goto(gameURL());await screen(page,'HandPreferenceScreen');
+    await page.goto(gameURL());await screen(page,'AudioPreferenceScreen');
+    await tapControl(page,'audio.silence');await screen(page,'HandPreferenceScreen');
     await tapControl(page,'hand.right');await screen(page,'MainMenuScreen');
   });
   test('native text editing preserves Unicode and selection across rotation',async({page},info)=>{

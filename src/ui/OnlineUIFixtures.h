@@ -64,7 +64,7 @@ inline Json roomState()
 	Json teams = Json::array({{{"team", 0}, {"alliance", 0}}, {{"team", 1}, {"alliance", 1}}, {{"team", 2}, {"alliance", 0}}, {{"team", 3}, {"alliance", 1}}});
 	return Json{{"id", "5b0f3c1e-0000-4a7e-8a51-3d0a1c0b0001"},
 				{"code", "KXQ742MNPR"},
-				{"inviteUrl", "https://app.glob2online.com/j/KXQ742MNPR"},
+				{"inviteUrl", "https://app.glob2.online/j/KXQ742MNPR"},
 				{"name", "Bradley's room"},
 				{"visibility", "link"},
 				{"status", "open"},
@@ -195,7 +195,7 @@ class LanRoomFixture final : public RoomBackend
 inline OnlineHubScreen::Model hubModel()
 {
 	OnlineHubScreen::Model m;
-	m.origin = "https://app.glob2online.com";
+	m.origin = "https://app.glob2.online";
 	m.instanceName = "Globulation 2 Online";
 	m.link = OnlineHubScreen::Model::Link::Online;
 	m.displayName = "Guest-4821";
@@ -253,9 +253,9 @@ inline std::shared_ptr<Online::OnlineMatch> startingMatch()
 					{"seat", 0},
 					{"ticket", "x"},
 					{"ticketExpiresAt", "2026-10-01T21:00:00Z"},
-					{"relayUrl", "wss://app.glob2online.com/relay/eu-west-2"},
+					{"relayUrl", "wss://app.glob2.online/relay/eu-west-2"},
 					{"setup", setup},
-					{"mapUrl", "https://app.glob2online.com/api/v1/blobs/maps/aaaa"},
+					{"mapUrl", "https://app.glob2.online/api/v1/blobs/maps/aaaa"},
 					{"mapTitle", "Even Ground"}};
 	Online::OnlineMatchContext context;
 	context.label = "1 vs 1 - Ranked";
@@ -345,7 +345,7 @@ inline std::unique_ptr<GAGGUI::Screen> quickMatch(GAGGUI::ScreenStack &stack, bo
 	const auto now = Glob2UI::wallClockMs();
 	if (searching)
 		m.presentSearching(queues()[0], status(now), now - 42000);
-	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://app.glob2online.com", "Bradley");
+	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://app.glob2.online", "Bradley");
 }
 
 // A section of the hub other than Play (a registered player placed on the ladder).
@@ -452,7 +452,7 @@ inline std::unique_ptr<GAGGUI::Screen> profile(GAGGUI::ScreenStack &stack)
 	const auto now = Glob2UI::wallClockMs();
 	const std::int64_t day = 86400000;
 	OnlineProfileScreen::Data data;
-	data.instance = "https://app.glob2online.com";
+	data.instance = "https://app.glob2.online";
 	data.accountId = "me";
 	data.displayName = "Bradley";
 	data.kind = "registered";
@@ -533,7 +533,7 @@ inline OnlineMapsScreen::Data mapsData(const std::string &root)
 	const auto now = Glob2UI::wallClockMs();
 	const std::int64_t day = 86400000;
 	OnlineMapsScreen::Data data;
-	data.instance = "https://app.glob2online.com";
+	data.instance = "https://app.glob2.online";
 	data.now = now;
 	data.previewFiles = {
 		{"fixture://drumlin-128", root + "test/fixtures/map-previews/128-4-colonies.webp"},
