@@ -166,6 +166,34 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For a Google Cloud Thai draft, use the development-only adapter after preparing
+and drafting a `th` kit:
+
+```sh
+python3 tools/localization/google_draft.py --project PROJECT_ID --locale th \
+  --output artifacts/translation-program --budget-usd 25 --ids-file PILOT_IDS.json
+```
+
+The pilot file is a JSON array of `native:[key]` and `online:source message` IDs.
+Omit `--ids-file` only after reviewing and correcting the representative pilot.
+The adapter uses `gcloud auth print-access-token` with Cloud Translation v3, protects
+placeholders and technical literals, and fills only blank entries. Actual provider
+responses and a source-bound cost ledger remain in the kit. Each attempted request
+reserves its conservative cost before transmission, including retries and ambiguous
+network failures. The campaign ceiling does not limit other project consumers;
+verify the configured price against current provider pricing before starting.
+An exclusive campaign lock prevents concurrent writers. Investigate an abandoned
+process before removing a stale lock; retain the ledger and cached responses.
+
+Thai native catalogs may contain reviewed U+200B soft word-break hints. Generate
+candidate boundaries with `node tools/localization/thai_breaks.mjs INPUT OUTPUT`
+using distinct files, then inspect the output during the editorial pass. The tool
+uses the development Node/ICU Thai segmenter; no segmenter ships with the game.
+Hints prefer whole-word wrapping without adding visible spaces, and the renderer
+omits them from measurements and drawing. Oversized words retain cluster-safe
+emergency wrapping. Keep online catalog text unannotated and use browser Thai line
+breaking. Review hint changes as catalog changes and refresh affected sign-offs.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use

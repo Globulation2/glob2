@@ -42,7 +42,7 @@ class FontCoverageTest(unittest.TestCase):
                 values = path.read_text(encoding='utf-8').splitlines()[1::2]
                 characters = set(''.join(values))
                 # Formatting controls have no visible glyph of their own.
-                characters -= set('\u200c\u200d\u200e\u200f')
+                characters -= set('\u200b\u200c\u200d\u200e\u200f')
                 missing = sorted(c for c in characters if ord(c) > 32 and (
                     ord(c) > 0xFFFF or not any(ttf.TTF_FontHasGlyph(font, ord(c)) for font in fonts)))
                 with self.subTest(catalog=path.name):

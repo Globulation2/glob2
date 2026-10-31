@@ -340,6 +340,24 @@ void checkShapingClusterWrapping()
         require(explicitLines.size() == 2 && explicitLines.front() == cluster,
                 "explicit newline keeps preceding cluster intact");
     }
+    FixedTextMeasurer fixed;
+    const std::string annotated = "ab\u200bcd\u200bef";
+    require(wrapText(fixed, FontRole::Body, annotated, 32) == std::vector<std::string>{"abcd", "ef"},
+            "soft boundaries prefer whole words without adding spaces");
+    require(wrapText(fixed, FontRole::Body, annotated, 24) == std::vector<std::string>{"ab", "cd", "ef"},
+            "a Thai-style word wraps before it exceeds the remaining line");
+    require(wrapText(fixed, FontRole::Body, "ab\u200bcdefg", 24) == std::vector<std::string>{"ab", "cde", "fg"},
+            "oversized annotated words retain emergency cluster wrapping");
+    require(wrapText(fixed, FontRole::Body, "\u200bab \u200bcd\u200b\u200b\nef\u200b", 80) ==
+            std::vector<std::string>{"ab cd", "ef"},
+            "leading consecutive and trailing hints preserve real spaces and newlines");
+    require(ellipsize(fixed, FontRole::Body, annotated, 32) == "abc…",
+            "ellipsis neither measures nor emits soft boundary markers");
+    require(ellipsize(fixed, FontRole::Body, annotated, 80) == "abcdef",
+            "untruncated labels omit soft boundary markers too");
+    ClusterFixture thai("ก้");
+    require(wrapText(thai, FontRole::Body, "ก้\u200bx", 8) == std::vector<std::string>{"ก้", "x"},
+            "a soft boundary never separates a Thai base and tone mark");
     struct InvalidBoundaries : FixedTextMeasurer
     {
         std::vector<std::size_t> clusterEnds(FontRole, const std::string &) const override

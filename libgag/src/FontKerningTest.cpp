@@ -9,6 +9,7 @@
 #include <Toolkit.h>
 #include <TrueTypeFont.h>
 #include <BidiText.h>
+#include <TouchText.h>
 #include <StringTable.h>
 #include <fstream>
 #include <algorithm>
@@ -120,6 +121,33 @@ TEST_SUITE("FontKerning")
 		CHECK(antialiased);
 	}
 
+	TEST_CASE("Thai soft word hints affect wrapping without affecting raster or metrics")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		for (unsigned size : {10u, 13u, 20u})
+		{
+			TrueTypeFont font("data/fonts/sans.ttf", size);
+			const std::string word = "ผู้เล่น", second = "กำลัง", plain = word + second;
+			const std::string annotated = word + "\u200b" + second;
+			CHECK(font.getStringWidth(annotated) == font.getStringWidth(plain));
+			CHECK(font.getStringHeight(annotated) == font.getStringHeight(plain));
+			CHECK(font.hasGlyphsFor(annotated));
+			for (float scale : {1.f, 1.5f, 2.f, 3.f})
+			{
+				auto original = font.rasterizeString(plain, scale);
+				auto hinted = font.rasterizeString(annotated, scale);
+				REQUIRE(original); REQUIRE(hinted);
+				CHECK(samePixels(original->getSDLSurface(), hinted->getSDLSurface()));
+			}
+			const int width = std::max(font.getStringWidth(word), font.getStringWidth(second));
+			CHECK(GAGCore::wrapTouchText(&font, annotated, width) == std::vector<std::string>{word, second});
+			CHECK(GAGCore::wrapTouchText(&font, annotated, font.getStringWidth(plain) + 10) ==
+				std::vector<std::string>{plain});
+		}
+	}
+
 	TEST_CASE("shaping clusters keep conjuncts and combining marks together")
 	{
 		TtfScope ttf;
@@ -150,7 +178,7 @@ TEST_SUITE("FontKerning")
 		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
 		std::ofstream listing(files.path / "probe.list.txt");
 		listing << "probe.keys.txt\n";
-		for (const char *code : {"en", "hi", "ur", "sw", "gu", "pa-guru", "ar", "fa"})
+		for (const char *code : {"en", "hi", "ur", "sw", "gu", "pa-guru", "th", "ar", "fa"})
 		{
 			listing << "probe." << code << ".txt\n";
 			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
@@ -164,7 +192,7 @@ TEST_SUITE("FontKerning")
 			const int originalHeight = font.getStringHeight("");
 			auto original = font.rasterizeString("Menu", 1.f);
 			REQUIRE(original);
-			for (const char *code : {"hi", "ur", "sw", "gu", "pa-guru"})
+			for (const char *code : {"hi", "ur", "sw", "gu", "pa-guru", "th"})
 			{
 				strings->setLang(strings->getLangCode(code));
 				const int lineHeight = font.getStringHeight("");
@@ -176,6 +204,7 @@ TEST_SUITE("FontKerning")
 				CAPTURE(code); CAPTURE(size);
 				const char *sample = std::string(code) == "hi" ? "क्षत्रिय खिलाड़ी" :
 					std::string(code) == "gu" ? "ગુજરાતી ખેલાડી" :
+					std::string(code) == "th" ? "ผู้เล่นกำลังก่อสร้าง 12 / 100" :
 					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :
 					std::string(code) == "sw" ? "Nina haki ya kushiriki rekodi hizi na michoro hii kwa leseni iliyochaguliwa." : "کھلاڑی 12 / 100";
 				CHECK(font.getStringHeight(sample) <= lineHeight);
