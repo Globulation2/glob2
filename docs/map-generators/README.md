@@ -2,7 +2,9 @@
 
 Choose a landscape, create reproducible maps, or develop a new generator. Lobby,
 editor and study tools share registered controls; uniform terrain is editor-only.
-A normal lobby rolls a fresh map and launches the previewed snapshot.
+Fresh lobby and editor setups default to Lava Shield, independently of catalog order.
+The lobby remembers your selected landscape. A normal lobby rolls a fresh map and
+launches the previewed snapshot.
 
 ## Start here
 
