@@ -112,7 +112,7 @@ namespace GAGCore
 #endif
 		const char* assets = SDL_getenv_unsafe("GLOB2_ASSET_DIR");
 		if (assets && *assets) addDir(assets);
-#ifdef PACKAGE_RUNTIME_ASSET_DIR
+#if defined(PACKAGE_RUNTIME_ASSET_DIR) && !defined(GLOB2_INSTALLED_PATHS)
         // Generated source-build indices must precede the source PNG indices.
         addDir(PACKAGE_RUNTIME_ASSET_DIR);
 #endif
@@ -162,7 +162,9 @@ namespace GAGCore
 		#endif
 
 		addDir(PACKAGE_DATA_DIR);
+#ifndef GLOB2_INSTALLED_PATHS
 		addDir(PACKAGE_SOURCE_DIR);
+#endif
 		fileListIndex = -1;
 	}
 	

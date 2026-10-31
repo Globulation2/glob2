@@ -50,3 +50,12 @@ class RecordingConfigTests(unittest.TestCase):
         attach_system(env)
         env.ParseConfig.assert_called_once_with(
             'pkg-config --cflags --libs libavformat libavcodec libswscale libswresample libavutil')
+
+    def test_installed_paths_are_a_native_linux_client_path_choice(self):
+        build_identity({'installed_paths': '1'}, 'linux')
+        for arguments, host in [({'installed_paths': '1'}, 'darwin'),
+                                ({'installed_paths': '1', 'role': 'relay'}, 'linux'),
+                                ({'installed_paths': '1', 'target': 'web'}, 'linux'),
+                                ({'installed_paths': '1', 'mingw': '1'}, 'linux')]:
+            with self.subTest(arguments=arguments, host=host), self.assertRaises(ValueError):
+                build_identity(arguments, host)

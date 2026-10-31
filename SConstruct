@@ -32,7 +32,8 @@ def establish_options(env):
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
-    opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
+    opts.Add("DATADIR", "Runtime game data root (typically INSTALLDIR/glob2)", "/usr/local/share")
+    opts.Add(BoolVariable("installed_paths", "Omit checkout asset/shader lookup paths (Linux packages)", 0))
     opts.Add(BoolVariable("dev_fast", "Fast full-featured development build", 0))
     opts.Add(BoolVariable("pch", "Experimental development precompiled headers", 0))
     opts.Add(BoolVariable("unity", "Experimental selective development unity compilation", 0))

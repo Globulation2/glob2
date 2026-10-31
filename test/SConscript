@@ -46,6 +46,8 @@ def available(options):
         return False
     if 'no-recording' in required and env.get('recording') != 'disabled':
         return False
+    if 'installed-paths' in required and not env.get('installed_paths'):
+        return False
     if 'mac' in required and (env['PLATFORM'] != 'darwin' or env.get('mingw') or env.get('mingwcross')):
         return False
     if 'wss' in required and not env.get('wss', True):

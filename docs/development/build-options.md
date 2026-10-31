@@ -5,6 +5,11 @@ Native Linux distribution builds can select `recording=system` or
 use separate output directories. See [recording dependencies](media-dependencies.md#linux-distribution-recording-variants)
 for required libraries and feature differences.
 
+Linux distro recipes should also use `installed_paths=1` to omit compiled
+checkout, generated-asset and shader fallback paths. Use matching build/install
+options and set `DATADIR` to the final game data root, such as `/usr/share/glob2`.
+Development builds retain their existing lookup behavior by default.
+
 Fast builds accelerate editing; ordinary debug builds provide full symbols and release builds provide representative runtime behavior.
 
 Native distribution packages that extract separate debug symbols can use

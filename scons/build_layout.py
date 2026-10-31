@@ -35,8 +35,10 @@ def build_identity(arguments, host=None):
     if role not in ('client', 'relay'):
         raise ValueError('role must be client or relay')
     from recording_config import resolve as recording_mode
-    recording = recording_mode(arguments, target, role,
-        'mingw' if enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)) else (host or platform.system().lower()))
+    native_host = 'mingw' if enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)) else (host or platform.system().lower())
+    recording = recording_mode(arguments, target, role, native_host)
+    if enabled(arguments.get('installed_paths', 0)) and (target != 'native' or role != 'client' or native_host != 'linux'):
+        raise ValueError('installed_paths requires a native Linux client')
     china = enabled(arguments.get('china', 0))
     if china and (target == 'web' or role != 'client'):
         raise ValueError('china=1 supports native and mobile clients only')

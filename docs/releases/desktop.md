@@ -189,9 +189,14 @@ test harnesses require a Git checkout of the selected tag, with downstream patch
 applied, so their embedded source provenance cannot borrow an enclosing repository
 or mislabel archive contents as an unchanged commit.
 
-Use `release=1 retain_symbols=1 client_profile=free`, distro build flags and
+Use `release=1 retain_symbols=1 client_profile=free installed_paths=1`, distro build flags and
 matching build/install options. Stage `BINDIR` and `INSTALLDIR`, keeping `DATADIR`
-at the final location, usually `/usr/share`. Verify executable, data, campaigns,
+at the final game asset root, usually `/usr/share/glob2` (or
+`/usr/share/games/glob2` for Debian's existing layout). `installed_paths=1`
+omits compiled checkout/runtime-asset/shader fallback paths while retaining
+explicit environment overrides and installed-prefix discovery. It does not
+change the public ABI; SCons tracks its two consumers' compile flags like other
+installation path choices. Verify executable, data, campaigns,
 maps, scripts, desktop metadata, icons, man page, completions and license notices.
 Reject build-directory runtime library search paths.
 

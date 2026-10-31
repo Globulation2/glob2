@@ -22,6 +22,8 @@ def register_test_provenance(env, output):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     metadata = module.source_identity(root)
+    if env.get('installed_paths'):
+        metadata['installedPaths'] = True
     metadata.update(compiler=env.subst('$CXX'),
                     flags={key: env.subst('$' + key) for key in
                            ('CFLAGS', 'CCFLAGS', 'CPPFLAGS', 'CXXFLAGS', 'CPPDEFINES', 'LINKFLAGS')})

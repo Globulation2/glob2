@@ -9,7 +9,7 @@ client object; otherwise it joins ENGINE_TESTS. Entry options:
   cxxflags  extra compiler flags for that translation unit only
   defines   extra preprocessor defines for that translation unit only
   require   build features the entry needs: 'wss', 'not-mingw', 'opengl',
-            'recording', 'no-recording' (native Linux codec-free variant)
+            'recording', 'no-recording', 'installed-paths' (Linux packaging)
 """
 
 # Linked into both test binaries.
@@ -254,6 +254,7 @@ UNIT_TESTS = [
     ('#libgag/src/GameplayRecordingTest.cpp', dict(require={'recording'})),
     ('#libgag/src/RecordingSessionTest.cpp', dict(require={'recording'})),
     ('#libgag/src/RecordingDisabledTest.cpp', dict(require={'no-recording'})),
+    ('#libgag/src/InstalledPathsTest.cpp', dict(require={'installed-paths'}, cxxflags=['-fno-access-control'])),
     'support/RecordingValidationProcess.cpp',
     '#libusl/test/USLCoverageTest.cpp',
     '#libgag/src/SurfaceCoverageTest.cpp',
