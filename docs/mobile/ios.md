@@ -35,6 +35,15 @@ rejected or invisible builds fail the job and require checking Apple's delivery
 notification before retrying with a corrected immutable tag.
 
 
+## Safe-area layout
+
+Menus, dialogs and the touch HUD use UIKit safe-area insets to keep text and
+controls clear of the status bar, camera cutout and home indicator. Backgrounds
+can extend to the screen edges. The shared host bridge uses SDL3's
+`SDL_PLATFORM_IOS` platform guard; the former SDL2 `__IPHONEOS__` macro is not
+defined by SDL3 or the iOS compiler. Insets are read from the current window so
+layouts can follow orientation and system UI changes.
+
 ## Reusing an empty App Store draft
 
 When Apple already has a listing draft for an earlier candidate, the owner can
