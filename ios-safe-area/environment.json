@@ -1,0 +1,17 @@
+{
+  "source": "ff092cfebec87154e2d677dfc51f44a8eda1fadc",
+  "base": "6e83e9f4dec9ac13ac309d2a9bbf9302bdabc0e3",
+  "system": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "xcode": "Xcode 27.2\nBuild version 27B52",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)\nTarget: arm64-apple-darwin27.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "ios_full_build": "Stopped by repository requirement Xcode 27.0; available Xcode is 27.2. Toolchain lock unchanged.",
+  "native_full_build": "Broad test-binary build interrupted; focused unmodified MobileInputHarness compiled and run separately.",
+  "runtime_limits": "No packaged app, iPhone/iPad runtime, orientation or visual verification. No Android/browser execution. Guards on other platforms unchanged. No simulation/save/replay/network changes.",
+  "results": {
+    "ios_compilation": "10/10 translation units compiled with exit 0 for arm64 iOS simulator/device targets",
+    "native_bridge_symbols": "6/6 expected references present in fixed objects; baseline simulator object omits all 3",
+    "mobile_input": "4 test cases / 404 assertions passed; exit 0",
+    "independent_review": "No actionable findings; runtime iPhone qualification recommended"
+  },
+  "integration_base": "6e83e9f4dec9ac13ac309d2a9bbf9302bdabc0e3"
+}

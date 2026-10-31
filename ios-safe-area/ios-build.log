@@ -1,0 +1,11 @@
+scons: Reading SConscript files ...
+ValueError: Expected Xcode 27.0, got Xcode 27.2
+Build version 27B52. Select it with developer_dir=PATH; do not change the system selection.:
+  File "/Users/bradley/.codex/worktrees/0672/glob2/SConstruct", line 658:
+    main()
+  File "/Users/bradley/.codex/worktrees/0672/glob2/SConstruct", line 327:
+    build_mobile(bdir, identity, ARGUMENTS)
+  File "/Users/bradley/.codex/worktrees/0672/glob2/scons/mobile_build.py", line 26:
+    toolchain = discover(dependency_identity, arguments)
+  File "/Users/bradley/.codex/worktrees/0672/glob2/scons/mobile_toolchain.py", line 78:
+    raise ValueError(f'Expected Xcode {lock["ios"]["xcode"]}, got {version}. Select it with developer_dir=PATH; do not change the system selection.')
