@@ -1,0 +1,14 @@
+2026-10-31T23:02:40.1389347Z Downloading single artifact
+2026-10-31T23:02:40.1531262Z (node:2092) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-31T23:02:40.1531891Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-31T23:02:40.2982805Z ##[error]Unable to download artifact(s): Artifact not found for name: web-client
+        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.
+        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md
+2026-10-31T23:02:40.3087257Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-31T23:02:40.3314441Z 
+2026-10-31T23:02:40.3314719Z - Failed: `download_web_client`
+2026-10-31T23:02:40.3314920Z 
+2026-10-31T23:02:40.3348256Z ##[error]Process completed with exit code 1.
+2026-10-31T23:02:40.3412390Z ##[group]Run actions/upload-artifact@v4
+2026-10-31T23:02:40.3412608Z with:
+2026-10-31T23:02:40.3412779Z   name: ci-observation-web-deploy-0
