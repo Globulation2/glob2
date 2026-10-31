@@ -32,7 +32,7 @@
 #include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
 #include "mobile/ios/SafeArea.h"
 #endif
 using namespace GAGCore;
