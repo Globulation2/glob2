@@ -75,6 +75,11 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
 	{
 		CHECK(code("hi", "IN") == "hi");
+		CHECK(code("mr", "IN") == "mr");
+		CHECK(code("mr-Deva-IN") == "mr");
+		CHECK(code("mr-Latn").empty());
+		CHECK(code("mr-u-nu-latn") == "mr");
+		CHECK(code("mr-x-arab") == "mr");
 		CHECK(code("tl", "PH") == "fil");
 		CHECK(code("jw") == "jv");
 		CHECK(code("yo", "NG") == "yo");
@@ -115,9 +120,9 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
-		CHECK(startupLanguage("") == "br");
-		CHECK(startupLanguage("no-such-language") == "br");
+		PreferredLocales locales("mr_IN,hi_IN,pt_BR,en_US");
+		CHECK(startupLanguage("") == "mr");
+		CHECK(startupLanguage("no-such-language") == "mr");
 		CHECK(startupLanguage("fr") == "fr");
 	}
 }

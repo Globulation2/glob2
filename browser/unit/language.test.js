@@ -29,6 +29,17 @@ test('a saved game language takes priority and receives no online override', () 
   assert.equal(context.interfaceLanguage(), 'de');
   assert.equal(context.cjkInterface(), false);
 });
+test('Marathi starts from the online choice while saved game preferences remain authoritative', () => {
+  const first = profile(null, 'mr');
+  first.applyOnlineLanguage();
+  assert.equal(first.ENV.SDL_PREFERRED_LOCALES, 'mr');
+  assert.equal(first.interfaceLanguage(), 'mr');
+  assert.equal(first.cjkInterface(), false);
+  const saved = profile('hi', 'mr');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'hi');
+});
 test('both Chinese scripts and Japanese/Korean require the full startup font', () => {
   for (const language of ['zh-Hans','zh-Hant','ja','ko']) {
     const context = profile(null, language);

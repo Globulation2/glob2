@@ -166,6 +166,36 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For a Google Cloud comparison draft, use the development-only helper after
+preparing the kit and blank draft:
+
+```sh
+python3 tools/localization/google_draft.py --output artifacts/translation-program --locale mr --project PROJECT_ID --pilot
+```
+
+The default is a dry-run estimate. Add `--run` to translate the representative
+100-message pilot; omit `--pilot` for the remaining blank entries after reviewing
+the pilot. Authentication uses `gcloud auth print-access-token`; credentials are
+never saved in the kit. The helper uses explicit English-to-target NMT requests,
+protects format tokens and literal invariants, and rejects damaged responses.
+It retains raw responses, request provenance and a resumable response cache.
+It fills only blank entries and supplies no linguistic sign-offs. Keep the helper
+as the exclusive catalog writer while it runs. It captures catalog hashes before
+reading entries and checks them before each write; detected external edits abort
+the run while preserving disk edits and cached paid responses. These checks do
+not make independent editors participate in its lock.
+
+`--budget-usd` defaults to 9 and cannot exceed US$9. The ledger reserves each
+request before dispatch at US$20 per million submitted characters, without
+assuming free credit. Failed or uncertain attempts remain reserved; reruns can
+incur another charge if no cached response exists. On POSIX, reservation writes
+flush both the file and its directory after atomic replacement before dispatch;
+durability errors abort the request. Windows flushes file contents but has no
+portable directory-flush equivalent, so its reservation durability guarantee
+covers process failures, not OS crashes. The ceiling bounds this kit's
+requests, not unrelated project spending. Verify current provider pricing before
+use and keep one kit for the campaign so its ledger covers all attempts.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use
@@ -244,21 +274,24 @@ not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
-### Hindi, Urdu and Swahili terminology
+### Hindi, Marathi, Urdu and Swahili terminology
 
 Use these concept anchors across the game, lessons and online messages. Inflect
 words naturally in sentences rather than substituting labels mechanically.
 Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
-order, and Swahili uses standard Latin-script Kiswahili.
+order, Marathi uses contemporary standard Marathi in Devanagari, and Swahili
+uses standard Latin-script Kiswahili. Marathi instructions use respectful plural
+imperatives such as करा and निवडा; shared script does not justify copying Hindi
+grammar. Inns feed units, while Swarms are the hive buildings that create units.
 
-| Concept | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`) |
-| --- | --- | --- | --- |
-| Worker | श्रमिक | کارکن | Mfanyakazi |
-| Explorer | खोजी | کھوجی | Mgunduzi |
-| Warrior | योद्धा | جنگجو | Shujaa |
-| Inn | सराय | سرائے | Nyumba ya wageni |
-| Swarm | छत्ता | چھتہ | Kiota |
-| Market | बाज़ार | بازار | Soko |
+| Concept | Hindi (`hi`) | Marathi (`mr`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- | --- |
+| Worker | श्रमिक | कामगार | کارکن | Mfanyakazi |
+| Explorer | खोजी | शोधक | کھوجی | Mgunduzi |
+| Warrior | योद्धा | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | खानावळ | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | पोळे | چھتہ | Kiota |
+| Market | बाज़ार | बाजार | بازار | Soko |
 
 An assigned worker target requests workers; it does not count workers already
 present. Construction and operating supply use separate targets. Keep those
