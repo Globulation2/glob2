@@ -51,10 +51,10 @@ an original-glyph regression comparison.
 
 The script-specific Noto Sans fonts in `scripts/` supplement the original font
 without modifying its outlines or layout tables. The renderer loads them lazily
-for supported script runs and uses HarfBuzz on logical text. Existing Arabic,
-Persian, Latin and CJK interfaces keep their original font and bidi route; the
-prospective Urdu, Shahmukhi Punjabi, Pashto and Sindhi locales use the Arabic
-script font when registered.
+for supported script runs and uses HarfBuzz on logical text. Telugu uses the
+bundled Noto Sans Telugu font. Existing Arabic, Persian, Latin and CJK interfaces
+keep their original font and bidi route; Urdu uses the Arabic script font, as do
+the prospective Shahmukhi Punjabi, Pashto and Sindhi locales when registered.
 Each newly supported complex-script locale also selects appropriate default
 line metrics, including for empty strings used to size UI rows. Language changes
 invalidate those metrics and cached text.

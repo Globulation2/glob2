@@ -166,6 +166,35 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For Telugu Google NMT comparison drafts, use the development-only adapter after
+preparing a Telugu kit and its blank draft:
+`python3 tools/localization/google_draft.py --output artifacts/localization-telugu --project PROJECT_ID --pilot`.
+This is a dry run; add `--run` to send requests using the current `gcloud auth`
+identity. Supply the explicit project ID whose display name is `Bradley personal`
+(or pass its exact display name with `--expected-project-name`). The adapter never
+changes the active gcloud project, enables services or configures billing. The
+Cloud Translation API and billing must already be enabled on that project.
+Review the representative pilot before running again without `--pilot` to fill
+the remaining blank entries. Existing nonempty draft entries are retained.
+
+The adapter uses v3 English-to-Telugu `general/nmt`, initializes blank target
+language metadata, and protects placeholders, product/AI names, URLs, unambiguous
+paths, escaped paragraph breaks and online literal invariants with HTML
+notranslate spans. It validates their exact restoration before writing catalogs.
+Malformed responses remain evidence and
+block the run. Raw requests/responses live under the kit's `google/responses/`;
+successful cached inputs, including pilot inputs, are reused without more calls.
+An exclusive process lock serializes adapter runs. The durable `google/ledger.json`
+reserves each network attempt before sending, including attempts whose outcome
+is unknown; failures never refund reservations. The gross ceiling is $9 at
+$20 per million Unicode characters, conservatively counting all submitted HTML
+and ignoring free credits. Confirm
+[current provider prices](https://cloud.google.com/products/translate/pricing)
+before using this rate-based guard. The ledger covers only this adapter's calls, not unrelated
+project spending. Retain the ledger and response directory together; deleting
+them defeats resumability and the campaign spending guard. The adapter is a
+Linux contributor tool and requires Python's `fcntl` locking support.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use
@@ -265,6 +294,35 @@ present. Construction and operating supply use separate targets. Keep those
 meanings distinct in instructions. Reviewed product names, technical terms and
 loanwords belong in the existing shared-value exception contracts; an exception
 for one key does not justify leaving unrelated prose in English.
+
+### Telugu terminology
+
+Telugu (`te`) uses modern standard Telugu in its own script, with concise,
+respectful wording accessible across Andhra Pradesh and Telangana. Keep the
+following role and building names consistent in menus, tutorials and online
+messages; inflect them naturally in sentences.
+
+| Concept | Telugu |
+| --- | --- |
+| Worker | కార్మికుడు / కార్మికులు |
+| Explorer | అన్వేషకుడు / అన్వేషకులు |
+| Warrior | యోధుడు / యోధులు |
+| Inn | సత్రం / సత్రాలు |
+| Swarm | గూడు |
+| Market | మార్కెట్ |
+| Flag | జెండా |
+| Map | మ్యాప్ |
+| Unit | యూనిట్ |
+| Settings | సెట్టింగ్‌లు |
+| Building upgrade | మెరుగుదల |
+
+Reachability messages describe physically reaching a building, flag or resource,
+not software access. Conversion means a unit joining another team; explain that
+action instead of using an ambiguous exchange term. Flags assign work or
+attention, and the Swarm is the colony's unit-producing nest. Retain product and
+AI names consistently. Familiar software loanwords are acceptable when they make
+the interface easier to understand; avoid mechanically transliterating role
+names that already have clear Telugu terms.
 
 ## Anatomy of a screen
 

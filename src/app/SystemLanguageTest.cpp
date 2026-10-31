@@ -75,6 +75,10 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
 	{
 		CHECK(code("hi", "IN") == "hi");
+		CHECK(code("te", "IN") == "te");
+		CHECK(code("te-Telu-IN") == "te");
+		CHECK(code("te-Latn").empty());
+		CHECK(code("te-u-nu-latn") == "te");
 		CHECK(code("tl", "PH") == "fil");
 		CHECK(code("jw") == "jv");
 		CHECK(code("yo", "NG") == "yo");
@@ -115,9 +119,17 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
+		PreferredLocales locales("te-Latn-IN,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
+	}
+
+	TEST_CASE("startup selects installed Telugu and preserves a saved language")
+	{
+		PreferredLocales locales("te_IN,en_US");
+		CHECK(startupLanguage("") == "te");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("te") == "te");
 	}
 }

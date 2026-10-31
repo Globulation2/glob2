@@ -162,6 +162,10 @@
 .upload-form {
   max-width: 640px;
 }
+.upload-form input[type='file'] {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
 
 /* ------------------------------------------------------------- moderation */
 

@@ -39,16 +39,23 @@ describe('online locale resolution', () => {
   });
   it('accepts only supported cookie values', () => {
     expect(localeFromCookie('other=1; glob2_locale=pt-BR; theme=dark')).toBe('pt-BR');
+    expect(localeFromCookie('glob2_locale=te')).toBe('te');
     expect(localeFromCookie('glob2_locale=%')).toBeUndefined();
     expect(localeFromCookie('glob2_locale=<script>')).toBeUndefined();
   });
-  it('respects written scripts for installed Hindi, Urdu and Swahili catalogs', () => {
+  it('respects written scripts for installed script-specific catalogs', () => {
     expect(resolveLocale('hi-Deva-IN')).toBe('hi');
     expect(resolveLocale(['hi-Latn', 'fr'])).toBe('fr');
     expect(resolveLocale('hi-u-nu-latn')).toBe('hi');
     expect(resolveLocale('hi-x-arab')).toBe('hi');
     expect(resolveLocale('ur-Arab-PK')).toBe('ur');
     expect(resolveLocale(['ur-Latn', 'hi-IN'])).toBe('hi');
+    expect(resolveLocale('te')).toBe('te');
+    expect(resolveLocale('te-IN')).toBe('te');
+    expect(resolveLocale('te-Telu-IN')).toBe('te');
+    expect(resolveLocale(['te-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('te-u-nu-latn')).toBe('te');
+    expect(resolveLocale('te-x-latn')).toBe('te');
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
@@ -122,10 +129,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 36 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(36);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(36);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(36);
+  it('contains 37 unique game catalog mappings', () => {
+    expect(locales).toHaveLength(37);
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(37);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(37);
   });
 });
 
@@ -162,6 +169,18 @@ describe('startup loading and presentation', () => {
     expect(browserScope.document.cookie).toBe('other_cookie=1');
     await runtime.setLocale('fr');
     expect(browserScope.document.cookie).toContain('glob2_locale=fr');
+  });
+  it('restores Telugu and persists an explicit selection', async () => {
+    const runtime = await fresh('glob2_locale=te');
+    runtime.configureCatalogLoader(async () => ({ Language: 'భాష' }));
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('te');
+    expect(runtime.t('Language')).toBe('భాష');
+    expect(browserScope.document.documentElement.lang).toBe('te');
+    expect(browserScope.document.documentElement.dir).toBe('ltr');
+    await runtime.setLocale('en');
+    await runtime.setLocale('te');
+    expect(browserScope.document.cookie).toContain('glob2_locale=te');
   });
   it('a failed initial download cannot override a newer successful switch', async () => {
     const runtime = await fresh();
