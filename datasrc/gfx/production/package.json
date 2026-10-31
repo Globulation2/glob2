@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "8ff752679adf9ca96f325d3252b3ad035bc23182d103b6ffd78841cfa4689148"
+      "sha256": "54dea641d48298116bbccd8b8dfa8b3a4b24daa3c6f821d04948e88907854e29"
     },
     {
       "runtime": "frames.txt",
@@ -19859,302 +19859,302 @@
     {
       "runtime": "terrain-decor0.png",
       "source": "procedural-materials/terrain-decor0.png",
-      "sha256": "86883c4b29c3809cba67294ca699af8d8a0a1ddfd1029e125bfbfbdd644f3e8b"
+      "sha256": "ca580b62f6701e9d9a352565d779a8954b329b5d3ef326f2b19155b476bec6db"
     },
     {
       "runtime": "terrain-decor1.png",
       "source": "procedural-materials/terrain-decor1.png",
-      "sha256": "76102376bfc1ce57ed7d155f22221b02686b3ff9340616c513bfb6e1d62a6ef8"
+      "sha256": "7e8b9dade191e81d2953276c95196b65ff29544fa8dc8cdc01eab6e9356d0be4"
     },
     {
       "runtime": "terrain-decor2.png",
       "source": "procedural-materials/terrain-decor2.png",
-      "sha256": "4e1a84642c463723369bb967df779181e690746fd08669d4045662ee770502a6"
+      "sha256": "b7aa073e329799045d12e5264cbfe2d7fd926d05dc291755cbb368c073ee5249"
     },
     {
       "runtime": "terrain-decor3.png",
       "source": "procedural-materials/terrain-decor3.png",
-      "sha256": "4b62b4bf31e4827305dee34d2516ee8b88e10c3ecebf340d8de43a0ea549fc04"
+      "sha256": "1ae840ea8a5f3fea576e2d41c64f9d27358d5eca1231555c835d465ade659930"
     },
     {
       "runtime": "terrain-decor4.png",
       "source": "procedural-materials/terrain-decor4.png",
-      "sha256": "91bdee231eb3c8ff03481becb45a3e21035a6fd462841230b0a7f48efe38e129"
+      "sha256": "9fa48555ebf0eccf12b9a43855140be2cccbdf7745f5cf5291d460fdf7dba4d0"
     },
     {
       "runtime": "terrain-decor5.png",
       "source": "procedural-materials/terrain-decor5.png",
-      "sha256": "6ff6958cea0668bf920c5b3ffbe813d3ea15fbcb7df70d02a4986c2573f30faa"
+      "sha256": "308ea6239fd3ac7104ba4f84642c7236ab9c4e1b05336b3f115475ed93da7178"
     },
     {
       "runtime": "terrain-decor6.png",
       "source": "procedural-materials/terrain-decor6.png",
-      "sha256": "bb4a229461a46bcbe7ee931f7851d83b702c90fef85fcc99b2602cfe619517b8"
+      "sha256": "02d5a06928a2f00a4aa79061c5d5e2daeaaa168a14c3df271e0099e04d1ba2c7"
     },
     {
       "runtime": "terrain-decor7.png",
       "source": "procedural-materials/terrain-decor7.png",
-      "sha256": "221a6a678160c00f6f11c483b6230d099994537b7c9e2aafb9325e070594ba99"
+      "sha256": "d282b100ac36a4a5ae25e3369574c2ed782e914085c9636500a93fd77e5ceb20"
     },
     {
       "runtime": "terrain-decor8.png",
       "source": "procedural-materials/terrain-decor8.png",
-      "sha256": "fc59490d2385f340ee1b4f5912aeb4f71e563298360358334d39c7b19a91681d"
+      "sha256": "001a10d52a5760885c5e00d17d5fefdc42e5606bca5936a214654d9b5d84b1bc"
     },
     {
       "runtime": "terrain-decor9.png",
       "source": "procedural-materials/terrain-decor9.png",
-      "sha256": "50be050b65866a688c46715507f3554474f67fe43954e8769f42a0b0660141a3"
+      "sha256": "4ead1ad6c44f574aa29ee053a7c901bb7f5cdaad7e9f6b2f603c067ca982dfad"
     },
     {
       "runtime": "terrain-decor10.png",
       "source": "procedural-materials/terrain-decor10.png",
-      "sha256": "80d5045b003d930fac754ee50e58165e084f495576293cf6935e1771188a481a"
+      "sha256": "9d6a09066c08b097edffcdbe233f8404f1469ffde7e42bc90b61ee9f9b72bec0"
     },
     {
       "runtime": "terrain-decor11.png",
       "source": "procedural-materials/terrain-decor11.png",
-      "sha256": "6f15a15bdb4cfc4b10aa48d4aded928dc351895239f268c9b7e6de176cbe3e3b"
+      "sha256": "9a2529c909b91e5032c0c47f2849caf50cfd2141a0ac48036bc0a7062dd552e2"
     },
     {
       "runtime": "terrain-decor12.png",
       "source": "procedural-materials/terrain-decor12.png",
-      "sha256": "f2fbf11d3291edf02e617cb19f11ea4bd3a9d9821f68ac613fe5fd6d2dbf088f"
+      "sha256": "d86a11a9cd2bbb32ffee33113bab430d7915a48fab8619e0b8940be9184df7d4"
     },
     {
       "runtime": "terrain-decor13.png",
       "source": "procedural-materials/terrain-decor13.png",
-      "sha256": "7e59d514e4bb94e96b970c3e2a0e3679dd7dce71c29a2cd7f9edda1c56b39cee"
+      "sha256": "a1edf40ee18a2b1b023d7218a0b23eff0b57adf4e49f9a87cb2b787f5f63d820"
     },
     {
       "runtime": "terrain-decor14.png",
       "source": "procedural-materials/terrain-decor14.png",
-      "sha256": "1e74507f9e9819ff1427a06d05699b68737b828a7a7a3311dd1de8229db30b89"
+      "sha256": "8a011a2767983bb07d6c2dcdbcebf00c8338141e01fed2e1942422c9be6ebd07"
     },
     {
       "runtime": "terrain-decor15.png",
       "source": "procedural-materials/terrain-decor15.png",
-      "sha256": "ae7cfb620801ff46ee97a385be5d98cc09fa5dbbd388987c5318a5dff98f5238"
+      "sha256": "3d6b46fbdac12eb73238b5e3a6461cfd8acf0519c1a8297813f743fa22b6be02"
     },
     {
       "runtime": "terrain-decor16.png",
       "source": "procedural-materials/terrain-decor16.png",
-      "sha256": "690a713cd1c057bae0da0bb2316e7d39c1855c96728979db7971132007b9d068"
+      "sha256": "6ecc0046ae5d4772d46f6951b095317787ac7586263e530044ab50b1b4e04d82"
     },
     {
       "runtime": "terrain-decor17.png",
       "source": "procedural-materials/terrain-decor17.png",
-      "sha256": "9095b0866333f4dd8a063f258216c9cf8441245f56465d2fb0754f15cafce6d4"
+      "sha256": "e0dce1fba576239ba740f5fab2d2e0943003b94685d258a51f2218ee573ddffa"
     },
     {
       "runtime": "terrain-decor18.png",
       "source": "procedural-materials/terrain-decor18.png",
-      "sha256": "d13dac1f409092ea815c6a13d4848431d217a7f6311da4b2a75266e0a786eceb"
+      "sha256": "2661f911cc20d46d25d2ae7bbb4fee65b2c52b74d5ef9903f4cbb84498f45fe9"
     },
     {
       "runtime": "terrain-decor19.png",
       "source": "procedural-materials/terrain-decor19.png",
-      "sha256": "187138a88bc594ecc132559f288ccd2cbf7c49f6336bfee49fc51cd57d01527c"
+      "sha256": "06aaeb28eabf9d18eb1df6645372b3005f46b86313942201db061bf69dfcac79"
     },
     {
       "runtime": "terrain-decor20.png",
       "source": "procedural-materials/terrain-decor20.png",
-      "sha256": "6972f3a91608968e64c33b88728c27f1fe5c71dace59cb4d1cd3fce3cd23ea9f"
+      "sha256": "a82a89f6f16d71b1b911ae07aaad9f299f1c9a866d46100e97fb9f894aebe84c"
     },
     {
       "runtime": "terrain-decor21.png",
       "source": "procedural-materials/terrain-decor21.png",
-      "sha256": "083f7cbe27cb4e767bf3ea368356743728417884ae4e0a01d64baadc1e0cdc80"
+      "sha256": "0281a31425fd1557f57cd1386f278523a3a8a40dc17a5fa09203ab5f98baa651"
     },
     {
       "runtime": "terrain-decor22.png",
       "source": "procedural-materials/terrain-decor22.png",
-      "sha256": "d72a672dc4f126bce0250163c9aa93f277f507ee246b42e5e768d1c79f18c671"
+      "sha256": "4e2146c7b4606a17823ef39ded5eab5cc0bc3e866479bba88620e449fdbc9b6f"
     },
     {
       "runtime": "terrain-decor23.png",
       "source": "procedural-materials/terrain-decor23.png",
-      "sha256": "f2c0cd98a0d02874f5b3a340bb92803f07b29aba4f6648468800cf8fa89bf1c0"
+      "sha256": "b61671825bba11f0a8bc3f03c369219c6cef8b9edf9a4b1c2d895acc66e07349"
     },
     {
       "runtime": "terrain-decor24.png",
       "source": "procedural-materials/terrain-decor24.png",
-      "sha256": "22c87b69f7f74c06f1b15bc619cb8eb497a2a0809cb8c86e9cac4db0774d266f"
+      "sha256": "e56cf305256563e9da6c3509c4d734130a87bbec94c623be243bcf3f970eb701"
     },
     {
       "runtime": "terrain-decor25.png",
       "source": "procedural-materials/terrain-decor25.png",
-      "sha256": "0a1aeb687ac034e8d5f629e6d1ad5df94905d8a288052641714cf85bcb4d570f"
+      "sha256": "af0f12dba37e1915c7bbf996cfa02d9d977d0f174fc7266ca5724830b75e8582"
     },
     {
       "runtime": "terrain-decor26.png",
       "source": "procedural-materials/terrain-decor26.png",
-      "sha256": "5909359811e5c33ac4af832c6ec833b04075090fbcf43588422543faa0b0fe14"
+      "sha256": "8286da2fb20751110fa447566257f8c9e8e865d860c2536710a62cd2b5c4d63e"
     },
     {
       "runtime": "terrain-decor27.png",
       "source": "procedural-materials/terrain-decor27.png",
-      "sha256": "c58786b988a8888007f7ba3a706fd00f8102da44ed1f516d1279cfbb40b15d08"
+      "sha256": "eb424c4ee037d4d82d4c9f85c14c1b047e61801cbad57087f8027bf71e673b0e"
     },
     {
       "runtime": "terrain-decor28.png",
       "source": "procedural-materials/terrain-decor28.png",
-      "sha256": "af23c52a920efdfd28bb4e683602bba986d75503cd2acf38feae2a55c618df8a"
+      "sha256": "c7668fe1486af77b938808fc74c189555428c0400fc060f44675357e9f214c0c"
     },
     {
       "runtime": "terrain-decor29.png",
       "source": "procedural-materials/terrain-decor29.png",
-      "sha256": "b96e81deb73997895522974932c16890ee5a2a53f681381ed9ff5d66fcdd686b"
+      "sha256": "a736dbc27d3743d082ec1469e9acfbf1d297cfeac64c7298740ddf5a5acf941d"
     },
     {
       "runtime": "terrain-decor30.png",
       "source": "procedural-materials/terrain-decor30.png",
-      "sha256": "7647272317e142f691823c1a75fbb30c87dba3d8a3f50a24d6c4dcf7bff93918"
+      "sha256": "6634050a0bf63ede5f8fac687d4599159f7c682db825dfb0a1a5993b687b369d"
     },
     {
       "runtime": "terrain-decor31.png",
       "source": "procedural-materials/terrain-decor31.png",
-      "sha256": "5f0c462cd530b59be4a83b8e67e7857a86a089b0c5f94d5fc4a6319b63a6fabf"
+      "sha256": "4ed25041b7dd6ee4a3815ee3d65fc84d2c2618f5d10854b857e3b004302c2ec8"
     },
     {
       "runtime": "terrain-decor32.png",
       "source": "procedural-materials/terrain-decor32.png",
-      "sha256": "d99e73f3c76cdf8574fba9ee6b469af910ac3c185a36608a290457b0bc376787"
+      "sha256": "36c77bb317f77365bf8622f6ae06b56d76d1fb0c8ce8bae05367f03d113d3b01"
     },
     {
       "runtime": "terrain-decor33.png",
       "source": "procedural-materials/terrain-decor33.png",
-      "sha256": "cc6ea2e73e1eedef9386b70fefba758e393b047b2737776a6b23cd0638bd2d58"
+      "sha256": "65a485944845ae8cf01b7e2eb63c0426cee8e88edcb8a9bfdcb4564eee9c03fd"
     },
     {
       "runtime": "terrain-decor34.png",
       "source": "procedural-materials/terrain-decor34.png",
-      "sha256": "3186079d68d0e100b92a2d2abc4f632dbe0bc348ea4468c7e73175da05ca8d78"
+      "sha256": "c601fe29f566752e7b13b9975a2098e72aab2816aca71f9d815b8c22745ea6e8"
     },
     {
       "runtime": "terrain-decor35.png",
       "source": "procedural-materials/terrain-decor35.png",
-      "sha256": "3f0334d2f4b926112e37162b858948025c8e639a2dae99d0e42543c9903eb8ac"
+      "sha256": "214411c86b0151169887949aade80764519ef3a8ef448c0a3fde2ebeeb42ff2d"
     },
     {
       "runtime": "terrain-decor36.png",
       "source": "procedural-materials/terrain-decor36.png",
-      "sha256": "5da2ef9d137ac089c172fd51d0ce5808dcedc62495354c4805ed08dcb3b7dbbe"
+      "sha256": "9aff92e7f9dd61b7c9c46f7d1b42aea71b1c1b4db3c460352ead5304a396a4c5"
     },
     {
       "runtime": "terrain-decor37.png",
       "source": "procedural-materials/terrain-decor37.png",
-      "sha256": "4fdc36622dbb597460e139f86f8b6fdeafc8acc61e19ac0949ea4e4a0858d29e"
+      "sha256": "974f735ad3b4fcbca782b289688ca555d2292fee5f2951f4d9291ff98a184f54"
     },
     {
       "runtime": "terrain-decor38.png",
       "source": "procedural-materials/terrain-decor38.png",
-      "sha256": "e0c7deb77ec18f964eda4f2a82f788af6c899a7c86bc6afb546215993d166ebc"
+      "sha256": "db049118499e8e45e2bfee3c47efc33303e8e4f0c24db5c2c7b282027b1202f5"
     },
     {
       "runtime": "terrain-decor39.png",
       "source": "procedural-materials/terrain-decor39.png",
-      "sha256": "53e26763836c9429c40da06dddc5bddf060dc94ada3dd016a436c2b283551e07"
+      "sha256": "d09e0bc0d2fc908928d29a023dd075583490883ad54e916f2aea795b8ce8df23"
     },
     {
       "runtime": "terrain-decor40.png",
       "source": "procedural-materials/terrain-decor40.png",
-      "sha256": "304f619b50964d4884f83fac19641397cfc7aa7caea144113005467dc709b843"
+      "sha256": "55fe08aa0f2372f6fb22a7e96db8ccb59d075807da8bee64926b566544b318a1"
     },
     {
       "runtime": "terrain-decor41.png",
       "source": "procedural-materials/terrain-decor41.png",
-      "sha256": "5632b3ef26a5503f690c969cd4c721b94b22775c8928d20c90911d29c2eea736"
+      "sha256": "67e26ff5f5e674bbd6b41794b2de7ac630ced750a993b66b9158d33193e5bddf"
     },
     {
       "runtime": "terrain-decor42.png",
       "source": "procedural-materials/terrain-decor42.png",
-      "sha256": "e477284e6dde8e3aaad31f95dc1161bc548189a87c432827fc8825b733a4e930"
+      "sha256": "bd31c1fa40993aaa61ca501f0ed498f3567282470e14742b1254189214529ff7"
     },
     {
       "runtime": "terrain-decor43.png",
       "source": "procedural-materials/terrain-decor43.png",
-      "sha256": "71709b5eb14a114a54251b4d0f039350631b69d81b6de7e5477e21d4d6d7c33a"
+      "sha256": "3c6b13896baab5f3c683355b901822f92bec80b05939167bd7407e727c65e377"
     },
     {
       "runtime": "terrain-decor44.png",
       "source": "procedural-materials/terrain-decor44.png",
-      "sha256": "8ed553555434d7066f89e95fc3df76151d50554b2a8adec3251394f23cbddc17"
+      "sha256": "a2a923427f3325f7cc03ff0a3a8cbb1c389501cbb4642e970cf061a24468ab8b"
     },
     {
       "runtime": "terrain-decor45.png",
       "source": "procedural-materials/terrain-decor45.png",
-      "sha256": "0e412e4b946522eaae82add64cf2a1dfd46d8d077990b06bc051520e11705850"
+      "sha256": "fdfc675a4115bb7b1ac8b689864fc567f543b7e45036620cfd147414d1f485e5"
     },
     {
       "runtime": "terrain-decor46.png",
       "source": "procedural-materials/terrain-decor46.png",
-      "sha256": "0aa882e805238f0da9b7d16920bf90f923f25c9be9e643f097b4fa823d151b59"
+      "sha256": "530b465d41e19a3439900af3216b566a1030e4f687fb370ccd1ac35c90e19802"
     },
     {
       "runtime": "terrain-decor47.png",
       "source": "procedural-materials/terrain-decor47.png",
-      "sha256": "8b9e9e5562ee8757537497e777a684f8bedc3e9b37b7fc5bc5fd42b7245d99e2"
+      "sha256": "17c98c9fc0398133a27b0d8a122d32f745745a1292063a6c19111500630a50fb"
     },
     {
       "runtime": "terrain-decor48.png",
       "source": "procedural-materials/terrain-decor48.png",
-      "sha256": "fc7096076c0934487415812b98b969f9058e1c87a24e8b2104d1e7dcf5ce5c35"
+      "sha256": "066b6b1b0da0c6ca93d1fecac7365ecab85badc2ca7fd1b735376b12f45baf86"
     },
     {
       "runtime": "terrain-decor49.png",
       "source": "procedural-materials/terrain-decor49.png",
-      "sha256": "bd55850647d5d9d6c51448db0d40d0d9279a3fc1a357a826e3b12400a2480ccf"
+      "sha256": "f44f71c721a0b101b45fbb49e98542204e250878b7a5d00f3e736ad25d995dfd"
     },
     {
       "runtime": "terrain-decor50.png",
       "source": "procedural-materials/terrain-decor50.png",
-      "sha256": "42c952a6bbb00a2a6308737b0978a5dcb3731c4eea6b709195e20b772acd400e"
+      "sha256": "3268842dc40e5bae17e937c895a177be751b42158331c99e04718a24373aa3e7"
     },
     {
       "runtime": "terrain-decor51.png",
       "source": "procedural-materials/terrain-decor51.png",
-      "sha256": "862ff20114b96422fa19ab6eb011f406b0546b462899eeccfc7bbde8abfe9cca"
+      "sha256": "a42d1023e8f84ba725ec0de47f4fcffa7b3e3494f433532aaa0be7a4e9f77260"
     },
     {
       "runtime": "terrain-decor52.png",
       "source": "procedural-materials/terrain-decor52.png",
-      "sha256": "8c04714b97c9c7c36cc235f439720b882bd1e8b1df425174c0e8bb67d9c34811"
+      "sha256": "cca23f3c2f4fcb42dd7ee6e52fe71a7417d48ba02d0d52f4ca4223970777c138"
     },
     {
       "runtime": "terrain-decor53.png",
       "source": "procedural-materials/terrain-decor53.png",
-      "sha256": "0763d801ddc7bb2faa487b640c77f1354eefa5eb089a052a1bf8dd4444b8f7eb"
+      "sha256": "a081b19c30395fe60df3fca9822bfdc40fab635ca1b21c56a1a9c0328a5db4b9"
     },
     {
       "runtime": "terrain-decor54.png",
       "source": "procedural-materials/terrain-decor54.png",
-      "sha256": "d67bd71adaf86f9e1fbe3ba2b548d98dd9799a97a6ceeabea9e5c9f1edb9a0ab"
+      "sha256": "62112eebfa3135085e780c09488181a8f952a1cfbe6f46b9ec2148c62348ed91"
     },
     {
       "runtime": "terrain-decor55.png",
       "source": "procedural-materials/terrain-decor55.png",
-      "sha256": "96715931cfb5ef0f721cbc5f027fea010084c1dcaded162e04265ef655e5c068"
+      "sha256": "ca749efbefc4444f83d35682499902aaa4b602e7b955fa33a6ce0d70d2de02d2"
     },
     {
       "runtime": "terrain-decor56.png",
       "source": "procedural-materials/terrain-decor56.png",
-      "sha256": "7d28458c7cbd37a7dc730ef89eb34e57f510f87726d97f6aba0d54f82402fc6f"
+      "sha256": "976b279cc0eb5e27457c3f9f974b0ec9e42c5937364b9553cae465a4a796c128"
     },
     {
       "runtime": "terrain-decor57.png",
       "source": "procedural-materials/terrain-decor57.png",
-      "sha256": "4c32555b97ad5c0d7b884304ed2b7414cb8c32fefb123047bf4e323a89e5a5e8"
+      "sha256": "c7ef60ed086ae4075260b8735eb64f0a5f5a85847b823cb59eda48b8213b575d"
     },
     {
       "runtime": "terrain-decor58.png",
       "source": "procedural-materials/terrain-decor58.png",
-      "sha256": "c63006524ca2ae91d85efc27acb6a51f3273a664cb3079ad4f16d549353c0933"
+      "sha256": "143831d5c15a861e6b5a7e5cb01f88e50684d017accf98f06ebbda3d10708d14"
     },
     {
       "runtime": "terrain-decor59.png",
       "source": "procedural-materials/terrain-decor59.png",
-      "sha256": "f021cc1d574f733743662579ff3a9ad3a34e7e3c21ed584bbcbd05bf44e7af7a"
+      "sha256": "3afd183e754939a9a49a5f667d4260c05265f013a4fa825ab5e724e358af8ddb"
     },
     {
       "runtime": "resource-gold-ore0.png",
