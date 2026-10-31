@@ -52,7 +52,20 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+    // Optional navigation (for example skins) follows instance feature flags.
+    // Each translated page must retain the seeded instance's core destinations.
+    for (const href of [
+      '/',
+      '/leaderboard',
+      '/players',
+      '/matches',
+      '/maps',
+      '/sets',
+      '/ais',
+      '/buildings',
+      '/music',
+    ])
+      await expect(page.locator(`.app-sidebar .nav a[href="${href}"]`)).toHaveCount(1);
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(
@@ -77,6 +90,56 @@ for (const locale of locales) {
     await expect(page.locator('html')).toHaveAttribute('lang', locale.code);
   });
 }
+
+test('Bengali libraries, account and room invitations fit the viewport', async ({
+  page,
+  context,
+}, info) => {
+  await page.route('glob2://**', (route) => route.abort());
+  await page.route('**/api/v1/accounts/me', (route) =>
+    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+  );
+  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+  await context.addCookies([{ name: 'glob2_locale', value: 'bn', url: base }]);
+  const catalog = JSON.parse(
+    readFileSync(new URL('../../../packages/i18n/locales/bn.json', import.meta.url), 'utf8'),
+  ) as Record<string, string>;
+  for (const [path, heading, name] of [
+    ['/maps', 'Maps', 'maps'],
+    ['/ais', 'AI Library', 'ais'],
+    ['/buildings', 'Building library', 'buildings'],
+    ['/sets', 'Terrain & resource sets', 'sets'],
+    ['/account', 'Your account', 'account'],
+    ['/signin', 'Sign in', 'signin'],
+    ['/j/GLOBJOIN', 'You’re invited', 'invite'],
+  ]) {
+    await page.goto(path!);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(catalog[heading!]!);
+    const search = page.locator('main input[type="search"]').first();
+    if (await search.count()) {
+      await search.fill('নদী');
+      await expect(search).toHaveValue('নদী');
+    }
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    const directory = process.env.SCREENSHOT_DIR
+      ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
+      : undefined;
+    if (directory) mkdirSync(directory, { recursive: true });
+    await info.attach(`bn-${name}`, {
+      body: await page.screenshot({
+        fullPage: true,
+        path: directory ? resolve(directory, `bn-${name}.png`) : undefined,
+      }),
+      contentType: 'image/png',
+    });
+  }
+});
 
 for (const language of ['fr', 'bn']) {
   test(`changing to ${language} updates the page without losing input`, async ({ page }) => {
