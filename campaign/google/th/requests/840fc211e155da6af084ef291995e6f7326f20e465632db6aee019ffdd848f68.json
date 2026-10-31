@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Replaying the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> you missed. The screen updates when you&#x27;re back to the present.",
+      "about <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> s left",
+      "Connections",
+      "Connection",
+      "Delay<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> the time from your click until it happens, for everyone. It follows your own connection, not the other players&#x27;. Good under <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>, poor from <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span>.",
+      "Fair",
+      "Good",
+      "With more than four players the panel shows each player&#x27;s ping in milliseconds, or how many seconds behind they are.",
+      "jitter <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Leave match",
+      "Left",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is back.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> left the match.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> lost connection. The game continues; their colony keeps working while they reconnect (<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> left).",
+      "Ping<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> the round trip between a player and the relay. Good under <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>, poor from <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span>.",
+      "Ping",
+      "Players",
+      "Poor",
+      "Reconnecting",
+      "Relay<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Rejoining",
+      "Slow",
+      "unstable",
+      "Connecting…",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> (you)",
+      "You",
+      "Your delay <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Account",
+      "AI joins after <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "All",
+      "Change server…",
+      "Code or invite link",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · connecting…",
+      "Continue with <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Create room",
+      "Find match",
+      "Free seat",
+      "Get the update",
+      "Guest · kept on this device",
+      "That isn&#x27;t an invite code or link.",
+      "Join by code",
+      "Join code",
+      "Join",
+      "Leaderboard",
+      "Maps",
+      "This server has no quick-match queues.",
+      "No open rooms right now. Create one and share the invite.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · offline",
+      "Trying again in <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> s. Quick match and online rooms are unavailable. LAN game on the main menu doesn&#x27;t need this server.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · online",
+      "Online settings",
+      "Online",
+      "Open the page again",
+      "Open rooms",
+      "Play",
+      "Rooms",
+      "Ranks",
+      "Play with friends",
+      "Also search <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players online · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> searching this queue",
+      "Show in Open rooms",
+      "Last match",
+      "You are #<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · rating <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "You don&#x27;t have a rank here yet. Play ranked matches to place.",
+      "Quick match appears when the server answers.",
+      "Quick match isn&#x27;t available in this version yet.",
+      "Quick match",
+      "Ranked",
+      "Refresh",
+      "Retry now",
+      "Room",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>&#x27;s room",
+      "Room",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>/<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> seats",
+      "Open the sign-in page",
+      "That sign-in already belongs to another account.",
+      "Sign-in didn&#x27;t finish (<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>).",
+      "Sign in or create an account in your browser. Your guest matches come with you.",
+      "Sign in",
+      "Sign out on this device"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "กำลังเล่นซ้ำส่วนที่พลาดไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน้าจอจะอัปเดตเมื่อคุณกลับมายังปัจจุบัน"
+      },
+      {
+        "translatedText": "เหลือเวลาประมาณ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> วินาที"
+      },
+      {
+        "translatedText": "การเชื่อมต่อ"
+      },
+      {
+        "translatedText": "การเชื่อมต่อ"
+      },
+      {
+        "translatedText": "ความล่าช้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> เวลาตั้งแต่คุณคลิกจนกระทั่งเหตุการณ์เกิดขึ้น สำหรับทุกคน โดยจะขึ้นอยู่กับการเชื่อมต่อของคุณเอง ไม่ใช่ของผู้เล่นคนอื่น ดีถ้าต่ำกว่า <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> แย่ถ้ามากกว่า <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "ยุติธรรม"
+      },
+      {
+        "translatedText": "ดี"
+      },
+      {
+        "translatedText": "เมื่อมีผู้เล่นมากกว่าสี่คน หน้าจอจะแสดงค่า ping ของผู้เล่นแต่ละคนเป็นมิลลิวินาที หรือแสดงว่าพวกเขาตามหลังอยู่กี่วินาที"
+      },
+      {
+        "translatedText": "ความผันผวน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ออกจากแมตช์"
+      },
+      {
+        "translatedText": "ซ้าย"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> กลับมาแล้ว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ออกจากเกม"
+      },
+      {
+        "translatedText": "การเชื่อมต่อขาดหายไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> เกมยังคงดำเนินต่อไป อาณานิคมของพวกเขายังคงทำงานต่อไปในขณะที่พวกเขากำลังเชื่อมต่อใหม่ (เหลือ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> )"
+      },
+      {
+        "translatedText": "ปิง (Ping) <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ระยะทางไปกลับระหว่างผู้เล่นและรีเลย์ ดีเมื่อต่ำกว่า <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> แย่เมื่อสูงกว่า <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "ปิง"
+      },
+      {
+        "translatedText": "ผู้เล่น"
+      },
+      {
+        "translatedText": "ยากจน"
+      },
+      {
+        "translatedText": "การเชื่อมต่อใหม่"
+      },
+      {
+        "translatedText": "รีเลย์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "กลับเข้าร่วม"
+      },
+      {
+        "translatedText": "ช้า"
+      },
+      {
+        "translatedText": "ไม่เสถียร"
+      },
+      {
+        "translatedText": "กำลังเชื่อมต่อ…"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> (คุณ)"
+      },
+      {
+        "translatedText": "คุณ"
+      },
+      {
+        "translatedText": "ความล่าช้าของคุณ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "บัญชี"
+      },
+      {
+        "translatedText": "AI เข้าร่วมหลังจาก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ทั้งหมด"
+      },
+      {
+        "translatedText": "เปลี่ยนเซิร์ฟเวอร์…"
+      },
+      {
+        "translatedText": "รหัสหรือลิงก์เชิญ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · กำลังเชื่อมต่อ…"
+      },
+      {
+        "translatedText": "ดำเนินการต่อด้วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "สร้างห้อง"
+      },
+      {
+        "translatedText": "ค้นหาคู่ที่ตรงกัน"
+      },
+      {
+        "translatedText": "ที่นั่งว่าง"
+      },
+      {
+        "translatedText": "รับการอัปเดต"
+      },
+      {
+        "translatedText": "แขก · เก็บไว้ในอุปกรณ์นี้"
+      },
+      {
+        "translatedText": "นั่นไม่ใช่รหัสเชิญหรือลิงก์"
+      },
+      {
+        "translatedText": "เข้าร่วมโดยใช้รหัส"
+      },
+      {
+        "translatedText": "รหัสเข้าร่วม"
+      },
+      {
+        "translatedText": "เข้าร่วม"
+      },
+      {
+        "translatedText": "ตารางอันดับ"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์นี้ไม่มีระบบจับคู่ด่วน"
+      },
+      {
+        "translatedText": "ขณะนี้ยังไม่มีห้องว่าง สร้างห้องใหม่แล้วส่งคำเชิญได้เลย"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · ออฟไลน์"
+      },
+      {
+        "translatedText": "กำลังลองใหม่ใน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> วินาที ไม่สามารถใช้งานแมตช์ด่วนและห้องออนไลน์ได้ เกม LAN บนเมนูหลักไม่จำเป็นต้องใช้เซิร์ฟเวอร์นี้"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · ออนไลน์"
+      },
+      {
+        "translatedText": "การตั้งค่าออนไลน์"
+      },
+      {
+        "translatedText": "ออนไลน์"
+      },
+      {
+        "translatedText": "เปิดหน้าเว็บอีกครั้ง"
+      },
+      {
+        "translatedText": "ห้องเปิดโล่ง"
+      },
+      {
+        "translatedText": "เล่น"
+      },
+      {
+        "translatedText": "ห้องพัก"
+      },
+      {
+        "translatedText": "อันดับ"
+      },
+      {
+        "translatedText": "เล่นกับเพื่อน ๆ"
+      },
+      {
+        "translatedText": "ค้นหา <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> เพิ่มเติม"
+      },
+      {
+        "translatedText": "ผู้เล่นออนไลน์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · กำลังค้นหาคิวนี้ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "จัดแสดงในห้องเปิดโล่ง"
+      },
+      {
+        "translatedText": "แมตช์สุดท้าย"
+      },
+      {
+        "translatedText": "คุณคือ # <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · คะแนน <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "คุณยังไม่มีอันดับที่นี่ เล่นแมตช์จัดอันดับเพื่อจัดอันดับตัวเอง"
+      },
+      {
+        "translatedText": "การจับคู่ด่วนจะปรากฏขึ้นเมื่อเซิร์ฟเวอร์ตอบกลับ"
+      },
+      {
+        "translatedText": "ฟีเจอร์จับคู่ด่วนยังไม่พร้อมใช้งานในเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "จับคู่ด่วน"
+      },
+      {
+        "translatedText": "จัดอันดับ"
+      },
+      {
+        "translatedText": "รีเฟรช"
+      },
+      {
+        "translatedText": "ลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ห้อง"
+      },
+      {
+        "translatedText": "ห้องของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ห้อง"
+      },
+      {
+        "translatedText": "ที่นั่ง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> / <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "เปิดหน้าเข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "บัญชีล็อกอินนั้นเป็นของบัญชีอื่นอยู่แล้ว"
+      },
+      {
+        "translatedText": "การเข้าสู่ระบบไม่สำเร็จ ( <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> )"
+      },
+      {
+        "translatedText": "ลงชื่อเข้าใช้หรือสร้างบัญชีในเบราว์เซอร์ของคุณ ข้อมูลการจับคู่ของแขกของคุณจะยังคงอยู่กับคุณ"
+      },
+      {
+        "translatedText": "เข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "ออกจากระบบบนอุปกรณ์นี้"
+      }
+    ]
+  }
+}

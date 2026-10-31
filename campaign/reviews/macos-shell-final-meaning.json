@@ -1,0 +1,23 @@
+{
+  "reviewer": "thai_brief",
+  "role": "independent final macOS shell meaning reviewer",
+  "source_file_sha256": {
+    "darwin/Info.plist": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896"
+  },
+  "source_sha256": "7f5189ea785f3ebc0b36e3083f822a66e59684fec15a769812e2572a875c34bd",
+  "target_sha256": "14882598830eb95cdd1b7a28f016f48d0c90646104364f41695e69508a27c377",
+  "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+  "target": "Globulation 2 ค้นหาและเข้าร่วมเกมแบบหลายผู้เล่นที่โฮสต์บนเครือข่ายในพื้นที่ของคุณ",
+  "reviewed_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "fresh_reviewed_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "approved_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "findings": [],
+  "reason": "Freshly compared selected actual text to macOS purpose source: both finding and joining hosted LAN multiplayer games retained, standard Thai coherent, brand intact, Apple เครือข่ายในพื้นที่ consistent with iOS permission.",
+  "certification": "Agent-reviewed; not native-human certified. Main6229/mobile2 signoffs unchanged."
+}

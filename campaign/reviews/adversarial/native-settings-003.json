@@ -1,0 +1,230 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "9bb00325be83afc1e6cb8e6888e9bb43c6c386d10f9da95a88f12e3a043929b9",
+  "adversarial_reviewed_keys": [
+    "native:[music Most liked]",
+    "native:[music Music decoding failed.]",
+    "native:[music Music download failed.]",
+    "native:[music Music installed.]",
+    "native:[music Music installed. It is now available in Audio settings.]",
+    "native:[music Music is not yet saved permanently. Retry saving before leaving.]",
+    "native:[music Music library]",
+    "native:[music Music request failed.]",
+    "native:[music Newest]",
+    "native:[music No community music installed yet. Import files or browse the online library.]",
+    "native:[music No music found.]",
+    "native:[music Not AI-generated]",
+    "native:[music Pause]",
+    "native:[music Play]",
+    "native:[music Playback position]",
+    "native:[music Preview]",
+    "native:[music Ready to import.]",
+    "native:[music Remove]",
+    "native:[music Reset to game behavior]",
+    "native:[music Retry saving]",
+    "native:[music Saved.]",
+    "native:[music Saving music…]",
+    "native:[music Search]",
+    "native:[music Search title, artist, description…]",
+    "native:[music Select for installation]",
+    "native:[music Share music on the web]",
+    "native:[music Some catalogue entries could not be read.]",
+    "native:[music Storage could not be saved. Retry or export your files before leaving.]",
+    "native:[music Tag]",
+    "native:[music Test crossfades]",
+    "native:[music Up to 2 minutes]",
+    "native:[music Use this music]",
+    "native:[music Validating music…]",
+    "native:[settings Music library · Browse, install and import]",
+    "native:[music Filters]",
+    "native:[music Leave without saving]",
+    "native:[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+    "native:[settings Target render FPS]",
+    "native:[settings Unlimited]",
+    "native:[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]",
+    "native:[settings Map generators]",
+    "native:[settings Import a generator package, then select its landscape when creating a map or game.]",
+    "native:[settings Import map generator]",
+    "native:[settings No custom map generators installed.]",
+    "native:[settings Replace package]",
+    "native:[settings Export package]",
+    "native:[settings Remove generator]",
+    "native:[settings Saving generator library…]",
+    "native:[settings Could not read generator package.]",
+    "native:[settings Generator library saved.]",
+    "native:[settings Storage could not be saved. The previous library is retained.]",
+    "native:[settings Waiting for file selection or storage…]",
+    "native:[settings File selection is unavailable.]",
+    "native:[settings Package export is unavailable.]",
+    "native:[settings CPU automatic]",
+    "native:[settings Scalar]",
+    "native:[settings Unavailable]",
+    "native:[settings Initializing]",
+    "native:[settings Gradient backend]",
+    "native:[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+    "native:[settings Gradient algorithm]",
+    "native:[settings All choices compute the same exact field.]",
+    "native:[settings Bucket propagation]",
+    "native:[settings Verify gradient results]",
+    "native:[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+    "native:[settings Gradient computation]",
+    "native:[settings CPU fallback]",
+    "native:[settings GPU fields]",
+    "native:[settings CPU fallbacks]",
+    "native:[settings MCP server]",
+    "native:[settings Enabling the MCP server permits local clients to see and operate the game.]",
+    "native:[settings Enable MCP server]",
+    "native:[settings Port]",
+    "native:[settings Current controller: %0]",
+    "native:[settings Copy endpoint]",
+    "native:[settings Retry listener]",
+    "native:[settings Revoke control]",
+    "native:[settings MCP server unavailable in this application]",
+    "native:[settings Disabled]",
+    "native:[settings Running]",
+    "native:[settings Error: %0]",
+    "native:[settings None]",
+    "native:[settings Starting]",
+    "native:[settings Browse shared generators]",
+    "native:[settings Apply artwork on the next game or editor load.]",
+    "native:[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+    "native:[settings Automatically show the torus overview while moving around the map.]",
+    "native:[settings Requires a renderer with torus support. Your saved choice is retained.]",
+    "native:[settings Move and animate units between game ticks.]",
+    "native:[settings Renderer unavailable]",
+    "native:[settings Apply at the next completed frame. Your game stays running.]",
+    "native:[settings Active renderer: %0]",
+    "native:[settings Changing renderer…]",
+    "native:[settings Menu scroll wheel enabled]",
+    "native:[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+    "native:[settings Gesture scrolling]",
+    "native:[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+    "native:[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+    "native:[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]"
+  ],
+  "findings": [
+    {
+      "id": "native:[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "severity": "major",
+      "proposed": "ยัง​ไม่​ได้​บันทึก​เพลง​อย่าง​ถาวร โปรด​ลอง​บันทึก​อีกครั้ง​ก่อน​ออกจาก​โปรแกรม",
+      "reason": "Break before before, not within again."
+    },
+    {
+      "id": "native:[music Test crossfades]",
+      "severity": "minor",
+      "proposed": "ทดสอบ​ครอสเฟด",
+      "reason": "Keep crossfade loanword intact."
+    },
+    {
+      "id": "native:[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "severity": "minor",
+      "proposed": "นำเข้า ZIP เพลง​ที่​ดาวน์โหลด​หรือ​แทร็ก Opus ทั้ง​สาม อ่าน​ข้อมูล​เมตา​และ​ภาพ​ปก​จาก​แทร็ก​สงบ ไม่ต้อง​มี​ไฟล์​อื่น",
+      "reason": "Keep metadata element intact."
+    },
+    {
+      "id": "native:[settings Import map generator]",
+      "severity": "major",
+      "proposed": "นำเข้า​ตัวสร้าง​แผนที่",
+      "reason": "Import is one word, not นำ then เข้าตัว."
+    },
+    {
+      "id": "native:[settings No custom map generators installed.]",
+      "severity": "major",
+      "proposed": "ยัง​ไม่​ได้​ติดตั้ง​ตัวสร้าง​แผนที่​แบบ​กำหนด​เอง",
+      "reason": "Match generator terminology and no installed yet status."
+    },
+    {
+      "id": "native:[settings Generator library saved.]",
+      "severity": "minor",
+      "proposed": "บันทึก​คลัง​ตัว​สร้าง​แผนที่​แล้ว",
+      "reason": "Separate completion adverb from map noun."
+    },
+    {
+      "id": "native:[settings Storage could not be saved. The previous library is retained.]",
+      "severity": "major",
+      "proposed": "บันทึก​ข้อมูล​ไม่​ได้ ยัง​เก็บ​คลัง​เดิม​ไว้",
+      "reason": "Correct awkward คงคลัง boundary and retention wording."
+    },
+    {
+      "id": "native:[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "severity": "major",
+      "proposed": "ใช้​เมื่อ​ถึง​จุด​เปลี่ยน​รอบ​จำลอง​ถัดไป งาน​ที่​ไม่​รองรับ​ใช้ CPU อัตโนมัติ ส่วน​การ​เรนเดอร์​แยก​จากกัน",
+      "reason": "Unsupported work uses CPU; break between support and use, not create รับใช้."
+    },
+    {
+      "id": "native:[settings Bucket propagation]",
+      "severity": "minor",
+      "proposed": "แพร่​ค่า​แบบ​บักเก็ต",
+      "reason": "Keep bucket loanword intact."
+    },
+    {
+      "id": "native:[settings Browse shared generators]",
+      "severity": "major",
+      "proposed": "เรียกดู​ตัวสร้าง​แผนที่​ที่​แชร์",
+      "reason": "Separate browse and generator words."
+    },
+    {
+      "id": "native:[settings Menu scroll wheel enabled]",
+      "severity": "major",
+      "proposed": "เปิด​ใช้​ล้อเลื่อน​ใน​เมนู",
+      "reason": "Avoid splitting wheel and unnatural วงล้อเลื่อน."
+    },
+    {
+      "id": "native:[settings Gradient backend]",
+      "severity": "minor",
+      "proposed": "ระบบ​คำนวณ​กราเดียนต์",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Gradient algorithm]",
+      "severity": "minor",
+      "proposed": "อัลกอริทึม​กราเดียนต์",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Verify gradient results]",
+      "severity": "minor",
+      "proposed": "ตรวจสอบ​ผล​กราเดียนต์",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Gradient computation]",
+      "severity": "minor",
+      "proposed": "การคำนวณ​กราเดียนต์",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map.]",
+      "severity": "minor",
+      "proposed": "แสดง​ภาพรวม​ทอรัส​อัตโนมัติ​ขณะ​เลื่อน​แผนที่",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "severity": "minor",
+      "proposed": "ต้อง​ใช้​โปรแกรม​เรนเดอร์​ที่​รองรับ​ทอรัส ตัวเลือก​ที่​คุณ​บันทึก​ไว้​จะ​ยัง​คงอยู่",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Renderer unavailable]",
+      "severity": "minor",
+      "proposed": "ตัวเรนเดอร์​ไม่​พร้อม​ใช้งาน",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Active renderer: %0]",
+      "severity": "minor",
+      "proposed": "ตัวเรนเดอร์​ที่​ใช้งาน: %0",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    },
+    {
+      "id": "native:[settings Changing renderer…]",
+      "severity": "minor",
+      "proposed": "กำลัง​เปลี่ยนตัวเรนเดอร์…",
+      "reason": "Use consistent gradient terminology and intact torus/renderer terms."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Read every immutable round2 source and target with soft boundaries shown visibly before consulting prior native findings. Checked meaning, Thai idiom, terminology, and word/cluster breaks; proposed corrections require independent recheck. Agent-reviewed; not native-human-certified."
+}

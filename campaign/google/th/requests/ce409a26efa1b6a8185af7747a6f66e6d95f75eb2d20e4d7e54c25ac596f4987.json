@@ -1,0 +1,214 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "with <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> credits",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> credits",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> players on this page",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> players on this page",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> teams ·",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> teams ·",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> versions",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> versions",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{status}</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{count}</span> images",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{count}</span> images",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> HP per exposed tick",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> Your credit was returned.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> copy",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> not found",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> playing",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> request needs attention in Preview.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> response ready in Preview.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> seconds",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> selected",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> attention",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> · revision <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> × <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> preview pixels",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> × <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span> players",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>% saturation, <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>% brightness",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{count}</span> open",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{count}</span> searching",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>× wheat",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>’s average",
+      "× Compatibility checks failed",
+      "▶ Let the globs roam",
+      "★ Favourited",
+      "☆ Favourite",
+      "♡ Like",
+      "♥ Liked",
+      "✓ Passed compatibility checks",
+      "✓ uploaded",
+      "❚❚ Pause the globs",
+      "Converted terrain",
+      "Native terrain preview · awaiting checks",
+      "Generated layout · intermediate image",
+      "Selected map area",
+      "Cropped layout · intermediate image",
+      "Landscape reference <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>",
+      "Composition source · edit <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>",
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> execution report",
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> score",
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> · validated"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ด้วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> หน่วยกิต"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> หน่วยกิต"
+      },
+      {
+        "translatedText": "จำนวนผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> คนในหน้านี้"
+      },
+      {
+        "translatedText": "จำนวนผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> คนในหน้านี้"
+      },
+      {
+        "translatedText": "จำนวนทีม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> ทีม ·"
+      },
+      {
+        "translatedText": "จำนวนทีม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> ทีม ·"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> เวอร์ชัน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> เวอร์ชัน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{status}</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{count}</span> รูปภาพ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{count}</span> รูปภาพ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> HP ต่อเห็บที่สัมผัส"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> คุณได้รับเครดิตคืนแล้ว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> คัดลอก"
+      },
+      {
+        "translatedText": "ไม่พบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "กำลังเล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "คำขอ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> จำเป็นต้องได้รับการตรวจสอบในเวอร์ชันพรีวิว"
+      },
+      {
+        "translatedText": "การตอบสนอง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> พร้อมแล้วในโหมดพรีวิว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> วินาที"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> เลือกแล้ว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> ความสนใจ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> · การแก้ไข <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>"
+      },
+      {
+        "translatedText": "พิกเซลแสดงตัวอย่าง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> × <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>"
+      },
+      {
+        "translatedText": "ผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> × <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span> คน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> % ความอิ่มตัว, <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> % ความสว่าง"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{count}</span> เปิด"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{count}</span> กำลังค้นหา"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> × ข้าวสาลี"
+      },
+      {
+        "translatedText": "ค่าเฉลี่ยของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "× การตรวจสอบความเข้ากันได้ล้มเหลว"
+      },
+      {
+        "translatedText": "▶ ปล่อยให้ก้อนกลมๆ เหล่านั้นท่องไป"
+      },
+      {
+        "translatedText": "★ ถูกใจ"
+      },
+      {
+        "translatedText": "☆ รายการโปรด"
+      },
+      {
+        "translatedText": "♡ ถูกใจ"
+      },
+      {
+        "translatedText": "♥ ถูกใจ"
+      },
+      {
+        "translatedText": "✓ ผ่านการตรวจสอบความเข้ากันได้แล้ว"
+      },
+      {
+        "translatedText": "✓ อัปโหลดแล้ว"
+      },
+      {
+        "translatedText": "❚❚ หยุดก้อนกลมๆ ไว้ก่อน"
+      },
+      {
+        "translatedText": "ภูมิประเทศที่ถูกแปลงแล้ว"
+      },
+      {
+        "translatedText": "ตัวอย่างภูมิประเทศดั้งเดิม · รอการตรวจสอบ"
+      },
+      {
+        "translatedText": "เค้าโครงที่สร้างขึ้น · รูปภาพขั้นกลาง"
+      },
+      {
+        "translatedText": "พื้นที่แผนที่ที่เลือก"
+      },
+      {
+        "translatedText": "เค้าโครงภาพแบบครอป · ภาพระดับกลาง"
+      },
+      {
+        "translatedText": "ข้อมูลอ้างอิงภูมิทัศน์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>"
+      },
+      {
+        "translatedText": "แหล่งที่มาขององค์ประกอบ · แก้ไข <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>"
+      },
+      {
+        "translatedText": "รายงานการดำเนินการของผู้สมัคร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>"
+      },
+      {
+        "translatedText": "คะแนนของผู้สมัคร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>"
+      },
+      {
+        "translatedText": "ผู้สมัครจำนวน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> · ผ่านการตรวจสอบแล้ว"
+      }
+    ]
+  }
+}

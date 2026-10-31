@@ -1,0 +1,429 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "818b21dc6652636a17465f3c537adce85599c3b8fae58ccb850c1f3d9b5a3c07",
+  "edited_keys": [
+    "online:Changes",
+    "online:Changing settings takes effect when you press Generate. One seed per preview.",
+    "online:Charged",
+    "online:Charts appear once the server has replayed the match.",
+    "online:Chat",
+    "online:Check & publish",
+    "online:Check again",
+    "online:Check payment",
+    "online:Check the connection, then try again.",
+    "online:Check the essentials",
+    "online:Check the score",
+    "online:Checker",
+    "online:Checking",
+    "online:Checking generator…",
+    "online:Checking the map with the game.",
+    "online:Checking the map…",
+    "online:Checking your AI… {value0} of {value1} checks passed.{value2}",
+    "online:Checking your set…",
+    "online:Checking your world…",
+    "online:Checkout could not be opened. Please try again.",
+    "online:Checkout does not match this purchase.",
+    "online:Checkout failed.",
+    "online:Checkout is not available yet; retry this event.",
+    "online:Checkout returned. Check the payment below to confirm your purchase.",
+    "online:Checkout was cancelled. Your project and draft are saved.",
+    "online:Checks",
+    "online:Checks apply to the last saved revision. ",
+    "online:Checks cover the listed settings and do not certify game balance.",
+    "online:Checks failed",
+    "online:Checks for {value0}",
+    "online:Checks passed",
+    "online:Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+    "online:Checks · {slot0}",
+    "online:Chevrons",
+    "online:Choose 7, 30 or 90 days.",
+    "online:Choose a JPEG, PNG or WebP photo.",
+    "online:Choose a PNG or WebP frame.",
+    "online:Choose a PNG spritesheet.",
+    "online:Choose a PNG, JPEG or WebP up to 2048×2048.",
+    "online:Choose a building ZIP package.",
+    "online:Choose a draft or a released set.",
+    "online:Choose a family name.",
+    "online:Choose a file to begin.",
+    "online:Choose a local custom game or a multiplayer room with this map.",
+    "online:Choose a map file first: a .map or .map.gz file from the game.",
+    "online:Choose a map first.",
+    "online:Choose a nonempty JavaScript file without NUL bytes.",
+    "online:Choose a nonempty JavaScript file.",
+    "online:Choose a nonempty portable generator package without NUL bytes.",
+    "online:Choose a password",
+    "online:Choose a password of at least {p0} characters.",
+    "online:Choose a photo no larger than 10 MiB.",
+    "online:Choose a photo no larger than 25 megapixels.",
+    "online:Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+    "online:Choose a skin",
+    "online:Choose a skin name.",
+    "online:Choose a sprite, frame, layer and current revision.",
+    "online:Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+    "online:Choose a still PNG or WebP frame no larger than 512 by 512.",
+    "online:Choose a still PNG or WebP frame.",
+    "online:Choose a still photo, not an animation.",
+    "online:Choose a username",
+    "online:Choose a validated release for the simulation version you play. Each download includes its artwork.",
+    "online:Choose a version",
+    "online:Choose an AI.",
+    "online:Choose an existing report to resolve.",
+    "online:Choose an updated file to try again.",
+    "online:Choose automatic or initials.",
+    "online:Choose either an import or a library version.",
+    "online:Choose final view",
+    "online:Choose how to sign in to the game:",
+    "online:Choose one bundled .js file.",
+    "online:Choose profile photo",
+    "online:Choose property…",
+    "online:Choose revision",
+    "online:Choose sheet…",
+    "online:Choose the current draft revision.",
+    "online:Choose up to five tags. These describe your strategy, not a tested strength rating.",
+    "online:Choose uploaded sheet…",
+    "online:Choose visibility and a moderation reason.",
+    "online:Choose {value0}",
+    "online:Clear selection",
+    "online:Close",
+    "online:Close credits",
+    "online:Close navigation",
+    "online:Close panel",
+    "online:Close panel · Escape",
+    "online:Close play choices",
+    "online:Close preview",
+    "online:Close {value0}",
+    "online:Closed",
+    "online:Code",
+    "online:Code or invite link",
+    "online:Collection disabled",
+    "online:Collection enabled",
+    "online:Colonies",
+    "online:Colony AI",
+    "online:Colony skins",
+    "online:Colony still standing",
+    "online:Colony {slot0}",
+    "online:Colony {value0} paint",
+    "online:Colony {value0} skin",
+    "online:Color",
+    "online:Colors your buildings; painted units stay unchanged.",
+    "online:Colors, seams and raised decor",
+    "online:Combat",
+    "online:Commander account",
+    "online:Commander work",
+    "online:Community",
+    "online:Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+    "online:Compare revision",
+    "online:Compare with",
+    "online:Compare with version",
+    "online:Compared revision",
+    "online:Compared revision {slot0}",
+    "online:Compared revision: {slot0}",
+    "online:Compare…",
+    "online:Compatibility checklist",
+    "online:Compatibility checks",
+    "online:Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+    "online:Compatibility of your active skin",
+    "online:Complete",
+    "online:Complete family JSON",
+    "online:Complete passing checks before publishing.",
+    "online:Completed",
+    "online:Completion time comparison table",
+    "online:Compose the music",
+    "online:Composer’s progress",
+    "online:Composition",
+    "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+    "online:Confirm history deletion",
+    "online:Confirm the license chosen when composing this version.",
+    "online:Confirmed cash",
+    "online:Confirmed cash table",
+    "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+    "online:Confirming your payment. Your credits appear once payment is confirmed.",
+    "online:Connected",
+    "online:Connection",
+    "online:Connection interrupted. Reconnecting to your saved project…",
+    "online:Connection quality per player",
+    "online:Consistent levels",
+    "online:Content",
+    "online:Content not found.",
+    "online:Contents",
+    "online:Contents & gameplay properties",
+    "online:Continue as {p1}",
+    "online:Continue to uploads",
+    "online:Continue to {p1}",
+    "online:Continue with {p3}",
+    "online:Controls and compatibility evidence",
+    "online:Conversation",
+    "online:Convert and prepare preview",
+    "online:Converting",
+    "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "online:Copy paint",
+    "online:Copy paint to all models",
+    "online:Copy paint to other models…",
+    "online:Copy recorded usage",
+    "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+    "online:Copyright"
+  ],
+  "findings": [
+    {
+      "id": "online:Charged",
+      "severity": "major",
+      "proposed": "เรียกเก็บแล้ว",
+      "reason": "Billing charge, not a criminal charge."
+    },
+    {
+      "id": "online:Check payment",
+      "severity": "major",
+      "proposed": "ตรวจสอบการชำระเงิน",
+      "reason": "Check payment status, not payment by cheque."
+    },
+    {
+      "id": "online:Checker",
+      "severity": "major",
+      "proposed": "ลายตารางหมากรุก",
+      "reason": "Checker paint pattern, confirmed PatternDialog.tsx."
+    },
+    {
+      "id": "online:Checking generator…",
+      "severity": "major",
+      "proposed": "กำลังตรวจสอบตัวสร้าง…",
+      "reason": "Procedural generator, not electrical equipment."
+    },
+    {
+      "id": "online:Checking your set…",
+      "severity": "major",
+      "proposed": "กำลังตรวจสอบชุดของคุณ…",
+      "reason": "Asset set, not equipment."
+    },
+    {
+      "id": "online:Checkout does not match this purchase.",
+      "severity": "major",
+      "proposed": "รายการชำระเงินไม่ตรงกับการซื้อนี้",
+      "reason": "Explicit checkout mismatch."
+    },
+    {
+      "id": "online:Checkout is not available yet; retry this event.",
+      "severity": "major",
+      "proposed": "ยังไม่มีรายการชำระเงิน โปรดลองประมวลผลเหตุการณ์นี้ใหม่",
+      "reason": "Webhook/event retry, not joining an event."
+    },
+    {
+      "id": "online:Checkout returned. Check the payment below to confirm your purchase.",
+      "severity": "major",
+      "proposed": "กลับจากหน้าชำระเงินแล้ว ตรวจสอบการชำระเงินด้านล่างเพื่อยืนยันการซื้อ",
+      "reason": "Returning from checkout is not a payment rejection."
+    },
+    {
+      "id": "online:Checks",
+      "severity": "major",
+      "proposed": "การตรวจสอบ",
+      "reason": "Validation checks, not cheques."
+    },
+    {
+      "id": "online:Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "severity": "major",
+      "proposed": "การตรวจสอบจะทดสอบคุณสมบัติการเล่นเกม ขอบเขตภาพ การจับคู่เฟรม และการเรนเดอร์ด้วยเอนจินเกม แต่ไม่ได้รับรองความสมดุลของแผนที่",
+      "reason": "Limited checks do not establish balance; do not say balance is never checked."
+    },
+    {
+      "id": "online:Checks · {slot0}",
+      "severity": "major",
+      "proposed": "การตรวจสอบ · {slot0}",
+      "reason": "Validation checks label."
+    },
+    {
+      "id": "online:Choose a PNG spritesheet.",
+      "severity": "major",
+      "proposed": "เลือกสไปรต์ชีต PNG",
+      "reason": "Preserve required spritesheet type, not any PNG."
+    },
+    {
+      "id": "online:Choose a building ZIP package.",
+      "severity": "major",
+      "proposed": "เลือกแพ็กเกจอาคารแบบ ZIP",
+      "reason": "ZIP archive, not postal code."
+    },
+    {
+      "id": "online:Choose a family name.",
+      "severity": "major",
+      "proposed": "เลือกชื่อตระกูลอาคาร",
+      "reason": "Asset family, not human surname."
+    },
+    {
+      "id": "online:Choose a local custom game or a multiplayer room with this map.",
+      "severity": "major",
+      "proposed": "เลือกเกมกำหนดเองในเครื่อง หรือห้องเล่นหลายคนที่ใช้แผนที่นี้",
+      "reason": "Local game means on-device play."
+    },
+    {
+      "id": "online:Choose a nonempty portable generator package without NUL bytes.",
+      "severity": "major",
+      "proposed": "เลือกแพ็กเกจตัวสร้างแบบพกพาที่ไม่ว่างและไม่มีไบต์ NUL",
+      "reason": "Portable procedural generator, not power generator."
+    },
+    {
+      "id": "online:Choose a skin name.",
+      "severity": "major",
+      "proposed": "เลือกชื่อสกิน",
+      "reason": "Skin name, not a decorative character name."
+    },
+    {
+      "id": "online:Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "severity": "major",
+      "proposed": "เลือกฉบับเผยแพร่ที่ผ่านการตรวจสอบสำหรับเวอร์ชันการจำลองที่คุณเล่น การดาวน์โหลดแต่ละครั้งมีภาพประกอบรวมมาด้วย",
+      "reason": "Choose validated release compatible with simulation, not a validated simulation version; artwork is not cover art."
+    },
+    {
+      "id": "online:Choose how to sign in to the game:",
+      "severity": "minor",
+      "proposed": "เลือกวิธีลงชื่อเข้าใช้เกม:",
+      "reason": "Canonical sign-in term."
+    },
+    {
+      "id": "online:Choose property…",
+      "severity": "major",
+      "proposed": "เลือกคุณสมบัติ…",
+      "reason": "Object/game property, not real estate."
+    },
+    {
+      "id": "online:Choose sheet…",
+      "severity": "major",
+      "proposed": "เลือกสไปรต์ชีต…",
+      "reason": "Sprite sheet, not spreadsheet."
+    },
+    {
+      "id": "online:Choose uploaded sheet…",
+      "severity": "major",
+      "proposed": "เลือกสไปรต์ชีตที่อัปโหลด…",
+      "reason": "Uploaded sprite sheet, not a document."
+    },
+    {
+      "id": "online:Clear selection",
+      "severity": "major",
+      "proposed": "ล้างการเลือก",
+      "reason": "Clear is an action, not clarity."
+    },
+    {
+      "id": "online:Close panel · Escape",
+      "severity": "major",
+      "proposed": "ปิดแผง · Escape",
+      "reason": "Escape names a keyboard key, not an exit command."
+    },
+    {
+      "id": "online:Close play choices",
+      "severity": "major",
+      "proposed": "ปิดตัวเลือกการเล่น",
+      "reason": "Close is dismissing UI, not near."
+    },
+    {
+      "id": "online:Colony AI",
+      "severity": "minor",
+      "proposed": "AI ของอาณานิคม",
+      "reason": "Use stable AI acronym."
+    },
+    {
+      "id": "online:Colony skins",
+      "severity": "major",
+      "proposed": "สกินอาณานิคม",
+      "reason": "Canonical colony term."
+    },
+    {
+      "id": "online:Colony {slot0}",
+      "severity": "major",
+      "proposed": "อาณานิคม {slot0}",
+      "reason": "Canonical colony term."
+    },
+    {
+      "id": "online:Colony {value0} paint",
+      "severity": "major",
+      "proposed": "สีของอาณานิคม {value0}",
+      "reason": "Colony game asset, not house paint product."
+    },
+    {
+      "id": "online:Colony {value0} skin",
+      "severity": "major",
+      "proposed": "สกินอาณานิคม {value0}",
+      "reason": "Canonical colony term."
+    },
+    {
+      "id": "online:Colors your buildings; painted units stay unchanged.",
+      "severity": "major",
+      "proposed": "เปลี่ยนสีอาคารของคุณ ยูนิตที่ลงสีไว้จะไม่เปลี่ยน",
+      "reason": "Painted units remain unchanged, not painted buildings."
+    },
+    {
+      "id": "online:Compatibility of your active skin",
+      "severity": "major",
+      "proposed": "ความเข้ากันได้ของสกินที่ใช้อยู่",
+      "reason": "Skin is game appearance, not human skin."
+    },
+    {
+      "id": "online:Complete family JSON",
+      "severity": "major",
+      "proposed": "JSON ของตระกูลอาคารทั้งหมด",
+      "reason": "Building asset family, not a human family."
+    },
+    {
+      "id": "online:Completed",
+      "severity": "minor",
+      "proposed": "เสร็จสิ้น",
+      "reason": "Completed task status."
+    },
+    {
+      "id": "online:Composition",
+      "severity": "major",
+      "proposed": "บทประพันธ์เพลง",
+      "reason": "Music composition category, confirmed Validation.tsx."
+    },
+    {
+      "id": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "severity": "minor",
+      "proposed": "ตั้งค่า Hive Mind ใน การตั้งค่า → ออนไลน์ ระหว่างแมตช์ กด Ctrl+Enter เพื่อออกคำสั่ง อนุญาตให้ใช้ผู้ช่วยในแมตช์จัดอันดับ",
+      "reason": "Canonical played match term."
+    },
+    {
+      "id": "online:Confirm the license chosen when composing this version.",
+      "severity": "major",
+      "proposed": "ยืนยันสัญญาอนุญาตที่เลือกไว้เมื่อแต่งเพลงเวอร์ชันนี้",
+      "reason": "Composing music; canonical licence term."
+    },
+    {
+      "id": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "severity": "major",
+      "proposed": "ยอดเงินที่ยืนยันแล้วใช้หน่วยสกุลเงินของการเรียกเก็บเงิน/คืนเงินผ่าน Stripe ในช่วง UTC ปัจจุบันและก่อนหน้า ไฟล์ CSV เก็บค่าจำนวนเต็มในหน่วยเงินย่อยอย่างเที่ยงตรง",
+      "reason": "Analytics confirmed cash amount, not the act of confirming payment."
+    },
+    {
+      "id": "online:Contents",
+      "severity": "major",
+      "proposed": "เนื้อหา",
+      "reason": "Asset contents, not a book table of contents."
+    },
+    {
+      "id": "online:Continue as {p1}",
+      "severity": "major",
+      "proposed": "ดำเนินการต่อในชื่อ {p1}",
+      "reason": "Authenticated identity, not following instructions from person."
+    },
+    {
+      "id": "online:Continue to uploads",
+      "severity": "major",
+      "proposed": "ไปยังรายการอัปโหลด",
+      "reason": "Navigate to uploads, not continue uploading."
+    },
+    {
+      "id": "online:Continue with {p3}",
+      "severity": "major",
+      "proposed": "ดำเนินการต่อด้วย {p3}",
+      "reason": "Sign-in provider, not navigation destination."
+    },
+    {
+      "id": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "severity": "major",
+      "proposed": "คัดลอกลิงก์นี้ลงในช่องลิงก์หรือ ID ของตระกูล ในตัวเลือกตระกูลอาคารของเกม เพื่อเปิดตระกูลนี้โดยตรง",
+      "reason": "Building family picker, not creating a human family."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

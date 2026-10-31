@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> terrains · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span> resources",
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>",
+      "B<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "CC BY",
+      "CC BY 4.0",
+      "CC BY 4.0 — credit required",
+      "CC BY-SA 4.0",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC-BY-4.0</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC-BY-SA-4.0</span>",
+      "CC0",
+      "CC0 1.0",
+      "CC0 — public domain",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC0-1.0</span>",
+      "CHOOSE FINAL VIEW",
+      "COLONY STUDIO",
+      "COMMUNITY SOUNDTRACKS",
+      "COMMUNITY · LOCAL PLAY",
+      "CURRENT POSE",
+      "Cabino",
+      "Cache write tokens",
+      "Cached input",
+      "Cached input tokens",
+      "Calm",
+      "Calm → Building → Combat → Calm · eight seconds per mood",
+      "Camera angle",
+      "Camera view",
+      "Can be farmed",
+      "Can be retried",
+      "Cancel",
+      "Cancel editing",
+      "Cancel generation",
+      "Cancel report",
+      "Cancel request",
+      "Cancel upload",
+      "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "Cancellation requested",
+      "Cancelled",
+      "Candidate preview · may need repairs",
+      "Candidate previews &amp; reports",
+      "Candidate unavailable.",
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Canonical package <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">SHA-256</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Cash amount",
+      "Castor",
+      "Catalog",
+      "Categorical",
+      "Change",
+      "Change role",
+      "Change shape ⌄",
+      "Changes",
+      "Changing settings takes effect when you press Generate. One seed per preview.",
+      "Charged",
+      "Charts appear once the server has replayed the match.",
+      "Chat",
+      "Check &amp; publish",
+      "Check again",
+      "Check payment",
+      "Check the connection, then try again.",
+      "Check the essentials",
+      "Check the score",
+      "Checker",
+      "Checking",
+      "Checking generator…",
+      "Checking the map with the game.",
+      "Checking the map…",
+      "Checking your AI… <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> of <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> checks passed.<span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span>",
+      "Checking your set…",
+      "Checking your world…",
+      "Checkout could not be opened. Please try again.",
+      "Checkout does not match this purchase.",
+      "Checkout failed.",
+      "Checkout is not available yet; retry this event.",
+      "Checkout returned. Check the payment below to confirm your purchase.",
+      "Checkout was cancelled. Your project and draft are saved.",
+      "Checks",
+      "Checks apply to the last saved revision.",
+      "Checks cover the listed settings and do not certify game balance.",
+      "Checks failed",
+      "Checks for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Checks passed"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · ภูมิประเทศ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> · ทรัพยากร <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      },
+      {
+        "translatedText": "บี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ซีซี บีวาย"
+      },
+      {
+        "translatedText": "ซีซี บีวาย 4.0"
+      },
+      {
+        "translatedText": "CC BY 4.0 — ต้องให้เครดิต"
+      },
+      {
+        "translatedText": "ซีซี บีอี-เอสเอ 4.0"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC-BY-4.0</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC-BY-SA-4.0</span>"
+      },
+      {
+        "translatedText": "ซีซีโอ"
+      },
+      {
+        "translatedText": "CC0 1.0"
+      },
+      {
+        "translatedText": "CC0 — สาธารณสมบัติ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">CC0-1.0</span>"
+      },
+      {
+        "translatedText": "เลือกมุมมองสุดท้าย"
+      },
+      {
+        "translatedText": "โคโลนี สตูดิโอ"
+      },
+      {
+        "translatedText": "เพลงประกอบชุมชน"
+      },
+      {
+        "translatedText": "ชุมชน · การเล่นในท้องถิ่น"
+      },
+      {
+        "translatedText": "ท่าปัจจุบัน"
+      },
+      {
+        "translatedText": "คาบิโน"
+      },
+      {
+        "translatedText": "แคชโทเค็นการเขียน"
+      },
+      {
+        "translatedText": "ข้อมูลที่แคชไว้"
+      },
+      {
+        "translatedText": "โทเค็นอินพุตที่แคชไว้"
+      },
+      {
+        "translatedText": "เงียบสงบ"
+      },
+      {
+        "translatedText": "สงบ → สร้างความคึกคัก → ต่อสู้ → สงบ · แปดวินาทีต่ออารมณ์"
+      },
+      {
+        "translatedText": "มุมกล้อง"
+      },
+      {
+        "translatedText": "มุมมองกล้อง"
+      },
+      {
+        "translatedText": "สามารถเพาะปลูกได้"
+      },
+      {
+        "translatedText": "สามารถลองใหม่ได้"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "ยกเลิกการแก้ไข"
+      },
+      {
+        "translatedText": "ยกเลิกการสร้าง"
+      },
+      {
+        "translatedText": "ยกเลิกรายงาน"
+      },
+      {
+        "translatedText": "คำขอการยกเลิก"
+      },
+      {
+        "translatedText": "ยกเลิกการอัปโหลด"
+      },
+      {
+        "translatedText": "ไม่สามารถยกเลิกได้ในระหว่างที่กำลังตรวจสอบผลลัพธ์ของผู้ให้บริการและเครดิตที่สำรองไว้ คุณสามารถแก้ไขแหล่งข้อมูลที่บันทึกไว้หรือส่งออกได้"
+      },
+      {
+        "translatedText": "ร้องขอการยกเลิก"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "ตัวอย่างรถที่อาจต้องซ่อมแซม"
+      },
+      {
+        "translatedText": "ข้อมูลเบื้องต้นและรายงานของผู้สมัคร"
+      },
+      {
+        "translatedText": "ผู้สมัครไม่พร้อมรับงาน"
+      },
+      {
+        "translatedText": "ผู้สมัคร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "แพ็คเกจมาตรฐาน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">SHA-256</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "จำนวนเงินสด"
+      },
+      {
+        "translatedText": "คาสเตอร์"
+      },
+      {
+        "translatedText": "แคตตาล็อก"
+      },
+      {
+        "translatedText": "เชิงหมวดหมู่"
+      },
+      {
+        "translatedText": "เปลี่ยน"
+      },
+      {
+        "translatedText": "เปลี่ยนบทบาท"
+      },
+      {
+        "translatedText": "เปลี่ยนรูปร่าง ⌄"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงการตั้งค่าจะมีผลเมื่อคุณกดปุ่มสร้าง (Generate) หนึ่ง Seed ต่อหนึ่งการแสดงตัวอย่าง"
+      },
+      {
+        "translatedText": "ถูกตั้งข้อหา"
+      },
+      {
+        "translatedText": "แผนภูมิจะปรากฏขึ้นเมื่อเซิร์ฟเวอร์เล่นแมตช์ซ้ำเสร็จแล้ว"
+      },
+      {
+        "translatedText": "แชท"
+      },
+      {
+        "translatedText": "ตรวจสอบและเผยแพร่"
+      },
+      {
+        "translatedText": "ตรวจสอบอีกครั้ง"
+      },
+      {
+        "translatedText": "ชำระเงินด้วยเช็ค"
+      },
+      {
+        "translatedText": "ตรวจสอบการเชื่อมต่อ แล้วลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ตรวจสอบสิ่งสำคัญ"
+      },
+      {
+        "translatedText": "ตรวจสอบคะแนน"
+      },
+      {
+        "translatedText": "เช็คเกอร์"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบ"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบเครื่องกำเนิดไฟฟ้า…"
+      },
+      {
+        "translatedText": "ตรวจสอบแผนที่กับเกม"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบแผนที่…"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบ AI ของคุณ… ผ่านการตรวจสอบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> จาก <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> ครั้ง <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span>"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบอุปกรณ์ของคุณ…"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบโลกของคุณ…"
+      },
+      {
+        "translatedText": "ไม่สามารถเปิดหน้าชำระเงินได้ โปรดลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ระบบไม่ตรงกับรายการซื้อนี้"
+      },
+      {
+        "translatedText": "การชำระเงินล้มเหลว"
+      },
+      {
+        "translatedText": "ขณะนี้ยังไม่สามารถชำระเงินได้ โปรดลองเข้าร่วมกิจกรรมนี้อีกครั้ง"
+      },
+      {
+        "translatedText": "การชำระเงินถูกปฏิเสธ โปรดตรวจสอบการชำระเงินด้านล่างเพื่อยืนยันการซื้อของคุณ"
+      },
+      {
+        "translatedText": "การชำระเงินถูกยกเลิก โครงการและฉบับร่างของคุณได้รับการบันทึกแล้ว"
+      },
+      {
+        "translatedText": "เช็ค"
+      },
+      {
+        "translatedText": "การตรวจสอบจะมีผลกับเวอร์ชันที่บันทึกไว้ล่าสุด"
+      },
+      {
+        "translatedText": "การตรวจสอบครอบคลุมเฉพาะการตั้งค่าที่ระบุไว้ และไม่ได้รับรองความสมดุลของเกม"
+      },
+      {
+        "translatedText": "การตรวจสอบล้มเหลว"
+      },
+      {
+        "translatedText": "ตรวจสอบค่า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "การตรวจสอบผ่านแล้ว"
+      }
+    ]
+  }
+}

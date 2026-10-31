@@ -1,0 +1,347 @@
+{
+  "locale": "th",
+  "variety": "Standard Thai (ภาษาไทยมาตรฐาน)",
+  "script": "Thai",
+  "region": "Thailand",
+  "direction": "ltr",
+  "display_name": "ไทย",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "reviewer": "thai_brief",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "register": "Concise, respectful contemporary software/game Thai. Omit gendered polite particles in neutral interface labels; do not add English-style word spaces. Preserve product names, IDs, placeholders, paths and URLs. Use authored ASCII numbers in game instructions; do not alter simulation or technical formats. Editorial reconciliation selects ยูนิต (entity classifier ตัว) and แมตช์ for played matches; these are deliberate gaming loanwords.",
+  "sources": [
+    {
+      "url": "https://dictionary.orst.go.th/",
+      "kind": "Royal Society dictionary",
+      "consulted": "Lookup form and public func_lookup.php endpoint; actual returned entries individually consulted below.",
+      "lookups": [
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "คนงาน",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "cd9f9ae9e34228b0afc038cf468dca1e99e8525c0ab9e241e4136be641598d76",
+          "headword_observed": "คนงาน",
+          "interpretation": "A worker performing labour; appropriate functional label for gathering/building units, without implying a military unit.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "นักรบ",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "492c89338b2d3f432f4fa5fdabf206612e86a8cd6947f34d95abd0aaff92868c",
+          "headword_observed": "นักรบ",
+          "interpretation": "A person skilled in fighting, soldier; matches combat unit.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "สำรวจ",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "173b9d6f3e10e5e6b9d4aacb320c4ae6698612efcaba1ec50c9027100e475bb5",
+          "headword_observed": "สำรวจ",
+          "interpretation": "To inspect or search for things such as mineral resources; supports the explorer scouting role.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "สันดอน",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "21c02191bab9ee1556e34d0f103621027e52853b59b46a43920f3d3dfe0cf664",
+          "headword_observed": "สันดอน",
+          "interpretation": "An elongated raised accumulation of sediment in water; the terrain sense of bar, not a drinking establishment.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "ช่องเขา",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "b3179d98b403ce14192d9709bb7b7cd15310f292ebb5818c8189f36659794982",
+          "headword_observed": "ช่องเขา",
+          "interpretation": "Route crossing a mountain range or gap between mountains; confirms terrain pass.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "รัง",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "f13217e710e91bd26c42f012b94f9ef146fdbb2b40652ba17130d45b64769aae",
+          "headword_observed": "รัง",
+          "interpretation": "The second noun sense is an animal/insect home used for shelter and raising young; matches the birth-producing building and French/Japanese references.",
+          "found": true
+        },
+        {
+          "url": "https://dictionary.orst.go.th/func_lookup.php",
+          "method": "POST read-only lookup",
+          "request": {
+            "word": "โรงเตี๊ยม",
+            "funcName": "lookupWord",
+            "status": "lookup"
+          },
+          "response_sha256": "bc1ac7ada475603cb8bc81f341d457d4d7913981bf3ee99fd94dafc17569fd78",
+          "headword_observed": "โรงเตี๊ยม",
+          "interpretation": "Traveller accommodation/inn; valid literal term, but the game food role should be explicit in its explanation.",
+          "found": true
+        }
+      ]
+    },
+    {
+      "url": "https://www.w3.org/TR/thai-lreq/",
+      "kind": "W3C Thai script resources, draft",
+      "consulted_sections": [
+        "2 Thai Script Overview",
+        "4 Text direction",
+        "8.1 Line breaking and hyphenation"
+      ],
+      "interpretation": "Thai uses horizontal left-to-right text; spaces delimit phrases. Vowels and tone marks surround consonants, requiring correct positioning and adequate height."
+    },
+    {
+      "url": "https://www.w3.org/International/articles/typography/linebreak.en.html",
+      "kind": "W3C typography guidance",
+      "consulted_sections": [
+        "Languages that wrap words",
+        "Languages that have no word separators"
+      ],
+      "interpretation": "Thai normally wraps at semantic word boundaries rather than arbitrary characters. U+200B can mark opportunities; reviewed break hints must preserve syllables and marks."
+    },
+    {
+      "url": "https://www.orst.go.th/info.asp",
+      "kind": "Royal Society contemporary Thai UI",
+      "consulted_text": "อัปโหลดเอกสาร",
+      "interpretation": "Attests the spelling อัปโหลด for upload and documents as เอกสาร."
+    },
+    {
+      "url": "https://support.google.com/accounts?hl=th",
+      "kind": "Contemporary Thai account UI",
+      "consulted_text": [
+        "สร้างบัญชี Google",
+        "ลงชื่อเข้าใช้ในอุปกรณ์ที่ไม่ใช่ของคุณ"
+      ],
+      "interpretation": "Supports บัญชี / สร้างบัญชี / ลงชื่อเข้าใช้; usage comparison, not independent linguistic approval."
+    },
+    {
+      "url": "https://support.google.com/drive/answer/2424368?hl=th",
+      "kind": "Contemporary Thai software usage",
+      "consulted_text": "อัปโหลดไฟล์และโฟลเดอร์",
+      "interpretation": "Supports consistent อัปโหลด, ไฟล์, โฟลเดอร์. Page itself discloses possible AI translation, so use only as comparison, not native certification."
+    },
+    {
+      "url": "https://creativecommons.org/licenses/by/3.0/th/legalcode.th",
+      "kind": "Rights holder Thai license text",
+      "consulted_sections": [
+        "สัญญาอนุญาต",
+        "1 คำนิยาม"
+      ],
+      "interpretation": "Uses สัญญาอนุญาต for content licence and ลิขสิทธิ์ for copyright. Do not collapse these concepts."
+    },
+    {
+      "url": "https://coined-word.orst.go.th/",
+      "kind": "Royal Society40disciplinecoined-word dictionary",
+      "consulted": "Successful live POST lookupWord withbook_id0 fordrumlin,moraine,gradient,portage; exactpayloads,responsehashes andactualresults in ignoredreviews/technical-terms.json."
+    }
+  ],
+  "terminology_rationales": [
+    {
+      "source": "Worker",
+      "target": "คนงาน",
+      "rationale": "Workers gather/build; natural labour role, dictionary-attested."
+    },
+    {
+      "source": "Warrior",
+      "target": "นักรบ",
+      "rationale": "Combat role; no need to impose real-world rank."
+    },
+    {
+      "source": "Explorer",
+      "target": "นักสำรวจ",
+      "rationale": "Scouting/exploration role; distinguish from scientist."
+    },
+    {
+      "source": "Swarm",
+      "target": "รัง",
+      "rationale": "Birth-producing home, not a moving swarm. FR Ruche, JA 巣, VI Tổ all support nest/hive."
+    },
+    {
+      "source": "Inn",
+      "target": "โรงเตี๊ยม",
+      "rationale": "Keep recognisable building name; explanation must say it feeds units. Not merely a hotel. Conversion is a separate effect."
+    },
+    {
+      "source": "Market",
+      "target": "ตลาด",
+      "rationale": "Building exchanges fruit; not an online marketplace in native gameplay."
+    },
+    {
+      "source": "War Flag",
+      "target": "ธงรบ",
+      "rationale": "Attracts/assigns warriors, not direct individual-unit steering."
+    },
+    {
+      "source": "Exploration Flag",
+      "target": "ธงสำรวจ",
+      "rationale": "Attracts explorers/scouting attention."
+    },
+    {
+      "source": "Clearing Flag",
+      "target": "ธงแผ้วถาง",
+      "rationale": "Clears resources; do not confuse with clearing all UI flags."
+    },
+    {
+      "source": "Colony",
+      "target": "อาณานิคม",
+      "rationale": "Player colony/settlement, used consistently in gameplay and online."
+    },
+    {
+      "source": "Pass",
+      "target": "ช่องเขา",
+      "rationale": "Terrain mountain route; dictionary-attested. Passed validation uses ผ่าน instead."
+    },
+    {
+      "source": "Pass width",
+      "target": "ความกว้างช่องเขา",
+      "rationale": "Width of route; not password/pass ticket."
+    },
+    {
+      "source": "Stream reach",
+      "target": "ความยาวลำธาร",
+      "rationale": "Actual generator effect is stream length; FR/JA both confirm length."
+    },
+    {
+      "source": "Bank",
+      "target": "ริมฝั่ง",
+      "rationale": "River/fjord margin, not finance."
+    },
+    {
+      "source": "Sandbar",
+      "target": "สันดอนทราย",
+      "rationale": "Sediment bar; dictionary สันดอน supports this. Distinguish dune เนินทราย."
+    },
+    {
+      "source": "Deposits",
+      "target": "แหล่งทรัพยากร",
+      "rationale": "Game resources; not bank deposits."
+    },
+    {
+      "source": "Account",
+      "target": "บัญชี",
+      "rationale": "Modern software usage."
+    },
+    {
+      "source": "Room",
+      "target": "ห้อง",
+      "rationale": "Multiplayer room; context from create/join controls."
+    },
+    {
+      "source": "Matchmaking",
+      "target": "การจับคู่",
+      "rationale": "Find opponents; avoid romance connotation through game context."
+    },
+    {
+      "source": "Quick match",
+      "target": "หาคู่แข่งด่วน",
+      "rationale": "Verb/button phrasing for quickly finding a game opponent."
+    },
+    {
+      "source": "Upload",
+      "target": "อัปโหลด",
+      "rationale": "Royal Society UI spelling; not อัพโหลด."
+    },
+    {
+      "source": "Licence",
+      "target": "สัญญาอนุญาต",
+      "rationale": "Content/software rights agreement, distinct from copyright."
+    },
+    {
+      "source": "Copyright",
+      "target": "ลิขสิทธิ์",
+      "rationale": "Rights in work; distinct from licence."
+    },
+    {
+      "source": "Sign in",
+      "target": "ลงชื่อเข้าใช้",
+      "rationale": "Use consistently with account controls."
+    },
+    {
+      "source": "Create account",
+      "target": "สร้างบัญชี",
+      "rationale": "Concise software register."
+    },
+    {
+      "source": "Wheat",
+      "target": "ข้าวสาลี",
+      "rationale": "Game food resource; do not generalize to rice."
+    },
+    {
+      "source": "Wood",
+      "target": "ไม้",
+      "rationale": "Construction resource; not forest terrain when resource amount is meant."
+    },
+    {
+      "source": "Unit",
+      "target": "ยูนิต",
+      "rationale": "Independent editor selected a common Thai gaming loanword to distinguish game entities from generic units, organizations, or goods. Use classifier ตัว for entity counts; retain หน่วย only for measurement units. Meaning reviewer accepts this consistent neutral game register."
+    },
+    {
+      "source": "Match",
+      "target": "แมตช์",
+      "rationale": "Independent editor selected the common Thai gaming loanword for one played match; distinguish matchmaking การจับคู่ and equality/matching ตรงกัน. Meaning reviewer accepts consistent compact usage."
+    },
+    {
+      "source": "Drumlin",
+      "target": "ดรัมลิน",
+      "rationale": "RoyalSociety soilscience headword ดรัมลิน; geography เนินดรัมลิน. Protect ดร and ลิน syllable."
+    },
+    {
+      "source": "Moraine hummocks",
+      "target": "เนินตะกอนธารน้ำแข็ง",
+      "rationale": "RoyalSociety moraine=กองตะกอนธารน้ำแข็ง; actualproceduralcontrol generatesstonehummocks, use descriptiveThai."
+    },
+    {
+      "source": "Portage Lakes",
+      "target": "ทะเลสาบพอร์เทจ",
+      "rationale": "Specificgamegeneratorname transliteration, notnormativegeographicterminology. RoyalSociety portage=การยกเรือข้าม; gamecontrolsdescribe dryforestshortcut, no boats."
+    },
+    {
+      "source": "Gradient",
+      "target": "เกรเดียนต์",
+      "rationale": "RoyalSociety math/science term andactual ChulalongkornpublishedHydrogeologycontents attest spelling. Pathfieldsoftwareuse technicalterm; distinguish geographicalslope ความชัน."
+    }
+  ],
+  "unresolved_uncertainty": [],
+  "limits": [
+    "Language brief and terminology proposals only; no catalog has been approved.",
+    "Thai is not required to reproduce French gender inflections.",
+    "Creative Commons Thai 4.0 URL redirects to English; only actual Thai 3.0 legal code was used for terminology, without changing selected release licences."
+  ],
+  "context_findings": [
+    {
+      "key": "native:[inn explanation]",
+      "source": "Feeds your units",
+      "observation": "The source and FR/JA/VI agree that feeding is the basic building purpose; generic context statements about conversion must not replace this meaning.",
+      "code_evidence": "src/building/IntBuildingType.cpp maps inn to FOOD_BUILDING; Building.h describes secondary conversion."
+    }
+  ]
+}

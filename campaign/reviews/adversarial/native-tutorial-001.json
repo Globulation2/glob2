@@ -1,0 +1,42 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "cc980854a500d24ba36d3072e1705b27796f692411a0caf45852eb223682e0f3",
+  "adversarial_reviewed_keys": [
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[tutorial]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial complete]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]"
+  ],
+  "findings": [
+    {
+      "id": "native:[tutorial text 3]",
+      "severity": "minor",
+      "proposed": "คุณ​ทำ​ได้ดี​ที่​มาถึง​จุด​นี้ ต่อไป​คือ​นักรบ ค่ายฝึก และ​การ​อัปเกรด",
+      "reason": "Keep canonical training camp building name intact."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "severity": "minor",
+      "proposed": "ใกล้​จบ​บท​ฝึก​แล้ว เหลือ​ธง​และ​การ​โจมตี จากนั้น​คุณ​จะ​พร้อม​ลอง​เกม​กำหนด​เอง และ​เล่น​ออนไลน์​กับ​ผู้เล่น​ฝีมือ​เยี่ยม​ของ Globulation 2",
+      "reason": "Keep player noun intact."
+    },
+    {
+      "id": "native:[tutorial complete]",
+      "severity": "minor",
+      "proposed": "บทเรียน​จบ​แล้ว",
+      "reason": "Preserve lesson noun; break before completed verb."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Read every immutable round2 source and target with soft boundaries shown visibly before consulting prior native findings. Checked meaning, Thai idiom, terminology, and word/cluster breaks; proposed corrections require independent recheck. Agent-reviewed; not native-human-certified."
+}

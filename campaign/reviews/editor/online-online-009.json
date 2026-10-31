@@ -1,0 +1,381 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "92f3034613f88a7ff57dbae5608826cbcb9b4e2e619d3d3b61f46b5930e70d9d",
+  "edited_keys": [
+    "online:No shared maps yet. Be the first to share one.",
+    "online:No sign-in provider {p0}.",
+    "online:No skin reports.",
+    "online:No such AI version.",
+    "online:No such AI.",
+    "online:No such account.",
+    "online:No such agent.",
+    "online:No such artifact.",
+    "online:No such artwork.",
+    "online:No such blob.",
+    "online:No such building family.",
+    "online:No such delivered map.",
+    "online:No such draft.",
+    "online:No such generator.",
+    "online:No such job.",
+    "online:No such leaderboard.",
+    "online:No such map.",
+    "online:No such match.",
+    "online:No such music release.",
+    "online:No such player.",
+    "online:No such proposal.",
+    "online:No such queue ticket.",
+    "online:No such release.",
+    "online:No such report.",
+    "online:No such room.",
+    "online:No such sign-in on this connection.",
+    "online:No such sign-in.",
+    "online:No such track.",
+    "online:No such upload.",
+    "online:No such version.",
+    "online:No timeline was recorded for this match.",
+    "online:No uncertain request.",
+    "online:No unpublished drafts.",
+    "online:No validated building release.",
+    "online:No validated release",
+    "online:No worker leases are recorded.",
+    "online:No {p0} sign-in is linked to this account.",
+    "online:Nobody",
+    "online:None",
+    "online:None: this guest account lives on the device that created it.",
+    "online:Not AI-generated",
+    "online:Not applicable",
+    "online:Not available yet",
+    "online:Not evaluated",
+    "online:Not found.",
+    "online:Not found. It may have been removed, or the link is wrong.",
+    "online:Not hidden",
+    "online:Not run",
+    "online:Not saved",
+    "online:Notes",
+    "online:Nothing changed",
+    "online:Nothing here: this page wandered off like an explorer glob. {slot0}.",
+    "online:Numbi",
+    "online:OK",
+    "online:Offensive",
+    "online:Offline",
+    "online:Offline · changes pending",
+    "online:Older reports",
+    "online:Oldest queued engine job: {slot0}",
+    "online:One .js file · up to 128 KiB · profiles 1 and 2",
+    "online:One melody. Three moods.",
+    "online:One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+    "online:One-time purchases stay with your account. Preview and paint before buying.",
+    "online:Only a successfully converted release can be published.",
+    "online:Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+    "online:Only if you have installed the game on this device.",
+    "online:Only me",
+    "online:Only registered accounts can be moderators or administrators.",
+    "online:Only the host assigns seats in this room.",
+    "online:Only the host can add AIs.",
+    "online:Only the host can change the room.",
+    "online:Only the host can empty other seats.",
+    "online:Only the host can lock seats.",
+    "online:Only the host can remove players.",
+    "online:Only the host can start the match.",
+    "online:Only the map owner can do that.",
+    "online:Only uncertain calls can be reconciled.",
+    "online:Only uncertain requests need reconciliation.",
+    "online:Opacity ",
+    "online:Open",
+    "online:Open AI Map Studio",
+    "online:Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+    "online:Open in installed app",
+    "online:Open in the Globulation 2 app",
+    "online:Open music release",
+    "online:Open navigation",
+    "online:Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+    "online:Open {target} ↗",
+    "online:Opening Globulation 2…",
+    "online:Opening studio…",
+    "online:Opening your studio…",
+    "online:Opens the app if it is installed.",
+    "online:Operations",
+    "online:Opponent",
+    "online:Orders the server refused (a modified or broken client sends these)",
+    "online:Original game artwork",
+    "online:Other",
+    "online:Output tokens",
+    "online:Overview",
+    "online:Owned",
+    "online:PLAYABLE MAP",
+    "online:Package",
+    "online:Pad ends with silence to longest",
+    "online:Page not found",
+    "online:Paint color",
+    "online:Paint directly on the 3D {value0} model",
+    "online:Paint repeats on matching surfaces",
+    "online:Paint tools",
+    "online:Painting is unavailable in this browser.",
+    "online:Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+    "online:Passed",
+    "online:Password",
+    "online:Passwords can be at most {p0} characters.",
+    "online:Paste the invite link, or type its code (6 to 16 letters and digits).",
+    "online:Pattern color",
+    "online:Pattern coverage",
+    "online:Pattern rotation",
+    "online:Pattern size",
+    "online:Patterns",
+    "online:Patterns & fills",
+    "online:Pause",
+    "online:Payment",
+    "online:Payment mode",
+    "online:Payment status: {value0}.",
+    "online:Payments are not configured.",
+    "online:Pen pressure",
+    "online:Pending",
+    "online:Period",
+    "online:Petals cupped open around a central bud.",
+    "online:Photo updated.",
+    "online:Ping",
+    "online:Play",
+    "online:Play Locally in Custom Game",
+    "online:Play as {p3} instead",
+    "online:Play in Multiplayer",
+    "online:Play in browser",
+    "online:Play in your browser",
+    "online:Play online",
+    "online:Play this map",
+    "online:Play {slot0}",
+    "online:Playability checks",
+    "online:Playability checks passed",
+    "online:Playable",
+    "online:Playable generator",
+    "online:Playable terrain",
+    "online:Playback format",
+    "online:Playback position",
+    "online:Player",
+    "online:Player guides",
+    "online:Player types",
+    "online:Players",
+    "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+    "online:Players and results",
+    "online:Players cannot be removed while a match is starting or running.",
+    "online:Players online",
+    "online:Plays",
+    "online:Please fix the issues in the attached test diagnostics.",
+    "online:Please try building the map again and address this issue: {value0}",
+    "online:Pose",
+    "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files."
+  ],
+  "findings": [
+    {
+      "id": "online:No skin reports.",
+      "severity": "major",
+      "proposed": "ไม่มีรายงานสกิน",
+      "reason": "Game skins, not dermatology."
+    },
+    {
+      "id": "online:No such agent.",
+      "severity": "minor",
+      "proposed": "ไม่พบเอเจนต์ดังกล่าว",
+      "reason": "Software agent."
+    },
+    {
+      "id": "online:No such artifact.",
+      "severity": "minor",
+      "proposed": "ไม่พบชิ้นงานดังกล่าว",
+      "reason": "Generated/file artifact, not a historical invention."
+    },
+    {
+      "id": "online:No such blob.",
+      "severity": "major",
+      "proposed": "ไม่พบบล็อบข้อมูลดังกล่าว",
+      "reason": "Stored binary blob, not an unspecified nonexistent thing."
+    },
+    {
+      "id": "online:No such generator.",
+      "severity": "major",
+      "proposed": "ไม่พบตัวสร้างดังกล่าว",
+      "reason": "Procedural generator."
+    },
+    {
+      "id": "online:No such match.",
+      "severity": "major",
+      "proposed": "ไม่พบแมตช์ดังกล่าว",
+      "reason": "Played match, not matching data."
+    },
+    {
+      "id": "online:No such sign-in on this connection.",
+      "severity": "major",
+      "proposed": "ไม่พบการลงชื่อเข้าใช้ดังกล่าวในการเชื่อมต่อนี้",
+      "reason": "Absent sign-in record, not a blanket inability to sign in."
+    },
+    {
+      "id": "online:No such sign-in.",
+      "severity": "major",
+      "proposed": "ไม่พบการลงชื่อเข้าใช้ดังกล่าว",
+      "reason": "Sign-in record, not a login system."
+    },
+    {
+      "id": "online:No timeline was recorded for this match.",
+      "severity": "major",
+      "proposed": "ไม่มีการบันทึกข้อมูลตามเวลาสำหรับแมตช์นี้",
+      "reason": "Telemetry timeline, not simply match duration."
+    },
+    {
+      "id": "online:No validated building release.",
+      "severity": "major",
+      "proposed": "ไม่มีฉบับเผยแพร่อาคารที่ผ่านการตรวจสอบ",
+      "reason": "No validated asset release, not no act of validation."
+    },
+    {
+      "id": "online:No worker leases are recorded.",
+      "severity": "major",
+      "proposed": "ไม่มีบันทึกสิทธิ์ครอบครองงานของเวิร์กเกอร์",
+      "reason": "Software worker leases, not labour rental contracts."
+    },
+    {
+      "id": "online:Not run",
+      "severity": "major",
+      "proposed": "ยังไม่ได้ทดสอบ",
+      "reason": "Check not run, not unused feature."
+    },
+    {
+      "id": "online:Nothing here: this page wandered off like an explorer glob. {slot0}.",
+      "severity": "major",
+      "proposed": "ไม่พบหน้านี้ มันหลงทางไปเหมือนโกลบนักสำรวจ {slot0}",
+      "reason": "Game explorer creature, not a program explorer glob."
+    },
+    {
+      "id": "online:Offensive",
+      "severity": "major",
+      "proposed": "เนื้อหาไม่เหมาะสม",
+      "reason": "Content report reason, not an aggressive strategy."
+    },
+    {
+      "id": "online:Offline · changes pending",
+      "severity": "major",
+      "proposed": "ออฟไลน์ · การเปลี่ยนแปลงรอซิงค์",
+      "reason": "Changes pending, not changes currently underway."
+    },
+    {
+      "id": "online:Only the host assigns seats in this room.",
+      "severity": "minor",
+      "proposed": "เฉพาะเจ้าของห้องเท่านั้นที่จัดที่นั่งในห้องนี้ได้",
+      "reason": "Multiplayer room host."
+    },
+    {
+      "id": "online:Only the host can change the room.",
+      "severity": "major",
+      "proposed": "เฉพาะเจ้าของห้องเท่านั้นที่เปลี่ยนการตั้งค่าห้องได้",
+      "reason": "Modify room settings, not switch rooms."
+    },
+    {
+      "id": "online:Only the host can empty other seats.",
+      "severity": "major",
+      "proposed": "เฉพาะเจ้าของห้องเท่านั้นที่นำผู้เล่นออกจากที่นั่งอื่นได้",
+      "reason": "Empty player slots, not permit guests to leave chairs."
+    },
+    {
+      "id": "online:Only the host can lock seats.",
+      "severity": "major",
+      "proposed": "เฉพาะเจ้าของห้องเท่านั้นที่ล็อกที่นั่งได้",
+      "reason": "Multiplayer host, not accommodation owner."
+    },
+    {
+      "id": "online:Only the host can start the match.",
+      "severity": "minor",
+      "proposed": "เฉพาะเจ้าของห้องเท่านั้นที่เริ่มแมตช์ได้",
+      "reason": "Canonical room host and match terms."
+    },
+    {
+      "id": "online:Only uncertain calls can be reconciled.",
+      "severity": "major",
+      "proposed": "ตรวจสอบสถานะให้ตรงกันได้เฉพาะการเรียกที่ยังไม่ทราบผลแน่ชัด",
+      "reason": "Provider API calls with uncertain outcomes, not uncertain human decisions."
+    },
+    {
+      "id": "online:Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "severity": "major",
+      "proposed": "เมื่อสร้างเกมใหม่หรือแผนที่ใหม่ในตัวแก้ไข ให้เปิดตระกูลอาคาร ติดตั้งฉบับเผยแพร่ที่เข้ากันได้ แล้วเปิดใช้งาน ตระกูลที่เปิดใช้จะมีผลกับแผนที่ที่สร้างในอนาคตร่วมกับอาคารมาตรฐาน แผนที่และเซฟเดิมจะเก็บอาคารของตนเองไว้",
+      "reason": "Open is a command opening the picker, not an open-family licence adjective."
+    },
+    {
+      "id": "online:Open music release",
+      "severity": "major",
+      "proposed": "เปิดฉบับเผยแพร่เพลง",
+      "reason": "Navigate to an existing release, not release new music."
+    },
+    {
+      "id": "online:Opening studio…",
+      "severity": "major",
+      "proposed": "กำลังเปิดสตูดิโอ…",
+      "reason": "App loading, not an opening ceremony."
+    },
+    {
+      "id": "online:Orders the server refused (a modified or broken client sends these)",
+      "severity": "major",
+      "proposed": "คำสั่งที่เซิร์ฟเวอร์ปฏิเสธ (ไคลเอนต์ที่ถูกแก้ไขหรือทำงานผิดพลาดจะส่งคำสั่งเหล่านี้)",
+      "reason": "Gameplay orders, not purchase orders."
+    },
+    {
+      "id": "online:Package",
+      "severity": "major",
+      "proposed": "แพ็กเกจ",
+      "reason": "Software/content package, not physical packaging."
+    },
+    {
+      "id": "online:Pad ends with silence to longest",
+      "severity": "major",
+      "proposed": "เติมความเงียบที่ท้ายให้ยาวเท่าแทร็กที่ยาวที่สุด",
+      "reason": "Pad audio ends to longest track, not a record ending with long silence."
+    },
+    {
+      "id": "online:Patterns & fills",
+      "severity": "minor",
+      "proposed": "ลวดลายและการเติมสี",
+      "reason": "Paint tools fill, not generic fill."
+    },
+    {
+      "id": "online:Play Locally in Custom Game",
+      "severity": "minor",
+      "proposed": "เล่นเกมกำหนดเองในเครื่อง",
+      "reason": "Local on-device gameplay."
+    },
+    {
+      "id": "online:Playable generator",
+      "severity": "major",
+      "proposed": "ตัวสร้างแผนที่ที่เล่นได้",
+      "reason": "Procedural playable-map generator, not a playable machine."
+    },
+    {
+      "id": "online:Playback format",
+      "severity": "major",
+      "proposed": "รูปแบบการเล่นเสียง",
+      "reason": "Audio playback, not gameplay format."
+    },
+    {
+      "id": "online:Playback position",
+      "severity": "minor",
+      "proposed": "ตำแหน่งการเล่นเสียง",
+      "reason": "Audio playback position."
+    },
+    {
+      "id": "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "severity": "major",
+      "proposed": "ผู้เล่นและคู่ต่อสู้ AI จัดอันดับตามคะแนนประเมินแบบเผื่อความไม่แน่นอน ซึ่งจะสูงขึ้นเมื่อเกมมั่นใจในฝีมือของคุณมากขึ้น ผู้เยี่ยมชมไม่ถูกจัดอันดับ",
+      "reason": "Conservative rating is uncertainty-adjusted skill, not a preliminary/provisional rating."
+    },
+    {
+      "id": "online:Plays",
+      "severity": "major",
+      "proposed": "จำนวนครั้งที่เล่น",
+      "reason": "Playback/play count, not theatre plays."
+    },
+    {
+      "id": "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "severity": "major",
+      "proposed": "เตรียมเพลงเดียวกันในอารมณ์สงบ ก่อสร้าง และต่อสู้ แต่ละฉบับต้องยาว 10 วินาทีถึง 15 นาที ไฟล์ต้นฉบับจะถูกลบหลังแปลง โปรดเก็บไฟล์ต้นฉบับของคุณเองไว้",
+      "reason": "Three distinct arrangements/moods, not three calm intensity levels."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

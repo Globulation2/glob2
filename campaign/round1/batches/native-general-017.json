@@ -1,0 +1,231 @@
+{
+  "id": "native-general-017",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "key": "[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone",
+      "target": "จัด​เตรียม​เขต​เฝ้า​ระวัง"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "key": "[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "ศัตรู​กำลัง​โจมตี จง​รักษา​แนว​ป้องกัน​และ​จัดหา​เสบียง​ให้​โรงแรม การ​โจม​ตี​เล็กๆ จะ​เริ่ม​ขึ้น​หลัง​จาก​ที่​คุณ​เตรียม​การ​เสร็จ​แล้ว จง​เอาชนะ​หรือ​ขับ​ไล่​ผู้​บุกรุก​ทั้ง​สอง​ฝ่าย ศัตรู​ที่​บาด​เจ็บ​อาจ​ล่า​ถอย นักรบ​อาจ​ออก​ไป​หา​อาหาร​ชั่วคราว หาก​การ​ป้องกัน​ล้ม​เหลว ให้​ใช้​ไฟล์​บันทึก​เกม​ก่อน​หน้า​หรือ​เริ่ม​ใหม่"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel title]",
+      "key": "[lesson defensive-tactics repel title]",
+      "source": "Repel the practice attack",
+      "target": "ขับ​ไล่​การ​โจมตี​ฝึก​ซ้อม"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+      "target": "ศัตรู​กำลัง​โจมตี จง​รักษา​แนว​ป้องกัน​และ​จัดหา​เสบียง​ให้​แก่​โรงแรม​อยู่​เสมอ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel help]",
+      "key": "[lesson defensive-tactics repel help]",
+      "source": "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "การ​โจมตี​ขนาด​เล็ก​จะ​เริ่ม​ขึ้น​หลัง​จาก​ที่​คุณ​เตรียม​การ​เสร็จ​แล้ว เอาชนะ​หรือ​ขับ​ไล่​ผู้​บุกรุก​ทั้ง​สอง​ฝ่าย ศัตรู​ที่​บาด​เจ็บ​อาจ​ล่า​ถอย นักรบ​อาจ​ออก​ไป​หา​อาหาร​ชั่วคราว หาก​การ​ป้องกัน​ล้ม​เหลว ให้​ใช้​ไฟล์​บันทึก​ก่อน​หน้า​หรือ​เริ่ม​ใหม่"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel marker]",
+      "key": "[lesson defensive-tactics repel marker]",
+      "source": "Repel the practice attack",
+      "target": "ขับ​ไล่​การ​โจมตี​ฝึก​ซ้อม"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "วาง​ธง​รบ​เหนือ​ฝูง​ศัตรู ร้องขอ​ทหาร 3 นาย และ​ใช้​รัศมี 4 หรือ​เล็ก​กว่า​นั้น เขต​ป้องกัน​และ​ธง​รบ​จะ​แย่ง​ชิง​ทหาร​กัน หาก​เขต​ป้องกัน​ขัด​ขวาง​กองทัพ​ของ​คุณ ให้​ลบ​ออก เตรียม​อาหาร​ให้​เพียง​พอ​ใน​ขณะ​ที่​ทหาร​เดิน​ทาง​และ​โจมตี"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack title]",
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source": "Direct a focused counterattack",
+      "target": "ทำการ​โต้​กลับ​อย่าง​มี​เป้า​หมาย"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack instruction]",
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+      "target": "วาง​ธง​รบ​ไว้​เหนือ​ฝูง​ศัตรู ร้องขอ​ทหาร 3 นาย และ​ใช้​รัศมี 4 หรือ​เล็ก​กว่า​นั้น"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source": "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "เขต​ป้องกัน​และ​ธง​รบ​ต่าง​แย่ง​ชิง​กำลัง​พล หาก​เขต​ป้องกัน​ใด​ขัด​ขวาง​การ​เคลื่อน​ทัพ​ของ​คุณ ให้​กำจัด​ทิ้ง​ไป คอย​จัดหา​เสบียง​อาหาร​ให้​เพียง​พอ​ใน​ขณะ​ที่​กำลัง​พล​เดิน​ทาง​และ​โจมตี"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack marker]",
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source": "Direct a focused counterattack",
+      "target": "ทำการ​โต้​กลับ​อย่าง​มี​เป้า​หมาย"
+    },
+    {
+      "id": "native:[lesson healing build compact]",
+      "key": "[lesson healing build compact]",
+      "source": "Build → Hospital. Leave access; assign builders.",
+      "target": "สร้าง → โรง​พยาบาล อนุญาต​การ​เข้า​ถึง และ​มอบ​หมาย​ผู้​สร้าง"
+    },
+    {
+      "id": "native:[lesson healing heal compact]",
+      "key": "[lesson healing heal compact]",
+      "source": "Let the wounded worker heal at the Hospital.",
+      "target": "ให้​คน​งาน​ที่​ได้​รับ​บาด​เจ็บ​พัก​รักษา​ตัว​ที่​โรง​พยาบาล"
+    },
+    {
+      "id": "native:[lesson walking-training build compact]",
+      "key": "[lesson walking-training build compact]",
+      "source": "Build → Racetrack. Leave space around its edges.",
+      "target": "สร้าง → สนาม​แข่ง​รถ เว้น​พื้นที่​รอบ​ขอบ​สนาม​ไว้"
+    },
+    {
+      "id": "native:[lesson walking-training train compact]",
+      "key": "[lesson walking-training train compact]",
+      "source": "Let a worker finish Racetrack training.",
+      "target": "ให้​พนักงาน​ฝึก​อบรม​ใน​สนาม​แข่ง​รถ​เสร็จ​สิ้น"
+    },
+    {
+      "id": "native:[lesson swimming build compact]",
+      "key": "[lesson swimming build compact]",
+      "source": "Build → Swimming Pool, west of the pond.",
+      "target": "สร้าง → สระ​ว่าย​น้ำ ทาง​ทิศ​ตะวัน​ตก​ของ​สระ​น้ำ"
+    },
+    {
+      "id": "native:[lesson swimming train compact]",
+      "key": "[lesson swimming train compact]",
+      "source": "Let a worker learn to swim.",
+      "target": "ให้​คน​งาน​เรียน​ว่าย​น้ำ"
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "key": "[lesson swimming water-job compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "สร้าง → โรงเรียน มอบ​หมาย​ผู้​สร้าง​สำหรับ​งาน​ไม้​และ​สาหร่าย"
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "key": "[lesson schools build compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "สร้าง → โรงเรียน มอบ​หมาย​ผู้​สร้าง​สำหรับ​งาน​ไม้​และ​สาหร่าย"
+    },
+    {
+      "id": "native:[lesson schools learn compact]",
+      "key": "[lesson schools learn compact]",
+      "source": "Let a worker finish School training.",
+      "target": "ให้​คน​งาน​เรียน​จบ​หลักสูตร​การ​ศึกษา"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade compact]",
+      "key": "[lesson upgrades upgrade compact]",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders.",
+      "target": "เลือก​สนาม​แข่ง​รถ → อัป​เกรด มอบ​หมาย​ช่าง​ฝีมือ​ที่​มี​ความ​เชี่ยวชาญ"
+    },
+    {
+      "id": "native:[lesson upgrades train compact]",
+      "key": "[lesson upgrades train compact]",
+      "source": "Let a worker train at the upgraded Racetrack.",
+      "target": "ให้​พนักงาน​ฝึกฝน​ที่​สนาม​แข่ง​รถ​ที่​ได้​รับ​การ​ปรับปรุง​ใหม่"
+    },
+    {
+      "id": "native:[lesson fortifications tower compact]",
+      "key": "[lesson fortifications tower compact]",
+      "source": "Build → Tower. Place in the marked area.",
+      "target": "สร้าง → หอคอย วาง​ใน​พื้นที่​ที่​ทำ​เครื่องหมาย​ไว้"
+    },
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "key": "[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open.",
+      "target": "สร้าง​กำแพง 2 ด้าน รักษา​ทาง​เข้า​ด้าน​ตะวัน​ตก​ของ​หอคอย​ให้​เปิด​อยู่​เสมอ"
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "key": "[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone.",
+      "target": "เลือก​หอคอย → ซัพพลาย​เอ​อร์ รอ 2 หิน"
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "key": "[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker.",
+      "target": "คอย​ส่ง​เสบียง​ให้​หอคอย​เพื่อ​ป้องกัน​การ​โจมตี​จาก​ผู้​บุกรุก"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "key": "[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer.",
+      "target": "ธง → การ​สำรวจ วาง​ธง​ไว้​ที่​ฝั่ง​ศัตรู มอบ​หมาย​นัก​สำรวจ 1 คน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "key": "[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+      "target": "ธง → ยาม ทาสี 4 ช่อง; ปล่อย​ให้​ทหาร 2 นาย​มา​ถึง"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "key": "[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied.",
+      "target": "รักษา​แนว​ป้องกัน​ไว้ จัดหา​เสบียง​ให้​โรงแรม​อย่าง​สม่ำเสมอ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4.",
+      "target": "ธง​สงคราม → ฝูง​ศัตรู ร้องขอ​ทหาร 3 นาย รัศมี ≤4"
+    },
+    {
+      "id": "native:[intro attack destination]",
+      "key": "[intro attack destination]",
+      "source": "Attack here",
+      "target": "โจมตี​ตรง​นี้"
+    },
+    {
+      "id": "native:[Grassland]",
+      "key": "[Grassland]",
+      "source": "Grassland",
+      "target": "ทุ่ง​หญ้า"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "key": "[Kopjes]",
+      "source": "Kopjes",
+      "target": "คอ​ป​เจส"
+    },
+    {
+      "id": "native:[Game trails]",
+      "key": "[Game trails]",
+      "source": "Game trails",
+      "target": "เส้น​ทาง​สัตว์​ป่า"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "key": "[Fish amount]",
+      "source": "Fish amount",
+      "target": "ปริมาณ​ปลา"
+    },
+    {
+      "id": "native:[scenario messages]",
+      "key": "[scenario messages]",
+      "source": "Messages ▸",
+      "target": "ข้อความ ▸"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount",
+      "target": "จำนวน​พื้นที่​ตั้ง​แคม​ป์"
+    }
+  ]
+}

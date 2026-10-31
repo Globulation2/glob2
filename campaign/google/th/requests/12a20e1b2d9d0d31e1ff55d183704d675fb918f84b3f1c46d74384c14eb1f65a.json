@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "This invite has expired or does not exist.",
+      "Invite only",
+      "Invite",
+      "Joining on this network",
+      "Local network · not rated",
+      "Others on the same network see <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> in the LAN game list on the main menu.",
+      "Leave",
+      "The map changed to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "The map could not be prepared",
+      "Room",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> joined.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> left.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is ready.",
+      "Invite a friend or add an AI to start",
+      "No map yet",
+      "Not ready",
+      "Open for a person",
+      "Anyone with the invite can take it",
+      "Open seat",
+      "Person",
+      "Preparing map on the server…",
+      "Public",
+      "Ready",
+      "✓ Ready",
+      "Remove from room",
+      "Off",
+      "On",
+      "The rules changed.",
+      "Rules",
+      "Say something…",
+      "Players can move to an open seat themselves. Change Team to rebalance.",
+      "Seat options",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> AI · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%2</span> open",
+      "Seats",
+      "Seed",
+      "Send",
+      "Set by the host",
+      "Join my <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> room<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Share…",
+      "Size",
+      "Starting the match…",
+      "Take seat",
+      "Team <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "This room plays another version of the game. Update to join it.",
+      "Uploaded map",
+      "Waiting for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> to be ready",
+      "Press Ready when you&#x27;re set",
+      "Match over. Ready up for another round!",
+      "Waiting for the host to start",
+      "Waiting for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players to be ready",
+      "Who can find it",
+      "You created the room.",
+      "You joined <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "The host removed you from the room.",
+      "you",
+      "Online",
+      "Another server",
+      "Check",
+      "Checking…",
+      "Choose which server you play on and how you sign in to it.",
+      "Connecting…",
+      "Could not reach this server.",
+      "Display name saved.",
+      "Display name",
+      "Delete my account",
+      "Enter an https<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>// address.",
+      "Forget",
+      "Guests keep a generated name; sign in to choose one.",
+      "Link",
+      "Not a <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> server.",
+      "Not linked",
+      "Not signed in.",
+      "Open",
+      "Opens your account page on <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>, where you can delete it.",
+      "Run by a community, a club or yourself. Paste its address.",
+      "Save",
+      "Server",
+      "Shown in rooms, matches and the leaderboard. Change once every 30 days.",
+      "Sign in with<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> · queues<span id=\"g2p2\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "Sign out on this device"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "คำเชิญนี้หมดอายุแล้วหรือไม่มีอยู่จริง"
+      },
+      {
+        "translatedText": "เชิญเฉพาะผู้ได้รับเชิญเท่านั้น"
+      },
+      {
+        "translatedText": "เชิญ"
+      },
+      {
+        "translatedText": "การเข้าร่วมเครือข่ายนี้"
+      },
+      {
+        "translatedText": "เครือข่ายท้องถิ่น · ยังไม่ได้รับการจัดอันดับ"
+      },
+      {
+        "translatedText": "ผู้ใช้งานคนอื่นๆ ในเครือข่ายเดียวกันจะเห็น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ในรายการเกม LAN บนเมนูหลัก"
+      },
+      {
+        "translatedText": "ออกจาก"
+      },
+      {
+        "translatedText": "แผนที่เปลี่ยนเป็น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> แล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถจัดทำแผนที่ได้"
+      },
+      {
+        "translatedText": "ห้อง"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> คน"
+      },
+      {
+        "translatedText": "เหลือ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> พร้อมแล้ว"
+      },
+      {
+        "translatedText": "เชิญเพื่อนหรือเพิ่ม AI เพื่อเริ่มต้น"
+      },
+      {
+        "translatedText": "ยังไม่มีแผนที่"
+      },
+      {
+        "translatedText": "ยังไม่พร้อม"
+      },
+      {
+        "translatedText": "เปิดให้บุคคลทั่วไปเข้าชมได้"
+      },
+      {
+        "translatedText": "ใครก็ตามที่ได้รับคำเชิญสามารถไปร่วมงานได้"
+      },
+      {
+        "translatedText": "ที่นั่งว่าง"
+      },
+      {
+        "translatedText": "บุคคล"
+      },
+      {
+        "translatedText": "กำลังเตรียมแผนที่บนเซิร์ฟเวอร์…"
+      },
+      {
+        "translatedText": "สาธารณะ"
+      },
+      {
+        "translatedText": "พร้อม"
+      },
+      {
+        "translatedText": "✓ พร้อมส่ง"
+      },
+      {
+        "translatedText": "นำออกจากห้อง"
+      },
+      {
+        "translatedText": "ปิด"
+      },
+      {
+        "translatedText": "บน"
+      },
+      {
+        "translatedText": "กฎเปลี่ยนไปแล้ว"
+      },
+      {
+        "translatedText": "กฎ"
+      },
+      {
+        "translatedText": "พูดอะไรสักอย่างสิ…"
+      },
+      {
+        "translatedText": "ผู้เล่นสามารถย้ายไปนั่งที่ว่างได้ด้วยตนเอง เปลี่ยนทีมเพื่อปรับสมดุลใหม่"
+      },
+      {
+        "translatedText": "ตัวเลือกที่นั่ง"
+      },
+      {
+        "translatedText": "ผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · AI <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> · เปิด <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%2</span>"
+      },
+      {
+        "translatedText": "ที่นั่ง"
+      },
+      {
+        "translatedText": "เมล็ดพันธุ์"
+      },
+      {
+        "translatedText": "ส่ง"
+      },
+      {
+        "translatedText": "ตั้งค่าโดยโฮสต์"
+      },
+      {
+        "translatedText": "เข้าร่วมห้อง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> ของฉัน <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "แบ่งปัน…"
+      },
+      {
+        "translatedText": "ขนาด"
+      },
+      {
+        "translatedText": "เริ่มการแข่งขัน…"
+      },
+      {
+        "translatedText": "เชิญนั่ง"
+      },
+      {
+        "translatedText": "ทีม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ห้องนี้เล่นเกมเวอร์ชันอื่น อัปเดตเพื่อเข้าร่วม"
+      },
+      {
+        "translatedText": "แผนที่ที่อัปโหลดแล้ว"
+      },
+      {
+        "translatedText": "กำลังรอให้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "กด &quot;พร้อม&quot; เมื่อคุณพร้อมแล้ว"
+      },
+      {
+        "translatedText": "จบการแข่งขันแล้ว เตรียมพร้อมสำหรับรอบต่อไป!"
+      },
+      {
+        "translatedText": "กำลังรอให้โฮสต์เริ่ม"
+      },
+      {
+        "translatedText": "กำลังรอให้ผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> พร้อม"
+      },
+      {
+        "translatedText": "ใครจะหาเจอได้บ้าง"
+      },
+      {
+        "translatedText": "คุณเป็นคนสร้างห้องนี้ขึ้นมา"
+      },
+      {
+        "translatedText": "คุณเข้าร่วม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> แล้ว"
+      },
+      {
+        "translatedText": "เจ้าของบ้านเชิญคุณออกจากห้องแล้ว"
+      },
+      {
+        "translatedText": "คุณ"
+      },
+      {
+        "translatedText": "ออนไลน์"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์อีกเครื่องหนึ่ง"
+      },
+      {
+        "translatedText": "ตรวจสอบ"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบ…"
+      },
+      {
+        "translatedText": "เลือกเซิร์ฟเวอร์ที่คุณต้องการเล่นและวิธีการเข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "กำลังเชื่อมต่อ…"
+      },
+      {
+        "translatedText": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์นี้ได้"
+      },
+      {
+        "translatedText": "บันทึกชื่อที่แสดงเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "ชื่อที่แสดง"
+      },
+      {
+        "translatedText": "ลบบัญชีของฉัน"
+      },
+      {
+        "translatedText": "ป้อนที่อยู่ https <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> //"
+      },
+      {
+        "translatedText": "ลืม"
+      },
+      {
+        "translatedText": "ผู้เข้าพักจะได้รับชื่อที่สร้างขึ้นโดยอัตโนมัติ โปรดลงชื่อเข้าใช้เพื่อเลือกชื่อที่ต้องการ"
+      },
+      {
+        "translatedText": "ลิงก์"
+      },
+      {
+        "translatedText": "ไม่ใช่เซิร์ฟเวอร์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "ไม่ได้เชื่อมโยง"
+      },
+      {
+        "translatedText": "ยังไม่ได้เข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "เปิด"
+      },
+      {
+        "translatedText": "เปิดหน้าบัญชีของคุณที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ซึ่งคุณสามารถลบข้อมูลได้"
+      },
+      {
+        "translatedText": "ดำเนินการโดยชุมชน ชมรม หรือตัวคุณเอง กรุณาใส่ที่อยู่ลงไป"
+      },
+      {
+        "translatedText": "บันทึก"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์"
+      },
+      {
+        "translatedText": "แสดงในห้องแข่งขัน แมตช์ และตารางคะแนน เปลี่ยนแปลงทุก 30 วัน"
+      },
+      {
+        "translatedText": "เข้าสู่ระบบด้วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> · คิว <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "ออกจากระบบบนอุปกรณ์นี้"
+      }
+    ]
+  }
+}

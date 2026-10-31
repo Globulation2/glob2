@@ -1,0 +1,468 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "6d15a0ecfe7ce4dceefc19bfbe3d791cf7175ceb53eed7d7d83c2ca02ee11c75",
+  "edited_keys": [
+    "online:checking…",
+    "online:checks need",
+    "online:deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+    "online:diverged",
+    "online:dropped",
+    "online:finding",
+    "online:findings",
+    "online:forest",
+    "online:format must be map or save.",
+    "online:format {value0}, network {value1}",
+    "online:get the game",
+    "online:hidden",
+    "online:hidden by a moderator",
+    "online:icon {value0}",
+    "online:in a web browser",
+    "online:inspection",
+    "online:invalid",
+    "online:joined {slot0} · last seen {slot1} · {slot2}",
+    "online:launch timeout",
+    "online:limit must be an integer from 1 to {p0}.",
+    "online:live",
+    "online:madeWith must be hand or generator.",
+    "online:map",
+    "online:match on now",
+    "online:match today",
+    "online:matchId differs from the path.",
+    "online:matches on now",
+    "online:matches today",
+    "online:median length",
+    "online:muted until {slot0}",
+    "online:none",
+    "online:not checked",
+    "online:not set",
+    "online:on a computer",
+    "online:on an Android device",
+    "online:on an iPhone or iPad",
+    "online:owner must be \"me\" or an account id.",
+    "online:package:",
+    "online:participants must be all, humans or ai.",
+    "online:payment",
+    "online:play in your browser",
+    "online:player online",
+    "online:players online",
+    "online:projection",
+    "online:provider sign-in failed",
+    "online:provider unavailable",
+    "online:provisional",
+    "online:provisional must be include or exclude.",
+    "online:public, max-age=604800",
+    "online:record.sha256 differs from the uploaded record.",
+    "online:refund",
+    "online:removed from end",
+    "online:replaces your name with “Deleted player” in your past matches, chat and records;",
+    "online:resynced",
+    "online:right away, or",
+    "online:r{slot0} · {slot1}",
+    "online:signs you out on every device and removes your sign-in methods and e-mail address;",
+    "online:silence added at end",
+    "online:simVersion (a sim version key) is required.",
+    "online:simVersion differs from the match setup.",
+    "online:simVersion must be a sim version key.",
+    "online:size unknown",
+    "online:sort must be one of {p0}.",
+    "online:starting",
+    "online:status must be open, resolved, dismissed or all.",
+    "online:teams must list the map's {p0} teams in order 0..{p1}.",
+    "online:text/html; charset=utf-8",
+    "online:today {time}",
+    "online:unexpected instance response: {value0}",
+    "online:unverifiable",
+    "online:valid",
+    "online:v{slot0}",
+    "online:world {value0}",
+    "online:{hours} {minutes}",
+    "online:{loaded} of {total} MB",
+    "online:{p0} No app?",
+    "online:{p0} Studio is not enabled on this instance.",
+    "online:{p0} as",
+    "online:{p0} invited you to their Globulation 2 room{p1}.",
+    "online:{p0} must be an integer from {p1} to {p2}.",
+    "online:{p0} sign-in is unavailable right now.",
+    "online:{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+    "online:{slot0}  {slot1} credit available",
+    "online:{slot0}  {slot1} credits available",
+    "online:{slot0} ({slot1}%)",
+    "online:{slot0} ({slot1})",
+    "online:{slot0} / {slot1}",
+    "online:{slot0} / {slot1} passed",
+    "online:{slot0} Manual editing and local playtests use no credits.",
+    "online:{slot0} The preview shows exactly what will be saved.",
+    "online:{slot0} Try again, or download the set to listen locally.",
+    "online:{slot0} W · {slot1} L",
+    "online:{slot0} W · {slot1} L{slot2}",
+    "online:{slot0} and resolve",
+    "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+    "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+    "online:{slot0} before buying so you can recover your purchases.",
+    "online:{slot0} credit available",
+    "online:{slot0} credit available · {slot1} reserved",
+    "online:{slot0} credit reserved for work in progress.",
+    "online:{slot0} credit · {slot1}  {slot2}",
+    "online:{slot0} credit — {slot1}",
+    "online:{slot0} credits available",
+    "online:{slot0} credits available · {slot1} reserved",
+    "online:{slot0} credits reserved for work in progress.",
+    "online:{slot0} credits · {slot1}  {slot2}",
+    "online:{slot0} credits — {slot1}",
+    "online:{slot0} day",
+    "online:{slot0} days",
+    "online:{slot0} likes · {slot1} downloads",
+    "online:{slot0} likes · {slot1} downloads · {slot2}",
+    "online:{slot0} live · {slot1} in the last 24 hours",
+    "online:{slot0} loop",
+    "online:{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+    "online:{slot0} or inspect the reported library item’s validation.",
+    "online:{slot0} passed · {slot1}  {slot2}{slot3}",
+    "online:{slot0} properties",
+    "online:{slot0} reserved. Credits belong to this studio.",
+    "online:{slot0} selected · up to 10 sets, 64 MiB",
+    "online:{slot0} teams",
+    "online:{slot0} terrain · {slot1} resources · revision {slot2}",
+    "online:{slot0} terrain · {slot1} resources · {slot2}",
+    "online:{slot0} terrains · {slot1} resources · revision {slot2}",
+    "online:{slot0} terrains · {slot1} resources · {slot2}",
+    "online:{slot0} tiles",
+    "online:{slot0} to create and save drafts.",
+    "online:{slot0} to publish.",
+    "online:{slot0} to see and share your maps.",
+    "online:{slot0} to see your generators.",
+    "online:{slot0} to see your library.",
+    "online:{slot0} to share an AI.",
+    "online:{slot0} to share maps.",
+    "online:{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+    "online:{slot0} unique accounts · previous period {slot1}",
+    "online:{slot0} with a moderator account.",
+    "online:{slot0} within {slot1} minutes",
+    "online:{slot0} {slot1} · AI composition is disclosed.",
+    "online:{slot0} · Continue editing",
+    "online:{slot0} · Custom artwork and gameplay properties",
+    "online:{slot0} · based on revision {slot1}",
+    "online:{slot0} · last seen {slot1}{slot2}",
+    "online:{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+    "online:{slot0} · playing since {slot1}{slot2}",
+    "online:{slot0} · revision {slot1}",
+    "online:{slot0} · revision {slot1} · {slot2}",
+    "online:{slot0} · saved generation preview",
+    "online:{slot0} · seed {slot1} · {slot2}",
+    "online:{slot0} · seed {slot1} · {slot2}{slot3}",
+    "online:{slot0} · {slot1}",
+    "online:{slot0} · {slot1} MiB stored",
+    "online:{slot0} · {slot1} likes",
+    "online:{slot0} · {slot1} second",
+    "online:{slot0} · {slot1} seconds",
+    "online:{slot0} · {slot1} since {slot2}",
+    "online:{slot0} · {slot1} {slot2}",
+    "online:{slot0} · {slot1} · last renewed {slot2}{slot3}",
+    "online:{slot0} · {slot1} · {slot2}",
+    "online:{slot0} · {slot1} · {slot2} downloads",
+    "online:{slot0} · {slot1} · {slot2} × {slot3}",
+    "online:{slot0} · {slot1} · {slot2}{slot3}"
+  ],
+  "findings": [
+    {
+      "id": "online:checks need",
+      "severity": "major",
+      "proposed": "การตรวจสอบ",
+      "reason": "Composed in ValidationPanel with {value0} {value1} attention; Thai outer template supplies needs attention."
+    },
+    {
+      "id": "online:dropped",
+      "severity": "major",
+      "proposed": "หลุด",
+      "reason": "Dropped connection/game participant status, not a falling object."
+    },
+    {
+      "id": "online:finding",
+      "severity": "minor",
+      "proposed": "ข้อค้นพบ",
+      "reason": "Individual inspection finding."
+    },
+    {
+      "id": "online:findings",
+      "severity": "minor",
+      "proposed": "ข้อค้นพบ",
+      "reason": "Inspection findings, consistent with singular."
+    },
+    {
+      "id": "online:hidden by a moderator",
+      "severity": "minor",
+      "proposed": "ถูกซ่อนโดยผู้ดูแลเนื้อหา",
+      "reason": "Content moderator role."
+    },
+    {
+      "id": "online:madeWith must be hand or generator.",
+      "severity": "major",
+      "proposed": "madeWith ต้องเป็น hand หรือ generator",
+      "reason": "Preserve API parameter/enums and repair malformed Thai syntax."
+    },
+    {
+      "id": "online:median length",
+      "severity": "major",
+      "proposed": "มัธยฐานระยะเวลา",
+      "reason": "Median game duration, not mean/average."
+    },
+    {
+      "id": "online:owner must be \"me\" or an account id.",
+      "severity": "major",
+      "proposed": "owner ต้องเป็น \"me\" หรือรหัสบัญชี",
+      "reason": "Preserve owner/me API fields and exact literal."
+    },
+    {
+      "id": "online:package:",
+      "severity": "major",
+      "proposed": "แพ็กเกจ:",
+      "reason": "Software package, not physical packaging."
+    },
+    {
+      "id": "online:participants must be all, humans or ai.",
+      "severity": "major",
+      "proposed": "participants ต้องเป็น all, humans หรือ ai",
+      "reason": "Preserve all three enum values and repair corrupted punctuation."
+    },
+    {
+      "id": "online:provisional must be include or exclude.",
+      "severity": "major",
+      "proposed": "provisional ต้องเป็น include หรือ exclude",
+      "reason": "Keep exact parameter name provisional."
+    },
+    {
+      "id": "online:r{slot0} · {slot1}",
+      "severity": "minor",
+      "proposed": "r{slot0} · {slot1}",
+      "reason": "Technical revision prefix should not gain a space."
+    },
+    {
+      "id": "online:simVersion (a sim version key) is required.",
+      "severity": "major",
+      "proposed": "ต้องระบุ simVersion (คีย์เวอร์ชันการจำลอง)",
+      "reason": "Simulation version, not a SIM card version."
+    },
+    {
+      "id": "online:simVersion must be a sim version key.",
+      "severity": "major",
+      "proposed": "simVersion ต้องเป็นคีย์เวอร์ชันการจำลอง",
+      "reason": "Simulation version, not a SIM card version."
+    },
+    {
+      "id": "online:teams must list the map's {p0} teams in order 0..{p1}.",
+      "severity": "major",
+      "proposed": "teams ต้องระบุทีมทั้ง {p0} ทีมของแผนที่ตามลำดับ 0..{p1}",
+      "reason": "Preserve count, ordering contract, and technical range."
+    },
+    {
+      "id": "online:v{slot0}",
+      "severity": "minor",
+      "proposed": "v{slot0}",
+      "reason": "Technical version prefix should not gain a space."
+    },
+    {
+      "id": "online:{loaded} of {total} MB",
+      "severity": "major",
+      "proposed": "{loaded} จาก {total} MB",
+      "reason": "Loaded amount out of total, not then total."
+    },
+    {
+      "id": "online:{slot0} ({slot1}%)",
+      "severity": "minor",
+      "proposed": "{slot0} ({slot1}%)",
+      "reason": "Do not add spaces within a percentage token."
+    },
+    {
+      "id": "online:{slot0} ({slot1})",
+      "severity": "minor",
+      "proposed": "{slot0} ({slot1})",
+      "reason": "Compact parenthesized value; remove injected spaces."
+    },
+    {
+      "id": "online:{slot0} Manual editing and local playtests use no credits.",
+      "severity": "major",
+      "proposed": "{slot0} การแก้ไขด้วยตนเองและการทดสอบเล่นในเครื่องไม่เสียเครดิต",
+      "reason": "Use no credits means no charge, not no credits awarded."
+    },
+    {
+      "id": "online:{slot0} W · {slot1} L",
+      "severity": "major",
+      "proposed": "ชนะ {slot0} · แพ้ {slot1}",
+      "reason": "W/L mean wins/losses, not west/left."
+    },
+    {
+      "id": "online:{slot0} W · {slot1} L{slot2}",
+      "severity": "major",
+      "proposed": "ชนะ {slot0} · แพ้ {slot1}{slot2}",
+      "reason": "W/L mean wins/losses, not west/left."
+    },
+    {
+      "id": "online:{slot0} and resolve",
+      "severity": "major",
+      "proposed": "{slot0} และปิดเรื่อง",
+      "reason": "Moderation report resolution."
+    },
+    {
+      "id": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+      "severity": "major",
+      "proposed": "ใช้ได้ {slot0} · กันไว้ {slot1} ต้องมีเครดิตเหลืออยู่จึงสนทนาได้ แผนที่หรือฉบับแก้ไขที่ส่งมอบแต่ละครั้งคิด 1 เครดิต หากสร้างล้มเหลวจะคืนเครดิต",
+      "reason": "Available-credit prerequisite distinct from charging discussion."
+    },
+    {
+      "id": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+      "severity": "major",
+      "proposed": "ใช้ได้ {slot0} · กันไว้ {slot1} ต้องมีเครดิตเหลืออยู่จึงสนทนาได้ ชุดหรือฉบับแก้ไขที่ส่งมอบแต่ละครั้งคิด 1 เครดิต หากสร้างล้มเหลวจะคืนเครดิต",
+      "reason": "Available-credit prerequisite distinct from charging discussion."
+    },
+    {
+      "id": "online:{slot0} before buying so you can recover your purchases.",
+      "severity": "major",
+      "proposed": "{slot0} ก่อนซื้อเพื่อให้กู้คืนการซื้อของคุณได้",
+      "reason": "Slot is sign-in action; do not introduce a check action."
+    },
+    {
+      "id": "online:{slot0} credit reserved for work in progress.",
+      "severity": "major",
+      "proposed": {
+        "other": "กันเครดิต {slot0} ไว้สำหรับงานที่กำลังทำ"
+      },
+      "reason": "Credits reserved for ongoing work, not necessarily software development."
+    },
+    {
+      "id": "online:{slot0} credits reserved for work in progress.",
+      "severity": "major",
+      "proposed": "กันเครดิต {slot0} ไว้สำหรับงานที่กำลังทำ",
+      "reason": "Credits reserved for ongoing work."
+    },
+    {
+      "id": "online:{slot0} live · {slot1} in the last 24 hours",
+      "severity": "major",
+      "proposed": "กำลังเล่น {slot0} · {slot1} ในช่วง 24 ชั่วโมงที่ผ่านมา",
+      "reason": "Live match count, not live broadcasts."
+    },
+    {
+      "id": "online:{slot0} reserved. Credits belong to this studio.",
+      "severity": "major",
+      "proposed": "กันไว้ {slot0} เครดิตเป็นของสตูดิโอนี้",
+      "reason": "Reserved billing credits, not rights reserved."
+    },
+    {
+      "id": "online:{slot0} tiles",
+      "severity": "major",
+      "proposed": "{slot0} ช่อง",
+      "reason": "Map tiles, not ceramic tiles."
+    },
+    {
+      "id": "online:{slot0} to see your generators.",
+      "severity": "major",
+      "proposed": "{slot0} เพื่อดูตัวสร้างของคุณ",
+      "reason": "Procedural generators."
+    },
+    {
+      "id": "online:{slot0} to see your library.",
+      "severity": "major",
+      "proposed": "{slot0} เพื่อดูคลังของคุณ",
+      "reason": "Digital library, not book collection."
+    },
+    {
+      "id": "online:{slot0} with a moderator account.",
+      "severity": "major",
+      "proposed": "{slot0} ด้วยบัญชีผู้ดูแลเนื้อหา",
+      "reason": "Moderator account, not admin account."
+    },
+    {
+      "id": "online:{slot0} {slot1} · AI composition is disclosed.",
+      "severity": "major",
+      "proposed": "{slot0} {slot1} · เปิดเผยแล้วว่าใช้ AI แต่งเพลง",
+      "reason": "Disclosure of AI music composition, not AI components."
+    },
+    {
+      "id": "online:{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+      "severity": "major",
+      "proposed": "{slot0} · ต่อหนึ่งล้านโทเค็น: อินพุต {slot1} / แคช {slot2} / เอาต์พุต {slot3} เครดิต",
+      "reason": "Credits charged for input/cached/output token categories, not incoming/outgoing credit balances."
+    },
+    {
+      "id": "online:{slot0} · saved generation preview",
+      "severity": "major",
+      "proposed": "{slot0} · ตัวอย่างการสร้างที่บันทึกไว้",
+      "reason": "Generation attempt, not a product generation."
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}",
+      "severity": "minor",
+      "proposed": "{slot0} · ค่าสุ่ม {slot1} · {slot2}",
+      "reason": "Translate generation seed consistently."
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}{slot3}",
+      "severity": "minor",
+      "proposed": "{slot0} · ค่าสุ่ม {slot1} · {slot2}{slot3}",
+      "reason": "Translate seed; preserve adjoining display suffix."
+    },
+    {
+      "id": "online:{slot0} · {slot1} MiB stored",
+      "severity": "major",
+      "proposed": "{slot0} · เก็บไว้ {slot1} MiB",
+      "reason": "Stored amount, not unspecified storage capacity."
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} downloads",
+      "severity": "major",
+      "proposed": "{slot0} · {slot1} · ดาวน์โหลด {slot2} ครั้ง",
+      "reason": "Download count belongs to final slot only."
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "online:public, max-age=604800",
+      "reason": "Exact HTTP Cache-Control directive public, max-age=604800."
+    },
+    {
+      "id": "online:r{slot0} · {slot1}",
+      "reason": "Revision prefix r and substituted values are technical identifiers."
+    },
+    {
+      "id": "online:text/html; charset=utf-8",
+      "reason": "Exact HTTP Content-Type media type and charset."
+    },
+    {
+      "id": "online:v{slot0}",
+      "reason": "Technical version prefix v and substituted version."
+    },
+    {
+      "id": "online:{hours} {minutes}",
+      "reason": "Formatted hour/minute values require no additional words."
+    },
+    {
+      "id": "online:{slot0} ({slot1}%)",
+      "reason": "Numeric label and percentage placeholders contain no translatable words."
+    },
+    {
+      "id": "online:{slot0} ({slot1})",
+      "reason": "Two substituted values with parentheses."
+    },
+    {
+      "id": "online:{slot0} / {slot1}",
+      "reason": "Ratio of two substituted values."
+    },
+    {
+      "id": "online:{slot0} · {slot1}",
+      "reason": "Two substituted values separated by a middle dot."
+    },
+    {
+      "id": "online:{slot0} · {slot1} {slot2}",
+      "reason": "Three substituted values with spacing and separator."
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2}",
+      "reason": "Three substituted values separated by middle dots."
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} × {slot3}",
+      "reason": "Substituted values and multiplication sign."
+    }
+  ],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

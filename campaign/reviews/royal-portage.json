@@ -1,0 +1,14 @@
+{
+  "word": "portage",
+  "url": "https://coined-word.orst.go.th/func_lookup.php",
+  "request": {
+    "word": "portage",
+    "funcName": "lookupWord",
+    "book_id": "0",
+    "status": "lookup",
+    "loc": ""
+  },
+  "status": 200,
+  "sha256": "11915cd5c629f56058b09e7e889b85a4b7ff703333a3252ee6e0ce6eabbb7742",
+  "text": "ผลการค้นหา \" portage \" ภูมิศาสตร์ portage การยกเรือข้าม; ท่ายกเรือข้าม"
+}

@@ -1,0 +1,969 @@
+{
+  "id": "native-general-015",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[dock no properties]",
+      "key": "[dock no properties]",
+      "source": "This object has no editable properties.",
+      "target": "วัตถุ​นี้​ไม่มี​คุณสมบัติ​ใด ๆ ที่​สามารถ​แก้ไข​ได้"
+    },
+    {
+      "id": "native:[focus brush search]",
+      "key": "[focus brush search]",
+      "source": "Search brushes",
+      "target": "แปรง​ค้นหา"
+    },
+    {
+      "id": "native:[switch to resources view]",
+      "key": "[switch to resources view]",
+      "source": "Switch to resources view",
+      "target": "เปลี่ยน​ไป​ที่​มุม​มอง​ทรัพยากร"
+    },
+    {
+      "id": "native:[dock resources base]",
+      "key": "[dock resources base]",
+      "source": "Standard resources",
+      "target": "ทรัพยากร​มาตรฐาน"
+    },
+    {
+      "id": "native:[dock fertility stale]",
+      "key": "[dock fertility stale]",
+      "source": "The fertility map is out of date.",
+      "target": "แผนที่​อัตรา​การ​เจริญ​พันธุ์​นั้น​ล้า​สมัย​แล้ว"
+    },
+    {
+      "id": "native:[dock fertility refresh]",
+      "key": "[dock fertility refresh]",
+      "source": "Refresh fertility",
+      "target": "ฟื้นฟู​ภาวะ​เจริญ​พันธุ์"
+    },
+    {
+      "id": "native:[Enabled %0 for this map]",
+      "key": "[Enabled %0 for this map]",
+      "source": "Enabled %0 for this map",
+      "target": "เปิด​ใช้​งาน %0 สำหรับ​แผนที่​นี้"
+    },
+    {
+      "id": "native:[editor fertility tap refresh]",
+      "key": "[editor fertility tap refresh]",
+      "source": "Fertility map out of date: tap to refresh",
+      "target": "แผนที่​แสดง​อัตรา​การ​เจริญ​พันธุ์​ล้า​สมัย​แล้ว : แตะ​เพื่อ​รีเฟรช"
+    },
+    {
+      "id": "native:[editor menu import set]",
+      "key": "[editor menu import set]",
+      "source": "Import Terrain & Resource Set",
+      "target": "นำ​เข้า​ชุด​ภูมิประเทศ​และ​ทรัพยากร"
+    },
+    {
+      "id": "native:[editor menu set library]",
+      "key": "[editor menu set library]",
+      "source": "Set Library",
+      "target": "ชุด​ห้อง​สมุด"
+    },
+    {
+      "id": "native:[set library loading]",
+      "key": "[set library loading]",
+      "source": "Loading sets…",
+      "target": "กำลัง​โหลด​ชุด​ข้อมูล…"
+    },
+    {
+      "id": "native:[set library downloading]",
+      "key": "[set library downloading]",
+      "source": "Downloading exact release…",
+      "target": "กำลัง​ดาวน์โหลด​เวอร์ชัน​ที่​แน่นอน..."
+    },
+    {
+      "id": "native:[set library connection error]",
+      "key": "[set library connection error]",
+      "source": "Cannot load sets. Check your connection and try again.",
+      "target": "ไม่​สามารถ​โหลด​ชุด​ข้อมูล​ได้ โปรด​ตรวจ​สอบ​การ​เชื่อม​ต่อ​ของ​คุณ​แล้ว​ลอง​ใหม่​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[set library hash error]",
+      "key": "[set library hash error]",
+      "source": "Downloaded set failed its hash check.",
+      "target": "ชุด​ข้อมูล​ที่​ดาวน์โหลด​ไม่​ผ่าน​การ​ตรวจ​สอบ​แฮช"
+    },
+    {
+      "id": "native:[set library package error]",
+      "key": "[set library package error]",
+      "source": "Invalid set package.",
+      "target": "ชุด​แพ็ก​เกจ​ไม่​ถูก​ต้อง"
+    },
+    {
+      "id": "native:[set library listing error]",
+      "key": "[set library listing error]",
+      "source": "Invalid set listing.",
+      "target": "รายการ​ชุด​ข้อมูล​ไม่​ถูก​ต้อง"
+    },
+    {
+      "id": "native:[set library release error]",
+      "key": "[set library release error]",
+      "source": "Invalid set release.",
+      "target": "การ​ปล่อย​ชุด​ข้อมูล​ไม่​ถูก​ต้อง"
+    },
+    {
+      "id": "native:[set library selection help]",
+      "key": "[set library selection help]",
+      "source": "Select entries to import. Required custom resources are included automatically.",
+      "target": "เลือก​รายการ​ที่​จะ​นำ​เข้า ทรัพยากร​ที่​กำหนด​เอง​ที่​จำเป็น​จะ​ถูก​รวม​ไว้​โดย​อัตโนมัติ"
+    },
+    {
+      "id": "native:[set library empty]",
+      "key": "[set library empty]",
+      "source": "No sets found.",
+      "target": "ไม่​พบ​ชุด​ข้อ​มูล​ใดๆ"
+    },
+    {
+      "id": "native:[set library release help]",
+      "key": "[set library release help]",
+      "source": "Choose an exact release to inspect and import.",
+      "target": "เลือก​เวอร์ชัน​ที่​ต้องการ​ตรวจ​สอบ​และ​นำ​เข้า"
+    },
+    {
+      "id": "native:[set library heading]",
+      "key": "[set library heading]",
+      "source": "Terrain & resource sets",
+      "target": "ชุด​ภูมิประเทศ​และ​ทรัพยากร"
+    },
+    {
+      "id": "native:[set library browse]",
+      "key": "[set library browse]",
+      "source": "Browse online library",
+      "target": "เรียก​ดู​ห้อง​สมุด​ออนไลน์"
+    },
+    {
+      "id": "native:[set library local]",
+      "key": "[set library local]",
+      "source": "Map content, credits & local edits",
+      "target": "เนื้อหา​แผนที่ เครดิต และ​การ​แก้ไข​ใน​พื้นที่"
+    },
+    {
+      "id": "native:[set library local help]",
+      "key": "[set library local help]",
+      "source": "Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release.",
+      "target": "แก้ไข​สำเนา​แผนที่​นี้ เครดิต​การ​เผย​แพร่​ดั้งเดิม​ยัง​คง​อยู่ การ​เปลี่ยนแปลง​จะ​ไม่​ส่ง​ผล​ต่อ​แผนที่​อื่น​หรือ​เวอร์ชัน​ออนไลน์"
+    },
+    {
+      "id": "native:[set library apply]",
+      "key": "[set library apply]",
+      "source": "Apply local changes",
+      "target": "ปรับ​ใช้​การ​เปลี่ยนแปลง​ใน​ท้อง​ถิ่น"
+    },
+    {
+      "id": "native:[set library updated]",
+      "key": "[set library updated]",
+      "source": "Local content updated.",
+      "target": "เนื้อหา​ใน​พื้นที่​ได้​รับ​การ​อัปเดต​แล้ว"
+    },
+    {
+      "id": "native:[set library search hint]",
+      "key": "[set library search hint]",
+      "source": "Search themes and creators",
+      "target": "ค้นหา​ธีม​และ​ผู้​สร้าง"
+    },
+    {
+      "id": "native:[set library search]",
+      "key": "[set library search]",
+      "source": "Search",
+      "target": "ค้นหา"
+    },
+    {
+      "id": "native:[set library set]",
+      "key": "[set library set]",
+      "source": "Set",
+      "target": "ชุด"
+    },
+    {
+      "id": "native:[set library update help]",
+      "key": "[set library update help]",
+      "source": "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.",
+      "target": "นี่​เป็นการ​แทนที่​ภูมิประเทศ​และ​ทรัพยากร​ที่​วาง​ไว้​เดิม​อย่าง​ชัดเจน รวม​ถึง​การ​แก้ไข​เฉพาะ​จุด​ด้วย รายการ​ที่​ถูก​ลบ​จะ​ยัง​คง​อยู่​ใน​เวอร์ชัน​เก่า ปริมาณ​วัสดุ​ที่​มี​อยู่​จะ​ถูก​จำกัด​ตาม​ความ​จุ​ใหม่"
+    },
+    {
+      "id": "native:[set library import]",
+      "key": "[set library import]",
+      "source": "Import selected entries",
+      "target": "นำ​เข้า​ข้อมูล​ที่​เลือก"
+    },
+    {
+      "id": "native:[set library next]",
+      "key": "[set library next]",
+      "source": "Next page",
+      "target": "หน้า​ถัด​ไป"
+    },
+    {
+      "id": "native:[set library back]",
+      "key": "[set library back]",
+      "source": "Back to results",
+      "target": "กลับ​สู่​ผลลัพธ์"
+    },
+    {
+      "id": "native:[set library license %0]",
+      "key": "[set library license %0]",
+      "source": "License: %0",
+      "target": "ใบ​อนุญาต : %0"
+    },
+    {
+      "id": "native:[set library release %0]",
+      "key": "[set library release %0]",
+      "source": "release %0",
+      "target": "ปล่อย %0"
+    },
+    {
+      "id": "native:[set library replace %0]",
+      "key": "[set library replace %0]",
+      "source": "Replace placed entries from release %0",
+      "target": "แทนที่​รายการ​ที่​วาง​ไว้​จาก​เวอร์ชัน %0"
+    },
+    {
+      "id": "native:[set library preview limit]",
+      "key": "[set library preview limit]",
+      "source": "Previews are shown for the first 64 entries. All entries remain selectable.",
+      "target": "แสดง​ตัวอย่าง​สำหรับ 64 รายการ​แรก รายการ​ทั้งหมด​สามารถ​เลือก​ดู​ได้"
+    },
+    {
+      "id": "native:[set library definition]",
+      "key": "[set library definition]",
+      "source": "Properties definition (JSON)",
+      "target": "การ​กำหนด​คุณสมบัติ ( JSON )"
+    },
+    {
+      "id": "native:[set library artwork]",
+      "key": "[set library artwork]",
+      "source": "Terrain artwork mapping (JSON)",
+      "target": "การ​สร้าง​แผนที่​ภูมิประเทศ ( JSON )"
+    },
+    {
+      "id": "native:[stat band area upkeep]",
+      "key": "[stat band area upkeep]",
+      "source": "Area upkeep",
+      "target": "การ​บำรุง​รักษา​พื้นที่"
+    },
+    {
+      "id": "native:[outcome reason eliminated]",
+      "key": "[outcome reason eliminated]",
+      "source": "Colony eliminated.",
+      "target": "กำจัด​อาณานิคม​เรียบร้อย​แล้ว"
+    },
+    {
+      "id": "native:[outcome reason opponents defeated]",
+      "key": "[outcome reason opponents defeated]",
+      "source": "All opponents defeated.",
+      "target": "ฝ่าย​ตรง​ข้าม​ทั้งหมด​พ่าย​แพ้​แล้ว"
+    },
+    {
+      "id": "native:[outcome reason ally won]",
+      "key": "[outcome reason ally won]",
+      "source": "An allied colony won.",
+      "target": "อาณานิคม​พันธมิตร​เป็น​ฝ่าย​ชนะ"
+    },
+    {
+      "id": "native:[outcome reason prestige]",
+      "key": "[outcome reason prestige]",
+      "source": "Prestige goal reached.",
+      "target": "บรรลุ​เป้า​หมาย​ด้าน​เกียรติยศ​แล้ว"
+    },
+    {
+      "id": "native:[outcome reason scenario]",
+      "key": "[outcome reason scenario]",
+      "source": "Scenario rules decided the outcome.",
+      "target": "กฎ​ของ​สถานการณ์​เป็น​ตัว​กำหนด​ผลลัพธ์"
+    },
+    {
+      "id": "native:[outcome reason timer]",
+      "key": "[outcome reason timer]",
+      "source": "Time limit reached.",
+      "target": "หมด​เวลา​แล้ว"
+    },
+    {
+      "id": "native:[outcome reason probability]",
+      "key": "[outcome reason probability]",
+      "source": "Win probability threshold reached.",
+      "target": "ความ​น่า​จะ​เป็น​ใน​การ​ชนะ​ถึง​เกณฑ์​ที่​กำหนด​แล้ว"
+    },
+    {
+      "id": "native:[Discord community]",
+      "key": "[Discord community]",
+      "source": "Discord community",
+      "target": "ชุมชน Discord"
+    },
+    {
+      "id": "native:[Globulation 2 Discord]",
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "target": "ดิส​คอร์ด Globulation 2"
+    },
+    {
+      "id": "native:[discord community intro]",
+      "key": "[discord community intro]",
+      "source": "Find opponents, ask for help, and share your maps with the Globulation 2 community.",
+      "target": "ค้นหา​คู่​ต่อสู้ ขอ​ความ​ช่วย​เหลือ และ​แบ่ง​ปัน​แผนที่​ของ​คุณ​กับ​ชุมชน Globulation 2"
+    },
+    {
+      "id": "native:[discord opens externally]",
+      "key": "[discord opens externally]",
+      "source": "Join our Discord server. This opens Discord or your browser.",
+      "target": "เข้า​ร่วม​เซิร์ฟเวอร์ Discord ของ​เรา (คลิก​ที่​นี่​เพื่อ​เปิด Discord หรือ​เบราว์เซอร์​ของ​คุณ)"
+    },
+    {
+      "id": "native:[Join Discord]",
+      "key": "[Join Discord]",
+      "source": "Join Discord",
+      "target": "เข้า​ร่วม Discord"
+    },
+    {
+      "id": "native:[Copy link]",
+      "key": "[Copy link]",
+      "source": "Copy link",
+      "target": "คัด​ลิงก์"
+    },
+    {
+      "id": "native:[discord opened]",
+      "key": "[discord opened]",
+      "source": "Discord opened. You can return to the game at any time.",
+      "target": "Discord เปิด​แล้ว คุณ​สามารถ​กลับ​เข้า​เกม​ได้​ทุก​เมื่อ"
+    },
+    {
+      "id": "native:[discord open failed]",
+      "key": "[discord open failed]",
+      "source": "Could not open Discord. Copy the invitation link and open it in your browser.",
+      "target": "ไม่​สามารถ​เปิด Discord ได้ โป​รด​คัด​ลink คำ​เชิญ​แล้ว​เปิด​ใน​เบราว์เซอร์​ของ​คุณ"
+    },
+    {
+      "id": "native:[discord link copied]",
+      "key": "[discord link copied]",
+      "source": "Invitation link copied.",
+      "target": "คัด​ลอก​ลิงก์​คำ​เชิญ​แล้ว"
+    },
+    {
+      "id": "native:[Which hand holds your phone?]",
+      "key": "[Which hand holds your phone?]",
+      "source": "Left or right hand?",
+      "target": "มือ​ซ้าย​หรือ​มือขวา?"
+    },
+    {
+      "id": "native:[hand preference explanation]",
+      "key": "[hand preference explanation]",
+      "source": "Hold your phone naturally. Tap the hand you play with.",
+      "target": "ถือ​โทรศัพท์​ใน​ท่า​ที่​เป็น​ธรรมชาติ แล้ว​แตะ​ด้วย​มือ​ข้าง​ที่​คุณ​ใช้​เล่น"
+    },
+    {
+      "id": "native:[hand silhouettes description]",
+      "key": "[hand silhouettes description]",
+      "source": "A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.",
+      "target": "ภาพ​ร่าง​โทรศัพท์​ที่​มี​มือ​ซ้าย​และ​ขวา​อยู่​ด้าน​บน กด​ที่​ไอคอน​รูป​นิ้ว​โป้ง​ด้าน​ใด​ด้าน​หนึ่ง​เพื่อ​เลือก​ด้าน​นั้น"
+    },
+    {
+      "id": "native:[hand preference change later]",
+      "key": "[hand preference change later]",
+      "source": "You can change sides later in Settings.",
+      "target": "คุณ​สามารถ​เปลี่ยน​ด้าน​ได้​ใน​ภาย​หลัง​ผ่าน​การ​ตั้ง​ค่า"
+    },
+    {
+      "id": "native:[hand preference save failed]",
+      "key": "[hand preference save failed]",
+      "source": "Could not save your choice. Please try again.",
+      "target": "ไม่​สามารถ​บันทึก​ตัว​เลือก​ของ​คุณ​ได้ โปรด​ลอง​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[Left hand]",
+      "key": "[Left hand]",
+      "source": "Left hand",
+      "target": "มือ​ซ้าย"
+    },
+    {
+      "id": "native:[Right hand]",
+      "key": "[Right hand]",
+      "source": "Right hand",
+      "target": "มือขวา"
+    },
+    {
+      "id": "native:[discord copy failed]",
+      "key": "[discord copy failed]",
+      "source": "Could not copy the link. Select the invitation above to copy it manually.",
+      "target": "ไม่​สามารถ​คัด​ลิงก์​ได้ โปรด​เลือก​คำ​เชิญ​ด้าน​บน​เพื่อ​คัด​ลิงก์​ด้วย​ตนเอง"
+    },
+    {
+      "id": "native:[stat ground movement]",
+      "key": "[stat ground movement]",
+      "source": "Ground movement",
+      "target": "การ​เคลื่อน​ตัว​ของ​พื้น​ดิน"
+    },
+    {
+      "id": "native:[stat ground movement about]",
+      "key": "[stat ground movement about]",
+      "source": "Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.",
+      "target": "หน่วย​เคลื่อนที่​บน​พื้น​ดิน​โดย​ประมาณ​ตาม​อัตราส่วน​ความเร็ว 'ว่าย​น้ำ 2 เท่า' หมาย​ถึง​ว่าย​น้ำ​เร็ว​กว่า​วิ่ง​สอง​เท่า ไม่​รวม​หน่วย​บิน​และ​หน่วย​ที่​อยู่​กับ​ที่"
+    },
+    {
+      "id": "native:[stat view by movement]",
+      "key": "[stat view by movement]",
+      "source": "By movement",
+      "target": "โดย​การ​เคลื่อนไหว"
+    },
+    {
+      "id": "native:[stat band land only]",
+      "key": "[stat band land only]",
+      "source": "Land only",
+      "target": "ที่ดิน​เท่านั้น"
+    },
+    {
+      "id": "native:[stat band swim twice run]",
+      "key": "[stat band swim twice run]",
+      "source": "Swim 2x",
+      "target": "ว่าย​น้ำ 2 ครั้ง"
+    },
+    {
+      "id": "native:[stat band swim faster run]",
+      "key": "[stat band swim faster run]",
+      "source": "Swim 1.4x",
+      "target": "ว่าย​น้ำ 1.4x"
+    },
+    {
+      "id": "native:[stat band swim equals run]",
+      "key": "[stat band swim equals run]",
+      "source": "Equal",
+      "target": "เท่า​กัน"
+    },
+    {
+      "id": "native:[stat band run faster swim]",
+      "key": "[stat band run faster swim]",
+      "source": "Run 1.3x",
+      "target": "รัน 1.3x"
+    },
+    {
+      "id": "native:[stat band run twice swim]",
+      "key": "[stat band run twice swim]",
+      "source": "Run 2x",
+      "target": "วิ่ง 2 ครั้ง"
+    },
+    {
+      "id": "native:[stat band run triple swim]",
+      "key": "[stat band run triple swim]",
+      "source": "Run 3x",
+      "target": "วิ่ง 3 ครั้ง"
+    },
+    {
+      "id": "native:[stat band water only]",
+      "key": "[stat band water only]",
+      "source": "Water only",
+      "target": "น้ำ​เปล่า​เท่านั้น"
+    },
+    {
+      "id": "native:[hive stopping]",
+      "key": "[hive stopping]",
+      "source": "Stopping…",
+      "target": "กำลัง​หยุด…"
+    },
+    {
+      "id": "native:[hive stopped]",
+      "key": "[hive stopped]",
+      "source": "Stopped",
+      "target": "หยุด"
+    },
+    {
+      "id": "native:[hive stop failed]",
+      "key": "[hive stop failed]",
+      "source": "Stop failed; retry the stop shortcut",
+      "target": "การ​หยุด​ล้ม​เหลว ลอง​ใช้​ทาง​ลัด​การ​หยุด​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[hive updating]",
+      "key": "[hive updating]",
+      "source": "Updating…",
+      "target": "กำลัง​อัปเดต…"
+    },
+    {
+      "id": "native:[hive requested]",
+      "key": "[hive requested]",
+      "source": "Requested",
+      "target": "ร้องขอ"
+    },
+    {
+      "id": "native:[hive update failed]",
+      "key": "[hive update failed]",
+      "source": "Update failed; try again",
+      "target": "การ​อัปเดต​ล้ม​เหลว โปรด​ลอง​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[hive give order]",
+      "key": "[hive give order]",
+      "source": "Give order",
+      "target": "สั่ง​การ"
+    },
+    {
+      "id": "native:[hive less]",
+      "key": "[hive less]",
+      "source": "Less",
+      "target": "น้อย"
+    },
+    {
+      "id": "native:[hive reports and details]",
+      "key": "[hive reports and details]",
+      "source": "Reports / details",
+      "target": "รายงาน / ราย​ละเอียด"
+    },
+    {
+      "id": "native:[hive needs fresh order]",
+      "key": "[hive needs fresh order]",
+      "source": "Needs a fresh order",
+      "target": "ต้อง​สั่ง​ใหม่"
+    },
+    {
+      "id": "native:[hive active]",
+      "key": "[hive active]",
+      "source": "Active",
+      "target": "คล่องแคล่ว"
+    },
+    {
+      "id": "native:[hive resume]",
+      "key": "[hive resume]",
+      "source": "Resume",
+      "target": "ประวัติ​ย่อ"
+    },
+    {
+      "id": "native:[recordings]",
+      "key": "[recordings]",
+      "source": "Recordings",
+      "target": "การ​บันทึก"
+    },
+    {
+      "id": "native:[recording delete confirm]",
+      "key": "[recording delete confirm]",
+      "source": "Delete recording?",
+      "target": "ลบ​การ​บันทึก?"
+    },
+    {
+      "id": "native:[recording delete warning]",
+      "key": "[recording delete warning]",
+      "source": "The recording and its metadata will be removed.",
+      "target": "ไฟล์​บันทึก​และ​ข้อมูล​เม​ตา​ของ​ไฟล์​จะ​ถูก​ลบ​ออก"
+    },
+    {
+      "id": "native:[recording delete]",
+      "key": "[recording delete]",
+      "source": "Delete",
+      "target": "ลบ"
+    },
+    {
+      "id": "native:[recording working]",
+      "key": "[recording working]",
+      "source": "Working…",
+      "target": "การ​ทำงาน…"
+    },
+    {
+      "id": "native:[recording none]",
+      "key": "[recording none]",
+      "source": "No recordings yet.",
+      "target": "ยัง​ไม่มี​การ​บัน​ทึก​ใดๆ"
+    },
+    {
+      "id": "native:[recording interrupted]",
+      "key": "[recording interrupted]",
+      "source": "Interrupted recording",
+      "target": "การ​บันทึก​ถูก​ขัดจังหวะ"
+    },
+    {
+      "id": "native:[recording recover]",
+      "key": "[recording recover]",
+      "source": "Recover",
+      "target": "ฟื้น​ตัว"
+    },
+    {
+      "id": "native:[recording export video]",
+      "key": "[recording export video]",
+      "source": "Export video",
+      "target": "ส่ง​ออก​วิดีโอ"
+    },
+    {
+      "id": "native:[recording export metadata]",
+      "key": "[recording export metadata]",
+      "source": "Export metadata",
+      "target": "ส่ง​ออก​ข้อมูล​เม​ตา"
+    },
+    {
+      "id": "native:[recording export events]",
+      "key": "[recording export events]",
+      "source": "Export events",
+      "target": "กิจกรรม​การ​ส่ง​ออก"
+    },
+    {
+      "id": "native:[recording export failed]",
+      "key": "[recording export failed]",
+      "source": "Could not export recording.",
+      "target": "ไม่​สามารถ​ส่ง​ออก​ไฟล์​บันทึก​ได้"
+    },
+    {
+      "id": "native:[recording delete action]",
+      "key": "[recording delete action]",
+      "source": "Delete recording",
+      "target": "ลบ​การ​บันทึก"
+    },
+    {
+      "id": "native:[recording refresh]",
+      "key": "[recording refresh]",
+      "source": "Refresh",
+      "target": "รีเฟรช"
+    },
+    {
+      "id": "native:[library  Could not restore the previous library: %0]",
+      "key": "[library  Could not restore the previous library: %0]",
+      "source": " Could not restore the previous library: %0",
+      "target": " ไม่​สามารถ​กู้​คืน​ไลบรารี​เดิม​ได้ : %0"
+    },
+    {
+      "id": "native:[library  The previous library is retained.]",
+      "key": "[library  The previous library is retained.]",
+      "source": " The previous library is retained.",
+      "target": " ไลบรารี​เดิม​ยัง​คง​อยู่"
+    },
+    {
+      "id": "native:[library  · Installed]",
+      "key": "[library  · Installed]",
+      "source": " · Installed",
+      "target": " · ติด​ตั้ง​แล้ว"
+    },
+    {
+      "id": "native:[library  · Update available]",
+      "key": "[library  · Update available]",
+      "source": " · Update available",
+      "target": " · มี​การ​อัปเดต​แล้ว"
+    },
+    {
+      "id": "native:[library A different release is installed. Install the selected release to update explicitly.]",
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "source": "A different release is installed. Install the selected release to update explicitly.",
+      "target": "มี​การ​ติด​ตั้ง​เวอร์ชัน​อื่น​อยู่ โปรด​ติด​ตั้ง​เวอร์ชัน​ที่​เลือก​เพื่อ​อัปเดต​อย่าง​ชัดเจน"
+    },
+    {
+      "id": "native:[library All engines]",
+      "key": "[library All engines]",
+      "source": "All engines",
+      "target": "เครื่องยนต์​ทั้งหมด"
+    },
+    {
+      "id": "native:[library Available families]",
+      "key": "[library Available families]",
+      "source": "Available families",
+      "target": "ครอบครัว​ที่​พร้อม​ให้​รับ​เลี้ยง"
+    },
+    {
+      "id": "native:[library Back]",
+      "key": "[library Back]",
+      "source": "Back",
+      "target": "กลับ"
+    },
+    {
+      "id": "native:[library Choose an online instance before opening a family link.]",
+      "key": "[library Choose an online instance before opening a family link.]",
+      "source": "Choose an online instance before opening a family link.",
+      "target": "เลือก​อิน​ส​แตน​ซ์​ออนไลน์​ก่อน​เปิด​ใช้​งานการ​เชื่อม​โยง​ครอบครัว"
+    },
+    {
+      "id": "native:[library Compatible with this engine]",
+      "key": "[library Compatible with this engine]",
+      "source": "Compatible with this engine",
+      "target": "ใช้​งาน​ร่วม​กับ​เครื่องยนต์​นี้​ได้"
+    },
+    {
+      "id": "native:[library Confirm replacement]",
+      "key": "[library Confirm replacement]",
+      "source": "Confirm replacement",
+      "target": "ยืนยัน​การ​เปลี่ยน​สินค้า"
+    },
+    {
+      "id": "native:[library Editor tools]",
+      "key": "[library Editor tools]",
+      "source": "Editor tools",
+      "target": "เครื่อง​มือ​แก้ไข"
+    },
+    {
+      "id": "native:[library Family link or ID]",
+      "key": "[library Family link or ID]",
+      "source": "Family link or ID",
+      "target": "ความ​สัมพันธ์​ทาง​ครอบครัว​หรือ​บัตร​ประจำ​ตัว​ประชาชน"
+    },
+    {
+      "id": "native:[library Family links must be at most 1024 characters.]",
+      "key": "[library Family links must be at most 1024 characters.]",
+      "source": "Family links must be at most 1024 characters.",
+      "target": "ลิงก์​ครอบครัว​ต้อง​มี​ความ​ยาว​ไม่​เกิน 1024 ตัว​อักษร"
+    },
+    {
+      "id": "native:[library Family removed.]",
+      "key": "[library Family removed.]",
+      "source": "Family removed.",
+      "target": "ครอบครัว​ถูก​พา​ตัว​ออก​ไป​แล้ว"
+    },
+    {
+      "id": "native:[library Family unavailable. Private families require signing in through Online with an account that can access them.]",
+      "key": "[library Family unavailable. Private families require signing in through Online with an account that can access them.]",
+      "source": "Family unavailable. Private families require signing in through Online with an account that can access them.",
+      "target": "ครอบครัว​ไม่​พร้อม​ให้​บริการ ครอบครัว​ส่วน​ตัว​ต้อง​ลงชื่อ​เข้า​ใช้​ผ่าน​ระบบ​ออนไลน์​ด้วย​บัญชี​ที่​สามารถ​เข้า​ถึง​พวก​เขา​ได้"
+    },
+    {
+      "id": "native:[library Install compatible release]",
+      "key": "[library Install compatible release]",
+      "source": "Install compatible release",
+      "target": "ติด​ตั้ง​เวอร์ชัน​ที่​เข้า​กัน​ได้"
+    },
+    {
+      "id": "native:[library Install selected release]",
+      "key": "[library Install selected release]",
+      "source": "Install selected release",
+      "target": "ติด​ตั้ง​เวอร์ชัน​ที่​เลือก"
+    },
+    {
+      "id": "native:[library Installed]",
+      "key": "[library Installed]",
+      "source": "Installed",
+      "target": "ติด​ตั้ง​แล้ว"
+    },
+    {
+      "id": "native:[library Installed families]",
+      "key": "[library Installed families]",
+      "source": "Installed families",
+      "target": "ครอบครัว​ที่​เข้า​มา"
+    },
+    {
+      "id": "native:[library Installed. Enable the family below for new maps.]",
+      "key": "[library Installed. Enable the family below for new maps.]",
+      "source": "Installed. Enable the family below for new maps.",
+      "target": "ติด​ตั้ง​เรียบร้อย​แล้ว เปิด​ใช้​งาน​กลุ่ม​ไฟล์​ด้าน​ล่าง​เพื่อ​รับ​แผนที่​ใหม่"
+    },
+    {
+      "id": "native:[library Invalid library cursor]",
+      "key": "[library Invalid library cursor]",
+      "source": "Invalid library cursor",
+      "target": "เคอร์เซอร์​ไลบรารี​ไม่​ถูก​ต้อง"
+    },
+    {
+      "id": "native:[library Invalid release identity]",
+      "key": "[library Invalid release identity]",
+      "source": "Invalid release identity",
+      "target": "รหัส​การ​เผย​แพร่​ไม่​ถูก​ต้อง"
+    },
+    {
+      "id": "native:[library Load more]",
+      "key": "[library Load more]",
+      "source": "Load more",
+      "target": "โหลด​เพิ่ม​เติม"
+    },
+    {
+      "id": "native:[library Load more families]",
+      "key": "[library Load more families]",
+      "source": "Load more families",
+      "target": "เพิ่ม​ข้อมูล​ครอบครัว​เพิ่ม​เติม"
+    },
+    {
+      "id": "native:[library Loading…]",
+      "key": "[library Loading…]",
+      "source": "Loading…",
+      "target": "กำลัง​โหลด…"
+    },
+    {
+      "id": "native:[library Maps]",
+      "key": "[library Maps]",
+      "source": "Maps",
+      "target": "แผนที่"
+    },
+    {
+      "id": "native:[library Most downloaded]",
+      "key": "[library Most downloaded]",
+      "source": "Most downloaded",
+      "target": "ดาวน์โหลด​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[library Most liked]",
+      "key": "[library Most liked]",
+      "source": "Most liked",
+      "target": "ถูกใจ​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[library Newest]",
+      "key": "[library Newest]",
+      "source": "Newest",
+      "target": "ใหม่​ล่าสุด"
+    },
+    {
+      "id": "native:[library No validated release for this game version.]",
+      "key": "[library No validated release for this game version.]",
+      "source": "No validated release for this game version.",
+      "target": "ยัง​ไม่มี​การ​ตรวจ​สอบ​ความ​ถูก​ต้อง​ของ​เวอร์ชัน​เกม​นี้"
+    },
+    {
+      "id": "native:[library Online server changed during download]",
+      "key": "[library Online server changed during download]",
+      "source": "Online server changed during download",
+      "target": "เซิร์ฟเวอร์​ออนไลน์​เปลี่ยน​ระหว่าง​การ​ดาวน์โหลด"
+    },
+    {
+      "id": "native:[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "source": "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+      "target": "เปิด​ดู​ครอบครัว​ที่​ยัง​ไม่​ได้​ลง​ทะเบียน​โดย​ใช้​ลิงก์​หรือ​รหัส​ประจำ​ตัว สำหรับ​ครอบครัว​ส่วน​ตัว โปรด​ลงชื่อ​เข้า​ใช้​ผ่าน​ระบบ​ออนไลน์​ก่อน"
+    },
+    {
+      "id": "native:[library Open family]",
+      "key": "[library Open family]",
+      "source": "Open family",
+      "target": "ครอบครัว​เปิด​กว้าง"
+    },
+    {
+      "id": "native:[library Opened family. Install its compatible release below.]",
+      "key": "[library Opened family. Install its compatible release below.]",
+      "source": "Opened family. Install its compatible release below.",
+      "target": "เปิด​ตระกูล​โปรแกรม​แล้ว ติด​ตั้ง​เวอร์ชัน​ที่​เข้า​กัน​ได้​ด้าน​ล่าง"
+    },
+    {
+      "id": "native:[library Playable]",
+      "key": "[library Playable]",
+      "source": "Playable",
+      "target": "เล่น​ได้"
+    },
+    {
+      "id": "native:[library Privacy policy]",
+      "key": "[library Privacy policy]",
+      "source": "Privacy policy",
+      "target": "นโยบาย​ความ​เป็น​ส่วน​ตัว"
+    },
+    {
+      "id": "native:[library Public library]",
+      "key": "[library Public library]",
+      "source": "Public library",
+      "target": "ห้อง​สมุด​สาธารณะ"
+    },
+    {
+      "id": "native:[library Recently updated]",
+      "key": "[library Recently updated]",
+      "source": "Recently updated",
+      "target": "อัปเดต​ล่าสุด"
+    },
+    {
+      "id": "native:[library Refresh library]",
+      "key": "[library Refresh library]",
+      "source": "Refresh library",
+      "target": "รีเฟรช​ไลบรารี"
+    },
+    {
+      "id": "native:[library Release identity changed during installation]",
+      "key": "[library Release identity changed during installation]",
+      "source": "Release identity changed during installation",
+      "target": "รหัส​การ​วาง​จำหน่าย​ถูก​เปลี่ยนแปลง​ระหว่าง​การ​ติด​ตั้ง"
+    },
+    {
+      "id": "native:[library Reroll]",
+      "key": "[library Reroll]",
+      "source": "Reroll",
+      "target": "สุ่ม​ใหม่"
+    },
+    {
+      "id": "native:[library Reroll seed]",
+      "key": "[library Reroll seed]",
+      "source": "Reroll seed",
+      "target": "สุ่ม​เมล็ด​พันธุ์​ใหม่"
+    },
+    {
+      "id": "native:[library Search]",
+      "key": "[library Search]",
+      "source": "Search",
+      "target": "ค้นหา"
+    },
+    {
+      "id": "native:[library Seed]",
+      "key": "[library Seed]",
+      "source": "Seed",
+      "target": "เมล็ด​พันธุ์"
+    },
+    {
+      "id": "native:[library Selection saved for new maps.]",
+      "key": "[library Selection saved for new maps.]",
+      "source": "Selection saved for new maps.",
+      "target": "บันทึก​การ​เลือก​ไว้​สำหรับ​แผนที่​ใหม่​แล้ว"
+    },
+    {
+      "id": "native:[library Storage failed.]",
+      "key": "[library Storage failed.]",
+      "source": "Storage failed.",
+      "target": "การ​จัด​เก็บ​ข้อมูล​ล้ม​เหลว"
+    },
+    {
+      "id": "native:[library Storage persistence unavailable]",
+      "key": "[library Storage persistence unavailable]",
+      "source": "Storage persistence unavailable",
+      "target": "ไม่​สามารถ​ใช้​งานการ​จัด​เก็บ​ข้อมูล​แบบ​ถาวร​ได้"
+    },
+    {
+      "id": "native:[library Tags]",
+      "key": "[library Tags]",
+      "source": "Tags",
+      "target": "แท็ก"
+    },
+    {
+      "id": "native:[library Technical checks passed for this engine. Balance is not certified.]",
+      "key": "[library Technical checks passed for this engine. Balance is not certified.]",
+      "source": "Technical checks passed for this engine. Balance is not certified.",
+      "target": "เครื่องยนต์​นี้​ผ่าน​การ​ตรวจ​สอบ​ทาง​เทคนิค​แล้ว แต่​การ​ปรับ​สมดุล​ไม่​ได้​รับ​การ​รับรอง"
+    },
+    {
+      "id": "native:[library The server returned a different family.]",
+      "key": "[library The server returned a different family.]",
+      "source": "The server returned a different family.",
+      "target": "เซิร์ฟเวอร์​ส่ง​ข้อมูล​ครอบครัว​อื่น​กลับ​มา"
+    },
+    {
+      "id": "native:[library This link is from another instance. Switch to that instance in Online first.]",
+      "key": "[library This link is from another instance. Switch to that instance in Online first.]",
+      "source": "This link is from another instance. Switch to that instance in Online first.",
+      "target": "ลิงก์​นี้​มา​จา​กอินส​แตน​ซ์​อื่น โปรด​สลับ​ไป​ยัง​อิน​ส​แตน​ซ์​นั้น​ใน​โหมด​ออนไลน์​ก่อน"
+    },
+    {
+      "id": "native:[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "key": "[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "source": "This package ID is installed. Confirm replacement to use the selected release.",
+      "target": "ติด​ตั้ง​แพ็ก​เกจ ID นี้​แล้ว โปรด​ยืนยัน​การ​เปลี่ยน​เพื่อ​ใช้​เวอร์ชัน​ที่​เลือก"
+    },
+    {
+      "id": "native:[library This release has no passing checks for this engine.]",
+      "key": "[library This release has no passing checks for this engine.]",
+      "source": "This release has no passing checks for this engine.",
+      "target": "การ​เผย​แพร่​ครั้ง​นี้​ไม่มี​การ​ตรวจ​สอบ​ใดๆ ที่​ผ่าน​เกณฑ์​สำหรับ​เอน​จิ้น​นี้"
+    },
+    {
+      "id": "native:[library This release is installed.]",
+      "key": "[library This release is installed.]",
+      "source": "This release is installed.",
+      "target": "ติด​ตั้ง​เวอร์ชัน​นี้​เรียบร้อย​แล้ว"
+    },
+    {
+      "id": "native:[library Update installed family]",
+      "key": "[library Update installed family]",
+      "source": "Update installed family",
+      "target": "อัปเดต​ตระกูล​ที่​ติด​ตั้ง​แล้ว"
+    },
+    {
+      "id": "native:[library Use in a room]",
+      "key": "[library Use in a room]",
+      "source": "Use in a room",
+      "target": "ใช้​ใน​ห้อง"
+    },
+    {
+      "id": "native:[library By %0]",
+      "key": "[library By %0]",
+      "source": "By %0",
+      "target": "โดย %0"
+    },
+    {
+      "id": "native:[library Installed release %0]",
+      "key": "[library Installed release %0]",
+      "source": "Installed release %0",
+      "target": "ติด​ตั้ง​เวอร์ชัน %0"
+    }
+  ]
+}

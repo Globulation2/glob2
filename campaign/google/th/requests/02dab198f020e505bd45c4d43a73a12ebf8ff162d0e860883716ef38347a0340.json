@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Signed in as <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "Signed in on <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Signing in…",
+      "sim <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Unrated",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · update required",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> plays a newer version, so this copy can&#x27;t join online games until it updates. LAN games still work.",
+      "Update required",
+      "Server update pending",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · server update pending",
+      "This copy is newer than <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>, which hasn&#x27;t been updated to it yet. Online games will open once the server updates. LAN games still work.",
+      "Different version",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · different version",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> plays a different version of the game, so this copy can&#x27;t join online games. LAN games still work.",
+      "vs <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "AI",
+      "Downloading map <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "The match could not start.",
+      "Leave",
+      "Loading the game",
+      "Loading game graphics",
+      "already on this device",
+      "Downloading the map",
+      "Connected to relay <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Seat confirmed",
+      "Starting match",
+      "Tip<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> exploration flags send explorers to reveal the map; war flags gather your warriors.",
+      "Tip<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> your orders reach everyone after your own input delay; other players&#x27; connections don&#x27;t slow you down.",
+      "Tip<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> double-click a building to select every building of that type.",
+      "Waiting for every player",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> (you)",
+      "map",
+      "loading",
+      "connecting",
+      "ready",
+      "left",
+      "Back to online",
+      "Back to room",
+      "Find another match",
+      "Defeat",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> rating",
+      "You left the match",
+      "Match over",
+      "Match page",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> min",
+      "no change",
+      "Ranked",
+      "Recording the result…",
+      "Room match · unrated",
+      "Saved to your history",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> s",
+      "The server couldn&#x27;t reproduce this match, so it doesn&#x27;t count for anyone&#x27;s rating. It has been reported for investigation; you don&#x27;t need to do anything.",
+      "Verified · provisional",
+      "Verified",
+      "The server is replaying the match to confirm it. Usually under a minute.",
+      "Verifying result…",
+      "Victory",
+      "Address",
+      "AI<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Browser pairing",
+      "Catalog map",
+      "Change map…",
+      "Change rules…",
+      "Chat",
+      "Closed by the host",
+      "Closed",
+      "Colonies",
+      "Connecting to the room…",
+      "Copy",
+      "disconnected",
+      "Downloading map <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> %",
+      "Downloading the map…",
+      "The room has closed.",
+      "Generated once on the server, so everyone plays exactly this map.",
+      "guest",
+      "host <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "The host closed the room.",
+      "host",
+      "Humans vs AI",
+      "Code <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · opens in the app, on phones or in a browser"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เข้าสู่ระบบในฐานะ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เข้าสู่ระบบเมื่อ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "กำลังเข้าสู่ระบบ…"
+      },
+      {
+        "translatedText": "ซิม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ไม่ได้รับการจัดอันดับ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · ต้องอัปเดต"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> เล่นเวอร์ชันใหม่กว่า ดังนั้นสำเนาเครื่องนี้จึงไม่สามารถเข้าร่วมเกมออนไลน์ได้จนกว่าจะอัปเดตเสร็จ เกม LAN ยังคงใช้งานได้ตามปกติ"
+      },
+      {
+        "translatedText": "จำเป็นต้องอัปเดต"
+      },
+      {
+        "translatedText": "กำลังดำเนินการอัปเดตเซิร์ฟเวอร์"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · กำลังรอการอัปเดตเซิร์ฟเวอร์"
+      },
+      {
+        "translatedText": "สำเนานี้ใหม่กว่า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ซึ่งยังไม่ได้รับการอัปเดตเป็นเวอร์ชันนี้ เกมออนไลน์จะเปิดให้บริการเมื่อเซิร์ฟเวอร์อัปเดตแล้ว เกม LAN ยังคงใช้งานได้ตามปกติ"
+      },
+      {
+        "translatedText": "เวอร์ชันที่แตกต่างกัน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · เวอร์ชันที่แตกต่างกัน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> เล่นเกมเวอร์ชันอื่น ดังนั้นสำเนาเกมนี้จึงไม่สามารถเข้าร่วมเกมออนไลน์ได้ เกม LAN ยังคงใช้งานได้"
+      },
+      {
+        "translatedText": "เทียบกับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "AI"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดแผนที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "การแข่งขันไม่สามารถเริ่มต้นได้"
+      },
+      {
+        "translatedText": "ออกจาก"
+      },
+      {
+        "translatedText": "กำลังโหลดเกม"
+      },
+      {
+        "translatedText": "กำลังโหลดกราฟิกเกม"
+      },
+      {
+        "translatedText": "อยู่ในอุปกรณ์นี้แล้ว"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดแผนที่"
+      },
+      {
+        "translatedText": "เชื่อมต่อกับรีเลย์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ที่นั่งได้รับการยืนยันแล้ว"
+      },
+      {
+        "translatedText": "เริ่มการแข่งขัน"
+      },
+      {
+        "translatedText": "คำแนะนำ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ธงสำรวจจะส่งนักสำรวจไปเปิดเผยแผนที่ ส่วนธงสงครามจะรวบรวมนักรบของคุณ"
+      },
+      {
+        "translatedText": "คำแนะนำ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> คำสั่งของคุณจะส่งถึงทุกคนหลังจากเวลาหน่วงในการป้อนข้อมูลของคุณ การเชื่อมต่อของผู้เล่นคนอื่นจะไม่ทำให้คุณช้าลง"
+      },
+      {
+        "translatedText": "คำแนะนำ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ดับเบิ้ลคลิกที่อาคารเพื่อเลือกอาคารทุกประเภทนั้น"
+      },
+      {
+        "translatedText": "กำลังรอผู้เล่นทุกคนอยู่"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> (คุณ)"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "กำลังโหลด"
+      },
+      {
+        "translatedText": "การเชื่อมต่อ"
+      },
+      {
+        "translatedText": "พร้อม"
+      },
+      {
+        "translatedText": "ซ้าย"
+      },
+      {
+        "translatedText": "กลับสู่ระบบออนไลน์"
+      },
+      {
+        "translatedText": "กลับไปที่ห้อง"
+      },
+      {
+        "translatedText": "ค้นหาคู่ที่เหมาะสมอื่น"
+      },
+      {
+        "translatedText": "ความพ่ายแพ้"
+      },
+      {
+        "translatedText": "คะแนน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "คุณออกจากแมตช์แล้ว"
+      },
+      {
+        "translatedText": "จบการแข่งขัน"
+      },
+      {
+        "translatedText": "หน้าจับคู่"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> นาที"
+      },
+      {
+        "translatedText": "ไม่มีการเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "จัดอันดับ"
+      },
+      {
+        "translatedText": "บันทึกผลลัพธ์…"
+      },
+      {
+        "translatedText": "จับคู่ห้อง · ไม่ได้รับการจัดอันดับ"
+      },
+      {
+        "translatedText": "บันทึกไปยังประวัติการใช้งานของคุณ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> วินาที"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ไม่สามารถจำลองการแข่งขันนี้ได้ ดังนั้นจึงไม่นับรวมในคะแนนของใครเลย ได้มีการรายงานเพื่อตรวจสอบแล้ว คุณไม่จำเป็นต้องทำอะไรเพิ่มเติม"
+      },
+      {
+        "translatedText": "ตรวจสอบแล้ว · ชั่วคราว"
+      },
+      {
+        "translatedText": "ตรวจสอบแล้ว"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์กำลังเล่นแมตช์ซ้ำเพื่อยืนยัน โดยปกติจะใช้เวลาน้อยกว่าหนึ่งนาที"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบผลลัพธ์…"
+      },
+      {
+        "translatedText": "ชัยชนะ"
+      },
+      {
+        "translatedText": "ที่อยู่"
+      },
+      {
+        "translatedText": "AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "การจับคู่เบราว์เซอร์"
+      },
+      {
+        "translatedText": "แผนที่แคตตาล็อก"
+      },
+      {
+        "translatedText": "เปลี่ยนแผนที่…"
+      },
+      {
+        "translatedText": "เปลี่ยนกฎ…"
+      },
+      {
+        "translatedText": "แชท"
+      },
+      {
+        "translatedText": "ปิดโดยเจ้าภาพ"
+      },
+      {
+        "translatedText": "ปิด"
+      },
+      {
+        "translatedText": "อาณานิคม"
+      },
+      {
+        "translatedText": "กำลังเชื่อมต่อกับห้อง…"
+      },
+      {
+        "translatedText": "สำเนา"
+      },
+      {
+        "translatedText": "ตัดการเชื่อมต่อ"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดแผนที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> %"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดแผนที่…"
+      },
+      {
+        "translatedText": "ห้องดังกล่าวปิดแล้ว"
+      },
+      {
+        "translatedText": "แผนที่นี้ถูกสร้างขึ้นเพียงครั้งเดียวบนเซิร์ฟเวอร์ ดังนั้นทุกคนจึงเล่นแผนที่นี้เหมือนกันทุกประการ"
+      },
+      {
+        "translatedText": "แขก"
+      },
+      {
+        "translatedText": "โฮสต์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เจ้าของบ้านปิดห้อง"
+      },
+      {
+        "translatedText": "เจ้าภาพ"
+      },
+      {
+        "translatedText": "มนุษย์ปะทะปัญญาประดิษฐ์"
+      },
+      {
+        "translatedText": "รหัส <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · เปิดในแอป บนโทรศัพท์ หรือในเบราว์เซอร์"
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "Sign in": "ลงชื่อเข้าใช้",
+  "Sign out": "ออกจากระบบ",
+  "Play": "เล่น",
+  "Custom content credits": "ข้อมูลผู้สร้างเนื้อหาที่กำหนดเอง",
+  "Source identity": "ตัวระบุซอร์ส",
+  "{slot0} teams": "{slot0} ทีม",
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": "ต้องตรวจสอบสถานะผลจากผู้ให้บริการให้ตรงกัน เครดิต {value0} ที่กันไว้ยังคงถูกกันไว้ คำขอใหม่พักไว้ชั่วคราว ยังแก้ไขด้วยตนเองและส่งออกได้",
+  "Good under {value0}, fair under {value1}, poor from {value2}.": "ดีเมื่อต่ำกว่า {value0} พอใช้เมื่อต่ำกว่า {value1} แย่ตั้งแต่ {value2} ขึ้นไป"
+}

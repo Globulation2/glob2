@@ -1,0 +1,10 @@
+{
+  "Sign in": "Đăng nhập",
+  "Sign out": "Đăng xuất",
+  "Play": "Chơi",
+  "Custom content credits": "Tính năng cá nhân cảm ơn",
+  "Source identity": "Nguồn Identity",
+  "{slot0} teams": "{slot0} đội",
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": "Kết quả nhà cung cấp cần đối soát. {value0} điểm đã giữ chỗ của bạn vẫn bị giữ; yêu cầu mới tạm dừng. Bạn vẫn có thể chỉnh sửa thủ công và xuất dữ liệu.",
+  "Good under {value0}, fair under {value1}, poor from {value2}.": "Tốt dưới {value0}, trung bình dưới {value1}, kém từ {value2}."
+}

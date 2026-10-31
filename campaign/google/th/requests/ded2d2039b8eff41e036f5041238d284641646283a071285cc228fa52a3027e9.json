@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Measurements flag possible defects. Your ears decide whether the music feels right.",
+      "Medium",
+      "Meet the colonies. Find a player, explore their games, or get to know your next AI opponent.",
+      "Metric",
+      "Minimum seconds",
+      "Minimum total stock",
+      "Mirrored bands",
+      "Mirrored spots",
+      "Missing",
+      "Missing historical measurements are unavailable, rather than reconstructed from last-seen timestamps. Current periods may be partial. Retained account markers cover 90 days; anonymous daily totals cover 24 months.",
+      "Missing payment signature.",
+      "Mix and master",
+      "Mix balance",
+      "Model / stage",
+      "Model and camera versions do not match. Reload to update.",
+      "Model to paint",
+      "Moderate",
+      "Moderation",
+      "Moderation reason",
+      "Moderation reports",
+      "Moderation visibility",
+      "Moderator",
+      "Moderator access is required.",
+      "Mood contrast",
+      "Mood synchronization",
+      "More",
+      "More actions for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Most downloaded",
+      "Most liked",
+      "Most recent provider attempts; unavailable usage is not zero. These numbers need verification against provider evidence.",
+      "Mottled",
+      "Music",
+      "Music Studio",
+      "Music composition conversation",
+      "Music couldn’t be loaded.",
+      "Music credits",
+      "Music for your colony",
+      "Music is unavailable.",
+      "Music projects",
+      "Music reports",
+      "Music revisions",
+      "Music-credit sales are not enabled.",
+      "Musical variety",
+      "Mute <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "My AIs",
+      "My Colony",
+      "My colony",
+      "My families",
+      "My favourites",
+      "My generators",
+      "My landscape",
+      "My maps",
+      "My sets",
+      "My skins",
+      "Name",
+      "Name or content ID",
+      "Name, account id or email",
+      "Names like Guest-1234 are reserved for guests.",
+      "Navigation",
+      "Needs attention",
+      "New AI version",
+      "New building family",
+      "New composition",
+      "New display name",
+      "New here? Create an account",
+      "New map",
+      "New messages",
+      "New set",
+      "New skin",
+      "New terrain set",
+      "New to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>?",
+      "New version",
+      "Newest",
+      "Newest reports",
+      "News",
+      "Next",
+      "Next page",
+      "Next results",
+      "Next stage",
+      "Next stage<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "การวัดค่าต่างๆ ช่วยระบุข้อบกพร่องที่อาจเกิดขึ้นได้ หูของคุณจะเป็นตัวตัดสินว่าดนตรีนั้นไพเราะหรือไม่"
+      },
+      {
+        "translatedText": "ปานกลาง"
+      },
+      {
+        "translatedText": "มาทำความรู้จักกับเหล่าอาณานิคมกันเถอะ ค้นหาผู้เล่น สำรวจเกมของพวกเขา หรือทำความรู้จักกับคู่ต่อสู้ AI คนต่อไปของคุณ"
+      },
+      {
+        "translatedText": "เมตริก"
+      },
+      {
+        "translatedText": "วินาทีขั้นต่ำ"
+      },
+      {
+        "translatedText": "สต็อกขั้นต่ำทั้งหมด"
+      },
+      {
+        "translatedText": "แถบสะท้อนแสง"
+      },
+      {
+        "translatedText": "จุดสะท้อนแสง"
+      },
+      {
+        "translatedText": "หายไป"
+      },
+      {
+        "translatedText": "ข้อมูลการวัดทางประวัติศาสตร์ที่ขาดหายไปนั้นไม่สามารถใช้งานได้ เนื่องจากมีการสร้างขึ้นใหม่จากเวลาที่บันทึกไว้ครั้งล่าสุด ช่วงเวลาปัจจุบันอาจไม่ครบถ้วนสมบูรณ์ เครื่องหมายบัญชีที่เก็บรักษาไว้ครอบคลุม 90 วัน ส่วนยอดรวมรายวันแบบไม่ระบุชื่อครอบคลุม 24 เดือน"
+      },
+      {
+        "translatedText": "ขาดลายเซ็นการชำระเงิน"
+      },
+      {
+        "translatedText": "มิกซ์และมาสเตอร์"
+      },
+      {
+        "translatedText": "สมดุลผสม"
+      },
+      {
+        "translatedText": "แบบจำลอง / เวที"
+      },
+      {
+        "translatedText": "รุ่นรถและเวอร์ชันกล้องไม่ตรงกัน กรุณารีเฟรชหน้าเว็บเพื่ออัปเดต"
+      },
+      {
+        "translatedText": "โมเดลสำหรับระบายสี"
+      },
+      {
+        "translatedText": "ปานกลาง"
+      },
+      {
+        "translatedText": "ความพอดี"
+      },
+      {
+        "translatedText": "เหตุผลในการกลั่นกรอง"
+      },
+      {
+        "translatedText": "รายงานการตรวจสอบ"
+      },
+      {
+        "translatedText": "การมองเห็นของการดูแลจัดการ"
+      },
+      {
+        "translatedText": "พิธีกร"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีสิทธิ์ผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "ความแตกต่างของอารมณ์"
+      },
+      {
+        "translatedText": "การประสานอารมณ์"
+      },
+      {
+        "translatedText": "มากกว่า"
+      },
+      {
+        "translatedText": "การดำเนินการเพิ่มเติมสำหรับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ดาวน์โหลดมากที่สุด"
+      },
+      {
+        "translatedText": "ถูกใจมากที่สุด"
+      },
+      {
+        "translatedText": "จำนวนครั้งที่ผู้ให้บริการพยายามใช้งานล่าสุด; การใช้งานที่ไม่สามารถใช้งานได้นั้นไม่ใช่ศูนย์ ตัวเลขเหล่านี้จำเป็นต้องได้รับการตรวจสอบกับหลักฐานจากผู้ให้บริการ"
+      },
+      {
+        "translatedText": "ด่าง"
+      },
+      {
+        "translatedText": "ดนตรี"
+      },
+      {
+        "translatedText": "สตูดิโอเพลง"
+      },
+      {
+        "translatedText": "บทสนทนาเกี่ยวกับการประพันธ์ดนตรี"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดเพลงได้"
+      },
+      {
+        "translatedText": "เครดิตเพลง"
+      },
+      {
+        "translatedText": "ดนตรีสำหรับอาณานิคมของคุณ"
+      },
+      {
+        "translatedText": "ไม่สามารถเล่นเพลงได้"
+      },
+      {
+        "translatedText": "โครงการดนตรี"
+      },
+      {
+        "translatedText": "รายงานข่าวดนตรี"
+      },
+      {
+        "translatedText": "การแก้ไขดนตรี"
+      },
+      {
+        "translatedText": "การขายเครดิตเพลงยังไม่เปิดใช้งาน"
+      },
+      {
+        "translatedText": "ความหลากหลายทางดนตรี"
+      },
+      {
+        "translatedText": "ปิดเสียง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "AI ของฉัน"
+      },
+      {
+        "translatedText": "อาณานิคมของฉัน"
+      },
+      {
+        "translatedText": "อาณานิคมของฉัน"
+      },
+      {
+        "translatedText": "ครอบครัวของฉัน"
+      },
+      {
+        "translatedText": "ของโปรดของฉัน"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดไฟฟ้าของฉัน"
+      },
+      {
+        "translatedText": "ภูมิทัศน์ของฉัน"
+      },
+      {
+        "translatedText": "แผนที่ของฉัน"
+      },
+      {
+        "translatedText": "ชุดของฉัน"
+      },
+      {
+        "translatedText": "ผิวของฉัน"
+      },
+      {
+        "translatedText": "ชื่อ"
+      },
+      {
+        "translatedText": "ชื่อหรือรหัสเนื้อหา"
+      },
+      {
+        "translatedText": "ชื่อ, รหัสบัญชี หรืออีเมล"
+      },
+      {
+        "translatedText": "ชื่อบัญชีอย่างเช่น Guest-1234 นั้นสงวนไว้สำหรับแขกผู้เข้าพักเท่านั้น"
+      },
+      {
+        "translatedText": "การนำทาง"
+      },
+      {
+        "translatedText": "ต้องให้ความสนใจ"
+      },
+      {
+        "translatedText": "เวอร์ชัน AI ใหม่"
+      },
+      {
+        "translatedText": "ครอบครัวที่สร้างอาคารใหม่"
+      },
+      {
+        "translatedText": "ผลงานประพันธ์ใหม่"
+      },
+      {
+        "translatedText": "ชื่อที่แสดงใหม่"
+      },
+      {
+        "translatedText": "เพิ่งมาใหม่ใช่ไหม? สร้างบัญชีผู้ใช้"
+      },
+      {
+        "translatedText": "แผนที่ใหม่"
+      },
+      {
+        "translatedText": "ข้อความใหม่"
+      },
+      {
+        "translatedText": "ชุดใหม่"
+      },
+      {
+        "translatedText": "ผิวใหม่"
+      },
+      {
+        "translatedText": "ชุดภูมิประเทศใหม่"
+      },
+      {
+        "translatedText": "เพิ่งเริ่มใช้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> ใช่ไหม?"
+      },
+      {
+        "translatedText": "เวอร์ชันใหม่"
+      },
+      {
+        "translatedText": "ใหม่ล่าสุด"
+      },
+      {
+        "translatedText": "รายงานล่าสุด"
+      },
+      {
+        "translatedText": "ข่าว"
+      },
+      {
+        "translatedText": "ต่อไป"
+      },
+      {
+        "translatedText": "หน้าถัดไป"
+      },
+      {
+        "translatedText": "ผลลัพธ์ถัดไป"
+      },
+      {
+        "translatedText": "ขั้นตอนต่อไป"
+      },
+      {
+        "translatedText": "ขั้นตอนต่อไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      }
+    ]
+  }
+}

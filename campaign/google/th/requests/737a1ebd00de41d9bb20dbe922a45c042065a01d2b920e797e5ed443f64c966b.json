@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Compare with",
+      "Compare with version",
+      "Compared revision",
+      "Compared revision <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Compared revision<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Compare…",
+      "Compatibility checklist",
+      "Compatibility checks",
+      "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "Compatibility of your active skin",
+      "Complete",
+      "Complete family <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>",
+      "Complete passing checks before publishing.",
+      "Completed",
+      "Completion time comparison table",
+      "Compose the music",
+      "Composer’s progress",
+      "Composition",
+      "Configure Hive Mind in Settings → Online. In a match, press <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Ctrl+Enter</span> to give an order. Assistance is permitted in ranked matches.",
+      "Confirm history deletion",
+      "Confirm the license chosen when composing this version.",
+      "Confirmed cash",
+      "Confirmed cash table",
+      "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "Confirming your payment. Your credits appear once payment is confirmed.",
+      "Connected",
+      "Connection",
+      "Connection interrupted. Reconnecting to your saved project…",
+      "Connection quality per player",
+      "Consistent levels",
+      "Content",
+      "Content not found.",
+      "Contents",
+      "Contents &amp; gameplay properties",
+      "Continue as <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>",
+      "Continue to uploads",
+      "Continue to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>",
+      "Continue with <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p3}</span>",
+      "Controls and compatibility evidence",
+      "Conversation",
+      "Convert and prepare preview",
+      "Converting",
+      "Copies the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "Copy paint",
+      "Copy paint to all models",
+      "Copy paint to other models…",
+      "Copy recorded usage",
+      "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "Copyright",
+      "Correct the invalid <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> before saving.",
+      "Cortex",
+      "Could not check payment.",
+      "Could not crop this photo.",
+      "Could not delete this skin.",
+      "Could not load test map.",
+      "Could not load the material unwrap.",
+      "Could not load this language. Please try again.",
+      "Could not load this model. Please retry.",
+      "Could not load this <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Could not load your project.",
+      "Could not load <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>.<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>",
+      "Could not open this photo.",
+      "Could not save · retrying",
+      "Could not send report.",
+      "Could not update report.",
+      "Could not use this skin.",
+      "Count",
+      "Cover",
+      "Create",
+      "Create a building family",
+      "Create a building or an upgrade family with custom artwork.",
+      "Create a colony AI through conversation.",
+      "Create a family",
+      "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+      "Create a look. Use it in your next match.",
+      "Create a map generator through conversation.",
+      "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+      "Create a new room with this map and invite friends.",
+      "Create a ring of islands around a shared lagoon",
+      "Create a set"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เปรียบเทียบกับ"
+      },
+      {
+        "translatedText": "เปรียบเทียบกับเวอร์ชัน"
+      },
+      {
+        "translatedText": "การเปรียบเทียบการแก้ไข"
+      },
+      {
+        "translatedText": "เปรียบเทียบกับการแก้ไข <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เปรียบเทียบการแก้ไข <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เปรียบเทียบ…"
+      },
+      {
+        "translatedText": "รายการตรวจสอบความเข้ากันได้"
+      },
+      {
+        "translatedText": "การตรวจสอบความเข้ากันได้"
+      },
+      {
+        "translatedText": "การตรวจสอบความเข้ากันได้จะทดสอบเกมสั้นๆ และบันทึก/เล่นต่อ แต่ไม่ได้รับรองความปลอดภัยหรือความสามารถในการเล่นเกม ควรใช้เฉพาะโค้ดจากผู้พัฒนาที่คุณไว้วางใจเท่านั้น"
+      },
+      {
+        "translatedText": "ความเข้ากันได้ของผิวที่ใช้งานของคุณ"
+      },
+      {
+        "translatedText": "สมบูรณ์"
+      },
+      {
+        "translatedText": "ครอบครัวทั้งหมดในรูปแบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>"
+      },
+      {
+        "translatedText": "ตรวจสอบความถูกต้องครบถ้วนก่อนเผยแพร่"
+      },
+      {
+        "translatedText": "สมบูรณ์"
+      },
+      {
+        "translatedText": "ตารางเปรียบเทียบเวลาแล้วเสร็จ"
+      },
+      {
+        "translatedText": "แต่งเพลง"
+      },
+      {
+        "translatedText": "ความคืบหน้าของนักแต่งเพลง"
+      },
+      {
+        "translatedText": "องค์ประกอบ"
+      },
+      {
+        "translatedText": "ตั้งค่า Hive Mind ในการตั้งค่า → ออนไลน์ ในระหว่างการแข่งขัน ให้กด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Ctrl+Enter</span> เพื่อออกคำสั่ง การช่วยเหลือสามารถทำได้ในการแข่งขันจัดอันดับ"
+      },
+      {
+        "translatedText": "ยืนยันการลบประวัติ"
+      },
+      {
+        "translatedText": "โปรดยืนยันใบอนุญาตที่เลือกไว้เมื่อทำการจัดทำเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ยืนยันเงินสดแล้ว"
+      },
+      {
+        "translatedText": "ตารางเงินสดที่ได้รับการยืนยัน"
+      },
+      {
+        "translatedText": "การยืนยันการชำระเงินจะใช้หน่วยสกุลเงินของ Stripe สำหรับการเรียกเก็บเงิน/คืนเงิน โดยใช้ช่วงเวลา UTC ปัจจุบันและก่อนหน้า การส่งออกไฟล์ CSV จะรักษาหน่วยย่อยที่เป็นจำนวนเต็มไว้อย่างแม่นยำ"
+      },
+      {
+        "translatedText": "กำลังยืนยันการชำระเงินของคุณ เครดิตของคุณจะปรากฏขึ้นเมื่อการชำระเงินได้รับการยืนยันแล้ว"
+      },
+      {
+        "translatedText": "เชื่อมต่อแล้ว"
+      },
+      {
+        "translatedText": "การเชื่อมต่อ"
+      },
+      {
+        "translatedText": "การเชื่อมต่อถูกขัดจังหวะ กำลังเชื่อมต่อใหม่กับโปรเจ็กต์ที่คุณบันทึกไว้…"
+      },
+      {
+        "translatedText": "คุณภาพการเชื่อมต่อต่อผู้เล่น"
+      },
+      {
+        "translatedText": "ระดับที่สม่ำเสมอ"
+      },
+      {
+        "translatedText": "เนื้อหา"
+      },
+      {
+        "translatedText": "ไม่พบเนื้อหา"
+      },
+      {
+        "translatedText": "สารบัญ"
+      },
+      {
+        "translatedText": "เนื้อหาและคุณสมบัติการเล่นเกม"
+      },
+      {
+        "translatedText": "ดำเนินการต่อตาม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>"
+      },
+      {
+        "translatedText": "อัปโหลดต่อไป"
+      },
+      {
+        "translatedText": "ดำเนินการต่อที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>"
+      },
+      {
+        "translatedText": "ดำเนินการต่อที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p3}</span>"
+      },
+      {
+        "translatedText": "หลักฐานการควบคุมและความเข้ากันได้"
+      },
+      {
+        "translatedText": "การสนทนา"
+      },
+      {
+        "translatedText": "แปลงและเตรียมการแสดงตัวอย่าง"
+      },
+      {
+        "translatedText": "การแปลง"
+      },
+      {
+        "translatedText": "คัดลอกพื้นผิวและวัสดุของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> โมเดลแต่ละแบบมีการห่อหุ้มและการลงสีที่แตกต่างกัน โปรดตรวจสอบผลลัพธ์ด้านล่าง"
+      },
+      {
+        "translatedText": "คัดลอกสี"
+      },
+      {
+        "translatedText": "คัดลอกสีไปยังโมเดลทั้งหมด"
+      },
+      {
+        "translatedText": "คัดลอกสีไปยังโมเดลอื่นๆ..."
+      },
+      {
+        "translatedText": "คัดลอกการใช้งานที่บันทึกไว้"
+      },
+      {
+        "translatedText": "คัดลอกลิงก์นี้ไปวางในช่องลิงก์ครอบครัวหรือรหัสประจำตัวในตัวเลือกสร้างครอบครัวของเกม เพื่อเปิดครอบครัวนี้โดยตรง"
+      },
+      {
+        "translatedText": "ลิขสิทธิ์"
+      },
+      {
+        "translatedText": "แก้ไขข้อมูล <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> ที่ไม่ถูกต้องก่อนบันทึก"
+      },
+      {
+        "translatedText": "คอร์เทกซ์"
+      },
+      {
+        "translatedText": "ไม่สามารถตรวจสอบการชำระเงินได้"
+      },
+      {
+        "translatedText": "ไม่สามารถตัดแต่งรูปภาพนี้ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถลบสกินนี้ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดแผนที่ทดสอบได้"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดวัสดุที่แกะห่อได้"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดภาษานี้ได้ โปรดลองอีกครั้ง"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดโมเดลนี้ได้ โปรดลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดค่า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> นี้ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดโปรเจ็กต์ของคุณได้"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ได้ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>"
+      },
+      {
+        "translatedText": "ไม่สามารถเปิดรูปภาพนี้ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกได้ · กำลังลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ไม่สามารถส่งรายงานได้"
+      },
+      {
+        "translatedText": "ไม่สามารถอัปเดตรายงานได้"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้สกินนี้ได้"
+      },
+      {
+        "translatedText": "นับ"
+      },
+      {
+        "translatedText": "ปิดบัง"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "สร้างครอบครัวอาคาร"
+      },
+      {
+        "translatedText": "สร้างอาคารหรือชุดเฟอร์นิเจอร์อัปเกรดด้วยงานศิลปะแบบกำหนดเอง"
+      },
+      {
+        "translatedText": "สร้างอาณานิคม AI ผ่านการสนทนา"
+      },
+      {
+        "translatedText": "สร้างครอบครัว"
+      },
+      {
+        "translatedText": "สร้างบึงเห็ดที่มีบึงน้ำไหลเอื่อย ต้นไม้เรืองแสง และอาหารเห็ดที่สามารถสร้างใหม่ได้"
+      },
+      {
+        "translatedText": "สร้างลุคของคุณ แล้วนำไปใช้ในการแข่งขันครั้งต่อไป"
+      },
+      {
+        "translatedText": "สร้างโปรแกรมสร้างแผนที่ผ่านการสนทนา"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาลเห็ดที่สามารถรักษาคนงานและนักรบได้ ใช้ไม้ 10 หน่วย และจุคนได้ 4 คน"
+      },
+      {
+        "translatedText": "สร้างห้องใหม่โดยใช้แผนที่นี้และเชิญเพื่อน ๆ เข้ามา"
+      },
+      {
+        "translatedText": "สร้างวงแหวนของเกาะต่างๆ ล้อมรอบทะเลสาบน้ำเค็มที่ใช้ร่วมกัน"
+      },
+      {
+        "translatedText": "สร้างชุดข้อมูล"
+      }
+    ]
+  }
+}

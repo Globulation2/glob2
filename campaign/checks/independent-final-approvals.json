@@ -1,0 +1,400 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+    "online": "8bc1380c2899c9bdc89fa9bb43fb67794c51a0f32d734fcdd1616eb408a94ab6"
+  },
+  "batches": [
+    {
+      "id": "native-colony-001",
+      "target_sha256": "4add673c443db1795aad6f2e0268a3e52f91ff297fd83b8db09d88bbcfe1f1da",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-colony-002",
+      "target_sha256": "de180c8da8df063805b9c5ea4e82e6068e690a4f35fb7fba58653e8b3c994c2c",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-001",
+      "target_sha256": "781df89b7eb114f9eeef725eeea286c65475e40edc4cc4995aac4e8be54eade1",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-002",
+      "target_sha256": "ed4f73b3d6991cb9439f0124b6b2ab4bdf49ec34d6ad8e711ef49342aa0bda29",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-003",
+      "target_sha256": "3f1dfca399115c32a6ec14b0a967fd0796290c2bdb35e14c6a90d6b8712ee088",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-004",
+      "target_sha256": "da693c074f474c5c64f5eca485bc8e3c17ebe1b4db7357be2a827a7f6ee52f93",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-005",
+      "target_sha256": "e12a1c53904a7d583a414ecf95b9418cd2be9a127ffd6c661127ce5397162ce6",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-006",
+      "target_sha256": "6991d25b9158accd47a3483689a6c11c6e67aff43ab46fbe605e8eee88aa315e",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-007",
+      "target_sha256": "8ebf62181eb20a63f978731c29666c66b7ee4ff5b03b650f93b5acfc6126634c",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-008",
+      "target_sha256": "5c53f76bbdfeb9eb155c4619d9d79c60707eda84c359e4389895205ef4145651",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-009",
+      "target_sha256": "5455e4f651caf60df934ebf9e8cdf6f68835bf2cc6cc7149d646aecea5086401",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-010",
+      "target_sha256": "64fd09915d747473533959f4b37cfab8f05f7666d2dc7380ffe16035ae3964ce",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-011",
+      "target_sha256": "f6e0260db76769720b4c872b3f1c7e35443da4a6ffaea0457de31944695919b2",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-012",
+      "target_sha256": "c236e1ac83af125875663aa4a7830a1a6f4a58303effb7e92626cae1e3a844ca",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-013",
+      "target_sha256": "9ec1d7ae6deba913744c2b23012c6a2cf926a27c04e827e3e226420b8798b268",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-014",
+      "target_sha256": "f07af1347c023a1c5c38eb6b4d66c684fd22689470a5f600231be399bb4e8e32",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-015",
+      "target_sha256": "99b562765ffdd18a532999eee48590817e209f255541e62908513702091be8a7",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-016",
+      "target_sha256": "3ef80fbc63eb48b97630c269f135c61644cddb530f2a3085213cdba3dbb61231",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-general-017",
+      "target_sha256": "064cce93956d6f6c5b3390130915e48772eb297d96cf822a5e5116a5b4c95483",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-maps-001",
+      "target_sha256": "cb32b3962c1bb81f72297afb46fd5d932d7cc4d989f93250c269d9dff820d23d",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-maps-002",
+      "target_sha256": "f0c77524849440f8fe832e61a0e81833d9cc8984750d768bc8235dd5bc066eef",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-settings-001",
+      "target_sha256": "c58806cf821b0126fb6701654cc57039a10d19e1a71f1d80241aad4f9f0cda79",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-settings-002",
+      "target_sha256": "4fdaa46225ade802cef3f186ff29dd7bd7b4ae9d2c1d760a57b07de038d629df",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-settings-003",
+      "target_sha256": "db5ed97a231057d17d91aa4f9495785cf058d75beebb2cb3983e1a79d4801b83",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "native-tutorial-001",
+      "target_sha256": "4f8124dc07fd541c9d90174384338e309ba2b1e83d0912ddf4b546fdca4a7992",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "cloud_adapter",
+        "adversary": "thai_rendering"
+      }
+    },
+    {
+      "id": "online-online-001",
+      "target_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-002",
+      "target_sha256": "b43d5f5a48f557c735611f042ee51794d5f1f3a2090f526e39c5e6860f5f4d2d",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-003",
+      "target_sha256": "573d955a307107bbbf10b12b79fa3a5ebbbf66774574b5047384164e3592f5a2",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-004",
+      "target_sha256": "b12cdc8b41aa7f9052b9bfc5b8638b9e9d98bc415aa2c486285261844cc840ed",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-005",
+      "target_sha256": "57c2779e8ba9c2a3bb939194b4a1f2680183bc210452bd0ca3fe2f23b9dbd4ca",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-006",
+      "target_sha256": "f8a033f2203801ace2a9b0ad8869a6000e6894b153c270590cdfaf825593fe2f",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-007",
+      "target_sha256": "ce112152558b3505609f1e4226614976b4c122b77f1afdf5d038e05c19f00162",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-008",
+      "target_sha256": "b92d5785e4b06724832d5ff1c035221c36a6e2f0b2c36ecb31838aad883997aa",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-009",
+      "target_sha256": "8e09bfc5b0cf6d38d09cf42404f28df1e627ce0e598be808aa94c77f725b948a",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-010",
+      "target_sha256": "ebaecf684da77279e41bfeb2f39c1544cac9387daa2f28d183f54d513cb80edd",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-011",
+      "target_sha256": "6d265e90ad30e522d0fcee6965972f8fda9c9c72f80861f4041b6d9511259014",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-012",
+      "target_sha256": "91d7b16069a55d8eadef2ed557c553ac6e27e216f012730ad5ac3cdc70692703",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-013",
+      "target_sha256": "a8add17c71136607eed7e816a670afd2096144e7ff795ceb67452ffe5f0e1249",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-014",
+      "target_sha256": "8449178ed35c2bc54ec7d3b2ee18a600da4c185731926049d0429ec7ec096e41",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-015",
+      "target_sha256": "da76e08d2d86daa7c7e421814448ca92a566c76437d47e41fb04fd9db40631f5",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-016",
+      "target_sha256": "2495283a5945473f8fbb7eb1eebc19100c331dd8c25b5d7b526498c29ddea590",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-017",
+      "target_sha256": "704b66d39966531e24101cbd1bba512ad2551d3675074c03eb40789d01de2294",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    },
+    {
+      "id": "online-online-018",
+      "target_sha256": "5316985a69655733666c003cef1678662b1a4163fe755a9dec1a76d1c77707f3",
+      "independent_roles": {
+        "reviewer": "thai_brief",
+        "editor": "thai_rendering",
+        "adversary": "online_adversarial"
+      }
+    }
+  ],
+  "native_entries": 3393,
+  "online_entries": 2836,
+  "open_linguistic_findings": 0,
+  "certification": "Agent-reviewed; not native-human-certified"
+}

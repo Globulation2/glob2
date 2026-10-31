@@ -1,0 +1,306 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Touch scrolling feel. 0 turns an effect off; 50 is the default.",
+      "List momentum",
+      "List bounce",
+      "Map momentum",
+      "Artwork",
+      "Original",
+      "High resolution",
+      "Clouds",
+      "Show cloud cover above the map.",
+      "Cloud shadows",
+      "Show cloud shadows on the ground independently of cloud cover.",
+      "Building particles",
+      "Show smoke and other building particles.",
+      "Magic effects",
+      "Choose animated magic effects or a simple visible effect.",
+      "Simple",
+      "Requires the OpenGL renderer. Your saved choice is retained.",
+      "Interface appearance",
+      "Panels",
+      "Choose translucent or opaque interface panels.",
+      "Opaque",
+      "Translucent",
+      "Advanced graphics",
+      "Path lines",
+      "Choose translucent or opaque unit path lines.",
+      "Smooth progress indicators",
+      "Smooth the moving edges of progress indicators.",
+      "Decorative interface animation",
+      "Animate victory artwork. Reduced motion also disables this animation.",
+      "Smooth unit motion",
+      "Experimental<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> move and animate units between game ticks.",
+      "Smooth fog of war",
+      "Fade the map into and out of the fog of war gradually.",
+      "Adaptive zoom detail",
+      "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.",
+      "Text size",
+      "Enlarge interface text without changing the map scale.",
+      "Host pairing string (or trusted WSS URL)",
+      "Pair and connect",
+      "Select a host, then paste its pairing string to verify its identity.",
+      "LAN discovery is unavailable. Check local network permission or paste a host pairing string.",
+      "Discovered host <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> — pair to view games",
+      "Unable to reach the LAN host. Check local network permission and the host pairing string.",
+      "Unable to verify or connect to the LAN host<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Use the host lobby endpoint",
+      "Connection to the host lost. Reconnecting...",
+      "Waiting for every player to load...",
+      "Rejoining the game...",
+      "Catching up<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> turns behind",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is reconnecting...",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is lagging",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is catching up",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> has not connected yet",
+      "The host left the game.",
+      "The connection to the host was lost.",
+      "The host runs a different version of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> (<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>).",
+      "Unable to host a LAN game<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Play online",
+      "Use in room",
+      "AI",
+      "Behind <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Behind<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> how far a player&#x27;s game runs behind the match clock; it includes their delay. Under <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> is normal; from <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span> the player is marked slow.",
+      "Behind",
+      "Catching up",
+      "Your colony keeps working on its own<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> units finish their jobs and buildings keep running.",
+      "Rejoining from the match record so you see what everyone else sees. A report was sent automatically.",
+      "Your game fell out of sync",
+      "Your colony keeps working on its own<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> units finish their jobs and buildings keep running. You have <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> to come back before you&#x27;re removed from the match.",
+      "You are catching up · input paused",
+      "Connection lost",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> % · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> of <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%2</span> ticks",
+      "Reconnecting to the match… attempt <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "สัมผัสการเลื่อนแบบสัมผัส ค่า 0 คือการปิดเอฟเฟกต์ ค่า 50 คือค่าเริ่มต้น"
+      },
+      {
+        "translatedText": "รายการโมเมนตัม"
+      },
+      {
+        "translatedText": "รายการตีกลับ"
+      },
+      {
+        "translatedText": "โมเมนตัมของแผนที่"
+      },
+      {
+        "translatedText": "งานศิลปะ"
+      },
+      {
+        "translatedText": "ต้นฉบับ"
+      },
+      {
+        "translatedText": "ความละเอียดสูง"
+      },
+      {
+        "translatedText": "เมฆ"
+      },
+      {
+        "translatedText": "แสดงปริมาณเมฆปกคลุมเหนือแผนที่"
+      },
+      {
+        "translatedText": "เงาเมฆ"
+      },
+      {
+        "translatedText": "แสดงเงาเมฆบนพื้นดินโดยไม่ขึ้นอยู่กับปริมาณเมฆปกคลุม"
+      },
+      {
+        "translatedText": "อนุภาคอาคาร"
+      },
+      {
+        "translatedText": "แสดงภาพควันและเศษซากอาคารอื่นๆ"
+      },
+      {
+        "translatedText": "เอฟเฟกต์เวทมนตร์"
+      },
+      {
+        "translatedText": "เลือกเอฟเฟ็กต์มายากลแบบเคลื่อนไหวหรือเอฟเฟ็กต์แบบมองเห็นได้ง่ายๆ"
+      },
+      {
+        "translatedText": "เรียบง่าย"
+      },
+      {
+        "translatedText": "ต้องใช้ตัวเรนเดอร์ OpenGL ตัวเลือกที่คุณบันทึกไว้จะยังคงอยู่"
+      },
+      {
+        "translatedText": "ลักษณะของอินเทอร์เฟซ"
+      },
+      {
+        "translatedText": "แผง"
+      },
+      {
+        "translatedText": "เลือกแผงเชื่อมต่อแบบโปร่งแสงหรือทึบแสง"
+      },
+      {
+        "translatedText": "ทึบแสง"
+      },
+      {
+        "translatedText": "โปร่งแสง"
+      },
+      {
+        "translatedText": "กราฟิกขั้นสูง"
+      },
+      {
+        "translatedText": "เส้นทาง"
+      },
+      {
+        "translatedText": "เลือกเส้นทางเดินของยูนิตแบบโปร่งแสงหรือทึบแสง"
+      },
+      {
+        "translatedText": "ตัวชี้วัดความคืบหน้าที่ราบรื่น"
+      },
+      {
+        "translatedText": "ปรับขอบที่เคลื่อนไหวของตัวบ่งชี้ความคืบหน้าให้เรียบขึ้น"
+      },
+      {
+        "translatedText": "แอนิเมชันตกแต่งอินเทอร์เฟซ"
+      },
+      {
+        "translatedText": "แสดงภาพเคลื่อนไหวของภาพชัยชนะ การลดการเคลื่อนไหวจะปิดใช้งานภาพเคลื่อนไหวนี้ด้วย"
+      },
+      {
+        "translatedText": "การเคลื่อนที่ของหน่วยที่ราบรื่น"
+      },
+      {
+        "translatedText": "ทดลอง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> เคลื่อนย้ายและสร้างแอนิเมชั่นให้กับยูนิตระหว่างรอบเกม"
+      },
+      {
+        "translatedText": "หมอกแห่งสงครามที่ราบเรียบ"
+      },
+      {
+        "translatedText": "ค่อยๆ เผยแผนที่ให้ปรากฏและหายไปจากหมอกแห่งสงครามทีละน้อย"
+      },
+      {
+        "translatedText": "รายละเอียดการซูมแบบปรับได้"
+      },
+      {
+        "translatedText": "ลดความซับซ้อนของแถบ พื้นที่ ภูมิประเทศ และหน่วยต่างๆ เมื่อซูมแผนที่ออก และคงขนาดเล็กไว้เมื่อซูมเข้า"
+      },
+      {
+        "translatedText": "ขนาดตัวอักษร"
+      },
+      {
+        "translatedText": "ขยายขนาดข้อความในส่วนติดต่อผู้ใช้โดยไม่ต้องเปลี่ยนมาตราส่วนแผนที่"
+      },
+      {
+        "translatedText": "สตริงการจับคู่โฮสต์ (หรือ URL WSS ที่เชื่อถือได้)"
+      },
+      {
+        "translatedText": "จับคู่และเชื่อมต่อ"
+      },
+      {
+        "translatedText": "เลือกโฮสต์ จากนั้นวางสตริงการจับคู่เพื่อยืนยันตัวตนของโฮสต์นั้น"
+      },
+      {
+        "translatedText": "ไม่สามารถค้นหาอุปกรณ์ในเครือข่าย LAN ได้ โปรดตรวจสอบสิทธิ์การเข้าถึงเครือข่ายภายใน หรือวางสตริงการจับคู่โฮสต์ลงไป"
+      },
+      {
+        "translatedText": "พบโฮสต์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> — จับคู่เพื่อดูเกม"
+      },
+      {
+        "translatedText": "ไม่สามารถเชื่อมต่อกับโฮสต์ LAN ได้ โปรดตรวจสอบสิทธิ์การเข้าถึงเครือข่ายท้องถิ่นและสตริงการจับคู่โฮสต์"
+      },
+      {
+        "translatedText": "ไม่สามารถตรวจสอบหรือเชื่อมต่อกับโฮสต์ LAN ได้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ใช้เอนด์พอยต์ล็อบบี้โฮสต์"
+      },
+      {
+        "translatedText": "การเชื่อมต่อกับโฮสต์ขาดหายไป กำลังเชื่อมต่อใหม่..."
+      },
+      {
+        "translatedText": "กำลังรอให้ผู้เล่นทุกคนโหลดเสร็จ..."
+      },
+      {
+        "translatedText": "กลับเข้าร่วมเกมอีกครั้ง..."
+      },
+      {
+        "translatedText": "กำลังไล่ตาม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ตามหลังอยู่ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> กำลังเชื่อมต่อใหม่..."
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> คือความล่าช้า"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> กำลังไล่ตามทัน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ยังไม่ได้เชื่อมต่อ"
+      },
+      {
+        "translatedText": "พิธีกรออกจากเกมไปแล้ว"
+      },
+      {
+        "translatedText": "การเชื่อมต่อกับโฮสต์ขาดหายไป"
+      },
+      {
+        "translatedText": "โฮสต์ใช้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> เวอร์ชันที่แตกต่างออกไป ( <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> )"
+      },
+      {
+        "translatedText": "ไม่สามารถสร้างเกม LAN ได้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เล่นออนไลน์"
+      },
+      {
+        "translatedText": "ใช้ในห้อง"
+      },
+      {
+        "translatedText": "AI"
+      },
+      {
+        "translatedText": "เบื้องหลัง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ตามหลัง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> จำนวนครั้งที่เกมของผู้เล่นช้ากว่าเวลาการแข่งขัน ซึ่งรวมถึงความล่าช้าของตัวผู้เล่นเองด้วย ต่ำกว่า <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> ถือว่าปกติ ตั้งแต่ <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%1</span> ไป ถือว่าผู้เล่นเล่นช้า"
+      },
+      {
+        "translatedText": "ด้านหลัง"
+      },
+      {
+        "translatedText": "การติดตามความคืบหน้า"
+      },
+      {
+        "translatedText": "อาณานิคมของคุณยังคงทำงานต่อไปได้เอง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> หน่วยต่างๆ ทำงานเสร็จสิ้น และอาคารต่างๆ ก็ยังคงใช้งานได้ต่อไป"
+      },
+      {
+        "translatedText": "กลับเข้าร่วมจากบันทึกการแข่งขันเพื่อให้คุณเห็นสิ่งเดียวกับที่คนอื่นเห็น รายงานถูกส่งโดยอัตโนมัติ"
+      },
+      {
+        "translatedText": "เกมของคุณเกิดการไม่ซิงค์กัน"
+      },
+      {
+        "translatedText": "อาณานิคมของคุณยังคงทำงานต่อไปเอง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> หน่วยต่างๆ ทำงานจนเสร็จ และสิ่งก่อสร้างก็ยังคงทำงานต่อไป คุณมี <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> ในการกลับมาก่อนที่จะถูกกำจัดออกจากเกม"
+      },
+      {
+        "translatedText": "คุณกำลังตามทัน · การป้อนข้อมูลหยุดชั่วคราว"
+      },
+      {
+        "translatedText": "การเชื่อมต่อขาดหาย"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> % · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> จาก <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">%2</span> เครื่องหมายถูก"
+      },
+      {
+        "translatedText": "กำลังเชื่อมต่อกับแมตช์อีกครั้ง… พยายามครั้ง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      }
+    ]
+  }
+}

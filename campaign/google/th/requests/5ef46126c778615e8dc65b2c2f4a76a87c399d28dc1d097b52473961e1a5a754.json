@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Invalid shape heading",
+      "Invalid shape index",
+      "Invalid shape scale",
+      "Invalid shape size",
+      "Invalid skin dimensions.",
+      "Invalid studio event cursor.",
+      "Invalid visibility.",
+      "Invalid webhook signature.",
+      "Invalid webhook.",
+      "Invalid <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> camera",
+      "Invalid <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> dimensions",
+      "Invalid <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> normal camera",
+      "Invalid <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> scalar",
+      "Invite not found",
+      "It copies someone else’s work",
+      "It is broken or unplayable",
+      "It is offensive",
+      "It may not be installed on this device. You can",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> controls require the set workspace.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> value",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> API reference ↗",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Join",
+      "Join by code",
+      "Join <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>",
+      "Keep available and resolve",
+      "Keep history",
+      "Keep lengths (must already match)",
+      "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "Keep mine as a new skin",
+      "Keep my current account",
+      "Keep the melody, but make calm more spacious…",
+      "Keep this family namespace. Import a fork to create a different family.",
+      "Known-cost subtotal",
+      "Ladders",
+      "Language",
+      "Large",
+      "Last <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> days",
+      "Last <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> days",
+      "Late",
+      "Layer",
+      "Leaderboard",
+      "Leaderboard participants",
+      "Leaderboards",
+      "Leave the room instead.",
+      "Leave this set and discard unsaved changes?",
+      "Leave with unsaved changes? A recovery copy stays on this device.",
+      "Leave with unsaved edits? A recovery copy stays on this device.",
+      "Length repair",
+      "Library",
+      "License for this version",
+      "License<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "License<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> · AI composition is disclosed.",
+      "Lift ban",
+      "Light",
+      "Like",
+      "Likes",
+      "Limit must be between 1 and 100.",
+      "Link a recoverable account first.",
+      "Link an active recoverable account before purchasing.",
+      "Link an active recoverable account to sync drafts.",
+      "Listening note",
+      "Live AI playtest revision <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Live updates are unavailable. Refreshing saved work…",
+      "Load account changes",
+      "Load earlier conversation and versions",
+      "Load more",
+      "Load more drafts",
+      "Loading",
+      "Loading code editor…",
+      "Loading comparison…",
+      "Loading drafts…",
+      "Loading editor…",
+      "Loading engine…",
+      "Loading game…",
+      "Loading map preview…",
+      "Loading matches…",
+      "Loading music…",
+      "Loading preview…"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "หัวข้อรูปทรงไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ดัชนีรูปร่างไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "มาตราส่วนรูปร่างไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ขนาดรูปร่างไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ขนาดผิวไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "เคอร์เซอร์กิจกรรมสตูดิโอไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "การมองเห็นไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ลายเซ็นเว็บฮุคไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "เว็บฮุคไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "กล้อง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "มิติ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "กล้องปกติ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ค่า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ไม่พบคำเชิญ"
+      },
+      {
+        "translatedText": "มันลอกเลียนแบบผลงานของคนอื่น"
+      },
+      {
+        "translatedText": "มันเสียหรือเล่นไม่ได้"
+      },
+      {
+        "translatedText": "มันเป็นการดูถูก"
+      },
+      {
+        "translatedText": "อาจไม่ได้ติดตั้งบนอุปกรณ์นี้ คุณสามารถ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>"
+      },
+      {
+        "translatedText": "ส่วนควบคุม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> จำเป็นต้องมีการกำหนดพื้นที่ทำงาน"
+      },
+      {
+        "translatedText": "ค่า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>"
+      },
+      {
+        "translatedText": "เอกสารอ้างอิง API <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ↗"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เข้าร่วม"
+      },
+      {
+        "translatedText": "เข้าร่วมโดยใช้รหัส"
+      },
+      {
+        "translatedText": "เข้าร่วม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>"
+      },
+      {
+        "translatedText": "เตรียมพร้อมและแก้ไขปัญหา"
+      },
+      {
+        "translatedText": "เก็บประวัติไว้"
+      },
+      {
+        "translatedText": "รักษาระยะความยาวให้เท่ากัน (ต้องตรงกันอยู่แล้ว)"
+      },
+      {
+        "translatedText": "โปรดฟังและเปรียบเทียบข้อมูลในโหมดพรีวิว เลือกเวอร์ชันที่ส่งมอบแล้วเพื่อแก้ไขผ่านทางแชท"
+      },
+      {
+        "translatedText": "เก็บของฉันไว้เป็นสกินใหม่ด้วยนะ"
+      },
+      {
+        "translatedText": "เก็บบัญชีปัจจุบันของฉันไว้"
+      },
+      {
+        "translatedText": "คงทำนองเดิมไว้ แต่ทำให้ความสงบดูกว้างขวางมากขึ้น..."
+      },
+      {
+        "translatedText": "รักษากลุ่มชื่อตระกูลนี้ไว้ นำเข้ากลุ่มชื่อตระกูลใหม่เพื่อสร้างกลุ่มชื่อตระกูลที่แตกต่างออกไป"
+      },
+      {
+        "translatedText": "ยอดรวมย่อยต้นทุนที่ทราบ"
+      },
+      {
+        "translatedText": "บันได"
+      },
+      {
+        "translatedText": "ภาษา"
+      },
+      {
+        "translatedText": "ใหญ่"
+      },
+      {
+        "translatedText": "วันสุดท้าย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> วัน"
+      },
+      {
+        "translatedText": "วันสุดท้าย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> วัน"
+      },
+      {
+        "translatedText": "ช้า"
+      },
+      {
+        "translatedText": "ชั้น"
+      },
+      {
+        "translatedText": "ตารางอันดับ"
+      },
+      {
+        "translatedText": "ผู้เข้าร่วมตารางอันดับ"
+      },
+      {
+        "translatedText": "ตารางอันดับ"
+      },
+      {
+        "translatedText": "ออกจากห้องไปดีกว่า"
+      },
+      {
+        "translatedText": "ออกจากชุดข้อมูลนี้และยกเลิกการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใช่หรือไม่?"
+      },
+      {
+        "translatedText": "ออกจากเครื่องโดยไม่ได้บันทึกการเปลี่ยนแปลงใช่ไหม? สำเนาสำหรับกู้คืนจะยังคงอยู่ในอุปกรณ์นี้"
+      },
+      {
+        "translatedText": "ออกจากเครื่องโดยที่ยังไม่ได้บันทึกการแก้ไขใช่ไหม? สำเนาสำหรับกู้คืนจะยังคงอยู่ในอุปกรณ์นี้"
+      },
+      {
+        "translatedText": "การซ่อมแซมความยาว"
+      },
+      {
+        "translatedText": "ห้องสมุด"
+      },
+      {
+        "translatedText": "ใบอนุญาตสำหรับเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ใบอนุญาต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ใบอนุญาต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> · เปิดเผยองค์ประกอบ AI แล้ว"
+      },
+      {
+        "translatedText": "ยกเลิกข้อห้าม"
+      },
+      {
+        "translatedText": "แสงสว่าง"
+      },
+      {
+        "translatedText": "ชอบ"
+      },
+      {
+        "translatedText": "ไลค์"
+      },
+      {
+        "translatedText": "จำนวนจำกัดต้องอยู่ระหว่าง 1 ถึง 100"
+      },
+      {
+        "translatedText": "เชื่อมโยงบัญชีที่สามารถกู้คืนได้ก่อน"
+      },
+      {
+        "translatedText": "โปรดเชื่อมโยงบัญชีที่สามารถกู้คืนได้ก่อนทำการซื้อ"
+      },
+      {
+        "translatedText": "เชื่อมโยงบัญชีที่กู้คืนได้เพื่อซิงค์ฉบับร่าง"
+      },
+      {
+        "translatedText": "หมายเหตุการฟัง"
+      },
+      {
+        "translatedText": "การทดสอบการเล่น AI สด การแก้ไข <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ไม่สามารถอัปเดตข้อมูลแบบเรียลไทม์ได้ กำลังรีเฟรชงานที่บันทึกไว้…"
+      },
+      {
+        "translatedText": "โหลดการเปลี่ยนแปลงบัญชี"
+      },
+      {
+        "translatedText": "โหลดบทสนทนาและเวอร์ชันก่อนหน้า"
+      },
+      {
+        "translatedText": "โหลดเพิ่มเติม"
+      },
+      {
+        "translatedText": "โหลดฉบับร่างเพิ่มเติม"
+      },
+      {
+        "translatedText": "กำลังโหลด"
+      },
+      {
+        "translatedText": "กำลังโหลดโปรแกรมแก้ไขโค้ด…"
+      },
+      {
+        "translatedText": "กำลังโหลดข้อมูลเปรียบเทียบ…"
+      },
+      {
+        "translatedText": "กำลังโหลดฉบับร่าง…"
+      },
+      {
+        "translatedText": "กำลังโหลดตัวแก้ไข…"
+      },
+      {
+        "translatedText": "กำลังโหลดเครื่องยนต์…"
+      },
+      {
+        "translatedText": "กำลังโหลดเกม…"
+      },
+      {
+        "translatedText": "กำลังโหลดตัวอย่างแผนที่…"
+      },
+      {
+        "translatedText": "กำลังโหลดแมตช์…"
+      },
+      {
+        "translatedText": "กำลังโหลดเพลง…"
+      },
+      {
+        "translatedText": "กำลังโหลดตัวอย่าง…"
+      }
+    ]
+  }
+}

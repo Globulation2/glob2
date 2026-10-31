@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Explore this step.",
+      "Fix this",
+      "Fixed-point units<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> 256 = 1, 128 = 0.5, 512 = 2.",
+      "Follow latest generation",
+      "Following latest generation",
+      "Generation needs attention",
+      "Generator coding conversation",
+      "Generator package",
+      "Good under <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>, fair under <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>, poor from <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span>.",
+      "IMAGINATION, MEET POSSIBILITY",
+      "Images appear here as this stage completes.",
+      "Import .js",
+      "Import <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>",
+      "Import generator package",
+      "Loading workspace…",
+      "Make my colony more defensive…",
+      "Mute",
+      "No",
+      "No account needed for rooms and casual games; sign in to be ranked.",
+      "No additional details were recorded.",
+      "No release notes.",
+      "One <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> file.",
+      "One manifest and one <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> module.",
+      "Pause animation",
+      "Play animation",
+      "Play music",
+      "Playtest",
+      "Preparing your soundtrack…",
+      "Publish to music library",
+      "Publishing…",
+      "Refine your soundtrack",
+      "Replace generator package",
+      "Replace source with <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> file",
+      "Retry saved request",
+      "Review the technical results for this finding.",
+      "Run current revision",
+      "Saved candidate",
+      "Saved privately. Publishing shares only this version.",
+      "Saving…",
+      "Send",
+      "Send diagnostics to chat",
+      "Sign in with a registered account to like music",
+      "Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "Something wonderful is taking shape.",
+      "Start live game",
+      "Start with a feeling",
+      "Terrain designer",
+      "The assistant edits your file. You decide when to test.",
+      "The assistant edits your manifest and <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> together. You decide when to generate or run checks.",
+      "The provider outcome needs reconciliation. No duplicate call will be sent.",
+      "The provider outcome needs reconciliation. Your credit remains reserved.",
+      "The provider outcome needs reconciliation. Your reserved <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> credits remain held; new requests are paused. Manual editing and export remain available.",
+      "This match",
+      "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+      "This version is public.",
+      "Try “a winding river with fertile banks” or ask how the current generator works.",
+      "Try “focus on food before expansion” or ask how the current code works.",
+      "Use working starter",
+      "VIEW",
+      "Validation failed",
+      "We could not finish this map. Your earlier maps are safe.",
+      "What kind of colony will you build?",
+      "What landscape will you create?",
+      "Working on your request…",
+      "YOU",
+      "Your colony AI",
+      "Your colony’s soundtrack, in three moods.",
+      "Your composer is working…",
+      "Your landscape",
+      "Your message could not be completed.",
+      "Your music takes shape here",
+      "Your next battlefield starts here.",
+      "Your projects",
+      "generated",
+      "hand-made",
+      "no sign-in methods",
+      "one unit per harvest",
+      "stock remains available after harvesting",
+      "the whole stock per harvest",
+      "usage pending"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "สำรวจขั้นตอนต่อไปนี้"
+      },
+      {
+        "translatedText": "แก้ไขสิ่งนี้"
+      },
+      {
+        "translatedText": "หน่วยจุดคงที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> 256 = 1, 128 = 0.5, 512 = 2"
+      },
+      {
+        "translatedText": "ติดตามคนรุ่นล่าสุด"
+      },
+      {
+        "translatedText": "ตามรุ่นล่าสุด"
+      },
+      {
+        "translatedText": "คนรุ่นใหม่ต้องการความเอาใจใส่"
+      },
+      {
+        "translatedText": "บทสนทนาการเขียนโค้ดตัวสร้าง"
+      },
+      {
+        "translatedText": "ชุดเครื่องกำเนิดไฟฟ้า"
+      },
+      {
+        "translatedText": "ดีภายใต้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> , พอใช้ภายใต้ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span> , แย่ตั้งแต่ <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{value2}</span> ขึ้นไป"
+      },
+      {
+        "translatedText": "จินตนาการ พบกับความเป็นไปได้"
+      },
+      {
+        "translatedText": "รูปภาพจะปรากฏขึ้นที่นี่เมื่อขั้นตอนนี้เสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "นำเข้าไฟล์ .js"
+      },
+      {
+        "translatedText": "นำเข้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>"
+      },
+      {
+        "translatedText": "แพ็คเกจตัวสร้างการนำเข้า"
+      },
+      {
+        "translatedText": "กำลังโหลดพื้นที่ทำงาน…"
+      },
+      {
+        "translatedText": "ทำให้กลุ่มอาณานิคมของฉันมีการป้องกันที่แข็งแกร่งขึ้น…"
+      },
+      {
+        "translatedText": "ปิดเสียง"
+      },
+      {
+        "translatedText": "เลขที่"
+      },
+      {
+        "translatedText": "ไม่ต้องสร้างบัญชีเพื่อเข้าห้องและเล่นเกมทั่วไป ลงชื่อเข้าใช้เพื่อจัดอันดับ"
+      },
+      {
+        "translatedText": "ไม่มีการบันทึกรายละเอียดเพิ่มเติมใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีบันทึกการเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "ไฟล์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> หนึ่งไฟล์"
+      },
+      {
+        "translatedText": "ไฟล์ manifest หนึ่งไฟล์และโมดูล <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> หนึ่งโมดูล"
+      },
+      {
+        "translatedText": "หยุดแอนิเมชั่น"
+      },
+      {
+        "translatedText": "เล่นแอนิเมชั่น"
+      },
+      {
+        "translatedText": "เปิดเพลง"
+      },
+      {
+        "translatedText": "การทดสอบการเล่น"
+      },
+      {
+        "translatedText": "กำลังเตรียมเพลงประกอบภาพยนตร์ของคุณ…"
+      },
+      {
+        "translatedText": "เผยแพร่ไปยังคลังเพลง"
+      },
+      {
+        "translatedText": "การตีพิมพ์…"
+      },
+      {
+        "translatedText": "ปรับแต่งซาวด์แทร็กของคุณให้ดียิ่งขึ้น"
+      },
+      {
+        "translatedText": "เปลี่ยนชุดเครื่องกำเนิดไฟฟ้า"
+      },
+      {
+        "translatedText": "แทนที่โค้ดต้นฉบับด้วยไฟล์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>"
+      },
+      {
+        "translatedText": "ลองส่งคำขอที่บันทึกไว้อีกครั้ง"
+      },
+      {
+        "translatedText": "ตรวจสอบผลลัพธ์ทางเทคนิคเพื่อสนับสนุนข้อค้นพบนี้"
+      },
+      {
+        "translatedText": "เรียกใช้เวอร์ชันปัจจุบัน"
+      },
+      {
+        "translatedText": "ผู้สมัครที่บันทึกไว้"
+      },
+      {
+        "translatedText": "บันทึกไว้เป็นส่วนตัว การเผยแพร่จะแชร์เฉพาะเวอร์ชันนี้เท่านั้น"
+      },
+      {
+        "translatedText": "ประหยัด…"
+      },
+      {
+        "translatedText": "ส่ง"
+      },
+      {
+        "translatedText": "ส่งข้อมูลการวินิจฉัยไปยังแชท"
+      },
+      {
+        "translatedText": "ลงชื่อเข้าใช้ด้วยบัญชีที่ลงทะเบียนไว้เพื่อกดไลค์เพลง"
+      },
+      {
+        "translatedText": "ค่า HP ที่คำนวณได้ต่อรอบการโจมตี หารด้วย 256; ค่าติดลบจะสร้างความเสียหายเป็นหน่วย"
+      },
+      {
+        "translatedText": "สิ่งมหัศจรรย์กำลังก่อตัวขึ้น"
+      },
+      {
+        "translatedText": "เริ่มเกมสด"
+      },
+      {
+        "translatedText": "เริ่มต้นด้วยความรู้สึก"
+      },
+      {
+        "translatedText": "นักออกแบบภูมิประเทศ"
+      },
+      {
+        "translatedText": "ผู้ช่วยจะแก้ไขไฟล์ของคุณ คุณเป็นคนตัดสินใจว่าจะทดสอบเมื่อใด"
+      },
+      {
+        "translatedText": "ตัวช่วยจะแก้ไขไฟล์ manifest และ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ของคุณไปพร้อมกัน คุณสามารถกำหนดได้ว่าจะสร้างหรือเรียกใช้การตรวจสอบเมื่อใด"
+      },
+      {
+        "translatedText": "ผลลัพธ์จากผู้ให้บริการจำเป็นต้องได้รับการตรวจสอบความถูกต้อง จะไม่มีการโทรซ้ำ"
+      },
+      {
+        "translatedText": "ผลลัพธ์จากผู้ให้บริการจำเป็นต้องได้รับการตรวจสอบความถูกต้อง เครดิตของคุณยังคงถูกสำรองไว้"
+      },
+      {
+        "translatedText": "ผลลัพธ์จากผู้ให้บริการจำเป็นต้องได้รับการตรวจสอบความถูกต้อง เครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ที่คุณสำรองไว้ยังคงถูกระงับไว้ คำขอใหม่ถูกระงับชั่วคราว การแก้ไขด้วยตนเองและการส่งออกยังคงใช้งานได้"
+      },
+      {
+        "translatedText": "การแข่งขันนี้"
+      },
+      {
+        "translatedText": "คำขอของคุณถูกระงับชั่วคราวเพื่อตรวจสอบผลลัพธ์ เครดิตที่คุณสำรองไว้ยังคงปลอดภัย คุณสามารถออกจากระบบและกลับมาดำเนินการต่อได้ในภายหลัง"
+      },
+      {
+        "translatedText": "เวอร์ชันนี้เป็นเวอร์ชันสาธารณะ"
+      },
+      {
+        "translatedText": "ลองใช้ประโยคว่า “แม่น้ำที่คดเคี้ยวและมีฝั่งที่อุดมสมบูรณ์” หรือถามว่าเครื่องกำเนิดไฟฟ้าทำงานอย่างไร"
+      },
+      {
+        "translatedText": "ลองใช้ประโยค “เน้นเรื่องอาหารก่อนการขยายธุรกิจ” หรือสอบถามเกี่ยวกับระเบียบข้อบังคับปัจจุบันดู"
+      },
+      {
+        "translatedText": "ใช้ตัวสตาร์ทที่ใช้งานได้"
+      },
+      {
+        "translatedText": "ดู"
+      },
+      {
+        "translatedText": "การตรวจสอบความถูกต้องล้มเหลว"
+      },
+      {
+        "translatedText": "เราไม่สามารถสร้างแผนที่นี้ให้เสร็จได้ แผนที่ก่อนหน้านี้ของคุณปลอดภัยดี"
+      },
+      {
+        "translatedText": "คุณจะสร้างอาณานิคมแบบไหน?"
+      },
+      {
+        "translatedText": "คุณจะสร้างภูมิทัศน์แบบไหน?"
+      },
+      {
+        "translatedText": "กำลังดำเนินการตามคำขอของคุณ..."
+      },
+      {
+        "translatedText": "คุณ"
+      },
+      {
+        "translatedText": "AI อาณานิคมของคุณ"
+      },
+      {
+        "translatedText": "เพลงประกอบอาณานิคมของคุณ ในสามอารมณ์"
+      },
+      {
+        "translatedText": "นักแต่งเพลงของคุณกำลังดำเนินการอยู่…"
+      },
+      {
+        "translatedText": "ภูมิทัศน์ของคุณ"
+      },
+      {
+        "translatedText": "ไม่สามารถดำเนินการส่งข้อความของคุณได้เสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "ดนตรีของคุณเริ่มก่อร่างสร้างตัวที่นี่"
+      },
+      {
+        "translatedText": "สนามรบครั้งต่อไปของคุณเริ่มต้นที่นี่"
+      },
+      {
+        "translatedText": "โครงการของคุณ"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "ทำด้วยมือ"
+      },
+      {
+        "translatedText": "ไม่มีวิธีการลงชื่อเข้าใช้"
+      },
+      {
+        "translatedText": "หนึ่งหน่วยต่อการเก็บเกี่ยว"
+      },
+      {
+        "translatedText": "ผลผลิตยังคงมีอยู่หลังการเก็บเกี่ยว"
+      },
+      {
+        "translatedText": "สต็อกทั้งหมดต่อการเก็บเกี่ยว"
+      },
+      {
+        "translatedText": "การใช้งานอยู่ระหว่างดำเนินการ"
+      }
+    ]
+  }
+}

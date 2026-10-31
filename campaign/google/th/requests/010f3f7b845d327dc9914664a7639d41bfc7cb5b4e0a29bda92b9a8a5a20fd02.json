@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Strait width",
+      "Valleys",
+      "Frontier richness",
+      "City states need at least one colony.",
+      "Stone walls",
+      "Sand patches",
+      "Tidal flats",
+      "Everglades",
+      "Pool spacing",
+      "Pool size",
+      "Clearing size",
+      "Levee",
+      "Sloughs",
+      "Everglades need at least one colony.",
+      "Too many colonies for this map; use a bigger map or fewer colonies.",
+      "Coral",
+      "Fork angle",
+      "Lean",
+      "Home size",
+      "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.",
+      "Branching",
+      "Branch width",
+      "Coral needs at least one colony.",
+      "Coral needs a map at least 128 tiles across.",
+      "Carousel",
+      "Amphitheatre",
+      "Switchbacks",
+      "Corridor width",
+      "Spoke width",
+      "Court size",
+      "Court wall",
+      "Plaza size",
+      "Starting tower level",
+      "Towers per colony",
+      "Rings",
+      "Ramp width",
+      "Pit size",
+      "Terrace width",
+      "Bay size",
+      "Border wall",
+      "Plateau size",
+      "Trail width",
+      "Wall between legs",
+      "Farm building plots",
+      "Sand bridges over water",
+      "Sand lanes through crops",
+      "Carousels need at least two colonies.",
+      "Switchbacks need at least two colonies.",
+      "An amphitheatre needs at least two colonies.",
+      "The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.",
+      "The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.",
+      "The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.",
+      "Spider webs need at least one colony.",
+      "Spiral",
+      "Dew drops",
+      "Hub size",
+      "Torn strands",
+      "Sag",
+      "Thread width",
+      "Ring spacing",
+      "Spokes per colony",
+      "Spider web",
+      "Tide pools",
+      "Lagoons",
+      "Central island",
+      "Tidal flats need at least one colony.",
+      "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.",
+      "The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.",
+      "Wheat amount",
+      "Wood amount",
+      "Stone amount",
+      "Algae amount",
+      "Fruit amount",
+      "Stone on hilltops",
+      "Winding river",
+      "Sandy beaches",
+      "Land bridges",
+      "Colony meadows",
+      "Extra starting deposit",
+      "Moat bridges"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ความกว้างของช่องแคบ"
+      },
+      {
+        "translatedText": "หุบเขา"
+      },
+      {
+        "translatedText": "ความร่ำรวยของพรมแดน"
+      },
+      {
+        "translatedText": "นครรัฐจำเป็นต้องมีอาณานิคมอย่างน้อยหนึ่งแห่ง"
+      },
+      {
+        "translatedText": "กำแพงหิน"
+      },
+      {
+        "translatedText": "ผืนทราย"
+      },
+      {
+        "translatedText": "ที่ราบน้ำขึ้นน้ำลง"
+      },
+      {
+        "translatedText": "เอเวอร์เกลดส์"
+      },
+      {
+        "translatedText": "ระยะห่างระหว่างสระว่ายน้ำ"
+      },
+      {
+        "translatedText": "ขนาดสระว่ายน้ำ"
+      },
+      {
+        "translatedText": "ขนาดพื้นที่ว่าง"
+      },
+      {
+        "translatedText": "คันกั้นน้ำ"
+      },
+      {
+        "translatedText": "บึง"
+      },
+      {
+        "translatedText": "พื้นที่เอเวอร์เกลดส์ต้องการอาณานิคมอย่างน้อยหนึ่งแห่ง"
+      },
+      {
+        "translatedText": "มีอาณานิคมมากเกินไปสำหรับแผนที่นี้ โปรดใช้แผนที่ขนาดใหญ่กว่าหรือลดจำนวนอาณานิคมลง"
+      },
+      {
+        "translatedText": "ปะการัง"
+      },
+      {
+        "translatedText": "มุมส้อม"
+      },
+      {
+        "translatedText": "เอียง"
+      },
+      {
+        "translatedText": "ขนาดบ้าน"
+      },
+      {
+        "translatedText": "ปะการังในบริเวณนี้ไม่เหมาะสมกับแผนที่ ควรใช้แผนที่ที่ใหญ่กว่า ช่องแคบที่แคบกว่า หรือจำนวนโคโลนีที่น้อยกว่า"
+      },
+      {
+        "translatedText": "การแตกแขนง"
+      },
+      {
+        "translatedText": "ความกว้างของกิ่ง"
+      },
+      {
+        "translatedText": "ปะการังต้องการอย่างน้อยหนึ่งโคโลนี"
+      },
+      {
+        "translatedText": "Coral ต้องการแผนที่ที่มีความกว้างอย่างน้อย 128 ช่อง"
+      },
+      {
+        "translatedText": "ม้าหมุน"
+      },
+      {
+        "translatedText": "อัฒจันทร์"
+      },
+      {
+        "translatedText": "ทางโค้ง"
+      },
+      {
+        "translatedText": "ความกว้างของทางเดิน"
+      },
+      {
+        "translatedText": "ความกว้างของซี่ล้อ"
+      },
+      {
+        "translatedText": "ขนาดสนาม"
+      },
+      {
+        "translatedText": "กำแพงสนาม"
+      },
+      {
+        "translatedText": "ขนาดพลาซ่า"
+      },
+      {
+        "translatedText": "ระดับหอคอยเริ่มต้น"
+      },
+      {
+        "translatedText": "จำนวนหอคอยต่ออาณานิคม"
+      },
+      {
+        "translatedText": "แหวน"
+      },
+      {
+        "translatedText": "ความกว้างของทางลาด"
+      },
+      {
+        "translatedText": "ขนาดรักแร้"
+      },
+      {
+        "translatedText": "ความกว้างของระเบียง"
+      },
+      {
+        "translatedText": "ขนาดอ่าว"
+      },
+      {
+        "translatedText": "กำแพงชายแดน"
+      },
+      {
+        "translatedText": "ขนาดของที่ราบสูง"
+      },
+      {
+        "translatedText": "ความกว้างของเส้นทาง"
+      },
+      {
+        "translatedText": "กำแพงระหว่างขา"
+      },
+      {
+        "translatedText": "แปลงที่ดินสำหรับสร้างอาคารฟาร์ม"
+      },
+      {
+        "translatedText": "สะพานทรายข้ามน้ำ"
+      },
+      {
+        "translatedText": "ร่องทรายที่ตัดผ่านไร่นา"
+      },
+      {
+        "translatedText": "ม้าหมุนต้องมีอย่างน้อยสองอาณานิคม"
+      },
+      {
+        "translatedText": "ต้นไม้ชนิด Switchback ต้องการอย่างน้อยสองกลุ่มต้นไม้"
+      },
+      {
+        "translatedText": "อัฒจันทร์ต้องมีอาณานิคมอย่างน้อยสองแห่ง"
+      },
+      {
+        "translatedText": "ม้าหมุนไม่พอดีกับแผนที่นี้ ควรใช้แผนที่ที่ใหญ่กว่า บ้านขนาดเล็กกว่า หรือจำนวนอาณานิคมน้อยกว่า"
+      },
+      {
+        "translatedText": "เส้นทางคดเคี้ยวไม่ตรงกับแผนที่นี้ ควรใช้แผนที่ที่ใหญ่กว่า ที่ราบสูงที่เล็กกว่า เส้นทางที่แคบกว่า หรือจำนวนอาณานิคมที่น้อยกว่า"
+      },
+      {
+        "translatedText": "รูปทรงอัฒจันทร์ไม่เข้ากับแผนที่นี้ ควรใช้แผนที่ที่ใหญ่กว่า มีวงแหวนน้อยลง ระเบียงแคบลง หรือมีอาณานิคมน้อยลง"
+      },
+      {
+        "translatedText": "ใยแมงมุมต้องการอย่างน้อยหนึ่งอาณานิคม"
+      },
+      {
+        "translatedText": "เกลียว"
+      },
+      {
+        "translatedText": "หยาดน้ำค้าง"
+      },
+      {
+        "translatedText": "ขนาดดุมล้อ"
+      },
+      {
+        "translatedText": "เส้นใยขาด"
+      },
+      {
+        "translatedText": "ซาก"
+      },
+      {
+        "translatedText": "ความกว้างของเกลียว"
+      },
+      {
+        "translatedText": "ระยะห่างของวงแหวน"
+      },
+      {
+        "translatedText": "ซี่ล้อต่ออาณานิคม"
+      },
+      {
+        "translatedText": "ใยแมงมุม"
+      },
+      {
+        "translatedText": "แอ่งน้ำขึ้นน้ำลง"
+      },
+      {
+        "translatedText": "ทะเลสาบ"
+      },
+      {
+        "translatedText": "เกาะกลาง"
+      },
+      {
+        "translatedText": "พื้นที่ราบน้ำขึ้นน้ำลงจำเป็นต้องมีอาณานิคมอย่างน้อยหนึ่งแห่ง"
+      },
+      {
+        "translatedText": "หมู่เกาะหลักไม่พอดีกับแผนที่นี้ โปรดใช้แผนที่ขนาดใหญ่กว่า จำนวนอาณานิคมน้อยลง หรือเกาะขนาดเล็กกว่า"
+      },
+      {
+        "translatedText": "พื้นที่ส่วนกลางและช่องแคบเหลือพื้นที่สำหรับฐานทัพน้อยเกินไป ควรใช้แผนที่ที่ใหญ่กว่า จำนวนอาณานิคมน้อยกว่า พื้นที่ส่วนกลางเล็กกว่า หรือช่องแคบแคบกว่า"
+      },
+      {
+        "translatedText": "ปริมาณข้าวสาลี"
+      },
+      {
+        "translatedText": "ปริมาณไม้"
+      },
+      {
+        "translatedText": "ปริมาณหิน"
+      },
+      {
+        "translatedText": "ปริมาณสาหร่าย"
+      },
+      {
+        "translatedText": "ปริมาณผลไม้"
+      },
+      {
+        "translatedText": "หินบนยอดเขา"
+      },
+      {
+        "translatedText": "แม่น้ำที่คดเคี้ยว"
+      },
+      {
+        "translatedText": "ชายหาดทราย"
+      },
+      {
+        "translatedText": "สะพานเชื่อมแผ่นดิน"
+      },
+      {
+        "translatedText": "ทุ่งหญ้าโคโลนี"
+      },
+      {
+        "translatedText": "เงินฝากเริ่มต้นเพิ่มเติม"
+      },
+      {
+        "translatedText": "สะพานคูเมือง"
+      }
+    ]
+  }
+}

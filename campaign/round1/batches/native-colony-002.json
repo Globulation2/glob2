@@ -1,0 +1,165 @@
+{
+  "id": "native-colony-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[library Loading building families]",
+      "key": "[library Loading building families]",
+      "source": "Loading building families",
+      "target": "ครอบครัว​ที่​กำลัง​สร้าง​อาคาร"
+    },
+    {
+      "id": "native:[library No building families installed.]",
+      "key": "[library No building families installed.]",
+      "source": "No building families installed.",
+      "target": "ไม่มี​การ​ติด​ตั้ง​อาคาร​สำหรับ​ครอบครัว"
+    },
+    {
+      "id": "native:[library No public building families yet]",
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet",
+      "target": "ยัง​ไม่มี​ครอบครัว​ที่​อาศัย​อยู่​ใน​อาคาร​สาธารณะ"
+    },
+    {
+      "id": "native:[library Opening building family]",
+      "key": "[library Opening building family]",
+      "source": "Opening building family",
+      "target": "การ​เปิด​อาคาร​สำหรับ​ครอบครัว"
+    },
+    {
+      "id": "native:[intro hint no scout flag]",
+      "key": "[intro hint no scout flag]",
+      "source": "No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer.",
+      "target": "ไม่​พบ​ธง​สำรวจ​ที่​กำหนด​ไว้ โปรด​ปัก​ธง​สำรวจ​บน​ก้อน​หิน​ทาง​ทิศ​ตะวัน​ออก​ของ​ฐาน​ของ​คุณ และ​ขอ​ผู้​สำรวจ 1 คน"
+    },
+    {
+      "id": "native:[intro hint no war flag]",
+      "key": "[intro hint no war flag]",
+      "source": "No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors.",
+      "target": "ไม่​พบ​ธง​รบ​ที่​กำหนด​ไว้​ใน​ฐานทัพ​ศัตรู โปรด​ปัก​ธง​รบ​ไว้​เหนือ​กลุ่ม​ศัตรู​ทาง​ทิศ​ตะวัน​ออก และ​ร้องขอ​การ​สนับสนุน​จาก​นักรบ"
+    },
+    {
+      "id": "native:[lesson warrior-training title]",
+      "key": "[lesson warrior-training title]",
+      "source": "Producing and training warriors",
+      "target": "การ​ผลิต​และ​ฝึกฝน​นักรบ"
+    },
+    {
+      "id": "native:[lesson warrior-training briefing]",
+      "key": "[lesson warrior-training briefing]",
+      "source": "Produce warriors at the Swarm, then train them at a Training Camp.",
+      "target": "ผลิต​นักรบ​ที่​ฝูง​แมลง แล้ว​ฝึกฝน​พวก​เขา​ที่​ค่าย​ฝึก"
+    },
+    {
+      "id": "native:[lesson warrior-training complete]",
+      "key": "[lesson warrior-training complete]",
+      "source": "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat.",
+      "target": "คุณ​ควบคุม​การ​ผลิต​ทาง​ทหาร​และ​ฝึกฝน​นักรบ จง​ดูแล​ให้​มี​การ​ส่ง​เสบียง​อาหาร​อย่าง​ต่อ​เนื่อง หน่วย​รบ​ยัง​คง​ต้องการ​อาหาร​อยู่​เสมอ"
+    },
+    {
+      "id": "native:[lesson warrior-training produce hint]",
+      "key": "[lesson warrior-training produce hint]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "target": "ตั้ง​ค่า​ฝูง​ให้​มี​เฉพาะ​นักรบ​เท่านั้น กำหนด​ซัพพลาย​เอ​อร์​และ​รอ​รับ​นักรบ 2 คน ตั้ง​ค่า​อัตราส่วน​คน​งาน​และ​นัก​สำรวจ​เป็น 0 และ​อัตราส่วน​นักรบ​เป็น 1 ฝูง​จะ​ใช้​ข้าว​สาลี​ใน​การ​เพิ่ม​จำนวน อัตราส่วน​จะ​เป็น​ตัว​กำหนด​ว่า​จะ​ผลิต​อะไร ส่วน​ซัพพลาย​เอ​อร์​จะ​เป็น​ตัว​กำหนด​ว่า​ฝูง​จะ​ทำงาน​ได้​หรือ​ไม่"
+    },
+    {
+      "id": "native:[lesson warrior-training produce title]",
+      "key": "[lesson warrior-training produce title]",
+      "source": "Produce two warriors",
+      "target": "สร้าง​นักรบ​สอง​คน"
+    },
+    {
+      "id": "native:[lesson warrior-training produce instruction]",
+      "key": "[lesson warrior-training produce instruction]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors.",
+      "target": "ตั้ง​ค่า​ฝูง​ให้​เป็น​นักรบ​เท่านั้น กำหนด​ผู้​จัดหา และ​รอ​นักรบ 2 นาย"
+    },
+    {
+      "id": "native:[lesson warrior-training produce help]",
+      "key": "[lesson warrior-training produce help]",
+      "source": "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "target": "ตั้ง​อัตราส่วน​คน​งาน​และ​นัก​สำรวจ​เป็น 0 และ​อัตราส่วน​นักรบ​เป็น 1 ฝูง​สัตว์​จะ​ใช้​ข้าว​สาลี​ใน​การ​สืบพันธุ์ อัตราส่วน​จะ​เป็น​ตัว​กำหนด​สิ่ง​ที่​ผลิต​ขึ้น ส่วน​ผู้​จัดหา​จะ​เป็น​ตัว​กำหนด​ว่า​ระบบ​จะ​ทำงาน​ได้​หรือ​ไม่"
+    },
+    {
+      "id": "native:[lesson warrior-training produce marker]",
+      "key": "[lesson warrior-training produce marker]",
+      "source": "Produce two warriors",
+      "target": "สร้าง​นักรบ​สอง​คน"
+    },
+    {
+      "id": "native:[lesson warrior-training build hint]",
+      "key": "[lesson warrior-training build hint]",
+      "source": "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "target": "สร้าง​ค่าย​ฝึก​ใน​พื้นที่​โล่ง มอบ​หมาย​ช่าง​ก่อสร้าง หยุด​หรือ​ลด​การ​ผลิต​นักรบ​เมื่อ​คุณ​มี​จำนวน​เพียง​พอแล้ว ค่าย​ฝึกสอน​ทักษะ​การ​ต่อสู้ ดัง​นั้น​จึง​ต้องการ​พื้นที่​ว่าง​รอบๆ ขอบเขต​ของ​ค่าย"
+    },
+    {
+      "id": "native:[lesson warrior-training build title]",
+      "key": "[lesson warrior-training build title]",
+      "source": "Build a Training Camp",
+      "target": "สร้าง​ค่าย​ฝึก​อบรม"
+    },
+    {
+      "id": "native:[lesson warrior-training build instruction]",
+      "key": "[lesson warrior-training build instruction]",
+      "source": "Build a Training Camp in the clearing; assign builders.",
+      "target": "สร้าง​ค่าย​ฝึก​อบรม​ใน​พื้นที่​โล่ง และ​มอบ​หมาย​งาน​ก่อสร้าง​ให้​แก่​ทีม​งาน"
+    },
+    {
+      "id": "native:[lesson warrior-training build help]",
+      "key": "[lesson warrior-training build help]",
+      "source": "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "target": "หยุด​หรือ​ลด​การ​ผลิต​นักรบ​เมื่อ​คุณ​มี​จำนวน​เพียง​พอแล้ว ค่าย​ฝึกสอน​ทักษะ​การ​ต่อสู้ จำเป็น​ต้อง​มี​พื้นที่​ว่าง​รอบๆ ขอบเขต​ของ​ค่าย"
+    },
+    {
+      "id": "native:[lesson warrior-training build marker]",
+      "key": "[lesson warrior-training build marker]",
+      "source": "Build a Training Camp",
+      "target": "สร้าง​ค่าย​ฝึก​อบรม"
+    },
+    {
+      "id": "native:[lesson warrior-training train hint]",
+      "key": "[lesson warrior-training train hint]",
+      "source": "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "target": "ปล่อย​ให้​นักรบ​ฝึกฝน​ใน​ค่าย​ฝึก​ให้​เสร็จ​สมบูรณ์ นักรบ​จะ​แสวงหา​การ​ฝึกฝน​โดย​อัตโนมัติ จัดหา​เสบียง​ให้​ที่พัก​และ​ตั้ง​ค่าย​ให้​เข้า​ถึง​ได้ การ​สร้าง​ค่าย​เพียง​อย่าง​เดียว​ไม่​ถือ​เป็นการ​ฝึกฝน​ที่​เสร็จ​สมบูรณ์"
+    },
+    {
+      "id": "native:[lesson warrior-training train title]",
+      "key": "[lesson warrior-training train title]",
+      "source": "Train your warriors",
+      "target": "ฝึกฝน​นักรบ​ของ​คุณ"
+    },
+    {
+      "id": "native:[lesson warrior-training train instruction]",
+      "key": "[lesson warrior-training train instruction]",
+      "source": "Let a warrior complete Training Camp practice.",
+      "target": "ปล่อย​ให้​นักรบ​ฝึก​ซ้อม​ใน​ค่าย​ฝึก​ให้​เสร็จ​สิ้น"
+    },
+    {
+      "id": "native:[lesson warrior-training train help]",
+      "key": "[lesson warrior-training train help]",
+      "source": "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "target": "นักรบ​ย่อม​แสวงหา​การ​ฝึกฝน​โดย​อัตโนมัติ ต้อง​ดูแล​ให้​ที่พัก​มี​เสบียง​ครบ​ครัน​และ​ค่าย​พัก​สามารถ​เข้า​ถึง​ได้ การ​สร้าง​ค่าย​พัก​เพียง​อย่าง​เดียว​ไม่​ถือ​เป็นการ​ฝึกฝน​ที่​สมบูรณ์"
+    },
+    {
+      "id": "native:[lesson warrior-training produce compact]",
+      "key": "[lesson warrior-training produce compact]",
+      "source": "Swarm → warriors only. Supply wheat for 2 warriors.",
+      "target": "ฝูง → เฉพาะ​นักรบ​เท่านั้น จัดหา​ข้าว​สาลี​สำหรับ​นักรบ 2 นาย"
+    },
+    {
+      "id": "native:[lesson warrior-training build compact]",
+      "key": "[lesson warrior-training build compact]",
+      "source": "Build → Training Camp. Leave space around its edges.",
+      "target": "สร้าง → ค่าย​ฝึก​ซ้อม เว้น​พื้น​ที่​รอบๆ ขอบ​ค่าย​ไว้"
+    },
+    {
+      "id": "native:[lesson warrior-training train compact]",
+      "key": "[lesson warrior-training train compact]",
+      "source": "Let a warrior finish Training Camp practice.",
+      "target": "ปล่อย​ให้​นักรบ​ฝึก​ซ้อม​ใน​ค่าย​ฝึก​ให้​เสร็จ​สิ้น"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "Sign in": "Sign in",
+  "Sign out": "Sign out",
+  "Play": "Play",
+  "Custom content credits": "Custom content credits",
+  "Source identity": "Source identity",
+  "{slot0} teams": "{slot0} teams",
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+  "Good under {value0}, fair under {value1}, poor from {value2}.": "Good under {value0}, fair under {value1}, poor from {value2}."
+}

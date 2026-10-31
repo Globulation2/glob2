@@ -1,0 +1,190 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Producing and training warriors",
+      "Produce warriors at the Swarm, then train them at a Training Camp.",
+      "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat.",
+      "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "Produce two warriors",
+      "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors.",
+      "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "Produce two warriors",
+      "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "Build a Training Camp",
+      "Build a Training Camp in the clearing; assign builders.",
+      "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "Build a Training Camp",
+      "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "Train your warriors",
+      "Let a warrior complete Training Camp practice.",
+      "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "Towers and protective walls",
+      "Build a supplied tower and protective walls, then test them against one small attack.",
+      "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.",
+      "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "Build a defense tower",
+      "Build a tower in the marked area; assign builders.",
+      "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "Build a defense tower",
+      "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> suppliers need a route. The marked west lane must remain clear.",
+      "Protect the tower with walls",
+      "Build at least 2 wall sections near the tower; keep its west access lane open.",
+      "Walls use stone and each site requests workers. Do not seal the tower in<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> suppliers need a route. The marked west lane must remain clear.",
+      "Protect the tower with walls",
+      "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "Supply ammunition",
+      "Select the tower and request suppliers. Wait for at least 2 stone.",
+      "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "Supply ammunition",
+      "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "Test the fortifications",
+      "A practice warrior is approaching. Keep the tower supplied and accessible.",
+      "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "Test the fortifications",
+      "Guard zones and flag tactics",
+      "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+      "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "การผลิตและฝึกฝนนักรบ"
+      },
+      {
+        "translatedText": "ผลิตนักรบที่ฝูงแมลง แล้วฝึกฝนพวกเขาที่ค่ายฝึก"
+      },
+      {
+        "translatedText": "คุณควบคุมการผลิตทางทหารและฝึกฝนนักรบ จงดูแลให้มีการส่งเสบียงอาหารอย่างต่อเนื่อง หน่วยรบยังคงต้องการอาหารอยู่เสมอ"
+      },
+      {
+        "translatedText": "ตั้งค่าฝูงให้มีเฉพาะนักรบเท่านั้น กำหนดซัพพลายเออร์และรอรับนักรบ 2 คน ตั้งค่าอัตราส่วนคนงานและนักสำรวจเป็น 0 และอัตราส่วนนักรบเป็น 1 ฝูงจะใช้ข้าวสาลีในการเพิ่มจำนวน อัตราส่วนจะเป็นตัวกำหนดว่าจะผลิตอะไร ส่วนซัพพลายเออร์จะเป็นตัวกำหนดว่าฝูงจะทำงานได้หรือไม่"
+      },
+      {
+        "translatedText": "สร้างนักรบสองคน"
+      },
+      {
+        "translatedText": "ตั้งค่าฝูงให้เป็นนักรบเท่านั้น กำหนดผู้จัดหา และรอนักรบ 2 นาย"
+      },
+      {
+        "translatedText": "ตั้งอัตราส่วนคนงานและนักสำรวจเป็น 0 และอัตราส่วนนักรบเป็น 1 ฝูงสัตว์จะใช้ข้าวสาลีในการสืบพันธุ์ อัตราส่วนจะเป็นตัวกำหนดสิ่งที่ผลิตขึ้น ส่วนผู้จัดหาจะเป็นตัวกำหนดว่าระบบจะทำงานได้หรือไม่"
+      },
+      {
+        "translatedText": "สร้างนักรบสองคน"
+      },
+      {
+        "translatedText": "สร้างค่ายฝึกในพื้นที่โล่ง มอบหมายช่างก่อสร้าง หยุดหรือลดการผลิตนักรบเมื่อคุณมีจำนวนเพียงพอแล้ว ค่ายฝึกสอนทักษะการต่อสู้ ดังนั้นจึงต้องการพื้นที่ว่างรอบๆ ขอบเขตของค่าย"
+      },
+      {
+        "translatedText": "สร้างค่ายฝึกอบรม"
+      },
+      {
+        "translatedText": "สร้างค่ายฝึกอบรมในพื้นที่โล่ง และมอบหมายงานก่อสร้างให้แก่ทีมงาน"
+      },
+      {
+        "translatedText": "หยุดหรือลดการผลิตนักรบเมื่อคุณมีจำนวนเพียงพอแล้ว ค่ายฝึกสอนทักษะการต่อสู้ จำเป็นต้องมีพื้นที่ว่างรอบๆ ขอบเขตของค่าย"
+      },
+      {
+        "translatedText": "สร้างค่ายฝึกอบรม"
+      },
+      {
+        "translatedText": "ปล่อยให้นักรบฝึกฝนในค่ายฝึกให้เสร็จสมบูรณ์ นักรบจะแสวงหาการฝึกฝนโดยอัตโนมัติ จัดหาเสบียงให้ที่พักและตั้งค่ายให้เข้าถึงได้ การสร้างค่ายเพียงอย่างเดียวไม่ถือเป็นการฝึกฝนที่เสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "ฝึกฝนนักรบของคุณ"
+      },
+      {
+        "translatedText": "ปล่อยให้นักรบฝึกซ้อมในค่ายฝึกให้เสร็จสิ้น"
+      },
+      {
+        "translatedText": "นักรบย่อมแสวงหาการฝึกฝนโดยอัตโนมัติ ต้องดูแลให้ที่พักมีเสบียงครบครันและค่ายพักสามารถเข้าถึงได้ การสร้างค่ายพักเพียงอย่างเดียวไม่ถือเป็นการฝึกฝนที่สมบูรณ์"
+      },
+      {
+        "translatedText": "หอคอยและกำแพงป้องกัน"
+      },
+      {
+        "translatedText": "สร้างหอคอยและกำแพงป้องกันตามที่กำหนด จากนั้นทดสอบการป้องกันโดยการโจมตีขนาดเล็กเพียงครั้งเดียว"
+      },
+      {
+        "translatedText": "ระบบป้องกันที่คุณจัดหามานั้นสามารถหยุดการโจมตีทดลองได้ หอคอยต้องการหิน และกำแพงต้องการช่องว่างเพื่อให้ผู้ส่งสารสามารถเข้าถึงพื้นที่ได้อย่างต่อเนื่อง"
+      },
+      {
+        "translatedText": "สร้างหอคอยในพื้นที่ที่ทำเครื่องหมายไว้ มอบหมายช่างก่อสร้าง วางหอคอยไว้ใกล้เหมืองหินและไม่อนุญาตให้ผู้จัดหาเข้าถึงได้ การโจมตีจะไม่เริ่มต้นจนกว่าเป้าหมายการเตรียมการจะเสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "สร้างหอคอยป้องกัน"
+      },
+      {
+        "translatedText": "สร้างหอคอยในพื้นที่ที่ทำเครื่องหมายไว้ และมอบหมายผู้สร้าง"
+      },
+      {
+        "translatedText": "วางฐานไว้ใกล้เหมืองหินและปิดกั้นทางเข้าของผู้จัดหา การโจมตีจะไม่เริ่มต้นจนกว่าเป้าหมายการเตรียมการจะเสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "สร้างหอคอยป้องกัน"
+      },
+      {
+        "translatedText": "สร้างกำแพงอย่างน้อย 2 ส่วนใกล้กับหอคอย และต้องเปิดทางเข้าด้านทิศตะวันตกไว้เสมอ กำแพงใช้หิน และแต่ละพื้นที่ต้องจัดหาคนงานเอง ห้ามปิดกั้นหอคอย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ผู้ขนส่งจำเป็นต้องมีเส้นทางสัญจร ทางเข้าด้านทิศตะวันตกที่ทำเครื่องหมายไว้ต้องไม่มีสิ่งกีดขวาง"
+      },
+      {
+        "translatedText": "ป้องกันหอคอยด้วยกำแพง"
+      },
+      {
+        "translatedText": "สร้างกำแพงอย่างน้อย 2 ส่วนใกล้กับหอคอย และรักษาทางเข้าด้านทิศตะวันตกให้เปิดอยู่เสมอ"
+      },
+      {
+        "translatedText": "กำแพงสร้างจากหิน และแต่ละสถานที่ก็ต้องการคนงาน อย่าปิดกั้นหอคอย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ผู้จัดหาจำเป็นต้องมีเส้นทาง ช่องทางด้านตะวันตกที่ทำเครื่องหมายไว้ต้องคงไว้ให้โล่ง"
+      },
+      {
+        "translatedText": "ป้องกันหอคอยด้วยกำแพง"
+      },
+      {
+        "translatedText": "เลือกหอคอยและขอซัพพลายเออร์ รออย่างน้อย 2 ก้อน หอคอยที่สร้างเสร็จแล้วต้องการเป้าหมายคนงานที่ปฏิบัติงานเพื่อนำกระสุนมาส่ง ซึ่งแยกต่างหากจากเป้าหมายการก่อสร้าง"
+      },
+      {
+        "translatedText": "จัดหาและยิงกระสุน"
+      },
+      {
+        "translatedText": "เลือกหอคอยและขอซัพพลายเออร์ รออย่างน้อย 2 หิน"
+      },
+      {
+        "translatedText": "หอคอยที่สร้างเสร็จแล้วจำเป็นต้องมีเป้าหมายสำหรับคนงานที่กำลังปฏิบัติงานเพื่อนำกระสุนมาส่ง ซึ่งแยกต่างหากจากเป้าหมายในการก่อสร้าง"
+      },
+      {
+        "translatedText": "จัดหาและยิงกระสุน"
+      },
+      {
+        "translatedText": "ทหารฝึกหัดกำลังเข้ามาใกล้ คอยส่งเสบียงให้หอคอยและเข้าถึงได้ง่าย ยึดพื้นที่ไว้จนกว่าผู้โจมตีจะพ่ายแพ้หรือถูกขับไล่กลับไป กำแพงที่ปิดกั้นการส่งเสบียงอาจทำให้หอคอยขาดกระสุนได้ หากอาณานิคมล้มเหลว ให้เริ่มใหม่หรือโหลดไฟล์บันทึกก่อนหน้า"
+      },
+      {
+        "translatedText": "ทดสอบป้อมปราการ"
+      },
+      {
+        "translatedText": "นักรบฝึกหัดกำลังเข้ามาใกล้ โปรดส่งเสบียงให้หอคอยและตรวจสอบให้แน่ใจว่าพวกเขาสามารถเข้าถึงได้"
+      },
+      {
+        "translatedText": "ยึดพื้นที่ไว้จนกว่าผู้โจมตีจะพ่ายแพ้หรือถูกขับไล่กลับไป กำแพงที่ปิดกั้นเส้นทางลำเลียงเสบียงอาจทำให้หอคอยขาดแคลนกระสุน หากอาณานิคมล้มเหลว ให้เริ่มใหม่หรือโหลดไฟล์บันทึกก่อนหน้า"
+      },
+      {
+        "translatedText": "ทดสอบป้อมปราการ"
+      },
+      {
+        "translatedText": "เขตรักษาการณ์และยุทธวิธีธง"
+      },
+      {
+        "translatedText": "สำรวจศัตรูในการฝึกซ้อม เตรียมเขตป้องกัน ป้องกัน แล้ววางแผนการโจมตีโต้กลับ"
+      },
+      {
+        "translatedText": "คุณได้ทำการลาดตระเวน ป้องกันเขตรักษาการณ์ และสั่งการโจมตีโต้กลับ การปักธงเพื่อขอหน่วยรบ การควบคุมรัศมีจะกำหนดขอบเขตการทำงานของหน่วยรบเหล่านั้น"
+      }
+    ]
+  }
+}

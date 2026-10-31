@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Describe your map or discuss changes",
+      "Description",
+      "Design",
+      "Design brief <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Design conversation",
+      "Design the building",
+      "Design the set",
+      "Designer reply awaiting reconciliation",
+      "Designer request failed",
+      "Designer request status",
+      "Designer status",
+      "Destination<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> library. Run checks before publication.",
+      "Detailed usage rates",
+      "Details",
+      "Development credits",
+      "Dimension",
+      "Disable",
+      "Disable skin and resolve",
+      "Disabled",
+      "Discard local retry",
+      "Discard manual edits and load saved revision",
+      "Disconnected",
+      "Disconnects",
+      "Discover",
+      "Discover a new opponent. Find a new way to play.",
+      "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "Dismiss",
+      "Dismiss notification",
+      "Dismiss report",
+      "Dismissed",
+      "Display names are at most <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> bytes.",
+      "Display names can only be changed once per interval.",
+      "Display names cannot contain control characters.",
+      "Display names cannot start or end with spaces.",
+      "Diverged",
+      "Download",
+      "Download <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> (.js)",
+      "Download <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">SHA-256</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Download ZIP",
+      "Download candidate",
+      "Download exact package",
+      "Download family",
+      "Download local changes",
+      "Download local edits",
+      "Download my data",
+      "Download progress",
+      "Download replay",
+      "Download saved draft",
+      "Download selected",
+      "Download set",
+      "Download the game",
+      "Download this release",
+      "Download <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Downloading replay…",
+      "Downloading the game…",
+      "Downloads",
+      "Download<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Draft",
+      "Draft identities cannot change.",
+      "Draft is temporarily empty. Add source to save.",
+      "Draft not found.",
+      "Draft recovery failed",
+      "Draft recovery failed.",
+      "Draft saved",
+      "Draft saved.",
+      "Drafts",
+      "Drafts are private. Publish a saved family to share it in the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>.",
+      "Drag or use arrow keys to explore the wraparound map.",
+      "Drag the playhead to explore",
+      "Drag to choose your <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> angle",
+      "Drag to explore when zoomed",
+      "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "Drag to rotate and tilt · scroll or pinch to zoom",
+      "Drag to turn · fixed height and scale",
+      "Draw",
+      "Duplicate",
+      "Duplicate rig clip",
+      "Duplicate shape clip",
+      "Duration (steps)"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "อธิบายแผนที่ของคุณหรือหารือเกี่ยวกับการเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "คำอธิบาย"
+      },
+      {
+        "translatedText": "ออกแบบ"
+      },
+      {
+        "translatedText": "รายละเอียดงานออกแบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "บทสนทนาการออกแบบ"
+      },
+      {
+        "translatedText": "ออกแบบอาคาร"
+      },
+      {
+        "translatedText": "ออกแบบฉาก"
+      },
+      {
+        "translatedText": "นักออกแบบกำลังรอการตอบกลับเพื่อยืนยันความถูกต้อง"
+      },
+      {
+        "translatedText": "คำขอของนักออกแบบล้มเหลว"
+      },
+      {
+        "translatedText": "สถานะคำขอของนักออกแบบ"
+      },
+      {
+        "translatedText": "สถานะนักออกแบบ"
+      },
+      {
+        "translatedText": "ปลายทาง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ไลบรารี <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> โปรดตรวจสอบก่อนเผยแพร่"
+      },
+      {
+        "translatedText": "อัตราค่าบริการโดยละเอียด"
+      },
+      {
+        "translatedText": "รายละเอียด"
+      },
+      {
+        "translatedText": "เครดิตการพัฒนา"
+      },
+      {
+        "translatedText": "มิติ"
+      },
+      {
+        "translatedText": "ปิดใช้งาน"
+      },
+      {
+        "translatedText": "ปิดใช้งานสกินและแก้ไขปัญหา"
+      },
+      {
+        "translatedText": "พิการ"
+      },
+      {
+        "translatedText": "ยกเลิกการลองใหม่ในพื้นที่"
+      },
+      {
+        "translatedText": "ยกเลิกการแก้ไขด้วยตนเองและโหลดเวอร์ชันที่บันทึกไว้"
+      },
+      {
+        "translatedText": "ตัดการเชื่อมต่อ"
+      },
+      {
+        "translatedText": "การตัดการเชื่อมต่อ"
+      },
+      {
+        "translatedText": "ค้นพบ"
+      },
+      {
+        "translatedText": "ค้นพบคู่ต่อสู้ใหม่ ค้นพบวิธีการเล่นใหม่"
+      },
+      {
+        "translatedText": "การสนทนาไม่ใช้เครดิตใดๆ ต้องใช้เครดิตอาคาร 1 หน่วย การสร้างและการแก้ไขคำขอจะเริ่มต้นโดยอัตโนมัติและมีค่าใช้จ่าย 1 เครดิตเมื่อส่งมอบ"
+      },
+      {
+        "translatedText": "อนุญาตให้ออกไป"
+      },
+      {
+        "translatedText": "ยกเลิกการแจ้งเตือน"
+      },
+      {
+        "translatedText": "ยกเลิกรายงาน"
+      },
+      {
+        "translatedText": "ไล่ออก"
+      },
+      {
+        "translatedText": "ชื่อที่แสดงมีขนาดไม่เกิน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ไบต์"
+      },
+      {
+        "translatedText": "สามารถเปลี่ยนชื่อที่แสดงได้เพียงครั้งเดียวต่อช่วงเวลาเท่านั้น"
+      },
+      {
+        "translatedText": "ชื่อที่แสดงต้องไม่มีอักขระควบคุม"
+      },
+      {
+        "translatedText": "ชื่อที่แสดงไม่สามารถขึ้นต้นหรือลงท้ายด้วยช่องว่างได้"
+      },
+      {
+        "translatedText": "แตกต่างกัน"
+      },
+      {
+        "translatedText": "ดาวน์โหลด"
+      },
+      {
+        "translatedText": "ดาวน์โหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> (.js)"
+      },
+      {
+        "translatedText": "ดาวน์โหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">SHA-256</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ดาวน์โหลดไฟล์ ZIP"
+      },
+      {
+        "translatedText": "ดาวน์โหลดผู้สมัคร"
+      },
+      {
+        "translatedText": "ดาวน์โหลดแพ็กเกจที่ถูกต้อง"
+      },
+      {
+        "translatedText": "ดาวน์โหลดครอบครัว"
+      },
+      {
+        "translatedText": "ดาวน์โหลดการเปลี่ยนแปลงในพื้นที่"
+      },
+      {
+        "translatedText": "ดาวน์โหลดการแก้ไขในเครื่อง"
+      },
+      {
+        "translatedText": "ดาวน์โหลดข้อมูลของฉัน"
+      },
+      {
+        "translatedText": "ความคืบหน้าการดาวน์โหลด"
+      },
+      {
+        "translatedText": "ดาวน์โหลดรีเพลย์"
+      },
+      {
+        "translatedText": "ดาวน์โหลดฉบับร่างที่บันทึกไว้"
+      },
+      {
+        "translatedText": "ดาวน์โหลดที่เลือก"
+      },
+      {
+        "translatedText": "ชุดดาวน์โหลด"
+      },
+      {
+        "translatedText": "ดาวน์โหลดเกม"
+      },
+      {
+        "translatedText": "ดาวน์โหลดเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ดาวน์โหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดวิดีโอรีเพลย์…"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลดเกม…"
+      },
+      {
+        "translatedText": "ดาวน์โหลด"
+      },
+      {
+        "translatedText": "ดาวน์โหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ร่าง"
+      },
+      {
+        "translatedText": "ข้อมูลประจำตัวของร่างเอกสารไม่สามารถเปลี่ยนแปลงได้"
+      },
+      {
+        "translatedText": "ฉบับร่างว่างเปล่าชั่วคราว เพิ่มแหล่งที่มาเพื่อบันทึก"
+      },
+      {
+        "translatedText": "ไม่พบฉบับร่าง"
+      },
+      {
+        "translatedText": "การกู้คืนร่างล้มเหลว"
+      },
+      {
+        "translatedText": "การกู้คืนร่างล้มเหลว"
+      },
+      {
+        "translatedText": "บันทึกฉบับร่างแล้ว"
+      },
+      {
+        "translatedText": "บันทึกฉบับร่างแล้ว"
+      },
+      {
+        "translatedText": "ร่าง"
+      },
+      {
+        "translatedText": "ฉบับร่างเป็นส่วนตัว หากต้องการแชร์ครอบครัวที่บันทึกไว้ใน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> โปรดเผยแพร่"
+      },
+      {
+        "translatedText": "ลากหรือใช้ปุ่มลูกศรเพื่อสำรวจแผนที่แบบวนรอบ"
+      },
+      {
+        "translatedText": "ลากตัวชี้เวลาเพื่อสำรวจ"
+      },
+      {
+        "translatedText": "ลากเพื่อเลือกมุม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ของคุณ"
+      },
+      {
+        "translatedText": "ลากเพื่อสำรวจเมื่อซูมเข้า"
+      },
+      {
+        "translatedText": "ลากเพื่อระบายสี · หมุนเครื่องมือเพื่อเปลี่ยนทิศทาง · เลื่อนหรือบีบนิ้วเพื่อซูมเข้า/ออก"
+      },
+      {
+        "translatedText": "ลากเพื่อจัดตำแหน่ง ใช้ปุ่มลูกศรเพื่อเลื่อน และแถบเลื่อนเพื่อซูม"
+      },
+      {
+        "translatedText": "ลากเพื่อหมุนและเอียง · เลื่อนหรือบีบนิ้วเพื่อซูม"
+      },
+      {
+        "translatedText": "ลากเพื่อหมุน · ความสูงและขนาดคงที่"
+      },
+      {
+        "translatedText": "วาด"
+      },
+      {
+        "translatedText": "ทำซ้ำ"
+      },
+      {
+        "translatedText": "คลิปอุปกรณ์ซ้ำ"
+      },
+      {
+        "translatedText": "คลิปรูปทรงซ้ำ"
+      },
+      {
+        "translatedText": "ระยะเวลา (ขั้นตอน)"
+      }
+    ]
+  }
+}

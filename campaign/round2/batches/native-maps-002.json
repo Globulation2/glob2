@@ -1,0 +1,117 @@
+{
+  "id": "native-maps-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "maps",
+  "context": "Procedural terrain controls: passes are mountain routes, reach is stream length, and banks/bars are terrain, not finance/weapons.",
+  "entries": [
+    {
+      "id": "native:[terrain palette hint]",
+      "key": "[terrain palette hint]",
+      "source": "Pick a brush. Groups share one set of rules; their members differ only in look.",
+      "target": "เลือก​แปรง สมาชิก​ใน​แต่ละ​กลุ่ม​ใช้​กฎ​ชุด​เดียวกัน​และ​ต่างกัน​เพียง​รูปลักษณ์"
+    },
+    {
+      "id": "native:[terrain rule algae grow]",
+      "key": "[terrain rule algae grow]",
+      "source": "Algae grow",
+      "target": "สาหร่าย​เจริญเติบโต"
+    },
+    {
+      "id": "native:[editor map saved]",
+      "key": "[editor map saved]",
+      "source": "Map saved",
+      "target": "แผนที่​ถูก​บันทึก​แล้ว"
+    },
+    {
+      "id": "native:[editor map shared]",
+      "key": "[editor map shared]",
+      "source": "Map shared online",
+      "target": "แชร์​แผนที่​ออนไลน์​แล้ว"
+    },
+    {
+      "id": "native:[editor menu import terrain]",
+      "key": "[editor menu import terrain]",
+      "source": "Import terrain definitions…",
+      "target": "นำเข้า​ข้อกำหนด​ภูมิประเทศ…"
+    },
+    {
+      "id": "native:[library All generators]",
+      "key": "[library All generators]",
+      "source": "All generators",
+      "target": "ตัว​สร้าง​แผนที่​ทั้งหมด"
+    },
+    {
+      "id": "native:[library Downloading generator…]",
+      "key": "[library Downloading generator…]",
+      "source": "Downloading generator…",
+      "target": "กำลัง​ดาวน์โหลด​ตัว​สร้าง​แผนที่…"
+    },
+    {
+      "id": "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "key": "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.",
+      "target": "แต่ละ​ภูมิประเทศ​จะ​แสดง​เป็น​แผน​ที่จริง​ตาม​ขนาด​และ​จำนวน​อาณานิคม​ด้านล่าง ซึ่ง​คุณ​สามารถ​เปลี่ยนแปลง​ได้​ที่นี่ เลือก​ใช้​แผน​ที่ใด​แผน​ที่หนึ่ง​เพื่อ​เล่น​แผนที่​ที่​แสดง"
+    },
+    {
+      "id": "native:[library Editor tool: generates terrain for the map editor.]",
+      "key": "[library Editor tool: generates terrain for the map editor.]",
+      "source": "Editor tool: generates terrain for the map editor.",
+      "target": "เครื่องมือ​แก้ไข : สร้าง​ภูมิประเทศ​สำหรับ​โปรแกรม​แก้ไข​แผนที่"
+    },
+    {
+      "id": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "source": "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.",
+      "target": "เปิด​ใช้​ตระกูล​อาคาร​ที่​ติดตั้ง​ไว้​ด้านล่าง การ​เลือก​บันทึก​ใน​โปรไฟล์​บน​อุปกรณ์​นี้ แผนที่​และ​เกม​ที่​บันทึก​ไว้​ยังคง​อาคาร​เดิม หาก​ต้องการ​เล่น​ออนไลน์ ให้​สร้าง​แผนที่​ที่​ใช้​ตระกูล​เหล่านี้ เผยแพร่​ใน​คลัง​แผนที่ แล้ว​เลือก​แผนที่​นั้น​ใน​ห้อง"
+    },
+    {
+      "id": "native:[library Generator file hash mismatch]",
+      "key": "[library Generator file hash mismatch]",
+      "source": "Generator file hash mismatch",
+      "target": "แฮ​ช​ไฟล์​ตัว​สร้าง​แผนที่​ไม่​ตรงกัน"
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "key": "[library Generator installed. Future selections use this release.]",
+      "source": "Generator installed. Future selections use this release.",
+      "target": "ติด​ตั้งตัว​สร้าง​แผน​ที่แล้ว การ​เลือก​ครั้ง​ต่อไป​จะ​ใช้​รุ่น​เผยแพร่​นี้"
+    },
+    {
+      "id": "native:[library Generator package identity mismatch]",
+      "key": "[library Generator package identity mismatch]",
+      "source": "Generator package identity mismatch",
+      "target": "ข้อมูล​ระบุ​แพ็กเกจ​ตัว​สร้าง​แผนที่​ไม่​ตรงกัน"
+    },
+    {
+      "id": "native:[library Generators]",
+      "key": "[library Generators]",
+      "source": "Generators",
+      "target": "ตัว​สร้าง​แผนที่"
+    },
+    {
+      "id": "native:[library Map generators]",
+      "key": "[library Map generators]",
+      "source": "Map generators",
+      "target": "ตัว​สร้าง​แผนที่"
+    },
+    {
+      "id": "native:[library My generators]",
+      "key": "[library My generators]",
+      "source": "My generators",
+      "target": "ตัว​สร้าง​แผนที่​ของ​ฉัน"
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "key": "[library Playable generator]",
+      "source": "Playable generator",
+      "target": "ตัว​สร้าง​แผนที่​สำหรับ​เล่น"
+    },
+    {
+      "id": "native:[library Saving generator library…]",
+      "key": "[library Saving generator library…]",
+      "source": "Saving generator library…",
+      "target": "กำลัง​บันทึก​คลัง​ตัว​สร้าง​แผนที่…"
+    }
+  ]
+}

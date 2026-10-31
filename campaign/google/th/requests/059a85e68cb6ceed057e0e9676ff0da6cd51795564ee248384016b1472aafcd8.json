@@ -1,0 +1,154 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.",
+      "The city has too few usable junctions.",
+      "A city neighbourhood lacks reachable crops or building room.",
+      "The city neighbourhoods are too unequal; try another seed.",
+      "The fractured civic plaza did not survive.",
+      "Who Ate the Map?",
+      "Appetite",
+      "A Little Nibble",
+      "Hungry",
+      "Portage Lakes",
+      "Lake elongation",
+      "Portage depth",
+      "Extra trails",
+      "Portage Lakes needs sides between 64 and 512 tiles.",
+      "Portage Lakes cannot fit shoreline settlements on this seed.",
+      "Portage Lakes cannot fit renewable shore fields beside every settlement.",
+      "Portage Lakes cannot connect its shoreline trails.",
+      "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+      "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+      "Portage Lakes needs separate swimming lakes on this seed.",
+      "Drowned Forest",
+      "Sandbar connections",
+      "Wooded neck thickness",
+      "Neutral clearing size",
+      "Bastion Keys",
+      "Plantation size",
+      "Outlying islands",
+      "The Hungry Marches",
+      "Opening ration",
+      "Central concentration",
+      "The Last Treeline",
+      "Woodland depth",
+      "AI strategy",
+      "Balances sustainable growth and training, then gathers armies into waves."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เมืองที่มีข้อบกพร่องต้องการพื้นที่ 256 หรือ 512 ช่องต่อด้าน และอาณานิคมหนึ่งถึงสิบสองแห่ง"
+      },
+      {
+        "translatedText": "เมืองนี้มีทางแยกที่ใช้งานได้น้อยเกินไป"
+      },
+      {
+        "translatedText": "ย่านในเมืองบางแห่งขาดแคลนพื้นที่เพาะปลูกหรือพื้นที่ก่อสร้างที่เข้าถึงได้"
+      },
+      {
+        "translatedText": "ย่านต่างๆ ในเมืองมีความเหลื่อมล้ำมากเกินไป ลองใช้เมล็ดพันธุ์อื่นดู"
+      },
+      {
+        "translatedText": "ลานสาธารณะที่แตกหักนั้นไม่สามารถคงอยู่ได้"
+      },
+      {
+        "translatedText": "ใครกินแผนที่ไป?"
+      },
+      {
+        "translatedText": "ความอยากอาหาร"
+      },
+      {
+        "translatedText": "ชิมนิดหน่อย"
+      },
+      {
+        "translatedText": "หิว"
+      },
+      {
+        "translatedText": "พอร์เทจ เลคส์"
+      },
+      {
+        "translatedText": "การยืดตัวของทะเลสาบ"
+      },
+      {
+        "translatedText": "ความลึกของเส้นทางขนส่ง"
+      },
+      {
+        "translatedText": "เส้นทางเพิ่มเติม"
+      },
+      {
+        "translatedText": "โครงการ Portage Lakes ต้องการพื้นที่ด้านข้างระหว่าง 64 ถึง 512 กระเบื้อง"
+      },
+      {
+        "translatedText": "พื้นที่ Portage Lakes ไม่สามารถรองรับการตั้งถิ่นฐานริมชายฝั่งบนแผนที่นี้ได้"
+      },
+      {
+        "translatedText": "ทะเลสาบพอร์เทจไม่สามารถสร้างพื้นที่เพาะปลูกริมชายฝั่งที่ยั่งยืนได้ข้างๆ ทุกชุมชน"
+      },
+      {
+        "translatedText": "ทะเลสาบพอร์เทจไม่สามารถเชื่อมต่อเส้นทางเลียบชายฝั่งได้"
+      },
+      {
+        "translatedText": "Portage Lakes ไม่สามารถสร้างทางลัดในป่าแห้งที่เป็นประโยชน์บนเมล็ดพันธุ์นี้ได้"
+      },
+      {
+        "translatedText": "ทะเลสาบพอร์เทจไม่สามารถสร้างทางลัดว่ายน้ำที่ใช้งานได้จริงบนเมล็ดพันธุ์นี้ได้"
+      },
+      {
+        "translatedText": "Portage Lakes จำเป็นต้องมีทะเลสาบสำหรับว่ายน้ำแยกต่างหากใน seed นี้"
+      },
+      {
+        "translatedText": "ป่าที่จมน้ำ"
+      },
+      {
+        "translatedText": "การเชื่อมต่อสันดอนทราย"
+      },
+      {
+        "translatedText": "ความหนาของคอไม้"
+      },
+      {
+        "translatedText": "ขนาดการเคลียร์ที่เป็นกลาง"
+      },
+      {
+        "translatedText": "กุญแจป้อมปราการ"
+      },
+      {
+        "translatedText": "ขนาดสวน"
+      },
+      {
+        "translatedText": "หมู่เกาะรอบนอก"
+      },
+      {
+        "translatedText": "ขบวนแห่แห่งความหิวโหย"
+      },
+      {
+        "translatedText": "ส่วนแบ่งเริ่มต้น"
+      },
+      {
+        "translatedText": "การรวมศูนย์"
+      },
+      {
+        "translatedText": "แนวต้นไม้สุดท้าย"
+      },
+      {
+        "translatedText": "ความลึกของป่า"
+      },
+      {
+        "translatedText": "กลยุทธ์ AI"
+      },
+      {
+        "translatedText": "สร้างสมดุลระหว่างการเติบโตอย่างยั่งยืนและการฝึกฝน จากนั้นจึงรวบรวมกองทัพเป็นระลอกๆ"
+      }
+    ]
+  }
+}

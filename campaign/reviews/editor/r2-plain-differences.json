@@ -1,0 +1,104 @@
+[
+  {
+    "batch": "native-general-002",
+    "id": "native:[pause]",
+    "editor_proposal": "หยุดชั่วคราว",
+    "r2": "Pause"
+  },
+  {
+    "batch": "native-general-003",
+    "id": "native:[Won : you have the most prestige]",
+    "editor_proposal": "ชนะ : คุณมีเกียรติสูงสุด",
+    "r2": "ชนะ: คุณมีเกียรติยศสูงสุด"
+  },
+  {
+    "batch": "native-general-005",
+    "id": "native:[Small (+50 each)]",
+    "editor_proposal": "ขนาดเล็ก (+50 ต่อชิ้น)",
+    "r2": "เล็ก (+50 ต่อชนิด)"
+  },
+  {
+    "batch": "native-general-005",
+    "id": "native:[Medium (+150 each)]",
+    "editor_proposal": "ขนาดกลาง (+150 ต่อชิ้น)",
+    "r2": "กลาง (+150 ต่อชนิด)"
+  },
+  {
+    "batch": "native-general-005",
+    "id": "native:[Large (+300 each)]",
+    "editor_proposal": "ขนาดใหญ่ (+300 ต่อชิ้น)",
+    "r2": "ใหญ่ (+300 ต่อชนิด)"
+  },
+  {
+    "batch": "native-general-007",
+    "id": "native:[Tower spacing]",
+    "editor_proposal": "ระยะห่างระหว่างเสา",
+    "r2": "ระยะห่างหอหินปูน"
+  },
+  {
+    "batch": "native-general-008",
+    "id": "native:[Confirm %0]",
+    "editor_proposal": "ตกลง : %0",
+    "r2": "ปกติ: %0"
+  },
+  {
+    "batch": "native-general-009",
+    "id": "native:[conn delay explanation %0 %1]",
+    "editor_proposal": "ความล่าช้า : เวลาตั้งแต่คุณคลิกจนกระทั่งเหตุการณ์เกิดขึ้น สำหรับทุกคน โดยจะขึ้นอยู่กับการเชื่อมต่อของคุณเอง ไม่ใช่ของผู้เล่นคนอื่น ดีถ้าต่ำกว่า %0 แย่ถ้ามากกว่า %1",
+    "r2": "ความหน่วง: เวลาจากที่คุณคลิกจนคำสั่งเกิดผลสำหรับทุกคน ขึ้นกับการเชื่อมต่อของคุณเอง ไม่ใช่ของผู้เล่นอื่น ต่ำกว่า %0 ถือว่าดี ตั้งแต่ %1 ถือว่าแย่"
+  },
+  {
+    "batch": "native-general-012",
+    "id": "native:[room picker for %0]",
+    "editor_proposal": "สำหรับผู้เล่น %0 ในห้องนี้",
+    "r2": "สำหรับผู้เล่น %0 คนในห้อง"
+  },
+  {
+    "batch": "native-general-012",
+    "id": "native:[room picker does not fit]",
+    "editor_proposal": "ขนาดไม่พอดี กรุณาลองขนาดอื่น",
+    "r2": "ไม่พอดีกับขนาดนี้ ให้ลองแบบอื่น"
+  },
+  {
+    "batch": "native-general-012",
+    "id": "native:[bases per colony]",
+    "editor_proposal": "ฐานต่ออาณานิคม; ฐานหนึ่งแห่งคือหนึ่งทีมบนแผนที่ตามที่วาดไว้ พร้อมสิ่งก่อสร้างและหน่วยต่างๆ",
+    "r2": "ฐานต่ออาณานิคม; ฐานหนึ่งแห่งคือหนึ่งทีมบนแผนที่ตามที่วาดไว้ พร้อมสิ่งก่อสร้างและยูนิต"
+  },
+  {
+    "batch": "native-general-013",
+    "id": "native:[stat unit resources]",
+    "editor_proposal": "หน่วย",
+    "r2": "ยูนิต"
+  },
+  {
+    "batch": "native-general-016",
+    "id": "native:[intro hint retry]",
+    "editor_proposal": "หน่วยหรือสิ่งก่อสร้างที่จำเป็นสำหรับบทเรียนนี้หายไป โปรดโหลดไฟล์บันทึกก่อนหน้าหรือเริ่มบทเรียนนี้ใหม่จากเมนูเกม",
+    "r2": "ยูนิตหรืออาคารที่จำเป็นต่อบทเรียนสูญเสียไป โหลดเซฟก่อนหน้าหรือเริ่มบทเรียนใหม่จากเมนูเกม"
+  },
+  {
+    "batch": "native-general-016",
+    "id": "native:[lesson walking-training complete]",
+    "editor_proposal": "คนงานของคุณเรียนรู้การเดินได้เร็วขึ้น การฝึกฝนช่วยพัฒนาคนงานที่คุณมีอยู่ แต่ไม่ได้ทดแทนแหล่งอาหารของอาณานิคม",
+    "r2": "คนงานเรียนทักษะเดินเร็วขึ้นแล้ว การฝึกพัฒนาคนงานที่มีอยู่ แต่ยังต้องส่งอาหารให้อาณานิคม"
+  },
+  {
+    "batch": "native-maps-001",
+    "id": "native:[Conquest only removes prestige victory; map scripts still apply.]",
+    "editor_proposal": "การพิชิตจะลบเฉพาะชัยชนะด้านเกียรติยศเท่านั้น สคริปต์แผนที่ยังคงมีผลอยู่",
+    "r2": "โหมดพิชิตอย่างเดียวปิดเฉพาะชัยชนะด้วยเกียรติยศ สคริปต์แผนที่ยังมีผล"
+  },
+  {
+    "batch": "native-maps-001",
+    "id": "native:[Home island size]",
+    "editor_proposal": "ขนาดเกาะบ้าน",
+    "r2": "ขนาดเกาะตั้งต้น"
+  },
+  {
+    "batch": "native-maps-001",
+    "id": "native:[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+    "editor_proposal": "ด่าน Gauntlet ต้องการแผนที่ที่ใหญ่กว่าหรือจำนวนอาณานิคมที่น้อยกว่าเพื่อให้เหมาะสมกับแนวป้องกันสองด้าน",
+    "r2": "ด่านทดสอบต้องใช้แผนที่ใหญ่ขึ้นหรือลดอาณานิคมเพื่อให้พอดีกับแนวเฝ้าระวังสองด้าน"
+  }
+]

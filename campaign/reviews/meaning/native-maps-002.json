@@ -1,0 +1,95 @@
+{
+  "id": "native-maps-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "930be93f778366a0e090809997befce232ccec4ed489451c25a76cb445a9c438",
+  "reviewer": "thai_brief",
+  "role": "independent meaning reviewer",
+  "reviewed_keys": [
+    "native:[terrain palette hint]",
+    "native:[terrain rule algae grow]",
+    "native:[editor map saved]",
+    "native:[editor map shared]",
+    "native:[editor menu import terrain]",
+    "native:[library All generators]",
+    "native:[library Downloading generator…]",
+    "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+    "native:[library Editor tool: generates terrain for the map editor.]",
+    "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+    "native:[library Generator file hash mismatch]",
+    "native:[library Generator installed. Future selections use this release.]",
+    "native:[library Generator package identity mismatch]",
+    "native:[library Generators]",
+    "native:[library Map generators]",
+    "native:[library My generators]",
+    "native:[library Playable generator]",
+    "native:[library Saving generator library…]"
+  ],
+  "findings": [
+    {
+      "id": "native:[terrain palette hint]",
+      "key": "native:[terrain palette hint]",
+      "severity": "major",
+      "state": "open",
+      "original": "เลือก​แปรง​สัก​อัน กลุ่ม​ต่างๆ มี​กฎ​เกณฑ์​ชุด​เดียวกัน สมาชิก​ใน​กลุ่ม​จะ​แตก​ต่าง​กัน​เพียง​แค่​รูป​ลักษณ์​ภายนอก​เท่านั้น",
+      "proposed": "เลือกแปรง สมาชิกภายในแต่ละกลุ่มใช้กฎเดียวกันและต่างกันเฉพาะรูปลักษณ์",
+      "reason": "Same rules within each group, not all different groups sharing one ruleset."
+    },
+    {
+      "id": "native:[library All generators]",
+      "key": "native:[library All generators]",
+      "severity": "major",
+      "state": "open",
+      "original": "เครื่อง​กำเนิด​ไฟฟ้า​ทั้งหมด",
+      "proposed": "ตัวสร้างแผนที่ทั้งหมด",
+      "reason": "Software generators, not electrical generators."
+    },
+    {
+      "id": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "key": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "severity": "minor",
+      "state": "open",
+      "original": "เปิด​ใช้​งาน​ตระกูล​อาคาร​ที่​ติด​ตั้ง​ไว้​ด้าน​ล่าง การ​เลือก​จะ​ถูก​บันทึก​ไว้​ใน​โปรไฟล์​ท้อง​ถิ่น​นี้ แผนที่​และ​ไฟล์​บันทึก​ที่​มี​อยู่​จะ​ยัง​คง​มี​อาคาร​ของ​ตนเอง สำหรับ​การ​เล่น​ออนไลน์ ให้​สร้าง​แผนที่​ด้วย​ตระกูล​อาคาร​เหล่า​นี้ เผย​แพร่​ใน​คลัง​แผนที่ จาก​นั้น​เลือก​แผนที่​นั้น​ใน​ห้อง​ของ​คุณ",
+      "proposed": "เปิดตระกูลอาคารที่ติดตั้งด้านล่าง การเลือกบันทึกในโปรไฟล์เครื่องนี้ แผนที่และเซฟเดิมคงอาคารของตัวเอง หากเล่นออนไลน์ ให้สร้างแผนที่ด้วยตระกูลเหล่านี้ เผยแพร่ในคลังแผนที่ แล้วเลือกในห้อง",
+      "reason": "Local profile not geographic profile."
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "key": "native:[library Generator installed. Future selections use this release.]",
+      "severity": "major",
+      "state": "open",
+      "original": "ติด​ตั้ง​ตัว​สร้าง​สัญญาณ​แล้ว การ​เลือก​ใน​อนาคต​จะ​ใช้​เวอร์ชัน​นี้",
+      "proposed": "ติดตั้งตัวสร้างแผนที่แล้ว การเลือกครั้งต่อไปใช้รุ่นนี้",
+      "reason": "Map generator, not signal generator."
+    },
+    {
+      "id": "native:[library Generators]",
+      "key": "native:[library Generators]",
+      "severity": "major",
+      "state": "open",
+      "original": "เครื่อง​กำเนิด​ไฟฟ้า",
+      "proposed": "ตัวสร้างแผนที่",
+      "reason": "Not electricity generation."
+    },
+    {
+      "id": "native:[library My generators]",
+      "key": "native:[library My generators]",
+      "severity": "major",
+      "state": "open",
+      "original": "เครื่อง​กำเนิด​ไฟฟ้า​ของ​ฉัน",
+      "proposed": "ตัวสร้างแผนที่ของฉัน",
+      "reason": "Not electricity generation."
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "key": "native:[library Playable generator]",
+      "severity": "minor",
+      "state": "open",
+      "original": "เครื่อง​กำเนิด​ที่​เล่น​ได้",
+      "proposed": "ตัวสร้างแผนที่สำหรับเล่น",
+      "reason": "Playable terrain generator."
+    }
+  ],
+  "accepted_english": [],
+  "status": "meaning pass complete; findings require editor reconciliation then final recheck",
+  "review_policy": "All listed paired source/target entries were read. No editor findings consulted. Segmentation candidates shown but detailed idiom/break review belongs to independent editor."
+}

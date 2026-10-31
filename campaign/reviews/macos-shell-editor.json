@@ -1,0 +1,22 @@
+{
+  "editor": "cloud_adapter",
+  "independence": "Source and actual provider draft read independently before any macOS meaning findings.",
+  "source_sha256": "7f5189ea785f3ebc0b36e3083f822a66e59684fec15a769812e2572a875c34bd",
+  "source_file_sha256": {
+    "macos:NSLocalNetworkUsageDescription": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896"
+  },
+  "target_sha256": "e04267ed3f7cfbcf9bf82848691f1afdf652617fadc1937b1efe415bf7bcfdab",
+  "reviewed_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "findings": [
+    {
+      "id": "macos:NSLocalNetworkUsageDescription",
+      "severity": "minor",
+      "proposed": "Globulation 2 ค้นหาและเข้าร่วมเกมผู้เล่นหลายคนที่โฮสต์บนเครือข่ายในพื้นที่ของคุณ",
+      "reason": "Use primary Apple OS term เครือข่ายในพื้นที่ consistently with approved iOS permission text. Remove redundant อยู่ while retaining both discovery and joining, multiplayer scope, hosting on local network, and official brand."
+    }
+  ],
+  "accepted_english": [],
+  "status": "reviewed-with-minor-edit"
+}

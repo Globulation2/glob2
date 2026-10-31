@@ -1,0 +1,152 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "changes": [
+    {
+      "id": "native:[select place guard area]",
+      "source": "Select Place Guard Area",
+      "before": "เลือก​วาง​พื้นที่​รักษาการณ์",
+      "after": "เลือก​วาง​เขต​ป้องกัน"
+    },
+    {
+      "id": "native:[Switchbacks]",
+      "source": "Switchbacks",
+      "before": "ทาง​คดเคี้ยว",
+      "after": "ทาง​โค้ง​หักศอก"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "source": "Portage Lakes cannot fit shoreline settlements on this seed.",
+      "before": "ค่า​สุ่ม​นี้​วาง​ฐาน​ริมฝั่ง​ของ​ทะเลสาบ​พอร์​เท​จ​ไม่​ได้",
+      "after": "ค่า​สุ่ม​นี้​วาง​ฐาน​ริมฝั่ง​ของ​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+      "before": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​ป่า​แห้ง​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์​เท​จ​ไม่​ได้",
+      "after": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​บน​บก​ผ่าน​ป่า​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+      "before": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​ว่ายน้ำ​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์​เท​จ​ไม่​ได้",
+      "after": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​ว่ายน้ำ​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed.",
+      "before": "ค่า​สุ่ม​นี้​แยก​ทะเลสาบ​สำหรับ​ว่ายน้ำ​ของ​ทะเลสาบ​พอร์​เท​จ​ไม่​ได้",
+      "after": "ค่า​สุ่ม​นี้​แยก​ทะเลสาบ​สำหรับ​ว่ายน้ำ​ของ​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom.",
+      "before": "แตะ​แผนที่สอง​ครั้ง​ค้าง​ไว้ แล้ว​ลาก​เพื่อ​ซูม​เข้าออก",
+      "after": "แตะ​แผนที่​สอง​ครั้ง​ค้าง​ไว้ แล้ว​ลาก​เพื่อ​ซูม​เข้าออก"
+    },
+    {
+      "id": "native:[stat health]",
+      "source": "Health",
+      "before": "พลัง​ชีวิต",
+      "after": "พลังชีวิต"
+    },
+    {
+      "id": "native:[intro instruction scout]",
+      "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+      "before": "เปิด​เมนู​ธง และ​วาง​ธงสำรวจ​ไว้​เหนือ​ผืน​หิน​ทาง​ทิศตะวันออก​ของ​อาณานิคม​ของ​คุณ มอบหมาย​นักสำรวจ​หนึ่ง​ตัว แล้ว​เฝ้าดู​นักสำรวจ​เดินทาง​ไป​ยัง​ธง​นั้น",
+      "after": "เปิด​เมนู​ธง และ​วาง​ธงสำรวจ​ไว้​บน​กลุ่ม​หิน​ทาง​ทิศตะวันออก​ของ​อาณานิคม​ของ​คุณ มอบหมาย​นักสำรวจ​หนึ่ง​ตัว แล้ว​เฝ้าดู​นักสำรวจ​เดินทาง​ไป​ยัง​ธง​นั้น"
+    },
+    {
+      "id": "native:[lesson healing briefing]",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "before": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว อาณานิคม​เริ่ม​พร้อม​อาหาร โดย​มี​คนงาน​บาดเจ็บ 1 ตัว",
+      "after": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว ยูนิต​ใน​อาณานิคม​เริ่ม​โดย​กิน​อาหาร​แล้ว และ​มี​คนงาน​บาดเจ็บ 1 ตัว"
+    },
+    {
+      "id": "native:[lesson upgrades briefing]",
+      "source": "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.",
+      "before": "ใช้​คนงาน​ที่​เตรียม​ไว้​และ​มี​ทักษะ​เพื่อ​อัปเกรด​สนาม​วิ่ง แล้ว​ฝึก​ให้​เกิน​ระดับ​แรก",
+      "after": "ใช้​คนงาน​ที่​เตรียม​ไว้​และ​มี​ทักษะ​เพื่อ​อัปเกรด​สนามวิ่ง แล้ว​ฝึก​ให้​เกิน​ระดับ​แรก"
+    },
+    {
+      "id": "native:[lesson defensive-tactics briefing]",
+      "source": "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+      "before": "สำรวจ​ศัตรู​ทดสอบ เตรียม​เขต​รักษาการณ์ ตั้งรับ แล้ว​จัดการ​โต้กลับ",
+      "after": "สำรวจ​ศัตรู​ทดสอบ เตรียม​เขต​ป้องกัน ตั้งรับ แล้ว​จัดการ​โต้กลับ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout hint]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "before": "วาง​ธง​สำรวจ​ที่​ฐานทัพ​ศัตรู; มอบหมาย​นักสำรวจ 1 ตัว ธง​จะ​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​จะ​เปิดเผย​ความเคลื่อนไหว​ปัจจุบัน​ผ่าน​หมอก​แห่ง​สงคราม และ​อาจ​หยุดพัก​เพื่อ​รับประทาน​อาหาร",
+      "after": "วาง​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู; มอบหมาย​นักสำรวจ 1 ตัว ธง​จะ​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​จะ​เปิดเผย​ความเคลื่อนไหว​ปัจจุบัน​ผ่าน​หมอก​แห่ง​สงคราม และ​อาจ​หยุดพัก​เพื่อ​รับประทาน​อาหาร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard hint]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "before": "ระบาย​เขต​รักษาการณ์​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​ไป​ถึง เปิด​ธง เลือก​รักษาการณ์ แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​รักษาการณ์​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร",
+      "after": "ระบาย​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​ไป​ถึง เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard title]",
+      "source": "Prepare a guard zone",
+      "before": "เตรียม​เขต​รักษาการณ์",
+      "after": "เตรียม​เขต​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "before": "เปิด​ธง เลือก​รักษาการณ์ แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​รักษาการณ์​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร",
+      "after": "เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone",
+      "before": "เตรียม​เขต​รักษาการณ์",
+      "after": "เตรียม​เขต​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "before": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​รักษาการณ์​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "after": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+      "before": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​รักษาการณ์​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "after": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+      "before": "ธง → รักษาการณ์ ระบาย 4 ช่อง รอ​นักรบ 2 ตัว​มาถึง",
+      "after": "ธง → ป้องกัน ระบาย 4 ช่อง รอ​นักรบ 2 ตัว​มาถึง"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied.",
+      "before": "คุม​เขต​รักษาการณ์ ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "after": "คุม​เขต​ป้องกัน ส่ง​เสบียง​ให้​โรงเตี๊ยม"
+    }
+  ],
+  "disagreements": [
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "previous": {
+        "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+        "severity": "minor",
+        "proposed": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​ป่า​แห้ง​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้",
+        "reason": "Keep Portage proper name intact, matching final landscape label.",
+        "selected_role": "final-adversarial"
+      },
+      "next": {
+        "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+        "severity": "major",
+        "proposed": "ค่า​สุ่ม​นี้​สร้าง​ทางลัด​บน​บก​ผ่าน​ป่า​ที่​ใช้งาน​ได้​ใน​ทะเลสาบ​พอร์เทจ​ไม่​ได้",
+        "reason": "Remove syllable-internal breaks in the proper generator name พอร์เทจ. Dry means a land shortcut through woodland, not arid forest. This restores the reviewed source-context correction.",
+        "boundary_status": "explicit reviewed final hints; preserve verbatim",
+        "selected_role": "final-editor"
+      }
+    }
+  ],
+  "policy": "Explicit final-editor preference; exact native hints preserved verbatim. All changed values pending fresh agreement."
+}

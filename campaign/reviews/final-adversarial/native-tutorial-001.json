@@ -1,0 +1,45 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "4f8124dc07fd541c9d90174384338e309ba2b1e83d0912ddf4b546fdca4a7992",
+  "approved_keys": [
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[tutorial]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial complete]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]"
+  ],
+  "fresh_reviewed_keys": [],
+  "carried_keys": [
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[tutorial]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial complete]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]"
+  ],
+  "carried_subset_sha256": "4f8124dc07fd541c9d90174384338e309ba2b1e83d0912ddf4b546fdca4a7992",
+  "priorrecordproof": {
+    "path": "artifacts/thai-localization/reviews/final-adversarial-r4/native-tutorial-001.json",
+    "sha256": "92954330ba99ee866eeb9900e9a3ba4d7a9c93452b3031e6eae449da647484cf",
+    "rule": "Carried values exactly equal previously approved round4 text; asserted against immutable original batch and prior approval keys."
+  },
+  "findings": [],
+  "accepted_english": [],
+  "method": "Read the sole actual changed round5 healing-briefing source and Thai text independently: starts fed is now fluently stated as units already satiated, with one injured worker. No unresolved findings. Other3392entries carried only from exact previously approved text with hash proof. Agent-reviewed, not native-human-certified."
+}

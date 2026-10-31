@@ -1,0 +1,974 @@
+{
+  "id": "online-online-011",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Remove {value0}",
+      "key": "Remove {value0}",
+      "source": "Remove {value0}",
+      "target": "ลบ {value0}"
+    },
+    {
+      "id": "online:Rename",
+      "key": "Rename",
+      "source": "Rename",
+      "target": "เปลี่ยนชื่อ"
+    },
+    {
+      "id": "online:Render the instruments",
+      "key": "Render the instruments",
+      "source": "Render the instruments",
+      "target": "เรนเดอร์เครื่องดนตรี"
+    },
+    {
+      "id": "online:Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "key": "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "source": "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "target": "แสดงผลโดยเอนจิ้นเกมของเบราว์เซอร์ เรียกใช้การตรวจสอบการเผยแพร่เพื่อยืนยันเวอร์ชันที่บันทึกไว้"
+    },
+    {
+      "id": "online:Replace or remove the team layer before changing frame dimensions.",
+      "key": "Replace or remove the team layer before changing frame dimensions.",
+      "source": "Replace or remove the team layer before changing frame dimensions.",
+      "target": "เปลี่ยนหรือลบเลเยอร์ทีมก่อนที่จะเปลี่ยนขนาดเฟรม"
+    },
+    {
+      "id": "online:Replace the gaps too",
+      "key": "Replace the gaps too",
+      "source": "Replace the gaps too",
+      "target": "อุดช่องว่างด้วย"
+    },
+    {
+      "id": "online:Replay",
+      "key": "Replay",
+      "source": "Replay",
+      "target": "รีเพลย์"
+    },
+    {
+      "id": "online:Report",
+      "key": "Report",
+      "source": "Report",
+      "target": "รายงาน"
+    },
+    {
+      "id": "online:Report AI",
+      "key": "Report AI",
+      "source": "Report AI",
+      "target": "รายงาน AI"
+    },
+    {
+      "id": "online:Report a problem",
+      "key": "Report a problem",
+      "source": "Report a problem",
+      "target": "รายงานปัญหา"
+    },
+    {
+      "id": "online:Report already resolved.",
+      "key": "Report already resolved.",
+      "source": "Report already resolved.",
+      "target": "ปิดเรื่องรายงานแล้ว"
+    },
+    {
+      "id": "online:Report for {value0}",
+      "key": "Report for {value0}",
+      "source": "Report for {value0}",
+      "target": "รายงานสำหรับ {value0}"
+    },
+    {
+      "id": "online:Report has already been resolved. Refresh to review its resolution.",
+      "key": "Report has already been resolved. Refresh to review its resolution.",
+      "source": "Report has already been resolved. Refresh to review its resolution.",
+      "target": "ปิดเรื่องรายงานแล้ว รีเฟรชเพื่อดูผลการดำเนินการ"
+    },
+    {
+      "id": "online:Report not found.",
+      "key": "Report not found.",
+      "source": "Report not found.",
+      "target": "ไม่พบรายงาน"
+    },
+    {
+      "id": "online:Report reason",
+      "key": "Report reason",
+      "source": "Report reason",
+      "target": "เหตุผลในการรายงาน"
+    },
+    {
+      "id": "online:Report received.",
+      "key": "Report received.",
+      "source": "Report received.",
+      "target": "ได้รับรายงานแล้ว"
+    },
+    {
+      "id": "online:Report skin",
+      "key": "Report skin",
+      "source": "Report skin",
+      "target": "รายงานสกิน"
+    },
+    {
+      "id": "online:Report this generator",
+      "key": "Report this generator",
+      "source": "Report this generator",
+      "target": "รายงานตัวสร้างนี้"
+    },
+    {
+      "id": "online:Report this map",
+      "key": "Report this map",
+      "source": "Report this map",
+      "target": "รายงานแผนที่นี้"
+    },
+    {
+      "id": "online:Report this release",
+      "key": "Report this release",
+      "source": "Report this release",
+      "target": "รายงานการเผยแพร่ครั้งนี้"
+    },
+    {
+      "id": "online:Reported",
+      "key": "Reported",
+      "source": "Reported",
+      "target": "รายงาน"
+    },
+    {
+      "id": "online:Reported skin texture",
+      "key": "Reported skin texture",
+      "source": "Reported skin texture",
+      "target": "เท็กซ์เจอร์สกินที่ถูกรายงาน"
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "key": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": {
+        "one": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day is a complete calendar day. History may be incomplete; comparisons use recorded observations only.",
+        "other": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+      },
+      "target": {
+        "other": "ช่วงเวลารายงาน : {slot0} ถึง {slot1} (UTC) วันนี้ยังอยู่ระหว่างดำเนินการ วันก่อนหน้า {slot2} วัน เป็นวันตามปฏิทินที่สมบูรณ์แล้ว ข้อมูลประวัติอาจไม่สมบูรณ์ การเปรียบเทียบใช้เฉพาะข้อมูลที่บันทึกไว้เท่านั้น"
+      }
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "key": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "target": "ช่วงเวลารายงาน : {slot0} ถึง {slot1} (UTC) วันนี้ยังอยู่ระหว่างดำเนินการ วันก่อนหน้า {slot2} วัน เป็นวันตามปฏิทินที่สมบูรณ์แล้ว ข้อมูลประวัติอาจไม่สมบูรณ์ การเปรียบเทียบใช้เฉพาะข้อมูลที่บันทึกไว้เท่านั้น"
+    },
+    {
+      "id": "online:Reports",
+      "key": "Reports",
+      "source": "Reports",
+      "target": "รายงาน"
+    },
+    {
+      "id": "online:Request cap",
+      "key": "Request cap",
+      "source": "Request cap",
+      "target": "เพดานเครดิตต่อคำขอ"
+    },
+    {
+      "id": "online:Request cap exceeds the configured limit.",
+      "key": "Request cap exceeds the configured limit.",
+      "source": "Request cap exceeds the configured limit.",
+      "target": "เพดานเครดิตต่อคำขอเกินขีดจำกัดที่ตั้งไว้"
+    },
+    {
+      "id": "online:Request failed.",
+      "key": "Request failed.",
+      "source": "Request failed.",
+      "target": "การร้องขอไม่สำเร็จ"
+    },
+    {
+      "id": "online:Request not found.",
+      "key": "Request not found.",
+      "source": "Request not found.",
+      "target": "ไม่พบคำขอ"
+    },
+    {
+      "id": "online:Requests needing attention",
+      "key": "Requests needing attention",
+      "source": "Requests needing attention",
+      "target": "คำขอที่ต้องได้รับการดูแล"
+    },
+    {
+      "id": "online:Required experiment",
+      "key": "Required experiment",
+      "source": "Required experiment",
+      "target": "การทดลองที่จำเป็น"
+    },
+    {
+      "id": "online:Requires the {p0} role.",
+      "key": "Requires the {p0} role.",
+      "source": "Requires the {p0} role.",
+      "target": "ต้องมีบทบาท {p0}"
+    },
+    {
+      "id": "online:Reroll seed",
+      "key": "Reroll seed",
+      "source": "Reroll seed",
+      "target": "สุ่มค่าสุ่มใหม่"
+    },
+    {
+      "id": "online:Reservation",
+      "key": "Reservation",
+      "source": "Reservation",
+      "target": "การจอง"
+    },
+    {
+      "id": "online:Reserved",
+      "key": "Reserved",
+      "source": "Reserved",
+      "target": "ที่สงวนไว้"
+    },
+    {
+      "id": "online:Reserved product credits",
+      "key": "Reserved product credits",
+      "source": "Reserved product credits",
+      "target": "เครดิตสินค้าที่สำรองไว้"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits",
+      "key": "Reserved: {slot0} product credits",
+      "source": "Reserved: {slot0} product credits",
+      "target": "กันไว้: เครดิตผลิตภัณฑ์ {slot0}"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits{slot1}",
+      "key": "Reserved: {slot0} product credits{slot1}",
+      "source": "Reserved: {slot0} product credits{slot1}",
+      "target": "กันไว้: เครดิตผลิตภัณฑ์ {slot0}{slot1}"
+    },
+    {
+      "id": "online:Reset angle",
+      "key": "Reset angle",
+      "source": "Reset angle",
+      "target": "รีเซ็ตมุม"
+    },
+    {
+      "id": "online:Reset filters",
+      "key": "Reset filters",
+      "source": "Reset filters",
+      "target": "รีเซ็ตตัวกรอง"
+    },
+    {
+      "id": "online:Reset toolbox layout",
+      "key": "Reset toolbox layout",
+      "source": "Reset toolbox layout",
+      "target": "รีเซ็ตเค้าโครงกล่องเครื่องมือ"
+    },
+    {
+      "id": "online:Reset view",
+      "key": "Reset view",
+      "source": "Reset view",
+      "target": "รีเซ็ตมุมมอง"
+    },
+    {
+      "id": "online:Reset · ",
+      "key": "Reset · ",
+      "source": "Reset · ",
+      "target": "รีเซ็ต · "
+    },
+    {
+      "id": "online:Resize conversation",
+      "key": "Resize conversation",
+      "source": "Resize conversation",
+      "target": "ปรับขนาดการสนทนา"
+    },
+    {
+      "id": "online:Resolution: {slot0}{slot1}",
+      "key": "Resolution: {slot0}{slot1}",
+      "source": "Resolution: {slot0}{slot1}",
+      "target": "ผลการดำเนินการ: {slot0}{slot1}"
+    },
+    {
+      "id": "online:Resolve",
+      "key": "Resolve",
+      "source": "Resolve",
+      "target": "ปิดเรื่อง"
+    },
+    {
+      "id": "online:Resolve invalid fields before saving.",
+      "key": "Resolve invalid fields before saving.",
+      "source": "Resolve invalid fields before saving.",
+      "target": "แก้ไขข้อมูลที่ไม่ถูกต้องก่อนบันทึก"
+    },
+    {
+      "id": "online:Resolve the account changes before saving.",
+      "key": "Resolve the account changes before saving.",
+      "source": "Resolve the account changes before saving.",
+      "target": "โปรดแก้ไขการเปลี่ยนแปลงบัญชีให้เรียบร้อยก่อนบันทึก"
+    },
+    {
+      "id": "online:Resolved",
+      "key": "Resolved",
+      "source": "Resolved",
+      "target": "ปิดเรื่องแล้ว"
+    },
+    {
+      "id": "online:Resolved by disabling",
+      "key": "Resolved by disabling",
+      "source": "Resolved by disabling",
+      "target": "ปิดเรื่องโดยปิดใช้งาน"
+    },
+    {
+      "id": "online:Resource",
+      "key": "Resource",
+      "source": "Resource",
+      "target": "ทรัพยากร"
+    },
+    {
+      "id": "online:Resource growth",
+      "key": "Resource growth",
+      "source": "Resource growth",
+      "target": "การเติบโตของทรัพยากร"
+    },
+    {
+      "id": "online:Resource placement permissions",
+      "key": "Resource placement permissions",
+      "source": "Resource placement permissions",
+      "target": "สิทธิ์ในการวางทรัพยากร"
+    },
+    {
+      "id": "online:Resources",
+      "key": "Resources",
+      "source": "Resources",
+      "target": "ทรัพยากร"
+    },
+    {
+      "id": "online:Restart same setup",
+      "key": "Restart same setup",
+      "source": "Restart same setup",
+      "target": "เริ่มใหม่ด้วยการตั้งค่าเดิม"
+    },
+    {
+      "id": "online:Restore",
+      "key": "Restore",
+      "source": "Restore",
+      "target": "คืนค่า"
+    },
+    {
+      "id": "online:Restore device copy",
+      "key": "Restore device copy",
+      "source": "Restore device copy",
+      "target": "กู้คืนสำเนาอุปกรณ์"
+    },
+    {
+      "id": "online:Restore family",
+      "key": "Restore family",
+      "source": "Restore family",
+      "target": "คืนค่าตระกูลอาคาร"
+    },
+    {
+      "id": "online:Restore game settings",
+      "key": "Restore game settings",
+      "source": "Restore game settings",
+      "target": "คืนค่าการตั้งค่าเกม"
+    },
+    {
+      "id": "online:Restore skin",
+      "key": "Restore skin",
+      "source": "Restore skin",
+      "target": "คืนค่าสกิน"
+    },
+    {
+      "id": "online:Restore this revision",
+      "key": "Restore this revision",
+      "source": "Restore this revision",
+      "target": "กู้คืนการแก้ไขนี้"
+    },
+    {
+      "id": "online:Restore this version as the current draft? The current version stays in history.",
+      "key": "Restore this version as the current draft? The current version stays in history.",
+      "source": "Restore this version as the current draft? The current version stays in history.",
+      "target": "ต้องการกู้คืนเวอร์ชันนี้เป็นฉบับร่างปัจจุบันหรือไม่? เวอร์ชันปัจจุบันจะยังคงอยู่ในประวัติ"
+    },
+    {
+      "id": "online:Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "key": "Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "source": "Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "target": "การคืนค่าเนื้อหาจะยกเลิกข้อจำกัดจากการดูแลเนื้อหา แต่กฎการเผยแพร่ของแต่ละคลังยังคงมีผล"
+    },
+    {
+      "id": "online:Restrictions and deletion require a lower-role account.",
+      "key": "Restrictions and deletion require a lower-role account.",
+      "source": "Restrictions and deletion require a lower-role account.",
+      "target": "การจำกัดสิทธิ์และการลบทำได้เฉพาะกับบัญชีที่มีบทบาทต่ำกว่า"
+    },
+    {
+      "id": "online:Result",
+      "key": "Result",
+      "source": "Result",
+      "target": "ผลลัพธ์"
+    },
+    {
+      "id": "online:Reteaming names team {p0} of {p1}.",
+      "key": "Reteaming names team {p0} of {p1}.",
+      "source": "Reteaming names team {p0} of {p1}.",
+      "target": "การจัดทีมใหม่อ้างถึงทีม {p0} ทั้งที่มี {p1} ทีม"
+    },
+    {
+      "id": "online:Retry",
+      "key": "Retry",
+      "source": "Retry",
+      "target": "ลองใหม่อีกครั้ง"
+    },
+    {
+      "id": "online:Retry 3D canvas",
+      "key": "Retry 3D canvas",
+      "source": "Retry 3D canvas",
+      "target": "ลองสร้างผืนผ้าใบ 3 มิติใหม่อีกครั้ง"
+    },
+    {
+      "id": "online:Retry image",
+      "key": "Retry image",
+      "source": "Retry image",
+      "target": "ลองโหลดภาพใหม่"
+    },
+    {
+      "id": "online:Retry loading skins",
+      "key": "Retry loading skins",
+      "source": "Retry loading skins",
+      "target": "ลองโหลดสกินใหม่อีกครั้ง"
+    },
+    {
+      "id": "online:Retry loading studio",
+      "key": "Retry loading studio",
+      "source": "Retry loading studio",
+      "target": "ลองโหลดสตูดิโออีกครั้ง"
+    },
+    {
+      "id": "online:Retry preview",
+      "key": "Retry preview",
+      "source": "Retry preview",
+      "target": "ลองดูตัวอย่างอีกครั้ง"
+    },
+    {
+      "id": "online:Retry the same request",
+      "key": "Retry the same request",
+      "source": "Retry the same request",
+      "target": "ลองส่งคำขอเดิมอีกครั้ง"
+    },
+    {
+      "id": "online:Retry validation",
+      "key": "Retry validation",
+      "source": "Retry validation",
+      "target": "ลองตรวจสอบความถูกต้องอีกครั้ง"
+    },
+    {
+      "id": "online:Retrying",
+      "key": "Retrying",
+      "source": "Retrying",
+      "target": "ลองใหม่อีกครั้ง"
+    },
+    {
+      "id": "online:Return reserved credit",
+      "key": "Return reserved credit",
+      "source": "Return reserved credit",
+      "target": "คืนเครดิตที่กันไว้"
+    },
+    {
+      "id": "online:Return to final set",
+      "key": "Return to final set",
+      "source": "Return to final set",
+      "target": "กลับสู่ชุดสุดท้าย"
+    },
+    {
+      "id": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "key": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "source": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "target": "การคืนเครดิตที่กันไว้จะทำเครื่องหมายว่าการสร้างนี้ล้มเหลว ตรวจสอบรายละเอียดและยืนยันก่อนว่าไม่สามารถกู้คืนผลงานที่ส่งมอบได้"
+    },
+    {
+      "id": "online:Revenue and costs",
+      "key": "Revenue and costs",
+      "source": "Revenue and costs",
+      "target": "รายได้และต้นทุน"
+    },
+    {
+      "id": "online:Review account changes to resume saving",
+      "key": "Review account changes to resume saving",
+      "source": "Review account changes to resume saving",
+      "target": "ตรวจสอบการเปลี่ยนแปลงบัญชีเพื่อดำเนินการบันทึกต่อ"
+    },
+    {
+      "id": "online:Review operations",
+      "key": "Review operations",
+      "source": "Review operations",
+      "target": "ตรวจสอบการดำเนินงาน"
+    },
+    {
+      "id": "online:Review reports",
+      "key": "Review reports",
+      "source": "Review reports",
+      "target": "ตรวจสอบรายงาน"
+    },
+    {
+      "id": "online:Review set",
+      "key": "Review set",
+      "source": "Review set",
+      "target": "ตรวจสอบชุด"
+    },
+    {
+      "id": "online:Revise generated music in Music Studio.",
+      "key": "Revise generated music in Music Studio.",
+      "source": "Revise generated music in Music Studio.",
+      "target": "แก้ไขเพลงที่สร้างขึ้นใน Music Studio"
+    },
+    {
+      "id": "online:Revise this version",
+      "key": "Revise this version",
+      "source": "Revise this version",
+      "target": "แก้ไขเวอร์ชันนี้"
+    },
+    {
+      "id": "online:Revision restored to your saved draft.",
+      "key": "Revision restored to your saved draft.",
+      "source": "Revision restored to your saved draft.",
+      "target": "การแก้ไขได้รับการกู้คืนไปยังฉบับร่างที่คุณบันทึกไว้แล้ว"
+    },
+    {
+      "id": "online:Revision {slot0}",
+      "key": "Revision {slot0}",
+      "source": "Revision {slot0}",
+      "target": "การแก้ไข {slot0}"
+    },
+    {
+      "id": "online:Revision {slot0} checks: {slot1}",
+      "key": "Revision {slot0} checks: {slot1}",
+      "source": "Revision {slot0} checks: {slot1}",
+      "target": "การตรวจสอบการแก้ไข {slot0} : {slot1}"
+    },
+    {
+      "id": "online:Revision {value0} · seed {value1} · {value2} seconds",
+      "key": "Revision {value0} · seed {value1} · {value2} seconds",
+      "source": "Revision {value0} · seed {value1} · {value2} seconds",
+      "target": "ฉบับแก้ไข {value0} · ค่าสุ่ม {value1} · {value2} วินาที"
+    },
+    {
+      "id": "online:Revision {value0} · tick {value1} · live",
+      "key": "Revision {value0} · tick {value1} · live",
+      "source": "Revision {value0} · tick {value1} · live",
+      "target": "การแก้ไข {value0} · ติ๊ก {value1} · สด"
+    },
+    {
+      "id": "online:Role",
+      "key": "Role",
+      "source": "Role",
+      "target": "บทบาท"
+    },
+    {
+      "id": "online:Room",
+      "key": "Room",
+      "source": "Room",
+      "target": "ห้อง"
+    },
+    {
+      "id": "online:Room invite",
+      "key": "Room invite",
+      "source": "Room invite",
+      "target": "คำเชิญเข้าห้อง"
+    },
+    {
+      "id": "online:Room match",
+      "key": "Room match",
+      "source": "Room match",
+      "target": "แมตช์ในห้อง"
+    },
+    {
+      "id": "online:Room matches go back to their room instead.",
+      "key": "Room matches go back to their room instead.",
+      "source": "Room matches go back to their room instead.",
+      "target": "แมตช์ในห้องจะกลับไปยังห้องเดิมแทน"
+    },
+    {
+      "id": "online:Room to breathe",
+      "key": "Room to breathe",
+      "source": "Room to breathe",
+      "target": "มีพื้นที่ให้หายใจได้สะดวก"
+    },
+    {
+      "id": "online:Rooms",
+      "key": "Rooms",
+      "source": "Rooms",
+      "target": "ห้อง"
+    },
+    {
+      "id": "online:Rotate",
+      "key": "Rotate",
+      "source": "Rotate",
+      "target": "หมุน"
+    },
+    {
+      "id": "online:Rotation ",
+      "key": "Rotation ",
+      "source": "Rotation ",
+      "target": "การหมุน "
+    },
+    {
+      "id": "online:Run checks",
+      "key": "Run checks",
+      "source": "Run checks",
+      "target": "ดำเนินการตรวจสอบ"
+    },
+    {
+      "id": "online:Run checks & preview",
+      "key": "Run checks & preview",
+      "source": "Run checks & preview",
+      "target": "เรียกใช้การตรวจสอบและดูตัวอย่าง"
+    },
+    {
+      "id": "online:Run checks to create a preview.",
+      "key": "Run checks to create a preview.",
+      "source": "Run checks to create a preview.",
+      "target": "เรียกใช้การตรวจสอบเพื่อสร้างตัวอย่าง"
+    },
+    {
+      "id": "online:Run compatibility checks on the current saved revision first.",
+      "key": "Run compatibility checks on the current saved revision first.",
+      "source": "Run compatibility checks on the current saved revision first.",
+      "target": "โปรดตรวจสอบความเข้ากันได้กับเวอร์ชันที่บันทึกไว้ในปัจจุบันก่อน"
+    },
+    {
+      "id": "online:Run identifier already used.",
+      "key": "Run identifier already used.",
+      "source": "Run identifier already used.",
+      "target": "รหัสการรันถูกใช้งานไปแล้ว"
+    },
+    {
+      "id": "online:Running",
+      "key": "Running",
+      "source": "Running",
+      "target": "กำลังทำงาน"
+    },
+    {
+      "id": "online:Runtime diagnostics ({slot0})",
+      "key": "Runtime diagnostics ({slot0})",
+      "source": "Runtime diagnostics ({slot0})",
+      "target": "การวินิจฉัยขณะทำงาน ( {slot0} )"
+    },
+    {
+      "id": "online:Sand",
+      "key": "Sand",
+      "source": "Sand",
+      "target": "ทราย"
+    },
+    {
+      "id": "online:Save",
+      "key": "Save",
+      "source": "Save",
+      "target": "บันทึก"
+    },
+    {
+      "id": "online:Save and run checks on the current revision before publishing.",
+      "key": "Save and run checks on the current revision before publishing.",
+      "source": "Save and run checks on the current revision before publishing.",
+      "target": "บันทึกและตรวจสอบความถูกต้องของเวอร์ชันปัจจุบันก่อนเผยแพร่"
+    },
+    {
+      "id": "online:Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "key": "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "source": "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "target": "บันทึกการเปลี่ยนแปลงก่อน การเผยแพร่จะสร้างเวอร์ชันที่ตรึงไว้ของแพ็กเกจที่บันทึกไว้ ระบบจะตรวจสอบก่อนที่ผู้คนจะสามารถดาวน์โหลดได้ เวอร์ชันส่วนตัวจะมองเห็นได้เฉพาะคุณเท่านั้น ส่วนเวอร์ชันที่ไม่แสดงต่อสาธารณะสามารถเปิดได้โดยใช้ลิงก์"
+    },
+    {
+      "id": "online:Save details",
+      "key": "Save details",
+      "source": "Save details",
+      "target": "บันทึกรายละเอียด"
+    },
+    {
+      "id": "online:Save draft",
+      "key": "Save draft",
+      "source": "Save draft",
+      "target": "บันทึกฉบับร่าง"
+    },
+    {
+      "id": "online:Save photo",
+      "key": "Save photo",
+      "source": "Save photo",
+      "target": "บันทึกรูปภาพ"
+    },
+    {
+      "id": "online:Save published details",
+      "key": "Save published details",
+      "source": "Save published details",
+      "target": "บันทึกรายละเอียดที่เผยแพร่"
+    },
+    {
+      "id": "online:Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "key": "Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "source": "Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "target": "บันทึกการเปลี่ยนแปลงของคุณก่อนนำเข้าหรืออัปโหลดงานศิลปะ การส่งออกจะใช้ฉบับร่างที่บันทึกไว้"
+    },
+    {
+      "id": "online:Save your changes before publishing.",
+      "key": "Save your changes before publishing.",
+      "source": "Save your changes before publishing.",
+      "target": "บันทึกการเปลี่ยนแปลงก่อนเผยแพร่"
+    },
+    {
+      "id": "online:Save your draft before leaving for checkout. Device storage is unavailable.",
+      "key": "Save your draft before leaving for checkout. Device storage is unavailable.",
+      "source": "Save your draft before leaving for checkout. Device storage is unavailable.",
+      "target": "บันทึกฉบับร่างก่อนออกไปชำระเงิน ที่เก็บข้อมูลในอุปกรณ์ใช้ไม่ได้"
+    },
+    {
+      "id": "online:Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "key": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "target": "บันทึกการแก้ไขอาคารด้วยตนเองของคุณในโหมดแก้ไขก่อนที่จะสร้าง กู้คืนเวอร์ชัน หรือยกเลิกการเปลี่ยนแปลง"
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the building.",
+      "key": "Save your manual edits before asking AI to revise the building.",
+      "source": "Save your manual edits before asking AI to revise the building.",
+      "target": "บันทึกการแก้ไขด้วยตนเองของคุณก่อนที่จะขอให้ AI แก้ไขอาคาร"
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the set.",
+      "key": "Save your manual edits before asking AI to revise the set.",
+      "source": "Save your manual edits before asking AI to revise the set.",
+      "target": "บันทึกการแก้ไขด้วยตนเองของคุณก่อนที่จะขอให้ AI แก้ไขชุดข้อมูล"
+    },
+    {
+      "id": "online:Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "key": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "target": "บันทึกการแก้ไขภูมิประเทศด้วยตนเองของคุณในโหมดแก้ไขก่อนที่จะสร้าง กู้คืนเวอร์ชัน หรือยกเลิกการเปลี่ยนแปลง"
+    },
+    {
+      "id": "online:Saved",
+      "key": "Saved",
+      "source": "Saved",
+      "target": "บันทึกแล้ว"
+    },
+    {
+      "id": "online:Saved draft history",
+      "key": "Saved draft history",
+      "source": "Saved draft history",
+      "target": "ประวัติร่างที่บันทึกไว้"
+    },
+    {
+      "id": "online:Saved draft · validation remains version-specific.",
+      "key": "Saved draft · validation remains version-specific.",
+      "source": "Saved draft · validation remains version-specific.",
+      "target": "บันทึกฉบับร่างแล้ว · การตรวจสอบความถูกต้องยังคงขึ้นอยู่กับเวอร์ชัน"
+    },
+    {
+      "id": "online:Saving account changes…",
+      "key": "Saving account changes…",
+      "source": "Saving account changes…",
+      "target": "กำลังบันทึกการเปลี่ยนแปลงบัญชี…"
+    },
+    {
+      "id": "online:Scale",
+      "key": "Scale",
+      "source": "Scale",
+      "target": "มาตราส่วน"
+    },
+    {
+      "id": "online:Scene and resource gallery",
+      "key": "Scene and resource gallery",
+      "source": "Scene and resource gallery",
+      "target": "แกลเลอรีฉากและทรัพยากร"
+    },
+    {
+      "id": "online:Search",
+      "key": "Search",
+      "source": "Search",
+      "target": "ค้นหา"
+    },
+    {
+      "id": "online:Search AIs",
+      "key": "Search AIs",
+      "source": "Search AIs",
+      "target": "การค้นหา AI"
+    },
+    {
+      "id": "online:Search accounts",
+      "key": "Search accounts",
+      "source": "Search accounts",
+      "target": "ค้นหาบัญชี"
+    },
+    {
+      "id": "online:Search buildings",
+      "key": "Search buildings",
+      "source": "Search buildings",
+      "target": "ค้นหาอาคาร"
+    },
+    {
+      "id": "online:Search maps",
+      "key": "Search maps",
+      "source": "Search maps",
+      "target": "ค้นหาแผนที่"
+    },
+    {
+      "id": "online:Search matches",
+      "key": "Search matches",
+      "source": "Search matches",
+      "target": "ค้นหาแมตช์"
+    },
+    {
+      "id": "online:Search must be at most 64 characters.",
+      "key": "Search must be at most 64 characters.",
+      "source": "Search must be at most 64 characters.",
+      "target": "คำค้นหาต้องมีความยาวไม่เกิน 64 ตัวอักษร"
+    },
+    {
+      "id": "online:Search must be text.",
+      "key": "Search must be text.",
+      "source": "Search must be text.",
+      "target": "การค้นหาต้องเป็นข้อความเท่านั้น"
+    },
+    {
+      "id": "online:Search names, descriptions, authors…",
+      "key": "Search names, descriptions, authors…",
+      "source": "Search names, descriptions, authors…",
+      "target": "ค้นหาตามชื่อ คำอธิบาย ผู้แต่ง..."
+    },
+    {
+      "id": "online:Search players and AI opponents…",
+      "key": "Search players and AI opponents…",
+      "source": "Search players and AI opponents…",
+      "target": "ค้นหาผู้เล่นและคู่ต่อสู้ที่เป็น AI…"
+    },
+    {
+      "id": "online:Search titles",
+      "key": "Search titles",
+      "source": "Search titles",
+      "target": "ค้นหาชื่อเรื่อง"
+    },
+    {
+      "id": "online:Search unavailable",
+      "key": "Search unavailable",
+      "source": "Search unavailable",
+      "target": "ไม่สามารถค้นหาได้"
+    },
+    {
+      "id": "online:Seat {value0}",
+      "key": "Seat {value0}",
+      "source": "Seat {value0}",
+      "target": "ที่นั่ง {value0}"
+    },
+    {
+      "id": "online:Seed",
+      "key": "Seed",
+      "source": "Seed",
+      "target": "ค่าสุ่ม"
+    },
+    {
+      "id": "online:Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "key": "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "source": "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "target": "เลือกชุดไฟล์ให้น้อยลง : แต่ละไฟล์ ZIP มีขนาดจำกัดที่ 64 MiB เพื่อให้สามารถนำเข้าได้ในทุกแพลตฟอร์มเกม"
+    },
+    {
+      "id": "online:Select for download",
+      "key": "Select for download",
+      "source": "Select for download",
+      "target": "เลือกเพื่อดาวน์โหลด"
+    },
+    {
+      "id": "online:Selected frame",
+      "key": "Selected frame",
+      "source": "Selected frame",
+      "target": "เฟรมที่เลือก"
+    },
+    {
+      "id": "online:Selected music",
+      "key": "Selected music",
+      "source": "Selected music",
+      "target": "เพลงที่คัดสรรแล้ว"
+    },
+    {
+      "id": "online:Selected terrain",
+      "key": "Selected terrain",
+      "source": "Selected terrain",
+      "target": "ภูมิประเทศที่เลือก"
+    },
+    {
+      "id": "online:Send report",
+      "key": "Send report",
+      "source": "Send report",
+      "target": "ส่งรายงาน"
+    },
+    {
+      "id": "online:Send skin report",
+      "key": "Send skin report",
+      "source": "Send skin report",
+      "target": "ส่งรายงานสกิน"
+    },
+    {
+      "id": "online:Send the blob as the body.",
+      "key": "Send the blob as the body.",
+      "source": "Send the blob as the body.",
+      "target": "ส่งบล็อบข้อมูลเป็นเนื้อหาคำขอ"
+    },
+    {
+      "id": "online:Send the file as the request body (Content-Type: application/octet-stream).",
+      "key": "Send the file as the request body (Content-Type: application/octet-stream).",
+      "source": "Send the file as the request body (Content-Type: application/octet-stream).",
+      "target": "ส่งไฟล์เป็นเนื้อหาคำขอ (Content-Type: application/octet-stream)"
+    },
+    {
+      "id": "online:Send the job's lease token in {p0}.",
+      "key": "Send the job's lease token in {p0}.",
+      "source": "Send the job's lease token in {p0}.",
+      "target": "ส่งโทเค็นการเช่าของงานไปที่ {p0}"
+    },
+    {
+      "id": "online:Send the match record as the body.",
+      "key": "Send the match record as the body.",
+      "source": "Send the match record as the body.",
+      "target": "ส่งบันทึกแมตช์เป็นเนื้อหาคำขอ"
+    },
+    {
+      "id": "online:Set contents",
+      "key": "Set contents",
+      "source": "Set contents",
+      "target": "เนื้อหาชุด"
+    },
+    {
+      "id": "online:Set exceeds 16 MiB.",
+      "key": "Set exceeds 16 MiB.",
+      "source": "Set exceeds 16 MiB.",
+      "target": "ชุดข้อมูลมีขนาดเกิน 16 MiB"
+    },
+    {
+      "id": "online:Set file not found.",
+      "key": "Set file not found.",
+      "source": "Set file not found.",
+      "target": "ไม่พบไฟล์ชุด"
+    },
+    {
+      "id": "online:Set library",
+      "key": "Set library",
+      "source": "Set library",
+      "target": "คลังชุด"
+    },
+    {
+      "id": "online:Set not found.",
+      "key": "Set not found.",
+      "source": "Set not found.",
+      "target": "ไม่พบชุดข้อมูล"
+    },
+    {
+      "id": "online:Set preview engine",
+      "key": "Set preview engine",
+      "source": "Set preview engine",
+      "target": "เอนจินแสดงตัวอย่างชุด"
+    },
+    {
+      "id": "online:Set reports",
+      "key": "Set reports",
+      "source": "Set reports",
+      "target": "รายงานชุด"
+    },
+    {
+      "id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "target": "กำหนดเป้าหมายแล้วโกลบของคุณจะลงมือทำงาน เลี้ยงดูอาณานิคม ฝึกยูนิต และสำรวจไปด้วยกัน"
+    }
+  ]
+}

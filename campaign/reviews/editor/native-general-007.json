@@ -1,0 +1,564 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "0583baea60e1a892efe309f87cee7adf62682591fdd75606c6c647bc32e21382",
+  "edited_keys": [
+    "native:[Bridges]",
+    "native:[Karst towers]",
+    "native:[Tower spacing]",
+    "native:[Tower density]",
+    "native:[Paddy depth]",
+    "native:[Home design]",
+    "native:[Horseshoe]",
+    "native:[Twin gates]",
+    "native:[Three gates]",
+    "native:[Four gates]",
+    "native:[Flooded terraces]",
+    "native:[Sinkholes]",
+    "native:[Bajada]",
+    "native:[Range spacing]",
+    "native:[Ridge width]",
+    "native:[Passes]",
+    "native:[Fans per range]",
+    "native:[Stream reach]",
+    "native:[Playa]",
+    "native:[Broad fan]",
+    "native:[Long fan]",
+    "native:[Twin springs]",
+    "native:[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+    "native:[Central Quarry]",
+    "native:[Quarry size]",
+    "native:[Sand bars]",
+    "native:[Woodland]",
+    "native:[Central Quarry needs at least two colonies.]",
+    "native:[Hidden Oasis]",
+    "native:[Pond algae]",
+    "native:[Starting towers]",
+    "native:[Starting school]",
+    "native:[Mesas]",
+    "native:[Springs]",
+    "native:[Hidden Oasis needs at least two colonies.]",
+    "native:[Hidden Oasis holds at most eight colonies.]",
+    "native:[The pond has no room for that much algae; use a bigger pond.]",
+    "native:[Even Ground]",
+    "native:[Balance]",
+    "native:[Tight passes]",
+    "native:[Solver effort]",
+    "native:[Brief]",
+    "native:[Patient]",
+    "native:[The colonies could not be spread out on this map.]",
+    "native:[Marchland]",
+    "native:[Prizes on the rope]",
+    "native:[March width]",
+    "native:[Levelling]",
+    "native:[A march needs a country on each side; use at least two colonies.]",
+    "native:[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+    "native:[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+    "native:[Orchard Commons]",
+    "native:[Orchard spacing]",
+    "native:[Compact]",
+    "native:[Balanced]",
+    "native:[Spread]",
+    "native:[The Gauntlet]",
+    "native:[Partition thickness]",
+    "native:[The Comb]",
+    "native:[Peninsulas per shore]",
+    "native:[Encircled Kingdom]",
+    "native:[Fortress plan]",
+    "native:[Automatic]",
+    "native:[Elongated enclosure]",
+    "native:[Bastioned enclosure]",
+    "native:[Paired courtyards]",
+    "native:[Heartland farmland]",
+    "native:[The Faulted City]",
+    "native:[Fault displacement]",
+    "native:[Fault width]",
+    "native:[Ruin density]",
+    "native:[Surviving junctions]",
+    "native:[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+    "native:[The city has too few usable junctions.]",
+    "native:[The city neighbourhoods are too unequal; try another seed.]",
+    "native:[The fractured civic plaza did not survive.]",
+    "native:[Who Ate the Map?]",
+    "native:[Appetite]",
+    "native:[A Little Nibble]",
+    "native:[Hungry]",
+    "native:[Portage depth]",
+    "native:[Extra trails]",
+    "native:[Drowned Forest]",
+    "native:[Wooded neck thickness]",
+    "native:[Neutral clearing size]",
+    "native:[Bastion Keys]",
+    "native:[Plantation size]",
+    "native:[The Hungry Marches]",
+    "native:[Opening ration]",
+    "native:[Central concentration]",
+    "native:[The Last Treeline]",
+    "native:[Woodland depth]",
+    "native:[AI strategy]",
+    "native:[AIMaxima-Summary]",
+    "native:[AIMaxima-Profile]",
+    "native:[Fertility]",
+    "native:[Deposits]",
+    "native:[Room]",
+    "native:[Isolation]",
+    "native:[ERROR_CANT_SAVE_MAP]",
+    "native:[Loading headers]",
+    "native:[Loading teams]",
+    "native:[Loading players]",
+    "native:[Loading scripts]",
+    "native:[Generating map]",
+    "native:[ERROR_CANT_GENERATE_MAP]",
+    "native:[Loading units]",
+    "native:[Resolving team links]",
+    "native:[saving to storage]",
+    "native:[save failed retry]",
+    "native:[export save]",
+    "native:[storage restore failed]",
+    "native:[continue]",
+    "native:[export file]",
+    "native:[export failed]",
+    "native:[import file]",
+    "native:[select import file]",
+    "native:[validating import]",
+    "native:[import succeeded]",
+    "native:[import cancelled]",
+    "native:[import failed]",
+    "native:[import persistence failed]",
+    "native:[import progress]",
+    "native:[export progress]",
+    "native:[retry save]",
+    "native:[campaign save failed]",
+    "native:[leave without saving]",
+    "native:[campaign import failed]",
+    "native:[shutdown save failed]",
+    "native:[quit without saving]",
+    "native:[game closed]",
+    "native:[campaign editor save failed]",
+    "native:[Actions]",
+    "native:[Minimap]",
+    "native:[Fast forward]",
+    "native:[Player slot]",
+    "native:[Team color]",
+    "native:[Alliance group]",
+    "native:[menu]",
+    "native:[Editor tools]",
+    "native:[Pan map]",
+    "native:[Edit map]",
+    "native:[Editor map]",
+    "native:[Pause]",
+    "native:[Speed]",
+    "native:[Objectives]",
+    "native:[Menu]",
+    "native:[Goals]",
+    "native:[Teams]",
+    "native:[Use this landscape]",
+    "native:[Reset]",
+    "native:[Generating...]",
+    "native:[Players]",
+    "native:[Rules]",
+    "native:[Undo stroke]",
+    "native:[No overlay]",
+    "native:[zoom factor %0]",
+    "native:[More]",
+    "native:[No items]",
+    "native:[Review & Play]"
+  ],
+  "findings": [
+    {
+      "id": "native:[Home design]",
+      "severity": "major",
+      "proposed": "รูปแบบพื้นที่เริ่มต้น",
+      "reason": "Home is starting colony terrain layout, not house design.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Flooded terraces]",
+      "severity": "major",
+      "proposed": "ตะพักน้ำท่วม",
+      "reason": "Terrain terraces, not flooded balconies.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Bajada]",
+      "severity": "major",
+      "proposed": "ที่ราบเชิงเขาพัดตะกอน",
+      "reason": "Bajada is merged alluvial-fan terrain; descriptive term avoids unsupported transliteration.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Range spacing]",
+      "severity": "major",
+      "proposed": "ระยะห่างเทือกเขา",
+      "reason": "Ranges are mountain ranges, not numerical intervals.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Passes]",
+      "severity": "major",
+      "proposed": "ช่องเขา",
+      "reason": "Mountain passes, not tickets.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fans per range]",
+      "severity": "major",
+      "proposed": "พัดตะกอนต่อเทือกเขา",
+      "reason": "Alluvial fans, not electric fans.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Playa]",
+      "severity": "major",
+      "proposed": "แอ่งทะเลสาบแห้ง",
+      "reason": "Playa is the dry basin in this desert landscape, not an unexplained name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Broad fan]",
+      "severity": "major",
+      "proposed": "พัดตะกอนกว้าง",
+      "reason": "Alluvial fan landform, not electrical appliance.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Long fan]",
+      "severity": "major",
+      "proposed": "พัดตะกอนยาว",
+      "reason": "Same alluvial-fan landform.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Twin springs]",
+      "severity": "major",
+      "proposed": "ตาน้ำคู่",
+      "reason": "Natural springs, not mechanical springs.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "severity": "major",
+      "proposed": "ที่ราบเชิงเขาแคบเกินพื้นที่เริ่มต้น ให้ใช้แผนที่ใหญ่ขึ้น เพิ่มระยะห่างเทือกเขา ลดความกว้างสันเขา หรือลดขนาดแอ่งทะเลสาบแห้ง",
+      "reason": "Restore distinct bajada/range/ridge/playa terrain controls; no sandbars or houses.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Sand bars]",
+      "severity": "minor",
+      "proposed": "สันดอนทราย",
+      "reason": "Consistent sandbar term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starting school]",
+      "severity": "major",
+      "proposed": "โรงเรียนเริ่มต้น",
+      "reason": "Starting structure option, not a command to begin studying.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Mesas]",
+      "severity": "minor",
+      "proposed": "ภูเขายอดราบ",
+      "reason": "Mesa landform, recognizable descriptive label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Springs]",
+      "severity": "minor",
+      "proposed": "ตาน้ำ",
+      "reason": "Natural springs feeding landscape.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Hidden Oasis needs at least two colonies.]",
+      "severity": "minor",
+      "proposed": "โอเอซิสที่ซ่อนเร้นต้องมีอาณานิคมอย่างน้อยสองแห่ง",
+      "reason": "Use translated landscape name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Hidden Oasis holds at most eight colonies.]",
+      "severity": "minor",
+      "proposed": "โอเอซิสที่ซ่อนเร้นรองรับอาณานิคมได้ไม่เกินแปดแห่ง",
+      "reason": "Use translated landscape name and concise limit.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Even Ground]",
+      "severity": "minor",
+      "proposed": "พื้นที่สมดุล",
+      "reason": "Generator balances starting conditions, not simply flat elevation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Tight passes]",
+      "severity": "critical",
+      "proposed": "ช่องเขาแคบ",
+      "reason": "Mountain routes, not accurate football passing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Solver effort]",
+      "severity": "minor",
+      "proposed": "ความพยายามค้นหาคำตอบ",
+      "reason": "Solver is software search, not a human problem solver.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Marchland]",
+      "severity": "major",
+      "proposed": "แนวชายแดน",
+      "reason": "Marchland is borderland; translate function rather than transliterate March.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[March width]",
+      "severity": "critical",
+      "proposed": "ความกว้างแนวชายแดน",
+      "reason": "March is borderland, not the month March.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[A march needs a country on each side; use at least two colonies.]",
+      "severity": "major",
+      "proposed": "แนวชายแดนต้องมีดินแดนอยู่ทั้งสองฝั่ง ใช้อาณานิคมอย่างน้อยสองแห่ง",
+      "reason": "March is borderland, not marching; colonies are game starting bases, not colonial countries.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+      "severity": "major",
+      "proposed": "แนวชายแดนมีพื้นที่แย่งชิงน้อยเกินรางวัล ให้ลดรางวัล เพิ่มความกว้างแนวชายแดน หรือใช้แผนที่ใหญ่ขึ้น",
+      "reason": "Borderland contested ground, not a parade route.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+      "severity": "major",
+      "proposed": "แนวชายแดนไม่มีที่พอวางรางวัล ให้ใช้แผนที่ใหญ่ขึ้น ลดจำนวนอาณานิคม หรือเพิ่มความกว้างแนวชายแดน",
+      "reason": "Borderland physical capacity, not troop marching.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Orchard Commons]",
+      "severity": "major",
+      "proposed": "สวนผลไม้ส่วนกลาง",
+      "reason": "Descriptive shared orchard, not an untranslated proper name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Orchard spacing]",
+      "severity": "minor",
+      "proposed": "ระยะห่างสวนผลไม้",
+      "reason": "Between orchards, not between individual fruit trees.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Spread]",
+      "severity": "minor",
+      "proposed": "กระจาย",
+      "reason": "Spatial-layout option rather than process noun.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Partition thickness]",
+      "severity": "minor",
+      "proposed": "ความหนากำแพงกั้น",
+      "reason": "Physical map partition, not disk partition.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Elongated enclosure]",
+      "severity": "major",
+      "proposed": "แนวล้อมทรงยาว",
+      "reason": "Fortress enclosure shape, not a prolonged siege.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The Faulted City]",
+      "severity": "major",
+      "proposed": "เมืองรอยเลื่อน",
+      "reason": "Geological faulted city, not a defective city.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+      "severity": "major",
+      "proposed": "เมืองรอยเลื่อนต้องใช้แผนที่ยาวด้านละ 256 หรือ 512 ช่อง และมีอาณานิคมหนึ่งถึงสิบสองแห่ง",
+      "reason": "Same geological landscape name and explicit map dimensions.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The city neighbourhoods are too unequal; try another seed.]",
+      "severity": "major",
+      "proposed": "ย่านเมืองไม่สมดุลกันมากเกินไป ลองใช้ซีดอื่น",
+      "reason": "Map fairness, not social inequality; seed is random seed.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Wooded neck thickness]",
+      "severity": "major",
+      "proposed": "ความหนาคอคอดที่มีไม้",
+      "reason": "Land neck with trees, not a wooden anatomical neck.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Neutral clearing size]",
+      "severity": "minor",
+      "proposed": "ขนาดพื้นที่โล่งเป็นกลาง",
+      "reason": "Neutral clearing is terrain region, not the clearing action neutrality.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Bastion Keys]",
+      "severity": "major",
+      "proposed": "หมู่เกาะป้อมปราการ",
+      "reason": "Keys are small islands, not metal keys.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The Hungry Marches]",
+      "severity": "major",
+      "proposed": "ชายแดนอดอยาก",
+      "reason": "Marches are borderlands, not hungry parades.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Opening ration]",
+      "severity": "major",
+      "proposed": "เสบียงเริ่มต้น",
+      "reason": "Opening ration is food, not a generic starting share.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[AIMaxima-Profile]",
+      "severity": "major",
+      "proposed": "กลยุทธ์หลัก : พิจารณาอาหาร แรงงาน การเกิด การฝึกฝน การก่อสร้าง และการสู้รบเป็นความต้องการที่แข่งขันกัน ปรับขนาดกองทัพโดยพิจารณาจากกำลังของศัตรูที่คาดการณ์ไว้ จากนั้นพยายามส่งกองทัพนั้นอย่างมีประสิทธิภาพ\\n\\nเศรษฐกิจและการพัฒนา : วางแผนจำนวนเกิดตามอาหารและแรงงาน เผื่อช่วงว่างไว้สำหรับการฝึก และหยุดการเพิ่มแรงงานส่วนเกินเมื่อจำเป็นต้องผลิตทางทหาร ปรับขนาดกำลังการฝึกฝนและหลีกเลี่ยงการปิดใช้งานโครงสร้างพื้นฐานมากเกินไปเพื่อการอัปเกรด\\n\\nการลาดตระเวนและการตัดสินใจ : ประเมินกำลังของศัตรูจากยูนิตที่มองเห็นได้และการพบเห็นที่จำได้โดยใช้แบบจำลองที่ฝึกแล้ว เป้าหมายขึ้นอยู่กับคุณค่า ระยะทาง หอคอย คนงานที่เสี่ยงถูกโจมตี และความต่อเนื่องในการเลือกเป้าหมาย ภารกิจผลไม้สนับสนุนความหลากหลายของอาหารและการดึงยูนิตเข้าทีม\\n\\nการโจมตีและการป้องกัน : สำรองนักรบไว้สำหรับการฝึกฝนและการป้องกัน จากนั้นรวบรวมกำลังภาคพื้นดินที่เหมาะสมใกล้กับอาคารอาหารฝ่ายเดียวกันก่อนที่จะเปิดฉากโจมตี ใช้การตอบโต้การป้องกันในท้องถิ่นและประเมินวิธีการเข้าถึงอาณานิคม\\n\\nเมื่อการโจมตีหยุดชะงัก : หลังจากความล้มเหลวในการส่งระลอกโจมตีติดต่อกันสี่ครั้ง จะเปลี่ยนไปใช้ธงโจมตีที่เสริมกำลังอย่างต่อเนื่อง การโจมตีสะเทินน้ำสะเทินบกยังสามารถใช้การเสริมกำลังอย่างต่อเนื่องได้ แผนสำรองนี้ไม่ได้แก้ปัญหาอุปสรรคทุกอย่างก่อนที่จะมีการรวมพล\\n\\nเมื่อเปรียบเทียบกับ AI อื่นๆ : ผสานรวมอาหาร การฝึกฝน ข่าวกรอง และการวางกำลังอย่างแน่นแฟ้นยิ่งขึ้น Cabino เน้นการโจมตีอาคารหลายแห่ง ในขณะที่ Maxima เน้นความต้องการที่คาดการณ์ไว้และการส่งมอบกำลังพลที่รวบรวมได้\\n\\nจุดแข็งและจุดอ่อน : รักษาการเติบโตและการทดแทนกำลังทหารในขณะที่ปรับตัวให้เข้ากับแรงกดดันด้านอาหารและภัยคุกคามที่สังเกตได้ ต้องการอาหาร กำลังการฝึกฝน และพื้นที่รวมพลที่เปิดโล่ง ความแออัดและเส้นทางที่ยาวไกลอาจบั่นทอนการส่งมอบ\\n\\nกลยุทธ์รับมือที่ควรลอง : แย่งชิงแหล่งอาหาร โรงเตี๊ยม และค่ายฝึกที่เปิดเผยก่อนรวมพลบุกเป็นระลอก รักษากองกำลังป้องกันที่มีเสบียงไว้ด้วยกันและขัดขวางเส้นทางการเสริมกำลัง คาดว่าจะมีการกดดันซ้ำๆ หลังจากระลอกแรก\\n\\nการลาดตระเวน : การประมาณกำลังพลใช้การพบเห็นและประวัติการสังเกตการณ์ แทนที่จะใช้จำนวนทหารศัตรูที่ซ่อนอยู่",
+      "reason": "Restore literal profile separators, canonical buildings/units, fitted model, conversion meaning and amphibious spelling; use military waves as ระลอก.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fertility]",
+      "severity": "major",
+      "proposed": "ความอุดมสมบูรณ์",
+      "reason": "Terrain fertility, not reproductive fertility.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Deposits]",
+      "severity": "major",
+      "proposed": "แหล่งทรัพยากร",
+      "reason": "Resource deposits, not bank deposits.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Room]",
+      "severity": "major",
+      "proposed": "พื้นที่ก่อสร้าง",
+      "reason": "Room is available building space in start-quality metrics, not an online room.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Isolation]",
+      "severity": "minor",
+      "proposed": "ระยะห่างคู่แข่ง",
+      "reason": "Isolation metric concerns separation from competing colonies.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Loading units]",
+      "severity": "minor",
+      "proposed": "กำลังโหลดยูนิต…",
+      "reason": "Canonical unit term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Resolving team links]",
+      "severity": "minor",
+      "proposed": "กำลังเชื่อมโยงข้อมูลทีม…",
+      "reason": "Resolving links is loading reference connections, not troubleshooting connectivity.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[saving to storage]",
+      "severity": "critical",
+      "proposed": "กำลังบันทึก…",
+      "reason": "Save game state, not economize money.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[export file]",
+      "severity": "major",
+      "proposed": "ส่งออกไฟล์",
+      "reason": "Export action, not an export-file noun.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[campaign editor save failed]",
+      "severity": "minor",
+      "proposed": "ยังไม่ยืนยันการบันทึก กดตกลงเพื่อลองใหม่ หรือยกเลิกเพื่อกลับเมนูตัวแก้ไข",
+      "reason": "Refer to translated button labels rather than English OK/Cancel.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fast forward]",
+      "severity": "minor",
+      "proposed": "เร่งไปข้างหน้า",
+      "reason": "Playback speed action, not skipping content.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Player slot]",
+      "severity": "minor",
+      "proposed": "ช่องผู้เล่น",
+      "reason": "Player slot, avoid gambling-slot transliteration.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Pan map]",
+      "severity": "major",
+      "proposed": "เลื่อนแผนที่",
+      "reason": "Pan is map movement action, not a name Pan.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Objectives]",
+      "severity": "minor",
+      "proposed": "เป้าหมาย",
+      "reason": "Canonical objectives term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Use this landscape]",
+      "severity": "minor",
+      "proposed": "ใช้ภูมิประเทศนี้",
+      "reason": "Consistent landscape term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[zoom factor %0]",
+      "severity": "minor",
+      "proposed": "%0×",
+      "reason": "Keep compact multiplication-factor notation intact.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[More]",
+      "severity": "major",
+      "proposed": "เพิ่มเติม",
+      "reason": "More-menu action, not mathematical greater than.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Review & Play]",
+      "severity": "major",
+      "proposed": "ตรวจสอบและเล่น",
+      "reason": "Review setup before playing, not publish a critique.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

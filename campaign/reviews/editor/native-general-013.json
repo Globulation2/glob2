@@ -1,0 +1,606 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "2103b38dc44ce2db847e3c57055da65919aabe2671db493a2b3930cd3441b2aa",
+  "edited_keys": [
+    "native:[stat band trapped]",
+    "native:[stat band other]",
+    "native:[stat band starving]",
+    "native:[stat band hungry]",
+    "native:[stat band peckish]",
+    "native:[stat band fed]",
+    "native:[stat band critical]",
+    "native:[stat band wounded]",
+    "native:[stat band hurt]",
+    "native:[stat band healthy]",
+    "native:[stat band weakening]",
+    "native:[stat band looking]",
+    "native:[stat band eating]",
+    "native:[stat band healing]",
+    "native:[stat band meals]",
+    "native:[stat band new units]",
+    "native:[stat band ammunition]",
+    "native:[stat band construction]",
+    "native:[stat band upgrades]",
+    "native:[stat band built]",
+    "native:[stat band upgraded]",
+    "native:[stat band repaired]",
+    "native:[stat band destroyed]",
+    "native:[stat band demolished]",
+    "native:[stat band melee]",
+    "native:[stat band magic]",
+    "native:[stat band towers]",
+    "native:[stat band within 8]",
+    "native:[stat band 8 to 16]",
+    "native:[stat band 16 to 32]",
+    "native:[stat unit units]",
+    "native:[stat unit wheat]",
+    "native:[stat unit meals]",
+    "native:[stat unit hit points]",
+    "native:[stat unit resources]",
+    "native:[stat unit strength]",
+    "native:[stat unit damage]",
+    "native:[stat unit shots]",
+    "native:[stat unit visits]",
+    "native:[stat unit skills]",
+    "native:[stat unit prestige]",
+    "native:[stat axis percent of %0]",
+    "native:[stat axis share of all teams]",
+    "native:[stat axis percent of units]",
+    "native:[stat axis %0 per minute per 100 units]",
+    "native:[stat axis %0 per 100 units]",
+    "native:[stat axis %0 per minute]",
+    "native:[stat axis %0 so far]",
+    "native:[stat axis %0 minute average]",
+    "native:[stat view per minute]",
+    "native:[stat view total]",
+    "native:[stat view %0 min]",
+    "native:[stat view split]",
+    "native:[stat view percentages]",
+    "native:[stat view percent of units]",
+    "native:[stat view per 100 units]",
+    "native:[stat view share]",
+    "native:[stat view highlight none]",
+    "native:[stat column peak units]",
+    "native:[stat column born]",
+    "native:[stat column lost]",
+    "native:[stat column wheat]",
+    "native:[stat column damage dealt]",
+    "native:[stat column damage taken]",
+    "native:[stat column built]",
+    "native:[stat column prestige]",
+    "native:[stat marker wiped out]",
+    "native:[stat marker first combat death]",
+    "native:[stat not recorded for this match]",
+    "native:[results reason beyond doubt]",
+    "native:[stat per minute short]",
+    "native:[stat page colony]",
+    "native:[stat page %0 of %1]",
+    "native:[stat unit deaths]",
+    "native:[stat unit growth]",
+    "native:[stat view by unit type]",
+    "native:[stat view by state]",
+    "native:[stat view by resource]",
+    "native:[stat view by work]",
+    "native:[stat view by cause]",
+    "native:[stat view by weapon]",
+    "native:[stat view by distance]",
+    "native:[stat nothing to show]",
+    "native:[stat %0 nothing]",
+    "native:[Match]",
+    "native:[Time limit]",
+    "native:[Alliances can change]",
+    "native:[Starting unit level]",
+    "native:[Starting stockpile]",
+    "native:[Regrowth]",
+    "native:[Wounded units retreat]",
+    "native:[Units can die]",
+    "native:[Upgrades]",
+    "native:[No stockpile]",
+    "native:[No glass cannon]",
+    "native:[How quickly harvested resources grow back and spread.]",
+    "native:[Units must eat to keep working.]",
+    "native:[Summary]",
+    "native:[All rules]",
+    "native:[Show all rules]",
+    "native:[Choose a ruleset]",
+    "native:[Reset to %0]",
+    "native:[ruleset one change %0]",
+    "native:[ruleset changes %0 %1]",
+    "native:[This match cannot end. Turn on prestige victory or set a time limit.]",
+    "native:[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+    "native:[Blitz]",
+    "native:[ruleset blitz description]",
+    "native:[Gentle]",
+    "native:[ruleset gentle description]",
+    "native:[Sandbox]",
+    "native:[ruleset sandbox description]",
+    "native:[Bloodbath]",
+    "native:[ruleset bloodbath description]",
+    "native:[Siege]",
+    "native:[ruleset siege description]",
+    "native:[Lean years]",
+    "native:[ruleset lean years description]",
+    "native:[Gold rush]",
+    "native:[ruleset gold rush description]",
+    "native:[Elite ranks]",
+    "native:[ruleset elite ranks description]",
+    "native:[Shifting alliances]",
+    "native:[ruleset shifting alliances description]",
+    "native:[Changed from %0: %1]",
+    "native:[Combat is off, so the rules below have no effect.]",
+    "native:[%0 more rules are at their Standard values.]",
+    "native:[Each team starts with extra resources in its shared pool.]",
+    "native:[Units hit harder but have less HP and armor.]",
+    "native:[Teams can attack each other. Turn off for a peaceful match.]",
+    "native:[Hurt units go back to heal instead of fighting to the death.]",
+    "native:[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+    "native:[stat group work]",
+    "native:[stat work by job]",
+    "native:[stat work by job about]",
+    "native:[stat haul distance]",
+    "native:[stat haul distance about]",
+    "native:[stat hauling]",
+    "native:[stat hauling about]",
+    "native:[stat eating time]",
+    "native:[stat eating time about]",
+    "native:[stat intruders]",
+    "native:[stat intruders about]",
+    "native:[stat home defence]",
+    "native:[stat home defence about]",
+    "native:[stat combat death places]",
+    "native:[stat combat death places about]",
+    "native:[stat band working]",
+    "native:[stat band idle]",
+    "native:[stat band training]",
+    "native:[stat band unserved]",
+    "native:[stat band inns]",
+    "native:[stat band sites]",
+    "native:[stat band to resource]",
+    "native:[stat band harvesting]",
+    "native:[stat band carrying]",
+    "native:[stat band delivering]",
+    "native:[stat band walking to inn]",
+    "native:[stat band no inn]",
+    "native:[stat band at home]"
+  ],
+  "findings": [
+    {
+      "id": "native:[stat band trapped]",
+      "severity": "minor",
+      "proposed": "ติดทางออก",
+      "reason": "Trapped movement state, not necessarily a deliberate enemy trap.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band wounded]",
+      "severity": "minor",
+      "proposed": "บาดเจ็บหนัก",
+      "reason": "Keep lower-HP wounded band more severe than higher-HP hurt band.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band hurt]",
+      "severity": "minor",
+      "proposed": "บาดเจ็บ",
+      "reason": "Consistent health-band ordering.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band weakening]",
+      "severity": "minor",
+      "proposed": "กำลังอ่อนแอ",
+      "reason": "Unit weakening state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band looking]",
+      "severity": "major",
+      "proposed": "กำลังหาโรงเตี๊ยม",
+      "reason": "Canonical feeding building, not a small hotel.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band new units]",
+      "severity": "minor",
+      "proposed": "ยูนิตใหม่",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band built]",
+      "severity": "minor",
+      "proposed": "สร้างแล้ว",
+      "reason": "Completed construction band.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit units]",
+      "severity": "minor",
+      "proposed": "ตัว",
+      "reason": "Classifier for counted game units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit meals]",
+      "severity": "minor",
+      "proposed": "มื้อ",
+      "reason": "Unit of meals, distinguish from food stock.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit shots]",
+      "severity": "minor",
+      "proposed": "ครั้งยิง",
+      "reason": "Counted shots, not an unexplained shot loanword.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit visits]",
+      "severity": "major",
+      "proposed": "ครั้งเข้าฝึก",
+      "reason": "Training visits, not sightseeing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat axis share of all teams]",
+      "severity": "minor",
+      "proposed": "% ของทุกอาณานิคมรวมกัน",
+      "reason": "Share of combined quantities, not fraction of number of colonies.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat axis percent of units]",
+      "severity": "minor",
+      "proposed": "% ของยูนิตในอาณานิคม",
+      "reason": "Canonical units and compact axis notation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat axis %0 per minute per 100 units]",
+      "severity": "minor",
+      "proposed": "%0 ต่อนาที ต่อยูนิต 100 ตัวในอาณานิคม",
+      "reason": "Canonical unit noun/classifier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat axis %0 per 100 units]",
+      "severity": "minor",
+      "proposed": "%0 ต่อยูนิต 100 ตัวในอาณานิคม",
+      "reason": "Canonical unit noun/classifier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat axis %0 minute average]",
+      "severity": "major",
+      "proposed": "เฉลี่ย %0 นาที",
+      "reason": "Moving-average window, coherent Thai word order.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat view highlight none]",
+      "severity": "major",
+      "proposed": "เน้น: ไม่มี",
+      "reason": "Highlight option, not an outstanding feature.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column peak units]",
+      "severity": "minor",
+      "proposed": "จำนวนยูนิตสูงสุด",
+      "reason": "Peak living population, not highest unit level.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column lost]",
+      "severity": "major",
+      "proposed": "สูญเสีย",
+      "reason": "Units lost, not missing objects.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column damage dealt]",
+      "severity": "major",
+      "proposed": "ความเสียหายที่ทำ",
+      "reason": "Damage dealt, distinguish received.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column damage taken]",
+      "severity": "major",
+      "proposed": "ความเสียหายที่ได้รับ",
+      "reason": "Damage taken, distinguish inflicted.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column built]",
+      "severity": "minor",
+      "proposed": "สร้างแล้ว",
+      "reason": "Completed construction metric.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat marker wiped out]",
+      "severity": "minor",
+      "proposed": "สูญเสียยูนิตตัวสุดท้าย",
+      "reason": "Canonical unit and loss event.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat marker first combat death]",
+      "severity": "minor",
+      "proposed": "ยูนิตตัวแรกตายในรบ",
+      "reason": "Canonical unit and event.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit deaths]",
+      "severity": "minor",
+      "proposed": "การตาย",
+      "reason": "Game-unit deaths, not exclusively human deceased persons.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat view by unit type]",
+      "severity": "minor",
+      "proposed": "ตามชนิดยูนิต",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat view by state]",
+      "severity": "critical",
+      "proposed": "ตามสถานะ",
+      "reason": "Unit state, not a political state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Match]",
+      "severity": "major",
+      "proposed": "แมตช์",
+      "reason": "Game noun, not match-pairing verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Time limit]",
+      "severity": "minor",
+      "proposed": "เวลาจำกัด",
+      "reason": "Time-limit noun label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starting unit level]",
+      "severity": "minor",
+      "proposed": "ระดับยูนิตเริ่มต้น",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Wounded units retreat]",
+      "severity": "minor",
+      "proposed": "ยูนิตบาดเจ็บถอยกลับ",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units can die]",
+      "severity": "major",
+      "proposed": "ยูนิตตายได้",
+      "reason": "All units, not military only.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units must eat to keep working.]",
+      "severity": "major",
+      "proposed": "ยูนิตต้องกินอาหารเพื่อทำงานต่อ",
+      "reason": "All units, not military only.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ruleset one change %0]",
+      "severity": "major",
+      "proposed": "%0 + เปลี่ยน 1 ค่า",
+      "reason": "%0 is ruleset name; one changed setting, not change of a number plus one.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ruleset changes %0 %1]",
+      "severity": "major",
+      "proposed": "%0 + เปลี่ยน %1 ค่า",
+      "reason": "Keep ruleset name and number of overridden settings in correct roles.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "severity": "critical",
+      "proposed": "แมตช์นี้จบไม่ได้ เปิดชัยชนะด้วยเกียรติยศหรือตั้งเวลาจำกัด",
+      "reason": "Prestige victory, not a generic special-victory mode.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "severity": "major",
+      "proposed": "เกียรติยศมักเริ่มเกิดหลัง 13 ถึง 28 นาที ดังนั้นเวลาจำกัด 30 นาทีจึงมักจบเสมอ",
+      "reason": "Translate prestige consistently; preserve timing caveat.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Gentle]",
+      "severity": "minor",
+      "proposed": "ผ่อนปรน",
+      "reason": "Ruleset difficulty register rather than personality gentleness.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ruleset sandbox description]",
+      "severity": "major",
+      "proposed": "ไม่มีการรบหรืออดอยาก สร้างได้ทุกอย่าง",
+      "reason": "Rules remove hunger/death mechanics; do not order players not to starve.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Lean years]",
+      "severity": "minor",
+      "proposed": "ยุคขาดแคลน",
+      "reason": "Resource-scarcity ruleset name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ruleset elite ranks description]",
+      "severity": "major",
+      "proposed": "เริ่มพร้อมทักษะ ฝึกเพิ่มไม่ได้",
+      "reason": "Already trained initial units with training disabled, not beginning training then no need for more.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ruleset shifting alliances description]",
+      "severity": "major",
+      "proposed": "เปลี่ยนทีมได้ในแมตช์ 60 นาที",
+      "reason": "Alliance/team membership changes, not player substitutions.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Each team starts with extra resources in its shared pool.]",
+      "severity": "minor",
+      "proposed": "แต่ละทีมเริ่มพร้อมวัสดุเพิ่มเติมในกองกลาง",
+      "reason": "Preserve extra initial stock.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units hit harder but have less HP and armor.]",
+      "severity": "major",
+      "proposed": "ยูนิตโจมตีแรงขึ้นแต่มี HP และเกราะน้อยลง",
+      "reason": "Applies to all units; canonical unit and exact health tradeoff.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Hurt units go back to heal instead of fighting to the death.]",
+      "severity": "minor",
+      "proposed": "ยูนิตบาดเจ็บกลับไปรักษา แทนการสู้จนตาย",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "severity": "major",
+      "proposed": "ยูนิตตายเมื่อ HP หมด ปิดเพื่อให้ HP ลดได้ต่ำสุดเพียง 1",
+      "reason": "Rule clamps hit points, not stops unit movement at 1 HP.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat group work]",
+      "severity": "major",
+      "proposed": "เวลาของคนงาน",
+      "reason": "Chart includes idle/eating/healing time, not only working time.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat work by job about]",
+      "severity": "major",
+      "proposed": "จำนวนคนงานที่ส่งวัสดุให้อาคารแต่ละชนิด: รังเพื่อสร้างยูนิต โรงเตี๊ยมเพื่อทำมื้ออาหาร พื้นที่ก่อสร้างหรืออัปเกรด และอาคารอื่น เช่น หอคอย โรงเรียน และค่ายฝึก",
+      "reason": "Canonical buildings/units; supplier activity, not animal swarms/hotel employees.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat hauling about]",
+      "severity": "major",
+      "proposed": "คนงานส่งวัสดุแบ่งตามกิจกรรม: เดินไปหาแหล่งทรัพยากร เก็บเกี่ยว ขนกลับ และส่งของหรือรอทรัพยากรที่เข้าถึงได้ ส่วนใหญ่เป็นการเดิน ยิ่งทรัพยากรใกล้ก็ยิ่งทำงานได้มาก",
+      "reason": "Remove invented three-part count, which contradicts listed states.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat eating time]",
+      "severity": "minor",
+      "proposed": "คนงานที่ไปกินอาหาร",
+      "reason": "Generic food, not specifically rice.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat eating time about]",
+      "severity": "major",
+      "proposed": "คนงานที่หยุดงานไปกินอาหาร ทั้งกำลังเดินไปโรงเตี๊ยม กินอยู่ข้างใน หรือหิวแต่ไม่มีโรงเตี๊ยมว่าง หากมีคนงานหาโรงเตี๊ยมไม่ได้ แสดงว่าจำนวนยูนิตเกินความจุโรงเตี๊ยมหรืออาหารที่มี",
+      "reason": "Capacity/service availability rather than accommodation; canonical units/inn.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat intruders]",
+      "severity": "major",
+      "proposed": "นักรบศัตรูใกล้ฐาน",
+      "reason": "Near colony buildings, not inside a house.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat home defence]",
+      "severity": "major",
+      "proposed": "ส่วนต่างกำลังป้องกันฐาน",
+      "reason": "Home defense is colony base, not national defense.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat combat death places]",
+      "severity": "major",
+      "proposed": "จุดที่ยูนิตตายในรบ",
+      "reason": "All unit roles, not military-only.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat combat death places about]",
+      "severity": "major",
+      "proposed": "จุดที่ยูนิตของอาณานิคมถูกฆ่า: ใกล้อาคารฝ่ายตน ใกล้อาคารศัตรู หรือพื้นที่โล่งระหว่างอาณานิคม การสูญเสียใกล้ฐานหมายถึงถูกบุก ส่วนการสูญเสียที่ฐานศัตรูหมายถึงเป็นฝ่ายบุก พื้นที่ใกล้ทั้งสองฝ่ายนับเป็นฝ่ายตน",
+      "reason": "All unit roles; home means near own buildings, not a physical house.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band training]",
+      "severity": "minor",
+      "proposed": "การฝึก",
+      "reason": "Game skill training.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band unserved]",
+      "severity": "critical",
+      "proposed": "ไม่มีโรงเตี๊ยมหรือโรงพยาบาลว่าง",
+      "reason": "Free capacity, not free of monetary charge.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band inns]",
+      "severity": "major",
+      "proposed": "โรงเตี๊ยม",
+      "reason": "Canonical inn.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band sites]",
+      "severity": "minor",
+      "proposed": "ก่อสร้างและอัปเกรด",
+      "reason": "Canonical upgrade term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band walking to inn]",
+      "severity": "major",
+      "proposed": "เดินไปโรงเตี๊ยม",
+      "reason": "Canonical inn.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band no inn]",
+      "severity": "critical",
+      "proposed": "ไม่มีโรงเตี๊ยมว่าง",
+      "reason": "Capacity, not price.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band at home]",
+      "severity": "minor",
+      "proposed": "ใกล้ฐาน",
+      "reason": "Home zone around colony buildings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Reason<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Reasons",
+      "Recent activity",
+      "Recent matches",
+      "Recently updated",
+      "Reconcile outstanding credit reservations before deleting this project.",
+      "Reconcile verified usage",
+      "Reconciling",
+      "Reconnecting to your saved project…",
+      "Recorded usage<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> input tokens · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> cached input · <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> cache write · <span id=\"g2p4\" class=\"notranslate\" translate=\"no\">{slot3}</span> output tokens",
+      "Recovered edits belong to an older revision. Download them before reloading.",
+      "Recovered local edits",
+      "Recovery evidence for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Redo",
+      "Reference",
+      "Reference limit reached for this project.",
+      "Reference upload could not be saved.",
+      "Refine the composition",
+      "Refresh",
+      "Refresh validation",
+      "Refund",
+      "Refunded",
+      "Refused",
+      "Register an account to create and share sets.",
+      "Registered",
+      "Registered active account-days",
+      "Registered player",
+      "Registered signups",
+      "Registered<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> today · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> weekly · <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> monthly",
+      "Rejected",
+      "Relay key required.",
+      "Release",
+      "Release archive failed its integrity check.",
+      "Release archive is too large.",
+      "Release archive is unavailable.",
+      "Release artwork failed its integrity check.",
+      "Release exceeds package limits.",
+      "Release label",
+      "Release not found.",
+      "Release notes",
+      "Release unavailable.",
+      "Releases",
+      "Releases &amp; credits",
+      "Reload saved revision",
+      "Reload the current saved draft before publishing.",
+      "Remix with AI",
+      "Remove",
+      "Remove entry",
+      "Remove favourite",
+      "Remove generator",
+      "Remove sheet",
+      "Remove stage",
+      "Remove stock level",
+      "Remove variant",
+      "Remove <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Rename",
+      "Render the instruments",
+      "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "Replace or remove the team layer before changing frame dimensions.",
+      "Replace the gaps too",
+      "Replay",
+      "Report",
+      "Report AI",
+      "Report a problem",
+      "Report already resolved.",
+      "Report for <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Report has already been resolved. Refresh to review its resolution.",
+      "Report not found.",
+      "Report reason",
+      "Report received.",
+      "Report skin",
+      "Report this generator",
+      "Report this map",
+      "Report this release",
+      "Reported",
+      "Reported skin texture",
+      "Reporting range<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> through <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> (UTC). Today is still in progress; the previous <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "Reporting range<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> through <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> (UTC). Today is still in progress; the previous <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "Reports",
+      "Request cap"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เหตุผล <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เหตุผล"
+      },
+      {
+        "translatedText": "กิจกรรมล่าสุด"
+      },
+      {
+        "translatedText": "การแข่งขันล่าสุด"
+      },
+      {
+        "translatedText": "อัปเดตล่าสุด"
+      },
+      {
+        "translatedText": "ตรวจสอบและกระทบยอดการจองเครดิตที่ค้างอยู่ก่อนลบโครงการนี้"
+      },
+      {
+        "translatedText": "ตรวจสอบความถูกต้องของการใช้งานที่ได้รับการยืนยัน"
+      },
+      {
+        "translatedText": "การปรองดอง"
+      },
+      {
+        "translatedText": "กำลังเชื่อมต่อกับโปรเจ็กต์ที่คุณบันทึกไว้..."
+      },
+      {
+        "translatedText": "การใช้งานที่บันทึกไว้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> โทเค็นอินพุต <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> · อินพุตที่แคชไว้ <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> · การเขียนแคช <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> · โทเค็นเอาต์พุต <span id=\"g2p4\" class=\"notranslate\" translate=\"no\">{slot3}</span>"
+      },
+      {
+        "translatedText": "ไฟล์แก้ไขที่กู้คืนมาเป็นของเวอร์ชันเก่ากว่า กรุณาดาวน์โหลดไฟล์เหล่านั้นก่อนที่จะโหลดใหม่"
+      },
+      {
+        "translatedText": "กู้คืนการแก้ไขในพื้นที่"
+      },
+      {
+        "translatedText": "หลักฐานการกู้คืนสำหรับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ทำซ้ำ"
+      },
+      {
+        "translatedText": "อ้างอิง"
+      },
+      {
+        "translatedText": "ถึงขีดจำกัดอ้างอิงสำหรับโครงการนี้แล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกข้อมูลอ้างอิงที่อัปโหลดได้"
+      },
+      {
+        "translatedText": "ปรับปรุงองค์ประกอบให้ดียิ่งขึ้น"
+      },
+      {
+        "translatedText": "รีเฟรช"
+      },
+      {
+        "translatedText": "รีเฟรชการตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "คืนเงิน"
+      },
+      {
+        "translatedText": "ได้รับเงินคืน"
+      },
+      {
+        "translatedText": "ปฏิเสธ"
+      },
+      {
+        "translatedText": "ลงทะเบียนบัญชีเพื่อสร้างและแชร์ชุดภาพ"
+      },
+      {
+        "translatedText": "จดทะเบียนแล้ว"
+      },
+      {
+        "translatedText": "จำนวนวันบัญชีที่ลงทะเบียนใช้งาน"
+      },
+      {
+        "translatedText": "ผู้เล่นที่ลงทะเบียน"
+      },
+      {
+        "translatedText": "การลงทะเบียน"
+      },
+      {
+        "translatedText": "ลงทะเบียนแล้ว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> วันนี้ · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> รายสัปดาห์ · <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> รายเดือน"
+      },
+      {
+        "translatedText": "ถูกปฏิเสธ"
+      },
+      {
+        "translatedText": "ต้องใช้กุญแจรีเลย์"
+      },
+      {
+        "translatedText": "ปล่อย"
+      },
+      {
+        "translatedText": "ไฟล์เก็บถาวรเวอร์ชันใหม่ไม่ผ่านการตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "ไฟล์เก็บถาวรของเวอร์ชันใหม่มีขนาดใหญ่เกินไป"
+      },
+      {
+        "translatedText": "ไม่สามารถเข้าถึงไฟล์เก็บถาวรของการเผยแพร่ได้"
+      },
+      {
+        "translatedText": "ภาพปกอัลบั้มไม่ผ่านการตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "การเผยแพร่เกินขีดจำกัดของแพ็กเกจ"
+      },
+      {
+        "translatedText": "ฉลากวางจำหน่าย"
+      },
+      {
+        "translatedText": "ไม่พบไฟล์ดาวน์โหลด"
+      },
+      {
+        "translatedText": "บันทึกการเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "ยังไม่มีการเผยแพร่เวอร์ชันเต็ม"
+      },
+      {
+        "translatedText": "การเผยแพร่"
+      },
+      {
+        "translatedText": "การเผยแพร่และเครดิต"
+      },
+      {
+        "translatedText": "โหลดเวอร์ชันที่บันทึกไว้"
+      },
+      {
+        "translatedText": "โหลดฉบับร่างที่บันทึกไว้ปัจจุบันก่อนเผยแพร่"
+      },
+      {
+        "translatedText": "รีมิกซ์ด้วย AI"
+      },
+      {
+        "translatedText": "ลบ"
+      },
+      {
+        "translatedText": "ลบรายการ"
+      },
+      {
+        "translatedText": "ลบรายการโปรด"
+      },
+      {
+        "translatedText": "ถอดเครื่องกำเนิดไฟฟ้าออก"
+      },
+      {
+        "translatedText": "นำผ้าปูที่นอนออก"
+      },
+      {
+        "translatedText": "ถอดเวทีออก"
+      },
+      {
+        "translatedText": "ลบระดับสต็อก"
+      },
+      {
+        "translatedText": "ลบตัวแปร"
+      },
+      {
+        "translatedText": "ลบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "เปลี่ยนชื่อ"
+      },
+      {
+        "translatedText": "เรนเดอร์เครื่องดนตรี"
+      },
+      {
+        "translatedText": "แสดงผลโดยเอนจิ้นเกมของเบราว์เซอร์ เรียกใช้การตรวจสอบการเผยแพร่เพื่อยืนยันเวอร์ชันที่บันทึกไว้"
+      },
+      {
+        "translatedText": "เปลี่ยนหรือลบเลเยอร์ทีมก่อนที่จะเปลี่ยนขนาดเฟรม"
+      },
+      {
+        "translatedText": "อุดช่องว่างด้วย"
+      },
+      {
+        "translatedText": "เล่นซ้ำ"
+      },
+      {
+        "translatedText": "รายงาน"
+      },
+      {
+        "translatedText": "รายงาน AI"
+      },
+      {
+        "translatedText": "รายงานปัญหา"
+      },
+      {
+        "translatedText": "ปัญหาได้รับการแก้ไขเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "รายงานสำหรับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ปัญหาดังกล่าวได้รับการแก้ไขเรียบร้อยแล้ว โปรดรีเฟรชหน้าเว็บเพื่อตรวจสอบผลลัพธ์"
+      },
+      {
+        "translatedText": "ไม่พบรายงาน"
+      },
+      {
+        "translatedText": "เหตุผลในการรายงาน"
+      },
+      {
+        "translatedText": "ได้รับรายงานแล้ว"
+      },
+      {
+        "translatedText": "รายงานผิวหนัง"
+      },
+      {
+        "translatedText": "รายงานเครื่องกำเนิดไฟฟ้านี้"
+      },
+      {
+        "translatedText": "รายงานแผนที่นี้"
+      },
+      {
+        "translatedText": "รายงานการเผยแพร่ครั้งนี้"
+      },
+      {
+        "translatedText": "รายงาน"
+      },
+      {
+        "translatedText": "รายงานเกี่ยวกับลักษณะผิว"
+      },
+      {
+        "translatedText": "ช่วงเวลารายงาน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> ถึง <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> (UTC) วันนี้ยังอยู่ระหว่างดำเนินการ วันก่อนหน้า <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> วัน เป็นวันตามปฏิทินที่สมบูรณ์แล้ว ข้อมูลประวัติอาจไม่สมบูรณ์ การเปรียบเทียบใช้เฉพาะข้อมูลที่บันทึกไว้เท่านั้น"
+      },
+      {
+        "translatedText": "ช่วงเวลารายงาน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> ถึง <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> (UTC) วันนี้ยังอยู่ระหว่างดำเนินการ วันก่อนหน้า <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> วัน เป็นวันตามปฏิทินที่สมบูรณ์แล้ว ข้อมูลประวัติอาจไม่สมบูรณ์ การเปรียบเทียบใช้เฉพาะข้อมูลที่บันทึกไว้เท่านั้น"
+      },
+      {
+        "translatedText": "รายงาน"
+      },
+      {
+        "translatedText": "ขอหมวก"
+      }
+    ]
+  }
+}

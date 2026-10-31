@@ -1,0 +1,36 @@
+{
+  "fresh_reviewed_keys": [
+    "native:[select place guard area]",
+    "native:[Switchbacks]",
+    "native:[stat health]",
+    "native:[intro instruction scout]",
+    "native:[lesson healing briefing]",
+    "native:[lesson upgrades briefing]",
+    "native:[lesson defensive-tactics briefing]",
+    "native:[lesson defensive-tactics scout hint]",
+    "native:[lesson defensive-tactics guard hint]",
+    "native:[lesson defensive-tactics guard title]",
+    "native:[lesson defensive-tactics guard help]",
+    "native:[lesson defensive-tactics guard marker]",
+    "native:[lesson defensive-tactics repel hint]",
+    "native:[lesson defensive-tactics repel instruction]",
+    "native:[lesson defensive-tactics guard compact]",
+    "native:[lesson defensive-tactics repel compact]",
+    "native:[Portage Lakes cannot fit shoreline settlements on this seed.]",
+    "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+    "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+    "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+    "native:[settings Double-tap the map, hold, then drag to zoom.]"
+  ],
+  "carried_count": 3372,
+  "findings": [
+    {
+      "id": "native:[lesson healing briefing]",
+      "severity": "minor",
+      "state": "open",
+      "original": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว ยูนิต​ใน​อาณานิคม​เริ่ม​โดย​กิน​อาหาร​แล้ว และ​มี​คนงาน​บาดเจ็บ 1 ตัว",
+      "proposed": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว อาณานิคม​เริ่มต้น​ด้วย​ยูนิต​ที่​กิน​อิ่ม​แล้ว และ​มี​คนงาน​บาดเจ็บ 1 ตัว",
+      "reason": "Fed-state meaning is now correct; เริ่มโดยกินอาหารแล้ว is awkward. Prepared colony starts with already-fed units, expressed naturally as เริ่มต้นด้วยยูนิตที่กินอิ่มแล้ว."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "word": "moraine",
+  "url": "https://coined-word.orst.go.th/func_lookup.php",
+  "request": {
+    "word": "moraine",
+    "funcName": "lookupWord",
+    "book_id": "0",
+    "status": "lookup",
+    "loc": ""
+  },
+  "status": 200,
+  "sha256": "3503aa76cde561e5493b2e673bec35ae3484d539704fb17cf3ca4991e8ba4ed4",
+  "text": "ผลการค้นหา \" moraine \" ภูมิศาสตร์ moraine กองตะกอนธารน้ำแข็ง ปฐพีศาสตร์ moraine กองตะกอนธารน้ำแข็ง ป่าไม้ moraine กองตะกอนธารน้ำแข็ง"
+}

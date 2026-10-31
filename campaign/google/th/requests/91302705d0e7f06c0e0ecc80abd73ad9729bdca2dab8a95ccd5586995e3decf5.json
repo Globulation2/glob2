@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Food",
+      "Forbidden area",
+      "Healthy",
+      "free",
+      "from<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "fruit",
+      "Fullscreen",
+      "Game full",
+      "Game Shortcuts",
+      "Game speed",
+      "Game",
+      "General Settings",
+      "Go To Event",
+      "Go To Home",
+      "Go back to main menu",
+      "Grass",
+      "ground attack",
+      "Guard area",
+      "Please choose",
+      "a map",
+      "Handmade map",
+      "Happiness",
+      "Hard Pause",
+      "Harvest",
+      "high",
+      "Hints",
+      "home",
+      "Heals your units",
+      "Hospital",
+      "Host a game",
+      "HP",
+      "Human",
+      "human",
+      "hungry",
+      "Hunger",
+      "On the way",
+      "Increase Game Speed",
+      "Increase Units Working",
+      "insert",
+      "Inside",
+      "island size",
+      "Islands",
+      "Isles",
+      "Iterate to Next Selection",
+      "jobs",
+      "Join a game",
+      "Keyboard Settings",
+      "LAN Game",
+      "English - Incomplete",
+      "en",
+      "Language",
+      "English",
+      "left meta",
+      "left windows key",
+      "left",
+      "Level",
+      "Levels",
+      "Load Campaign",
+      "Load game",
+      "Load Map",
+      "Load Replay",
+      "Load Script",
+      "Load",
+      "Look around",
+      "Lost<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> has more prestige than you",
+      "Lost<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> your colony is dead",
+      "low",
+      "Low quality",
+      "Air dmg.",
+      "Ground dmg.",
+      "Description",
+      "Map Discovered",
+      "Name",
+      "Map Script",
+      "Map width",
+      "Map height",
+      "Mark Map For Allies",
+      "mid",
+      "meta-<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Minimum required level<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "อาหาร"
+      },
+      {
+        "translatedText": "เขตหวงห้าม"
+      },
+      {
+        "translatedText": "สุขภาพดี"
+      },
+      {
+        "translatedText": "ฟรี"
+      },
+      {
+        "translatedText": "จาก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "ผลไม้"
+      },
+      {
+        "translatedText": "เต็มหน้าจอ"
+      },
+      {
+        "translatedText": "เกมเต็ม"
+      },
+      {
+        "translatedText": "ทางลัดเกม"
+      },
+      {
+        "translatedText": "ความเร็วของเกม"
+      },
+      {
+        "translatedText": "เกม"
+      },
+      {
+        "translatedText": "การตั้งค่าทั่วไป"
+      },
+      {
+        "translatedText": "ไปที่กิจกรรม"
+      },
+      {
+        "translatedText": "กลับสู่หน้าหลัก"
+      },
+      {
+        "translatedText": "กลับสู่เมนูหลัก"
+      },
+      {
+        "translatedText": "หญ้า"
+      },
+      {
+        "translatedText": "การโจมตีภาคพื้นดิน"
+      },
+      {
+        "translatedText": "พื้นที่รักษาการณ์"
+      },
+      {
+        "translatedText": "โปรดเลือก"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "แผนที่ทำมือ"
+      },
+      {
+        "translatedText": "ความสุข"
+      },
+      {
+        "translatedText": "หยุดชั่วคราวอย่างถาวร"
+      },
+      {
+        "translatedText": "เก็บเกี่ยว"
+      },
+      {
+        "translatedText": "สูง"
+      },
+      {
+        "translatedText": "คำแนะนำ"
+      },
+      {
+        "translatedText": "บ้าน"
+      },
+      {
+        "translatedText": "รักษาหน่วยของคุณ"
+      },
+      {
+        "translatedText": "โรงพยาบาล"
+      },
+      {
+        "translatedText": "จัดเกม"
+      },
+      {
+        "translatedText": "เอชพี"
+      },
+      {
+        "translatedText": "มนุษย์"
+      },
+      {
+        "translatedText": "มนุษย์"
+      },
+      {
+        "translatedText": "หิว"
+      },
+      {
+        "translatedText": "ความหิว"
+      },
+      {
+        "translatedText": "ระหว่างทาง"
+      },
+      {
+        "translatedText": "เพิ่มความเร็วเกม"
+      },
+      {
+        "translatedText": "เพิ่มจำนวนหน่วยที่ทำงาน"
+      },
+      {
+        "translatedText": "แทรก"
+      },
+      {
+        "translatedText": "ข้างใน"
+      },
+      {
+        "translatedText": "ขนาดเกาะ"
+      },
+      {
+        "translatedText": "เกาะต่างๆ"
+      },
+      {
+        "translatedText": "หมู่เกาะ"
+      },
+      {
+        "translatedText": "วนซ้ำไปยังการเลือกถัดไป"
+      },
+      {
+        "translatedText": "งาน"
+      },
+      {
+        "translatedText": "เข้าร่วมเกม"
+      },
+      {
+        "translatedText": "การตั้งค่าแป้นพิมพ์"
+      },
+      {
+        "translatedText": "เกม LAN"
+      },
+      {
+        "translatedText": "ภาษาอังกฤษ - ไม่สมบูรณ์"
+      },
+      {
+        "translatedText": "เอ็น"
+      },
+      {
+        "translatedText": "ภาษา"
+      },
+      {
+        "translatedText": "ภาษาอังกฤษ"
+      },
+      {
+        "translatedText": "เมตาซ้าย"
+      },
+      {
+        "translatedText": "ปุ่ม Windows ซ้าย"
+      },
+      {
+        "translatedText": "ซ้าย"
+      },
+      {
+        "translatedText": "ระดับ"
+      },
+      {
+        "translatedText": "ระดับ"
+      },
+      {
+        "translatedText": "โหลดแคมเปญ"
+      },
+      {
+        "translatedText": "โหลดเกม"
+      },
+      {
+        "translatedText": "โหลดแผนที่"
+      },
+      {
+        "translatedText": "โหลดการเล่นซ้ำ"
+      },
+      {
+        "translatedText": "โหลดสคริปต์"
+      },
+      {
+        "translatedText": "โหลด"
+      },
+      {
+        "translatedText": "มองไปรอบๆ"
+      },
+      {
+        "translatedText": "แพ้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> มีเกียรติมากกว่าคุณ"
+      },
+      {
+        "translatedText": "สูญหาย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> อาณานิคมของคุณล่มสลายแล้ว"
+      },
+      {
+        "translatedText": "ต่ำ"
+      },
+      {
+        "translatedText": "คุณภาพต่ำ"
+      },
+      {
+        "translatedText": "ความเสียหายจากอากาศ"
+      },
+      {
+        "translatedText": "ความเสียหายภาคพื้นดิน"
+      },
+      {
+        "translatedText": "คำอธิบาย"
+      },
+      {
+        "translatedText": "ค้นพบแผนที่"
+      },
+      {
+        "translatedText": "ชื่อ"
+      },
+      {
+        "translatedText": "สคริปต์แผนที่"
+      },
+      {
+        "translatedText": "ความกว้างของแผนที่"
+      },
+      {
+        "translatedText": "ความสูงของแผนที่"
+      },
+      {
+        "translatedText": "ทำเครื่องหมายบนแผนที่สำหรับพันธมิตร"
+      },
+      {
+        "translatedText": "กลาง"
+      },
+      {
+        "translatedText": "เมตา- <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ระดับขั้นต่ำที่ต้องการ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      }
+    ]
+  }
+}

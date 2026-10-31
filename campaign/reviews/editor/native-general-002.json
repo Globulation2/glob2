@@ -1,0 +1,559 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "a5cdd05e723c3d2d0eaf4e2291850459d0fe22372a6297cdca344e1b89de698d",
+  "edited_keys": [
+    "native:[from:]",
+    "native:[fullscreen]",
+    "native:[game full]",
+    "native:[game speed]",
+    "native:[Game]",
+    "native:[general settings]",
+    "native:[go to event]",
+    "native:[go to home]",
+    "native:[goto main menu]",
+    "native:[grass]",
+    "native:[ground attack]",
+    "native:[guard area]",
+    "native:[GUIMapPreview text 0]",
+    "native:[GUIMapPreview text 1]",
+    "native:[handmade map]",
+    "native:[Happyness]",
+    "native:[hard pause]",
+    "native:[Harvest]",
+    "native:[high priority]",
+    "native:[hints]",
+    "native:[home]",
+    "native:[hospital explanation 2]",
+    "native:[hospital explanation]",
+    "native:[hospital]",
+    "native:[host]",
+    "native:[hp]",
+    "native:[Human]",
+    "native:[human]",
+    "native:[hungry]",
+    "native:[hungryness]",
+    "native:[In way]",
+    "native:[increase game speed]",
+    "native:[increase units working]",
+    "native:[inn]",
+    "native:[insert]",
+    "native:[inside]",
+    "native:[iterate selection]",
+    "native:[jobs]",
+    "native:[join a game]",
+    "native:[lan]",
+    "native:[language incomplete]",
+    "native:[language-code]",
+    "native:[language-tr]",
+    "native:[language]",
+    "native:[left meta]",
+    "native:[left super]",
+    "native:[left]",
+    "native:[level]",
+    "native:[levels]",
+    "native:[load campaign]",
+    "native:[load game]",
+    "native:[load map]",
+    "native:[load replay]",
+    "native:[load script]",
+    "native:[load]",
+    "native:[look around]",
+    "native:[Lost : %0 has more prestige than you]",
+    "native:[Lost : your colony is dead]",
+    "native:[low priority]",
+    "native:[lowquality]",
+    "native:[Magic At. Air]",
+    "native:[Magic At. Ground]",
+    "native:[mark map]",
+    "native:[medium priority]",
+    "native:[meta %0]",
+    "native:[Min required level:]",
+    "native:[Mute]",
+    "native:[mute]",
+    "native:[new campaign]",
+    "native:[new map]",
+    "native:[no fullscreen]",
+    "native:[No Hints]",
+    "native:[no key]",
+    "native:[No Objectives]",
+    "native:[no ressources growth areas]",
+    "native:[No]",
+    "native:[number of teams]",
+    "native:[Number Of Units]",
+    "native:[numlock]",
+    "native:[objectives]",
+    "native:[of which]",
+    "native:[ok]",
+    "native:[on press]",
+    "native:[On the spot]",
+    "native:[on unpress]",
+    "native:[open chat box]",
+    "native:[open load menu]",
+    "native:[open save menu]",
+    "native:[open scenario editor]",
+    "native:[open teams editor]",
+    "native:[open]",
+    "native:[OpenGL]",
+    "native:[Options]",
+    "native:[options]",
+    "native:[Orange]",
+    "native:[Other Options]",
+    "native:[page down]",
+    "native:[page up]",
+    "native:[Papyrus]",
+    "native:[pause game]",
+    "native:[pause]",
+    "native:[Paused]",
+    "native:[player name]",
+    "native:[players]",
+    "native:[please wait]",
+    "native:[power]",
+    "native:[press space]",
+    "native:[Prestige Score]",
+    "native:[Prestige Win Enabled]",
+    "native:[Prestige]",
+    "native:[Primary Objectives]",
+    "native:[print screen]",
+    "native:[priority]",
+    "native:[Prune]",
+    "native:[quit the editor]",
+    "native:[quit the game]",
+    "native:[quit the replay]",
+    "native:[quit]",
+    "native:[racetrack explanation 2]",
+    "native:[racetrack explanation]",
+    "native:[racetrack]",
+    "native:[range]",
+    "native:[ratios]",
+    "native:[remember unit]",
+    "native:[remove map]",
+    "native:[repair]",
+    "native:[repeat area]",
+    "native:[replay ended]",
+    "native:[return to editor]",
+    "native:[return to game]",
+    "native:[return to replay]",
+    "native:[return]",
+    "native:[right meta]",
+    "native:[right super]",
+    "native:[right]",
+    "native:[sand]",
+    "native:[save before quit?]",
+    "native:[save game]",
+    "native:[save map]",
+    "native:[save replay]",
+    "native:[save script]",
+    "native:[Save]",
+    "native:[school explanation 2]",
+    "native:[school explanation]",
+    "native:[school]",
+    "native:[Script Areas]",
+    "native:[scroll lock]",
+    "native:[scroll wheel enabled]",
+    "native:[Secondary Objectives]",
+    "native:[seeking a job]",
+    "native:[seeking]",
+    "native:[select construct barracks]",
+    "native:[select construct defencetower]",
+    "native:[select construct hospital]",
+    "native:[select construct inn]",
+    "native:[select construct racetrack]",
+    "native:[select construct school]",
+    "native:[select construct stonewall]",
+    "native:[select construct swimmingpool]",
+    "native:[select delete tool]"
+  ],
+  "findings": [
+    {
+      "id": "native:[go to event]",
+      "severity": "minor",
+      "proposed": "ไปยังเหตุการณ์",
+      "reason": "Gameplay event/alert, not social activity.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[go to home]",
+      "severity": "major",
+      "proposed": "กลับฐาน",
+      "reason": "Gameplay camera home action, not web homepage navigation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[hard pause]",
+      "severity": "major",
+      "proposed": "หยุดเกมทั้งหมดชั่วคราว",
+      "reason": "Hard pause is a full temporary pause, not a permanent pause.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[home]",
+      "severity": "major",
+      "proposed": "Home",
+      "reason": "Physical Home key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[hospital explanation]",
+      "severity": "minor",
+      "proposed": "รักษายูนิตของคุณ",
+      "reason": "Canonical unit terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[hp]",
+      "severity": "minor",
+      "proposed": "HP",
+      "reason": "Established game health abbreviation; recognizable concise stat label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[increase units working]",
+      "severity": "minor",
+      "proposed": "เพิ่มยูนิตที่ทำงาน",
+      "reason": "Canonical unit terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[insert]",
+      "severity": "major",
+      "proposed": "Insert",
+      "reason": "Physical Insert key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[iterate selection]",
+      "severity": "minor",
+      "proposed": "เลือกเป้าหมายถัดไป",
+      "reason": "Concise selection cycling action rather than abstract iterative process.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[language incomplete]",
+      "severity": "critical",
+      "proposed": "ไทย - ยังไม่สมบูรณ์",
+      "reason": "Locale self-identification must identify Thai, not translate the English locale name literally.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[language-code]",
+      "severity": "critical",
+      "proposed": "th",
+      "reason": "Runtime language code drives Thai shaping/metrics and must remain exact ISO code, not transliterated English en.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[language]",
+      "severity": "critical",
+      "proposed": "ไทย",
+      "reason": "Selectable native language name must identify Thai.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[left meta]",
+      "severity": "minor",
+      "proposed": "Meta ซ้าย",
+      "reason": "Physical Meta modifier key; retain recognizable legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Lost : your colony is dead]",
+      "severity": "major",
+      "proposed": "แพ้: อาณานิคมของคุณล่มสลายแล้ว",
+      "reason": "Lost is a match defeat, not a missing object.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Magic At. Air]",
+      "severity": "major",
+      "proposed": "ความเสียหายต่อยูนิตบิน",
+      "reason": "Air damage is against flying units, not damage from atmospheric air.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Magic At. Ground]",
+      "severity": "minor",
+      "proposed": "ความเสียหายต่อยูนิตเดิน",
+      "reason": "Ground damage applies to ground units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[meta %0]",
+      "severity": "major",
+      "proposed": "Meta-%0",
+      "reason": "Modifier key combination; no space before the second key.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[No Hints]",
+      "severity": "minor",
+      "proposed": "ไม่มีคำแนะนำ",
+      "reason": "Keep Hints label consistent.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[no key]",
+      "severity": "major",
+      "proposed": "ยังไม่ได้กำหนดปุ่ม",
+      "reason": "Key is keyboard binding, not a lock key.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[No Objectives]",
+      "severity": "minor",
+      "proposed": "ไม่มีเป้าหมาย",
+      "reason": "Concise game objectives term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[no ressources growth areas]",
+      "severity": "major",
+      "proposed": "พื้นที่ห้ามงอก",
+      "reason": "No Growth Areas are designated areas prohibiting resource growth, not an absence of growth zones.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[No]",
+      "severity": "critical",
+      "proposed": "ไม่",
+      "reason": "No is a negative dialog choice, not the abbreviation for number.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Number Of Units]",
+      "severity": "minor",
+      "proposed": "จำนวนยูนิต",
+      "reason": "Canonical unit terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[numlock]",
+      "severity": "minor",
+      "proposed": "Num Lock",
+      "reason": "Physical key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[objectives]",
+      "severity": "minor",
+      "proposed": "เป้าหมาย",
+      "reason": "Concise game objectives term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[on press]",
+      "severity": "major",
+      "proposed": "เมื่อกด",
+      "reason": "Press is keyboard/mouse press, not the news media.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[on unpress]",
+      "severity": "major",
+      "proposed": "เมื่อปล่อย",
+      "reason": "Release is key/button release, not publishing a product.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[open teams editor]",
+      "severity": "major",
+      "proposed": "เปิดตัวแก้ไขทีม",
+      "reason": "Teams is colony/player teams, not Microsoft Teams product.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[OpenGL]",
+      "severity": "minor",
+      "proposed": "OpenGL",
+      "reason": "Official graphics API product name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[page down]",
+      "severity": "minor",
+      "proposed": "Page Down",
+      "reason": "Physical key legend, not a scroll action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[page up]",
+      "severity": "minor",
+      "proposed": "Page Up",
+      "reason": "Physical key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Papyrus]",
+      "severity": "minor",
+      "proposed": "ปาปิรุส",
+      "reason": "Standard plant transliteration, keep whole.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[pause game]",
+      "severity": "major",
+      "proposed": "หยุดเกมชั่วคราว",
+      "reason": "Pause is temporary, distinguish from quitting/stopping game.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[power]",
+      "severity": "minor",
+      "proposed": "Power",
+      "reason": "Physical Power key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[press space]",
+      "severity": "minor",
+      "proposed": "กด Space เพื่อดำเนินการต่อ",
+      "reason": "Physical spacebar key legend recognizable in Thai keyboards.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Prestige Win Enabled]",
+      "severity": "major",
+      "proposed": "เปิดชัยชนะด้วยเกียรติยศ",
+      "reason": "This toggles prestige victory condition, not winning an honorary award.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[print screen]",
+      "severity": "minor",
+      "proposed": "Print Screen",
+      "reason": "Physical screenshot key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[quit the editor]",
+      "severity": "major",
+      "proposed": "ออกจากตัวแก้ไข",
+      "reason": "Quit the software editor, not resign a human editorial job.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[quit]",
+      "severity": "minor",
+      "proposed": "ออก",
+      "reason": "Quit action; not abandon an effort.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[racetrack explanation 2]",
+      "severity": "minor",
+      "proposed": "ของยูนิต",
+      "reason": "Pair with first explanation row; canonical unit term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[racetrack explanation]",
+      "severity": "minor",
+      "proposed": "เพิ่มความเร็วเดิน",
+      "reason": "Together rows mean improves units walking speed.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[racetrack]",
+      "severity": "major",
+      "proposed": "สนามวิ่ง",
+      "reason": "Trains walking speed, not a car racetrack.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[remember unit]",
+      "severity": "major",
+      "proposed": "จำจำนวนยูนิตที่กำหนด",
+      "reason": "Setting remembers staffing counts; not a reminder to manually count units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[repeat area]",
+      "severity": "minor",
+      "proposed": "ครั้งที่ทำซ้ำภูมิประเทศเดิม",
+      "reason": "Map repeat-count fragment.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[return]",
+      "severity": "major",
+      "proposed": "Enter",
+      "reason": "Physical Return/Enter key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[right meta]",
+      "severity": "minor",
+      "proposed": "Meta ขวา",
+      "reason": "Physical modifier key.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[school explanation 2]",
+      "severity": "minor",
+      "proposed": "ของคนงาน",
+      "reason": "Canonical worker term; pair with first row.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[school explanation]",
+      "severity": "major",
+      "proposed": "เพิ่มระดับการก่อสร้าง",
+      "reason": "Building is a construction skill here, not upgrading an existing structure.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[scroll lock]",
+      "severity": "minor",
+      "proposed": "Scroll Lock",
+      "reason": "Physical key legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Secondary Objectives]",
+      "severity": "critical",
+      "proposed": "รอง",
+      "reason": "Secondary objectives are optional/subordinate goals, not secondary school.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct barracks]",
+      "severity": "minor",
+      "proposed": "เลือกสร้างค่ายฝึก",
+      "reason": "Consistent training-building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct inn]",
+      "severity": "major",
+      "proposed": "เลือกสร้างโรงเตี๊ยม",
+      "reason": "Translate action/building rather than retain English Construct Inn.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct racetrack]",
+      "severity": "major",
+      "proposed": "เลือกสร้างสนามวิ่ง",
+      "reason": "Not a car racetrack.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct school]",
+      "severity": "major",
+      "proposed": "เลือกสร้างโรงเรียน",
+      "reason": "Select construction action, not an institution for construction training.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[hp]",
+      "reason": "HP is the established health-point abbreviation used in the game HUD."
+    },
+    {
+      "id": "native:[OpenGL]",
+      "reason": "OpenGL is an official graphics API name and should retain its spelling."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

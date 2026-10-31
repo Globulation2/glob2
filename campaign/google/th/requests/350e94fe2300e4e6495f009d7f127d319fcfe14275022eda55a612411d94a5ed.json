@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Oranges",
+      "Prunes",
+      "Gold",
+      "Metal",
+      "Glass",
+      "Fabric",
+      "Import Resource Definitions",
+      "Resource palette",
+      "Trees",
+      "Rocks",
+      "Cherry tree",
+      "Orange tree",
+      "Prune tree",
+      "Gold ore",
+      "Iron ore",
+      "Silica",
+      "Cotton",
+      "Jungle trees",
+      "Pine trees",
+      "Dead trees",
+      "Ruins",
+      "Camp-site",
+      "Ancient debris",
+      "Scrub",
+      "Tall grass",
+      "Maize",
+      "Potatoes",
+      "Rice",
+      "Fish",
+      "Boulders",
+      "Hedge",
+      "Thicket",
+      "Ridge",
+      "Outcrop",
+      "Dirt",
+      "Clay",
+      "Gravel",
+      "Flower meadow",
+      "Mud",
+      "Marsh",
+      "Deep snow",
+      "Scree",
+      "Dirt track",
+      "Boardwalk",
+      "Lava",
+      "Ember field",
+      "Loam",
+      "Moss",
+      "Spring meadow",
+      "Deep water",
+      "Dark water",
+      "Hole",
+      "Chasm",
+      "Water",
+      "Sand",
+      "Grass",
+      "Ice",
+      "Paths",
+      "Obstacles",
+      "Ridges",
+      "Barren ground",
+      "Rough ground",
+      "Lava",
+      "Fertile ground",
+      "Deep water",
+      "Void",
+      "Custom",
+      "Classic ground",
+      "Walkable",
+      "Swimmable",
+      "Impassable",
+      "No flying",
+      "Buildable",
+      "Speed <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>%",
+      "Crops grow",
+      "Irrigates nearby land",
+      "Stops nearby growth",
+      "Blocks shots",
+      "Hurts walkers",
+      "Hurts fliers"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ส้ม"
+      },
+      {
+        "translatedText": "ลูกพรุน"
+      },
+      {
+        "translatedText": "ทอง"
+      },
+      {
+        "translatedText": "โลหะ"
+      },
+      {
+        "translatedText": "กระจก"
+      },
+      {
+        "translatedText": "ผ้า"
+      },
+      {
+        "translatedText": "นำเข้าคำจำกัดความทรัพยากร"
+      },
+      {
+        "translatedText": "พาเลททรัพยากร"
+      },
+      {
+        "translatedText": "ต้นไม้"
+      },
+      {
+        "translatedText": "หิน"
+      },
+      {
+        "translatedText": "ต้นเชอร์รี่"
+      },
+      {
+        "translatedText": "ต้นส้ม"
+      },
+      {
+        "translatedText": "ตัดแต่งต้นไม้"
+      },
+      {
+        "translatedText": "แร่ทองคำ"
+      },
+      {
+        "translatedText": "แร่เหล็ก"
+      },
+      {
+        "translatedText": "ซิลิกา"
+      },
+      {
+        "translatedText": "ฝ้าย"
+      },
+      {
+        "translatedText": "ต้นไม้ในป่า"
+      },
+      {
+        "translatedText": "ต้นสน"
+      },
+      {
+        "translatedText": "ต้นไม้ที่ตายแล้ว"
+      },
+      {
+        "translatedText": "ซากปรักหักพัง"
+      },
+      {
+        "translatedText": "แคมป์ไซต์"
+      },
+      {
+        "translatedText": "เศษซากโบราณ"
+      },
+      {
+        "translatedText": "ขัด"
+      },
+      {
+        "translatedText": "หญ้าสูง"
+      },
+      {
+        "translatedText": "ข้าวโพด"
+      },
+      {
+        "translatedText": "มันฝรั่ง"
+      },
+      {
+        "translatedText": "ข้าว"
+      },
+      {
+        "translatedText": "ปลา"
+      },
+      {
+        "translatedText": "ก้อนหิน"
+      },
+      {
+        "translatedText": "เฮดจ์"
+      },
+      {
+        "translatedText": "พุ่มไม้"
+      },
+      {
+        "translatedText": "สันเขา"
+      },
+      {
+        "translatedText": "หินโผล่"
+      },
+      {
+        "translatedText": "สิ่งสกปรก"
+      },
+      {
+        "translatedText": "ดินเหนียว"
+      },
+      {
+        "translatedText": "กรวด"
+      },
+      {
+        "translatedText": "ทุ่งดอกไม้"
+      },
+      {
+        "translatedText": "โคลน"
+      },
+      {
+        "translatedText": "บึง"
+      },
+      {
+        "translatedText": "หิมะหนา"
+      },
+      {
+        "translatedText": "สกรีน"
+      },
+      {
+        "translatedText": "สนามดิน"
+      },
+      {
+        "translatedText": "ทางเดินริมทะเล"
+      },
+      {
+        "translatedText": "ลาวา"
+      },
+      {
+        "translatedText": "ทุ่งเพลิง"
+      },
+      {
+        "translatedText": "ดินร่วน"
+      },
+      {
+        "translatedText": "มอส"
+      },
+      {
+        "translatedText": "ทุ่งหญ้าฤดูใบไม้ผลิ"
+      },
+      {
+        "translatedText": "น้ำลึก"
+      },
+      {
+        "translatedText": "น้ำมืด"
+      },
+      {
+        "translatedText": "รู"
+      },
+      {
+        "translatedText": "เหว"
+      },
+      {
+        "translatedText": "น้ำ"
+      },
+      {
+        "translatedText": "ทราย"
+      },
+      {
+        "translatedText": "หญ้า"
+      },
+      {
+        "translatedText": "น้ำแข็ง"
+      },
+      {
+        "translatedText": "เส้นทาง"
+      },
+      {
+        "translatedText": "อุปสรรค"
+      },
+      {
+        "translatedText": "สันเขา"
+      },
+      {
+        "translatedText": "พื้นที่แห้งแล้ง"
+      },
+      {
+        "translatedText": "พื้นดินขรุขระ"
+      },
+      {
+        "translatedText": "ลาวา"
+      },
+      {
+        "translatedText": "ดินที่อุดมสมบูรณ์"
+      },
+      {
+        "translatedText": "น้ำลึก"
+      },
+      {
+        "translatedText": "ว่างเปล่า"
+      },
+      {
+        "translatedText": "กำหนดเอง"
+      },
+      {
+        "translatedText": "พื้นดินแบบคลาสสิก"
+      },
+      {
+        "translatedText": "เดินได้สะดวก"
+      },
+      {
+        "translatedText": "ว่ายน้ำได้"
+      },
+      {
+        "translatedText": "ผ่านไม่ได้"
+      },
+      {
+        "translatedText": "ห้ามบิน"
+      },
+      {
+        "translatedText": "สร้างได้"
+      },
+      {
+        "translatedText": "ความเร็ว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> %"
+      },
+      {
+        "translatedText": "พืชผลเจริญเติบโต"
+      },
+      {
+        "translatedText": "ใช้ในการชลประทานพื้นที่ใกล้เคียง"
+      },
+      {
+        "translatedText": "ยับยั้งการเจริญเติบโตในบริเวณใกล้เคียง"
+      },
+      {
+        "translatedText": "บล็อกลูกยิง"
+      },
+      {
+        "translatedText": "ทำร้ายคนเดิน"
+      },
+      {
+        "translatedText": "นักบินที่ได้รับบาดเจ็บ"
+      }
+    ]
+  }
+}

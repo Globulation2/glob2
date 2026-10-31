@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> Online website",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> is free software (GPL 3).",
+      "Go back to the game<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> it has signed you in. You can close this tab.",
+      "Go to the home page",
+      "Go to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>",
+      "Go to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p6}</span>",
+      "Got an invite code?",
+      "Got it",
+      "Grass",
+      "Gravatar when available, otherwise initials",
+      "Ground",
+      "Ground health change",
+      "Ground movement",
+      "Growth rate",
+      "Guest",
+      "Guest accounts are disabled on this instance.",
+      "Guest accounts created",
+      "Guest active account-days",
+      "Guest player",
+      "Guests are not ranked and keep no statistics. Their matches still appear below.",
+      "Guests get generated names; link a sign-in method to choose one.",
+      "Guests<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> today · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> weekly · <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> monthly",
+      "HTTP <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Hand-made",
+      "Hand-made or generated",
+      "Hardness",
+      "Health restored per tick",
+      "Hear it in the game",
+      "Height",
+      "Hex",
+      "Hidden",
+      "Hidden by a moderator",
+      "Hidden by a moderator<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Hidden following community report.",
+      "Hidden following moderator review",
+      "Hidden<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Hide",
+      "Hide family",
+      "Hide provisional ratings",
+      "Hide release and resolve",
+      "Hide set",
+      "Hide set and resolve",
+      "Historical amounts or payment modes are incomplete. <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+      "Historical coverage",
+      "History",
+      "Hive",
+      "Hive Mind",
+      "Hive Mind credits",
+      "Hive Mind is not available on this instance.",
+      "Hive Mind is not enabled on this instance.",
+      "Home",
+      "How AIs work <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "How would you like to play?",
+      "Hue",
+      "Human match participants",
+      "Humans",
+      "Hungry globs",
+      "I checked these token counts against provider evidence, including any explicitly entered zeros.",
+      "IN GAME · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "INTERMEDIATE IMAGE",
+      "Image is missing from storage.",
+      "Image is too large.",
+      "Image not found.",
+      "Image unavailable.",
+      "Import",
+      "Import in Settings → Custom AIs to use in local games.",
+      "Import package",
+      "Import the downloaded <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+      "Imported release <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>.",
+      "In match",
+      "In the game, choose",
+      "In the map editor",
+      "In use",
+      "In use · changes not applied",
+      "Inappropriate content",
+      "Incomplete music release.",
+      "Increase the manifest revision for a new release.",
+      "Individual moods",
+      "Information",
+      "Initial health"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เว็บไซต์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> Online"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> เป็นซอฟต์แวร์ฟรี (GPL 3)"
+      },
+      {
+        "translatedText": "กลับไปที่เกม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ระบบได้ล็อกอินคุณเรียบร้อยแล้ว คุณสามารถปิดแท็บนี้ได้"
+      },
+      {
+        "translatedText": "ไปที่หน้าแรก"
+      },
+      {
+        "translatedText": "ไปที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p1}</span>"
+      },
+      {
+        "translatedText": "ไปที่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p6}</span>"
+      },
+      {
+        "translatedText": "มีรหัสเชิญไหม?"
+      },
+      {
+        "translatedText": "เข้าใจแล้ว"
+      },
+      {
+        "translatedText": "หญ้า"
+      },
+      {
+        "translatedText": "รูปโปรไฟล์ Gravatar หากมี หากไม่มีให้ใช้ชื่อย่อแทน"
+      },
+      {
+        "translatedText": "พื้น"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงสุขภาพของพื้นดิน"
+      },
+      {
+        "translatedText": "การเคลื่อนตัวของพื้นดิน"
+      },
+      {
+        "translatedText": "อัตราการเติบโต"
+      },
+      {
+        "translatedText": "แขก"
+      },
+      {
+        "translatedText": "บัญชีผู้ใช้แบบผู้เยี่ยมชมถูกปิดใช้งานในระบบนี้"
+      },
+      {
+        "translatedText": "สร้างบัญชีผู้ใช้ชั่วคราว"
+      },
+      {
+        "translatedText": "จำนวนวันที่ใช้งานบัญชีผู้ใช้ของแขก"
+      },
+      {
+        "translatedText": "ผู้เล่นรับเชิญ"
+      },
+      {
+        "translatedText": "แขกรับเชิญจะไม่ได้รับการจัดอันดับและไม่มีการเก็บสถิติใดๆ แต่ผลการแข่งขันของพวกเขายังคงปรากฏอยู่ด้านล่าง"
+      },
+      {
+        "translatedText": "ผู้เข้าพักจะได้รับชื่ออัตโนมัติ โปรดเชื่อมโยงวิธีการเข้าสู่ระบบเพื่อเลือกวิธีการเข้าสู่ระบบที่ต้องการ"
+      },
+      {
+        "translatedText": "จำนวนผู้เข้าพัก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span> วันนี้ · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot1}</span> รายสัปดาห์ · <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">{slot2}</span> รายเดือน"
+      },
+      {
+        "translatedText": "HTTP <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ทำด้วยมือ"
+      },
+      {
+        "translatedText": "ทำด้วยมือหรือสร้างขึ้น"
+      },
+      {
+        "translatedText": "ความแข็ง"
+      },
+      {
+        "translatedText": "สุขภาพฟื้นฟูทุกครั้งที่มีเห็บ"
+      },
+      {
+        "translatedText": "ได้ยินมันในเกม"
+      },
+      {
+        "translatedText": "ความสูง"
+      },
+      {
+        "translatedText": "เฮกซ์"
+      },
+      {
+        "translatedText": "ที่ซ่อนอยู่"
+      },
+      {
+        "translatedText": "ถูกซ่อนโดยผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "ถูกซ่อนโดยผู้ดูแลระบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ถูกซ่อนไว้เนื่องจากรายงานจากชุมชน"
+      },
+      {
+        "translatedText": "ถูกซ่อนไว้หลังจากการตรวจสอบโดยผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "ซ่อนไว้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ซ่อน"
+      },
+      {
+        "translatedText": "ซ่อนครอบครัว"
+      },
+      {
+        "translatedText": "ซ่อนการจัดอันดับชั่วคราว"
+      },
+      {
+        "translatedText": "ซ่อนการเผยแพร่และการแก้ไข"
+      },
+      {
+        "translatedText": "ซ่อนชุด"
+      },
+      {
+        "translatedText": "ซ่อนชุดและแก้ไข"
+      },
+      {
+        "translatedText": "ข้อมูลประวัติการชำระเงินหรือจำนวนเงินไม่ครบถ้วน การซื้อ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> มีข้อมูลประวัติไม่ครบถ้วน ไม่สามารถอนุมานเงินคืนจากเครดิตที่ถูกยกเลิกได้"
+      },
+      {
+        "translatedText": "การรายงานข่าวทางประวัติศาสตร์"
+      },
+      {
+        "translatedText": "ประวัติศาสตร์"
+      },
+      {
+        "translatedText": "รังผึ้ง"
+      },
+      {
+        "translatedText": "จิตใจรวมหมู่"
+      },
+      {
+        "translatedText": "เครดิต Hive Mind"
+      },
+      {
+        "translatedText": "ฟังก์ชัน Hive Mind ไม่สามารถใช้งานได้ในอินสแตนซ์นี้"
+      },
+      {
+        "translatedText": "Hive Mind ไม่ได้เปิดใช้งานในอินสแตนซ์นี้"
+      },
+      {
+        "translatedText": "บ้าน"
+      },
+      {
+        "translatedText": "วิธีการทำงานของ AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "คุณอยากเล่นแบบไหน?"
+      },
+      {
+        "translatedText": "ฮิว"
+      },
+      {
+        "translatedText": "ผู้เข้าร่วมการจับคู่มนุษย์"
+      },
+      {
+        "translatedText": "มนุษย์"
+      },
+      {
+        "translatedText": "ก้อนหิว"
+      },
+      {
+        "translatedText": "ฉันตรวจสอบจำนวนโทเค็นเหล่านี้กับหลักฐานจากผู้ให้บริการ รวมถึงค่าศูนย์ที่ป้อนไว้อย่างชัดเจนด้วย"
+      },
+      {
+        "translatedText": "ในเกม · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ภาพขั้นกลาง"
+      },
+      {
+        "translatedText": "รูปภาพหายไปจากที่เก็บข้อมูล"
+      },
+      {
+        "translatedText": "รูปภาพมีขนาดใหญ่เกินไป"
+      },
+      {
+        "translatedText": "ไม่พบรูปภาพ"
+      },
+      {
+        "translatedText": "รูปภาพไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "นำเข้า"
+      },
+      {
+        "translatedText": "นำเข้าใน การตั้งค่า → AI แบบกำหนดเอง เพื่อใช้ในเกมแบบเล่นในเครื่องเดียวกัน"
+      },
+      {
+        "translatedText": "นำเข้าแพ็คเกจ"
+      },
+      {
+        "translatedText": "นำเข้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> ที่ดาวน์โหลดมาใน การตั้งค่า → ตัวสร้างแผนที่ ห้องเล่นออนไลน์จะใช้เวอร์ชันนี้โดยไม่ต้องให้ผู้เล่นคนอื่นติดตั้งเพิ่มเติม"
+      },
+      {
+        "translatedText": "นำเข้าเวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> แล้ว"
+      },
+      {
+        "translatedText": "ในการแข่งขัน"
+      },
+      {
+        "translatedText": "ในเกม ให้เลือก"
+      },
+      {
+        "translatedText": "ในโปรแกรมแก้ไขแผนที่"
+      },
+      {
+        "translatedText": "กำลังใช้งาน"
+      },
+      {
+        "translatedText": "กำลังใช้งาน · การเปลี่ยนแปลงยังไม่ได้ถูกนำมาใช้"
+      },
+      {
+        "translatedText": "เนื้อหาที่ไม่เหมาะสม"
+      },
+      {
+        "translatedText": "การเผยแพร่เพลงไม่สมบูรณ์"
+      },
+      {
+        "translatedText": "เพิ่มหมายเลขการแก้ไขไฟล์ Manifest สำหรับเวอร์ชันใหม่"
+      },
+      {
+        "translatedText": "อารมณ์ส่วนบุคคล"
+      },
+      {
+        "translatedText": "ข้อมูล"
+      },
+      {
+        "translatedText": "สุขภาพเบื้องต้น"
+      }
+    ]
+  }
+}

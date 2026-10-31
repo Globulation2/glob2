@@ -1,0 +1,548 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "82ffc7de55e199c169746d27715516245a94cd4c54a4556bc34246c6fe3d4fe9",
+  "edited_keys": [
+    "native:[library Release %0]",
+    "native:[library Remove %0]",
+    "native:[library Seed: %0]",
+    "native:[library %0 · revision %1]",
+    "native:[library Fit]",
+    "native:[library GL only]",
+    "native:[Sound or silence?]",
+    "native:[Silence]",
+    "native:[Sound]",
+    "native:[audio preference explanation]",
+    "native:[audio preference change later]",
+    "native:[audio preference save failed]",
+    "native:[audio choices description]",
+    "native:[intro menu]",
+    "native:[intro briefing]",
+    "native:[intro try]",
+    "native:[intro preflight]",
+    "native:[intro preflight save]",
+    "native:[intro preference failed]",
+    "native:[intro goal scout]",
+    "native:[intro goal build]",
+    "native:[intro goal supply]",
+    "native:[intro goal grow]",
+    "native:[intro goal attack]",
+    "native:[intro instruction scout]",
+    "native:[intro instruction build]",
+    "native:[intro instruction supply]",
+    "native:[intro instruction grow]",
+    "native:[intro instruction attack]",
+    "native:[intro help]",
+    "native:[intro help scout]",
+    "native:[intro help build]",
+    "native:[intro help supply]",
+    "native:[intro help grow]",
+    "native:[intro help attack]",
+    "native:[intro hint scout]",
+    "native:[intro hint build]",
+    "native:[intro hint supply]",
+    "native:[intro hint grow]",
+    "native:[intro hint attack]",
+    "native:[intro hint no suppliers]",
+    "native:[intro hint retry]",
+    "native:[intro complete]",
+    "native:[intro complete body]",
+    "native:[intro play again]",
+    "native:[intro restart]",
+    "native:[intro restart body]",
+    "native:[intro help touch scout]",
+    "native:[intro help touch build]",
+    "native:[intro help touch supply]",
+    "native:[intro help touch grow]",
+    "native:[intro help touch attack]",
+    "native:[intro show destination]",
+    "native:[intro scout destination]",
+    "native:[intro compact scout]",
+    "native:[intro compact build]",
+    "native:[intro compact supply]",
+    "native:[intro compact grow]",
+    "native:[intro compact attack]",
+    "native:[lesson healing title]",
+    "native:[lesson healing briefing]",
+    "native:[lesson healing complete]",
+    "native:[lesson healing build hint]",
+    "native:[lesson healing build title]",
+    "native:[lesson healing build instruction]",
+    "native:[lesson healing build help]",
+    "native:[lesson healing build marker]",
+    "native:[lesson healing heal hint]",
+    "native:[lesson healing heal title]",
+    "native:[lesson healing heal instruction]",
+    "native:[lesson healing heal help]",
+    "native:[lesson healing heal marker]",
+    "native:[lesson walking-training title]",
+    "native:[lesson walking-training briefing]",
+    "native:[lesson walking-training complete]",
+    "native:[lesson walking-training build hint]",
+    "native:[lesson walking-training build title]",
+    "native:[lesson walking-training build instruction]",
+    "native:[lesson walking-training build help]",
+    "native:[lesson walking-training build marker]",
+    "native:[lesson walking-training train hint]",
+    "native:[lesson walking-training train title]",
+    "native:[lesson walking-training train instruction]",
+    "native:[lesson walking-training train help]",
+    "native:[lesson swimming title]",
+    "native:[lesson swimming briefing]",
+    "native:[lesson swimming complete]",
+    "native:[lesson swimming build hint]",
+    "native:[lesson swimming build title]",
+    "native:[lesson swimming build instruction]",
+    "native:[lesson swimming build help]",
+    "native:[lesson swimming build marker]",
+    "native:[lesson swimming train hint]",
+    "native:[lesson swimming train title]",
+    "native:[lesson swimming train instruction]",
+    "native:[lesson swimming train help]",
+    "native:[lesson swimming water-job hint]",
+    "native:[lesson swimming water-job title]",
+    "native:[lesson swimming water-job instruction]",
+    "native:[lesson swimming water-job help]",
+    "native:[lesson swimming water-job marker]",
+    "native:[lesson schools title]",
+    "native:[lesson schools briefing]",
+    "native:[lesson schools complete]",
+    "native:[lesson schools build hint]",
+    "native:[lesson schools build title]",
+    "native:[lesson schools build instruction]",
+    "native:[lesson schools build help]",
+    "native:[lesson schools build marker]",
+    "native:[lesson schools learn hint]",
+    "native:[lesson schools learn title]",
+    "native:[lesson schools learn instruction]",
+    "native:[lesson schools learn help]",
+    "native:[lesson upgrades title]",
+    "native:[lesson upgrades briefing]",
+    "native:[lesson upgrades complete]",
+    "native:[lesson upgrades upgrade hint]",
+    "native:[lesson upgrades upgrade title]",
+    "native:[lesson upgrades upgrade instruction]",
+    "native:[lesson upgrades upgrade help]",
+    "native:[lesson upgrades upgrade marker]",
+    "native:[lesson upgrades train hint]",
+    "native:[lesson upgrades train title]",
+    "native:[lesson upgrades train instruction]",
+    "native:[lesson upgrades train help]",
+    "native:[lesson fortifications title]",
+    "native:[lesson fortifications briefing]",
+    "native:[lesson fortifications complete]",
+    "native:[lesson fortifications tower hint]",
+    "native:[lesson fortifications tower title]",
+    "native:[lesson fortifications tower instruction]",
+    "native:[lesson fortifications tower help]",
+    "native:[lesson fortifications tower marker]",
+    "native:[lesson fortifications walls hint]",
+    "native:[lesson fortifications walls title]",
+    "native:[lesson fortifications walls instruction]",
+    "native:[lesson fortifications walls help]",
+    "native:[lesson fortifications walls marker]",
+    "native:[lesson fortifications supply hint]",
+    "native:[lesson fortifications supply title]",
+    "native:[lesson fortifications supply instruction]",
+    "native:[lesson fortifications supply help]",
+    "native:[lesson fortifications supply marker]",
+    "native:[lesson fortifications hold hint]",
+    "native:[lesson fortifications hold title]",
+    "native:[lesson fortifications hold instruction]",
+    "native:[lesson fortifications hold help]",
+    "native:[lesson fortifications hold marker]",
+    "native:[lesson defensive-tactics title]",
+    "native:[lesson defensive-tactics briefing]",
+    "native:[lesson defensive-tactics complete]",
+    "native:[lesson defensive-tactics scout hint]",
+    "native:[lesson defensive-tactics scout title]",
+    "native:[lesson defensive-tactics scout instruction]",
+    "native:[lesson defensive-tactics scout help]",
+    "native:[lesson defensive-tactics scout marker]",
+    "native:[lesson defensive-tactics guard hint]",
+    "native:[lesson defensive-tactics guard title]",
+    "native:[lesson defensive-tactics guard instruction]",
+    "native:[lesson defensive-tactics guard help]"
+  ],
+  "findings": [
+    {
+      "id": "native:[intro try]",
+      "severity": "minor",
+      "proposed": "เริ่ม​บทแนะนำ",
+      "reason": "Use same introduction name as its menu.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro instruction scout]",
+      "severity": "minor",
+      "proposed": "เปิด​เมนู​ธง และ​วาง​ธงสำรวจ​ไว้​เหนือ​ผืน​หิน​ทาง​ทิศตะวันออก​ของ​อาณานิคม​ของ​คุณ มอบหมาย​นักสำรวจ​หนึ่ง​ตัว แล้ว​เฝ้าดู​นักสำรวจ​เดินทาง​ไป​ยัง​ธง​นั้น",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro instruction attack]",
+      "severity": "minor",
+      "proposed": "หา​รัง​ศัตรู​ถัดไป​ทาง​ตะวันออก ใช้​ธงรบ​ชี้​เป้า​ให้​นักรบ​โจมตี เปิด​ช่วยเหลือ​ได้​หาก​ต้อง​การทบทวน",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help scout]",
+      "severity": "minor",
+      "proposed": "ใช้​แผนที่​ย่อ​เลื่อน​ไป​ตะวันออก​เพื่อ​หา​กอง​หิน เลือก​ธงสำรวจ​ใน​ธง วาง​บน​หิน แล้ว​กดปุ่ม​เมาส์​รอง​เพื่อ​ออกจาก​โหมด​วาง เลือก​ธง​และ​กำหนด​นักสำรวจ 1 ตัว ธง​ร้องขอ​ยูนิต ไม่​ได้​ย้าย​ยูนิต​ทันที นักสำรวจ​อาจ​หยุด​กิน​อาหาร",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help supply]",
+      "severity": "minor",
+      "proposed": "งาน​ก่อสร้าง​กับ​งาน​ส่ง​เสบียง​มี​จำนวน​คนงาน​เป้าหมาย​แยกกัน เลือก​โรงเตี๊ยม​ที่​สร้าง​เสร็จ จากนั้น​เพิ่ม​คนงาน​ใช้งาน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​แปลง​ข้าวสาลี​ไว้",
+      "reason": "Remove repeated แล้วแล้ว and clarify food, not building, runs out.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help attack]",
+      "severity": "minor",
+      "proposed": "เปิด​ธง เลือก​ธงรบ แล้ว​วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน ออกจาก​โหมด​วาง​ด้วย​ปุ่ม​เมาส์​รอง​ก่อน​เลือก​ธง แล้ว​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​นักรบ​หมด​ให้​สร้าง​เพิ่ม​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro hint scout]",
+      "severity": "minor",
+      "proposed": "ธงสำรวจ​ตรง​กอง​หิน​ตะวันออก​ต้อง​กำหนด​นักสำรวจ​ไว้ ตรวจ​เป้าหมาย​และ​จำนวน​นักสำรวจ",
+      "reason": "Requested explorer count belongs to flag, not an explorer being assigned a flag object.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro hint attack]",
+      "severity": "minor",
+      "proposed": "ตรวจสอบ​ธงรบ จำนวน​นักรบ​ที่​ต้องการ และ​เสบียงอาหาร นักรบ​ของ​คุณ​ต้องการ​เวลา​ใน​การ​เดินทาง​และ​โจมตี",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro hint no suppliers]",
+      "severity": "major",
+      "proposed": "โรงเตี๊ยม​ใหม่​หรือ​พื้นที่​ก่อสร้าง​มี​จำนวน​คนงาน​เป้าหมาย​เป็น 0 เลือก​อาคาร​แล้ว​กำหนด​คนงาน",
+      "reason": "Select the building/site, not an unrelated options item.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro complete]",
+      "severity": "minor",
+      "proposed": "จบ​บทแนะนำ",
+      "reason": "Consistent introduction name.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro complete body]",
+      "severity": "minor",
+      "proposed": "คุณ​กำหนด​งาน​ให้​ยูนิต​ที่​ทำงาน​เอง เพิ่ม​อาหาร ขยาย​อาณานิคม และ​จัด​การบุก​แล้ว เรียน​เรื่อง​การ​ฝึก​ทักษะ การ​อัปเกรด และ​การ​ป้องกัน​ต่อ​ใน​บทเรียน​ฝึกสอน หรือ​กลับ​เมนูหลัก​เพื่อ​เริ่ม​แมตช์",
+      "reason": "Remove ฝึกการฝึกฝน duplication and clarify autonomous units.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro restart body]",
+      "severity": "minor",
+      "proposed": "เริ่ม​บทแนะนำ​ใหม่​จาก​อาณานิคม​ที่​เตรียม​ไว้​หรือไม่? ความคืบหน้า​ที่​ยัง​ไม่​บันทึก​จะ​หายไป",
+      "reason": "Canonical colony and introduction terms; neutral confirmation question.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help touch scout]",
+      "severity": "minor",
+      "proposed": "ลาก​พื้นที่ว่าง​เพื่อ​เลื่อน​มุมมอง​ก่อน​วาง​ธง หา​กอง​หิน​ทาง​ตะวันออก เปิด​ธง เลือก​ธงสำรวจ วาง​บน​หิน​แล้ว​ยืนยัน เลือก​ธง​แล้ว​ตั้ง​จำนวน​นักสำรวจ 1 ตัว ยูนิต​เดินทาง​เอง​และ​อาจ​หยุด​กิน​อาหาร",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help touch supply]",
+      "severity": "major",
+      "proposed": "เลือก​โรงเตี๊ยม​ใหม่​ที่​เสร็จ​แล้ว​และ​เพิ่ม​จำนวน​คนงาน​ที่​มอบหมาย งาน​ก่อสร้าง​กับ​ส่ง​เสบียง​มี​เป้าหมาย​แยกกัน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​ใน​อาคาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​ข้าวสาลี​ไว้",
+      "reason": "Source says food runs out, not the building itself disappears; concise supply explanation.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro help touch attack]",
+      "severity": "minor",
+      "proposed": "เปิด​ธง เลือก​ธงรบ วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน​แล้ว​ยืนยัน เลือก​ธง​และ​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​ไม่​มี​นักรบ​ให้​สร้าง​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro compact scout]",
+      "severity": "minor",
+      "proposed": "ธง → ธงสำรวจ วาง​ธง​ลง​บน​ก้อนหิน กำหนด​นักสำรวจ 1 ตัว",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro compact attack]",
+      "severity": "critical",
+      "proposed": "ธง → ธงรบ วาง​ทับ​รัง​ศัตรู กำหนด​นักรบ",
+      "reason": "Correct remaining Swarm-as-group mistranslation; marker targets birth building.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson healing briefing]",
+      "severity": "minor",
+      "proposed": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว อาณานิคม​เริ่ม​พร้อม​อาหาร โดย​มี​คนงาน​บาดเจ็บ 1 ตัว",
+      "reason": "Canonical colony and creature classifier.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training briefing]",
+      "severity": "minor",
+      "proposed": "สร้าง​สนามวิ่ง แล้ว​ดู​คนงาน​เดิม​ฝึก​จน​เดิน​เร็ว​ขึ้น",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training build hint]",
+      "severity": "minor",
+      "proposed": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ มอบหมาย​คนงาน สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ใน​ภายหลัง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training build title]",
+      "severity": "minor",
+      "proposed": "สร้าง​สนามวิ่ง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training build instruction]",
+      "severity": "minor",
+      "proposed": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ และ​มอบหมาย​คนงานก่อสร้าง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training build help]",
+      "severity": "minor",
+      "proposed": "สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ในอนาคต",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training build marker]",
+      "severity": "minor",
+      "proposed": "สร้าง​สนามวิ่ง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training train hint]",
+      "severity": "minor",
+      "proposed": "เปิด​ทางเข้า​สนามวิ่ง​แล้ว​รอ​ให้​คนงาน​ฝึก​จน​เสร็จ ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ไว้​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson walking-training train instruction]",
+      "severity": "minor",
+      "proposed": "รักษา​พื้นที่​สนามวิ่ง​ให้​สามารถ​เข้าถึง​ได้ และ​ให้​คนงาน​ฝึก​จน​เสร็จสิ้น",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson swimming title]",
+      "severity": "major",
+      "proposed": "การ​ว่ายน้ำ​และ​ทรัพยากร​ใน​น้ำ",
+      "reason": "Water resources means materials in water, not water sources.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson swimming build help]",
+      "severity": "major",
+      "proposed": "เว้น​ที่ว่าง​รอบ​สระว่ายน้ำ คนงาน​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ไม่​ได้​จนกว่า​จะ​ว่ายน้ำ​เป็น",
+      "reason": "Space is around constructed training pool, not the natural pond.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson swimming train instruction]",
+      "severity": "minor",
+      "proposed": "รอ​ให้​คนงาน​เดิม​ฝึก​ว่ายน้ำ​จน​เสร็จ",
+      "reason": "Existing worker rather than a new unit.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson swimming water-job hint]",
+      "severity": "minor",
+      "proposed": "สร้าง​โรงเรียน​ใกล้​กับ​อาณานิคม มอบหมาย​ให้​คนงานก่อสร้าง​ไปหา​ไม้​และ​สาหร่าย สาหร่าย​จะ​เจริญเติบโต​ใน​บ่อ นัก​ว่ายน้ำ​ที่​ฝึกฝน​มา​แล้วจะ​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ตั้ง​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson schools briefing]",
+      "severity": "minor",
+      "proposed": "ใช้​คนงาน​ที่​ว่ายน้ำ​ได้​ซึ่ง​เตรียม​ไว้​สร้าง​โรงเรียน แล้ว​ดู​คนงาน​ฝึก​ก่อสร้าง​และ​เก็บเกี่ยว",
+      "reason": "Game workers with swimming skill, natural instruction wording.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson schools build instruction]",
+      "severity": "major",
+      "proposed": "สร้าง​โรงเรียน​ใน​พื้นที่​โล่ง แล้ว​มอบหมาย​คนงาน​ก่อสร้าง",
+      "reason": "Complete truncated มอบหมายงานก่อสร้างให้ sentence with actual builders.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades briefing]",
+      "severity": "minor",
+      "proposed": "ใช้​แรง​งานฝีมือ​ที่​ได้รับ​การเตรียมพร้อม​เพื่อ​ยกระดับ​สนามวิ่ง​และ​ฝึกฝน​ให้​ก้าว​ข้าม​ระดับ​แรก",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades complete]",
+      "severity": "minor",
+      "proposed": "คุณ​อัปเกรด​อาคาร​และ​ใช้​การ​ฝึก​ที่​ดีขึ้น​แล้ว การ​อัปเกรด​ถัดไป​ทำ​วงจร​เดิม​ด้วย​โรงเรียน​ระดับสูง ทักษะ วัสดุ และ​พื้นที่​ที่​เพียงพอ จนถึง​ระดับ 3",
+      "reason": "Required building room, not terrain quality improving upgrades.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade hint]",
+      "severity": "minor",
+      "proposed": "เลือก​สนามวิ่ง เลือก \"อัปเกรด\" และ​มอบหมาย​คนงานก่อสร้าง​ที่​มี​ทักษะ คนงาน​เหล่านี้​ได้​เรียนรู้​ทักษะ​ระดับ​แรก​ของ​โรงเรียน​มา​แล้ว การ​อัปเกรด​ต้องการ​พื้นที่​และ​วัสดุ​เพิ่มเติม และ​จะ​ขัดจังหวะ​การ​ให้บริการ​ของ​อาคาร การ​อัปเกรด​ที่​ถูก​ยกเลิก​จะ​ไม่​นับ​รวม",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade title]",
+      "severity": "minor",
+      "proposed": "อัปเกรด​สนามวิ่ง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade instruction]",
+      "severity": "minor",
+      "proposed": "เลือก​สนามวิ่ง → อัปเกรด แล้ว​มอบหมาย​คนงาน​ก่อสร้าง​ที่​มี​ทักษะ",
+      "reason": "Preserve skilled-builder requirement explicitly.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade help]",
+      "severity": "minor",
+      "proposed": "คนงาน​เหล่านี้​เรียน​ทักษะ​โรงเรียน​ระดับ​แรก​แล้ว การ​อัปเกรด​ต้อง​ใช้​พื้นที่​และ​วัสดุ​เพิ่ม และ​หยุด​บริการ​ของ​อาคาร​ชั่วคราว การ​อัปเกรด​ที่​ยกเลิก​ไม่​นับ",
+      "reason": "First skill level, not generic school-level education; actual upgrade terminology.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade marker]",
+      "severity": "minor",
+      "proposed": "อัปเกรด​สนามวิ่ง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades train hint]",
+      "severity": "minor",
+      "proposed": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว การ​อัปเกรด​ที่​เสร็จ​เพิ่ม​ระดับ​การ​ฝึก​ที่​มี อาคาร​ระดับสูง​ต้อง​ใช้​ทักษะ​ก่อสร้าง​สูง​ขึ้น ระดับ​ที่​แสดง​เริ่ม​จาก 1",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades train instruction]",
+      "severity": "minor",
+      "proposed": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson upgrades train help]",
+      "severity": "minor",
+      "proposed": "การ​อัปเกรด​ที่​เสร็จ​สมบูรณ์​จะ​ช่วย​เพิ่ม​ระดับ​การฝึกฝน​ที่​มี​อยู่ ระดับ​อาคาร​ที่สูง​ขึ้น​ต้องการ​ทักษะ​การ​ก่อสร้าง​ที่สูง​ขึ้น โดย​ระดับ​ที่​แสดง​ให้​ผู้เล่น​เห็นจะ​เริ่มต้น​ที่​ระดับ 1",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications complete]",
+      "severity": "minor",
+      "proposed": "แนว​ป้องกันที่​มี​เสบียง​หยุด​การบุก​ทดสอบ​ได้ หอคอย​ต้อง​มี​หิน และ​กำแพง​ต้อง​เว้น​ช่อง​ให้​คนงาน​ส่ง​เสบียง​เข้าถึง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications walls hint]",
+      "severity": "major",
+      "proposed": "สร้าง​กำแพง​อย่าง​น้อย 2 ส่วน​ใกล้​หอคอย เว้น​ทางเข้า​ตะวันตก​ไว้ กำแพง​ใช้​หิน​และ​ต้อง​กำหนด​คนงาน​ให้​แต่ละ​จุด​ก่อสร้าง อย่า​ล้อม​ปิด​หอคอย เพราะ​คนงาน​ส่ง​เสบียง​ต้อง​มี​ทางเข้า ช่องทาง​ตะวันตก​ที่​ทำเครื่องหมาย​ต้อง​โล่ง",
+      "reason": "Each wall site needs an assigned worker target, not an autonomous requirement to recruit its own employees.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications supply help]",
+      "severity": "minor",
+      "proposed": "หอคอย​ที่​สร้าง​เสร็จ​ต้อง​กำหนด​จำนวน​คนงาน​ส่ง​เสบียง​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงาน​ก่อสร้าง",
+      "reason": "Clear separate operating and construction staffing targets.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications hold title]",
+      "severity": "minor",
+      "proposed": "ทดสอบ​แนว​ป้องกัน",
+      "reason": "Towers and walls under test, not a distinct fortress building.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications hold instruction]",
+      "severity": "major",
+      "proposed": "นักรบ​ทดสอบ​กำลัง​มา ส่ง​เสบียง​ให้​หอคอย​และ​เปิดทาง​ให้​คนงาน​เข้าถึง",
+      "reason": "Accessible for suppliers, not an ambiguous pronoun suggesting ensure enemy reaches tower.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson fortifications hold marker]",
+      "severity": "minor",
+      "proposed": "ทดสอบ​แนว​ป้องกัน",
+      "reason": "Same marker as title.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson defensive-tactics title]",
+      "severity": "minor",
+      "proposed": "เขต​ป้องกัน​และ​ยุทธวิธี​ธง",
+      "reason": "Canonical Guard-zone term.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout hint]",
+      "severity": "minor",
+      "proposed": "วาง​ธงสำรวจ​ที่​ฐาน​ศัตรู กำหนด​นักสำรวจ 1 ตัว ธง​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​เปิดเผย​ความเคลื่อนไหว​ผ่าน​หมอกสงคราม​และ​อาจ​หยุด​กิน​อาหาร",
+      "reason": "Canonical units and indirect flag assignment.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout instruction]",
+      "severity": "minor",
+      "proposed": "ปัก​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู และ​ส่ง​นักสำรวจ 1 ตัว​ไป​ประจำการ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout help]",
+      "severity": "minor",
+      "proposed": "ธง​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​เปิดเผย​ความเคลื่อนไหว​ผ่าน​หมอกสงคราม​และ​อาจ​หยุด​กิน​อาหาร",
+      "reason": "Remove stray space after noun normalization; concise autonomous behavior.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard instruction]",
+      "severity": "minor",
+      "proposed": "วาด​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​เข้าถึง",
+      "reason": "Canonical warrior/classifier; zone painted area rather than only an outline.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[library GL only]",
+      "reason": "GL is the technical graphics-renderer acronym; Thai restriction term is translated."
+    }
+  ],
+  "review_basis": "Read every actual round2 target and every corresponding editor/meaning disagreement; frozen English source was read in initial independent pass. Inspected candidate word boundaries. Explicit final proposals preserve all reviewed hints.",
+  "status": "final-editor-pass-with-findings"
+}

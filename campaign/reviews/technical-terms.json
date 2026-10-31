@@ -1,0 +1,145 @@
+{
+  "reviewer": "thai_brief",
+  "certification": "Primary-source terminology check by agent; no native-human certification.",
+  "sources": [
+    {
+      "url": "https://coined-word.orst.go.th/",
+      "publisher": "สำนักงานราชบัณฑิตยสภา",
+      "access": "Read live HTML form and followed its read-only POST lookup endpoint. book_id=0 is required by actual form; initial empty book_id returned no results and is explicitly superseded by successful exact requests.",
+      "lookups": [
+        {
+          "word": "drumlin",
+          "url": "https://coined-word.orst.go.th/func_lookup.php",
+          "request": {
+            "word": "drumlin",
+            "funcName": "lookupWord",
+            "book_id": "0",
+            "status": "lookup",
+            "loc": ""
+          },
+          "status": 200,
+          "sha256": "8c581c45647b0eff28126181b1255962b6df52f09f6f8aa4e6267cf338c1c95c",
+          "text": "ผลการค้นหา \" drumlin \" ภูมิศาสตร์ drumlin เนินดรัมลิน ปฐพีศาสตร์ drumlin ดรัมลิน"
+        },
+        {
+          "word": "moraine",
+          "url": "https://coined-word.orst.go.th/func_lookup.php",
+          "request": {
+            "word": "moraine",
+            "funcName": "lookupWord",
+            "book_id": "0",
+            "status": "lookup",
+            "loc": ""
+          },
+          "status": 200,
+          "sha256": "3503aa76cde561e5493b2e673bec35ae3484d539704fb17cf3ca4991e8ba4ed4",
+          "text": "ผลการค้นหา \" moraine \" ภูมิศาสตร์ moraine กองตะกอนธารน้ำแข็ง ปฐพีศาสตร์ moraine กองตะกอนธารน้ำแข็ง ป่าไม้ moraine กองตะกอนธารน้ำแข็ง"
+        },
+        {
+          "word": "gradient",
+          "url": "https://coined-word.orst.go.th/func_lookup.php",
+          "request": {
+            "word": "gradient",
+            "funcName": "lookupWord",
+            "book_id": "0",
+            "status": "lookup",
+            "loc": ""
+          },
+          "status": 200,
+          "sha256": "6908f70abb399a4bd7613a52caea36c1f61ec83646d7beaa17008404f1cb156a",
+          "text": "ผลการค้นหา \" gradient \" วิทยาศาสตร์ gradient ๑. ความชัน มีความหมายเหมือนกับ slope ๒. เกรเดียนต์ ภูมิศาสตร์ gradient ความชัน คณิตศาสตร์ gradient ๑. ความชัน มีความหมายเหมือนกับ slope ๒. เกรเดียนต์ [ตัวดำเนินการ] ปฐพีศาสตร์ gradient ความชัน ป่าไม้ gradient ความลาดชัน มีความหมายเหมือนกับ grade"
+        },
+        {
+          "word": "portage",
+          "url": "https://coined-word.orst.go.th/func_lookup.php",
+          "request": {
+            "word": "portage",
+            "funcName": "lookupWord",
+            "book_id": "0",
+            "status": "lookup",
+            "loc": ""
+          },
+          "status": 200,
+          "sha256": "11915cd5c629f56058b09e7e889b85a4b7ff703333a3252ee6e0ce6eabbb7742",
+          "text": "ผลการค้นหา \" portage \" ภูมิศาสตร์ portage การยกเรือข้าม; ท่ายกเรือข้าม"
+        }
+      ]
+    },
+    {
+      "url": "https://library.dmr.go.th/elib/cgi-bin/opacexe.exe?bid=35023&db=Main&mmid=10654&op=mmvw&sid=undefined&skin=u&usid=undefined",
+      "publisher": "DMR library / Chulalongkorn University Press",
+      "work": "อุทกธรณีวิทยา Hydrogeology, กิจการ พรหมมา, 2555",
+      "access": "Downloaded actual17-page scanned PDF; visually inspected titlePDFpage3 andcontentsPDFpage10.",
+      "short_exact_passage": "เกรเดียนต์",
+      "location": "PDFpage10, section4.1.3 chaptertitle on printedp87",
+      "response_sha256": "eb6c4041a113c1a86f7f0e0a38b2477dd2c2571c14aad085d6871841e0003868",
+      "interpretation": "Independent university-published technical spelling corroborates RoyalSociety เกรเดียนต์."
+    },
+    {
+      "url": "https://nsidc.org/learn/cryosphere-glossary/drumlin",
+      "publisher": "NSIDC, University of Colorado Boulder",
+      "access": "Opened actual glossary page",
+      "short_exact_passage": "remnant elongated hills formed by historical glacial action",
+      "interpretation": "Geographic hills, consistent with DrumlinFieldGenerator oval islands."
+    }
+  ],
+  "rejected_as_authority": [
+    {
+      "url": "https://dmr.go.th/wp-content/uploads/2023/01/อภิธานศัพท์ธรณีวิทยาเล่ม-1.pdf",
+      "reason": "Search excerpts available but direct retrieval returned403HTML; not claimed as a fully consulted PDF. RoyalSociety successful live results supersede need for this."
+    },
+    {
+      "url": "https://ssrudlp.ssru.ac.th/data-file/teacher_work/file/5caa887ef8a18cf7d08dce9aefb56a40.pdf",
+      "reason": "Open failed; no detailedattestation claimed."
+    },
+    {
+      "url": "https://hmong.in.th/wiki/Lateral_moraine",
+      "reason": "Machine-translated wiki mirror, not authoritative Thai nomenclature."
+    }
+  ],
+  "terms": [
+    {
+      "english": "drumlin",
+      "actual_thai": "ดรัมลิน",
+      "verdict": "attested",
+      "rationale": "RoyalSociety geography gives เนินดรัมลิน and soilscience ดรัมลิน. Current spelling is valid; keep syllable and initialดร intact.",
+      "code_context": "src/map/generator/generators/DrumlinFieldGenerator.cpp:30 describes longovalhills pointing with ancienticeflow andwaterhollows; titleทุ่งดรัมลิน is acceptable, controls spacing/length refer to hills."
+    },
+    {
+      "english": "moraine",
+      "actual_thai": "โมเรน",
+      "verdict": "replace descriptive control",
+      "rationale": "RoyalSociety geography/soil/forestry consistently uses กองตะกอนธารน้ำแข็ง. Current โมเรน is not established by primarylookup; it is an explanatory feature control, not a required proper name. Use เนินตะกอนธารน้ำแข็ง for Morainehummocks.",
+      "code_context": "src/map/generator/generators/BraidedRiverGenerator.cpp:64,198,812 describes brokenstonehummocks alongterraceedges. No actualglacier in game required; terrain is geological analogy."
+    },
+    {
+      "english": "portage",
+      "actual_thai": "พอร์เทจ",
+      "verdict": "acceptable proper generator name only",
+      "rationale": "RoyalSociety normativegeography is การยกเรือข้าม/ท่ายกเรือข้าม, so พอร์เทจ is not claimed normativegeographicThai. PortageLakes is specificproceduralgamegenerator title, retainingrecognizable transliteration is acceptable. Actualcontrols anderrors should describe drywoodlandshortcut/swimming, not implyboatsimulation.",
+      "code_context": "src/map/generator/generators/PortageLakesGenerator.cpp:29,649 describes crookedlakes/drywoodedridges; cuttingridge openspublicshortcut, swimminga differentconnection. findPortage leavesexactlydepthrowsofwood."
+    },
+    {
+      "english": "gradient",
+      "actual_thai": "เกรเดียนต์",
+      "verdict": "attested, retain canonical",
+      "rationale": "RoyalSociety math/science uses เกรเดียนต์ foroperator; geographicgradientmeansความชัน. Softwarefieldpathcomputation can use established technical loan. UniversitypublishedDMRlibrarytext independently corroborates spelling. กราเดียนต์ is not selected."
+    }
+  ],
+  "findings": [
+    {
+      "id": "native:[Moraine hummocks]",
+      "severity": "minor",
+      "proposed": "เนิน​ตะกอน​ธารน้ำแข็ง",
+      "reason": "Primary RoyalSociety moraine=กองตะกอนธารน้ำแข็ง; explanatory control refers to hummocks, use descriptive Thai rather than unattested โมเรน. This supersedes earlier lexicalbreak-onlyproposal."
+    },
+    {
+      "id": "native:[Portage depth]",
+      "severity": "minor",
+      "proposed": "ความลึก​แนว​ป่า​ที่​ต้อง​ถาง",
+      "reason": "Actualdepth is numberofstructuralwoodrows left blocking dryshortcut (findPortage comment649 and loop721), not waterdepth or generaltransportdepth. Keep properPortageLakes title separately."
+    }
+  ],
+  "unresolved_uncertainty": [],
+  "limits": "No assertion that transliterated proper generator title พอร์เทจ is normative geographic Thai. Technical terms now have primarylookup evidence; actual revised catalog still needs fresh candidate approval."
+}

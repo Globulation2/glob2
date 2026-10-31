@@ -1,0 +1,562 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "a68db13acf803010cc41c462a3b51c5c9e58dec9119bee9f743816cbf0a5881d",
+  "edited_keys": [
+    "native:[settings Right]",
+    "native:[settings Left]",
+    "native:[settings Back]",
+    "native:[settings Save the game automatically about every minute.]",
+    "native:[No other players have editable diplomatic settings in this match.]",
+    "native:[settings %0 · %1 Units]",
+    "native:[settings Level %0]",
+    "native:[settings Match the desktop %0]",
+    "native:[settings Current display %0 %1 %2 %3]",
+    "native:[settings Experiments]",
+    "native:[settings Custom AIs]",
+    "native:[settings Try features we are still testing. They can change balance and pacing.]",
+    "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+    "native:[settings No experiments in this build.]",
+    "native:[settings Touch scrolling]",
+    "native:[settings List momentum]",
+    "native:[settings How far lists and panels keep scrolling after a flick.]",
+    "native:[settings List bounce]",
+    "native:[settings How much lists and panels stretch past their ends and spring back.]",
+    "native:[settings Map momentum]",
+    "native:[settings How far the map keeps panning after a flick.]",
+    "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+    "native:[settings Artwork]",
+    "native:[settings Original]",
+    "native:[settings High resolution]",
+    "native:[settings Clouds]",
+    "native:[settings Show cloud cover above the map.]",
+    "native:[settings Cloud shadows]",
+    "native:[settings Show cloud shadows on the ground independently of cloud cover.]",
+    "native:[settings Building particles]",
+    "native:[settings Show smoke and other building particles.]",
+    "native:[settings Magic effects]",
+    "native:[settings Choose animated magic effects or a simple visible effect.]",
+    "native:[settings Simple]",
+    "native:[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+    "native:[settings Interface appearance]",
+    "native:[settings Panels]",
+    "native:[settings Choose translucent or opaque interface panels.]",
+    "native:[settings Opaque]",
+    "native:[settings Translucent]",
+    "native:[settings Advanced graphics]",
+    "native:[settings Path lines]",
+    "native:[settings Choose translucent or opaque unit path lines.]",
+    "native:[settings Smooth progress indicators]",
+    "native:[settings Smooth the moving edges of progress indicators.]",
+    "native:[settings Decorative interface animation]",
+    "native:[settings Animate victory artwork. Reduced motion also disables this animation.]",
+    "native:[settings Smooth unit motion]",
+    "native:[settings Experimental: move and animate units between game ticks.]",
+    "native:[settings Smooth fog of war]",
+    "native:[settings Fade the map into and out of the fog of war gradually.]",
+    "native:[settings Adaptive zoom detail]",
+    "native:[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+    "native:[settings Text size]",
+    "native:[settings Enlarge interface text without changing the map scale.]",
+    "native:[settings Online]",
+    "native:[settings Another server]",
+    "native:[settings Check]",
+    "native:[settings Checking…]",
+    "native:[settings Choose which server you play on and how you sign in to it.]",
+    "native:[settings Connecting…]",
+    "native:[settings Could not reach this server.]",
+    "native:[settings Display name saved.]",
+    "native:[settings Display name]",
+    "native:[settings Download or delete my data]",
+    "native:[settings Enter an https:// address.]",
+    "native:[settings Forget]",
+    "native:[settings Guests keep a generated name; sign in to choose one.]",
+    "native:[settings Link]",
+    "native:[settings Not a Globulation 2 server.]",
+    "native:[settings Not linked]",
+    "native:[settings Not signed in.]",
+    "native:[settings Open]",
+    "native:[settings Opens your account page on %0.]",
+    "native:[settings Run by a community, a club or yourself. Paste its address.]",
+    "native:[settings Save]",
+    "native:[settings Server]",
+    "native:[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+    "native:[settings Sign in with: %0 · queues: %1]",
+    "native:[settings Sign out on this device]",
+    "native:[settings Sign out]",
+    "native:[settings Switch to this server]",
+    "native:[settings The last sign-in method can't be unlinked.]",
+    "native:[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+    "native:[settings Unlink]",
+    "native:[settings Unlinking is done on the account page.]",
+    "native:[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+    "native:[settings Your account on %0]",
+    "native:[settings compatible with this version]",
+    "native:[settings connected]",
+    "native:[settings connecting…]",
+    "native:[settings guest]",
+    "native:[settings linked]",
+    "native:[settings plays another version]",
+    "native:[settings trusted]",
+    "native:[settings used before]",
+    "native:[settings you were %0 there]",
+    "native:[settings not connected]",
+    "native:[settings Open Play online to connect.]",
+    "native:[settings %0 is no longer linked.]",
+    "native:[settings Show colony skins]",
+    "native:[settings Turn off to use classic units, swarms and building colors on this device.]",
+    "native:[settings Hive Mind]",
+    "native:[settings Enable commander shortcuts]",
+    "native:[settings Command your colony without opening a menu.]",
+    "native:[settings Allow supervision for new commands]",
+    "native:[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+    "native:[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+    "native:[settings Commander account and credits]",
+    "native:[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+    "native:[settings Recording]",
+    "native:[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+    "native:[settings Record your games as MP4 videos with sound.]",
+    "native:[settings Recording uses the full rendered resolution at 30 FPS.]",
+    "native:[settings FFmpeg is ready.]",
+    "native:[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+    "native:[settings Check for FFmpeg again]",
+    "native:[settings Checking for FFmpeg…]",
+    "native:[settings Hotkey: %0. It also works in menus and the editor.]",
+    "native:[settings Change the hotkey]",
+    "native:[settings Recordings are saved in %0]",
+    "native:[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+    "native:[settings Music set]",
+    "native:[settings Random each match]",
+    "native:[Sign in through Online settings to like and favourite AIs.]",
+    "native:[music 2–5 minutes]",
+    "native:[music 5–15 minutes]",
+    "native:[music AI-generated]",
+    "native:[music All music]",
+    "native:[music All open licences]",
+    "native:[music Any duration]",
+    "native:[music Audition each mood for eight seconds]",
+    "native:[music Back]",
+    "native:[music Browse]",
+    "native:[music Building]",
+    "native:[music Calm]",
+    "native:[music Calm → Building → Combat]",
+    "native:[music Choose Building]",
+    "native:[music Choose Calm]",
+    "native:[music Choose Combat]",
+    "native:[music Choose ZIP]",
+    "native:[music Choose a music file.]",
+    "native:[music Combat]",
+    "native:[music Could not open this music set.]",
+    "native:[music Credits, downloads and reporting]",
+    "native:[music Downloading music…]",
+    "native:[music Export recovery files]",
+    "native:[music Fade duration]",
+    "native:[music File selection cancelled or failed.]",
+    "native:[music Import ZIP]",
+    "native:[music Import ZIP or three tracks]",
+    "native:[music Import music]",
+    "native:[music Import three tracks]",
+    "native:[music Includes AI-generated audio]",
+    "native:[music Install]",
+    "native:[music Install selected]",
+    "native:[music Installed]",
+    "native:[music Load more]",
+    "native:[music Loading music…]",
+    "native:[music Most downloaded]"
+  ],
+  "findings": [
+    {
+      "id": "native:[No other players have editable diplomatic settings in this match.]",
+      "severity": "major",
+      "proposed": "ไม่มีค่าการทูตของผู้เล่นอื่นที่แก้ไขได้ในแมตช์นี้",
+      "reason": "Settings of other players are uneditable; not a claim that those players lack edit permission.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings %0 · %1 Units]",
+      "severity": "minor",
+      "proposed": "%0 · ยูนิต %1 ตัว",
+      "reason": "Canonical unit noun/classifier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Current display %0 %1 %2 %3]",
+      "severity": "minor",
+      "proposed": "จอแสดงผลปัจจุบัน: %0 × %1 · %2 · %3",
+      "reason": "Monitor/display context.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "severity": "major",
+      "proposed": "การทดลองใช้กับเกมใหม่ที่คุณเริ่มหรือเป็นโฮสต์ ไม่ใช้กับภารกิจแคมเปญ เกมที่บันทึกไว้คงตัวเลือกทดลองตอนเริ่ม",
+      "reason": "Saved game preserves its initial experiment choices, not another game.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings List momentum]",
+      "severity": "major",
+      "proposed": "แรงเฉื่อยขณะเลื่อนรายการ",
+      "reason": "Scrolling inertia, not list of momenta.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings List bounce]",
+      "severity": "major",
+      "proposed": "แรงเด้งของรายการ",
+      "reason": "List overscroll bounce.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Map momentum]",
+      "severity": "minor",
+      "proposed": "แรงเฉื่อยขณะเลื่อนแผนที่",
+      "reason": "Explain map momentum.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "severity": "minor",
+      "proposed": "ความรู้สึกขณะเลื่อนด้วยสัมผัส: 0 ปิดเอฟเฟกต์ และ 50 เป็นค่าเริ่มต้น",
+      "reason": "Natural explanation of numeric controls.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Show smoke and other building particles.]",
+      "severity": "major",
+      "proposed": "แสดงควันและเอฟเฟกต์อนุภาคอื่นจากอาคาร",
+      "reason": "Visual particles, not necessarily building debris.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Choose animated magic effects or a simple visible effect.]",
+      "severity": "minor",
+      "proposed": "เลือกเอฟเฟกต์เวทมนตร์แบบเคลื่อนไหวหรือแบบเรียบง่ายที่มองเห็นได้",
+      "reason": "Magic in game, not stage conjuring; consistent effect spelling.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque interface panels.]",
+      "severity": "major",
+      "proposed": "เลือกแผงส่วนติดต่อแบบโปร่งแสงหรือทึบแสง",
+      "reason": "UI panels, not connection panels.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Smooth unit motion]",
+      "severity": "minor",
+      "proposed": "เคลื่อนที่ยูนิตอย่างนุ่มนวล",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Experimental: move and animate units between game ticks.]",
+      "severity": "major",
+      "proposed": "ทดลอง: แทรกการเคลื่อนที่และภาพเคลื่อนไหวยูนิตระหว่างทิกของเกม",
+      "reason": "Simulation ticks, not game rounds/turns.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Smooth fog of war]",
+      "severity": "minor",
+      "proposed": "หมอกสงครามแบบไล่ระดับ",
+      "reason": "Smooth visibility transitions, not flat terrain.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Adaptive zoom detail]",
+      "severity": "minor",
+      "proposed": "รายละเอียดตามระดับซูม",
+      "reason": "Adaptive detail rather than adjusting zoom itself.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "severity": "minor",
+      "proposed": "ลดรายละเอียดแถบ เขต ภูมิประเทศ และยูนิตเมื่อซูมออก และคงขนาดเล็กเมื่อซูมเข้า",
+      "reason": "Canonical units, concise adaptive-detail explanation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Choose which server you play on and how you sign in to it.]",
+      "severity": "minor",
+      "proposed": "เลือกเซิร์ฟเวอร์ที่เล่นและวิธีลงชื่อเข้าใช้",
+      "reason": "Canonical sign-in term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Enter an https:// address.]",
+      "severity": "critical",
+      "proposed": "ป้อนที่อยู่ https://",
+      "reason": "Preserve operational URL scheme exactly; provider inserted spaces into https://.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Guests keep a generated name; sign in to choose one.]",
+      "severity": "major",
+      "proposed": "ผู้เยี่ยมชมใช้ชื่อที่ระบบสร้าง ลงชื่อเข้าใช้เพื่อเลือกชื่อเอง",
+      "reason": "Software guest, not hotel guest.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Not signed in.]",
+      "severity": "minor",
+      "proposed": "ยังไม่ได้ลงชื่อเข้าใช้",
+      "reason": "Canonical sign-in.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Opens your account page on %0.]",
+      "severity": "major",
+      "proposed": "เปิดหน้าบัญชีของคุณบน %0 เพื่อลบบัญชีได้",
+      "reason": "Delete account, not unspecified data; %0 is server, not date.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "severity": "critical",
+      "proposed": "แสดงในห้อง แมตช์ และตารางอันดับ เปลี่ยนได้ครั้งหนึ่งต่อ 30 วัน",
+      "reason": "Rate limit, not automatic/required name changes every 30 days.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Sign in with: %0 · queues: %1]",
+      "severity": "minor",
+      "proposed": "ลงชื่อเข้าใช้ด้วย: %0 · คิว: %1",
+      "reason": "Canonical sign-in.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Sign out on this device]",
+      "severity": "minor",
+      "proposed": "ลงชื่อออกจากอุปกรณ์นี้",
+      "reason": "Consistent sign-out wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Sign out]",
+      "severity": "minor",
+      "proposed": "ลงชื่อออก",
+      "reason": "Consistent sign-out wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings The last sign-in method can't be unlinked.]",
+      "severity": "critical",
+      "proposed": "ยกเลิกการเชื่อมโยงวิธีลงชื่อเข้าใช้ที่เหลือเพียงวิธีเดียวไม่ได้",
+      "reason": "Last remaining authentication method, not the most recently used method.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "severity": "major",
+      "proposed": "คุณจะใช้บัญชีผู้เยี่ยมชมใหม่จนลงชื่อเข้าใช้อีกครั้ง บัญชีและประวัติแมตช์เดิมยังอยู่บนเซิร์ฟเวอร์",
+      "reason": "Guest identity reset, not becoming a new player; preserved remote data.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings connected]",
+      "severity": "minor",
+      "proposed": "เชื่อมต่อแล้ว",
+      "reason": "Completed connection state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings guest]",
+      "severity": "minor",
+      "proposed": "ผู้เยี่ยมชม",
+      "reason": "Consistent guest-account term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings linked]",
+      "severity": "minor",
+      "proposed": "เชื่อมโยงแล้ว",
+      "reason": "Completed linked state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings trusted]",
+      "severity": "major",
+      "proposed": "เชื่อถือแล้ว",
+      "reason": "User trust decision state, not an intrinsic guarantee of trustworthiness.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings you were %0 there]",
+      "severity": "major",
+      "proposed": "คุณเคยใช้ชื่อ %0 ที่นั่น",
+      "reason": "Previous display identity on server, not spatial position.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Open Play online to connect.]",
+      "severity": "critical",
+      "proposed": "เปิดเล่นออนไลน์เพื่อเชื่อมต่อ",
+      "reason": "Reference translated Play online menu item; remove leaked Open Play.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "severity": "major",
+      "proposed": "ปิดเพื่อใช้ยูนิต รัง และสีอาคารแบบคลาสสิกบนอุปกรณ์นี้",
+      "reason": "Swarm birth building, not an animal group.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Hive Mind]",
+      "severity": "major",
+      "proposed": "Hive Mind",
+      "reason": "Preserve official feature/product name rather than translate literal collective consciousness.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Enable commander shortcuts]",
+      "severity": "minor",
+      "proposed": "เปิดปุ่มลัดผู้ช่วยบัญชาการ",
+      "reason": "Keyboard bindings and assistant role.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Allow supervision for new commands]",
+      "severity": "minor",
+      "proposed": "อนุญาตการติดตามคำสั่งใหม่",
+      "reason": "Supervision of standing orders.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "severity": "critical",
+      "proposed": "ผู้ช่วยบัญชาการอาจติดตามคำสั่งต่อเนื่อง การติดตามใช้เครดิต ส่วนคำสั่งที่ติดตั้งแล้วทำงานต่อได้โดยไม่ใช้เครดิต",
+      "reason": "Follow-ups consume credits, not all execution of installed standing orders.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "severity": "minor",
+      "proposed": "ปุ่มลัดเริ่มต้น: Ctrl+Enter เพื่อสั่งการ Ctrl+Shift+Enter เพื่อหยุดงานบัญชาการ เปลี่ยนได้ในการควบคุม การ์ดคำสั่งต่อเนื่องมีปุ่มพักและยกเลิกแยกกัน",
+      "reason": "Consistent job/standing-order labels and translated control reference.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Commander account and credits]",
+      "severity": "minor",
+      "proposed": "บัญชีและเครดิตผู้ช่วยบัญชาการ",
+      "reason": "Assistant-service account, not a military human account.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "severity": "minor",
+      "proposed": "จัดการเครดิตและการซื้อในเบราว์เซอร์ ใช้ผู้ช่วยบัญชาการในแมตช์จัดอันดับได้",
+      "reason": "Explicit assistance permission and canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "severity": "minor",
+      "proposed": "บันทึกภาพเต็มความละเอียดที่เรนเดอร์ด้วย 30 FPS",
+      "reason": "Preserve rendered-resolution meaning.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Music set]",
+      "severity": "minor",
+      "proposed": "ชุดเพลง",
+      "reason": "Canonical music-set term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[settings Random each match]",
+      "severity": "minor",
+      "proposed": "เลือกสุ่มเพื่อเลือกชุดเพลงเมื่อเริ่มแต่ละแมตช์",
+      "reason": "Soundtrack set, not necessarily a single song; canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Sign in through Online settings to like and favourite AIs.]",
+      "severity": "major",
+      "proposed": "ลงชื่อเข้าใช้ผ่านการตั้งค่าออนไลน์เพื่อกดถูกใจ AI และเพิ่มในรายการโปรด",
+      "reason": "Like and Favourite are separate actions.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music All open licences]",
+      "severity": "major",
+      "proposed": "ทุกสัญญาอนุญาตแบบเปิด",
+      "reason": "Canonical content licence term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Building]",
+      "severity": "major",
+      "proposed": "ก่อสร้าง",
+      "reason": "Music mood during colony building, not a physical building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Calm → Building → Combat]",
+      "severity": "major",
+      "proposed": "สงบ → ก่อสร้าง → ต่อสู้",
+      "reason": "Three soundtrack moods, not selecting structures.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Choose Building]",
+      "severity": "critical",
+      "proposed": "เลือกเพลงก่อสร้าง",
+      "reason": "Choose audio track for construction mood, not a building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Choose Calm]",
+      "severity": "minor",
+      "proposed": "เลือกเพลงสงบ",
+      "reason": "Consistent audio-track action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Choose Combat]",
+      "severity": "minor",
+      "proposed": "เลือกเพลงต่อสู้",
+      "reason": "Consistent audio-track action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Choose ZIP]",
+      "severity": "critical",
+      "proposed": "เลือกไฟล์ ZIP",
+      "reason": "ZIP archive, not a postal code.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Credits, downloads and reporting]",
+      "severity": "major",
+      "proposed": "ข้อมูลผู้สร้าง การดาวน์โหลด และรายงาน",
+      "reason": "Attribution credits, not currency credits.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Import music]",
+      "severity": "major",
+      "proposed": "นำเข้าเพลง",
+      "reason": "Import is verb action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[music Install selected]",
+      "severity": "minor",
+      "proposed": "ติดตั้งรายการที่เลือก",
+      "reason": "Natural selected-install action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[settings Hive Mind]",
+      "reason": "Hive Mind is the official named assistant feature/product, not translatable generic prose."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

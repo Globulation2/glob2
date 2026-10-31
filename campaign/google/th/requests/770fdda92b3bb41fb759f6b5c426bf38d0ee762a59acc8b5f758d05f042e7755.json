@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "You cannot delete your own account here.",
+      "You declined a match; wait before queueing again.",
+      "You did not play in that match.",
+      "You have no seat in a running match with that id.",
+      "You have not shared any maps yet.",
+      "Your account",
+      "Your account cannot host rooms.",
+      "Your account cannot join rooms.",
+      "Your account cannot play.",
+      "Your account could not be refreshed. Please try again shortly.",
+      "Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+      "Your account is now linked",
+      "Your account was deleted",
+      "Your browser could not prepare this photo.",
+      "Your building",
+      "Your building drafts",
+      "Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+      "Your building workspace is full.",
+      "Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+      "Your changes were saved as a new skin.",
+      "Your collection has 100 designs. Delete an unused design to make room.",
+      "Your colony has a sound.",
+      "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "Your credit is reserved while the provider outcome is reconciled.",
+      "Your credit remains reserved while the provider outcome is reconciled.",
+      "Your credits are ready. Let’s create.",
+      "Your drafts",
+      "Your first AI belongs here.",
+      "Your first design starts with New skin. Your work saves automatically.",
+      "Your first idea",
+      "Your game keeps its current account. You can close this page.",
+      "Your idea or next change",
+      "Your map is ready to play.",
+      "Your match is already starting.",
+      "Your next colony starts here. Play in your browser or join your friends.",
+      "Your next great map",
+      "Your next soundtrack",
+      "Your next world starts with an idea.",
+      "Your profile",
+      "Your projects will be saved here.",
+      "Your purchases",
+      "Your saved building remains available in Building Studio.",
+      "Your set",
+      "Your swarm, in the game",
+      "Your terrain",
+      "Your uploaded photo",
+      "Your workspace has 100 drafts. Delete an old draft first.",
+      "Your world is taking shape…",
+      "You’re invited",
+      "Zoom",
+      "Zoom in",
+      "Zoom in (+)",
+      "Zoom out",
+      "Zoom out (−)",
+      "a few seconds left",
+      "aborted",
+      "about <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{minutes}</span> min left",
+      "about <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{seconds}</span> s left",
+      "account export",
+      "and use this link again.",
+      "as a guest, and sign in later to keep your games and rating.",
+      "b-",
+      "banned",
+      "browser sign-in completed",
+      "browser sign-in completed from web session",
+      "build",
+      "building library",
+      "by",
+      "by <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · updated <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "by <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "cancelled",
+      "check needs",
+      "checking…",
+      "checks need",
+      "deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+      "diverged",
+      "dropped",
+      "finding",
+      "findings",
+      "forest"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "คุณไม่สามารถลบบัญชีของคุณเองได้ที่นี่"
+      },
+      {
+        "translatedText": "คุณปฏิเสธการจับคู่ โปรดรอสักครู่ก่อนที่จะเข้าคิวอีกครั้ง"
+      },
+      {
+        "translatedText": "คุณไม่ได้ลงเล่นในแมตช์นั้น"
+      },
+      {
+        "translatedText": "คุณไม่มีสิทธิ์เข้าร่วมการแข่งขันที่กำลังดำเนินอยู่ด้วยรหัสประจำตัวนั้น"
+      },
+      {
+        "translatedText": "คุณยังไม่ได้แชร์แผนที่ใดๆ เลย"
+      },
+      {
+        "translatedText": "บัญชีของคุณ"
+      },
+      {
+        "translatedText": "บัญชีของคุณไม่สามารถสร้างห้องสนทนาได้"
+      },
+      {
+        "translatedText": "บัญชีของคุณไม่สามารถเข้าร่วมห้องได้"
+      },
+      {
+        "translatedText": "บัญชีของคุณไม่สามารถเล่นได้"
+      },
+      {
+        "translatedText": "ไม่สามารถรีเฟรชบัญชีของคุณได้ โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ร่างบัญชีของคุณมีการเปลี่ยนแปลง บันทึกงานของคุณในอุปกรณ์นี้ จากนั้นกู้คืนร่างบัญชี ก่อนที่จะบันทึกอีกครั้ง"
+      },
+      {
+        "translatedText": "บัญชีของคุณเชื่อมโยงเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "บัญชีของคุณถูกลบแล้ว"
+      },
+      {
+        "translatedText": "เบราว์เซอร์ของคุณไม่สามารถแสดงภาพนี้ได้"
+      },
+      {
+        "translatedText": "อาคารของคุณ"
+      },
+      {
+        "translatedText": "แบบร่างอาคารของคุณ"
+      },
+      {
+        "translatedText": "ไฟล์อ้างอิงอาคารของคุณมีขนาดจำกัดที่ 64 MiB โปรดลบประวัติโครงการเก่าก่อนอัปโหลดเพิ่มเติม"
+      },
+      {
+        "translatedText": "พื้นที่ทำงานในอาคารของคุณเต็มแล้ว"
+      },
+      {
+        "translatedText": "พื้นที่ทำงานสำหรับสร้างอาคารของคุณมีจำกัดที่ 64 MiB โปรดส่งออกและลบฉบับร่างเก่าก่อน"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงของคุณได้รับการบันทึกเป็นสกินใหม่แล้ว"
+      },
+      {
+        "translatedText": "คอลเลกชันของคุณมีดีไซน์ 100 แบบ ลบดีไซน์ที่ไม่ใช้แล้วออกเพื่อเพิ่มพื้นที่ว่าง"
+      },
+      {
+        "translatedText": "อาณานิคมของคุณมีเสียง"
+      },
+      {
+        "translatedText": "ผลงานของคุณจะปรากฏที่นี่ คุณสามารถตรวจสอบ แก้ไข เปรียบเทียบ และเผยแพร่เวอร์ชันที่บันทึกไว้ได้"
+      },
+      {
+        "translatedText": "เครดิตของคุณจะถูกกันไว้ชั่วคราวในระหว่างที่รอผลการตรวจสอบจากผู้ให้บริการ"
+      },
+      {
+        "translatedText": "ยอดเงินคงเหลือของคุณจะยังคงถูกสำรองไว้ในขณะที่กำลังดำเนินการตรวจสอบผลลัพธ์กับผู้ให้บริการ"
+      },
+      {
+        "translatedText": "คุณมีข้อมูลเครดิตพร้อมแล้ว มาเริ่มสร้างสรรค์ผลงานกันเลย"
+      },
+      {
+        "translatedText": "ฉบับร่างของคุณ"
+      },
+      {
+        "translatedText": "AI ตัวแรกของคุณเหมาะที่จะอยู่ที่นี่"
+      },
+      {
+        "translatedText": "การออกแบบครั้งแรกของคุณเริ่มต้นด้วยสกินใหม่ งานของคุณจะบันทึกโดยอัตโนมัติ"
+      },
+      {
+        "translatedText": "ความคิดแรกของคุณ"
+      },
+      {
+        "translatedText": "เกมของคุณจะเก็บบัญชีปัจจุบันไว้ คุณสามารถปิดหน้านี้ได้"
+      },
+      {
+        "translatedText": "ไอเดียของคุณ หรือการเปลี่ยนแปลงครั้งต่อไป"
+      },
+      {
+        "translatedText": "แผนที่ของคุณพร้อมเล่นแล้ว"
+      },
+      {
+        "translatedText": "การแข่งขันของคุณกำลังจะเริ่มต้นขึ้นแล้ว"
+      },
+      {
+        "translatedText": "การสร้างอาณานิคมครั้งต่อไปของคุณเริ่มต้นที่นี่ เล่นในเบราว์เซอร์ของคุณหรือร่วมเล่นกับเพื่อนๆ"
+      },
+      {
+        "translatedText": "แผนที่ยอดเยี่ยมชิ้นต่อไปของคุณ"
+      },
+      {
+        "translatedText": "เพลงประกอบภาพยนตร์เรื่องต่อไปของคุณ"
+      },
+      {
+        "translatedText": "โลกใบใหม่ของคุณเริ่มต้นด้วยไอเดีย"
+      },
+      {
+        "translatedText": "โปรไฟล์ของคุณ"
+      },
+      {
+        "translatedText": "โปรเจกต์ของคุณจะถูกบันทึกไว้ที่นี่"
+      },
+      {
+        "translatedText": "การซื้อของคุณ"
+      },
+      {
+        "translatedText": "อาคารที่คุณบันทึกไว้จะยังคงอยู่ใน Building Studio"
+      },
+      {
+        "translatedText": "ชุดของคุณ"
+      },
+      {
+        "translatedText": "ฝูงของคุณในเกม"
+      },
+      {
+        "translatedText": "ภูมิประเทศของคุณ"
+      },
+      {
+        "translatedText": "รูปภาพที่คุณอัปโหลด"
+      },
+      {
+        "translatedText": "พื้นที่ทำงานของคุณมีเอกสารฉบับร่าง 100 รายการ กรุณาลบเอกสารฉบับร่างเก่าออกก่อน"
+      },
+      {
+        "translatedText": "โลกของคุณกำลังก่อตัวขึ้น…"
+      },
+      {
+        "translatedText": "คุณได้รับเชิญ"
+      },
+      {
+        "translatedText": "ซูม"
+      },
+      {
+        "translatedText": "ซูมเข้า"
+      },
+      {
+        "translatedText": "ซูมเข้า (+)"
+      },
+      {
+        "translatedText": "ซูมออก"
+      },
+      {
+        "translatedText": "ซูมออก (−)"
+      },
+      {
+        "translatedText": "เหลือเวลาอีกไม่กี่วินาที"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "เหลือเวลาประมาณ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{minutes}</span> นาที"
+      },
+      {
+        "translatedText": "เหลือเวลาประมาณ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{seconds}</span> วินาที"
+      },
+      {
+        "translatedText": "การส่งออกบัญชี"
+      },
+      {
+        "translatedText": "และใช้ลิงก์นี้อีกครั้ง"
+      },
+      {
+        "translatedText": "ในฐานะแขกรับเชิญ แล้วค่อยเข้าสู่ระบบในภายหลังเพื่อรักษาสถิติเกมและคะแนนของคุณไว้"
+      },
+      {
+        "translatedText": "บี-"
+      },
+      {
+        "translatedText": "ห้าม"
+      },
+      {
+        "translatedText": "การเข้าสู่ระบบเบราว์เซอร์เสร็จสมบูรณ์แล้ว"
+      },
+      {
+        "translatedText": "การเข้าสู่ระบบเบราว์เซอร์เสร็จสมบูรณ์จากเซสชันเว็บ"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "อาคารห้องสมุด"
+      },
+      {
+        "translatedText": "โดย"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · อัปเดตเมื่อ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "ความต้องการตรวจสอบ"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบ…"
+      },
+      {
+        "translatedText": "จำเป็นต้องตรวจสอบ"
+      },
+      {
+        "translatedText": "ลบแผนที่ ไลค์ อัปโหลด และอันดับของคุณบนกระดานผู้นำ"
+      },
+      {
+        "translatedText": "แตกต่างกัน"
+      },
+      {
+        "translatedText": "ตก"
+      },
+      {
+        "translatedText": "การค้นพบ"
+      },
+      {
+        "translatedText": "ผลการค้นพบ"
+      },
+      {
+        "translatedText": "ป่า"
+      }
+    ]
+  }
+}

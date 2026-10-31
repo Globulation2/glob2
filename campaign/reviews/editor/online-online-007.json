@@ -1,0 +1,488 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "238e295cc2f23be9d9dde69052631f23c39c5490584605c59107006d993fa3a8",
+  "edited_keys": [
+    "online:Invalid pagination.",
+    "online:Invalid payment signature.",
+    "online:Invalid provider.",
+    "online:Invalid range or payment mode.",
+    "online:Invalid recovery reason.",
+    "online:Invalid report cursor.",
+    "online:Invalid report identifier.",
+    "online:Invalid report status.",
+    "online:Invalid request body.",
+    "online:Invalid request identifier.",
+    "online:Invalid rig UV",
+    "online:Invalid rig clip",
+    "online:Invalid rig dimensions",
+    "online:Invalid rig frame mapping",
+    "online:Invalid rig hierarchy",
+    "online:Invalid rig index",
+    "online:Invalid rig influence bone",
+    "online:Invalid rig inverse bind",
+    "online:Invalid rig normal",
+    "online:Invalid rig pose",
+    "online:Invalid rig radius",
+    "online:Invalid rig sample",
+    "online:Invalid rig size",
+    "online:Invalid rig track dimensions",
+    "online:Invalid rig transform",
+    "online:Invalid rig weights",
+    "online:Invalid shape UV",
+    "online:Invalid shape clip",
+    "online:Invalid shape dimensions",
+    "online:Invalid shape frame",
+    "online:Invalid shape heading",
+    "online:Invalid shape index",
+    "online:Invalid shape scale",
+    "online:Invalid shape size",
+    "online:Invalid skin dimensions.",
+    "online:Invalid studio event cursor.",
+    "online:Invalid visibility.",
+    "online:Invalid webhook signature.",
+    "online:Invalid webhook.",
+    "online:Invalid {value0} camera",
+    "online:Invalid {value0} dimensions",
+    "online:Invalid {value0} normal camera",
+    "online:Invalid {value0} scalar",
+    "online:Invite not found",
+    "online:It copies someone else’s work",
+    "online:It is broken or unplayable",
+    "online:It is offensive",
+    "online:It may not be installed on this device. You can",
+    "online:JSON",
+    "online:JSON controls require the set workspace.",
+    "online:JSON value",
+    "online:JavaScript API reference ↗",
+    "online:JavaScript · {slot0}",
+    "online:Join",
+    "online:Join by code",
+    "online:Join {p0}",
+    "online:Keep available and resolve",
+    "online:Keep history",
+    "online:Keep lengths (must already match)",
+    "online:Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+    "online:Keep mine as a new skin",
+    "online:Keep my current account",
+    "online:Keep the melody, but make calm more spacious…",
+    "online:Keep this family namespace. Import a fork to create a different family.",
+    "online:Known-cost subtotal",
+    "online:Ladders",
+    "online:Language",
+    "online:Large",
+    "online:Last {slot0} day",
+    "online:Last {slot0} days",
+    "online:Late",
+    "online:Layer",
+    "online:Leaderboard",
+    "online:Leaderboard participants",
+    "online:Leaderboards",
+    "online:Leave the room instead.",
+    "online:Leave this set and discard unsaved changes?",
+    "online:Leave with unsaved changes? A recovery copy stays on this device.",
+    "online:Leave with unsaved edits? A recovery copy stays on this device.",
+    "online:Length repair",
+    "online:Library",
+    "online:Licence",
+    "online:License",
+    "online:License for this version",
+    "online:License: {slot0}",
+    "online:License: {slot0} · AI composition is disclosed.",
+    "online:Lift ban",
+    "online:Light",
+    "online:Like",
+    "online:Likes",
+    "online:Limit must be between 1 and 100.",
+    "online:Link a recoverable account first.",
+    "online:Link an active recoverable account before purchasing.",
+    "online:Link an active recoverable account to sync drafts.",
+    "online:Listening note",
+    "online:Live AI playtest revision {value0}",
+    "online:Live updates are unavailable. Refreshing saved work…",
+    "online:Load account changes",
+    "online:Load earlier conversation and versions",
+    "online:Load more",
+    "online:Load more drafts",
+    "online:Loading ",
+    "online:Loading code editor…",
+    "online:Loading comparison…",
+    "online:Loading drafts…",
+    "online:Loading editor…",
+    "online:Loading engine…",
+    "online:Loading game…",
+    "online:Loading map preview…",
+    "online:Loading matches…",
+    "online:Loading music…",
+    "online:Loading preview…",
+    "online:Loading reports…",
+    "online:Loading revision comparison…",
+    "online:Loading sets…",
+    "online:Loading set…",
+    "online:Loading the inspected version…",
+    "online:Loading this version…",
+    "online:Loading your building workspace…",
+    "online:Loading your skins…",
+    "online:Loading…",
+    "online:Local accounts are not enabled on this instance.",
+    "online:Local accounts are not enabled.",
+    "online:Loop continuity",
+    "online:Lost",
+    "online:Made",
+    "online:Made for your next match.",
+    "online:Made with",
+    "online:Main",
+    "online:Main material",
+    "online:Make public",
+    "online:Malformed Authorization header.",
+    "online:Manage",
+    "online:Manage credits",
+    "online:Manage published family",
+    "online:Manage the credits for your in-game AI commander.",
+    "online:Manifest",
+    "online:Manifest JSON: {slot0}",
+    "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+    "online:Manual blend · Calm → Building → Combat",
+    "online:Map",
+    "online:Map Studio",
+    "online:Map build",
+    "online:Map build: {value0}",
+    "online:Map canvas",
+    "online:Map comparison",
+    "online:Map credits",
+    "online:Map design conversation",
+    "online:Map designer",
+    "online:Map details",
+    "online:Map file (.map or .map.gz)",
+    "online:Map file (.map or .map.gz, from the game or its map editor)",
+    "online:Map generator",
+    "online:Map generators",
+    "online:Map library",
+    "online:Map lists",
+    "online:Map location {value0}, {value1}",
+    "online:Map page",
+    "online:Map preview · validation did not pass",
+    "online:Map projects"
+  ],
+  "findings": [
+    {
+      "id": "online:Invalid range or payment mode.",
+      "severity": "major",
+      "proposed": "ช่วงข้อมูลหรือรูปแบบการชำระเงินไม่ถูกต้อง",
+      "reason": "Reporting range, not price range."
+    },
+    {
+      "id": "online:Invalid rig clip",
+      "severity": "major",
+      "proposed": "คลิปโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig, not equipment."
+    },
+    {
+      "id": "online:Invalid rig dimensions",
+      "severity": "major",
+      "proposed": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig, not a drilling platform."
+    },
+    {
+      "id": "online:Invalid rig hierarchy",
+      "severity": "major",
+      "proposed": "ลำดับชั้นโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig hierarchy."
+    },
+    {
+      "id": "online:Invalid rig index",
+      "severity": "major",
+      "proposed": "ดัชนีโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig index."
+    },
+    {
+      "id": "online:Invalid rig influence bone",
+      "severity": "major",
+      "proposed": "กระดูกที่ส่งผลต่อน้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "reason": "Rig skin influence bone."
+    },
+    {
+      "id": "online:Invalid rig inverse bind",
+      "severity": "major",
+      "proposed": "เมทริกซ์ผูกแบบผกผันของโครงกระดูกไม่ถูกต้อง",
+      "reason": "Rig inverse bind transform."
+    },
+    {
+      "id": "online:Invalid rig normal",
+      "severity": "major",
+      "proposed": "เวกเตอร์ตั้งฉากของโครงกระดูกไม่ถูกต้อง",
+      "reason": "Surface normal vector, not an ordinary arrangement."
+    },
+    {
+      "id": "online:Invalid rig radius",
+      "severity": "major",
+      "proposed": "รัศมีโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig."
+    },
+    {
+      "id": "online:Invalid rig sample",
+      "severity": "major",
+      "proposed": "ตัวอย่างโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig."
+    },
+    {
+      "id": "online:Invalid rig size",
+      "severity": "major",
+      "proposed": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation rig."
+    },
+    {
+      "id": "online:Invalid rig track dimensions",
+      "severity": "major",
+      "proposed": "ขนาดแทร็กโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation track, not drilling platform railway."
+    },
+    {
+      "id": "online:Invalid rig weights",
+      "severity": "major",
+      "proposed": "น้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "reason": "Animation skinning weights."
+    },
+    {
+      "id": "online:Invalid shape frame",
+      "severity": "major",
+      "proposed": "เฟรมรูปร่างไม่ถูกต้อง",
+      "reason": "Animation frame, not picture frame."
+    },
+    {
+      "id": "online:Invalid shape heading",
+      "severity": "major",
+      "proposed": "ทิศทางรูปร่างไม่ถูกต้อง",
+      "reason": "Heading is direction, not section title."
+    },
+    {
+      "id": "online:Invalid skin dimensions.",
+      "severity": "major",
+      "proposed": "ขนาดสกินไม่ถูกต้อง",
+      "reason": "Game skin, not human skin."
+    },
+    {
+      "id": "online:Invalid {value0} normal camera",
+      "severity": "major",
+      "proposed": "เมทริกซ์แปลงเวกเตอร์ตั้งฉากเข้ากล้องของ {value0} ไม่ถูกต้อง",
+      "reason": "Normal-to-camera matrix validated in binaryAsset.ts, not a normal/ordinary camera."
+    },
+    {
+      "id": "online:Invalid {value0} scalar",
+      "severity": "major",
+      "proposed": "ค่าสเกลาร์ {value0} ไม่ถูกต้อง",
+      "reason": "Preserve scalar type in validation error."
+    },
+    {
+      "id": "online:JSON controls require the set workspace.",
+      "severity": "major",
+      "proposed": "ส่วนควบคุม JSON ต้องใช้พื้นที่ทำงานของชุด",
+      "reason": "Set workspace, not merely setting a workspace."
+    },
+    {
+      "id": "online:Keep available and resolve",
+      "severity": "major",
+      "proposed": "คงเนื้อหาไว้และปิดเรื่อง",
+      "reason": "Moderator keeps content available and resolves report, not prepare content."
+    },
+    {
+      "id": "online:Keep mine as a new skin",
+      "severity": "minor",
+      "proposed": "เก็บของฉันเป็นสกินใหม่",
+      "reason": "Neutral command register, omit unsolicited polite/personal particle."
+    },
+    {
+      "id": "online:Keep this family namespace. Import a fork to create a different family.",
+      "severity": "major",
+      "proposed": "คงเนมสเปซของตระกูลอาคารนี้ไว้ นำเข้าสำเนาแยกเพื่อสร้างตระกูลใหม่",
+      "reason": "Fork is a copied asset branch, not a new namespace alone."
+    },
+    {
+      "id": "online:Ladders",
+      "severity": "major",
+      "proposed": "ประเภทตารางอันดับ",
+      "reason": "Leaderboard ladder categories, not physical ladders."
+    },
+    {
+      "id": "online:Last {slot0} day",
+      "severity": "major",
+      "proposed": {
+        "other": "{slot0} วันที่ผ่านมา"
+      },
+      "reason": "Rolling past days, not final days."
+    },
+    {
+      "id": "online:Last {slot0} days",
+      "severity": "major",
+      "proposed": "{slot0} วันที่ผ่านมา",
+      "reason": "Rolling past days, not final days."
+    },
+    {
+      "id": "online:Leave with unsaved changes? A recovery copy stays on this device.",
+      "severity": "major",
+      "proposed": "ออกโดยยังไม่บันทึกการเปลี่ยนแปลงหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "reason": "Leave editor/page, not leave the device."
+    },
+    {
+      "id": "online:Leave with unsaved edits? A recovery copy stays on this device.",
+      "severity": "major",
+      "proposed": "ออกโดยยังไม่บันทึกการแก้ไขหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "reason": "Leave editor/page, not leave the device."
+    },
+    {
+      "id": "online:Library",
+      "severity": "major",
+      "proposed": "คลัง",
+      "reason": "Digital asset library."
+    },
+    {
+      "id": "online:License for this version",
+      "severity": "minor",
+      "proposed": "สัญญาอนุญาตสำหรับเวอร์ชันนี้",
+      "reason": "Canonical licence term."
+    },
+    {
+      "id": "online:License: {slot0}",
+      "severity": "minor",
+      "proposed": "สัญญาอนุญาต: {slot0}",
+      "reason": "Canonical licence term."
+    },
+    {
+      "id": "online:License: {slot0} · AI composition is disclosed.",
+      "severity": "major",
+      "proposed": "สัญญาอนุญาต: {slot0} · เปิดเผยแล้วว่าใช้ AI แต่งเพลง",
+      "reason": "Disclosure of AI composition, not disclosure of an AI component."
+    },
+    {
+      "id": "online:Lift ban",
+      "severity": "major",
+      "proposed": "ยกเลิกการแบน",
+      "reason": "Undo moderation ban, not a general prohibition."
+    },
+    {
+      "id": "online:Light",
+      "severity": "major",
+      "proposed": "จาง",
+      "reason": "Paint pattern density setting, confirmed PatternDialog.tsx."
+    },
+    {
+      "id": "online:Like",
+      "severity": "minor",
+      "proposed": "ถูกใจ",
+      "reason": "Conventional like action."
+    },
+    {
+      "id": "online:Likes",
+      "severity": "minor",
+      "proposed": "จำนวนถูกใจ",
+      "reason": "Conventional like count."
+    },
+    {
+      "id": "online:Link an active recoverable account before purchasing.",
+      "severity": "major",
+      "proposed": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้ก่อนซื้อ",
+      "reason": "Preserve active-account requirement."
+    },
+    {
+      "id": "online:Link an active recoverable account to sync drafts.",
+      "severity": "major",
+      "proposed": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้เพื่อซิงค์ฉบับร่าง",
+      "reason": "Preserve active-account requirement."
+    },
+    {
+      "id": "online:Loading engine…",
+      "severity": "major",
+      "proposed": "กำลังโหลดเอนจิน…",
+      "reason": "Software engine."
+    },
+    {
+      "id": "online:Loading sets…",
+      "severity": "minor",
+      "proposed": "กำลังโหลดชุด…",
+      "reason": "Asset sets, not datasets."
+    },
+    {
+      "id": "online:Loading set…",
+      "severity": "minor",
+      "proposed": "กำลังโหลดชุด…",
+      "reason": "Asset set, not dataset."
+    },
+    {
+      "id": "online:Local accounts are not enabled on this instance.",
+      "severity": "major",
+      "proposed": "ระบบนี้ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "reason": "Local authentication accounts, not accounts on device."
+    },
+    {
+      "id": "online:Local accounts are not enabled.",
+      "severity": "major",
+      "proposed": "ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "reason": "Local authentication accounts."
+    },
+    {
+      "id": "online:Lost",
+      "severity": "major",
+      "proposed": "แพ้",
+      "reason": "Match outcome mapping in messages.ts; not lost/missing."
+    },
+    {
+      "id": "online:Made",
+      "severity": "major",
+      "proposed": "สร้างด้วย",
+      "reason": "Label for editor/generator provenance, Maps.tsx."
+    },
+    {
+      "id": "online:Made for your next match.",
+      "severity": "minor",
+      "proposed": "สร้างมาเพื่อแมตช์ถัดไปของคุณ",
+      "reason": "Canonical match term."
+    },
+    {
+      "id": "online:Malformed Authorization header.",
+      "severity": "major",
+      "proposed": "ส่วนหัว Authorization มีรูปแบบไม่ถูกต้อง",
+      "reason": "Preserve exact HTTP header identifier."
+    },
+    {
+      "id": "online:Manage published family",
+      "severity": "major",
+      "proposed": "จัดการตระกูลอาคารที่เผยแพร่แล้ว",
+      "reason": "Building family, not human family."
+    },
+    {
+      "id": "online:Manifest",
+      "severity": "major",
+      "proposed": "แมนิเฟสต์",
+      "reason": "Package manifest, not anonymous."
+    },
+    {
+      "id": "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "severity": "major",
+      "proposed": "หมายเลขฉบับแก้ไขในแมนิเฟสต์: {slot0} การเผยแพร่ฉบับใหม่ต้องเพิ่มหมายเลขฉบับแก้ไขในแมนิเฟสต์",
+      "reason": "Revision is numeric manifest version, not a larger textual edit."
+    },
+    {
+      "id": "online:Manual blend · Calm → Building → Combat",
+      "severity": "major",
+      "proposed": "ผสมเอง · สงบ → ก่อสร้าง → ต่อสู้",
+      "reason": "Soundtrack mood names, not stronger/fiercer adjectives."
+    },
+    {
+      "id": "online:Map canvas",
+      "severity": "minor",
+      "proposed": "พื้นที่แผนที่",
+      "reason": "Canvas UI workspace, not a map made of cloth."
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "online:JSON",
+      "reason": "JSON is the standard data-format identifier."
+    },
+    {
+      "id": "online:JavaScript · {slot0}",
+      "reason": "JavaScript language name plus substituted value."
+    }
+  ],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

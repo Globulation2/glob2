@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Core strategy<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p2\" class=\"notranslate\" translate=\"no\">\\n</span>Economy and development<span id=\"g2p3\" class=\"notranslate\" translate=\"no\">:</span> Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.<span id=\"g2p4\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p5\" class=\"notranslate\" translate=\"no\">\\n</span>Farming and conversion<span id=\"g2p6\" class=\"notranslate\" translate=\"no\">:</span> Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.<span id=\"g2p7\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p8\" class=\"notranslate\" translate=\"no\">\\n</span>Compared with other AIs<span id=\"g2p9\" class=\"notranslate\" translate=\"no\">:</span> The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.<span id=\"g2p10\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p11\" class=\"notranslate\" translate=\"no\">\\n</span>Strengths and weaknesses<span id=\"g2p12\" class=\"notranslate\" translate=\"no\">:</span> Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.<span id=\"g2p13\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p14\" class=\"notranslate\" translate=\"no\">\\n</span>Counterplay to try<span id=\"g2p15\" class=\"notranslate\" translate=\"no\">:</span> Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+      "Grows a food-rich colony and competes for converts without producing warriors."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "กลยุทธ์หลัก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ผลิตคนงานและนักสำรวจ ขยายเศรษฐกิจ และดึงดูดหน่วยศัตรูผ่านอาหารและผลไม้ ไม่มีกลยุทธ์การโจมตีด้วยทหารแบบดั้งเดิม <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">\\n</span> เศรษฐกิจและการพัฒนา <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">:</span> สร้างโรงแรมและฝูงสัตว์ใกล้แหล่งอาหาร เพิ่มการศึกษาและการฝึกเคลื่อนที่ และอัพเกรดโครงสร้างพื้นฐาน ติดตามปริมาณอาหารและรักษาสิ่งก่อสร้างและธงสำรวจไว้แม้ว่าเสบียงจะเสื่อมโทรมหรือเป้าหมายหายไป <span id=\"g2p4\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p5\" class=\"notranslate\" translate=\"no\">\\n</span> การทำฟาร์มและการเปลี่ยนศาสนา <span id=\"g2p6\" class=\"notranslate\" translate=\"no\">:</span> ปกป้องแหล่งอาหารและไม้ที่สามารถปลูกใหม่ได้ใกล้แหล่งน้ำ ส่งนักสำรวจไปยังแหล่งผลไม้และอาณานิคมของศัตรู และโฆษณาอาหารให้ศัตรูเมื่อแสวงหาแหล่งผลไม้ อาหารและผลไม้ที่ดีขึ้นสามารถช่วยดึงดูดผู้เปลี่ยนศาสนาได้ <span id=\"g2p7\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p8\" class=\"notranslate\" translate=\"no\">\\n</span> เมื่อเปรียบเทียบกับ AI อื่นๆ <span id=\"g2p9\" class=\"notranslate\" translate=\"no\">:</span> เป็นคู่ต่อสู้ที่มีความเชี่ยวชาญด้านเศรษฐกิจมากที่สุด Cabino และ Maxima ก็แสวงหาผลไม้เช่นกัน แต่ผสมผสานกับการสร้างกองทัพ <span id=\"g2p10\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p11\" class=\"notranslate\" translate=\"no\">\\n</span> จุดแข็งและจุดอ่อน <span id=\"g2p12\" class=\"notranslate\" translate=\"no\">:</span> สามารถเติบโตได้ในขณะที่คู่ต่อสู้ทางทหารอ่อนล้าลง โดยการเปลี่ยนศาสนาเป็นการแข่งขันอีกรูปแบบหนึ่ง ไม่ผลิตนักรบเพื่อตอบโต้การโจมตีอย่างต่อเนื่อง อาหาร ผลไม้ ภูมิศาสตร์ และกฎแห่งชัยชนะส่งผลกระทบอย่างมากต่อโอกาสของมัน <span id=\"g2p14\" class=\"notranslate\" translate=\"no\">\\n</span> รับมือที่ควรลอง <span id=\"g2p15\" class=\"notranslate\" translate=\"no\">:</span> กดดันการขยายตัวที่เปิดเผย รักษาโรงเตี๊ยมของคุณให้มีอาหารและผลไม้ <span id=\"g2p13\" class=\"notranslate\" translate=\"no\">\\n</span> เพื่อรักษากำลังพล หลีกเลี่ยงการทำให้ฐานทัพของคุณอ่อนล้าจากการต่อสู้ที่ไม่จำเป็นในขณะที่มันกำลังเติบโต"
+      },
+      {
+        "translatedText": "สร้างอาณานิคมที่อุดมสมบูรณ์ด้วยอาหารและแข่งขันเพื่อดึงดูดผู้คนให้เข้าร่วมโดยไม่ต้องผลิตนักรบ"
+      }
+    ]
+  }
+}

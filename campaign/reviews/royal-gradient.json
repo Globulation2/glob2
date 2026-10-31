@@ -1,0 +1,14 @@
+{
+  "word": "gradient",
+  "url": "https://coined-word.orst.go.th/func_lookup.php",
+  "request": {
+    "word": "gradient",
+    "funcName": "lookupWord",
+    "book_id": "0",
+    "status": "lookup",
+    "loc": ""
+  },
+  "status": 200,
+  "sha256": "6908f70abb399a4bd7613a52caea36c1f61ec83646d7beaa17008404f1cb156a",
+  "text": "ผลการค้นหา \" gradient \" วิทยาศาสตร์ gradient ๑. ความชัน มีความหมายเหมือนกับ slope ๒. เกรเดียนต์ ภูมิศาสตร์ gradient ความชัน คณิตศาสตร์ gradient ๑. ความชัน มีความหมายเหมือนกับ slope ๒. เกรเดียนต์ [ตัวดำเนินการ] ปฐพีศาสตร์ gradient ความชัน ป่าไม้ gradient ความลาดชัน มีความหมายเหมือนกับ grade"
+}

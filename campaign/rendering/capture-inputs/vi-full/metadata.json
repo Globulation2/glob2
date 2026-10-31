@@ -1,0 +1,8 @@
+{
+  "locale": "vi",
+  "full_native_catalog_path": "data/texts.vi.txt",
+  "full_native_catalog_sha256": "f26d2eaaa18e5b7975f978149eb1364480a2aff139edadb0e695e43f75007aee",
+  "full_online_catalog_path": "platform/packages/i18n/locales/vi.json",
+  "full_online_catalog_sha256": "3677487abd631dee9d14b415821a5fb417f5b856fac5666f4d15995c50f7a445",
+  "scope": "Full shipped catalog overlay; viewport/platform claims reported separately."
+}

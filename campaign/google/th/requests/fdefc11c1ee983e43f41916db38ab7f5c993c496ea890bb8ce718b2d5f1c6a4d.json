@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Jagged coastlines",
+      "Sand roads",
+      "Treasure in dead ends",
+      "Sandy lake shore",
+      "River delta",
+      "Meandering rivers",
+      "Fruit in home valleys",
+      "Moat",
+      "Stone in the orchard",
+      "Colonies on both coasts",
+      "Winding belt",
+      "Cell shape",
+      "Squares",
+      "Hexagons",
+      "Warp",
+      "Fingerprint",
+      "Wavelength",
+      "Pattern",
+      "Labyrinth",
+      "Channels",
+      "Barrier",
+      "Water",
+      "Grain",
+      "Rain shadow",
+      "Ridges",
+      "Slant",
+      "Ridge thickness",
+      "Pass spacing",
+      "Lee width",
+      "Old growth",
+      "Canals",
+      "Forest density",
+      "Hidden groves",
+      "Starting trails",
+      "Block size",
+      "Canal width",
+      "Extra bridges",
+      "Polder",
+      "Old town",
+      "Anthill",
+      "Row angle",
+      "Diagonal",
+      "Dyke spacing",
+      "Village size",
+      "Hamlets",
+      "City size",
+      "Street width",
+      "Plazas",
+      "Chamber spacing",
+      "Chamber size",
+      "Queen room",
+      "Tunnel width",
+      "Loops",
+      "Home pools",
+      "Farm plots",
+      "Tendril roads",
+      "Random",
+      "Vertical",
+      "Horizontal",
+      "Inland lakes",
+      "Block shape",
+      "Random parameters",
+      "Randomize parameters",
+      "Start quality",
+      "Fairness",
+      "Fitness",
+      "Win chance",
+      "Coefficient",
+      "Average",
+      "Fitted on games<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "Every colony&#x27;s start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> 1 when every colony is as likely to win as any other, 0 when one colony would take the map.",
+      "Worst",
+      "Best",
+      "Drag to wrap. Wheel to zoom. Right-click or double-click to reset.",
+      "Drag to wrap; wheel to zoom.",
+      "Loading...",
+      "Preview failed",
+      "Click to retry",
+      "Please wait",
+      "Choose a map"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ชายฝั่งที่ขรุขระ"
+      },
+      {
+        "translatedText": "ถนนทราย"
+      },
+      {
+        "translatedText": "สมบัติซ่อนอยู่ในทางตัน"
+      },
+      {
+        "translatedText": "ชายฝั่งทะเลสาบที่เป็นทราย"
+      },
+      {
+        "translatedText": "สามเหลี่ยมปากแม่น้ำ"
+      },
+      {
+        "translatedText": "แม่น้ำที่คดเคี้ยว"
+      },
+      {
+        "translatedText": "ผลไม้ในหุบเขาบ้านเกิด"
+      },
+      {
+        "translatedText": "คูเมือง"
+      },
+      {
+        "translatedText": "ก้อนหินในสวนผลไม้"
+      },
+      {
+        "translatedText": "อาณานิคมบนชายฝั่งทั้งสองฝั่ง"
+      },
+      {
+        "translatedText": "สายพานม้วน"
+      },
+      {
+        "translatedText": "รูปร่างเซลล์"
+      },
+      {
+        "translatedText": "สี่เหลี่ยม"
+      },
+      {
+        "translatedText": "หกเหลี่ยม"
+      },
+      {
+        "translatedText": "วาร์ป"
+      },
+      {
+        "translatedText": "ลายนิ้วมือ"
+      },
+      {
+        "translatedText": "ความยาวคลื่น"
+      },
+      {
+        "translatedText": "ลวดลาย"
+      },
+      {
+        "translatedText": "เขาวงกต"
+      },
+      {
+        "translatedText": "ช่องต่างๆ"
+      },
+      {
+        "translatedText": "สิ่งกีดขวาง"
+      },
+      {
+        "translatedText": "น้ำ"
+      },
+      {
+        "translatedText": "ธัญพืช"
+      },
+      {
+        "translatedText": "เงาฝน"
+      },
+      {
+        "translatedText": "สันเขา"
+      },
+      {
+        "translatedText": "เอียง"
+      },
+      {
+        "translatedText": "ความหนาของสัน"
+      },
+      {
+        "translatedText": "ระยะห่างระหว่างทาง"
+      },
+      {
+        "translatedText": "ความกว้างของลี"
+      },
+      {
+        "translatedText": "ป่าดั้งเดิม"
+      },
+      {
+        "translatedText": "คลอง"
+      },
+      {
+        "translatedText": "ความหนาแน่นของป่า"
+      },
+      {
+        "translatedText": "ป่าลับ"
+      },
+      {
+        "translatedText": "เส้นทางเริ่มต้น"
+      },
+      {
+        "translatedText": "ขนาดบล็อก"
+      },
+      {
+        "translatedText": "ความกว้างของคลอง"
+      },
+      {
+        "translatedText": "สะพานเสริม"
+      },
+      {
+        "translatedText": "พอลเดอร์"
+      },
+      {
+        "translatedText": "เมืองเก่า"
+      },
+      {
+        "translatedText": "จอมปลวก"
+      },
+      {
+        "translatedText": "มุมแถว"
+      },
+      {
+        "translatedText": "แนวทแยง"
+      },
+      {
+        "translatedText": "ระยะห่างของคันดิน"
+      },
+      {
+        "translatedText": "ขนาดหมู่บ้าน"
+      },
+      {
+        "translatedText": "แฮมเล็ต"
+      },
+      {
+        "translatedText": "ขนาดเมือง"
+      },
+      {
+        "translatedText": "ความกว้างของถนน"
+      },
+      {
+        "translatedText": "พลาซ่า"
+      },
+      {
+        "translatedText": "ระยะห่างของห้อง"
+      },
+      {
+        "translatedText": "ขนาดห้อง"
+      },
+      {
+        "translatedText": "ห้องควีน"
+      },
+      {
+        "translatedText": "ความกว้างของอุโมงค์"
+      },
+      {
+        "translatedText": "ลูป"
+      },
+      {
+        "translatedText": "สระว่ายน้ำในบ้าน"
+      },
+      {
+        "translatedText": "แปลงเกษตรกรรม"
+      },
+      {
+        "translatedText": "ถนนเถาวัลย์"
+      },
+      {
+        "translatedText": "สุ่ม"
+      },
+      {
+        "translatedText": "แนวตั้ง"
+      },
+      {
+        "translatedText": "แนวนอน"
+      },
+      {
+        "translatedText": "ทะเลสาบในแผ่นดิน"
+      },
+      {
+        "translatedText": "รูปทรงบล็อก"
+      },
+      {
+        "translatedText": "พารามิเตอร์แบบสุ่ม"
+      },
+      {
+        "translatedText": "สุ่มค่าพารามิเตอร์"
+      },
+      {
+        "translatedText": "คุณภาพเริ่มต้น"
+      },
+      {
+        "translatedText": "ความยุติธรรม"
+      },
+      {
+        "translatedText": "ฟิตเนส"
+      },
+      {
+        "translatedText": "โอกาสชนะ"
+      },
+      {
+        "translatedText": "สัมประสิทธิ์"
+      },
+      {
+        "translatedText": "เฉลี่ย"
+      },
+      {
+        "translatedText": "เหมาะสำหรับเกม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "จุดเริ่มต้นของแต่ละอาณานิคมจะถูกวัดบนแผนที่ที่เสร็จสมบูรณ์ และแบบจำลองที่ปรับให้เข้ากับเกมหลายพันเกมระหว่างคู่ต่อสู้ที่เท่าเทียมกันจะแปลงการวัดเหล่านั้นเป็นค่าความเหมาะสม ค่าความเหมาะสมจะบอกว่าอาณานิคมนั้นมีโอกาสชนะมากน้อยเพียงใด ความยุติธรรมคือการแบ่งโอกาสเหล่านั้นอย่างเท่าเทียมกัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> 1 เมื่อทุกอาณานิคมมีโอกาสชนะเท่ากัน และ 0 เมื่ออาณานิคมเดียวจะยึดครองแผนที่ได้"
+      },
+      {
+        "translatedText": "แย่ที่สุด"
+      },
+      {
+        "translatedText": "ดีที่สุด"
+      },
+      {
+        "translatedText": "ลากเพื่อจัดวางภาพ ใช้ล้อเมาส์เพื่อซูมเข้า-ออก คลิกขวาหรือดับเบิ้ลคลิกเพื่อรีเซ็ต"
+      },
+      {
+        "translatedText": "ลากเพื่อขยาย/ปรับขนาด; หมุนวงล้อเพื่อซูม"
+      },
+      {
+        "translatedText": "กำลังโหลด..."
+      },
+      {
+        "translatedText": "การแสดงตัวอย่างล้มเหลว"
+      },
+      {
+        "translatedText": "คลิกเพื่อลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "โปรดรอ"
+      },
+      {
+        "translatedText": "เลือกแผนที่"
+      }
+    ]
+  }
+}

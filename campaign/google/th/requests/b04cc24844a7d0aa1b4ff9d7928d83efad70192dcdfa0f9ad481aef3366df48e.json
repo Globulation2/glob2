@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Account already in use",
+      "Account changes",
+      "Account changes need review",
+      "Account draft saved",
+      "Account inactive.",
+      "Account is unavailable.",
+      "Acoustic · woodwinds, strings &amp; folk",
+      "Across",
+      "Action",
+      "Active",
+      "Active accounts",
+      "Activity comparison table",
+      "Activity trends",
+      "Actor account ID",
+      "Actual game size · 1×",
+      "Add",
+      "Add a property override",
+      "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+      "Add frames in order.",
+      "Add selected frame",
+      "Add stage",
+      "Add stock level",
+      "Add the base frame first.",
+      "Add <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Additional credits and source attribution",
+      "Additional field",
+      "Address",
+      "Administration",
+      "Administration sections",
+      "Administrator",
+      "Administrator access is required.",
+      "Administrator access required.",
+      "Advanced mixing",
+      "Advanced properties <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>",
+      "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+      "Agreed so far",
+      "Air health change",
+      "All",
+      "All candidate measurements",
+      "All compatibility checks must pass before publishing.",
+      "All downloads",
+      "All engine versions",
+      "All generation attempts",
+      "All generators",
+      "All libraries",
+      "All licenses",
+      "All matches",
+      "All music",
+      "All open licences",
+      "All properties and capabilities",
+      "All rankings",
+      "All sets",
+      "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "Allowed resource keys (null uses habitats)",
+      "Already in the game? Choose",
+      "Always available",
+      "An account is required to publish publicly.",
+      "An available Building credit is needed to chat or build.",
+      "An available Terrain credit is needed to chat or build.",
+      "An available <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> credit is needed.",
+      "Analytics display is disabled.",
+      "Animation phase",
+      "Another session saved revision <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>. Your local edits are preserved.",
+      "Another upload is in progress. Please retry shortly.",
+      "Any",
+      "Any size",
+      "Any status",
+      "Any teams",
+      "Anyone with the link",
+      "Appearance",
+      "Applied",
+      "Applies to",
+      "Apply soundtrack loudness targets and peak limiting",
+      "Apply to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Artifact view",
+      "Artwork",
+      "Artwork and font credits",
+      "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "Assemble the family"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "บัญชีนี้ถูกใช้งานอยู่แล้ว"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงบัญชี"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงบัญชีจำเป็นต้องได้รับการตรวจสอบ"
+      },
+      {
+        "translatedText": "บันทึกร่างบัญชีเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "บัญชีไม่ได้ใช้งานแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้งานบัญชีได้"
+      },
+      {
+        "translatedText": "อะคูสติก · เครื่องเป่าลม เครื่องสาย และดนตรีพื้นบ้าน"
+      },
+      {
+        "translatedText": "ข้าม"
+      },
+      {
+        "translatedText": "การกระทำ"
+      },
+      {
+        "translatedText": "คล่องแคล่ว"
+      },
+      {
+        "translatedText": "บัญชีที่ใช้งานอยู่"
+      },
+      {
+        "translatedText": "ตารางเปรียบเทียบกิจกรรม"
+      },
+      {
+        "translatedText": "แนวโน้มกิจกรรม"
+      },
+      {
+        "translatedText": "รหัสบัญชีนักแสดง"
+      },
+      {
+        "translatedText": "ขนาดเกมจริง · 1×"
+      },
+      {
+        "translatedText": "เพิ่ม"
+      },
+      {
+        "translatedText": "เพิ่มการแทนที่คุณสมบัติ"
+      },
+      {
+        "translatedText": "เพิ่มภูมิประเทศหรือทรัพยากรเพื่อเริ่มต้น ชุดค่าที่ตั้งไว้ล่วงหน้าจะกำหนดคุณสมบัติให้โดยไม่ต้องคัดลอกภาพประกอบลงในชุดของคุณ"
+      },
+      {
+        "translatedText": "เพิ่มเฟรมตามลำดับ"
+      },
+      {
+        "translatedText": "เพิ่มกรอบที่เลือก"
+      },
+      {
+        "translatedText": "เพิ่มเวที"
+      },
+      {
+        "translatedText": "เพิ่มระดับสต็อก"
+      },
+      {
+        "translatedText": "ติดตั้งโครงฐานก่อน"
+      },
+      {
+        "translatedText": "เพิ่ม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เครดิตเพิ่มเติมและการอ้างอิงแหล่งที่มา"
+      },
+      {
+        "translatedText": "ช่องเพิ่มเติม"
+      },
+      {
+        "translatedText": "ที่อยู่"
+      },
+      {
+        "translatedText": "การบริหาร"
+      },
+      {
+        "translatedText": "ส่วนงานบริหาร"
+      },
+      {
+        "translatedText": "ผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีสิทธิ์ผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "ต้องใช้สิทธิ์ผู้ดูแลระบบ"
+      },
+      {
+        "translatedText": "การผสมขั้นสูง"
+      },
+      {
+        "translatedText": "คุณสมบัติขั้นสูง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>"
+      },
+      {
+        "translatedText": "หลังจากชำระเงินแล้ว ยอดเงินคงเหลือของคุณจะอัปเดตเมื่อการชำระเงินได้รับการยืนยัน คุณสามารถกลับไปยังอาณานิคมของคุณได้ในระหว่างที่กำลังดำเนินการ"
+      },
+      {
+        "translatedText": "เห็นด้วยกับทุกประเด็นจนถึงตอนนี้"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงสุขภาพทางอากาศ"
+      },
+      {
+        "translatedText": "ทั้งหมด"
+      },
+      {
+        "translatedText": "การวัดผลของผู้สมัครทั้งหมด"
+      },
+      {
+        "translatedText": "ต้องผ่านการตรวจสอบความเข้ากันได้ทั้งหมดก่อนจึงจะเผยแพร่ได้"
+      },
+      {
+        "translatedText": "ดาวน์โหลดทั้งหมด"
+      },
+      {
+        "translatedText": "เครื่องยนต์ทุกเวอร์ชัน"
+      },
+      {
+        "translatedText": "ความพยายามทุกรุ่น"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดไฟฟ้าทั้งหมด"
+      },
+      {
+        "translatedText": "ห้องสมุดทั้งหมด"
+      },
+      {
+        "translatedText": "ใบอนุญาตทั้งหมด"
+      },
+      {
+        "translatedText": "การแข่งขันทั้งหมด"
+      },
+      {
+        "translatedText": "เพลงทั้งหมด"
+      },
+      {
+        "translatedText": "ใบอนุญาตแบบเปิดทั้งหมด"
+      },
+      {
+        "translatedText": "คุณสมบัติและความสามารถทั้งหมด"
+      },
+      {
+        "translatedText": "อันดับทั้งหมด"
+      },
+      {
+        "translatedText": "ชุดทั้งหมด"
+      },
+      {
+        "translatedText": "ยอดรวมห้องสมุดตลอดกาล; อันดับนี้จะไม่เปลี่ยนแปลงตามช่วงเวลาการรายงานที่เลือก จำนวนนับเป็นไปตามกฎของแต่ละห้องสมุดและไม่ได้แสดงถึงจำนวนบุคคลที่ไม่ซ้ำกัน"
+      },
+      {
+        "translatedText": "คีย์ทรัพยากรที่อนุญาต (ค่าว่างใช้สำหรับที่อยู่อาศัย)"
+      },
+      {
+        "translatedText": "อยู่ในเกมแล้วใช่ไหม? เลือก"
+      },
+      {
+        "translatedText": "พร้อมให้บริการเสมอ"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีบัญชีผู้ใช้เพื่อเผยแพร่ข้อมูลสู่สาธารณะ"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีเครดิตการสร้างอาคารเหลืออยู่เพื่อแชทหรือสร้างอาคาร"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีเครดิตภูมิประเทศเหลืออยู่เพื่อแชทหรือสร้างสิ่งก่อสร้าง"
+      },
+      {
+        "translatedText": "จำเป็นต้องมีเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ที่ใช้ได้"
+      },
+      {
+        "translatedText": "การแสดงผลข้อมูลวิเคราะห์ถูกปิดใช้งาน"
+      },
+      {
+        "translatedText": "ขั้นตอนการสร้างแอนิเมชั่น"
+      },
+      {
+        "translatedText": "เซสชันอื่นได้บันทึกการแก้ไข <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> แล้ว การแก้ไขในเครื่องของคุณจะถูกเก็บรักษาไว้"
+      },
+      {
+        "translatedText": "กำลังอัปโหลดไฟล์ใหม่ โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ใดๆ"
+      },
+      {
+        "translatedText": "ทุกขนาด"
+      },
+      {
+        "translatedText": "สถานะใดๆ"
+      },
+      {
+        "translatedText": "ทีมใดก็ได้"
+      },
+      {
+        "translatedText": "ใครมีลิงก์บ้าง"
+      },
+      {
+        "translatedText": "รูปร่าง"
+      },
+      {
+        "translatedText": "สมัครแล้ว"
+      },
+      {
+        "translatedText": "ใช้ได้กับ"
+      },
+      {
+        "translatedText": "กำหนดเป้าหมายความดังของเพลงประกอบและจำกัดระดับเสียงสูงสุด"
+      },
+      {
+        "translatedText": "สมัครเข้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "มุมมองของสิ่งประดิษฐ์"
+      },
+      {
+        "translatedText": "งานศิลปะ"
+      },
+      {
+        "translatedText": "เครดิตภาพประกอบและแบบอักษร"
+      },
+      {
+        "translatedText": "ไม่สามารถเตรียมภาพประกอบสำหรับอุปกรณ์รุ่นเก่าบางรุ่นได้ อุปกรณ์เหล่านั้นจะใช้ภาพประกอบเริ่มต้นแทน"
+      },
+      {
+        "translatedText": "งานศิลปะสำหรับอุปกรณ์รุ่นเก่าบางรุ่นยังอยู่ในระหว่างการจัดเตรียม อุปกรณ์เหล่านั้นอาจแสดงภาพอาณานิคมเริ่มต้นเป็นการชั่วคราว"
+      },
+      {
+        "translatedText": "รวมครอบครัวเข้าด้วยกัน"
+      }
+    ]
+  }
+}

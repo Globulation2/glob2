@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Min. unit level",
+      "Volume (music)",
+      "Mute",
+      "mute",
+      "New Campaign",
+      "New Map",
+      "* only in windowed mode",
+      "No Hints",
+      "no key yet",
+      "No Objectives",
+      "No Growth Areas",
+      "No",
+      "Number Of Buildings",
+      "number of teams",
+      "Number Of Units",
+      "numlock",
+      "Objectives",
+      "there are",
+      "Ok",
+      "Rugged Archipelago",
+      "Shattered Coast",
+      "On Press",
+      "Here",
+      "On release",
+      "Open Chat Box",
+      "Open Load Menu",
+      "Open Save Menu",
+      "Open Scenario Editor",
+      "Open Teams Editor",
+      "open",
+      "OpenGL",
+      "Options",
+      "options",
+      "Orange",
+      "Other Options",
+      "page down",
+      "page up",
+      "Papyrus",
+      "Pause game",
+      "pause",
+      "Paused",
+      "Player name",
+      "Players",
+      "Please wait",
+      "power",
+      "Press space to continue.",
+      "Prestige Score",
+      "Prestige Win Enabled",
+      "Prestige",
+      "Primary",
+      "print screen",
+      "Priority",
+      "Plum",
+      "Quit the editor",
+      "Quit the game",
+      "Quit the replay",
+      "Quit",
+      "speed of your units",
+      "Improves the walking",
+      "Racetrack",
+      "Range",
+      "Proportions",
+      "Remember unit counts",
+      "Remove Map",
+      "Remove Shortcut",
+      "Start/Stop Repair",
+      "Repair",
+      "times the same landscape",
+      "Replay Ended",
+      "Restore Default Keyboard Shortcuts",
+      "Return to the editor",
+      "Return to game",
+      "Return to the replay",
+      "enter",
+      "right meta",
+      "right windows key",
+      "right",
+      "width of river",
+      "River",
+      "Sand"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ระดับหน่วยขั้นต่ำ"
+      },
+      {
+        "translatedText": "ระดับเสียง (ดนตรี)"
+      },
+      {
+        "translatedText": "ปิดเสียง"
+      },
+      {
+        "translatedText": "ปิดเสียง"
+      },
+      {
+        "translatedText": "แคมเปญใหม่"
+      },
+      {
+        "translatedText": "แผนที่ใหม่"
+      },
+      {
+        "translatedText": "* เฉพาะในโหมดหน้าต่างเท่านั้น"
+      },
+      {
+        "translatedText": "ไม่มีคำใบ้"
+      },
+      {
+        "translatedText": "ยังไม่มีกุญแจ"
+      },
+      {
+        "translatedText": "ไม่มีวัตถุประสงค์"
+      },
+      {
+        "translatedText": "ไม่มีพื้นที่การเติบโต"
+      },
+      {
+        "translatedText": "เลขที่"
+      },
+      {
+        "translatedText": "จำนวนอาคาร"
+      },
+      {
+        "translatedText": "จำนวนทีม"
+      },
+      {
+        "translatedText": "จำนวนหน่วย"
+      },
+      {
+        "translatedText": "นัมล็อค"
+      },
+      {
+        "translatedText": "วัตถุประสงค์"
+      },
+      {
+        "translatedText": "มีอยู่"
+      },
+      {
+        "translatedText": "ตกลง"
+      },
+      {
+        "translatedText": "หมู่เกาะขรุขระ"
+      },
+      {
+        "translatedText": "ชายฝั่งที่แตกสลาย"
+      },
+      {
+        "translatedText": "ต่อสื่อมวลชน"
+      },
+      {
+        "translatedText": "ที่นี่"
+      },
+      {
+        "translatedText": "เมื่อวางจำหน่าย"
+      },
+      {
+        "translatedText": "เปิดกล่องแชท"
+      },
+      {
+        "translatedText": "เปิดเมนูโหลด"
+      },
+      {
+        "translatedText": "เปิดเมนูบันทึก"
+      },
+      {
+        "translatedText": "เปิดโปรแกรมแก้ไขสถานการณ์"
+      },
+      {
+        "translatedText": "เปิดโปรแกรมแก้ไข Teams"
+      },
+      {
+        "translatedText": "เปิด"
+      },
+      {
+        "translatedText": "โอเพ่นจีแอล"
+      },
+      {
+        "translatedText": "ตัวเลือก"
+      },
+      {
+        "translatedText": "ตัวเลือก"
+      },
+      {
+        "translatedText": "ส้ม"
+      },
+      {
+        "translatedText": "ตัวเลือกอื่นๆ"
+      },
+      {
+        "translatedText": "เลื่อนลง"
+      },
+      {
+        "translatedText": "เลื่อนขึ้น"
+      },
+      {
+        "translatedText": "ปาปิรัส"
+      },
+      {
+        "translatedText": "หยุดเกม"
+      },
+      {
+        "translatedText": "หยุดชั่วคราว"
+      },
+      {
+        "translatedText": "หยุดชั่วคราว"
+      },
+      {
+        "translatedText": "ชื่อผู้เล่น"
+      },
+      {
+        "translatedText": "ผู้เล่น"
+      },
+      {
+        "translatedText": "โปรดรอ"
+      },
+      {
+        "translatedText": "พลัง"
+      },
+      {
+        "translatedText": "กด space เพื่อดำเนินการต่อ"
+      },
+      {
+        "translatedText": "คะแนนเกียรติยศ"
+      },
+      {
+        "translatedText": "เปิดใช้งานการชนะรางวัลเกียรติยศ"
+      },
+      {
+        "translatedText": "เกียรติยศ"
+      },
+      {
+        "translatedText": "หลัก"
+      },
+      {
+        "translatedText": "แคปหน้าจอ"
+      },
+      {
+        "translatedText": "ลำดับความสำคัญ"
+      },
+      {
+        "translatedText": "ลูกพลัม"
+      },
+      {
+        "translatedText": "ลาออกจากตำแหน่งบรรณาธิการ"
+      },
+      {
+        "translatedText": "เลิกเล่นเกม"
+      },
+      {
+        "translatedText": "ปิดการเล่นซ้ำ"
+      },
+      {
+        "translatedText": "ล้มเลิก"
+      },
+      {
+        "translatedText": "ความเร็วของหน่วยของคุณ"
+      },
+      {
+        "translatedText": "ช่วยให้การเดินดีขึ้น"
+      },
+      {
+        "translatedText": "สนามแข่งรถ"
+      },
+      {
+        "translatedText": "พิสัย"
+      },
+      {
+        "translatedText": "สัดส่วน"
+      },
+      {
+        "translatedText": "อย่าลืมนับจำนวนหน่วย"
+      },
+      {
+        "translatedText": "ลบแผนที่"
+      },
+      {
+        "translatedText": "ลบทางลัด"
+      },
+      {
+        "translatedText": "การซ่อมแซมระบบสตาร์ท/หยุด"
+      },
+      {
+        "translatedText": "ซ่อมแซม"
+      },
+      {
+        "translatedText": "ภูมิประเทศเดียวกันหลายครั้ง"
+      },
+      {
+        "translatedText": "การเล่นซ้ำจบลงแล้ว"
+      },
+      {
+        "translatedText": "คืนค่าปุ่มลัดแป้นพิมพ์ตามค่าเริ่มต้น"
+      },
+      {
+        "translatedText": "กลับไปที่ตัวแก้ไข"
+      },
+      {
+        "translatedText": "กลับสู่เกม"
+      },
+      {
+        "translatedText": "กลับไปที่การเล่นซ้ำ"
+      },
+      {
+        "translatedText": "เข้า"
+      },
+      {
+        "translatedText": "เมตาขวา"
+      },
+      {
+        "translatedText": "ปุ่ม Windows ด้านขวา"
+      },
+      {
+        "translatedText": "ขวา"
+      },
+      {
+        "translatedText": "ความกว้างของแม่น้ำ"
+      },
+      {
+        "translatedText": "แม่น้ำ"
+      },
+      {
+        "translatedText": "ทราย"
+      }
+    ]
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Passwords can be at most <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> characters.",
+      "Paste the invite link, or type its code (6 to 16 letters and digits).",
+      "Pattern color",
+      "Pattern coverage",
+      "Pattern rotation",
+      "Pattern size",
+      "Patterns",
+      "Patterns &amp; fills",
+      "Pause",
+      "Payment",
+      "Payment mode",
+      "Payment status<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>.",
+      "Payments are not configured.",
+      "Pen pressure",
+      "Pending",
+      "Period",
+      "Petals cupped open around a central bud.",
+      "Photo updated.",
+      "Ping",
+      "Play",
+      "Play Locally in Custom Game",
+      "Play as <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p3}</span> instead",
+      "Play in Multiplayer",
+      "Play in browser",
+      "Play in your browser",
+      "Play online",
+      "Play this map",
+      "Play <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Playability checks",
+      "Playability checks passed",
+      "Playable",
+      "Playable generator",
+      "Playable terrain",
+      "Playback format",
+      "Playback position",
+      "Player",
+      "Player guides",
+      "Player types",
+      "Players",
+      "Players and AI opponents, ranked by their conservative rating<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "Players and results",
+      "Players cannot be removed while a match is starting or running.",
+      "Players online",
+      "Plays",
+      "Please fix the issues in the attached test diagnostics.",
+      "Please try building the map again and address this issue<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Pose",
+      "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "Prepare retry",
+      "Prepare the design",
+      "Prepare this release",
+      "Preparing photo…",
+      "Preparing your model…",
+      "Prestige",
+      "Prestige <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Preview",
+      "Preview current changes",
+      "Preview game transitions",
+      "Preview not found.",
+      "Preview of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Preview unavailable",
+      "Preview unavailable.",
+      "Preview · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Previewing game transitions · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · game fade timing",
+      "Previous",
+      "Previous mean",
+      "Previous recorded",
+      "Previous samples",
+      "Previous saved drafts",
+      "Previous stage",
+      "Priced",
+      "Private",
+      "Private or uploaded map",
+      "Private project",
+      "Private — only you",
+      "Processing",
+      "Product",
+      "Product / model",
+      "Product credit flow table",
+      "Product credits"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "รหัสผ่านต้องมีความยาวไม่เกิน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ตัวอักษร"
+      },
+      {
+        "translatedText": "วางลิงก์คำเชิญ หรือพิมพ์รหัส (ประกอบด้วยตัวอักษรและตัวเลข 6 ถึง 16 ตัว)"
+      },
+      {
+        "translatedText": "สีของลวดลาย"
+      },
+      {
+        "translatedText": "การครอบคลุมรูปแบบ"
+      },
+      {
+        "translatedText": "การหมุนลวดลาย"
+      },
+      {
+        "translatedText": "ขนาดของลวดลาย"
+      },
+      {
+        "translatedText": "ลวดลาย"
+      },
+      {
+        "translatedText": "ลวดลายและการเติม"
+      },
+      {
+        "translatedText": "หยุดชั่วคราว"
+      },
+      {
+        "translatedText": "การชำระเงิน"
+      },
+      {
+        "translatedText": "วิธีการชำระเงิน"
+      },
+      {
+        "translatedText": "สถานะการชำระเงิน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ยังไม่ได้ตั้งค่าการชำระเงิน"
+      },
+      {
+        "translatedText": "แรงกดปากกา"
+      },
+      {
+        "translatedText": "รอดำเนินการ"
+      },
+      {
+        "translatedText": "ระยะเวลา"
+      },
+      {
+        "translatedText": "กลีบดอกคลี่ออกโอบล้อมดอกตูมตรงกลาง"
+      },
+      {
+        "translatedText": "อัปเดตภาพแล้ว"
+      },
+      {
+        "translatedText": "ปิง"
+      },
+      {
+        "translatedText": "เล่น"
+      },
+      {
+        "translatedText": "เล่นแบบโลคอลในเกมที่กำหนดเอง"
+      },
+      {
+        "translatedText": "เล่นเป็น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p3}</span> แทน"
+      },
+      {
+        "translatedText": "เล่นในโหมดผู้เล่นหลายคน"
+      },
+      {
+        "translatedText": "เล่นในเบราว์เซอร์"
+      },
+      {
+        "translatedText": "เล่นในเบราว์เซอร์ของคุณ"
+      },
+      {
+        "translatedText": "เล่นออนไลน์"
+      },
+      {
+        "translatedText": "เล่นแผนที่นี้"
+      },
+      {
+        "translatedText": "เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "การตรวจสอบความสามารถในการเล่น"
+      },
+      {
+        "translatedText": "ผ่านการตรวจสอบความสามารถในการเล่นแล้ว"
+      },
+      {
+        "translatedText": "เล่นได้"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดที่เล่นได้"
+      },
+      {
+        "translatedText": "ภูมิประเทศที่เล่นได้"
+      },
+      {
+        "translatedText": "รูปแบบการเล่น"
+      },
+      {
+        "translatedText": "ตำแหน่งการเล่น"
+      },
+      {
+        "translatedText": "ผู้เล่น"
+      },
+      {
+        "translatedText": "คู่มือผู้เล่น"
+      },
+      {
+        "translatedText": "ประเภทผู้เล่น"
+      },
+      {
+        "translatedText": "ผู้เล่น"
+      },
+      {
+        "translatedText": "ผู้เล่นและคู่ต่อสู้ AI จะถูกจัดอันดับตามคะแนนประเมินเบื้องต้น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> คะแนนจะสูงขึ้นเมื่อเกมมั่นใจในฝีมือของคุณมากขึ้น ผู้เล่นรับเชิญจะไม่ได้รับการจัดอันดับ"
+      },
+      {
+        "translatedText": "ผู้เล่นและผลการแข่งขัน"
+      },
+      {
+        "translatedText": "ไม่สามารถนำผู้เล่นออกจากเกมได้ในขณะที่การแข่งขันกำลังเริ่มต้นหรือดำเนินอยู่"
+      },
+      {
+        "translatedText": "ผู้เล่นออนไลน์"
+      },
+      {
+        "translatedText": "ละคร"
+      },
+      {
+        "translatedText": "โปรดแก้ไขปัญหาในไฟล์รายงานการทดสอบที่แนบมาด้วย"
+      },
+      {
+        "translatedText": "โปรดลองสร้างแผนที่ใหม่และแก้ไขปัญหานี้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "โพส"
+      },
+      {
+        "translatedText": "เตรียมไฟล์เสียงเวอร์ชันสงบ 3 ระดับ คือ ระดับสงบ ระดับสร้างความตึงเครียด และระดับต่อสู้ โดยแต่ละเวอร์ชันต้องมีความยาว 10 วินาทีถึง 15 นาที ไฟล์ต้นฉบับจะถูกลบหลังจากการแปลงไฟล์ โปรดเก็บไฟล์ต้นฉบับของคุณไว้"
+      },
+      {
+        "translatedText": "เตรียมลองใหม่"
+      },
+      {
+        "translatedText": "เตรียมการออกแบบ"
+      },
+      {
+        "translatedText": "เตรียมการเผยแพร่ฉบับนี้"
+      },
+      {
+        "translatedText": "กำลังเตรียมรูปภาพ…"
+      },
+      {
+        "translatedText": "กำลังเตรียมโมเดลของคุณ…"
+      },
+      {
+        "translatedText": "เกียรติยศ"
+      },
+      {
+        "translatedText": "เกียรติยศ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ตัวอย่าง"
+      },
+      {
+        "translatedText": "ดูตัวอย่างการเปลี่ยนแปลงปัจจุบัน"
+      },
+      {
+        "translatedText": "ดูตัวอย่างการเปลี่ยนฉากในเกม"
+      },
+      {
+        "translatedText": "ไม่พบตัวอย่าง"
+      },
+      {
+        "translatedText": "ตัวอย่างของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ไม่สามารถดูตัวอย่างได้"
+      },
+      {
+        "translatedText": "ไม่สามารถดูตัวอย่างได้"
+      },
+      {
+        "translatedText": "ดูตัวอย่าง · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "การดูตัวอย่างการเปลี่ยนฉากในเกม · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · การกำหนดเวลาเฟดของเกม"
+      },
+      {
+        "translatedText": "ก่อนหน้า"
+      },
+      {
+        "translatedText": "ก่อนหน้านี้หมายถึง"
+      },
+      {
+        "translatedText": "บันทึกก่อนหน้านี้"
+      },
+      {
+        "translatedText": "ตัวอย่างก่อนหน้า"
+      },
+      {
+        "translatedText": "ฉบับร่างที่บันทึกไว้ก่อนหน้านี้"
+      },
+      {
+        "translatedText": "ขั้นตอนก่อนหน้า"
+      },
+      {
+        "translatedText": "ราคา"
+      },
+      {
+        "translatedText": "ส่วนตัว"
+      },
+      {
+        "translatedText": "แผนที่ส่วนตัวหรือแผนที่ที่อัปโหลด"
+      },
+      {
+        "translatedText": "โครงการส่วนตัว"
+      },
+      {
+        "translatedText": "ส่วนตัว — สำหรับคุณเท่านั้น"
+      },
+      {
+        "translatedText": "กำลังประมวลผล"
+      },
+      {
+        "translatedText": "ผลิตภัณฑ์"
+      },
+      {
+        "translatedText": "ผลิตภัณฑ์ / รุ่น"
+      },
+      {
+        "translatedText": "ตารางแสดงกระแสเครดิตของผลิตภัณฑ์"
+      },
+      {
+        "translatedText": "เครดิตผลิตภัณฑ์"
+      }
+    ]
+  }
+}

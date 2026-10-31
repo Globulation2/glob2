@@ -1,0 +1,390 @@
+[
+  {
+    "id": "native:[AI]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[ai]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[AIJavaScript]",
+    "reason": "Official programming-language name; translating it would obscure the file/API requirement."
+  },
+  {
+    "id": "native:[delete]",
+    "reason": "Physical keyboard key label in shortcut UI, distinct from the translated delete action."
+  },
+  {
+    "id": "native:[hp]",
+    "reason": "Conventional hit-point abbreviation, matching HUD measurements."
+  },
+  {
+    "id": "native:[OpenGL]",
+    "reason": "Official renderer/API name."
+  },
+  {
+    "id": "native:[FFA]",
+    "reason": "Recognizable free-for-all game-format abbreviation in the compact format selector."
+  },
+  {
+    "id": "native:[Stats low HP ranges]",
+    "reason": "Compact health-threshold legend; HP and numeric thresholds must remain recognizable."
+  },
+  {
+    "id": "native:[zoom factor %0]",
+    "reason": "Invariant punctuation/numeric formatter '%0×'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "native:[%0 / %1 HP · %2]",
+    "reason": "Numerical health HUD formatter using conventional HP abbreviation."
+  },
+  {
+    "id": "native:[P %0/%1/%2]",
+    "reason": "Compact profiler label P with three numerical measurements, not player-facing English prose."
+  },
+  {
+    "id": "native:[CPU load %0]",
+    "reason": "Processor initialism CPU plus its numeric percentage."
+  },
+  {
+    "id": "native:[%0 · %1]",
+    "reason": "Invariant punctuation/numeric formatter '%0 · %1'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "native:[%0 %1]",
+    "reason": "Invariant punctuation/numeric formatter '%0 %1'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "native:[conn ai]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[match ai]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[qm ai]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[qm ai badge]",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "native:[profile draw letter]",
+    "reason": "Invariant punctuation/numeric formatter '–'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "native:[maps 256]",
+    "reason": "Map dimensions use invariant Arabic numerals and multiplication sign."
+  },
+  {
+    "id": "native:[maps %0 kb]",
+    "reason": "File-size value with conventional KB unit."
+  },
+  {
+    "id": "native:[settings Hive Mind]",
+    "reason": "Product/feature proper name, kept consistent across native and web UI."
+  },
+  {
+    "id": "online: ({slot0})",
+    "reason": "Invariant punctuation/numeric formatter ' ({slot0})'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online: / {slot0}",
+    "reason": "Invariant punctuation/numeric formatter ' / {slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online: · ",
+    "reason": "Invariant punctuation/numeric formatter ' · '; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online: · {slot0}",
+    "reason": "Invariant punctuation/numeric formatter ' · {slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online: — ",
+    "reason": "Invariant punctuation/numeric formatter ' — '; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online: → ",
+    "reason": "Invariant punctuation/numeric formatter ' → '; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:#{slot0}",
+    "reason": "Invariant punctuation/numeric formatter '#{slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:.",
+    "reason": "Invariant punctuation/numeric formatter '.'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:/ais/favourites",
+    "reason": "Literal account-library URL route, preserved for navigation."
+  },
+  {
+    "id": "online:/ais/mine",
+    "reason": "Literal owned-AI URL route, preserved for navigation."
+  },
+  {
+    "id": "online:1.0.0",
+    "reason": "Semantic version example; numeric version syntax must remain exact."
+  },
+  {
+    "id": "online:: ",
+    "reason": "Invariant punctuation/numeric formatter ': '; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:A · V{slot0}",
+    "reason": "Asset-stage/version identifier template with invariant A/V abbreviations."
+  },
+  {
+    "id": "online:AI",
+    "reason": "Standard artificial-intelligence initialism, also used in the reviewed Thai AI labels."
+  },
+  {
+    "id": "online:B{slot0}",
+    "reason": "Building identifier template using literal B prefix."
+  },
+  {
+    "id": "online:CC BY",
+    "reason": "Exact Creative Commons licence identifier CC BY; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC BY 4.0",
+    "reason": "Exact Creative Commons licence identifier CC BY 4.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC BY-SA 4.0",
+    "reason": "Exact Creative Commons licence identifier CC BY-SA 4.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC-BY-4.0",
+    "reason": "Exact Creative Commons licence identifier CC-BY-4.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC-BY-SA-4.0",
+    "reason": "Exact Creative Commons licence identifier CC-BY-SA-4.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC0",
+    "reason": "Exact Creative Commons licence identifier CC0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC0 1.0",
+    "reason": "Exact Creative Commons licence identifier CC0 1.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:CC0-1.0",
+    "reason": "Exact Creative Commons licence identifier CC0-1.0; the terms around this identifier are translated separately."
+  },
+  {
+    "id": "online:Cabino",
+    "reason": "AI opponent proper name Cabino matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Castor",
+    "reason": "AI opponent proper name Castor matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Cortex",
+    "reason": "AI opponent proper name Cortex matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Econo",
+    "reason": "AI opponent proper name Econo matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Globulation 2",
+    "reason": "Official game title."
+  },
+  {
+    "id": "online:HTTP {value0}",
+    "reason": "HTTP protocol initialism and status code formatter."
+  },
+  {
+    "id": "online:Hive Mind",
+    "reason": "Product/feature proper name, kept consistent across native and web UI."
+  },
+  {
+    "id": "online:JSON",
+    "reason": "Standard data-format name needed to identify source/package format."
+  },
+  {
+    "id": "online:JavaScript · {slot0}",
+    "reason": "Official programming-language name followed by dynamically supplied metadata."
+  },
+  {
+    "id": "online:Maxima",
+    "reason": "AI opponent proper name Maxima matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Nicowar",
+    "reason": "AI opponent proper name Nicowar matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Numbi",
+    "reason": "AI opponent proper name Numbi matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Reach to Infinity",
+    "reason": "AI opponent proper name Reach to Infinity matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:Toubib",
+    "reason": "AI opponent proper name Toubib matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:V",
+    "reason": "Physical V key shortcut/visible literal identifier."
+  },
+  {
+    "id": "online:V{slot0} · {slot1}",
+    "reason": "Version identifier V prefix and dynamic metadata formatter."
+  },
+  {
+    "id": "online:Warrush",
+    "reason": "AI opponent proper name Warrush matches identifier/name in platform/apps/web/src/format.ts and native AI selector; keep recognizable across languages."
+  },
+  {
+    "id": "online:b-",
+    "reason": "Literal machine ID prefix b-, retained to match the identifier."
+  },
+  {
+    "id": "online:public, max-age=604800",
+    "reason": "Literal Cache-Control directive; translation would change technical syntax."
+  },
+  {
+    "id": "online:r{slot0} · {slot1}",
+    "reason": "Revision identifier r prefix followed by dynamic metadata."
+  },
+  {
+    "id": "online:text/html; charset=utf-8",
+    "reason": "Literal MIME type/charset header syntax."
+  },
+  {
+    "id": "online:v{slot0}",
+    "reason": "Literal version identifier prefix v plus numerical version."
+  },
+  {
+    "id": "online:{hours} {minutes}",
+    "reason": "Composes already localized hour/minute dynamic values; no English display words remain."
+  },
+  {
+    "id": "online:{slot0} ({slot1}%)",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} ({slot1}%)'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} ({slot1})",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} ({slot1})'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} / {slot1}",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} / {slot1}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} · {slot1}",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} · {slot1}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} · {slot1} {slot2}",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} · {slot1} {slot2}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} · {slot1} · {slot2}",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} · {slot1} · {slot2}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} · {slot1} · {slot2} × {slot3}",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} · {slot1} · {slot2} × {slot3}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0} ↗",
+    "reason": "Invariant punctuation/numeric formatter '{slot0} ↗'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0}%",
+    "reason": "Invariant punctuation/numeric formatter '{slot0}%'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0}/32",
+    "reason": "Invariant punctuation/numeric formatter '{slot0}/32'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{slot0}°",
+    "reason": "Invariant punctuation/numeric formatter '{slot0}°'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:×",
+    "reason": "Invariant punctuation/numeric formatter '×'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:–",
+    "reason": "Invariant punctuation/numeric formatter '–'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:•••",
+    "reason": "Invariant punctuation/numeric formatter '•••'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:…",
+    "reason": "Invariant punctuation/numeric formatter '…'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:← {slot0}",
+    "reason": "Invariant punctuation/numeric formatter '← {slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:↑",
+    "reason": "Invariant punctuation/numeric formatter '↑'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:→",
+    "reason": "Invariant punctuation/numeric formatter '→'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:↗",
+    "reason": "Invariant punctuation/numeric formatter '↗'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:−",
+    "reason": "Invariant punctuation/numeric formatter '−'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:⌄",
+    "reason": "Invariant punctuation/numeric formatter '⌄'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:◎",
+    "reason": "Invariant punctuation/numeric formatter '◎'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:●",
+    "reason": "Invariant punctuation/numeric formatter '●'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:★",
+    "reason": "Invariant punctuation/numeric formatter '★'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:♥ {slot0}",
+    "reason": "Invariant punctuation/numeric formatter '♥ {slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:♥ {slot0} · {slot1}",
+    "reason": "Invariant punctuation/numeric formatter '♥ {slot0} · {slot1}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:✕",
+    "reason": "Invariant punctuation/numeric formatter '✕'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:⠿ {slot0}",
+    "reason": "Invariant punctuation/numeric formatter '⠿ {slot0}'; its dynamic slots supply the actual localized or user-authored content."
+  },
+  {
+    "id": "online:{count} {status}",
+    "reason": "Composes numerical count and already localized status; no English display words remain."
+  }
+]

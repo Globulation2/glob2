@@ -1,0 +1,126 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{loaded}</span> of <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{total}</span> MB",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> No app?",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> Studio is not enabled on this instance.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> as",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> invited you to their <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Globulation 2</span> room<span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{p1}</span>.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> must be an integer from <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{p1}</span> to <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{p2}</span>.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> sign-in is unavailable right now.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>  <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> credits available",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>  <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> credits available",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> (<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>%)",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> (<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>)",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> / <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> / <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> passed",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> Manual editing and local playtests use no credits.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> The preview shows exactly what will be saved.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> Try again, or download the set to listen locally.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> W · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> L",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> W · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> L<span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> and resolve",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> available · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> available · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> before buying so you can recover your purchases.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits available",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits available · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> reserved",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits reserved for work in progress.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>  <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{loaded}</span> แล้ว <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{total}</span> MB"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ไม่มีแอปเหรอ?"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> Studio ไม่ได้เปิดใช้งานในอินสแตนซ์นี้"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> เป็น"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> เชิญคุณไปที่ห้อง <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Globulation 2</span> ของพวกเขา <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{p1}</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ต้องเป็นจำนวนเต็มตั้งแต่ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{p1}</span> ถึง <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{p2}</span>"
+      },
+      {
+        "translatedText": "ขณะนี้ไม่สามารถเข้าสู่ระบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ได้"
+      },
+      {
+        "translatedText": "ห้องของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ปิดไปแล้ว ดังนั้นคำเชิญนี้จึงใช้ไม่ได้อีกต่อไป โปรดขอลิงก์ใหม่จากพวกเขา หรือเริ่มเกมของคุณเอง"
+      },
+      {
+        "translatedText": "มีเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ให้ใช้"
+      },
+      {
+        "translatedText": "มีเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ให้ใช้"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ( <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> %)"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ( <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> )"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> / <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> / <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ผ่านแล้ว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> การแก้ไขด้วยตนเองและการทดสอบการเล่นในเครื่องจะไม่ให้เครดิตใดๆ"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ตัวอย่างจะแสดงสิ่งที่จะถูกบันทึกอย่างชัดเจน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ลองใหม่อีกครั้ง หรือดาวน์โหลดชุดไฟล์เพื่อฟังในเครื่อง"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ตะวันตก · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ซ้าย"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ตะวันตก · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ซ้าย <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> และแก้ไข"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ว่าง · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ถูกจองแล้ว การสนทนาต้องใช้เครดิตที่ว่างอยู่ การส่งแผนที่หรือการแก้ไขแต่ละครั้งมีค่าใช้จ่าย 1 เครดิต หากการสร้างแผนที่ล้มเหลว จะต้องคืนเครดิต"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ว่าง · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ถูกจองแล้ว การสนทนาต้องใช้เครดิตที่ว่างอยู่ การส่งมอบชุดงานหรือการแก้ไขแต่ละครั้งมีค่าใช้จ่าย 1 เครดิต หากงานไม่สำเร็จ จะต้องคืนเครดิต"
+      },
+      {
+        "translatedText": "ตรวจสอบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ก่อนซื้อ เพื่อให้คุณสามารถกู้คืนการซื้อของคุณได้"
+      },
+      {
+        "translatedText": "มีเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ให้ใช้"
+      },
+      {
+        "translatedText": "มีเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> ให้ใช้ และ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ถูกจองแล้ว"
+      },
+      {
+        "translatedText": "เครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> สงวนไว้สำหรับงานที่อยู่ระหว่างการพัฒนา"
+      },
+      {
+        "translatedText": "เครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      }
+    ]
+  }
+}

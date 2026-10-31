@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Assemble the pack",
+      "At least <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> characters.",
+      "At least <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> seats must be taken.",
+      "Attached diagnostics",
+      "Attack power",
+      "Attempts",
+      "Audible comparison version",
+      "Audio quality checks",
+      "Audit history",
+      "Authenticated account activity; anonymous visitors are excluded.",
+      "Author-reported generator",
+      "Authoring guide",
+      "Authoring guide ↗",
+      "Average successful completion time",
+      "Awaiting provider outcome",
+      "Awaiting validation",
+      "Back to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>",
+      "Back to My skins",
+      "Back to sign in",
+      "Back to the home page",
+      "Background color",
+      "Background material",
+      "Background noise",
+      "Balanced",
+      "Ban",
+      "Ban <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>? This signs them out everywhere.",
+      "Band width",
+      "Banned",
+      "Base artwork",
+      "Behind",
+      "Best <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Both",
+      "Boundary style",
+      "Branching spires rising from a mound.",
+      "Broken",
+      "Browse",
+      "Browse library",
+      "Browse maps",
+      "Browse the library",
+      "Browser recovery is unavailable. Keep this page open until changes are saved.",
+      "Brush",
+      "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "Brush paints",
+      "Brush size",
+      "Build",
+      "Build a consistent world with custom terrain, resources, and artwork.",
+      "Build details",
+      "Build in AI Map Studio",
+      "Build in AI Music Studio",
+      "Build in AI Studio",
+      "Build the playable map",
+      "Build wooded hills with wide routes between colonies",
+      "Building",
+      "Building Studio",
+      "Building Studio is disabled on this instance. Your saved projects remain available.",
+      "Building Studio is disabled.",
+      "Building color",
+      "Building color preview",
+      "Building design conversation",
+      "Building family",
+      "Building family editor",
+      "Building library",
+      "Building projects",
+      "Building-credit sales are not enabled.",
+      "Buildings",
+      "Buildings allowed",
+      "Buildings and upgrade stages",
+      "Buildings under construction",
+      "Buildings<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> latest verified match against recent average",
+      "Bundled <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> file",
+      "Buy <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Buy <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "Buy <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> credits · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "By a map generator",
+      "By generator",
+      "By map",
+      "By queue",
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> likes · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>",
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> terrains · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span> resources"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ประกอบชุดอุปกรณ์"
+      },
+      {
+        "translatedText": "อย่างน้อย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ตัวอักษร"
+      },
+      {
+        "translatedText": "ต้องมีการจองที่นั่งอย่างน้อย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ที่นั่ง"
+      },
+      {
+        "translatedText": "ไฟล์การวินิจฉัยที่แนบมา"
+      },
+      {
+        "translatedText": "พลังโจมตี"
+      },
+      {
+        "translatedText": "ความพยายาม"
+      },
+      {
+        "translatedText": "เวอร์ชันเปรียบเทียบเสียง"
+      },
+      {
+        "translatedText": "การตรวจสอบคุณภาพเสียง"
+      },
+      {
+        "translatedText": "ประวัติการตรวจสอบ"
+      },
+      {
+        "translatedText": "ผู้เข้าชมจะต้องได้รับการยืนยันตัวตนก่อนเข้าชมเว็บไซต์ ผู้เข้าชมที่ไม่ระบุตัวตนจะถูกยกเว้น"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดที่ผู้เขียนรายงาน"
+      },
+      {
+        "translatedText": "คู่มือการเขียน"
+      },
+      {
+        "translatedText": "คู่มือการสร้างเนื้อหา ↗"
+      },
+      {
+        "translatedText": "เวลาเฉลี่ยในการดำเนินการสำเร็จ"
+      },
+      {
+        "translatedText": "รอผลการตรวจจากผู้ให้บริการ"
+      },
+      {
+        "translatedText": "กำลังรอการตรวจสอบยืนยัน"
+      },
+      {
+        "translatedText": "กลับสู่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "กลับไปที่สกินของฉัน"
+      },
+      {
+        "translatedText": "กลับไปที่หน้าเข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "กลับสู่หน้าหลัก"
+      },
+      {
+        "translatedText": "สีพื้นหลัง"
+      },
+      {
+        "translatedText": "ข้อมูลพื้นฐาน"
+      },
+      {
+        "translatedText": "เสียงรบกวนพื้นหลัง"
+      },
+      {
+        "translatedText": "สมดุล"
+      },
+      {
+        "translatedText": "ห้าม"
+      },
+      {
+        "translatedText": "แบน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ? วิธีนี้จะทำให้พวกเขาออกจากระบบทุกที่"
+      },
+      {
+        "translatedText": "แบนด์วิดท์"
+      },
+      {
+        "translatedText": "ห้าม"
+      },
+      {
+        "translatedText": "งานศิลปะพื้นฐาน"
+      },
+      {
+        "translatedText": "ด้านหลัง"
+      },
+      {
+        "translatedText": "ดีที่สุด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ทั้งคู่"
+      },
+      {
+        "translatedText": "รูปแบบขอบเขต"
+      },
+      {
+        "translatedText": "ยอดแหลมแตกแขนงผุดขึ้นจากเนินดิน"
+      },
+      {
+        "translatedText": "แตกหัก"
+      },
+      {
+        "translatedText": "เรียกดู"
+      },
+      {
+        "translatedText": "เรียกดูห้องสมุด"
+      },
+      {
+        "translatedText": "ดูแผนที่"
+      },
+      {
+        "translatedText": "เรียกดูคลังข้อมูล"
+      },
+      {
+        "translatedText": "ไม่สามารถกู้คืนเบราว์เซอร์ได้ โปรดเปิดหน้านี้ไว้จนกว่าการเปลี่ยนแปลงจะถูกบันทึก"
+      },
+      {
+        "translatedText": "แปรง"
+      },
+      {
+        "translatedText": "แปรงและยางลบสามารถเข้าถึงพื้นผิวที่ซ่อนอยู่ใต้เคอร์เซอร์ได้ พื้นผิวบางส่วนด้านหน้า/ด้านหลังและด้านบน/ด้านล่างใช้สีร่วมกัน เส้นสีอาจปรากฏขึ้นที่ด้านที่ตรงกันด้วย ทำให้การพลิกของก้อนสีดูราบรื่น"
+      },
+      {
+        "translatedText": "สีแปรง"
+      },
+      {
+        "translatedText": "ขนาดแปรง"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "สร้างโลกที่สอดคล้องกันด้วยภูมิประเทศ ทรัพยากร และงานศิลปะที่ออกแบบเองได้"
+      },
+      {
+        "translatedText": "รายละเอียดการสร้าง"
+      },
+      {
+        "translatedText": "สร้างด้วย AI Map Studio"
+      },
+      {
+        "translatedText": "ในตัวด้วย AI Music Studio"
+      },
+      {
+        "translatedText": "สร้างด้วย AI Studio"
+      },
+      {
+        "translatedText": "สร้างแผนที่ที่สามารถเล่นได้"
+      },
+      {
+        "translatedText": "สร้างเนินเขาที่มีป่าไม้ปกคลุมและมีเส้นทางกว้างขวางเชื่อมระหว่างชุมชนต่างๆ"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "สตูดิโอก่อสร้าง"
+      },
+      {
+        "translatedText": "Building Studio ถูกปิดใช้งานในระบบนี้ โครงการที่คุณบันทึกไว้ยังคงใช้งานได้"
+      },
+      {
+        "translatedText": "Building Studio ถูกปิดใช้งานอยู่"
+      },
+      {
+        "translatedText": "สีของอาคาร"
+      },
+      {
+        "translatedText": "ตัวอย่างสีของอาคาร"
+      },
+      {
+        "translatedText": "การสนทนาเกี่ยวกับการออกแบบอาคาร"
+      },
+      {
+        "translatedText": "สร้างครอบครัว"
+      },
+      {
+        "translatedText": "บรรณาธิการฝ่ายสร้างครอบครัว"
+      },
+      {
+        "translatedText": "อาคารห้องสมุด"
+      },
+      {
+        "translatedText": "โครงการก่อสร้าง"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้งานระบบขายเครดิตอาคารได้"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "อาคารที่ได้รับอนุญาต"
+      },
+      {
+        "translatedText": "อาคารและขั้นตอนการปรับปรุง"
+      },
+      {
+        "translatedText": "อาคารที่อยู่ระหว่างการก่อสร้าง"
+      },
+      {
+        "translatedText": "อาคาร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> การจับคู่ที่ได้รับการยืนยันล่าสุดเทียบกับค่าเฉลี่ยล่าสุด"
+      },
+      {
+        "translatedText": "ไฟล์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ที่รวมไว้"
+      },
+      {
+        "translatedText": "ซื้อ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ซื้อเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "ซื้อเครดิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "โดยโปรแกรมสร้างแผนที่"
+      },
+      {
+        "translatedText": "โดยเครื่องกำเนิดไฟฟ้า"
+      },
+      {
+        "translatedText": "โดยแผนที่"
+      },
+      {
+        "translatedText": "ตามลำดับคิว"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> ไลค์ · <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · ภูมิประเทศ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span> · ทรัพยากร <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">{slot2}</span>"
+      }
+    ]
+  }
+}

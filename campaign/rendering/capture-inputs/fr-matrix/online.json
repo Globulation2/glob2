@@ -1,0 +1,10 @@
+{
+  "Sign in": "Se connecter",
+  "Sign out": "Se déconnecter",
+  "Play": "Jouer",
+  "Custom content credits": "Crédits de contenu personnalisés",
+  "Source identity": "Identité de la source",
+  "{slot0} teams": "{slot0} équipes",
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": "Le résultat du fournisseur doit être rapproché. Vos {value0} crédits réservés restent bloqués ; les nouvelles demandes sont suspendues. La modification manuelle et l’exportation restent disponibles.",
+  "Good under {value0}, fair under {value1}, poor from {value2}.": "Bon sous {value0}, acceptable sous {value1}, mauvais à partir de {value2}."
+}

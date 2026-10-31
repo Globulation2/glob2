@@ -1,0 +1,18 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_files_sha256": {
+    "darwin/Info.plist": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896"
+  },
+  "target_sha256": "14882598830eb95cdd1b7a28f016f48d0c90646104364f41695e69508a27c377",
+  "targets": {
+    "macos:NSLocalNetworkUsageDescription": "Globulation 2 ค้นหาและเข้าร่วมเกมแบบหลายผู้เล่นที่โฮสต์บนเครือข่ายในพื้นที่ของคุณ"
+  },
+  "reviewed_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "approved_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "findings": [],
+  "rationale": "Fresh independent source/Thai check: ค้นหาและเข้าร่วม preserves both discovery and joining, เกมแบบหลายผู้เล่น describes multiplayer games, ที่โฮสต์บนเครือข่ายในพื้นที่ของคุณ preserves hosted local-network scope, and game brand remains literal. Natural permission-purpose statement; no Internet claim. Agent-reviewed, not native-human-certified."
+}

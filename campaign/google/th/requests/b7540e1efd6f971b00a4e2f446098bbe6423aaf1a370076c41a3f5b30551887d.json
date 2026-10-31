@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Version <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Version <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>",
+      "Versions",
+      "Versions of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Versions of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "View orientation",
+      "View profile and games",
+      "View reported paint",
+      "View revision",
+      "View <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Viewing a saved revision. Restore it to make it the current draft.",
+      "Viewing <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "View…",
+      "Visibility",
+      "Volume",
+      "V<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>",
+      "Wait for a pending compatibility check.",
+      "Wait for a pending generator check.",
+      "Wait for the provider call to return before cancelling.",
+      "Waiting",
+      "Waiting for service capacity. Your place is saved.",
+      "Waived",
+      "Warning",
+      "Warrior attack",
+      "Warrior health",
+      "Warriors",
+      "Warrush",
+      "Watch AI play",
+      "Watch in browser",
+      "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "Water",
+      "Waves",
+      "Webhook mode mismatch.",
+      "Weight",
+      "Welcome to the colony",
+      "Welcome, <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "What changed",
+      "What will your world look like?",
+      "What would you like to create?",
+      "Whole model",
+      "Why hide this map? (shown to its owner)",
+      "Wide",
+      "Width",
+      "Win rate",
+      "Win rate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Win rate, <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> days",
+      "Win rate, <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> days",
+      "Winner",
+      "Withdraw from library",
+      "Withdraw published family",
+      "Withdraw release",
+      "Withdrawn",
+      "Won",
+      "Worker leases",
+      "Worker slots",
+      "Workers",
+      "Working…",
+      "Workspace view",
+      "Wrong username or password.",
+      "YOUR COLONY",
+      "YOUR COMPOSER",
+      "Yes",
+      "Yes, continue",
+      "You",
+      "You already own this product.",
+      "You already reported this map.",
+      "You are already in a queue.",
+      "You are muted.",
+      "You are not in this room.",
+      "You are sending messages too quickly.",
+      "You are signed in",
+      "You are signed in as",
+      "You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+      "You can close this page.",
+      "You can only ban accounts with a lower role.",
+      "You can only delete accounts with a lower role.",
+      "You can only mute accounts with a lower role.",
+      "You can send a new message to try again.",
+      "You cannot ban yourself.",
+      "You cannot change your own role."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "เวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value1}</span>"
+      },
+      {
+        "translatedText": "เวอร์ชัน"
+      },
+      {
+        "translatedText": "เวอร์ชันของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เวอร์ชันของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ดูการวางแนว"
+      },
+      {
+        "translatedText": "ดูโปรไฟล์และเกม"
+      },
+      {
+        "translatedText": "ดูรายงานสีทาบ้าน"
+      },
+      {
+        "translatedText": "ดูการแก้ไข"
+      },
+      {
+        "translatedText": "ดู <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "กำลังดูฉบับแก้ไขที่บันทึกไว้ กดกู้คืนเพื่อให้เป็นฉบับร่างปัจจุบัน"
+      },
+      {
+        "translatedText": "กำลังดู <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ดู…"
+      },
+      {
+        "translatedText": "การมองเห็น"
+      },
+      {
+        "translatedText": "ปริมาณ"
+      },
+      {
+        "translatedText": "V <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot1}</span>"
+      },
+      {
+        "translatedText": "รอการตรวจสอบความเข้ากันได้ที่กำลังดำเนินการอยู่"
+      },
+      {
+        "translatedText": "รอการตรวจสอบเครื่องกำเนิดไฟฟ้าที่กำลังดำเนินการอยู่"
+      },
+      {
+        "translatedText": "รอให้ผู้ให้บริการโทรกลับก่อนจึงค่อยยกเลิก"
+      },
+      {
+        "translatedText": "ซึ่งรอคอย"
+      },
+      {
+        "translatedText": "กำลังรอความพร้อมให้บริการ ที่นั่งของคุณได้รับการยืนยันแล้ว"
+      },
+      {
+        "translatedText": "ยกเว้น"
+      },
+      {
+        "translatedText": "คำเตือน"
+      },
+      {
+        "translatedText": "นักรบโจมตี"
+      },
+      {
+        "translatedText": "สุขภาพนักรบ"
+      },
+      {
+        "translatedText": "นักรบ"
+      },
+      {
+        "translatedText": "วอร์รัช"
+      },
+      {
+        "translatedText": "ดู AI เล่น"
+      },
+      {
+        "translatedText": "รับชมผ่านเบราว์เซอร์"
+      },
+      {
+        "translatedText": "ชมการต่อสู้ระหว่าง AI กับคู่ต่อสู้ในเกมบนแผนที่ทดสอบที่กำหนดไว้ เกมจะทำงานบนคอมพิวเตอร์เครื่องนี้และจะจบลงเมื่อคุณปิดเกม"
+      },
+      {
+        "translatedText": "น้ำ"
+      },
+      {
+        "translatedText": "คลื่น"
+      },
+      {
+        "translatedText": "โหมด Webhook ไม่ตรงกัน"
+      },
+      {
+        "translatedText": "น้ำหนัก"
+      },
+      {
+        "translatedText": "ยินดีต้อนรับสู่อาณานิคม"
+      },
+      {
+        "translatedText": "ยินดีต้อนรับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "อะไรเปลี่ยนไป"
+      },
+      {
+        "translatedText": "โลกของคุณจะมีหน้าตาเป็นอย่างไร?"
+      },
+      {
+        "translatedText": "คุณอยากสร้างอะไร?"
+      },
+      {
+        "translatedText": "โมเดลทั้งชุด"
+      },
+      {
+        "translatedText": "ทำไมถึงซ่อนแผนที่นี้ (แสดงให้เจ้าของเห็นแล้ว)"
+      },
+      {
+        "translatedText": "กว้าง"
+      },
+      {
+        "translatedText": "ความกว้าง"
+      },
+      {
+        "translatedText": "อัตราการชนะ"
+      },
+      {
+        "translatedText": "อัตราการชนะ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "อัตราการชนะ, <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> วัน"
+      },
+      {
+        "translatedText": "อัตราการชนะ, <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> วัน"
+      },
+      {
+        "translatedText": "ผู้ชนะ"
+      },
+      {
+        "translatedText": "ถอนตัวออกจากห้องสมุด"
+      },
+      {
+        "translatedText": "ถอนการเผยแพร่ครอบครัว"
+      },
+      {
+        "translatedText": "ถอนการปล่อยตัว"
+      },
+      {
+        "translatedText": "ถอนออก"
+      },
+      {
+        "translatedText": "วอน"
+      },
+      {
+        "translatedText": "สัญญาเช่าแรงงาน"
+      },
+      {
+        "translatedText": "ตำแหน่งคนงาน"
+      },
+      {
+        "translatedText": "คนงาน"
+      },
+      {
+        "translatedText": "การทำงาน…"
+      },
+      {
+        "translatedText": "มุมมองพื้นที่ทำงาน"
+      },
+      {
+        "translatedText": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "อาณานิคมของคุณ"
+      },
+      {
+        "translatedText": "นักแต่งเพลงของคุณ"
+      },
+      {
+        "translatedText": "ใช่"
+      },
+      {
+        "translatedText": "ใช่ ดำเนินการต่อ"
+      },
+      {
+        "translatedText": "คุณ"
+      },
+      {
+        "translatedText": "คุณมีผลิตภัณฑ์นี้อยู่แล้ว"
+      },
+      {
+        "translatedText": "คุณได้รายงานแผนที่นี้ไปแล้ว"
+      },
+      {
+        "translatedText": "คุณกำลังอยู่ในคิวอยู่แล้ว"
+      },
+      {
+        "translatedText": "คุณถูกปิดเสียงอยู่"
+      },
+      {
+        "translatedText": "คุณไม่ได้อยู่ในห้องนี้"
+      },
+      {
+        "translatedText": "คุณส่งข้อความเร็วเกินไป"
+      },
+      {
+        "translatedText": "คุณได้เข้าสู่ระบบแล้ว"
+      },
+      {
+        "translatedText": "คุณเข้าสู่ระบบในฐานะ..."
+      },
+      {
+        "translatedText": "คุณได้ออกจากระบบทุกที่แล้ว ชื่อของคุณหายไปจากประวัติการแข่งขัน และแสดงเป็น “ผู้เล่นที่ถูกลบ” ขอบคุณที่ร่วมเล่น"
+      },
+      {
+        "translatedText": "คุณสามารถปิดหน้านี้ได้"
+      },
+      {
+        "translatedText": "คุณสามารถแบนบัญชีที่มีบทบาทต่ำกว่าได้เท่านั้น"
+      },
+      {
+        "translatedText": "คุณสามารถลบบัญชีได้เฉพาะบัญชีที่มีบทบาทต่ำกว่าเท่านั้น"
+      },
+      {
+        "translatedText": "คุณสามารถปิดเสียงเฉพาะบัญชีที่มีบทบาทต่ำกว่าเท่านั้น"
+      },
+      {
+        "translatedText": "คุณสามารถส่งข้อความใหม่เพื่อลองอีกครั้งได้"
+      },
+      {
+        "translatedText": "คุณไม่สามารถห้ามตัวเองได้"
+      },
+      {
+        "translatedText": "คุณไม่สามารถเปลี่ยนแปลงบทบาทของตัวเองได้"
+      }
+    ]
+  }
+}

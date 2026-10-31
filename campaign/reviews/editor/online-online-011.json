@@ -1,0 +1,429 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "311568294a7c168afb60b42a91f0379fb5d15716459f8d85e1425406b1f39bfe",
+  "edited_keys": [
+    "online:Remove {value0}",
+    "online:Rename",
+    "online:Render the instruments",
+    "online:Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+    "online:Replace or remove the team layer before changing frame dimensions.",
+    "online:Replace the gaps too",
+    "online:Replay",
+    "online:Report",
+    "online:Report AI",
+    "online:Report a problem",
+    "online:Report already resolved.",
+    "online:Report for {value0}",
+    "online:Report has already been resolved. Refresh to review its resolution.",
+    "online:Report not found.",
+    "online:Report reason",
+    "online:Report received.",
+    "online:Report skin",
+    "online:Report this generator",
+    "online:Report this map",
+    "online:Report this release",
+    "online:Reported",
+    "online:Reported skin texture",
+    "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+    "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+    "online:Reports",
+    "online:Request cap",
+    "online:Request cap exceeds the configured limit.",
+    "online:Request failed.",
+    "online:Request not found.",
+    "online:Requests needing attention",
+    "online:Required experiment",
+    "online:Requires the {p0} role.",
+    "online:Reroll seed",
+    "online:Reservation",
+    "online:Reserved",
+    "online:Reserved product credits",
+    "online:Reserved: {slot0} product credits",
+    "online:Reserved: {slot0} product credits{slot1}",
+    "online:Reset angle",
+    "online:Reset filters",
+    "online:Reset toolbox layout",
+    "online:Reset view",
+    "online:Reset · ",
+    "online:Resize conversation",
+    "online:Resolution: {slot0}{slot1}",
+    "online:Resolve",
+    "online:Resolve invalid fields before saving.",
+    "online:Resolve the account changes before saving.",
+    "online:Resolved",
+    "online:Resolved by disabling",
+    "online:Resource",
+    "online:Resource growth",
+    "online:Resource placement permissions",
+    "online:Resources",
+    "online:Restart same setup",
+    "online:Restore",
+    "online:Restore device copy",
+    "online:Restore family",
+    "online:Restore game settings",
+    "online:Restore skin",
+    "online:Restore this revision",
+    "online:Restore this version as the current draft? The current version stays in history.",
+    "online:Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+    "online:Restrictions and deletion require a lower-role account.",
+    "online:Result",
+    "online:Reteaming names team {p0} of {p1}.",
+    "online:Retry",
+    "online:Retry 3D canvas",
+    "online:Retry image",
+    "online:Retry loading skins",
+    "online:Retry loading studio",
+    "online:Retry preview",
+    "online:Retry the same request",
+    "online:Retry validation",
+    "online:Retrying",
+    "online:Return reserved credit",
+    "online:Return to final set",
+    "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+    "online:Revenue and costs",
+    "online:Review account changes to resume saving",
+    "online:Review operations",
+    "online:Review reports",
+    "online:Review set",
+    "online:Revise generated music in Music Studio.",
+    "online:Revise this version",
+    "online:Revision restored to your saved draft.",
+    "online:Revision {slot0}",
+    "online:Revision {slot0} checks: {slot1}",
+    "online:Revision {value0} · seed {value1} · {value2} seconds",
+    "online:Revision {value0} · tick {value1} · live",
+    "online:Role",
+    "online:Room",
+    "online:Room invite",
+    "online:Room match",
+    "online:Room matches go back to their room instead.",
+    "online:Room to breathe",
+    "online:Rooms",
+    "online:Rotate",
+    "online:Rotation ",
+    "online:Run checks",
+    "online:Run checks & preview",
+    "online:Run checks to create a preview.",
+    "online:Run compatibility checks on the current saved revision first.",
+    "online:Run identifier already used.",
+    "online:Running",
+    "online:Runtime diagnostics ({slot0})",
+    "online:Sand",
+    "online:Save",
+    "online:Save and run checks on the current revision before publishing.",
+    "online:Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+    "online:Save details",
+    "online:Save draft",
+    "online:Save photo",
+    "online:Save published details",
+    "online:Save your changes before importing or uploading artwork. Export uses the saved draft.",
+    "online:Save your changes before publishing.",
+    "online:Save your draft before leaving for checkout. Device storage is unavailable.",
+    "online:Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+    "online:Save your manual edits before asking AI to revise the building.",
+    "online:Save your manual edits before asking AI to revise the set.",
+    "online:Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+    "online:Saved",
+    "online:Saved draft history",
+    "online:Saved draft · validation remains version-specific.",
+    "online:Saving account changes…",
+    "online:Scale",
+    "online:Scene and resource gallery",
+    "online:Search",
+    "online:Search AIs",
+    "online:Search accounts",
+    "online:Search buildings",
+    "online:Search maps",
+    "online:Search matches",
+    "online:Search must be at most 64 characters.",
+    "online:Search must be text.",
+    "online:Search names, descriptions, authors…",
+    "online:Search players and AI opponents…",
+    "online:Search titles",
+    "online:Search unavailable",
+    "online:Seat {value0}",
+    "online:Seed",
+    "online:Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+    "online:Select for download",
+    "online:Selected frame",
+    "online:Selected music",
+    "online:Selected terrain",
+    "online:Send report",
+    "online:Send skin report",
+    "online:Send the blob as the body.",
+    "online:Send the file as the request body (Content-Type: application/octet-stream).",
+    "online:Send the job's lease token in {p0}.",
+    "online:Send the match record as the body.",
+    "online:Set contents",
+    "online:Set exceeds 16 MiB.",
+    "online:Set file not found.",
+    "online:Set library",
+    "online:Set not found.",
+    "online:Set preview engine",
+    "online:Set reports",
+    "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together."
+  ],
+  "findings": [
+    {
+      "id": "online:Replay",
+      "severity": "minor",
+      "proposed": "รีเพลย์",
+      "reason": "Recorded game replay noun, consistent with download replay."
+    },
+    {
+      "id": "online:Report already resolved.",
+      "severity": "major",
+      "proposed": "ปิดเรื่องรายงานแล้ว",
+      "reason": "Report resolved, not necessarily underlying content problem fixed."
+    },
+    {
+      "id": "online:Report has already been resolved. Refresh to review its resolution.",
+      "severity": "major",
+      "proposed": "ปิดเรื่องรายงานแล้ว รีเฟรชเพื่อดูผลการดำเนินการ",
+      "reason": "Report resolution does not assert content defect was fixed."
+    },
+    {
+      "id": "online:Report skin",
+      "severity": "major",
+      "proposed": "รายงานสกิน",
+      "reason": "Game skin, not human skin."
+    },
+    {
+      "id": "online:Report this generator",
+      "severity": "major",
+      "proposed": "รายงานตัวสร้างนี้",
+      "reason": "Procedural generator."
+    },
+    {
+      "id": "online:Reported skin texture",
+      "severity": "major",
+      "proposed": "เท็กซ์เจอร์สกินที่ถูกรายงาน",
+      "reason": "Reported game texture, not a report about human skin."
+    },
+    {
+      "id": "online:Request cap",
+      "severity": "major",
+      "proposed": "เพดานเครดิตต่อคำขอ",
+      "reason": "Budget cap, not asking for a hat; CodingStudio.tsx."
+    },
+    {
+      "id": "online:Request cap exceeds the configured limit.",
+      "severity": "major",
+      "proposed": "เพดานเครดิตต่อคำขอเกินขีดจำกัดที่ตั้งไว้",
+      "reason": "Budget amount, not number of requests; coding-studio/routes.ts."
+    },
+    {
+      "id": "online:Reroll seed",
+      "severity": "major",
+      "proposed": "สุ่มค่าสุ่มใหม่",
+      "reason": "Random generation seed, not agricultural seed."
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits",
+      "severity": "major",
+      "proposed": "กันไว้: เครดิตผลิตภัณฑ์ {slot0}",
+      "reason": "Reserved billing credits, not rights reserved."
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits{slot1}",
+      "severity": "major",
+      "proposed": "กันไว้: เครดิตผลิตภัณฑ์ {slot0}{slot1}",
+      "reason": "Reserved billing credits, not rights reserved."
+    },
+    {
+      "id": "online:Reset angle",
+      "severity": "minor",
+      "proposed": "รีเซ็ตมุม",
+      "reason": "Imperative reset-angle action."
+    },
+    {
+      "id": "online:Resolution: {slot0}{slot1}",
+      "severity": "major",
+      "proposed": "ผลการดำเนินการ: {slot0}{slot1}",
+      "reason": "Moderation report resolution, confirmed Moderation.tsx, not screen resolution."
+    },
+    {
+      "id": "online:Resolve",
+      "severity": "major",
+      "proposed": "ปิดเรื่อง",
+      "reason": "Moderation report resolve command."
+    },
+    {
+      "id": "online:Resolved",
+      "severity": "major",
+      "proposed": "ปิดเรื่องแล้ว",
+      "reason": "Moderation report state."
+    },
+    {
+      "id": "online:Resolved by disabling",
+      "severity": "minor",
+      "proposed": "ปิดเรื่องโดยปิดใช้งาน",
+      "reason": "Moderation resolution action."
+    },
+    {
+      "id": "online:Restart same setup",
+      "severity": "major",
+      "proposed": "เริ่มใหม่ด้วยการตั้งค่าเดิม",
+      "reason": "Restart gameplay, not start setting up again."
+    },
+    {
+      "id": "online:Restore family",
+      "severity": "major",
+      "proposed": "คืนค่าตระกูลอาคาร",
+      "reason": "Asset family restore, not rehabilitating a human family."
+    },
+    {
+      "id": "online:Restore skin",
+      "severity": "major",
+      "proposed": "คืนค่าสกิน",
+      "reason": "Game skin restore, not skin treatment."
+    },
+    {
+      "id": "online:Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "severity": "major",
+      "proposed": "การคืนค่าเนื้อหาจะยกเลิกข้อจำกัดจากการดูแลเนื้อหา แต่กฎการเผยแพร่ของแต่ละคลังยังคงมีผล",
+      "reason": "Digital library terminology."
+    },
+    {
+      "id": "online:Restrictions and deletion require a lower-role account.",
+      "severity": "major",
+      "proposed": "การจำกัดสิทธิ์และการลบทำได้เฉพาะกับบัญชีที่มีบทบาทต่ำกว่า",
+      "reason": "Target account must have lower role; not operator needing lower-role credentials."
+    },
+    {
+      "id": "online:Reteaming names team {p0} of {p1}.",
+      "severity": "major",
+      "proposed": "การจัดทีมใหม่อ้างถึงทีม {p0} ทั้งที่มี {p1} ทีม",
+      "reason": "Reteaming references out-of-range team index, not renames team; rooms.ts."
+    },
+    {
+      "id": "online:Retry image",
+      "severity": "major",
+      "proposed": "ลองโหลดภาพใหม่",
+      "reason": "Retry image loading, not send an image."
+    },
+    {
+      "id": "online:Return reserved credit",
+      "severity": "major",
+      "proposed": "คืนเครดิตที่กันไว้",
+      "reason": "Virtual credit reservation, not cash refund."
+    },
+    {
+      "id": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "severity": "major",
+      "proposed": "การคืนเครดิตที่กันไว้จะทำเครื่องหมายว่าการสร้างนี้ล้มเหลว ตรวจสอบรายละเอียดและยืนยันก่อนว่าไม่สามารถกู้คืนผลงานที่ส่งมอบได้",
+      "reason": "Returning reservation marks generation failed; provider text scrambled the causal action."
+    },
+    {
+      "id": "online:Review reports",
+      "severity": "major",
+      "proposed": "ตรวจสอบรายงาน",
+      "reason": "Review is an action, not a report type."
+    },
+    {
+      "id": "online:Review set",
+      "severity": "major",
+      "proposed": "ตรวจสอบชุด",
+      "reason": "Review is an action, not a set of reviews."
+    },
+    {
+      "id": "online:Room match",
+      "severity": "major",
+      "proposed": "แมตช์ในห้อง",
+      "reason": "Room match, not pairing rooms."
+    },
+    {
+      "id": "online:Room matches go back to their room instead.",
+      "severity": "major",
+      "proposed": "แมตช์ในห้องจะกลับไปยังห้องเดิมแทน",
+      "reason": "Match return destination, not people matched within a room."
+    },
+    {
+      "id": "online:Running",
+      "severity": "major",
+      "proposed": "กำลังทำงาน",
+      "reason": "Process running, not physical running."
+    },
+    {
+      "id": "online:Save your draft before leaving for checkout. Device storage is unavailable.",
+      "severity": "major",
+      "proposed": "บันทึกฉบับร่างก่อนออกไปชำระเงิน ที่เก็บข้อมูลในอุปกรณ์ใช้ไม่ได้",
+      "reason": "Unavailable storage does not necessarily mean insufficient space."
+    },
+    {
+      "id": "online:Saving account changes…",
+      "severity": "major",
+      "proposed": "กำลังบันทึกการเปลี่ยนแปลงบัญชี…",
+      "reason": "Saving account edits, not a savings bank account."
+    },
+    {
+      "id": "online:Scene and resource gallery",
+      "severity": "major",
+      "proposed": "แกลเลอรีฉากและทรัพยากร",
+      "reason": "Game resources, not information sources."
+    },
+    {
+      "id": "online:Search matches",
+      "severity": "major",
+      "proposed": "ค้นหาแมตช์",
+      "reason": "Search action for games, not matching search results."
+    },
+    {
+      "id": "online:Seed",
+      "severity": "major",
+      "proposed": "ค่าสุ่ม",
+      "reason": "Procedural generation seed, not agricultural seed."
+    },
+    {
+      "id": "online:Send skin report",
+      "severity": "major",
+      "proposed": "ส่งรายงานสกิน",
+      "reason": "Game skins, not skin-condition reports."
+    },
+    {
+      "id": "online:Send the blob as the body.",
+      "severity": "major",
+      "proposed": "ส่งบล็อบข้อมูลเป็นเนื้อหาคำขอ",
+      "reason": "HTTP binary body, not a round object sent as an anatomical torso."
+    },
+    {
+      "id": "online:Send the file as the request body (Content-Type: application/octet-stream).",
+      "severity": "major",
+      "proposed": "ส่งไฟล์เป็นเนื้อหาคำขอ (Content-Type: application/octet-stream)",
+      "reason": "Preserve exact technical header syntax."
+    },
+    {
+      "id": "online:Set file not found.",
+      "severity": "major",
+      "proposed": "ไม่พบไฟล์ชุด",
+      "reason": "Asset set file, not an unspecified selected file."
+    },
+    {
+      "id": "online:Set library",
+      "severity": "major",
+      "proposed": "คลังชุด",
+      "reason": "Digital collection of asset sets, not a library set."
+    },
+    {
+      "id": "online:Set preview engine",
+      "severity": "major",
+      "proposed": "เอนจินแสดงตัวอย่างชุด",
+      "reason": "Set is an asset noun, not configure verb."
+    },
+    {
+      "id": "online:Set reports",
+      "severity": "major",
+      "proposed": "รายงานชุด",
+      "reason": "Reports about asset sets, not configure reports."
+    },
+    {
+      "id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "severity": "major",
+      "proposed": "กำหนดเป้าหมายแล้วโกลบของคุณจะลงมือทำงาน เลี้ยงดูอาณานิคม ฝึกยูนิต และสำรวจไปด้วยกัน",
+      "reason": "Globs are game creatures and units include non-warriors."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

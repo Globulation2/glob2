@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "No unpublished drafts.",
+      "No validated building release.",
+      "No validated release",
+      "No worker leases are recorded.",
+      "No <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> sign-in is linked to this account.",
+      "Nobody",
+      "None",
+      "None<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> this guest account lives on the device that created it.",
+      "Not AI-generated",
+      "Not applicable",
+      "Not available yet",
+      "Not evaluated",
+      "Not found.",
+      "Not found. It may have been removed, or the link is wrong.",
+      "Not hidden",
+      "Not run",
+      "Not saved",
+      "Notes",
+      "Nothing changed",
+      "Nothing here<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> this page wandered off like an explorer glob. <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>.",
+      "Numbi",
+      "OK",
+      "Offensive",
+      "Offline",
+      "Offline · changes pending",
+      "Older reports",
+      "Oldest queued engine job<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "One .js file · up to 128 KiB · profiles 1 and 2",
+      "One melody. Three moods.",
+      "One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+      "One-time purchases stay with your account. Preview and paint before buying.",
+      "Only a successfully converted release can be published.",
+      "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+      "Only if you have installed the game on this device.",
+      "Only me",
+      "Only registered accounts can be moderators or administrators.",
+      "Only the host assigns seats in this room.",
+      "Only the host can add AIs.",
+      "Only the host can change the room.",
+      "Only the host can empty other seats.",
+      "Only the host can lock seats.",
+      "Only the host can remove players.",
+      "Only the host can start the match.",
+      "Only the map owner can do that.",
+      "Only uncertain calls can be reconciled.",
+      "Only uncertain requests need reconciliation.",
+      "Opacity",
+      "Open",
+      "Open AI Map Studio",
+      "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "Open in installed app",
+      "Open in the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> app",
+      "Open music release",
+      "Open navigation",
+      "Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+      "Open <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{target}</span> ↗",
+      "Opening <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>…",
+      "Opening studio…",
+      "Opening your studio…",
+      "Opens the app if it is installed.",
+      "Operations",
+      "Opponent",
+      "Orders the server refused (a modified or broken client sends these)",
+      "Original game artwork",
+      "Other",
+      "Output tokens",
+      "Overview",
+      "Owned",
+      "PLAYABLE MAP",
+      "Package",
+      "Pad ends with silence to longest",
+      "Page not found",
+      "Paint color",
+      "Paint directly on the 3D <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> model",
+      "Paint repeats on matching surfaces",
+      "Paint tools",
+      "Painting is unavailable in this browser.",
+      "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+      "Passed",
+      "Password"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ไม่มีฉบับร่างที่ยังไม่ได้รับการตีพิมพ์"
+      },
+      {
+        "translatedText": "ไม่มีการตรวจสอบความถูกต้องของเวอร์ชันอาคาร"
+      },
+      {
+        "translatedText": "ไม่มีการเผยแพร่ที่ผ่านการตรวจสอบแล้ว"
+      },
+      {
+        "translatedText": "ไม่มีการบันทึกสัญญาเช่าแรงงานใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีการเชื่อมโยงการเข้าสู่ระบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> กับบัญชีนี้"
+      },
+      {
+        "translatedText": "ไม่มีใคร"
+      },
+      {
+        "translatedText": "ไม่มี"
+      },
+      {
+        "translatedText": "ไม่มี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> บัญชีผู้ใช้ชั่วคราวนี้จะอยู่ในอุปกรณ์ที่สร้างบัญชีนั้นขึ้นมา"
+      },
+      {
+        "translatedText": "ไม่ได้สร้างโดย AI"
+      },
+      {
+        "translatedText": "ไม่เกี่ยวข้อง"
+      },
+      {
+        "translatedText": "ยังไม่พร้อมให้บริการ"
+      },
+      {
+        "translatedText": "ยังไม่ได้รับการประเมิน"
+      },
+      {
+        "translatedText": "ไม่พบข้อมูล"
+      },
+      {
+        "translatedText": "ไม่พบ อาจถูกลบไปแล้ว หรือลิงก์ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ไม่ได้ซ่อนไว้"
+      },
+      {
+        "translatedText": "ไม่ได้ใช้งาน"
+      },
+      {
+        "translatedText": "ไม่ได้บันทึก"
+      },
+      {
+        "translatedText": "หมายเหตุ"
+      },
+      {
+        "translatedText": "ไม่มีอะไรเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "ไม่มีอะไรตรงนี้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> หน้านี้หายไปเหมือน glob ของโปรแกรมสำรวจ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "นัมบี"
+      },
+      {
+        "translatedText": "ตกลง"
+      },
+      {
+        "translatedText": "ก้าวร้าว"
+      },
+      {
+        "translatedText": "ออฟไลน์"
+      },
+      {
+        "translatedText": "ออฟไลน์ · กำลังดำเนินการเปลี่ยนแปลง"
+      },
+      {
+        "translatedText": "รายงานเก่าๆ"
+      },
+      {
+        "translatedText": "งานประมวลผลที่เก่าที่สุดที่อยู่ในคิว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "ไฟล์ .js หนึ่งไฟล์ · ขนาดไม่เกิน 128 KiB · โปรไฟล์ 1 และ 2"
+      },
+      {
+        "translatedText": "ทำนองเดียว สามอารมณ์"
+      },
+      {
+        "translatedText": "เพลงประกอบเดียว แต่มีสามอารมณ์ที่ประสานกัน เปลี่ยนอารมณ์ขณะฟังเพื่อดูว่าเกมจะปรับเปลี่ยนอย่างไร"
+      },
+      {
+        "translatedText": "การซื้อแบบครั้งเดียวจะคงอยู่ในบัญชีของคุณ สามารถดูตัวอย่างและลงสีได้ก่อนซื้อ"
+      },
+      {
+        "translatedText": "เฉพาะไฟล์ที่แปลงสำเร็จแล้วเท่านั้นจึงจะสามารถเผยแพร่ได้"
+      },
+      {
+        "translatedText": "ดำเนินการต่อเฉพาะเมื่อคุณเพิ่งเริ่มเข้าสู่ระบบจากเกมของคุณเองและเห็นรหัสเดียวกัน หากมีบุคคลอื่นส่งลิงก์นี้ให้คุณ โปรดยกเลิก"
+      },
+      {
+        "translatedText": "เฉพาะในกรณีที่คุณได้ติดตั้งเกมลงในอุปกรณ์นี้แล้วเท่านั้น"
+      },
+      {
+        "translatedText": "มีแค่ฉันคนเดียว"
+      },
+      {
+        "translatedText": "เฉพาะบัญชีที่ลงทะเบียนแล้วเท่านั้นที่จะสามารถเป็นผู้ดูแลหรือผู้ดูแลระบบได้"
+      },
+      {
+        "translatedText": "ในห้องนี้ มีเพียงเจ้าภาพเท่านั้นที่จะเป็นผู้จัดที่นั่งให้"
+      },
+      {
+        "translatedText": "เฉพาะโฮสต์เท่านั้นที่สามารถเพิ่ม AI ได้"
+      },
+      {
+        "translatedText": "เฉพาะเจ้าของห้องเท่านั้นที่สามารถเปลี่ยนห้องได้"
+      },
+      {
+        "translatedText": "มีเพียงเจ้าภาพเท่านั้นที่สามารถอนุญาตให้แขกออกจากที่นั่งอื่นๆ ได้"
+      },
+      {
+        "translatedText": "เฉพาะเจ้าของที่พักเท่านั้นที่สามารถล็อกที่นั่งได้"
+      },
+      {
+        "translatedText": "มีเพียงโฮสต์เท่านั้นที่สามารถลบผู้เล่นออกได้"
+      },
+      {
+        "translatedText": "มีเพียงเจ้าบ้านเท่านั้นที่สามารถเริ่มการแข่งขันได้"
+      },
+      {
+        "translatedText": "มีเพียงเจ้าของแผนที่เท่านั้นที่สามารถทำได้"
+      },
+      {
+        "translatedText": "มีเพียงการตัดสินใจที่ไม่แน่นอนเท่านั้นที่สามารถแก้ไขได้"
+      },
+      {
+        "translatedText": "เฉพาะคำขอที่ไม่แน่ชัดเท่านั้นที่ต้องมีการตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "ความทึบแสง"
+      },
+      {
+        "translatedText": "เปิด"
+      },
+      {
+        "translatedText": "เปิด AI Map Studio"
+      },
+      {
+        "translatedText": "เมื่อสร้างเกมใหม่หรือแผนที่ใหม่ในโปรแกรมแก้ไข ให้ติดตั้งเวอร์ชันที่เข้ากันได้และเปิดใช้งานตระกูลอาคารแบบเปิด ตระกูลอาคารที่เปิดใช้งานจะถูกนำไปใช้กับแผนที่ที่สร้างขึ้นในอนาคตควบคู่ไปกับอาคารมาตรฐาน แผนที่และไฟล์บันทึกที่มีอยู่จะยังคงใช้อาคารของตนเอง"
+      },
+      {
+        "translatedText": "เปิดด้วยแอปที่ติดตั้งไว้"
+      },
+      {
+        "translatedText": "เปิดในแอป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "ปล่อยเพลงใหม่"
+      },
+      {
+        "translatedText": "เปิดการนำทาง"
+      },
+      {
+        "translatedText": "เปิดคลังชุดแผนที่ของโปรแกรมแก้ไขแผนที่เพื่อนำเข้าเวอร์ชัน หรือนำเข้าแพ็กเกจที่ดาวน์โหลดมานี้ เฉพาะเนื้อหาที่กำหนดเองเท่านั้นที่จะรวมอยู่ในแผนที่ที่แชร์ แผนที่แต่ละแผนที่จะเก็บสำเนาที่แก้ไขได้ของตัวเองไว้"
+      },
+      {
+        "translatedText": "เปิด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{target}</span> ↗"
+      },
+      {
+        "translatedText": "การเปิด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> …"
+      },
+      {
+        "translatedText": "พิธีเปิดสตูดิโอ…"
+      },
+      {
+        "translatedText": "การเปิดสตูดิโอของคุณ…"
+      },
+      {
+        "translatedText": "จะเปิดแอปพลิเคชันหากติดตั้งไว้แล้ว"
+      },
+      {
+        "translatedText": "การดำเนินงาน"
+      },
+      {
+        "translatedText": "ฝ่ายตรงข้าม"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ปฏิเสธคำสั่งซื้อ (เนื่องจากไคลเอนต์ถูกแก้ไขหรือเสียหายจึงส่งคำสั่งเหล่านี้)"
+      },
+      {
+        "translatedText": "งานศิลปะต้นฉบับของเกม"
+      },
+      {
+        "translatedText": "อื่น"
+      },
+      {
+        "translatedText": "โทเค็นเอาต์พุต"
+      },
+      {
+        "translatedText": "ภาพรวม"
+      },
+      {
+        "translatedText": "เป็นเจ้าของ"
+      },
+      {
+        "translatedText": "แผนที่ที่เล่นได้"
+      },
+      {
+        "translatedText": "บรรจุุภัณฑ์"
+      },
+      {
+        "translatedText": "ตอนจบของแผ่นเสียงจบลงด้วยความเงียบที่ยาวนานที่สุด"
+      },
+      {
+        "translatedText": "ไม่พบหน้าเว็บ"
+      },
+      {
+        "translatedText": "สีทา"
+      },
+      {
+        "translatedText": "ระบายสีลงบนโมเดล 3 มิติ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> โดยตรง"
+      },
+      {
+        "translatedText": "สีทาซ้ำกันบนพื้นผิวที่เข้ากัน"
+      },
+      {
+        "translatedText": "อุปกรณ์ทาสี"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้งานการวาดภาพในเบราว์เซอร์นี้ได้"
+      },
+      {
+        "translatedText": "การวาดภาพต้องใช้ WebGL 2 คุณยังสามารถบันทึกแบบร่าง เรียกดูสกินของฉัน หรือเยี่ยมชมร้านค้าได้"
+      },
+      {
+        "translatedText": "ผ่านแล้ว"
+      },
+      {
+        "translatedText": "รหัสผ่าน"
+      }
+    ]
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.",
+      "Enter a building family ID or a link to its family page.",
+      "Family link or ID",
+      "Family links must be at most 1024 characters.",
+      "Family removed.",
+      "Family unavailable. Private families require signing in through Online with an account that can access them.",
+      "Generator file hash mismatch",
+      "Generator installed. Future selections use this release.",
+      "Generator package identity mismatch",
+      "Generators",
+      "Install compatible release",
+      "Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.",
+      "Install selected release",
+      "Installed",
+      "Installed families",
+      "Installed. Enable the family below for new maps.",
+      "Invalid building family ID.",
+      "Invalid building library response",
+      "Invalid library cursor",
+      "Invalid release identity",
+      "Load more",
+      "Load more families",
+      "Loading building families",
+      "Loading…",
+      "Map generators",
+      "Maps",
+      "Most downloaded",
+      "Most liked",
+      "My generators",
+      "Newest",
+      "No building families installed.",
+      "No public building families yet",
+      "No validated release for this game version.",
+      "Online server changed during download",
+      "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+      "Open family",
+      "Opened family. Install its compatible release below.",
+      "Opening building family",
+      "Playable",
+      "Playable generator",
+      "Privacy policy",
+      "Public library",
+      "Recently updated",
+      "Refresh library",
+      "Release identity changed during installation",
+      "Reroll",
+      "Reroll seed",
+      "Saving generator library…",
+      "Search",
+      "Seed",
+      "Selection saved for new maps.",
+      "Storage failed.",
+      "Storage persistence unavailable",
+      "Tags",
+      "Technical checks passed for this engine. Balance is not certified.",
+      "The server returned a different family.",
+      "This link is from another instance. Switch to that instance in Online first.",
+      "This package ID is installed. Confirm replacement to use the selected release.",
+      "This release has no passing checks for this engine.",
+      "This release is installed.",
+      "Update installed family",
+      "Use in a room",
+      "By <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Installed release <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Release <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Remove <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Seed<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · revision <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "Fit",
+      "GL only",
+      "Sound or silence?",
+      "Silence",
+      "Sound",
+      "The game starts quietly. Would you like silence, or music and game audio?",
+      "You can change this anytime in Settings → Audio.",
+      "Your choice could not be saved. Audio is still off. Please try again.",
+      "Silence<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> a muted speaker. Sound<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> a speaker with sound waves.",
+      "Introduction",
+      "Learn indirect control<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> scout with a flag, supply your colony, and direct an attack.",
+      "Start introduction"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เปิดใช้งานตระกูลอาคารที่ติดตั้งไว้ด้านล่าง การเลือกจะถูกบันทึกไว้ในโปรไฟล์ท้องถิ่นนี้ แผนที่และไฟล์บันทึกที่มีอยู่จะยังคงมีอาคารของตนเอง สำหรับการเล่นออนไลน์ ให้สร้างแผนที่ด้วยตระกูลอาคารเหล่านี้ เผยแพร่ในคลังแผนที่ จากนั้นเลือกแผนที่นั้นในห้องของคุณ"
+      },
+      {
+        "translatedText": "ป้อนรหัสกลุ่มอาคารหรือลิงก์ไปยังหน้ากลุ่มอาคารนั้นๆ"
+      },
+      {
+        "translatedText": "ความสัมพันธ์ทางครอบครัวหรือบัตรประจำตัวประชาชน"
+      },
+      {
+        "translatedText": "ลิงก์ครอบครัวต้องมีความยาวไม่เกิน 1024 ตัวอักษร"
+      },
+      {
+        "translatedText": "ครอบครัวถูกพาตัวออกไปแล้ว"
+      },
+      {
+        "translatedText": "ครอบครัวไม่พร้อมให้บริการ ครอบครัวส่วนตัวต้องลงชื่อเข้าใช้ผ่านระบบออนไลน์ด้วยบัญชีที่สามารถเข้าถึงพวกเขาได้"
+      },
+      {
+        "translatedText": "แฮชไฟล์ตัวสร้างไม่ตรงกัน"
+      },
+      {
+        "translatedText": "ติดตั้งตัวสร้างสัญญาณแล้ว การเลือกในอนาคตจะใช้เวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ความไม่ตรงกันของข้อมูลประจำตัวแพ็กเกจตัวสร้าง"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดไฟฟ้า"
+      },
+      {
+        "translatedText": "ติดตั้งเวอร์ชันที่เข้ากันได้"
+      },
+      {
+        "translatedText": "ติดตั้งอาคารแต่ละหลังหรืออัปเกรดกลุ่มอาคารควบคู่ไปกับอาคารที่มีอยู่แล้ว การเลือกนี้ใช้ได้เฉพาะกับแผนที่ที่สร้างขึ้นใหม่เท่านั้น"
+      },
+      {
+        "translatedText": "ติดตั้งเวอร์ชันที่เลือก"
+      },
+      {
+        "translatedText": "ติดตั้งแล้ว"
+      },
+      {
+        "translatedText": "ครอบครัวที่เข้ามา"
+      },
+      {
+        "translatedText": "ติดตั้งเรียบร้อยแล้ว เปิดใช้งานกลุ่มไฟล์ด้านล่างเพื่อรับแผนที่ใหม่"
+      },
+      {
+        "translatedText": "รหัสกลุ่มอาคารไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "การตอบสนองห้องสมุดอาคารไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "เคอร์เซอร์ไลบรารีไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "รหัสการเผยแพร่ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "โหลดเพิ่มเติม"
+      },
+      {
+        "translatedText": "เพิ่มข้อมูลครอบครัวเพิ่มเติม"
+      },
+      {
+        "translatedText": "ครอบครัวที่กำลังสร้างอาคาร"
+      },
+      {
+        "translatedText": "กำลังโหลด…"
+      },
+      {
+        "translatedText": "เครื่องสร้างแผนที่"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "ดาวน์โหลดมากที่สุด"
+      },
+      {
+        "translatedText": "ถูกใจมากที่สุด"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดไฟฟ้าของฉัน"
+      },
+      {
+        "translatedText": "ใหม่ล่าสุด"
+      },
+      {
+        "translatedText": "ไม่มีการติดตั้งอาคารสำหรับครอบครัว"
+      },
+      {
+        "translatedText": "ยังไม่มีครอบครัวที่อาศัยอยู่ในอาคารสาธารณะ"
+      },
+      {
+        "translatedText": "ยังไม่มีการตรวจสอบความถูกต้องของเวอร์ชันเกมนี้"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ออนไลน์เปลี่ยนระหว่างการดาวน์โหลด"
+      },
+      {
+        "translatedText": "เปิดดูครอบครัวที่ยังไม่ได้ลงทะเบียนโดยใช้ลิงก์หรือรหัสประจำตัว สำหรับครอบครัวส่วนตัว โปรดลงชื่อเข้าใช้ผ่านระบบออนไลน์ก่อน"
+      },
+      {
+        "translatedText": "ครอบครัวเปิดกว้าง"
+      },
+      {
+        "translatedText": "เปิดตระกูลโปรแกรมแล้ว ติดตั้งเวอร์ชันที่เข้ากันได้ด้านล่าง"
+      },
+      {
+        "translatedText": "การเปิดอาคารสำหรับครอบครัว"
+      },
+      {
+        "translatedText": "เล่นได้"
+      },
+      {
+        "translatedText": "เครื่องกำเนิดที่เล่นได้"
+      },
+      {
+        "translatedText": "นโยบายความเป็นส่วนตัว"
+      },
+      {
+        "translatedText": "ห้องสมุดสาธารณะ"
+      },
+      {
+        "translatedText": "อัปเดตล่าสุด"
+      },
+      {
+        "translatedText": "รีเฟรชไลบรารี"
+      },
+      {
+        "translatedText": "รหัสการวางจำหน่ายถูกเปลี่ยนแปลงระหว่างการติดตั้ง"
+      },
+      {
+        "translatedText": "สุ่มใหม่"
+      },
+      {
+        "translatedText": "สุ่มเมล็ดพันธุ์ใหม่"
+      },
+      {
+        "translatedText": "กำลังบันทึกไลบรารีตัวสร้าง…"
+      },
+      {
+        "translatedText": "ค้นหา"
+      },
+      {
+        "translatedText": "เมล็ดพันธุ์"
+      },
+      {
+        "translatedText": "บันทึกการเลือกไว้สำหรับแผนที่ใหม่แล้ว"
+      },
+      {
+        "translatedText": "การจัดเก็บข้อมูลล้มเหลว"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้งานการจัดเก็บข้อมูลแบบถาวรได้"
+      },
+      {
+        "translatedText": "แท็ก"
+      },
+      {
+        "translatedText": "เครื่องยนต์นี้ผ่านการตรวจสอบทางเทคนิคแล้ว แต่การปรับสมดุลไม่ได้รับการรับรอง"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ส่งข้อมูลครอบครัวอื่นกลับมา"
+      },
+      {
+        "translatedText": "ลิงก์นี้มาจากอินสแตนซ์อื่น โปรดสลับไปยังอินสแตนซ์นั้นในโหมดออนไลน์ก่อน"
+      },
+      {
+        "translatedText": "ติดตั้งแพ็กเกจ ID นี้แล้ว โปรดยืนยันการเปลี่ยนเพื่อใช้เวอร์ชันที่เลือก"
+      },
+      {
+        "translatedText": "การเผยแพร่ครั้งนี้ไม่มีการตรวจสอบใดๆ ที่ผ่านเกณฑ์สำหรับเอนจิ้นนี้"
+      },
+      {
+        "translatedText": "ติดตั้งเวอร์ชันนี้เรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "อัปเดตตระกูลที่ติดตั้งแล้ว"
+      },
+      {
+        "translatedText": "ใช้ในห้อง"
+      },
+      {
+        "translatedText": "โดย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ติดตั้งเวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ปล่อย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ลบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เมล็ดพันธุ์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · การแก้ไข <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "พอดี"
+      },
+      {
+        "translatedText": "GL เท่านั้น"
+      },
+      {
+        "translatedText": "เสียงหรือความเงียบ?"
+      },
+      {
+        "translatedText": "ความเงียบ"
+      },
+      {
+        "translatedText": "เสียง"
+      },
+      {
+        "translatedText": "เกมจะเริ่มต้นอย่างเงียบ ๆ คุณต้องการความเงียบ หรือเสียงเพลงและเสียงเกม?"
+      },
+      {
+        "translatedText": "คุณสามารถเปลี่ยนการตั้งค่านี้ได้ตลอดเวลาในเมนู การตั้งค่า → เสียง"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกตัวเลือกของคุณได้ เสียงยังคงปิดอยู่ โปรดลองอีกครั้ง"
+      },
+      {
+        "translatedText": "ความเงียบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ลำโพงที่ปิดเสียง เสียง <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> ลำโพงที่ส่งคลื่นเสียง"
+      },
+      {
+        "translatedText": "การแนะนำ"
+      },
+      {
+        "translatedText": "เรียนรู้การควบคุมทางอ้อม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> สอดแนมโดยใช้ธง ส่งเสบียงให้ฐานทัพ และสั่งการโจมตี"
+      },
+      {
+        "translatedText": "เริ่มต้นบทนำ"
+      }
+    ]
+  }
+}

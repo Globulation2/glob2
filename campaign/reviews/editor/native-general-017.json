@@ -1,0 +1,217 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "36c25da9291b172403fe77b27e735eba55d0d6f42c9472517751398e917f62aa",
+  "edited_keys": [
+    "native:[lesson defensive-tactics guard marker]",
+    "native:[lesson defensive-tactics repel hint]",
+    "native:[lesson defensive-tactics repel title]",
+    "native:[lesson defensive-tactics repel instruction]",
+    "native:[lesson defensive-tactics repel help]",
+    "native:[lesson defensive-tactics repel marker]",
+    "native:[lesson defensive-tactics counterattack hint]",
+    "native:[lesson defensive-tactics counterattack title]",
+    "native:[lesson defensive-tactics counterattack instruction]",
+    "native:[lesson defensive-tactics counterattack help]",
+    "native:[lesson defensive-tactics counterattack marker]",
+    "native:[lesson healing build compact]",
+    "native:[lesson healing heal compact]",
+    "native:[lesson walking-training build compact]",
+    "native:[lesson walking-training train compact]",
+    "native:[lesson swimming build compact]",
+    "native:[lesson swimming train compact]",
+    "native:[lesson swimming water-job compact]",
+    "native:[lesson schools build compact]",
+    "native:[lesson schools learn compact]",
+    "native:[lesson upgrades upgrade compact]",
+    "native:[lesson upgrades train compact]",
+    "native:[lesson fortifications tower compact]",
+    "native:[lesson fortifications walls compact]",
+    "native:[lesson fortifications supply compact]",
+    "native:[lesson fortifications hold compact]",
+    "native:[lesson defensive-tactics scout compact]",
+    "native:[lesson defensive-tactics guard compact]",
+    "native:[lesson defensive-tactics repel compact]",
+    "native:[lesson defensive-tactics counterattack compact]",
+    "native:[intro attack destination]",
+    "native:[Grassland]",
+    "native:[Kopjes]",
+    "native:[Game trails]",
+    "native:[Fish amount]",
+    "native:[scenario messages]",
+    "native:[Camp-site amount]"
+  ],
+  "findings": [
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "severity": "minor",
+      "proposed": "เตรียมเขตป้องกัน",
+      "reason": "Canonical guard-zone term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "severity": "major",
+      "proposed": "ศัตรูกำลังบุก ให้นักรบคุมเขตป้องกันและส่งเสบียงให้โรงเตี๊ยม การบุกเล็กๆ เริ่มหลังเตรียมพร้อม เอาชนะหรือขับไล่ผู้บุกทั้งสองตัว ศัตรูบาดเจ็บอาจถอย นักรบอาจไปกินอาหารชั่วคราว หากป้องกันไม่สำเร็จให้โหลดบันทึกก่อนหน้าหรือเริ่มใหม่",
+      "reason": "Both raiders are two attacking units, not two opposing factions; canonical inn and coverage.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "severity": "major",
+      "proposed": "ศัตรูกำลังบุก ให้นักรบคุมเขตป้องกันและส่งเสบียงให้โรงเตี๊ยม",
+      "reason": "Canonical inn and zone staffing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel help]",
+      "severity": "major",
+      "proposed": "การบุกเล็กๆ เริ่มหลังเตรียมพร้อม เอาชนะหรือขับไล่ผู้บุกทั้งสองตัว ศัตรูบาดเจ็บอาจถอย นักรบอาจไปกินอาหารชั่วคราว หากป้องกันไม่สำเร็จให้โหลดบันทึกก่อนหน้าหรือเริ่มใหม่",
+      "reason": "Two raiders, not two factions.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "severity": "major",
+      "proposed": "วางธงรบทับรังศัตรู กำหนดนักรบ 3 ตัวและรัศมีไม่เกิน 4 เขตป้องกันกับธงรบใช้กำลังนักรบชุดเดียวกัน ลบช่องเขตป้องกันหากดึงนักรบค้างไว้ ส่งอาหารให้พอระหว่างเดินทางและบุก",
+      "reason": "Canonical building/warriors; competing assignments, not physical movement barriers.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack instruction]",
+      "severity": "major",
+      "proposed": "วางธงรบทับรังศัตรู กำหนดนักรบ 3 ตัวและรัศมีไม่เกิน 4",
+      "reason": "Birth building and exact cap.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "severity": "major",
+      "proposed": "เขตป้องกันกับธงรบใช้กำลังนักรบชุดเดียวกัน ลบช่องเขตป้องกันหากดึงนักรบค้างไว้ ส่งอาหารให้พอระหว่างเดินทางและบุก",
+      "reason": "Remove guard-zone tiles releasing assignments, not destroy a military formation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson healing build compact]",
+      "severity": "major",
+      "proposed": "สร้าง → โรงพยาบาล เว้นทางเข้าออกและมอบหมายคนงานก่อสร้าง",
+      "reason": "Physical access, not granting permission; actual builders.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson walking-training build compact]",
+      "severity": "major",
+      "proposed": "สร้าง → สนามวิ่ง เว้นที่รอบอาคาร",
+      "reason": "Canonical walking-training building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson walking-training train compact]",
+      "severity": "major",
+      "proposed": "รอให้คนงานฝึกที่สนามวิ่งจนเสร็จ",
+      "reason": "Game workers/training, not employees at car racetrack.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson swimming build compact]",
+      "severity": "minor",
+      "proposed": "สร้าง → สระว่ายน้ำ ทางตะวันตกของบ่อน้ำ",
+      "reason": "Distinguish constructed pool from natural pond.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "severity": "major",
+      "proposed": "สร้าง → โรงเรียน มอบหมายคนงานไปเก็บไม้และสาหร่าย",
+      "reason": "Builders fetch resources, not craft wood and algae objects.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "severity": "major",
+      "proposed": "สร้าง → โรงเรียน มอบหมายคนงานไปเก็บไม้และสาหร่าย",
+      "reason": "Same resource gathering instruction.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson schools learn compact]",
+      "severity": "minor",
+      "proposed": "รอให้คนงานฝึกที่โรงเรียนจนเสร็จ",
+      "reason": "Game training session, not academic degree.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade compact]",
+      "severity": "major",
+      "proposed": "เลือกสนามวิ่ง → อัปเกรด มอบหมายคนงานก่อสร้างที่มีทักษะ",
+      "reason": "Canonical building and role.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson upgrades train compact]",
+      "severity": "major",
+      "proposed": "ให้คนงานฝึกที่สนามวิ่งที่อัปเกรดแล้ว",
+      "reason": "Canonical building/worker/upgrade terms.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "severity": "major",
+      "proposed": "สร้างกำแพง 2 ส่วน เว้นช่องทางตะวันตกของหอคอยไว้",
+      "reason": "Wall sections, not two sides of an enclosure.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "severity": "major",
+      "proposed": "เลือกหอคอย → คนงานส่งเสบียง รอหิน 2 หน่วย",
+      "reason": "Workers, not commercial vendors; coherent material count.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "severity": "minor",
+      "proposed": "ธง → ธงสำรวจ วางที่ฐานศัตรู กำหนดนักสำรวจ 1 ตัว",
+      "reason": "Actual translated tool label and canonical classifier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "severity": "major",
+      "proposed": "ธง → ป้องกัน วาด 4 ช่อง รอนักรบ 2 ตัวมาถึง",
+      "reason": "Guard zone tool, not a guard person; canonical warrior.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "severity": "major",
+      "proposed": "คุมเขตป้องกัน ส่งเสบียงให้โรงเตี๊ยม",
+      "reason": "Canonical zone and feeding building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "severity": "major",
+      "proposed": "ธงรบ → รังศัตรู กำหนดนักรบ 3 ตัว รัศมี ≤4",
+      "reason": "Canonical flag/building/warriors and exact radius bound.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "severity": "minor",
+      "proposed": "เนินหินโดด",
+      "reason": "Kopjes are isolated rocky hills/outcrops; descriptive geographic label rather than inaccurate phonetic suffix.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "severity": "minor",
+      "proposed": "จำนวนที่ตั้งค่าย",
+      "reason": "Consistent camp-site resource label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

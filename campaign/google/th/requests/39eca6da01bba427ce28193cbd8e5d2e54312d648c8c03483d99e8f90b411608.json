@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Browse online library",
+      "Map content, credits &amp; local edits",
+      "Edit this map&#x27;s copy. Original release credits remain attached. Changes do not update other maps or the online release.",
+      "Apply local changes",
+      "Local content updated.",
+      "Search themes and creators",
+      "Search",
+      "Set",
+      "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.",
+      "Import selected entries",
+      "Next page",
+      "Back to results",
+      "License<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "release <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Replace placed entries from release <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Previews are shown for the first 64 entries. All entries remain selectable.",
+      "Properties definition (<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>)",
+      "Terrain artwork mapping (<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span>)",
+      "Map generators",
+      "Import a generator package, then select its landscape when creating a map or game.",
+      "Import map generator",
+      "No custom map generators installed.",
+      "Replace package",
+      "Export package",
+      "Remove generator",
+      "Saving generator library…",
+      "Could not read generator package.",
+      "Generator library saved.",
+      "Storage could not be saved. The previous library is retained.",
+      "Waiting for file selection or storage…",
+      "File selection is unavailable.",
+      "Package export is unavailable.",
+      "Area upkeep",
+      "Colony eliminated.",
+      "All opponents defeated.",
+      "An allied colony won.",
+      "Prestige goal reached.",
+      "Scenario rules decided the outcome.",
+      "Time limit reached.",
+      "Win probability threshold reached.",
+      "Destroy this building?",
+      "Discord community",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> Discord",
+      "Find opponents, ask for help, and share your maps with the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> community.",
+      "Join our Discord server. This opens Discord or your browser.",
+      "Join Discord",
+      "Copy link",
+      "Discord opened. You can return to the game at any time.",
+      "Could not open Discord. Copy the invitation link and open it in your browser.",
+      "Invitation link copied.",
+      "CPU automatic",
+      "Scalar",
+      "Unavailable",
+      "Initializing",
+      "Gradient backend",
+      "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+      "Gradient algorithm",
+      "All choices compute the same exact field.",
+      "Bucket propagation",
+      "Verify gradient results",
+      "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+      "Gradient computation",
+      "CPU fallback",
+      "GPU fields",
+      "CPU fallbacks",
+      "MCP server",
+      "Enabling the MCP server permits local clients to see and operate the game.",
+      "Enable MCP server",
+      "Port",
+      "Current controller<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Copy endpoint",
+      "Retry listener",
+      "Revoke control",
+      "MCP server unavailable in this application",
+      "Disabled",
+      "Running",
+      "Error<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "None",
+      "Starting",
+      "Left or right hand?"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เรียกดูห้องสมุดออนไลน์"
+      },
+      {
+        "translatedText": "เนื้อหาแผนที่ เครดิต และการแก้ไขในพื้นที่"
+      },
+      {
+        "translatedText": "แก้ไขสำเนาแผนที่นี้ เครดิตการเผยแพร่ดั้งเดิมยังคงอยู่ การเปลี่ยนแปลงจะไม่ส่งผลต่อแผนที่อื่นหรือเวอร์ชันออนไลน์"
+      },
+      {
+        "translatedText": "ปรับใช้การเปลี่ยนแปลงในท้องถิ่น"
+      },
+      {
+        "translatedText": "เนื้อหาในพื้นที่ได้รับการอัปเดตแล้ว"
+      },
+      {
+        "translatedText": "ค้นหาธีมและผู้สร้าง"
+      },
+      {
+        "translatedText": "ค้นหา"
+      },
+      {
+        "translatedText": "ชุด"
+      },
+      {
+        "translatedText": "นี่เป็นการแทนที่ภูมิประเทศและทรัพยากรที่วางไว้เดิมอย่างชัดเจน รวมถึงการแก้ไขเฉพาะจุดด้วย รายการที่ถูกลบจะยังคงอยู่ในเวอร์ชันเก่า ปริมาณวัสดุที่มีอยู่จะถูกจำกัดตามความจุใหม่"
+      },
+      {
+        "translatedText": "นำเข้าข้อมูลที่เลือก"
+      },
+      {
+        "translatedText": "หน้าถัดไป"
+      },
+      {
+        "translatedText": "กลับสู่ผลลัพธ์"
+      },
+      {
+        "translatedText": "ใบอนุญาต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ปล่อย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "แทนที่รายการที่วางไว้จากเวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "แสดงตัวอย่างสำหรับ 64 รายการแรก รายการทั้งหมดสามารถเลือกดูได้"
+      },
+      {
+        "translatedText": "การกำหนดคุณสมบัติ ( <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> )"
+      },
+      {
+        "translatedText": "การสร้างแผนที่ภูมิประเทศ ( <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JSON</span> )"
+      },
+      {
+        "translatedText": "เครื่องสร้างแผนที่"
+      },
+      {
+        "translatedText": "นำเข้าแพ็กเกจตัวสร้างแผนที่ จากนั้นเลือกภูมิประเทศจากแพ็กเกจนั้นเมื่อสร้างแผนที่หรือเกม"
+      },
+      {
+        "translatedText": "เครื่องมือสร้างแผนที่นำเข้า"
+      },
+      {
+        "translatedText": "ไม่ได้ติดตั้งโปรแกรมสร้างแผนที่แบบกำหนดเอง"
+      },
+      {
+        "translatedText": "เปลี่ยนบรรจุภัณฑ์"
+      },
+      {
+        "translatedText": "แพ็คเกจส่งออก"
+      },
+      {
+        "translatedText": "ถอดเครื่องกำเนิดไฟฟ้าออก"
+      },
+      {
+        "translatedText": "กำลังบันทึกไลบรารีตัวสร้าง…"
+      },
+      {
+        "translatedText": "ไม่สามารถอ่านแพ็คเกจตัวสร้างได้"
+      },
+      {
+        "translatedText": "บันทึกไลบรารีตัวสร้างแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกพื้นที่จัดเก็บข้อมูลได้ ไลบรารีเดิมยังคงอยู่"
+      },
+      {
+        "translatedText": "กำลังรอการเลือกไฟล์หรือการจัดเก็บ..."
+      },
+      {
+        "translatedText": "ไม่สามารถเลือกไฟล์ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถส่งออกแพ็กเกจได้"
+      },
+      {
+        "translatedText": "การบำรุงรักษาพื้นที่"
+      },
+      {
+        "translatedText": "กำจัดอาณานิคมเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "ฝ่ายตรงข้ามทั้งหมดพ่ายแพ้แล้ว"
+      },
+      {
+        "translatedText": "อาณานิคมพันธมิตรเป็นฝ่ายชนะ"
+      },
+      {
+        "translatedText": "บรรลุเป้าหมายด้านเกียรติยศแล้ว"
+      },
+      {
+        "translatedText": "กฎของสถานการณ์เป็นตัวกำหนดผลลัพธ์"
+      },
+      {
+        "translatedText": "หมดเวลาแล้ว"
+      },
+      {
+        "translatedText": "ความน่าจะเป็นในการชนะถึงเกณฑ์ที่กำหนดแล้ว"
+      },
+      {
+        "translatedText": "ทำลายอาคารนี้?"
+      },
+      {
+        "translatedText": "ชุมชน Discord"
+      },
+      {
+        "translatedText": "ดิสคอร์ด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "ค้นหาคู่ต่อสู้ ขอความช่วยเหลือ และแบ่งปันแผนที่ของคุณกับชุมชน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "เข้าร่วมเซิร์ฟเวอร์ Discord ของเรา (คลิกที่นี่เพื่อเปิด Discord หรือเบราว์เซอร์ของคุณ)"
+      },
+      {
+        "translatedText": "เข้าร่วม Discord"
+      },
+      {
+        "translatedText": "คัดลิงก์"
+      },
+      {
+        "translatedText": "Discord เปิดแล้ว คุณสามารถกลับเข้าเกมได้ทุกเมื่อ"
+      },
+      {
+        "translatedText": "ไม่สามารถเปิด Discord ได้ โปรดคัดลink คำเชิญแล้วเปิดในเบราว์เซอร์ของคุณ"
+      },
+      {
+        "translatedText": "คัดลอกลิงก์คำเชิญแล้ว"
+      },
+      {
+        "translatedText": "ซีพียูอัตโนมัติ"
+      },
+      {
+        "translatedText": "สเกลาร์"
+      },
+      {
+        "translatedText": "ไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "กำลังเริ่มต้น"
+      },
+      {
+        "translatedText": "แบ็กเอนด์แบบไล่ระดับสี"
+      },
+      {
+        "translatedText": "มีผลที่ขอบเขตการจำลองถัดไป งานที่ไม่รองรับจะใช้ CPU อัตโนมัติ การเรนเดอร์เป็นอิสระ"
+      },
+      {
+        "translatedText": "อัลกอริทึมการไล่ระดับ"
+      },
+      {
+        "translatedText": "ตัวเลือกทั้งหมดคำนวณค่าในฟิลด์เดียวกันอย่างแม่นยำ"
+      },
+      {
+        "translatedText": "การแพร่กระจายแบบถัง"
+      },
+      {
+        "translatedText": "ตรวจสอบผลลัพธ์การไล่ระดับ"
+      },
+      {
+        "translatedText": "เปรียบเทียบผลลัพธ์จาก GPU กับผลลัพธ์จาก CPU ก่อนเผยแพร่ เพิ่มการคำนวณและหยุดเกมหากผลลัพธ์ไม่ตรงกัน"
+      },
+      {
+        "translatedText": "การคำนวณเกรเดียนต์"
+      },
+      {
+        "translatedText": "การสำรอง CPU"
+      },
+      {
+        "translatedText": "ฟิลด์ GPU"
+      },
+      {
+        "translatedText": "การสำรองข้อมูล CPU"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ MCP"
+      },
+      {
+        "translatedText": "การเปิดใช้งานเซิร์ฟเวอร์ MCP จะทำให้ไคลเอนต์ในพื้นที่สามารถมองเห็นและใช้งานเกมได้"
+      },
+      {
+        "translatedText": "เปิดใช้งานเซิร์ฟเวอร์ MCP"
+      },
+      {
+        "translatedText": "ท่าเรือ"
+      },
+      {
+        "translatedText": "ตัวควบคุมกระแสไฟฟ้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "คัดลอกจุดสิ้นสุด"
+      },
+      {
+        "translatedText": "ลองฟังใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "เพิกถอนการควบคุม"
+      },
+      {
+        "translatedText": "เซิร์ฟเวอร์ MCP ไม่พร้อมใช้งานในแอปพลิเคชันนี้"
+      },
+      {
+        "translatedText": "พิการ"
+      },
+      {
+        "translatedText": "วิ่ง"
+      },
+      {
+        "translatedText": "ข้อผิดพลาด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ไม่มี"
+      },
+      {
+        "translatedText": "เริ่มต้น"
+      },
+      {
+        "translatedText": "มือซ้ายหรือมือขวา?"
+      }
+    ]
+  }
+}

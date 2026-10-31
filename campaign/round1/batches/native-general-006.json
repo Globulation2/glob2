@@ -1,0 +1,969 @@
+{
+  "id": "native-general-006",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Stats meals per minute]",
+      "key": "[Stats meals per minute]",
+      "source": "Food/min",
+      "target": "อาหาร/นาที"
+    },
+    {
+      "id": "native:[Stats occupancy]",
+      "key": "[Stats occupancy]",
+      "source": "Feed / heal",
+      "target": "ให้​อาหาร / รักษา"
+    },
+    {
+      "id": "native:[Stats page one]",
+      "key": "[Stats page one]",
+      "source": "Statistics 1/3  >",
+      "target": "สถิติ 1/3 >"
+    },
+    {
+      "id": "native:[Stats page two]",
+      "key": "[Stats page two]",
+      "source": "Statistics 2/3  >",
+      "target": "สถิติ 2/3 >"
+    },
+    {
+      "id": "native:[Stats page three]",
+      "key": "[Stats page three]",
+      "source": "Statistics 3/3  >",
+      "target": "สถิติ 3/3 >"
+    },
+    {
+      "id": "native:[Stats next page]",
+      "key": "[Stats next page]",
+      "source": "Page (P)",
+      "target": "หน้า (P)"
+    },
+    {
+      "id": "native:[Stats blocked units]",
+      "key": "[Stats blocked units]",
+      "source": "Units blocked S/C",
+      "target": "หน่วย​ที่​ถูก​ปิด​กั้น S/C"
+    },
+    {
+      "id": "native:[Stats current blocked units]",
+      "key": "[Stats current blocked units]",
+      "source": "Currently blocked units",
+      "target": "หน่วย​ที่​ถูก​ปิด​กั้น​ใน​ปัจจุบัน"
+    },
+    {
+      "id": "native:[Stats growth global]",
+      "key": "[Stats growth global]",
+      "source": "Growth added amount",
+      "target": "การ​เติบโต​เพิ่ม​ขึ้น​จำนวน"
+    },
+    {
+      "id": "native:[Stats growth new tiles]",
+      "key": "[Stats growth new tiles]",
+      "source": "New resource tiles",
+      "target": "ไทล์​ทรัพยากร​ใหม่"
+    },
+    {
+      "id": "native:[Stats growth reductions]",
+      "key": "[Stats growth reductions]",
+      "source": "Natural reductions",
+      "target": "การ​ลด​ลง​ตาม​ธรรมชาติ"
+    },
+    {
+      "id": "native:[Stats growth per minute]",
+      "key": "[Stats growth per minute]",
+      "source": "Food growth/min",
+      "target": "การ​เจริญ​เติบโต​ของ​อาหาร/นาที"
+    },
+    {
+      "id": "native:[Stats growth near 8]",
+      "key": "[Stats growth near 8]",
+      "source": "Growth within 8 tiles",
+      "target": "การ​เจริญ​เติบโต​ภายใน 8 ช่อง"
+    },
+    {
+      "id": "native:[Stats growth near 16]",
+      "key": "[Stats growth near 16]",
+      "source": "Growth within 16 tiles",
+      "target": "การ​เจริญ​เติบโต​ภายใน​ระยะ 16 ช่อง"
+    },
+    {
+      "id": "native:[Stats growth near 32]",
+      "key": "[Stats growth near 32]",
+      "source": "Growth within 32 tiles",
+      "target": "การ​เจริญ​เติบโต​ภายใน 32 ช่อง"
+    },
+    {
+      "id": "native:[Stats low HP 25]",
+      "key": "[Stats low HP 25]",
+      "source": "Units at 25% HP",
+      "target": "หน่วย​ที่ 25% HP"
+    },
+    {
+      "id": "native:[Stats low food 25]",
+      "key": "[Stats low food 25]",
+      "source": "Units at 25% food reserve",
+      "target": "หน่วย​ที่​มี​ปริมาณ​อาหาร​สำรอง 25%"
+    },
+    {
+      "id": "native:[Stats low HP 50]",
+      "key": "[Stats low HP 50]",
+      "source": "Units at 50% HP",
+      "target": "หน่วย​ที่ 50% HP"
+    },
+    {
+      "id": "native:[Stats low HP 75]",
+      "key": "[Stats low HP 75]",
+      "source": "Units at 75% HP",
+      "target": "หน่วย​ที่ 75% HP"
+    },
+    {
+      "id": "native:[Stats low food 50]",
+      "key": "[Stats low food 50]",
+      "source": "Units at 50% food reserve",
+      "target": "หน่วย​ที่​มี​ปริมาณ​อาหาร​สำรอง 50%"
+    },
+    {
+      "id": "native:[Stats low food 75]",
+      "key": "[Stats low food 75]",
+      "source": "Units at 75% food reserve",
+      "target": "หน่วย​ที่​มี​ปริมาณ​อาหาร​สำรอง 75%"
+    },
+    {
+      "id": "native:[Stats structural units]",
+      "key": "[Stats structural units]",
+      "source": "Structurally blocked units",
+      "target": "หน่วย​ที่​ถูก​ปิด​กั้น​ทาง​โครงสร้าง"
+    },
+    {
+      "id": "native:[Stats low HP ranges]",
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "target": "HP ≤25/50/75%"
+    },
+    {
+      "id": "native:[Stats low food ranges]",
+      "key": "[Stats low food ranges]",
+      "source": "Food ≤25/50/75%",
+      "target": "อาหาร ≤25/50/75%"
+    },
+    {
+      "id": "native:[Emoji]",
+      "key": "[Emoji]",
+      "source": "Emoji",
+      "target": "อิ​โม​จิ"
+    },
+    {
+      "id": "native:[Emoji character]",
+      "key": "[Emoji character]",
+      "source": "Emoji character",
+      "target": "ตัว​อักษร​อิ​โม​จิ"
+    },
+    {
+      "id": "native:[Smiley]",
+      "key": "[Smiley]",
+      "source": "Smiley",
+      "target": "สไม​ลี่"
+    },
+    {
+      "id": "native:[Sad face]",
+      "key": "[Sad face]",
+      "source": "Sad face",
+      "target": "หน้า​เศร้า"
+    },
+    {
+      "id": "native:[Winking face]",
+      "key": "[Winking face]",
+      "source": "Winking face",
+      "target": "หน้า​ขยิบ​ตา"
+    },
+    {
+      "id": "native:[Surprised face]",
+      "key": "[Surprised face]",
+      "source": "Surprised face",
+      "target": "สีหน้า​ประหลาด​ใจ"
+    },
+    {
+      "id": "native:[Heart eyes]",
+      "key": "[Heart eyes]",
+      "source": "Heart eyes",
+      "target": "ตา​เป็น​รูป​หัวใจ"
+    },
+    {
+      "id": "native:[Sunglasses]",
+      "key": "[Sunglasses]",
+      "source": "Sunglasses",
+      "target": "แว่น​กันแดด"
+    },
+    {
+      "id": "native:[Heart]",
+      "key": "[Heart]",
+      "source": "Heart",
+      "target": "หัวใจ"
+    },
+    {
+      "id": "native:[Star]",
+      "key": "[Star]",
+      "source": "Star",
+      "target": "ดาว"
+    },
+    {
+      "id": "native:[Neutral face]",
+      "key": "[Neutral face]",
+      "source": "Neutral face",
+      "target": "สีหน้า​เรียบ​เฉย"
+    },
+    {
+      "id": "native:[Sleeping face]",
+      "key": "[Sleeping face]",
+      "source": "Sleeping face",
+      "target": "ใบหน้า​ขณะ​หลับ"
+    },
+    {
+      "id": "native:[Grinning face]",
+      "key": "[Grinning face]",
+      "source": "Grinning face",
+      "target": "ใบหน้า​ยิ้ม​แย้ม"
+    },
+    {
+      "id": "native:[Kissing face]",
+      "key": "[Kissing face]",
+      "source": "Kissing face",
+      "target": "ใบหน้า​จูบ"
+    },
+    {
+      "id": "native:[Angry face]",
+      "key": "[Angry face]",
+      "source": "Angry face",
+      "target": "หน้า​บูด​บึ้ง"
+    },
+    {
+      "id": "native:[Tongue out]",
+      "key": "[Tongue out]",
+      "source": "Tongue out",
+      "target": "แลบ​ลิ้น"
+    },
+    {
+      "id": "native:[Skull]",
+      "key": "[Skull]",
+      "source": "Skull",
+      "target": "กะโหลก"
+    },
+    {
+      "id": "native:[Flower]",
+      "key": "[Flower]",
+      "source": "Flower",
+      "target": "ดอกไม้"
+    },
+    {
+      "id": "native:[Four-leaf clover]",
+      "key": "[Four-leaf clover]",
+      "source": "Four-leaf clover",
+      "target": "ใบ​โคล​เวอร์​สี่​แฉก"
+    },
+    {
+      "id": "native:[Teardrop]",
+      "key": "[Teardrop]",
+      "source": "Teardrop",
+      "target": "หยด​น้ำตา"
+    },
+    {
+      "id": "native:[Cloud]",
+      "key": "[Cloud]",
+      "source": "Cloud",
+      "target": "คลา​วด์"
+    },
+    {
+      "id": "native:[Gem]",
+      "key": "[Gem]",
+      "source": "Gem",
+      "target": "อัญมณี"
+    },
+    {
+      "id": "native:[Apple]",
+      "key": "[Apple]",
+      "source": "Apple",
+      "target": "แอปเปิล"
+    },
+    {
+      "id": "native:[Speech bubble]",
+      "key": "[Speech bubble]",
+      "source": "Speech bubble",
+      "target": "ช่อง​คำ​พูด"
+    },
+    {
+      "id": "native:[Shield]",
+      "key": "[Shield]",
+      "source": "Shield",
+      "target": "โล่"
+    },
+    {
+      "id": "native:[Emoji style]",
+      "key": "[Emoji style]",
+      "source": "Emoji style",
+      "target": "สไตล์​อิ​โม​จิ"
+    },
+    {
+      "id": "native:[Outline]",
+      "key": "[Outline]",
+      "source": "Outline",
+      "target": "โครง​ร่าง"
+    },
+    {
+      "id": "native:[Filled]",
+      "key": "[Filled]",
+      "source": "Filled",
+      "target": "เต็ม​แล้ว"
+    },
+    {
+      "id": "native:[Regular]",
+      "key": "[Regular]",
+      "source": "Regular",
+      "target": "ปกติ"
+    },
+    {
+      "id": "native:[Inverse]",
+      "key": "[Inverse]",
+      "source": "Inverse",
+      "target": "ผกผัน"
+    },
+    {
+      "id": "native:[Crossings]",
+      "key": "[Crossings]",
+      "source": "Crossings",
+      "target": "ทาง​ข้าม"
+    },
+    {
+      "id": "native:[Forts]",
+      "key": "[Forts]",
+      "source": "Forts",
+      "target": "ป้อม​ปราการ"
+    },
+    {
+      "id": "native:[Gate width]",
+      "key": "[Gate width]",
+      "source": "Gate width",
+      "target": "ความ​กว้าง​ของ​ประตู"
+    },
+    {
+      "id": "native:[Braided Delta]",
+      "key": "[Braided Delta]",
+      "source": "Braided Delta",
+      "target": "เดลต้า​ถัก"
+    },
+    {
+      "id": "native:[Braid count]",
+      "key": "[Braid count]",
+      "source": "Braid count",
+      "target": "จำนวน​เปีย"
+    },
+    {
+      "id": "native:[Rejoining frequency]",
+      "key": "[Rejoining frequency]",
+      "source": "Rejoining frequency",
+      "target": "ความถี่​ใน​การ​เข้า​ร่วม​ใหม่"
+    },
+    {
+      "id": "native:[Crossing spacing]",
+      "key": "[Crossing spacing]",
+      "source": "Crossing spacing",
+      "target": "ระยะ​ห่าง​ระหว่าง​ทาง"
+    },
+    {
+      "id": "native:[Breachable highlands]",
+      "key": "[Breachable highlands]",
+      "source": "Breachable highlands",
+      "target": "ที่ราบสูง​ที่​สามารถ​เข้า​ถึง​ได้"
+    },
+    {
+      "id": "native:[Ridge depth]",
+      "key": "[Ridge depth]",
+      "source": "Ridge depth",
+      "target": "ความ​ลึก​ของ​สันเขา"
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "key": "[Extra open passes]",
+      "source": "Extra open passes",
+      "target": "บัตร​เปิด​พิเศษ"
+    },
+    {
+      "id": "native:[Wooded saddles]",
+      "key": "[Wooded saddles]",
+      "source": "Wooded saddles",
+      "target": "อาน​ม้า​ไม้"
+    },
+    {
+      "id": "native:[Hedgerow Country]",
+      "key": "[Hedgerow Country]",
+      "source": "Hedgerow Country",
+      "target": "ดิน​แดน​แห่ง​รั้ว​ต้นไม้"
+    },
+    {
+      "id": "native:[Field size]",
+      "key": "[Field size]",
+      "source": "Field size",
+      "target": "ขนาด​สนาม"
+    },
+    {
+      "id": "native:[Hedge thickness]",
+      "key": "[Hedge thickness]",
+      "source": "Hedge thickness",
+      "target": "ความ​หนา​ของ​พุ่ม​ไม้"
+    },
+    {
+      "id": "native:[Existing gateways]",
+      "key": "[Existing gateways]",
+      "source": "Existing gateways",
+      "target": "เกตเวย์​ที่​มี​อยู่"
+    },
+    {
+      "id": "native:[Wooded boundary share]",
+      "key": "[Wooded boundary share]",
+      "source": "Wooded boundary share",
+      "target": "ส่วน​แบ่ง​เขตแดน​ที่​เป็น​ป่า"
+    },
+    {
+      "id": "native:[The Glacis]",
+      "key": "[The Glacis]",
+      "source": "The Glacis",
+      "target": "ธาร​น้ำ​แข็ง"
+    },
+    {
+      "id": "native:[Allotments]",
+      "key": "[Allotments]",
+      "source": "Allotments",
+      "target": "การ​จัดสรร"
+    },
+    {
+      "id": "native:[Caravanserai]",
+      "key": "[Caravanserai]",
+      "source": "Caravanserai",
+      "target": "คาราวาน​เซ​ไร"
+    },
+    {
+      "id": "native:[Mixed]",
+      "key": "[Mixed]",
+      "source": "Mixed",
+      "target": "ผสม"
+    },
+    {
+      "id": "native:[Fort size]",
+      "key": "[Fort size]",
+      "source": "Fort size",
+      "target": "ขนาด​ป้อม"
+    },
+    {
+      "id": "native:[Bastions]",
+      "key": "[Bastions]",
+      "source": "Bastions",
+      "target": "ป้อม​ปราการ"
+    },
+    {
+      "id": "native:[Four-pointed]",
+      "key": "[Four-pointed]",
+      "source": "Four-pointed",
+      "target": "สี่​แฉก"
+    },
+    {
+      "id": "native:[Five-pointed]",
+      "key": "[Five-pointed]",
+      "source": "Five-pointed",
+      "target": "ห้า​แฉก"
+    },
+    {
+      "id": "native:[Six-pointed]",
+      "key": "[Six-pointed]",
+      "source": "Six-pointed",
+      "target": "หก​แฉก"
+    },
+    {
+      "id": "native:[Glacis width]",
+      "key": "[Glacis width]",
+      "source": "Glacis width",
+      "target": "ความ​กว้าง​ของ​ธาร​น้ำ​แข็ง"
+    },
+    {
+      "id": "native:[Gates]",
+      "key": "[Gates]",
+      "source": "Gates",
+      "target": "ประตู"
+    },
+    {
+      "id": "native:[Site size]",
+      "key": "[Site size]",
+      "source": "Site size",
+      "target": "ขนาด​ไซต์"
+    },
+    {
+      "id": "native:[Plot width]",
+      "key": "[Plot width]",
+      "source": "Plot width",
+      "target": "ความ​กว้าง​ของ​แปลง"
+    },
+    {
+      "id": "native:[Plot mix]",
+      "key": "[Plot mix]",
+      "source": "Plot mix",
+      "target": "พล็อต​ผสม​ผสาน"
+    },
+    {
+      "id": "native:[Tended]",
+      "key": "[Tended]",
+      "source": "Tended",
+      "target": "มี​แนว​โน้ม"
+    },
+    {
+      "id": "native:[Overgrown]",
+      "key": "[Overgrown]",
+      "source": "Overgrown",
+      "target": "รก"
+    },
+    {
+      "id": "native:[Commons]",
+      "key": "[Commons]",
+      "source": "Commons",
+      "target": "คอม​มอน​ส์"
+    },
+    {
+      "id": "native:[Few]",
+      "key": "[Few]",
+      "source": "Few",
+      "target": "น้อย"
+    },
+    {
+      "id": "native:[Some]",
+      "key": "[Some]",
+      "source": "Some",
+      "target": "บาง"
+    },
+    {
+      "id": "native:[Home oasis size]",
+      "key": "[Home oasis size]",
+      "source": "Home oasis size",
+      "target": "ขนาด​บ้าน​ที่​เหมือน​โอเอซิส"
+    },
+    {
+      "id": "native:[Caravanserais per colony]",
+      "key": "[Caravanserais per colony]",
+      "source": "Caravanserais per colony",
+      "target": "คาราวาน​เซ​ไร​ต่อ​อาณานิคม"
+    },
+    {
+      "id": "native:[Desert]",
+      "key": "[Desert]",
+      "source": "Desert",
+      "target": "ทะเล​ทราย"
+    },
+    {
+      "id": "native:[Open erg]",
+      "key": "[Open erg]",
+      "source": "Open erg",
+      "target": "เปิด erg"
+    },
+    {
+      "id": "native:[Dunes and mesas]",
+      "key": "[Dunes and mesas]",
+      "source": "Dunes and mesas",
+      "target": "เนิน​ทราย​และ​ที่ราบสูง"
+    },
+    {
+      "id": "native:[Canyon country]",
+      "key": "[Canyon country]",
+      "source": "Canyon country",
+      "target": "แคน​ยอน​คัน​ทรี"
+    },
+    {
+      "id": "native:[A wall would stand on a beach; try another seed.]",
+      "key": "[A wall would stand on a beach; try another seed.]",
+      "source": "A wall would stand on a beach; try another seed.",
+      "target": "กำแพง​จะ​ตั้ง​อยู่​บน​ชายหาด​ได้ ลอง​ใช้​เมล็ด​พันธุ์​อื่น​ดู"
+    },
+    {
+      "id": "native:[The fort is too small for its gardens; raise Fort size.]",
+      "key": "[The fort is too small for its gardens; raise Fort size.]",
+      "source": "The fort is too small for its gardens; raise Fort size.",
+      "target": "ป้อม​ปราการ​มี​ขนาด​เล็ก​เกิน​ไป​สำหรับ​สวน ควร​เพิ่ม​ขนาด​ของ​ป้อม​ปราการ​ให้​ใหญ่​ขึ้น"
+    },
+    {
+      "id": "native:[The home oasis is too small; raise Home oasis size.]",
+      "key": "[The home oasis is too small; raise Home oasis size.]",
+      "source": "The home oasis is too small; raise Home oasis size.",
+      "target": "พื้นที่​พัก​ผ่อน​ส่วน​ตัว​ภายใน​บ้าน​มี​ขนาด​เล็ก​เกิน​ไป โปรด​เพิ่ม​ขนาด​พื้นที่​พัก​ผ่อน​ส่วน​ตัว​ภายใน​บ้าน"
+    },
+    {
+      "id": "native:[Braid width]",
+      "key": "[Braid width]",
+      "source": "Braid width",
+      "target": "ความ​กว้าง​ของ​ถัก​เปีย"
+    },
+    {
+      "id": "native:[Bar size]",
+      "key": "[Bar size]",
+      "source": "Bar size",
+      "target": "ขนาด​แท่ง"
+    },
+    {
+      "id": "native:[Extra riffles]",
+      "key": "[Extra riffles]",
+      "source": "Extra riffles",
+      "target": "ร่อง​พิเศษ"
+    },
+    {
+      "id": "native:[Moraine hummocks]",
+      "key": "[Moraine hummocks]",
+      "source": "Moraine hummocks",
+      "target": "เนิน​โม​เรน"
+    },
+    {
+      "id": "native:[Drumlin field]",
+      "key": "[Drumlin field]",
+      "source": "Drumlin field",
+      "target": "ทุ่ง​ดรัม​ลิน"
+    },
+    {
+      "id": "native:[Drumlin spacing]",
+      "key": "[Drumlin spacing]",
+      "source": "Drumlin spacing",
+      "target": "ระยะ​ห่าง​ขอ​งด​รัม​ลิน"
+    },
+    {
+      "id": "native:[Drumlin length]",
+      "key": "[Drumlin length]",
+      "source": "Drumlin length",
+      "target": "ความ​ยาว​ขอ​งด​รัม​ลิน"
+    },
+    {
+      "id": "native:[Water gap]",
+      "key": "[Water gap]",
+      "source": "Water gap",
+      "target": "ช่อง​น้ำ"
+    },
+    {
+      "id": "native:[Esker loops]",
+      "key": "[Esker loops]",
+      "source": "Esker loops",
+      "target": "วง​โค้ง​เอ​ส​เกอร์"
+    },
+    {
+      "id": "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "key": "[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "source": "The eskers could not join every drumlin; use a smaller water gap or a bigger map.",
+      "target": "สันดอน​ทราย​ไม่​สามารถ​เชื่อม​ต่อ​กับ​เนิน​ดิน​รูป​ทรง​กลม​ทุก​แห่ง​ได้ ต้อง​ใช้​ช่อง​น้ำ​ที่​เล็ก​กว่า​หรือ​แผนที่​ที่​ใหญ่​กว่า"
+    },
+    {
+      "id": "native:[Continents]",
+      "key": "[Continents]",
+      "source": "Continents",
+      "target": "ทวีป​ต่างๆ"
+    },
+    {
+      "id": "native:[Continent]",
+      "key": "[Continent]",
+      "source": "Continent",
+      "target": "ทวีป"
+    },
+    {
+      "id": "native:[North America]",
+      "key": "[North America]",
+      "source": "North America",
+      "target": "อเมริกาเหนือ"
+    },
+    {
+      "id": "native:[South America]",
+      "key": "[South America]",
+      "source": "South America",
+      "target": "อเมริกาใต้"
+    },
+    {
+      "id": "native:[Africa]",
+      "key": "[Africa]",
+      "source": "Africa",
+      "target": "แอฟริกา"
+    },
+    {
+      "id": "native:[Europe]",
+      "key": "[Europe]",
+      "source": "Europe",
+      "target": "ยุโรป"
+    },
+    {
+      "id": "native:[Asia]",
+      "key": "[Asia]",
+      "source": "Asia",
+      "target": "เอเชีย"
+    },
+    {
+      "id": "native:[Oceania]",
+      "key": "[Oceania]",
+      "source": "Oceania",
+      "target": "โอ​เชีย​เนีย"
+    },
+    {
+      "id": "native:[Orientation]",
+      "key": "[Orientation]",
+      "source": "Orientation",
+      "target": "ปฐมนิเทศ"
+    },
+    {
+      "id": "native:[Turn to fit]",
+      "key": "[Turn to fit]",
+      "source": "Turn to fit",
+      "target": "หมุน​เพื่อ​ปรับ​ให้​พอดี"
+    },
+    {
+      "id": "native:[Upright]",
+      "key": "[Upright]",
+      "source": "Upright",
+      "target": "ตั้ง​ตรง"
+    },
+    {
+      "id": "native:[Islets]",
+      "key": "[Islets]",
+      "source": "Islets",
+      "target": "เกาะ​เล็ก ๆ"
+    },
+    {
+      "id": "native:[Oases]",
+      "key": "[Oases]",
+      "source": "Oases",
+      "target": "โอเอซิส"
+    },
+    {
+      "id": "native:[The world atlas has no such continent.]",
+      "key": "[The world atlas has no such continent.]",
+      "source": "The world atlas has no such continent.",
+      "target": "ใน​แผนที่​โลก​ไม่มี​ทวีป​ดัง​กล่าว"
+    },
+    {
+      "id": "native:[Savannah]",
+      "key": "[Savannah]",
+      "source": "Savannah",
+      "target": "ซา​วัน​นาห์"
+    },
+    {
+      "id": "native:[Watering holes]",
+      "key": "[Watering holes]",
+      "source": "Watering holes",
+      "target": "แหล่ง​น้ำ"
+    },
+    {
+      "id": "native:[Dry patches]",
+      "key": "[Dry patches]",
+      "source": "Dry patches",
+      "target": "บริเวณ​แห้ง​แล้ง"
+    },
+    {
+      "id": "native:[Sparse]",
+      "key": "[Sparse]",
+      "source": "Sparse",
+      "target": "เบาบาง"
+    },
+    {
+      "id": "native:[Normal]",
+      "key": "[Normal]",
+      "source": "Normal",
+      "target": "ปกติ"
+    },
+    {
+      "id": "native:[Many]",
+      "key": "[Many]",
+      "source": "Many",
+      "target": "มากมาย"
+    },
+    {
+      "id": "native:[Rice terraces]",
+      "key": "[Rice terraces]",
+      "source": "Rice terraces",
+      "target": "นา​ขั้น​บันได"
+    },
+    {
+      "id": "native:[Unoccupied hills]",
+      "key": "[Unoccupied hills]",
+      "source": "Unoccupied hills",
+      "target": "เนิน​เขา​ร้าง"
+    },
+    {
+      "id": "native:[Hill radius]",
+      "key": "[Hill radius]",
+      "source": "Hill radius",
+      "target": "รัศมี​เนิน​เขา"
+    },
+    {
+      "id": "native:[Contour band width]",
+      "key": "[Contour band width]",
+      "source": "Contour band width",
+      "target": "ความ​กว้าง​ของ​แถบ​คอน​ทัวร์"
+    },
+    {
+      "id": "native:[Stairs per hill]",
+      "key": "[Stairs per hill]",
+      "source": "Stairs per hill",
+      "target": "บันได​ต่อ​เนิน​เขา"
+    },
+    {
+      "id": "native:[Hills]",
+      "key": "[Hills]",
+      "source": "Hills",
+      "target": "เนิน​เขา"
+    },
+    {
+      "id": "native:[Hillsides]",
+      "key": "[Hillsides]",
+      "source": "Hillsides",
+      "target": "เนิน​เขา"
+    },
+    {
+      "id": "native:[Terraces per slope]",
+      "key": "[Terraces per slope]",
+      "source": "Terraces per slope",
+      "target": "ระเบียง​ต่อ​เนิน"
+    },
+    {
+      "id": "native:[Waviness]",
+      "key": "[Waviness]",
+      "source": "Waviness",
+      "target": "ความ​โค้ง"
+    },
+    {
+      "id": "native:[Stair spacing]",
+      "key": "[Stair spacing]",
+      "source": "Stair spacing",
+      "target": "ระยะ​ห่าง​ระหว่าง​บันได"
+    },
+    {
+      "id": "native:[Locust]",
+      "key": "[Locust]",
+      "source": "Locust",
+      "target": "ตั๊กแตน"
+    },
+    {
+      "id": "native:[Plantations]",
+      "key": "[Plantations]",
+      "source": "Plantations",
+      "target": "ไร่"
+    },
+    {
+      "id": "native:[Plot size]",
+      "key": "[Plot size]",
+      "source": "Plot size",
+      "target": "ขนาด​แปลง"
+    },
+    {
+      "id": "native:[Farm width]",
+      "key": "[Farm width]",
+      "source": "Farm width",
+      "target": "ความ​กว้าง​ของ​ฟาร์ม"
+    },
+    {
+      "id": "native:[Outpost inns]",
+      "key": "[Outpost inns]",
+      "source": "Outpost inns",
+      "target": "โรงแรม​ด่าน​หน้า"
+    },
+    {
+      "id": "native:[Sierpiński Gardens]",
+      "key": "[Sierpiński Gardens]",
+      "source": "Sierpiński Gardens",
+      "target": "สวน​เซียร์ปิน​สกี"
+    },
+    {
+      "id": "native:[Maximum nesting]",
+      "key": "[Maximum nesting]",
+      "source": "Maximum nesting",
+      "target": "การ​ซ้อน​สูงสุด"
+    },
+    {
+      "id": "native:[Minimum terminal district side]",
+      "key": "[Minimum terminal district side]",
+      "source": "Minimum terminal district side",
+      "target": "เขต​เท​อร์​มิ​นัล​ขั้น​ต่ำ​ฝั่ง"
+    },
+    {
+      "id": "native:[Major crossing pairs]",
+      "key": "[Major crossing pairs]",
+      "source": "Major crossing pairs",
+      "target": "คู่​ทาง​แยก​หลัก"
+    },
+    {
+      "id": "native:[Maximum fold depth]",
+      "key": "[Maximum fold depth]",
+      "source": "Maximum fold depth",
+      "target": "ความ​ลึก​ของ​การ​พับ​สูงสุด"
+    },
+    {
+      "id": "native:[Minimum land spacing]",
+      "key": "[Minimum land spacing]",
+      "source": "Minimum land spacing",
+      "target": "ระยะ​ห่าง​ขั้น​ต่ำ​ของ​ที่ดิน"
+    },
+    {
+      "id": "native:[Optional local crossings per parent]",
+      "key": "[Optional local crossings per parent]",
+      "source": "Optional local crossings per parent",
+      "target": "ทาง​ข้าม​ท้อง​ถิ่น​เพิ่ม​เติม​สำหรับ​แต่ละ​ผู้​ปกครอง"
+    },
+    {
+      "id": "native:[Lava shield]",
+      "key": "[Lava shield]",
+      "source": "Lava shield",
+      "target": "โล่​ลาวา"
+    },
+    {
+      "id": "native:[Lava tongues]",
+      "key": "[Lava tongues]",
+      "source": "Lava tongues",
+      "target": "ลิ้น​ลาวา"
+    },
+    {
+      "id": "native:[Long tongues]",
+      "key": "[Long tongues]",
+      "source": "Long tongues",
+      "target": "ลิ้น​ยาว"
+    },
+    {
+      "id": "native:[Crater rim width]",
+      "key": "[Crater rim width]",
+      "source": "Crater rim width",
+      "target": "ความ​กว้าง​ของ​ขอบ​ปล่อง​ภูเขาไฟ"
+    },
+    {
+      "id": "native:[Honeycomb isle]",
+      "key": "[Honeycomb isle]",
+      "source": "Honeycomb isle",
+      "target": "เกาะ​รัง​ผึ้ง"
+    },
+    {
+      "id": "native:[Blocks per colony]",
+      "key": "[Blocks per colony]",
+      "source": "Blocks per colony",
+      "target": "บล็อก​ต่อ​อาณานิคม"
+    },
+    {
+      "id": "native:[Rubble]",
+      "key": "[Rubble]",
+      "source": "Rubble",
+      "target": "ซาก​ปรัก​หัก​พัง"
+    },
+    {
+      "id": "native:[Outline gaps]",
+      "key": "[Outline gaps]",
+      "source": "Outline gaps",
+      "target": "ระบุ​ช่อง​ว่าง"
+    },
+    {
+      "id": "native:[Craters per colony]",
+      "key": "[Craters per colony]",
+      "source": "Craters per colony",
+      "target": "จำนวน​หลุม​อุกกาบาต​ต่อ​อาณานิคม"
+    },
+    {
+      "id": "native:[Wheat fields]",
+      "key": "[Wheat fields]",
+      "source": "Wheat fields",
+      "target": "ทุ่ง​ข้าว​สาลี"
+    }
+  ]
+}

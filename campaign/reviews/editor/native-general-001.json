@@ -1,0 +1,602 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "e588ca69ed77b2510cf1558bea0401d04bdcd9be0014fa2f4e2e70ea64c07bbe",
+  "edited_keys": [
+    "native:[hub finish in browser, game continues]",
+    "native:[hub browser did not open]",
+    "native:[hub compare code %0]",
+    "native:[hub code copied]",
+    "native:[%0 has left the game]",
+    "native:[start recording]",
+    "native:[stop recording]",
+    "native:[finalizing recording]",
+    "native:[%0 level %1]",
+    "native:[%0 units can't access resource]",
+    "native:[%0 units not available]",
+    "native:[%0 units too far from resource]",
+    "native:[%0 units too low level]",
+    "native:[%0% Uploaded]",
+    "native:[%0's team unit got converted to your team]",
+    "native:[abreaviation explanation A]",
+    "native:[abreaviation explanation C]",
+    "native:[abreaviation explanation fV]",
+    "native:[abreaviation explanation mV]",
+    "native:[abreaviation explanation V]",
+    "native:[add map]",
+    "native:[AI Descriptions]",
+    "native:[AI]",
+    "native:[ai]",
+    "native:[AICastor-Description]",
+    "native:[AICastor]",
+    "native:[AICortex-Description]",
+    "native:[AIMaxima-Description]",
+    "native:[AIMaxima]",
+    "native:[AICortex]",
+    "native:[AINicowar-Description]",
+    "native:[AINicowar]",
+    "native:[AINone-Description]",
+    "native:[AINone]",
+    "native:[AINumbi-Description]",
+    "native:[AINumbi]",
+    "native:[AIEcono-Description]",
+    "native:[AIEcono]",
+    "native:[AIWarrush-Description]",
+    "native:[AIWarrush]",
+    "native:[AICabino-Description]",
+    "native:[AICabino]",
+    "native:[AIJavaScript]",
+    "native:[AIJavaScript-Description]",
+    "native:[Alga]",
+    "native:[algae]",
+    "native:[alliances]",
+    "native:[alt %0]",
+    "native:[and]",
+    "native:[are dying hungry]",
+    "native:[are hungry]",
+    "native:[are ok]",
+    "native:[are wonded]",
+    "native:[armor]",
+    "native:[assigned]",
+    "native:[At. speed]",
+    "native:[At. strength]",
+    "native:[Attack]",
+    "native:[audio]",
+    "native:[auto save]",
+    "native:[available lan games]",
+    "native:[away:]",
+    "native:[Back]",
+    "native:[backspace]",
+    "native:[barracks explanation 2]",
+    "native:[barracks explanation]",
+    "native:[barracks]",
+    "native:[beach size]",
+    "native:[break]",
+    "native:[briefing]",
+    "native:[build %0 level %1]",
+    "native:[Build]",
+    "native:[Bullets]",
+    "native:[campaign editor]",
+    "native:[campaign]",
+    "native:[Can't connect, can't find host]",
+    "native:[Can't host game, port %0 in use]",
+    "native:[Can't join game, game has started]",
+    "native:[Can't join game, game is full]",
+    "native:[cancel destroy]",
+    "native:[cancel repair]",
+    "native:[cancel upgrade]",
+    "native:[Cancel]",
+    "native:[caps lock]",
+    "native:[carry]",
+    "native:[Change Area Name]",
+    "native:[Cherry]",
+    "native:[choose campaign]",
+    "native:[choose game]",
+    "native:[choose map]",
+    "native:[clear area]",
+    "native:[farm area]",
+    "native:[Clearing:]",
+    "native:[closed]",
+    "native:[combined vision]",
+    "native:[compile]",
+    "native:[compose]",
+    "native:[Computing Fertility]",
+    "native:[connect]",
+    "native:[connecting to game]",
+    "native:[connecting to]",
+    "native:[Construction Site Defaults]",
+    "native:[Continue playing]",
+    "native:[control %0]",
+    "native:[Corn]",
+    "native:[crater density]",
+    "native:[create map]",
+    "native:[credits]",
+    "native:[ctrl - line]",
+    "native:[current speed]",
+    "native:[custom game]",
+    "native:[customcur]",
+    "native:[damage]",
+    "native:[Damaged Map]",
+    "native:[decrease game speed]",
+    "native:[decrease units working]",
+    "native:[Defeat Your Oppenents]",
+    "native:[defencetower explanation 2]",
+    "native:[defencetower explanation]",
+    "native:[defencetower]",
+    "native:[Defense Map]",
+    "native:[Defense]",
+    "native:[Delete game]",
+    "native:[delete]",
+    "native:[desert]",
+    "native:[destroy]",
+    "native:[display]",
+    "native:[do nothing]",
+    "native:[don't carry anything]",
+    "native:[down]",
+    "native:[edit map]",
+    "native:[editing map]",
+    "native:[editor]",
+    "native:[end]",
+    "native:[enter]",
+    "native:[equals]",
+    "native:[ERROR_CANT_LOAD_MAP]",
+    "native:[ERROR_CANT_SAVE_CAMPAIGN]",
+    "native:[escape]",
+    "native:[f10]",
+    "native:[f11]",
+    "native:[f12]",
+    "native:[f13]",
+    "native:[f14]",
+    "native:[f15]",
+    "native:[f1]",
+    "native:[f2]",
+    "native:[f3]",
+    "native:[f4]",
+    "native:[f5]",
+    "native:[f6]",
+    "native:[f7]",
+    "native:[f8]",
+    "native:[f9]",
+    "native:[Fertility Map]",
+    "native:[fog of war]",
+    "native:[food]",
+    "native:[forbidden area]",
+    "native:[Free]",
+    "native:[free]"
+  ],
+  "findings": [
+    {
+      "id": "native:[%0% Uploaded]",
+      "severity": "minor",
+      "proposed": "อัปโหลดแล้ว %0%",
+      "reason": "Keep loanword อัปโหลด intact.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[abreaviation explanation C]",
+      "severity": "minor",
+      "proposed": "C: ส่งข้อความแชทไปยัง",
+      "reason": "Keep แชท intact; remove candidate syllable split.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[abreaviation explanation fV]",
+      "severity": "major",
+      "proposed": "fV: แบ่งปันการมองเห็นจากโรงเตี๊ยม (เพื่อดึงยูนิตมาเข้าทีม)",
+      "reason": "Vision is map visibility; Inn is canonical building, units are not organizations.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[abreaviation explanation mV]",
+      "severity": "major",
+      "proposed": "mV: แบ่งปันการมองเห็นจากตลาด (เพื่อแลกเปลี่ยนผลไม้)",
+      "reason": "Vision means shared visibility, not an organizational vision statement.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[abreaviation explanation V]",
+      "severity": "major",
+      "proposed": "V: แบ่งปันการมองเห็นจากอาคารทุกหลัง",
+      "reason": "Same gameplay visibility concept.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[AICastor-Description]",
+      "severity": "minor",
+      "proposed": "ก่อสร้างและฝึกฝน โดยให้การเติบโตสอดคล้องกับอาหารที่มี",
+      "reason": "Natural concise AI behavior, not abstract linking language.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[AICortex-Description]",
+      "severity": "major",
+      "proposed": "รวบรวมนักรบโจมตีเป็นระลอก พร้อมส่งอาหารและรักษาพยาบาล",
+      "reason": "A strategy description, not a past-tense statement that warriors gathered.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[AIMaxima-Description]",
+      "severity": "major",
+      "proposed": "สำรวจ สะสมอาหาร และรวบรวมนักรบโจมตีเป็นระลอก",
+      "reason": "Scouts is a verb describing AI; not a scout unit performing all construction/economy.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[alt %0]",
+      "severity": "minor",
+      "proposed": "Alt-%0",
+      "reason": "Keyboard modifier label; do not insert a space into the key combination.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[are ok]",
+      "severity": "major",
+      "proposed": "ปกติ",
+      "reason": "Healthy/okay unit state, not an OK confirmation button.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[At. speed]",
+      "severity": "major",
+      "proposed": "ความเร็วโจมตี",
+      "reason": "Translate attack abbreviation rather than retaining meaningless English Att.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[At. strength]",
+      "severity": "major",
+      "proposed": "พลังโจมตี",
+      "reason": "Translate attack-strength field rather than leaving English abbreviation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[available lan games]",
+      "severity": "major",
+      "proposed": "เกมในเครือข่ายท้องถิ่นที่เข้าร่วมได้",
+      "reason": "Local games here are LAN sessions, not local-region games.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[backspace]",
+      "severity": "major",
+      "proposed": "Backspace",
+      "reason": "Physical key name; distinguish from Delete rather than generic erase.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[barracks explanation 2]",
+      "severity": "minor",
+      "proposed": "ของนักรบ",
+      "reason": "Pair with first explanation row to form เพิ่มระดับการต่อสู้ / ของนักรบ.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[barracks explanation]",
+      "severity": "minor",
+      "proposed": "เพิ่มระดับการต่อสู้",
+      "reason": "Natural paired description with source level in second row.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[barracks]",
+      "severity": "minor",
+      "proposed": "ค่ายฝึก",
+      "reason": "Align gameplay building name with the Training Camp tutorial referring to this building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[break]",
+      "severity": "major",
+      "proposed": "Break",
+      "reason": "Keyboard key, not an instruction to take a rest.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[campaign editor]",
+      "severity": "major",
+      "proposed": "ตัวแก้ไขแคมเปญ",
+      "reason": "Software editor, not human editor.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[caps lock]",
+      "severity": "major",
+      "proposed": "Caps Lock",
+      "reason": "Physical key name, use recognizable keyboard legend.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[carry]",
+      "severity": "minor",
+      "proposed": "กำลังขน:",
+      "reason": "Resource-carrying field rather than abstract portability.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Cherry]",
+      "severity": "minor",
+      "proposed": "เชอร์รี",
+      "reason": "Use consistent Thai fruit spelling and keep the word whole.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[clear area]",
+      "severity": "minor",
+      "proposed": "พื้นที่แผ้วถาง",
+      "reason": "Zone for resource clearing, not an already empty clearing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Clearing:]",
+      "severity": "minor",
+      "proposed": "กำลังแผ้วถาง:",
+      "reason": "Consistent clearing terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[combined vision]",
+      "severity": "major",
+      "proposed": "รวมการมองเห็น",
+      "reason": "Visibility sharing, not a combined strategic vision.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[compose]",
+      "severity": "major",
+      "proposed": "Compose",
+      "reason": "Physical Compose key, not composing music/text as an action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Computing Fertility]",
+      "severity": "major",
+      "proposed": "กำลังคำนวณความอุดมสมบูรณ์",
+      "reason": "Terrain/crop fertility, not reproductive fertility.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Construction Site Defaults]",
+      "severity": "major",
+      "proposed": "ค่าเริ่มต้นของพื้นที่ก่อสร้าง",
+      "reason": "Defaults are settings, not financial/legal default.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[control %0]",
+      "severity": "major",
+      "proposed": "Ctrl-%0",
+      "reason": "Keyboard modifier, not a command to control something.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[credits]",
+      "severity": "minor",
+      "proposed": "ผู้จัดทำ",
+      "reason": "Native credits menu lists contributors, not spendable currency.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[ctrl - line]",
+      "severity": "major",
+      "proposed": "Ctrl - เส้น",
+      "reason": "Drawing a line with modifier, not a text line.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Damaged Map]",
+      "severity": "minor",
+      "proposed": "แผนที่ยูนิตบาดเจ็บ",
+      "reason": "Canonical units; concise overlay name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[decrease units working]",
+      "severity": "minor",
+      "proposed": "ลดยูนิตที่ทำงาน",
+      "reason": "Canonical unit terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[defencetower explanation 2]",
+      "severity": "minor",
+      "proposed": "ยูนิตหรืออาคารของศัตรูที่อยู่ใกล้",
+      "reason": "Pair with โจมตี in first explanation row; preserve enemy qualifier for both nouns.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[defencetower explanation]",
+      "severity": "minor",
+      "proposed": "โจมตี",
+      "reason": "Avoid awkward cross-row phrase โจมตีศัตรูที่อยู่ใกล้เคียง / หน่วยหรืออาคาร.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[delete]",
+      "severity": "minor",
+      "proposed": "Delete",
+      "reason": "Physical Delete key; distinguish from Backspace and other erase actions.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[display]",
+      "severity": "minor",
+      "proposed": "การแสดงผล",
+      "reason": "Display settings category, not an imperative Show.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[do nothing]",
+      "severity": "minor",
+      "proposed": "ไม่ทำอะไร",
+      "reason": "Neutral AI/order state, not a prohibitive command to player.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[editor]",
+      "severity": "major",
+      "proposed": "ตัวแก้ไข",
+      "reason": "Software editor, not a human journalist/editor.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[end]",
+      "severity": "major",
+      "proposed": "End",
+      "reason": "Physical End key, not end the game.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[enter]",
+      "severity": "major",
+      "proposed": "Enter",
+      "reason": "Physical Enter key, not go inside.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[escape]",
+      "severity": "major",
+      "proposed": "Esc",
+      "reason": "Physical Escape key, not flee.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fertility Map]",
+      "severity": "major",
+      "proposed": "แผนที่ความอุดมสมบูรณ์",
+      "reason": "Terrain/crop fertility, not reproductive fertility.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[free]",
+      "severity": "major",
+      "proposed": "ว่าง",
+      "reason": "Unassigned unit/free capacity, not zero monetary price.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f10]",
+      "severity": "minor",
+      "proposed": "F10",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f11]",
+      "severity": "minor",
+      "proposed": "F11",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f12]",
+      "severity": "minor",
+      "proposed": "F12",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f13]",
+      "severity": "minor",
+      "proposed": "F13",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f14]",
+      "severity": "minor",
+      "proposed": "F14",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f15]",
+      "severity": "minor",
+      "proposed": "F15",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f1]",
+      "severity": "minor",
+      "proposed": "F1",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f2]",
+      "severity": "minor",
+      "proposed": "F2",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f3]",
+      "severity": "minor",
+      "proposed": "F3",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f4]",
+      "severity": "minor",
+      "proposed": "F4",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f5]",
+      "severity": "minor",
+      "proposed": "F5",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f6]",
+      "severity": "minor",
+      "proposed": "F6",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f7]",
+      "severity": "minor",
+      "proposed": "F7",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f8]",
+      "severity": "minor",
+      "proposed": "F8",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[f9]",
+      "severity": "minor",
+      "proposed": "F9",
+      "reason": "Physical function-key legend, retain recognizable ASCII key name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[AI]",
+      "reason": "AI is the established technical acronym for artificial intelligence and appears as such in Thai software/game usage."
+    },
+    {
+      "id": "native:[ai]",
+      "reason": "Same established AI acronym; lowercase key is an identifier, displayed source is AI."
+    },
+    {
+      "id": "native:[AIJavaScript]",
+      "reason": "JavaScript is the official programming-language name."
+    },
+    {
+      "id": "native:[delete]",
+      "reason": "Physical Delete key legend is intentionally retained to distinguish it from Backspace."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

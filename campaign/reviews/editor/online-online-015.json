@@ -1,0 +1,362 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "27cd4a0b295e9feb2584aa9137718c5b740fcd1138aba1c8453c5045cbad3c3b",
+  "edited_keys": [
+    "online:Verification ",
+    "online:Verification and connection details",
+    "online:Verification failed",
+    "online:Verified",
+    "online:Version",
+    "online:Version history",
+    "online:Version label",
+    "online:Version {slot0}",
+    "online:Version {value0}",
+    "online:Version {value0}{value1}",
+    "online:Versions",
+    "online:Versions of {slot0}",
+    "online:Versions of {value0}",
+    "online:View orientation",
+    "online:View profile and games",
+    "online:View reported paint",
+    "online:View revision",
+    "online:View {slot0}",
+    "online:Viewing a saved revision. Restore it to make it the current draft.",
+    "online:Viewing {slot0}",
+    "online:View…",
+    "online:Visibility",
+    "online:Volume",
+    "online:V{slot0} · {slot1}",
+    "online:Wait for a pending compatibility check.",
+    "online:Wait for a pending generator check.",
+    "online:Wait for the provider call to return before cancelling.",
+    "online:Waiting",
+    "online:Waiting for service capacity. Your place is saved.",
+    "online:Waived",
+    "online:Warning",
+    "online:Warrior attack",
+    "online:Warrior health",
+    "online:Warriors",
+    "online:Warrush",
+    "online:Watch AI play",
+    "online:Watch in browser",
+    "online:Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+    "online:Water",
+    "online:Waves",
+    "online:Webhook mode mismatch.",
+    "online:Weight",
+    "online:Welcome to the colony",
+    "online:Welcome, {value0}",
+    "online:What changed",
+    "online:What will your world look like?",
+    "online:What would you like to create?",
+    "online:Whole model",
+    "online:Why hide this map? (shown to its owner)",
+    "online:Wide",
+    "online:Width",
+    "online:Win rate",
+    "online:Win rate {slot0}",
+    "online:Win rate, {slot0} day",
+    "online:Win rate, {slot0} days",
+    "online:Winner",
+    "online:Withdraw from library",
+    "online:Withdraw published family",
+    "online:Withdraw release",
+    "online:Withdrawn",
+    "online:Won",
+    "online:Worker leases",
+    "online:Worker slots",
+    "online:Workers",
+    "online:Working…",
+    "online:Workspace view",
+    "online:Wrong username or password.",
+    "online:YOUR COLONY",
+    "online:YOUR COMPOSER",
+    "online:Yes",
+    "online:Yes, continue",
+    "online:You",
+    "online:You already own this product.",
+    "online:You already reported this map.",
+    "online:You are already in a queue.",
+    "online:You are muted.",
+    "online:You are not in this room.",
+    "online:You are sending messages too quickly.",
+    "online:You are signed in",
+    "online:You are signed in as",
+    "online:You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+    "online:You can close this page.",
+    "online:You can only ban accounts with a lower role.",
+    "online:You can only delete accounts with a lower role.",
+    "online:You can only mute accounts with a lower role.",
+    "online:You can send a new message to try again.",
+    "online:You cannot ban yourself.",
+    "online:You cannot change your own role.",
+    "online:You cannot delete your own account here.",
+    "online:You declined a match; wait before queueing again.",
+    "online:You did not play in that match.",
+    "online:You have no seat in a running match with that id.",
+    "online:You have not shared any maps yet.",
+    "online:Your account",
+    "online:Your account cannot host rooms.",
+    "online:Your account cannot join rooms.",
+    "online:Your account cannot play.",
+    "online:Your account could not be refreshed. Please try again shortly.",
+    "online:Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+    "online:Your account is now linked",
+    "online:Your account was deleted",
+    "online:Your browser could not prepare this photo.",
+    "online:Your building",
+    "online:Your building drafts",
+    "online:Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+    "online:Your building workspace is full.",
+    "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+    "online:Your changes were saved as a new skin.",
+    "online:Your collection has 100 designs. Delete an unused design to make room.",
+    "online:Your colony has a sound.",
+    "online:Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+    "online:Your credit is reserved while the provider outcome is reconciled.",
+    "online:Your credit remains reserved while the provider outcome is reconciled.",
+    "online:Your credits are ready. Let’s create.",
+    "online:Your drafts",
+    "online:Your first AI belongs here.",
+    "online:Your first design starts with New skin. Your work saves automatically.",
+    "online:Your first idea",
+    "online:Your game keeps its current account. You can close this page.",
+    "online:Your idea or next change",
+    "online:Your map is ready to play.",
+    "online:Your match is already starting.",
+    "online:Your next colony starts here. Play in your browser or join your friends.",
+    "online:Your next great map",
+    "online:Your next soundtrack",
+    "online:Your next world starts with an idea.",
+    "online:Your profile",
+    "online:Your projects will be saved here.",
+    "online:Your purchases",
+    "online:Your saved building remains available in Building Studio.",
+    "online:Your set",
+    "online:Your swarm, in the game",
+    "online:Your terrain",
+    "online:Your uploaded photo",
+    "online:Your workspace has 100 drafts. Delete an old draft first.",
+    "online:Your world is taking shape…",
+    "online:You’re invited",
+    "online:Zoom",
+    "online:Zoom in",
+    "online:Zoom in (+)",
+    "online:Zoom out",
+    "online:Zoom out (−)",
+    "online:a few seconds left",
+    "online:aborted",
+    "online:about {minutes} min left",
+    "online:about {seconds} s left",
+    "online:account export",
+    "online:and use this link again.",
+    "online:as a guest, and sign in later to keep your games and rating.",
+    "online:b-",
+    "online:banned",
+    "online:browser sign-in completed",
+    "online:browser sign-in completed from web session",
+    "online:build",
+    "online:building library",
+    "online:by ",
+    "online:by {slot0} · updated {slot1}",
+    "online:by {slot0}{slot1}",
+    "online:cancelled",
+    "online:check needs"
+  ],
+  "findings": [
+    {
+      "id": "online:Version",
+      "severity": "minor",
+      "proposed": "เวอร์ชัน",
+      "reason": "Consistent standard spelling."
+    },
+    {
+      "id": "online:View reported paint",
+      "severity": "major",
+      "proposed": "ดูสีที่ถูกรายงาน",
+      "reason": "Reported skin paint, not a report about house paint."
+    },
+    {
+      "id": "online:Volume",
+      "severity": "major",
+      "proposed": "ระดับเสียง",
+      "reason": "Audio volume, not quantity."
+    },
+    {
+      "id": "online:V{slot0} · {slot1}",
+      "severity": "minor",
+      "proposed": "V{slot0} · {slot1}",
+      "reason": "Preserve technical V label without inserted space."
+    },
+    {
+      "id": "online:Wait for a pending generator check.",
+      "severity": "major",
+      "proposed": "รอการตรวจสอบตัวสร้างที่กำลังดำเนินการ",
+      "reason": "Procedural generator."
+    },
+    {
+      "id": "online:Wait for the provider call to return before cancelling.",
+      "severity": "major",
+      "proposed": "รอผลการเรียกผู้ให้บริการก่อนยกเลิก",
+      "reason": "API call completion, not a provider returning a phone call."
+    },
+    {
+      "id": "online:Waiting",
+      "severity": "minor",
+      "proposed": "กำลังรอ",
+      "reason": "Waiting status, not a relative-clause adjective."
+    },
+    {
+      "id": "online:Waiting for service capacity. Your place is saved.",
+      "severity": "major",
+      "proposed": "กำลังรอความพร้อมของบริการ ระบบเก็บลำดับคิวของคุณไว้แล้ว",
+      "reason": "Saved queue place, not a confirmed game seat."
+    },
+    {
+      "id": "online:Warrior attack",
+      "severity": "major",
+      "proposed": "พลังโจมตีนักรบ",
+      "reason": "Unit attack stat, not an attack event."
+    },
+    {
+      "id": "online:Warrior health",
+      "severity": "major",
+      "proposed": "พลังชีวิตนักรบ",
+      "reason": "Unit hit-point stat."
+    },
+    {
+      "id": "online:Why hide this map? (shown to its owner)",
+      "severity": "major",
+      "proposed": "เหตุใดจึงซ่อนแผนที่นี้? (เจ้าของจะเห็นเหตุผล)",
+      "reason": "Reason will be shown to owner, not already shown."
+    },
+    {
+      "id": "online:Withdraw from library",
+      "severity": "major",
+      "proposed": "ถอนออกจากคลัง",
+      "reason": "Remove content from digital library, not a person leaving a library."
+    },
+    {
+      "id": "online:Withdraw published family",
+      "severity": "major",
+      "proposed": "ถอนการเผยแพร่ตระกูลอาคาร",
+      "reason": "Asset family, not a human family."
+    },
+    {
+      "id": "online:Withdraw release",
+      "severity": "major",
+      "proposed": "ถอนฉบับเผยแพร่",
+      "reason": "Unpublish asset release, not withdraw a prisoner release."
+    },
+    {
+      "id": "online:Won",
+      "severity": "major",
+      "proposed": "ชนะ",
+      "reason": "Match outcome, not Korean currency or beseeching."
+    },
+    {
+      "id": "online:Worker leases",
+      "severity": "major",
+      "proposed": "สิทธิ์ครอบครองงานของเวิร์กเกอร์",
+      "reason": "Software job leases, not labour rental contracts."
+    },
+    {
+      "id": "online:Worker slots",
+      "severity": "major",
+      "proposed": "ช่องงานเวิร์กเกอร์",
+      "reason": "Engine worker slots, not labourer job vacancies."
+    },
+    {
+      "id": "online:Working…",
+      "severity": "minor",
+      "proposed": "กำลังทำงาน…",
+      "reason": "Ongoing progress state."
+    },
+    {
+      "id": "online:You cannot ban yourself.",
+      "severity": "major",
+      "proposed": "แบนบัญชีตัวเองไม่ได้",
+      "reason": "Account moderation ban, not forbidding oneself generally."
+    },
+    {
+      "id": "online:Your account cannot host rooms.",
+      "severity": "major",
+      "proposed": "บัญชีของคุณสร้างห้องไม่ได้",
+      "reason": "Multiplayer room, not merely chat room."
+    },
+    {
+      "id": "online:Your browser could not prepare this photo.",
+      "severity": "major",
+      "proposed": "เบราว์เซอร์ของคุณไม่สามารถเตรียมภาพนี้ได้",
+      "reason": "Photo processing/preparation, not displaying an image."
+    },
+    {
+      "id": "online:Your building workspace is full.",
+      "severity": "major",
+      "proposed": "พื้นที่ทำงานอาคารของคุณเต็มแล้ว",
+      "reason": "Building-design workspace, not workspace inside a building."
+    },
+    {
+      "id": "online:Your credit remains reserved while the provider outcome is reconciled.",
+      "severity": "major",
+      "proposed": "เครดิตของคุณยังถูกกันไว้ระหว่างตรวจสอบผลจากผู้ให้บริการให้ตรงกัน",
+      "reason": "Virtual usage credits, not a cash account balance."
+    },
+    {
+      "id": "online:Your credits are ready. Let’s create.",
+      "severity": "major",
+      "proposed": "เครดิตของคุณพร้อมแล้ว มาเริ่มสร้างกัน",
+      "reason": "Credits available to spend, not credit data/info."
+    },
+    {
+      "id": "online:Your next soundtrack",
+      "severity": "major",
+      "proposed": "เพลงประกอบชุดถัดไปของคุณ",
+      "reason": "Game soundtrack, not film soundtrack."
+    },
+    {
+      "id": "online:Your swarm, in the game",
+      "severity": "major",
+      "proposed": "รังของคุณในเกม",
+      "reason": "Swarm building, not moving swarm."
+    },
+    {
+      "id": "online:as a guest, and sign in later to keep your games and rating.",
+      "severity": "major",
+      "proposed": "แบบผู้เยี่ยมชม แล้วลงชื่อเข้าใช้ภายหลังเพื่อเก็บเกมและคะแนนประเมินของคุณไว้",
+      "reason": "Guest account mode, not an invited special guest."
+    },
+    {
+      "id": "online:b-",
+      "severity": "major",
+      "proposed": "b-",
+      "reason": "Technical prefix must remain executable/unmodified."
+    },
+    {
+      "id": "online:banned",
+      "severity": "major",
+      "proposed": "ถูกแบน",
+      "reason": "Account ban status, not a general prohibition."
+    },
+    {
+      "id": "online:building library",
+      "severity": "major",
+      "proposed": "คลังอาคาร",
+      "reason": "Digital building library, not library building."
+    },
+    {
+      "id": "online:check needs",
+      "severity": "major",
+      "proposed": "การตรวจสอบ",
+      "reason": "Composed in ValidationPanel with {value0} {value1} attention; Thai outer template supplies needs attention."
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "online:b-",
+      "reason": "Technical b- identifier prefix must remain ASCII."
+    }
+  ],
+  "method": "Every entry read against immutable English/Thai snapshot; retained entries included. No prior reviewer findings read. Standard Thai language brief and selected FR/JA/VI contextual cross-checks used. Agent-reviewed; not native-human-certified."
+}

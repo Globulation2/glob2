@@ -1,0 +1,809 @@
+{
+  "id": "online-online-006",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Generated layout",
+      "key": "Generated layout",
+      "source": "Generated layout"
+    },
+    {
+      "id": "online:Generated revisions",
+      "key": "Generated revisions",
+      "source": "Generated revisions"
+    },
+    {
+      "id": "online:Generated source accepted as revision {slot0}. Run engine checks before publication.",
+      "key": "Generated source accepted as revision {slot0}. Run engine checks before publication.",
+      "source": "Generated source accepted as revision {slot0}. Run engine checks before publication."
+    },
+    {
+      "id": "online:Generated version accepted as your current edit target.",
+      "key": "Generated version accepted as your current edit target.",
+      "source": "Generated version accepted as your current edit target."
+    },
+    {
+      "id": "online:Generation history {slot0}",
+      "key": "Generation history {slot0}",
+      "source": "Generation history {slot0}"
+    },
+    {
+      "id": "online:Generation is unavailable. Saved code, export and local tools remain accessible.",
+      "key": "Generation is unavailable. Saved code, export and local tools remain accessible.",
+      "source": "Generation is unavailable. Saved code, export and local tools remain accessible."
+    },
+    {
+      "id": "online:Generation report",
+      "key": "Generation report",
+      "source": "Generation report"
+    },
+    {
+      "id": "online:Generation stages",
+      "key": "Generation stages",
+      "source": "Generation stages"
+    },
+    {
+      "id": "online:Generation stopped. Your failed generation credit is returned.",
+      "key": "Generation stopped. Your failed generation credit is returned.",
+      "source": "Generation stopped. Your failed generation credit is returned."
+    },
+    {
+      "id": "online:Generation {value0} · {value1}",
+      "key": "Generation {value0} · {value1}",
+      "source": "Generation {value0} · {value1}"
+    },
+    {
+      "id": "online:Generator",
+      "key": "Generator",
+      "source": "Generator"
+    },
+    {
+      "id": "online:Generator JavaScript source",
+      "key": "Generator JavaScript source",
+      "source": "Generator JavaScript source"
+    },
+    {
+      "id": "online:Generator Studio",
+      "key": "Generator Studio",
+      "source": "Generator Studio"
+    },
+    {
+      "id": "online:Generator Studio is disabled on this instance. Recover saved files through",
+      "key": "Generator Studio is disabled on this instance. Recover saved files through",
+      "source": "Generator Studio is disabled on this instance. Recover saved files through"
+    },
+    {
+      "id": "online:Generator Studio is not enabled on this instance.",
+      "key": "Generator Studio is not enabled on this instance.",
+      "source": "Generator Studio is not enabled on this instance."
+    },
+    {
+      "id": "online:Generator control values (JSON)",
+      "key": "Generator control values (JSON)",
+      "source": "Generator control values (JSON)"
+    },
+    {
+      "id": "online:Generator manifest JSON",
+      "key": "Generator manifest JSON",
+      "source": "Generator manifest JSON"
+    },
+    {
+      "id": "online:Generator preview revision {value0}",
+      "key": "Generator preview revision {value0}",
+      "source": "Generator preview revision {value0}"
+    },
+    {
+      "id": "online:Generators",
+      "key": "Generators",
+      "source": "Generators"
+    },
+    {
+      "id": "online:Give a bounded moderation reason without NUL characters.",
+      "key": "Give a bounded moderation reason without NUL characters.",
+      "source": "Give a bounded moderation reason without NUL characters."
+    },
+    {
+      "id": "online:Give a bounded recovery reason.",
+      "key": "Give a bounded recovery reason.",
+      "source": "Give a bounded recovery reason."
+    },
+    {
+      "id": "online:Give a moderation reason.",
+      "key": "Give a moderation reason.",
+      "source": "Give a moderation reason."
+    },
+    {
+      "id": "online:Give a reason and a valid content identifier.",
+      "key": "Give a reason and a valid content identifier.",
+      "source": "Give a reason and a valid content identifier."
+    },
+    {
+      "id": "online:Give a reason.",
+      "key": "Give a reason.",
+      "source": "Give a reason."
+    },
+    {
+      "id": "online:Give a report reason of at most 2000 characters.",
+      "key": "Give a report reason of at most 2000 characters.",
+      "source": "Give a report reason of at most 2000 characters."
+    },
+    {
+      "id": "online:Give orders. Receive reports. Lead your colony.",
+      "key": "Give orders. Receive reports. Lead your colony.",
+      "source": "Give orders. Receive reports. Lead your colony."
+    },
+    {
+      "id": "online:Give your colony controller a home. Every release keeps its own source and download history.",
+      "key": "Give your colony controller a home. Every release keeps its own source and download history.",
+      "source": "Give your colony controller a home. Every release keeps its own source and download history."
+    },
+    {
+      "id": "online:Globs",
+      "key": "Globs",
+      "source": "Globs"
+    },
+    {
+      "id": "online:Globs (all)",
+      "key": "Globs (all)",
+      "source": "Globs (all)"
+    },
+    {
+      "id": "online:Globulation 2",
+      "key": "Globulation 2",
+      "source": "Globulation 2"
+    },
+    {
+      "id": "online:Globulation 2 Online website",
+      "key": "Globulation 2 Online website",
+      "source": "Globulation 2 Online website"
+    },
+    {
+      "id": "online:Globulation 2 is free software (GPL 3).",
+      "key": "Globulation 2 is free software (GPL 3).",
+      "source": "Globulation 2 is free software (GPL 3)."
+    },
+    {
+      "id": "online:Go back to the game: it has signed you in. You can close this tab.",
+      "key": "Go back to the game: it has signed you in. You can close this tab.",
+      "source": "Go back to the game: it has signed you in. You can close this tab."
+    },
+    {
+      "id": "online:Go to the home page",
+      "key": "Go to the home page",
+      "source": "Go to the home page"
+    },
+    {
+      "id": "online:Go to {p1}",
+      "key": "Go to {p1}",
+      "source": "Go to {p1}"
+    },
+    {
+      "id": "online:Go to {p6}",
+      "key": "Go to {p6}",
+      "source": "Go to {p6}"
+    },
+    {
+      "id": "online:Got an invite code?",
+      "key": "Got an invite code?",
+      "source": "Got an invite code?"
+    },
+    {
+      "id": "online:Got it",
+      "key": "Got it",
+      "source": "Got it"
+    },
+    {
+      "id": "online:Grass",
+      "key": "Grass",
+      "source": "Grass"
+    },
+    {
+      "id": "online:Gravatar when available, otherwise initials",
+      "key": "Gravatar when available, otherwise initials",
+      "source": "Gravatar when available, otherwise initials"
+    },
+    {
+      "id": "online:Ground",
+      "key": "Ground",
+      "source": "Ground"
+    },
+    {
+      "id": "online:Ground health change",
+      "key": "Ground health change",
+      "source": "Ground health change"
+    },
+    {
+      "id": "online:Ground movement",
+      "key": "Ground movement",
+      "source": "Ground movement"
+    },
+    {
+      "id": "online:Growth rate",
+      "key": "Growth rate",
+      "source": "Growth rate"
+    },
+    {
+      "id": "online:Guest",
+      "key": "Guest",
+      "source": "Guest"
+    },
+    {
+      "id": "online:Guest accounts are disabled on this instance.",
+      "key": "Guest accounts are disabled on this instance.",
+      "source": "Guest accounts are disabled on this instance."
+    },
+    {
+      "id": "online:Guest accounts created",
+      "key": "Guest accounts created",
+      "source": "Guest accounts created"
+    },
+    {
+      "id": "online:Guest active account-days",
+      "key": "Guest active account-days",
+      "source": "Guest active account-days"
+    },
+    {
+      "id": "online:Guest player",
+      "key": "Guest player",
+      "source": "Guest player"
+    },
+    {
+      "id": "online:Guests are not ranked and keep no statistics. Their matches still appear below.",
+      "key": "Guests are not ranked and keep no statistics. Their matches still appear below.",
+      "source": "Guests are not ranked and keep no statistics. Their matches still appear below."
+    },
+    {
+      "id": "online:Guests get generated names; link a sign-in method to choose one.",
+      "key": "Guests get generated names; link a sign-in method to choose one.",
+      "source": "Guests get generated names; link a sign-in method to choose one."
+    },
+    {
+      "id": "online:Guests: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "key": "Guests: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "source": "Guests: {slot0} today · {slot1} weekly · {slot2} monthly"
+    },
+    {
+      "id": "online:HTTP {value0}",
+      "key": "HTTP {value0}",
+      "source": "HTTP {value0}"
+    },
+    {
+      "id": "online:Hand-made",
+      "key": "Hand-made",
+      "source": "Hand-made"
+    },
+    {
+      "id": "online:Hand-made or generated",
+      "key": "Hand-made or generated",
+      "source": "Hand-made or generated"
+    },
+    {
+      "id": "online:Hardness ",
+      "key": "Hardness ",
+      "source": "Hardness "
+    },
+    {
+      "id": "online:Health restored per tick",
+      "key": "Health restored per tick",
+      "source": "Health restored per tick"
+    },
+    {
+      "id": "online:Hear it in the game",
+      "key": "Hear it in the game",
+      "source": "Hear it in the game"
+    },
+    {
+      "id": "online:Height",
+      "key": "Height",
+      "source": "Height"
+    },
+    {
+      "id": "online:Hex",
+      "key": "Hex",
+      "source": "Hex"
+    },
+    {
+      "id": "online:Hidden",
+      "key": "Hidden",
+      "source": "Hidden"
+    },
+    {
+      "id": "online:Hidden by a moderator",
+      "key": "Hidden by a moderator",
+      "source": "Hidden by a moderator"
+    },
+    {
+      "id": "online:Hidden by a moderator: {slot0}",
+      "key": "Hidden by a moderator: {slot0}",
+      "source": "Hidden by a moderator: {slot0}"
+    },
+    {
+      "id": "online:Hidden following community report.",
+      "key": "Hidden following community report.",
+      "source": "Hidden following community report."
+    },
+    {
+      "id": "online:Hidden following moderator review",
+      "key": "Hidden following moderator review",
+      "source": "Hidden following moderator review"
+    },
+    {
+      "id": "online:Hidden: {slot0}",
+      "key": "Hidden: {slot0}",
+      "source": "Hidden: {slot0}"
+    },
+    {
+      "id": "online:Hide",
+      "key": "Hide",
+      "source": "Hide"
+    },
+    {
+      "id": "online:Hide family",
+      "key": "Hide family",
+      "source": "Hide family"
+    },
+    {
+      "id": "online:Hide provisional ratings",
+      "key": "Hide provisional ratings",
+      "source": "Hide provisional ratings"
+    },
+    {
+      "id": "online:Hide release and resolve",
+      "key": "Hide release and resolve",
+      "source": "Hide release and resolve"
+    },
+    {
+      "id": "online:Hide set",
+      "key": "Hide set",
+      "source": "Hide set"
+    },
+    {
+      "id": "online:Hide set and resolve",
+      "key": "Hide set and resolve",
+      "source": "Hide set and resolve"
+    },
+    {
+      "id": "online:Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+      "key": "Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+      "source": "Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits."
+    },
+    {
+      "id": "online:Historical coverage",
+      "key": "Historical coverage",
+      "source": "Historical coverage"
+    },
+    {
+      "id": "online:History",
+      "key": "History",
+      "source": "History"
+    },
+    {
+      "id": "online:Hive",
+      "key": "Hive",
+      "source": "Hive"
+    },
+    {
+      "id": "online:Hive Mind",
+      "key": "Hive Mind",
+      "source": "Hive Mind"
+    },
+    {
+      "id": "online:Hive Mind credits",
+      "key": "Hive Mind credits",
+      "source": "Hive Mind credits"
+    },
+    {
+      "id": "online:Hive Mind is not available on this instance.",
+      "key": "Hive Mind is not available on this instance.",
+      "source": "Hive Mind is not available on this instance."
+    },
+    {
+      "id": "online:Hive Mind is not enabled on this instance.",
+      "key": "Hive Mind is not enabled on this instance.",
+      "source": "Hive Mind is not enabled on this instance."
+    },
+    {
+      "id": "online:Home",
+      "key": "Home",
+      "source": "Home"
+    },
+    {
+      "id": "online:How AIs work {slot0}",
+      "key": "How AIs work {slot0}",
+      "source": "How AIs work {slot0}"
+    },
+    {
+      "id": "online:How would you like to play?",
+      "key": "How would you like to play?",
+      "source": "How would you like to play?"
+    },
+    {
+      "id": "online:Hue",
+      "key": "Hue",
+      "source": "Hue"
+    },
+    {
+      "id": "online:Human match participants",
+      "key": "Human match participants",
+      "source": "Human match participants"
+    },
+    {
+      "id": "online:Humans",
+      "key": "Humans",
+      "source": "Humans"
+    },
+    {
+      "id": "online:Hungry globs",
+      "key": "Hungry globs",
+      "source": "Hungry globs"
+    },
+    {
+      "id": "online:I checked these token counts against provider evidence, including any explicitly entered zeros.",
+      "key": "I checked these token counts against provider evidence, including any explicitly entered zeros.",
+      "source": "I checked these token counts against provider evidence, including any explicitly entered zeros."
+    },
+    {
+      "id": "online:IN GAME · {slot0}",
+      "key": "IN GAME · {slot0}",
+      "source": "IN GAME · {slot0}"
+    },
+    {
+      "id": "online:INTERMEDIATE IMAGE",
+      "key": "INTERMEDIATE IMAGE",
+      "source": "INTERMEDIATE IMAGE"
+    },
+    {
+      "id": "online:Image is missing from storage.",
+      "key": "Image is missing from storage.",
+      "source": "Image is missing from storage."
+    },
+    {
+      "id": "online:Image is too large.",
+      "key": "Image is too large.",
+      "source": "Image is too large."
+    },
+    {
+      "id": "online:Image not found.",
+      "key": "Image not found.",
+      "source": "Image not found."
+    },
+    {
+      "id": "online:Image unavailable.",
+      "key": "Image unavailable.",
+      "source": "Image unavailable."
+    },
+    {
+      "id": "online:Import",
+      "key": "Import",
+      "source": "Import"
+    },
+    {
+      "id": "online:Import in Settings → Custom AIs to use in local games.",
+      "key": "Import in Settings → Custom AIs to use in local games.",
+      "source": "Import in Settings → Custom AIs to use in local games."
+    },
+    {
+      "id": "online:Import package",
+      "key": "Import package",
+      "source": "Import package"
+    },
+    {
+      "id": "online:Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+      "key": "Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+      "source": "Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it."
+    },
+    {
+      "id": "online:Imported release {slot0}.",
+      "key": "Imported release {slot0}.",
+      "source": "Imported release {slot0}."
+    },
+    {
+      "id": "online:In match",
+      "key": "In match",
+      "source": "In match"
+    },
+    {
+      "id": "online:In the game, choose",
+      "key": "In the game, choose",
+      "source": "In the game, choose"
+    },
+    {
+      "id": "online:In the map editor",
+      "key": "In the map editor",
+      "source": "In the map editor"
+    },
+    {
+      "id": "online:In use",
+      "key": "In use",
+      "source": "In use"
+    },
+    {
+      "id": "online:In use · changes not applied",
+      "key": "In use · changes not applied",
+      "source": "In use · changes not applied"
+    },
+    {
+      "id": "online:Inappropriate content",
+      "key": "Inappropriate content",
+      "source": "Inappropriate content"
+    },
+    {
+      "id": "online:Incomplete music release.",
+      "key": "Incomplete music release.",
+      "source": "Incomplete music release."
+    },
+    {
+      "id": "online:Increase the manifest revision for a new release.",
+      "key": "Increase the manifest revision for a new release.",
+      "source": "Increase the manifest revision for a new release."
+    },
+    {
+      "id": "online:Individual moods",
+      "key": "Individual moods",
+      "source": "Individual moods"
+    },
+    {
+      "id": "online:Information",
+      "key": "Information",
+      "source": "Information"
+    },
+    {
+      "id": "online:Initial health",
+      "key": "Initial health",
+      "source": "Initial health"
+    },
+    {
+      "id": "online:Initials only",
+      "key": "Initials only",
+      "source": "Initials only"
+    },
+    {
+      "id": "online:Inn capacity",
+      "key": "Inn capacity",
+      "source": "Inn capacity"
+    },
+    {
+      "id": "online:Input tokens",
+      "key": "Input tokens",
+      "source": "Input tokens"
+    },
+    {
+      "id": "online:Input tokens (including cached)",
+      "key": "Input tokens (including cached)",
+      "source": "Input tokens (including cached)"
+    },
+    {
+      "id": "online:Inspect candidate",
+      "key": "Inspect candidate",
+      "source": "Inspect candidate"
+    },
+    {
+      "id": "online:Inspect latest release",
+      "key": "Inspect latest release",
+      "source": "Inspect latest release"
+    },
+    {
+      "id": "online:Inspect library content",
+      "key": "Inspect library content",
+      "source": "Inspect library content"
+    },
+    {
+      "id": "online:Inspect match verification",
+      "key": "Inspect match verification",
+      "source": "Inspect match verification"
+    },
+    {
+      "id": "online:Inspect matches",
+      "key": "Inspect matches",
+      "source": "Inspect matches"
+    },
+    {
+      "id": "online:Inspect recovery details",
+      "key": "Inspect recovery details",
+      "source": "Inspect recovery details"
+    },
+    {
+      "id": "online:Inspect requesting account",
+      "key": "Inspect requesting account",
+      "source": "Inspect requesting account"
+    },
+    {
+      "id": "online:Inspect sheet",
+      "key": "Inspect sheet",
+      "source": "Inspect sheet"
+    },
+    {
+      "id": "online:Inspect this version",
+      "key": "Inspect this version",
+      "source": "Inspect this version"
+    },
+    {
+      "id": "online:Inspect tracks",
+      "key": "Inspect tracks",
+      "source": "Inspect tracks"
+    },
+    {
+      "id": "online:Inspect version ",
+      "key": "Inspect version ",
+      "source": "Inspect version "
+    },
+    {
+      "id": "online:Inspect version {slot0} · {slot1}",
+      "key": "Inspect version {slot0} · {slot1}",
+      "source": "Inspect version {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Inspected",
+      "key": "Inspected",
+      "source": "Inspected"
+    },
+    {
+      "id": "online:Inspecting",
+      "key": "Inspecting",
+      "source": "Inspecting"
+    },
+    {
+      "id": "online:Inspection zoom",
+      "key": "Inspection zoom",
+      "source": "Inspection zoom"
+    },
+    {
+      "id": "online:Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "key": "Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "source": "Install community AIs for local games. Versions work offline. Only run code from authors you trust."
+    },
+    {
+      "id": "online:Installed preset artwork",
+      "key": "Installed preset artwork",
+      "source": "Installed preset artwork"
+    },
+    {
+      "id": "online:Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "key": "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "source": "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it."
+    },
+    {
+      "id": "online:Internal server error.",
+      "key": "Internal server error.",
+      "source": "Internal server error."
+    },
+    {
+      "id": "online:Into the fray",
+      "key": "Into the fray",
+      "source": "Into the fray"
+    },
+    {
+      "id": "online:Invalid",
+      "key": "Invalid",
+      "source": "Invalid"
+    },
+    {
+      "id": "online:Invalid account cursor.",
+      "key": "Invalid account cursor.",
+      "source": "Invalid account cursor."
+    },
+    {
+      "id": "online:Invalid audit cursor.",
+      "key": "Invalid audit cursor.",
+      "source": "Invalid audit cursor."
+    },
+    {
+      "id": "online:Invalid checkout destination",
+      "key": "Invalid checkout destination",
+      "source": "Invalid checkout destination"
+    },
+    {
+      "id": "online:Invalid checkout destination.",
+      "key": "Invalid checkout destination.",
+      "source": "Invalid checkout destination."
+    },
+    {
+      "id": "online:Invalid claimed generator provenance.",
+      "key": "Invalid claimed generator provenance.",
+      "source": "Invalid claimed generator provenance."
+    },
+    {
+      "id": "online:Invalid cursor.",
+      "key": "Invalid cursor.",
+      "source": "Invalid cursor."
+    },
+    {
+      "id": "online:Invalid date.",
+      "key": "Invalid date.",
+      "source": "Invalid date."
+    },
+    {
+      "id": "online:Invalid duration filter.",
+      "key": "Invalid duration filter.",
+      "source": "Invalid duration filter."
+    },
+    {
+      "id": "online:Invalid editor-only filter.",
+      "key": "Invalid editor-only filter.",
+      "source": "Invalid editor-only filter."
+    },
+    {
+      "id": "online:Invalid engine version.",
+      "key": "Invalid engine version.",
+      "source": "Invalid engine version."
+    },
+    {
+      "id": "online:Invalid identifier.",
+      "key": "Invalid identifier.",
+      "source": "Invalid identifier."
+    },
+    {
+      "id": "online:Invalid manifest JSON.",
+      "key": "Invalid manifest JSON.",
+      "source": "Invalid manifest JSON."
+    },
+    {
+      "id": "online:Invalid mapId.",
+      "key": "Invalid mapId.",
+      "source": "Invalid mapId."
+    },
+    {
+      "id": "online:Invalid material map dimensions.",
+      "key": "Invalid material map dimensions.",
+      "source": "Invalid material map dimensions."
+    },
+    {
+      "id": "online:Invalid material map.",
+      "key": "Invalid material map.",
+      "source": "Invalid material map."
+    },
+    {
+      "id": "online:Invalid material unwrap coordinate.",
+      "key": "Invalid material unwrap coordinate.",
+      "source": "Invalid material unwrap coordinate."
+    },
+    {
+      "id": "online:Invalid material unwrap dimensions.",
+      "key": "Invalid material unwrap dimensions.",
+      "source": "Invalid material unwrap dimensions."
+    },
+    {
+      "id": "online:Invalid model camera",
+      "key": "Invalid model camera",
+      "source": "Invalid model camera"
+    },
+    {
+      "id": "online:Invalid model dimensions",
+      "key": "Invalid model dimensions",
+      "source": "Invalid model dimensions"
+    },
+    {
+      "id": "online:Invalid model geometry",
+      "key": "Invalid model geometry",
+      "source": "Invalid model geometry"
+    },
+    {
+      "id": "online:Invalid model size",
+      "key": "Invalid model size",
+      "source": "Invalid model size"
+    },
+    {
+      "id": "online:Invalid model transform",
+      "key": "Invalid model transform",
+      "source": "Invalid model transform"
+    },
+    {
+      "id": "online:Invalid page cursor.",
+      "key": "Invalid page cursor.",
+      "source": "Invalid page cursor."
+    },
+    {
+      "id": "online:Invalid page size.",
+      "key": "Invalid page size.",
+      "source": "Invalid page size."
+    },
+    {
+      "id": "online:Invalid pagination cursor.",
+      "key": "Invalid pagination cursor.",
+      "source": "Invalid pagination cursor."
+    }
+  ]
+}

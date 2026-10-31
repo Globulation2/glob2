@@ -1,0 +1,611 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "bb30562c91c6db8356ec1a3e059b4a2c3f79b51f8f1c5c729d23c965dc5799c4",
+  "edited_keys": [
+    "native:[Stats meals per minute]",
+    "native:[Stats occupancy]",
+    "native:[Stats page one]",
+    "native:[Stats page two]",
+    "native:[Stats page three]",
+    "native:[Stats next page]",
+    "native:[Stats blocked units]",
+    "native:[Stats current blocked units]",
+    "native:[Stats growth global]",
+    "native:[Stats growth new tiles]",
+    "native:[Stats growth reductions]",
+    "native:[Stats growth per minute]",
+    "native:[Stats growth near 8]",
+    "native:[Stats growth near 16]",
+    "native:[Stats growth near 32]",
+    "native:[Stats low HP 25]",
+    "native:[Stats low food 25]",
+    "native:[Stats low HP 50]",
+    "native:[Stats low HP 75]",
+    "native:[Stats low food 50]",
+    "native:[Stats low food 75]",
+    "native:[Stats structural units]",
+    "native:[Stats low HP ranges]",
+    "native:[Stats low food ranges]",
+    "native:[Emoji]",
+    "native:[Emoji character]",
+    "native:[Smiley]",
+    "native:[Sad face]",
+    "native:[Winking face]",
+    "native:[Surprised face]",
+    "native:[Heart eyes]",
+    "native:[Sunglasses]",
+    "native:[Heart]",
+    "native:[Star]",
+    "native:[Neutral face]",
+    "native:[Sleeping face]",
+    "native:[Grinning face]",
+    "native:[Kissing face]",
+    "native:[Angry face]",
+    "native:[Tongue out]",
+    "native:[Skull]",
+    "native:[Flower]",
+    "native:[Four-leaf clover]",
+    "native:[Teardrop]",
+    "native:[Cloud]",
+    "native:[Gem]",
+    "native:[Apple]",
+    "native:[Speech bubble]",
+    "native:[Shield]",
+    "native:[Emoji style]",
+    "native:[Outline]",
+    "native:[Filled]",
+    "native:[Regular]",
+    "native:[Inverse]",
+    "native:[Crossings]",
+    "native:[Forts]",
+    "native:[Gate width]",
+    "native:[Braided Delta]",
+    "native:[Braid count]",
+    "native:[Rejoining frequency]",
+    "native:[Crossing spacing]",
+    "native:[Breachable highlands]",
+    "native:[Ridge depth]",
+    "native:[Extra open passes]",
+    "native:[Wooded saddles]",
+    "native:[Hedgerow Country]",
+    "native:[Field size]",
+    "native:[Hedge thickness]",
+    "native:[Existing gateways]",
+    "native:[Wooded boundary share]",
+    "native:[The Glacis]",
+    "native:[Allotments]",
+    "native:[Caravanserai]",
+    "native:[Mixed]",
+    "native:[Fort size]",
+    "native:[Bastions]",
+    "native:[Four-pointed]",
+    "native:[Five-pointed]",
+    "native:[Six-pointed]",
+    "native:[Glacis width]",
+    "native:[Gates]",
+    "native:[Site size]",
+    "native:[Plot width]",
+    "native:[Plot mix]",
+    "native:[Tended]",
+    "native:[Overgrown]",
+    "native:[Commons]",
+    "native:[Few]",
+    "native:[Some]",
+    "native:[Home oasis size]",
+    "native:[Caravanserais per colony]",
+    "native:[Desert]",
+    "native:[Open erg]",
+    "native:[Dunes and mesas]",
+    "native:[Canyon country]",
+    "native:[A wall would stand on a beach; try another seed.]",
+    "native:[The fort is too small for its gardens; raise Fort size.]",
+    "native:[The home oasis is too small; raise Home oasis size.]",
+    "native:[Braid width]",
+    "native:[Bar size]",
+    "native:[Extra riffles]",
+    "native:[Moraine hummocks]",
+    "native:[Drumlin field]",
+    "native:[Drumlin spacing]",
+    "native:[Drumlin length]",
+    "native:[Water gap]",
+    "native:[Esker loops]",
+    "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+    "native:[Continents]",
+    "native:[Continent]",
+    "native:[North America]",
+    "native:[South America]",
+    "native:[Africa]",
+    "native:[Europe]",
+    "native:[Asia]",
+    "native:[Oceania]",
+    "native:[Orientation]",
+    "native:[Turn to fit]",
+    "native:[Upright]",
+    "native:[Islets]",
+    "native:[Oases]",
+    "native:[The world atlas has no such continent.]",
+    "native:[Savannah]",
+    "native:[Watering holes]",
+    "native:[Dry patches]",
+    "native:[Sparse]",
+    "native:[Normal]",
+    "native:[Many]",
+    "native:[Rice terraces]",
+    "native:[Unoccupied hills]",
+    "native:[Hill radius]",
+    "native:[Contour band width]",
+    "native:[Stairs per hill]",
+    "native:[Hills]",
+    "native:[Hillsides]",
+    "native:[Terraces per slope]",
+    "native:[Waviness]",
+    "native:[Stair spacing]",
+    "native:[Locust]",
+    "native:[Plantations]",
+    "native:[Plot size]",
+    "native:[Farm width]",
+    "native:[Outpost inns]",
+    "native:[Sierpiński Gardens]",
+    "native:[Maximum nesting]",
+    "native:[Minimum terminal district side]",
+    "native:[Major crossing pairs]",
+    "native:[Maximum fold depth]",
+    "native:[Minimum land spacing]",
+    "native:[Optional local crossings per parent]",
+    "native:[Lava shield]",
+    "native:[Lava tongues]",
+    "native:[Long tongues]",
+    "native:[Crater rim width]",
+    "native:[Honeycomb isle]",
+    "native:[Blocks per colony]",
+    "native:[Rubble]",
+    "native:[Outline gaps]",
+    "native:[Craters per colony]",
+    "native:[Wheat fields]"
+  ],
+  "findings": [
+    {
+      "id": "native:[Stats blocked units]",
+      "severity": "minor",
+      "proposed": "ยูนิตติดขัด S/C",
+      "reason": "Canonical units; preserve structural/congestion abbreviations.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats current blocked units]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่ติดขัดขณะนี้",
+      "reason": "Canonical units and concise stat label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats growth global]",
+      "severity": "major",
+      "proposed": "ปริมาณที่งอกเพิ่ม",
+      "reason": "Natural count label; draft word order is ungrammatical.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats growth new tiles]",
+      "severity": "minor",
+      "proposed": "ช่องทรัพยากรใหม่",
+      "reason": "Consistent map tile term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats structural units]",
+      "severity": "minor",
+      "proposed": "ยูนิตติดขัดเชิงโครงสร้าง",
+      "reason": "Canonical units.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Emoji]",
+      "severity": "minor",
+      "proposed": "อีโมจิ",
+      "reason": "Consistent contemporary spelling.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Emoji character]",
+      "severity": "minor",
+      "proposed": "อักขระอีโมจิ",
+      "reason": "An emoji is a character, not necessarily an alphabetic letter.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Smiley]",
+      "severity": "minor",
+      "proposed": "หน้ายิ้ม",
+      "reason": "Recognizable icon label, not transliterated Smiley.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Angry face]",
+      "severity": "minor",
+      "proposed": "หน้าโกรธ",
+      "reason": "Anger, not merely sulking.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Cloud]",
+      "severity": "major",
+      "proposed": "เมฆ",
+      "reason": "Pictorial cloud, not cloud-computing service.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Speech bubble]",
+      "severity": "minor",
+      "proposed": "กรอบคำพูด",
+      "reason": "Speech-bubble icon, not an input field.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Emoji style]",
+      "severity": "minor",
+      "proposed": "รูปแบบอีโมจิ",
+      "reason": "Consistent icon terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Outline]",
+      "severity": "minor",
+      "proposed": "เส้นขอบ",
+      "reason": "Outline drawing style.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Filled]",
+      "severity": "major",
+      "proposed": "ทึบ",
+      "reason": "Filled drawing style, not a full-capacity object.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Inverse]",
+      "severity": "major",
+      "proposed": "กลับสี",
+      "reason": "Inverse visual style, not mathematical reciprocal.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Braided Delta]",
+      "severity": "major",
+      "proposed": "ปากแม่น้ำแตกแขนง",
+      "reason": "Braided river delta, not woven fabric.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Braid count]",
+      "severity": "major",
+      "proposed": "จำนวนสายแม่น้ำ",
+      "reason": "River braids, not hair braids.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Rejoining frequency]",
+      "severity": "major",
+      "proposed": "ความถี่การบรรจบ",
+      "reason": "River channels rejoin, not players rejoining a session.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Crossing spacing]",
+      "severity": "minor",
+      "proposed": "ระยะห่างจุดข้าม",
+      "reason": "Explicit crossings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Breachable highlands]",
+      "severity": "major",
+      "proposed": "ที่สูงเปิดทางได้",
+      "reason": "Breachable means routes can be opened through obstacles, not merely accessible terrain.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "severity": "major",
+      "proposed": "ช่องเขาเปิดเพิ่มเติม",
+      "reason": "Mountain passes, not special tickets.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Wooded saddles]",
+      "severity": "major",
+      "proposed": "อานเขาที่มีป่า",
+      "reason": "Geographic saddles, not wooden riding saddles.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Field size]",
+      "severity": "major",
+      "proposed": "ขนาดแปลง",
+      "reason": "Agricultural field/plot, not sports field.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Existing gateways]",
+      "severity": "minor",
+      "proposed": "ช่องผ่านที่มีอยู่",
+      "reason": "Physical gaps through hedgerows, not computing gateways.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Wooded boundary share]",
+      "severity": "minor",
+      "proposed": "สัดส่วนแนวเขตที่มีไม้",
+      "reason": "Terrain border share, not ownership share.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The Glacis]",
+      "severity": "major",
+      "proposed": "ลาดหน้าป้อม",
+      "reason": "Glacis is a defensive slope, not a glacier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Allotments]",
+      "severity": "major",
+      "proposed": "แปลงเพาะปลูก",
+      "reason": "Allotments are land plots here, not the process of allocation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Caravanserai]",
+      "severity": "minor",
+      "proposed": "ที่พักกองคาราวาน",
+      "reason": "Recognizable desert caravan courtyard/inn landscape.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Glacis width]",
+      "severity": "major",
+      "proposed": "ความกว้างลาดหน้าป้อม",
+      "reason": "Glacis is defensive slope, not glacier.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Plot mix]",
+      "severity": "major",
+      "proposed": "ส่วนผสมแปลง",
+      "reason": "Plot means cultivated land, not a story plot.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Tended]",
+      "severity": "major",
+      "proposed": "ดูแลแล้ว",
+      "reason": "Tended crops/plots, not tendency.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Commons]",
+      "severity": "minor",
+      "proposed": "พื้นที่ส่วนกลาง",
+      "reason": "Shared commons land, not untranslated Commons name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Some]",
+      "severity": "minor",
+      "proposed": "ปานกลาง",
+      "reason": "Some as numeric amount option, not an indefinite determiner.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Home oasis size]",
+      "severity": "major",
+      "proposed": "ขนาดโอเอซิสเริ่มต้น",
+      "reason": "Starting colony oasis, not an oasis-like house.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Caravanserais per colony]",
+      "severity": "minor",
+      "proposed": "ที่พักคาราวานต่ออาณานิคม",
+      "reason": "Consistent descriptive landscape-feature name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Open erg]",
+      "severity": "major",
+      "proposed": "ทะเลเนินทรายโล่ง",
+      "reason": "Erg is a sand sea, not open command or unexplained English unit.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Canyon country]",
+      "severity": "minor",
+      "proposed": "ดินแดนหุบผาชัน",
+      "reason": "Descriptive canyon landscape rather than a brand-like transliteration.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[A wall would stand on a beach; try another seed.]",
+      "severity": "major",
+      "proposed": "กำแพงจะทับชายหาด ลองใช้ซีดอื่น",
+      "reason": "This is invalid generator placement; seed is randomness, not plant seeds.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The home oasis is too small; raise Home oasis size.]",
+      "severity": "critical",
+      "proposed": "โอเอซิสเริ่มต้นเล็กเกินไป ให้เพิ่มขนาดโอเอซิสเริ่มต้น",
+      "reason": "Oasis is literal terrain and start area, not a private relaxation space inside a house.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Braid width]",
+      "severity": "major",
+      "proposed": "ความกว้างแนวแม่น้ำหลายสาย",
+      "reason": "River braid, not hair braiding.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Bar size]",
+      "severity": "major",
+      "proposed": "ขนาดสันดอน",
+      "reason": "River sediment bar, not a generic stick/bar.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Extra riffles]",
+      "severity": "major",
+      "proposed": "แก่งตื้นเพิ่มเติม",
+      "reason": "Riffles are shallow rapid-water sections, not special grooves.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "severity": "major",
+      "proposed": "สันเอสเกอร์เชื่อมเนินดรัมลินได้ไม่ครบ ให้ลดช่องน้ำหรือใช้แผนที่ใหญ่ขึ้น",
+      "reason": "Preserve distinct glacial landforms instead of changing eskers into sandbars and drumlins into round hills.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Orientation]",
+      "severity": "major",
+      "proposed": "ทิศทางการวาง",
+      "reason": "Map orientation, not an induction/orientation event.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Savannah]",
+      "severity": "major",
+      "proposed": "ทุ่งหญ้าสะวันนา",
+      "reason": "Biome, not the city Savannah.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Unoccupied hills]",
+      "severity": "minor",
+      "proposed": "เนินเขาว่าง",
+      "reason": "Unoccupied terrain, not abandoned settlement.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Contour band width]",
+      "severity": "minor",
+      "proposed": "ความกว้างแถบระดับความสูง",
+      "reason": "Contour bands in terrain, not a cosmetics contour.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Hillsides]",
+      "severity": "minor",
+      "proposed": "ไหล่เขา",
+      "reason": "Hillsides differ from whole hills.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Terraces per slope]",
+      "severity": "major",
+      "proposed": "ขั้นตะพักต่อไหล่เขา",
+      "reason": "Terrain terraces, not house balconies.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Waviness]",
+      "severity": "minor",
+      "proposed": "ความเป็นคลื่น",
+      "reason": "Waviness differs from general curvature.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Outpost inns]",
+      "severity": "major",
+      "proposed": "โรงเตี๊ยมด่านหน้า",
+      "reason": "Canonical feeding-building term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Minimum terminal district side]",
+      "severity": "major",
+      "proposed": "ความยาวด้านต่ำสุดของเขตย่อยสุด",
+      "reason": "Terminal fractal district geometry, not a transit terminal or side of a minimum district.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Optional local crossings per parent]",
+      "severity": "major",
+      "proposed": "ทางข้ามย่อยเพิ่มเติมต่อพื้นที่แม่",
+      "reason": "Parent is a containing fractal region, not a human guardian.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Lava shield]",
+      "severity": "major",
+      "proposed": "ภูเขาไฟรูปโล่",
+      "reason": "Shield-volcano landscape with crater circuit, not a wearable lava shield.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Outline gaps]",
+      "severity": "major",
+      "proposed": "ช่องว่างในเส้นขอบ",
+      "reason": "Outline is a noun boundary, not verb identify.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Craters per colony]",
+      "severity": "minor",
+      "proposed": "จำนวนปล่องต่ออาณานิคม",
+      "reason": "Neutral crater wording covers volcanic/impact shapes without inventing meteors.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low HP 25]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มี HP 25%",
+      "reason": "Canonical unit noun and coherent health statistic.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low HP 50]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มี HP 50%",
+      "reason": "Canonical unit noun and coherent health statistic.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low HP 75]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มี HP 75%",
+      "reason": "Canonical unit noun and coherent health statistic.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low food 25]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มีอาหารสำรอง 25%",
+      "reason": "Canonical unit noun.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low food 50]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มีอาหารสำรอง 50%",
+      "reason": "Canonical unit noun.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats low food 75]",
+      "severity": "minor",
+      "proposed": "ยูนิตที่มีอาหารสำรอง 75%",
+      "reason": "Canonical unit noun.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[Stats low HP ranges]",
+      "reason": "HP and the exact ≤25/50/75% threshold notation are technical compact stat labels; only the surrounding concepts elsewhere need translation."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

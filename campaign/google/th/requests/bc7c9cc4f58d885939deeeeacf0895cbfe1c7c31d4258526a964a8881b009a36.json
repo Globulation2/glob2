@@ -1,0 +1,138 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Finish signing in in your browser. The game continues by itself once you are done.",
+      "Your browser did not open. Open the sign-in page to continue.",
+      "If the page asks, check that it shows <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "Code copied",
+      "Finish in your browser. The game continues by itself.",
+      "Music set",
+      "Random each match",
+      "Playing: <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Could not load this music set.",
+      "Edge scrolling",
+      "Edge scrolling in fullscreen",
+      "Edge scrolling in windowed mode",
+      "Move the game and editor maps when the mouse reaches the window edge.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> has quit the game.",
+      "Start recording",
+      "Stop recording",
+      "Finalizing recording…",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> Level <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units can&#x27;t access building",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units can&#x27;t access flag",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units can&#x27;t access fruit",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units can&#x27;t access needed materials",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units not available",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units too far from building",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units too far from flag",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units too far from fruit",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units too far from needed materials",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> units too low level",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>% uploaded",
+      "A unit from <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>&#x27;s team has joined your team"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เข้าสู่ระบบให้เสร็จสิ้นในเบราว์เซอร์ของคุณ เกมจะเล่นต่อโดยอัตโนมัติเมื่อคุณทำเสร็จแล้ว"
+      },
+      {
+        "translatedText": "เบราว์เซอร์ของคุณเปิดไม่ขึ้น โปรดเปิดหน้าเข้าสู่ระบบเพื่อดำเนินการต่อ"
+      },
+      {
+        "translatedText": "ถ้าหน้าเว็บถาม ให้ตรวจสอบว่าแสดง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ไม่"
+      },
+      {
+        "translatedText": "คัดลอกโค้ดแล้ว"
+      },
+      {
+        "translatedText": "จบเกมในเบราว์เซอร์ของคุณ เกมจะเล่นต่อเองโดยอัตโนมัติ"
+      },
+      {
+        "translatedText": "ชุดดนตรี"
+      },
+      {
+        "translatedText": "สุ่มเลือกแต่ละแมตช์"
+      },
+      {
+        "translatedText": "กำลังเล่น: <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดชุดเพลงนี้ได้"
+      },
+      {
+        "translatedText": "การเลื่อนขอบ"
+      },
+      {
+        "translatedText": "การเลื่อนขอบในโหมดเต็มหน้าจอ"
+      },
+      {
+        "translatedText": "การเลื่อนขอบในโหมดหน้าต่าง"
+      },
+      {
+        "translatedText": "เลื่อนแผนที่เกมและแผนที่แก้ไขเมื่อเมาส์ไปถึงขอบหน้าต่าง"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ออกจากเกมแล้ว"
+      },
+      {
+        "translatedText": "เริ่มบันทึก"
+      },
+      {
+        "translatedText": "หยุดการบันทึก"
+      },
+      {
+        "translatedText": "กำลังดำเนินการบันทึกขั้นสุดท้าย…"
+      },
+      {
+        "translatedText": "ระดับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วยไม่สามารถเข้าอาคารได้"
+      },
+      {
+        "translatedText": "หน่วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ไม่สามารถเข้าถึงธงได้"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วยไม่สามารถเข้าถึงผลไม้ได้"
+      },
+      {
+        "translatedText": "หน่วยงาน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> แห่งไม่สามารถเข้าถึงวัสดุที่จำเป็นได้"
+      },
+      {
+        "translatedText": "ไม่มีสินค้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ชิ้น"
+      },
+      {
+        "translatedText": "อยู่ห่างจากอาคารมากเกินไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วย"
+      },
+      {
+        "translatedText": "อยู่ห่างจากธง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วย"
+      },
+      {
+        "translatedText": "อยู่ห่างจากผลไม้มากเกินไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วย"
+      },
+      {
+        "translatedText": "อยู่ห่างจากวัสดุที่ต้องการมากเกินไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วย"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> หน่วย ต่ำเกินไป"
+      },
+      {
+        "translatedText": "อัปโหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> %"
+      },
+      {
+        "translatedText": "สมาชิกจากทีมของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ได้เข้าร่วมทีมของคุณแล้ว"
+      }
+    ]
+  }
+}

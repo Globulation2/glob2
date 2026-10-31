@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "This sign-in link has expired or was already used. Start signing in again from the game.",
+      "This sign-in was already opened in another browser.",
+      "This skin changed on another device. Reload it before using it.",
+      "This skin changed on another device. Your changes are safe here.",
+      "This skin changed on another device. Your work is safe in this browser.",
+      "This source or version label has already been published for this AI.",
+      "This source or version label has already been published for this generator.",
+      "This version has a different or unverified musical timeline. Playback starts from the beginning.",
+      "This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "This <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> sign-in already belongs to the player",
+      "Three moods. One shared rhythm. Find your next soundtrack.",
+      "Through (UTC)",
+      "Time between shots (ticks)",
+      "Timeline",
+      "Title",
+      "Title, artist, description…",
+      "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+      "Too many live Building Studio connections.",
+      "Too many live Music Studio connections.",
+      "Too many live Terrain Studio connections.",
+      "Too many requests.",
+      "Too many sign-in attempts from here. Wait a minute and try again.",
+      "Too many sign-ins in progress on this connection.",
+      "Too many unknown invite codes; try again later.",
+      "Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+      "Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+      "Toolbox options",
+      "Top library content by lifetime recorded downloads",
+      "Total health",
+      "Toubib",
+      "Trailing <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> data",
+      "Transitioning to <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>…",
+      "Trim ends to shortest",
+      "Truncated rig geometry",
+      "Truncated rig tracks",
+      "Truncated <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> payload",
+      "Try again",
+      "Turn around the ring. Height and scale stay fixed.",
+      "Type",
+      "Type",
+      "Type your display name exactly to confirm.",
+      "Type your name,",
+      "Typical game",
+      "UTC day",
+      "Unavailable",
+      "Unavailable cost",
+      "Unbounded rig scale",
+      "Uncertain",
+      "Uncertain requests and queued/failed engine jobs, oldest first.",
+      "Undo",
+      "Undo revision",
+      "Unexpected checkout address.",
+      "Unhide",
+      "Units",
+      "Units can cross",
+      "Units<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> latest verified match against recent average",
+      "Unknown",
+      "Unknown AI tag.",
+      "Unknown building sort.",
+      "Unknown contentType.",
+      "Unknown device credential.",
+      "Unknown engine agent key.",
+      "Unknown generator tag.",
+      "Unknown library.",
+      "Unknown license.",
+      "Unknown or unavailable catalog map.",
+      "Unknown product.",
+      "Unknown queue result.",
+      "Unknown queue.",
+      "Unknown relay key.",
+      "Unknown set kind.",
+      "Unknown sign-in provider.",
+      "Unknown sort.",
+      "Unknown status.",
+      "Unknown upload slot.",
+      "Unknown verification state.",
+      "Unlike",
+      "Unlisted",
+      "Unlisted (people with the link)",
+      "Unlisted — accessible by link"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ลิงก์เข้าสู่ระบบนี้หมดอายุแล้วหรือถูกใช้งานไปแล้ว โปรดเริ่มเข้าสู่ระบบอีกครั้งจากในเกม"
+      },
+      {
+        "translatedText": "การเข้าสู่ระบบนี้ถูกเปิดอยู่ในเบราว์เซอร์อื่นแล้ว"
+      },
+      {
+        "translatedText": "ธีมนี้เปลี่ยนไปในอุปกรณ์อื่น โปรดโหลดธีมใหม่ก่อนใช้งาน"
+      },
+      {
+        "translatedText": "ธีมนี้เปลี่ยนไปบนอุปกรณ์อื่นแล้ว การเปลี่ยนแปลงของคุณจะปลอดภัยบนอุปกรณ์นี้"
+      },
+      {
+        "translatedText": "ธีมนี้เปลี่ยนไปบนอุปกรณ์อื่นแล้ว งานของคุณปลอดภัยในเบราว์เซอร์นี้"
+      },
+      {
+        "translatedText": "ป้ายกำกับแหล่งที่มาหรือเวอร์ชันนี้ได้รับการเผยแพร่สำหรับ AI นี้แล้ว"
+      },
+      {
+        "translatedText": "ป้ายกำกับแหล่งที่มาหรือเวอร์ชันนี้ได้รับการเผยแพร่สำหรับเครื่องมือสร้างนี้แล้ว"
+      },
+      {
+        "translatedText": "เวอร์ชันนี้มีลำดับเวลาทางดนตรีที่แตกต่างหรือยังไม่ได้รับการตรวจสอบ การเล่นจะเริ่มจากต้นใหม่"
+      },
+      {
+        "translatedText": "เวอร์ชันนี้ยังคงใช้แผนที่เดิม สร้างการแก้ไขใน AI Map Studio หรืออัปโหลดสำเนาที่แก้ไขแล้วเป็นแผนที่ใหม่"
+      },
+      {
+        "translatedText": "การเข้าสู่ระบบ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> นี้เป็นของผู้เล่นอยู่แล้ว"
+      },
+      {
+        "translatedText": "สามอารมณ์ หนึ่งจังหวะที่เชื่อมโยงกัน ค้นหาเพลงประกอบภาพยนตร์เพลงใหม่ของคุณได้ที่นี่"
+      },
+      {
+        "translatedText": "ผ่านทาง (UTC)"
+      },
+      {
+        "translatedText": "ระยะเวลาระหว่างการยิงแต่ละครั้ง (ติ๊ก)"
+      },
+      {
+        "translatedText": "ไทม์ไลน์"
+      },
+      {
+        "translatedText": "ชื่อ"
+      },
+      {
+        "translatedText": "ชื่อเพลง ศิลปิน คำอธิบาย…"
+      },
+      {
+        "translatedText": "ในการเล่นออนไลน์ ให้เผยแพร่แผนที่ที่สร้างขึ้นในคลังแผนที่และเลือกแผนที่นั้นสำหรับห้องของคุณ ดาวน์โหลดไฟล์ส่งออกตระกูลในรูปแบบ ZIP เพื่อนำเข้าหรือแก้ไขใน Building Studio"
+      },
+      {
+        "translatedText": "มีการเชื่อมต่อ Building Studio สดมากเกินไป"
+      },
+      {
+        "translatedText": "มีการเชื่อมต่อสตูดิโอเพลงสดมากเกินไป"
+      },
+      {
+        "translatedText": "มีการเชื่อมต่อ Terrain Studio สดมากเกินไป"
+      },
+      {
+        "translatedText": "มีคำขอมากเกินไป"
+      },
+      {
+        "translatedText": "มีการพยายามเข้าสู่ระบบจากที่นี่มากเกินไป โปรดรอสักครู่แล้วลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "มีผู้ใช้งานกำลังเข้าสู่ระบบพร้อมกันมากเกินไปบนการเชื่อมต่อนี้"
+      },
+      {
+        "translatedText": "มีรหัสเชิญที่ไม่รู้จักมากเกินไป โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "เนื่องจากป้อนรหัสผิดหลายครั้งเกินไป การเข้าสู่ระบบจึงถูกระงับ โปรดเริ่มเข้าสู่ระบบใหม่อีกครั้งจากในเกม"
+      },
+      {
+        "translatedText": "ป้อนรหัสผ่านผิดหลายครั้งเกินไป โปรดรอ 15 นาทีแล้วลองใหม่อีกครั้ง หรือเข้าสู่ระบบด้วยวิธีอื่น"
+      },
+      {
+        "translatedText": "ตัวเลือกกล่องเครื่องมือ"
+      },
+      {
+        "translatedText": "เนื้อหาในคลังยอดนิยมที่มียอดดาวน์โหลดสูงสุดตลอดอายุการใช้งาน"
+      },
+      {
+        "translatedText": "สุขภาพโดยรวม"
+      },
+      {
+        "translatedText": "ทูบิบ"
+      },
+      {
+        "translatedText": "ข้อมูลท้ายสุด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "กำลังเปลี่ยนไปใช้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> …"
+      },
+      {
+        "translatedText": "ตัดปลายให้สั้นที่สุด"
+      },
+      {
+        "translatedText": "รูปทรงเรขาคณิตของอุปกรณ์ที่ถูกตัดทอน"
+      },
+      {
+        "translatedText": "รางแท่นขุดเจาะที่ถูกตัดทอน"
+      },
+      {
+        "translatedText": "เพย์โหลด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> ที่ถูกตัดทอน"
+      },
+      {
+        "translatedText": "ลองอีกครั้ง"
+      },
+      {
+        "translatedText": "หมุนวงแหวนไปรอบๆ ความสูงและขนาดจะคงที่"
+      },
+      {
+        "translatedText": "พิมพ์"
+      },
+      {
+        "translatedText": "พิมพ์"
+      },
+      {
+        "translatedText": "โปรดพิมพ์ชื่อที่แสดงของคุณให้ถูกต้องทุกประการเพื่อยืนยัน"
+      },
+      {
+        "translatedText": "กรุณาพิมพ์ชื่อของคุณ"
+      },
+      {
+        "translatedText": "เกมทั่วไป"
+      },
+      {
+        "translatedText": "วัน UTC"
+      },
+      {
+        "translatedText": "ไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "ค่าใช้จ่ายไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "มาตราส่วนแท่นขุดเจาะที่ไร้ขีดจำกัด"
+      },
+      {
+        "translatedText": "ไม่แน่นอน"
+      },
+      {
+        "translatedText": "คำขอที่ไม่แน่นอนและงานประมวลผลที่ค้างอยู่ในคิว/ล้มเหลว เรียงลำดับจากเก่าที่สุดก่อน"
+      },
+      {
+        "translatedText": "เลิกทำ"
+      },
+      {
+        "translatedText": "ยกเลิกการแก้ไข"
+      },
+      {
+        "translatedText": "ที่อยู่ชำระเงินไม่ตรงตามที่คาดไว้"
+      },
+      {
+        "translatedText": "เปิดเผย"
+      },
+      {
+        "translatedText": "หน่วย"
+      },
+      {
+        "translatedText": "หน่วยต่างๆ สามารถข้ามไปได้"
+      },
+      {
+        "translatedText": "หน่วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ผลการแข่งขันที่ได้รับการยืนยันล่าสุดเทียบกับค่าเฉลี่ยล่าสุด"
+      },
+      {
+        "translatedText": "ไม่ทราบ"
+      },
+      {
+        "translatedText": "แท็ก AI ไม่ทราบที่มา"
+      },
+      {
+        "translatedText": "ไม่ทราบประเภทอาคาร"
+      },
+      {
+        "translatedText": "ประเภทเนื้อหาไม่ทราบ"
+      },
+      {
+        "translatedText": "ข้อมูลประจำตัวอุปกรณ์ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "คีย์ตัวแทนเครื่องยนต์ที่ไม่รู้จัก"
+      },
+      {
+        "translatedText": "แท็กตัวสร้างที่ไม่รู้จัก"
+      },
+      {
+        "translatedText": "ห้องสมุดที่ไม่ทราบชื่อ"
+      },
+      {
+        "translatedText": "ไม่ทราบใบอนุญาต"
+      },
+      {
+        "translatedText": "แผนที่แคตตาล็อกไม่ปรากฏหรือไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "ผลิตภัณฑ์ไม่ทราบชนิด"
+      },
+      {
+        "translatedText": "ผลลัพธ์คิวไม่ทราบค่า"
+      },
+      {
+        "translatedText": "คิวที่ไม่รู้จัก"
+      },
+      {
+        "translatedText": "ไม่ทราบรหัสรีเลย์"
+      },
+      {
+        "translatedText": "ไม่ทราบชนิดของชุดข้อมูล"
+      },
+      {
+        "translatedText": "ผู้ให้บริการเข้าสู่ระบบที่ไม่รู้จัก"
+      },
+      {
+        "translatedText": "ไม่ทราบชนิด"
+      },
+      {
+        "translatedText": "สถานะไม่ทราบแน่ชัด"
+      },
+      {
+        "translatedText": "ไม่ทราบช่องอัปโหลด"
+      },
+      {
+        "translatedText": "สถานะการตรวจสอบไม่ทราบแน่ชัด"
+      },
+      {
+        "translatedText": "ต่างจาก"
+      },
+      {
+        "translatedText": "ไม่ได้ระบุรายการ"
+      },
+      {
+        "translatedText": "ไม่เปิดเผย (บุคคลที่มีลิงก์)"
+      },
+      {
+        "translatedText": "ไม่แสดงในรายการ — สามารถเข้าถึงได้ผ่านลิงก์"
+      }
+    ]
+  }
+}

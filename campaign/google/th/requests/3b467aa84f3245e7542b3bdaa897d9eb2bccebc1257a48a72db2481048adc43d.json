@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> min <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> s",
+      "AI opponent<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Connected to the game server",
+      "Choose a map",
+      "For the 1 player in the room",
+      "For the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players in the room",
+      "Generated",
+      "Premade",
+      "Catalog",
+      "Size",
+      "Colonies",
+      "Fair start for every colony",
+      "Does not fit this size; try another",
+      "Preparing the preview…",
+      "Each landscape gives every colony an equally good start, and the server makes the same map for everyone.",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players",
+      "can&#x27;t be read",
+      "No premade maps were found.",
+      "This map has fewer colonies than the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> players in the room.",
+      "Pick a map to see it here.",
+      "Maps other players shared. Open one and choose Use in a room.",
+      "Browse shared maps",
+      "More options…",
+      "Use this map",
+      "Play <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "this map",
+      "Create a room and invite your friends<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> the room plays this map.",
+      "Draw",
+      "Show colony skins",
+      "Turn off to use classic units, swarms and building colors on this device.",
+      "Hive Mind",
+      "Enable commander shortcuts",
+      "Command your colony without opening a menu.",
+      "Allow supervision for new commands",
+      "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.",
+      "Default shortcuts<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Ctrl+Enter</span> to give an order; <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">Ctrl+Shift+Enter</span> to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+      "Commander account and credits",
+      "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.",
+      "Open commander",
+      "Stop commander",
+      "Recording",
+      "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+      "Record your games as MP4 videos with sound.",
+      "Recording uses the full rendered resolution at 30 FPS.",
+      "FFmpeg is ready.",
+      "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+      "Check for FFmpeg again",
+      "Checking for FFmpeg…",
+      "Hotkey<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>. It also works in menus and the editor.",
+      "Change the hotkey",
+      "Recordings are saved in <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Start or stop recording",
+      "File selection is unavailable.",
+      "Saving custom AI…",
+      "Could not read the selected <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> file.",
+      "Custom AI library saved.",
+      "Storage could not be saved. The previous library is retained.",
+      "Import a single <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> AI file, then select it when setting up a local game.",
+      "Imports keep a copy in <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Glob2</span>. Update replaces that copy for future games; saves keep their original AI.",
+      "Waiting for file selection or storage…",
+      "Import <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> AI",
+      "Link development file",
+      "Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.",
+      "Example AI and authoring guide",
+      "No custom AIs yet. Import a bundled .js file to get started.",
+      "Relink",
+      "Update",
+      "Validate",
+      "AI startup and persistent globals are valid.",
+      "Remove from library",
+      "AI telemetry",
+      "No accessible AI telemetry.",
+      "Search fields",
+      "Telemetry unavailable for this recording or controller.",
+      "Linked",
+      "Imported",
+      "Player",
+      "Updated at tick <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "No values published yet.",
+      "No fields match your search."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> นาที <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> วินาที"
+      },
+      {
+        "translatedText": "คู่ต่อสู้ AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เชื่อมต่อกับเซิร์ฟเวอร์เกมแล้ว"
+      },
+      {
+        "translatedText": "เลือกแผนที่"
+      },
+      {
+        "translatedText": "สำหรับผู้เล่น 1 คนในห้อง"
+      },
+      {
+        "translatedText": "สำหรับผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ในห้องนี้"
+      },
+      {
+        "translatedText": "สร้างขึ้น"
+      },
+      {
+        "translatedText": "สำเร็จรูป"
+      },
+      {
+        "translatedText": "แคตตาล็อก"
+      },
+      {
+        "translatedText": "ขนาด"
+      },
+      {
+        "translatedText": "อาณานิคม"
+      },
+      {
+        "translatedText": "การเริ่มต้นที่เป็นธรรมสำหรับทุกอาณานิคม"
+      },
+      {
+        "translatedText": "ขนาดไม่พอดี กรุณาลองขนาดอื่น"
+      },
+      {
+        "translatedText": "กำลังเตรียมการแสดงตัวอย่าง…"
+      },
+      {
+        "translatedText": "แต่ละภูมิประเทศมอบจุดเริ่มต้นที่ดีเท่าเทียมกันให้กับทุกอาณานิคม และเซิร์ฟเวอร์จะสร้างแผนที่เดียวกันสำหรับทุกคน"
+      },
+      {
+        "translatedText": "ผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "อ่านไม่ออก"
+      },
+      {
+        "translatedText": "ไม่พบแผนที่ที่สร้างไว้ล่วงหน้า"
+      },
+      {
+        "translatedText": "แผนที่นี้มีจำนวนอาณานิคมน้อยกว่าจำนวนผู้เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> คนในห้อง"
+      },
+      {
+        "translatedText": "เลือกแผนที่เพื่อดูตำแหน่งที่นี่"
+      },
+      {
+        "translatedText": "แผนที่ที่ผู้เล่นคนอื่นแชร์ไว้ เปิดแผนที่หนึ่งแล้วเลือก &quot;ใช้ในห้อง&quot;"
+      },
+      {
+        "translatedText": "เรียกดูแผนที่ที่แชร์"
+      },
+      {
+        "translatedText": "ตัวเลือกเพิ่มเติม…"
+      },
+      {
+        "translatedText": "ใช้แผนที่นี้"
+      },
+      {
+        "translatedText": "เล่น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "แผนที่นี้"
+      },
+      {
+        "translatedText": "สร้างห้องและเชิญเพื่อนของคุณเข้าร่วม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ห้องนั้นจะเล่นแผนที่นี้"
+      },
+      {
+        "translatedText": "วาด"
+      },
+      {
+        "translatedText": "แสดงสกินของอาณานิคม"
+      },
+      {
+        "translatedText": "ปิดใช้งานเพื่อใช้งานยูนิตแบบคลาสสิก ฝูง และสีอาคารบนอุปกรณ์นี้"
+      },
+      {
+        "translatedText": "จิตใจรวมหมู่"
+      },
+      {
+        "translatedText": "เปิดใช้งานทางลัดผู้บัญชาการ"
+      },
+      {
+        "translatedText": "ควบคุมอาณานิคมของคุณโดยไม่ต้องเปิดเมนู"
+      },
+      {
+        "translatedText": "อนุญาตให้มีการกำกับดูแลสำหรับคำสั่งใหม่"
+      },
+      {
+        "translatedText": "ผู้บัญชาการอาจดำเนินการตามคำสั่งที่กำหนดไว้แล้ว การดำเนินการตามคำสั่งจะใช้เครดิต ส่วนคำสั่งที่ติดตั้งไว้แล้วจะทำงานต่อไปได้โดยไม่ต้องใช้เครดิต"
+      },
+      {
+        "translatedText": "ปุ่มลัดเริ่มต้น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Ctrl+Enter</span> เพื่อออกคำสั่ง; <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">Ctrl+Shift+Enter</span> เพื่อหยุดการทำงานของผู้บังคับบัญชา เปลี่ยนปุ่มลัดเหล่านี้ได้ในส่วนการควบคุม การ์ดคำสั่งประจำจะมีปุ่มหยุดชั่วคราวและยกเลิกแยกต่างหาก"
+      },
+      {
+        "translatedText": "บัญชีผู้บัญชาการและเครดิต"
+      },
+      {
+        "translatedText": "จัดการเครดิตและการซื้อในเบราว์เซอร์ของคุณ อนุญาตให้ขอความช่วยเหลือจากผู้บัญชาการได้ในการเล่นจัดอันดับ"
+      },
+      {
+        "translatedText": "ผู้บัญชาการเปิด"
+      },
+      {
+        "translatedText": "หยุดผู้บัญชาการ"
+      },
+      {
+        "translatedText": "การบันทึก"
+      },
+      {
+        "translatedText": "บันทึกวิดีโอเกมของคุณเป็นไฟล์ MP4 พร้อมเสียง การบันทึกต้องใช้ FFmpeg พร้อมตัวเข้ารหัส libx264 และ AAC"
+      },
+      {
+        "translatedText": "บันทึกวิดีโอเกมของคุณเป็นไฟล์ MP4 พร้อมเสียง"
+      },
+      {
+        "translatedText": "การบันทึกใช้ความละเอียดเต็มที่ที่ 30 เฟรมต่อวินาที"
+      },
+      {
+        "translatedText": "FFmpeg พร้อมใช้งานแล้ว"
+      },
+      {
+        "translatedText": "FFmpeg ไม่พร้อมใช้งาน ดังนั้นการบันทึกจึงถูกปิดใช้งาน ติดตั้ง FFmpeg และตรวจสอบให้แน่ใจว่าได้เพิ่มลงใน PATH แล้ว จากนั้นตรวจสอบอีกครั้ง"
+      },
+      {
+        "translatedText": "ตรวจสอบหา FFmpeg อีกครั้ง"
+      },
+      {
+        "translatedText": "กำลังตรวจสอบหา FFmpeg…"
+      },
+      {
+        "translatedText": "ปุ่มลัด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span> ใช้งานได้ทั้งในเมนูและตัวแก้ไข"
+      },
+      {
+        "translatedText": "เปลี่ยนปุ่มลัด"
+      },
+      {
+        "translatedText": "ไฟล์บันทึกจะถูกบันทึกไว้ใน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เริ่มหรือหยุดการบันทึก"
+      },
+      {
+        "translatedText": "ไม่สามารถเลือกไฟล์ได้"
+      },
+      {
+        "translatedText": "กำลังบันทึก AI ที่กำหนดเอง…"
+      },
+      {
+        "translatedText": "ไม่สามารถอ่านไฟล์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ที่เลือกได้"
+      },
+      {
+        "translatedText": "บันทึกไลบรารี AI ที่กำหนดเองเรียบร้อยแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกพื้นที่จัดเก็บข้อมูลได้ ไลบรารีเดิมยังคงอยู่"
+      },
+      {
+        "translatedText": "นำเข้าไฟล์ AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ไฟล์เดียว จากนั้นเลือกไฟล์นั้นเมื่อตั้งค่าเกมในเครื่อง"
+      },
+      {
+        "translatedText": "การนำเข้าจะเก็บสำเนาไว้ใน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Glob2</span> การอัปเดตจะแทนที่สำเนาเดิมสำหรับการเล่นเกมในอนาคต ส่วนการบันทึกจะคงค่า AI เดิมไว้"
+      },
+      {
+        "translatedText": "กำลังรอการเลือกไฟล์หรือการจัดเก็บ..."
+      },
+      {
+        "translatedText": "นำเข้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> AI"
+      },
+      {
+        "translatedText": "ไฟล์การพัฒนาลิงก์"
+      },
+      {
+        "translatedText": "ไฟล์ที่เชื่อมโยงจะถูกอ่านเมื่อเริ่มเกม สร้างไฟล์ใหม่ก่อนเริ่มเกมใหม่ การลบลิงก์จะไม่ลบไฟล์ของคุณ"
+      },
+      {
+        "translatedText": "ตัวอย่างคู่มือ AI และการสร้างเนื้อหา"
+      },
+      {
+        "translatedText": "ยังไม่มี AI แบบกำหนดเอง นำเข้าไฟล์ .js ที่รวมไว้เพื่อเริ่มต้นใช้งาน"
+      },
+      {
+        "translatedText": "เชื่อมโยงใหม่"
+      },
+      {
+        "translatedText": "อัปเดต"
+      },
+      {
+        "translatedText": "ตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "สตาร์ทอัพ AI และตัวแปรทั่วโลกแบบถาวรนั้นถูกต้อง"
+      },
+      {
+        "translatedText": "ลบออกจากไลบรารี"
+      },
+      {
+        "translatedText": "ระบบวัดระยะทาง AI"
+      },
+      {
+        "translatedText": "ไม่มีระบบส่งข้อมูลทางไกล AI ที่สามารถเข้าถึงได้"
+      },
+      {
+        "translatedText": "ช่องค้นหา"
+      },
+      {
+        "translatedText": "ไม่สามารถใช้งานระบบส่งข้อมูลทางไกลสำหรับการบันทึกหรือตัวควบคุมนี้ได้"
+      },
+      {
+        "translatedText": "เชื่อมโยง"
+      },
+      {
+        "translatedText": "นำเข้า"
+      },
+      {
+        "translatedText": "ผู้เล่น"
+      },
+      {
+        "translatedText": "อัปเดตเมื่อเวลา <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ยังไม่มีการเผยแพร่ค่าใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีข้อมูลใดตรงกับผลการค้นหาของคุณ"
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match.",
+      "Play again",
+      "Restart introduction",
+      "Restart from the prepared colony? Unsaved progress in this introduction will be lost.",
+      "Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat.",
+      "Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts.",
+      "Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible.",
+      "Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied.",
+      "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "Show destination",
+      "Scout here",
+      "Flags → Exploration Flag. Place it on the stone; assign 1 explorer.",
+      "Build → Inn. Place near wheat; assign 2 builders.",
+      "Select your new Inn; assign at least 1 supplier. Wait for wheat.",
+      "Select the Swarm; assign 2 suppliers. Produce workers only.",
+      "Flags → War Flag. Place over the enemy Swarm; assign warriors.",
+      "Tutorial lessons",
+      "Restart lesson",
+      "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "Lesson complete",
+      "Food supply practice",
+      "Practice expanding food supply<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> build another Inn, then assign suppliers and watch wheat arrive.",
+      "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "Tutorial lessons could not be loaded.",
+      "Hospitals and healing",
+      "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "Your Hospital restored an injured globule. Keep Inns supplied<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> hunger can injure units again.",
+      "Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "Build a Hospital",
+      "Build a Hospital in clear ground; assign 2 builders.",
+      "Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "Build a Hospital",
+      "Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "Let the patient recover",
+      "Keep the Hospital accessible. Watch the injured worker recover.",
+      "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "Let the patient recover",
+      "Walking training",
+      "Build a Racetrack and observe an existing worker learn to walk faster.",
+      "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.",
+      "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "Build a Racetrack",
+      "Build a Racetrack in the marked clearing; assign builders.",
+      "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "Build a Racetrack"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "คุณได้ควบคุมกลุ่มอนุภาคอัตโนมัติ ขยายแหล่งอาหาร ขยายอาณานิคม และวางแผนการโจมตี ดำเนินการต่อด้วยบทเรียนแนะนำสำหรับการฝึกฝน การอัปเกรด และการป้องกัน หรือกลับไปที่เมนูหลักเพื่อเริ่มการแข่งขัน"
+      },
+      {
+        "translatedText": "เล่นอีกครั้ง"
+      },
+      {
+        "translatedText": "บทนำการเริ่มต้นใหม่"
+      },
+      {
+        "translatedText": "เริ่มต้นใหม่จากโคโลนีที่เตรียมไว้แล้วใช่ไหม? ความคืบหน้าที่ยังไม่ได้บันทึกในส่วนแนะนำนี้จะสูญหายไป"
+      },
+      {
+        "translatedText": "ลากพื้นที่ว่างเพื่อเปลี่ยนมุมมองก่อนปักธง ค้นหาพื้นที่หินทางทิศตะวันออกของอาณานิคม เปิดเมนูธง เลือกธงสำรวจ ปักธงลงบนหินแล้วยืนยัน เลือกธงและขอผู้สำรวจ 1 คนโดยใช้เป้าหมายหน่วยที่กำหนดไว้ วัตถุทรงกลมจะเดินทางเองและอาจหยุดเพื่อกินอาหาร"
+      },
+      {
+        "translatedText": "เลือก Inn จาก Build วางลงบนพื้นที่โล่งใกล้ทุ่งข้าวสาลีแล้วยืนยัน เลือกไซต์และขอคนก่อสร้าง 2 คน เป้าหมายคนงานคือคำขอ ไม่ใช่จำนวนคนงานที่มีอยู่แล้ว รักษา Inn และ Swarm ที่มีอยู่ให้คงเดิม ไซต์ใดก็ได้ที่ถูกต้องถือว่าใช้ได้"
+      },
+      {
+        "translatedText": "เลือกโรงแรมใหม่ที่สร้างเสร็จแล้วและเพิ่มเป้าหมายจำนวนคนงานที่ได้รับมอบหมาย การก่อสร้างและการจัดหาวัสดุอุปกรณ์ประจำวันมีเป้าหมายแยกกัน ผู้จัดหาจะรวบรวมข้าวสาลีและขนส่งมาที่นี่ ก้อนกลมที่หิวโหยจะกินอาหารที่โรงแรม อาคารที่ไม่มีผู้จัดหาวัสดุอุปกรณ์จะหมดลงในที่สุด คอยดูแลให้ข้าวสาลีสามารถเข้าถึงได้อยู่เสมอ"
+      },
+      {
+        "translatedText": "เลือกกลุ่มสิ่งมีชีวิต (Swarm) ตั้งค่าการผลิตคนงานเป็น 1 และการผลิตนักสำรวจและนักรบเป็น 0 เพิ่มเป้าหมายคนงานที่ได้รับมอบหมายเป็น 2 หรือมากกว่านั้น ผู้จัดหาจะนำข้าวสาลีมาสำหรับหน่วยใหม่ แต่จะแข่งขันกับงานอื่นๆ รักษาโรงเตี๊ยมทั้งสองแห่งให้มีเสบียงอยู่เสมอ"
+      },
+      {
+        "translatedText": "เปิดเมนูธง เลือกธงสงคราม วางธงไว้เหนือฝูงศัตรูทางทิศตะวันออกของก้อนหิน แล้วยืนยัน เลือกธงและขอทหารได้สูงสุด 4 นาย รัศมีเล็กๆ จะรวมทหารไว้ด้วยกัน หากไม่มีทหารเหลือ ให้ส่งทหารไปยังฝูงศัตรูของคุณ ทหารอาจหยุดพักเพื่อกินอาหาร คอยเติมเสบียงในโรงเตี๊ยมอยู่เสมอ"
+      },
+      {
+        "translatedText": "แสดงปลายทาง"
+      },
+      {
+        "translatedText": "ลูกเสืออยู่ที่นี่"
+      },
+      {
+        "translatedText": "ธง → ธงสำรวจ วางธงลงบนก้อนหิน กำหนดนักสำรวจ 1 คน"
+      },
+      {
+        "translatedText": "สร้าง → โรงแรม วางไว้ใกล้ทุ่งข้าวสาลี มอบหมายช่างก่อสร้าง 2 คน"
+      },
+      {
+        "translatedText": "เลือกโรงแรมใหม่ของคุณ กำหนดซัพพลายเออร์อย่างน้อย 1 ราย รอข้าวสาลี"
+      },
+      {
+        "translatedText": "เลือกกลุ่ม (Swarm); กำหนดซัพพลายเออร์ 2 ราย ผลิตเฉพาะคนงานเท่านั้น"
+      },
+      {
+        "translatedText": "ธง → ธงสงคราม วางเหนือฝูงศัตรู กำหนดกำลังทหาร"
+      },
+      {
+        "translatedText": "บทเรียนสอน"
+      },
+      {
+        "translatedText": "เริ่มบทเรียนใหม่"
+      },
+      {
+        "translatedText": "เริ่มบทเรียนนี้ใหม่จากกลุ่มบทเรียนที่เตรียมไว้หรือไม่? ความคืบหน้าที่ยังไม่ได้บันทึกจะสูญหาย"
+      },
+      {
+        "translatedText": "บทเรียนจบแล้ว"
+      },
+      {
+        "translatedText": "แนวปฏิบัติด้านการจัดหาอาหาร"
+      },
+      {
+        "translatedText": "ฝึกฝนการขยายแหล่งอาหาร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> สร้างโรงแรมอีกแห่ง จากนั้นมอบหมายซัพพลายเออร์และคอยดูว่าข้าวสาลีจะทยอยมาถึงหรือไม่"
+      },
+      {
+        "translatedText": "คุณสร้างโรงแรมและจัดหาข้าวสาลีให้แล้ว ลองเรียนบทเรียนอื่นหรือกลับไปที่เมนูหลัก"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดบทเรียนแนะนำได้"
+      },
+      {
+        "translatedText": "โรงพยาบาลและการรักษา"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาลและช่วยเหลือคนงานที่ได้รับบาดเจ็บให้ฟื้นตัว ชุมชนเริ่มต้นด้วยอาหารเพียงพอ โดยมีคนงานที่ได้รับบาดเจ็บหนึ่งคน"
+      },
+      {
+        "translatedText": "โรงพยาบาลของคุณได้ทำการซ่อมแซมก้อนเนื้อที่ได้รับบาดเจ็บแล้ว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> จัดหาเสบียงให้ที่พักพิงอย่างต่อเนื่อง เพราะความหิวโหยอาจทำให้หน่วยต่างๆ ได้รับบาดเจ็บอีกครั้ง"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาลบนพื้นที่โล่ง มอบหมายช่างก่อสร้าง 2 คน เว้นที่ว่างให้ก้อนเนื้อเข้าและออกได้ โรงพยาบาลรักษาบาดแผล โรงแรมจัดหาอาหาร ผู้ป่วยรายนี้ได้รับอาหารแล้ว"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาล"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาลบนพื้นที่โล่ง; มอบหมายคนงานก่อสร้าง 2 คน"
+      },
+      {
+        "translatedText": "เว้นที่ว่างให้เม็ดเลือดเข้าและออกได้ โรงพยาบาลรักษาบาดแผล โรงแรมจัดหาอาหาร ผู้ป่วยรายนี้ได้รับอาหารแล้ว"
+      },
+      {
+        "translatedText": "สร้างโรงพยาบาล"
+      },
+      {
+        "translatedText": "รักษาโรงพยาบาลให้เข้าถึงได้ง่าย คอยสังเกตการฟื้นตัวของคนงานที่ได้รับบาดเจ็บ ก้อนเนื้อจะหาทางรักษาตัวเองโดยอัตโนมัติ ติดตามคนงานที่ได้รับบาดเจ็บ ไม่ใช่หน่วยที่เพิ่งเกิด หากมันตาย ให้เริ่มใหม่หรือโหลดไฟล์บันทึก"
+      },
+      {
+        "translatedText": "ปล่อยให้ผู้ป่วยพักฟื้น"
+      },
+      {
+        "translatedText": "ให้โรงพยาบาลเข้าถึงได้ง่าย และเฝ้าดูผู้บาดเจ็บฟื้นตัว"
+      },
+      {
+        "translatedText": "ก้อนกลมๆ เหล่านั้นจะค้นหาการรักษาตัวเองโดยอัตโนมัติ ติดตามคนงานที่ได้รับบาดเจ็บ ไม่ใช่หน่วยที่เพิ่งเกิด หากมันตาย ให้เริ่มใหม่หรือโหลดเซฟ"
+      },
+      {
+        "translatedText": "ปล่อยให้ผู้ป่วยพักฟื้น"
+      },
+      {
+        "translatedText": "การฝึกเดิน"
+      },
+      {
+        "translatedText": "สร้างสนามแข่งรถและสังเกตพฤติกรรมของพนักงานที่มีอยู่ว่าจะเดินเร็วขึ้นได้อย่างไร"
+      },
+      {
+        "translatedText": "คนงานของคุณเรียนรู้การเดินได้เร็วขึ้น การฝึกฝนช่วยพัฒนาคนงานที่คุณมีอยู่ แต่ไม่ได้ทดแทนแหล่งอาหารของอาณานิคม"
+      },
+      {
+        "translatedText": "สร้างสนามแข่งรถในพื้นที่โล่งที่ทำเครื่องหมายไว้ มอบหมายคนงาน สนามแข่งรถต้องใช้ไม้และหิน เว้นช่องว่างรอบขอบไว้สำหรับทางเข้า ทางออก และการขยายในภายหลัง"
+      },
+      {
+        "translatedText": "สร้างสนามแข่งรถ"
+      },
+      {
+        "translatedText": "สร้างสนามแข่งรถในพื้นที่โล่งที่ทำเครื่องหมายไว้ และมอบหมายผู้สร้างสนาม"
+      },
+      {
+        "translatedText": "สนามแข่งรถต้องใช้ไม้และหิน เว้นช่องว่างรอบขอบไว้สำหรับทางเข้า ทางออก และการขยายในอนาคต"
+      },
+      {
+        "translatedText": "สร้างสนามแข่งรถ"
+      }
+    ]
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Core strategy<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p2\" class=\"notranslate\" translate=\"no\">\\n</span>Economy and development<span id=\"g2p3\" class=\"notranslate\" translate=\"no\">:</span> Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.<span id=\"g2p4\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p5\" class=\"notranslate\" translate=\"no\">\\n</span>Attack and defense<span id=\"g2p6\" class=\"notranslate\" translate=\"no\">:</span> Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.<span id=\"g2p7\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p8\" class=\"notranslate\" translate=\"no\">\\n</span>Training<span id=\"g2p9\" class=\"notranslate\" translate=\"no\">:</span> Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.<span id=\"g2p10\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p11\" class=\"notranslate\" translate=\"no\">\\n</span>Compared with other AIs<span id=\"g2p12\" class=\"notranslate\" translate=\"no\">:</span> More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima&#x27;s gathered waves, using unit reservations to manage competing demands.<span id=\"g2p13\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p14\" class=\"notranslate\" translate=\"no\">\\n</span>Strengths and weaknesses<span id=\"g2p15\" class=\"notranslate\" translate=\"no\">:</span> Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.<span id=\"g2p16\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p17\" class=\"notranslate\" translate=\"no\">\\n</span>Counterplay to try<span id=\"g2p18\" class=\"notranslate\" translate=\"no\">:</span> Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.<span id=\"g2p19\" class=\"notranslate\" translate=\"no\">\\n</span><span id=\"g2p20\" class=\"notranslate\" translate=\"no\">\\n</span>Scouting<span id=\"g2p21\" class=\"notranslate\" translate=\"no\">:</span> Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+      "Coordinates colony growth and trained attacks, targeting healing and food first.",
+      "Algae",
+      "Beach size",
+      "Blue",
+      "Brown",
+      "Built-in maps",
+      "Closed",
+      "Colonies",
+      "Colony",
+      "Concrete islands",
+      "Conquest only",
+      "Conquest or prestige",
+      "Could not launch this map. Your setup is retained; try again.",
+      "Could not load this map. Choose another map or retry.",
+      "Crater lakes",
+      "Custom",
+      "Custom teams",
+      "Cyan",
+      "Desert weight",
+      "Easy",
+      "Extra colony assignments are retained for larger maps.",
+      "Extra islands",
+      "FFA",
+      "Fruit",
+      "Game Rules",
+      "Game speed",
+      "Generate &amp; play",
+      "Give at least one terrain type a nonzero weight.",
+      "Grass weight",
+      "Gray",
+      "Green",
+      "Hard",
+      "Height",
+      "Invalid colony count.",
+      "Island size",
+      "Islands",
+      "Isles",
+      "Lake density",
+      "Landscape",
+      "Last colony standing",
+      "Layout",
+      "Magenta",
+      "Map",
+      "Match finished",
+      "Medium",
+      "Medium - Experimental",
+      "No AI orders",
+      "Rugged Archipelago",
+      "Shattered Coast",
+      "Open at least one colony to start a match.",
+      "Open book",
+      "Pink",
+      "Play this map",
+      "Players &amp; Teams",
+      "Premade maps",
+      "Preview ready. Start plays this exact map.",
+      "Regenerate all",
+      "Generating preview...",
+      "Preview unavailable"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "กลยุทธ์หลัก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> แบ่งการผลิตหน่วยรบระหว่างการก่อสร้าง การอัพเกรด การป้องกัน การโจมตี และการสำรวจ ผู้จัดการแต่ละคนจะร้องขอและสำรองหน่วยรบแยกกัน พัฒนาเศรษฐกิจและการทหารไปพร้อมกัน <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p2\" class=\"notranslate\" translate=\"no\">\\n</span> เศรษฐกิจและการพัฒนา <span id=\"g2p3\" class=\"notranslate\" translate=\"no\">:</span> สร้างและอัพเกรดที่ตั้งถิ่นฐานขนาดใหญ่ จัดการพนักงานโรงแรมและหอคอย เคลียร์พื้นที่รอบอาคาร และปกป้องทรัพยากรที่สามารถทดแทนได้ สำรวจผลไม้และโฆษณาอาหารเพื่อแข่งขันดึงดูดผู้คน <span id=\"g2p4\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p5\" class=\"notranslate\" translate=\"no\">\\n</span> การโจมตีและการป้องกัน <span id=\"g2p6\" class=\"notranslate\" translate=\"no\">:</span> เลือกศัตรูและให้ความสำคัญกับโรงพยาบาลก่อน จากนั้นโรงแรม และค่ายทหาร รองรับการโจมตีได้สูงสุดสี่ครั้ง โดยทั่วไปจะจัดสรรนักรบแปดถึงยี่สิบคนต่อเป้าหมายตามความพร้อมใช้งานและศัตรูที่อยู่ใกล้เคียง ใช้ธงป้องกันแยกต่างหากรอบอาคารที่ถูกคุกคาม <span id=\"g2p7\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p8\" class=\"notranslate\" translate=\"no\">\\n</span> การฝึกฝน <span id=\"g2p9\" class=\"notranslate\" translate=\"no\">:</span> ต้องมีนักรบที่เหมาะสมเพียงพอและค่ายทหารที่สร้างเสร็จแล้วจึงจะโจมตีได้ แต่ไม่จำเป็นต้องรอเทคโนโลยีสูงสุด การอัพเกรดและการฝึกฝนอย่างต่อเนื่องจะเสริมความแข็งแกร่งให้กับการโจมตีในภายหลัง <span id=\"g2p10\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p11\" class=\"notranslate\" translate=\"no\">\\n</span> เมื่อเปรียบเทียบกับ AI อื่นๆ <span id=\"g2p12\" class=\"notranslate\" translate=\"no\">:</span> มีความตั้งใจในการรื้อถอนอาคารสนับสนุนมากกว่า Nicowar กระจายการโจมตีมากกว่าการโจมตีแบบรวมกลุ่มของ Maxima โดยใช้การสำรองหน่วยรบเพื่อจัดการความต้องการที่แข่งขันกัน จุดแข็งและ <span id=\"g2p14\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p15\" class=\"notranslate\" translate=\"no\">:</span> ผสมผสานการเติบโต การฝึกฝน การป้องกัน และการ <span id=\"g2p13\" class=\"notranslate\" translate=\"no\">\\n</span> หลายรูปแบบ การทำลายอาหารและการรักษาอาจทำให้ทั้งอาณานิคมอ่อนแอลง การเลือกคู่ต่อสู้แบบสุ่มและลำดับความสำคัญของสิ่งก่อสร้างที่กำหนดไว้อาจทำให้พลาดโอกาส การโจมตีหลายครั้งอาจทำให้กำลังพลแตกกระจาย <span id=\"g2p16\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p17\" class=\"notranslate\" translate=\"no\">\\n</span> กลยุทธ์รับมือที่ควรลอง <span id=\"g2p18\" class=\"notranslate\" translate=\"no\">:</span> ป้องกันโรงพยาบาลและโรงแรม ต่อต้านการขยายตัวที่เปิดเผยและรวมกำลังป้องกันเพื่อรับมือกับการโจมตีแต่ละครั้ง ทำลายอาหารหรือการฝึกฝนก่อนที่จะต้องรับมือกับหลายแนวรบ <span id=\"g2p19\" class=\"notranslate\" translate=\"no\">\\n</span> <span id=\"g2p20\" class=\"notranslate\" translate=\"no\">\\n</span> การสอดแนม <span id=\"g2p21\" class=\"notranslate\" translate=\"no\">:</span> ตัวเลือกการโจมตีจะอ่านรายการสิ่งก่อสร้างของศัตรูโดยไม่ต้องตรวจสอบการมองเห็นอย่างชัดเจน การเปรียบเทียบทางเศรษฐกิจบางอย่างใช้สถิติของศัตรูโดยตรง"
+      },
+      {
+        "translatedText": "ประสานงานการเติบโตของอาณานิคมและการโจมตีที่ได้รับการฝึกฝน โดยมุ่งเป้าไปที่การรักษาและการหาอาหารเป็นอันดับแรก"
+      },
+      {
+        "translatedText": "สาหร่าย"
+      },
+      {
+        "translatedText": "ขนาดชายหาด"
+      },
+      {
+        "translatedText": "สีฟ้า"
+      },
+      {
+        "translatedText": "สีน้ำตาล"
+      },
+      {
+        "translatedText": "แผนที่ในตัว"
+      },
+      {
+        "translatedText": "ปิด"
+      },
+      {
+        "translatedText": "อาณานิคม"
+      },
+      {
+        "translatedText": "อาณานิคม"
+      },
+      {
+        "translatedText": "เกาะคอนกรีต"
+      },
+      {
+        "translatedText": "การพิชิตเท่านั้น"
+      },
+      {
+        "translatedText": "การพิชิตหรือเกียรติยศ"
+      },
+      {
+        "translatedText": "ไม่สามารถเปิดแผนที่นี้ได้ การตั้งค่าของคุณยังคงอยู่ โปรดลองอีกครั้ง"
+      },
+      {
+        "translatedText": "ไม่สามารถโหลดแผนที่นี้ได้ โปรดเลือกแผนที่อื่นหรือลองใหม่อีกครั้ง"
+      },
+      {
+        "translatedText": "ทะเลสาบปล่องภูเขาไฟ"
+      },
+      {
+        "translatedText": "กำหนดเอง"
+      },
+      {
+        "translatedText": "ทีมที่กำหนดเอง"
+      },
+      {
+        "translatedText": "สีฟ้าอมเขียว"
+      },
+      {
+        "translatedText": "น้ำหนักทะเลทราย"
+      },
+      {
+        "translatedText": "ง่าย"
+      },
+      {
+        "translatedText": "การจัดสรรอาณานิคมเพิ่มเติมจะถูกเก็บไว้สำหรับแผนที่ขนาดใหญ่"
+      },
+      {
+        "translatedText": "เกาะพิเศษ"
+      },
+      {
+        "translatedText": "เอฟเอฟเอ"
+      },
+      {
+        "translatedText": "ผลไม้"
+      },
+      {
+        "translatedText": "กติกาเกม"
+      },
+      {
+        "translatedText": "ความเร็วของเกม"
+      },
+      {
+        "translatedText": "สร้างและเล่น"
+      },
+      {
+        "translatedText": "กำหนดค่าน้ำหนักที่ไม่เป็นศูนย์ให้กับภูมิประเทศอย่างน้อยหนึ่งประเภท"
+      },
+      {
+        "translatedText": "น้ำหนักหญ้า"
+      },
+      {
+        "translatedText": "สีเทา"
+      },
+      {
+        "translatedText": "สีเขียว"
+      },
+      {
+        "translatedText": "แข็ง"
+      },
+      {
+        "translatedText": "ความสูง"
+      },
+      {
+        "translatedText": "จำนวนโคโลนีไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "ขนาดเกาะ"
+      },
+      {
+        "translatedText": "เกาะต่างๆ"
+      },
+      {
+        "translatedText": "หมู่เกาะ"
+      },
+      {
+        "translatedText": "ความหนาแน่นของทะเลสาบ"
+      },
+      {
+        "translatedText": "ภูมิประเทศ"
+      },
+      {
+        "translatedText": "อาณานิคมสุดท้ายที่ยังคงอยู่"
+      },
+      {
+        "translatedText": "เค้าโครง"
+      },
+      {
+        "translatedText": "แมเจนต้า"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "การแข่งขันจบลงแล้ว"
+      },
+      {
+        "translatedText": "ปานกลาง"
+      },
+      {
+        "translatedText": "ขนาดกลาง - ทดลอง"
+      },
+      {
+        "translatedText": "ไม่มีคำสั่งซื้อ AI"
+      },
+      {
+        "translatedText": "หมู่เกาะขรุขระ"
+      },
+      {
+        "translatedText": "ชายฝั่งที่แตกสลาย"
+      },
+      {
+        "translatedText": "ต้องเปิดอาณานิคมอย่างน้อยหนึ่งแห่งเพื่อเริ่มการแข่งขัน"
+      },
+      {
+        "translatedText": "เปิดหนังสือ"
+      },
+      {
+        "translatedText": "สีชมพู"
+      },
+      {
+        "translatedText": "เล่นแผนที่นี้"
+      },
+      {
+        "translatedText": "ผู้เล่นและทีม"
+      },
+      {
+        "translatedText": "แผนที่สำเร็จรูป"
+      },
+      {
+        "translatedText": "พร้อมสำหรับการแสดงตัวอย่างแล้ว เริ่มเล่นแผนที่นี้ได้เลย"
+      },
+      {
+        "translatedText": "สร้างใหม่ทั้งหมด"
+      },
+      {
+        "translatedText": "กำลังสร้างตัวอย่าง..."
+      },
+      {
+        "translatedText": "ไม่สามารถดูตัวอย่างได้"
+      }
+    ]
+  }
+}

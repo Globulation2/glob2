@@ -1,0 +1,634 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "232896e16e0a49ec7402ab4b2e14420938dce39008fdd439ff5693fbaf4c95b0",
+  "edited_keys": [
+    "native:[%0 units can't access building]",
+    "native:[%0 units can't access flag]",
+    "native:[%0 units can't access fruit]",
+    "native:[%0 units too far from building]",
+    "native:[%0 units too far from flag]",
+    "native:[%0 units too far from fruit]",
+    "native:[any explorer]",
+    "native:[Building Defaults]",
+    "native:[building settings]",
+    "native:[building site]",
+    "native:[Building Tool Box Explanation]",
+    "native:[Building Tool Line Explanation]",
+    "native:[Buildings]",
+    "native:[clearingflag explanation 2]",
+    "native:[clearingflag explanation]",
+    "native:[clearingflag]",
+    "native:[destroy building]",
+    "native:[explorationflag explanation 2]",
+    "native:[explorationflag explanation]",
+    "native:[explorationflag]",
+    "native:[Explorer Ratio]",
+    "native:[Explorer]",
+    "native:[explorers]",
+    "native:[Flag Defaults]",
+    "native:[fruit]",
+    "native:[inn explanation 2]",
+    "native:[inn explanation]",
+    "native:[market explanation 2]",
+    "native:[market explanation]",
+    "native:[market]",
+    "native:[Minimum Level To Flag]",
+    "native:[Number Of Buildings]",
+    "native:[repair building]",
+    "native:[select barracks building]",
+    "native:[select clearingflag]",
+    "native:[select construct market]",
+    "native:[select construct swarm]",
+    "native:[select explorationflag]",
+    "native:[select hospital building]",
+    "native:[select inn building]",
+    "native:[select market building]",
+    "native:[select place clearingflag]",
+    "native:[select place explorationflag]",
+    "native:[select place warflag]",
+    "native:[select racetrack building]",
+    "native:[select school building]",
+    "native:[select swarm building]",
+    "native:[select swimmingpool building]",
+    "native:[select tower building]",
+    "native:[select wall building]",
+    "native:[select warflag]",
+    "native:[show flags]",
+    "native:[swarm explanation 2]",
+    "native:[swarm explanation]",
+    "native:[swarm]",
+    "native:[switch to building view]",
+    "native:[switch to flag view]",
+    "native:[the building is finished]",
+    "native:[the building is under attack]",
+    "native:[the clearingflag is finished]",
+    "native:[the clearingflag is under attack]",
+    "native:[the explorationflag is finished]",
+    "native:[the explorationflag is under attack]",
+    "native:[the inn is finished]",
+    "native:[the inn is under attack]",
+    "native:[the market is finished]",
+    "native:[the market is under attack]",
+    "native:[the swarm is finished]",
+    "native:[the swarm is under attack]",
+    "native:[the warflag is finished]",
+    "native:[the warflag is under attack]",
+    "native:[upgrade building]",
+    "native:[warflag explanation 2]",
+    "native:[warflag explanation]",
+    "native:[warflag]",
+    "native:[Warrior Ratio]",
+    "native:[Warrior]",
+    "native:[warriors]",
+    "native:[Worker Ratio]",
+    "native:[Worker]",
+    "native:[workers]",
+    "native:[Fruit]",
+    "native:[Starting workers]",
+    "native:[Starting workers: Game Rules tab.]",
+    "native:[8 workers / 2x speed]",
+    "native:[Classic colony building]",
+    "native:[Quick clash: 2x speed; generated maps start with 8 workers.]",
+    "native:[Starting workers affects generated maps only.]",
+    "native:[More workers jump-start colony growth. Changes the generated map.]",
+    "native:[No warriors]",
+    "native:[Farm building plots]",
+    "native:[Fruit amount]",
+    "native:[Fruit in home valleys]",
+    "native:[Building sites complete immediately, skipping delivery.]",
+    "native:[Higher tiers give every building much more HP.]",
+    "native:[Stats new buildings]",
+    "native:[Stats blocked buildings]",
+    "native:[Stats blocked buildings swim]",
+    "native:[Stats current blocked buildings]",
+    "native:[Stats structural buildings]",
+    "native:[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+    "native:[A city neighbourhood lacks reachable crops or building room.]",
+    "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+    "native:[Building gradients]",
+    "native:[Loading buildings]",
+    "native:[Flags]",
+    "native:[Buildings: %0]",
+    "native:[Read-only building]",
+    "native:[Share market vision]",
+    "native:[match tip flags]",
+    "native:[stat group buildings]",
+    "native:[stat buildings]",
+    "native:[stat buildings about]",
+    "native:[stat buildings lost]",
+    "native:[stat buildings lost about]",
+    "native:[stat blocked buildings]",
+    "native:[stat blocked buildings about]",
+    "native:[stat unit buildings]",
+    "native:[stat column buildings lost]",
+    "native:[stat marker first building destroyed]",
+    "native:[stat band workers]",
+    "native:[stat band explorers]",
+    "native:[stat band warriors]",
+    "native:[stat view by building]",
+    "native:[Building strength]",
+    "native:[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+    "native:[stat worker time]",
+    "native:[stat worker time about]",
+    "native:[stat idle workers]",
+    "native:[stat idle workers about]",
+    "native:[stat inn distance]",
+    "native:[stat inn distance about]",
+    "native:[stat warriors]",
+    "native:[stat warriors about]",
+    "native:[stat warrior level]",
+    "native:[stat warrior level about]",
+    "native:[stat warrior duties]",
+    "native:[stat warrior duties about]",
+    "native:[stat band flag work]",
+    "native:[stat band swarms]",
+    "native:[stat band other buildings]",
+    "native:[stat band war flag]",
+    "native:[stat unit workers]",
+    "native:[stat unit worker time]",
+    "native:[stat unit working workers]",
+    "native:[stat unit warriors]",
+    "native:[stat unit enemy warriors]",
+    "native:[experiment markets-v2]",
+    "native:[experiment markets-v2 help]",
+    "native:[dock flags and units]",
+    "native:[dock building level]",
+    "native:[Destroy this building?]",
+    "native:[library Building families]",
+    "native:[library Building library]",
+    "native:[library Checking building release]",
+    "native:[library Create in Building Studio]",
+    "native:[library Enter a building family ID or a link to its family page.]",
+    "native:[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+    "native:[library Invalid building family ID.]",
+    "native:[library Invalid building library response]"
+  ],
+  "findings": [
+    {
+      "id": "native:[clearingflag explanation]",
+      "severity": "minor",
+      "proposed": "แผ้วถางทรัพยากร",
+      "reason": "Use agreed clearing terminology rather than vague เคลียร์.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Minimum Level To Flag]",
+      "severity": "minor",
+      "proposed": "ระดับยูนิตขั้นต่ำ",
+      "reason": "Use canonical unit term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[repair building]",
+      "severity": "major",
+      "proposed": "เริ่ม/หยุดซ่อมแซม",
+      "reason": "Start is the action, not a vehicle starter system.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select clearingflag]",
+      "severity": "major",
+      "proposed": "เลือกธงแผ้วถาง",
+      "reason": "Clearing flag is not a data-reset flag.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct market]",
+      "severity": "major",
+      "proposed": "เลือกสร้างตลาด",
+      "reason": "Shortcut selects constructing a market; not a construction marketplace.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select construct swarm]",
+      "severity": "major",
+      "proposed": "เลือกสร้างรัง",
+      "reason": "Canonical birth building, not a moving swarm.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select hospital building]",
+      "severity": "minor",
+      "proposed": "เลือกโรงพยาบาล",
+      "reason": "Restore natural verb-object order.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select inn building]",
+      "severity": "major",
+      "proposed": "เลือกโรงเตี๊ยม",
+      "reason": "Canonical building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select market building]",
+      "severity": "major",
+      "proposed": "เลือกตลาด",
+      "reason": "This is an imperative Select, not selected-market adjective.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select place clearingflag]",
+      "severity": "major",
+      "proposed": "เลือกวางธงแผ้วถาง",
+      "reason": "Select the flag-placement tool, not a location for deleting flags.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select place explorationflag]",
+      "severity": "major",
+      "proposed": "เลือกวางธงสำรวจ",
+      "reason": "Select placement tool, not a survey location.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select place warflag]",
+      "severity": "major",
+      "proposed": "เลือกวางธงรบ",
+      "reason": "Select placement tool with canonical flag name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select racetrack building]",
+      "severity": "major",
+      "proposed": "เลือกสนามวิ่ง",
+      "reason": "Racetrack trains unit walking speed, not car racing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select swarm building]",
+      "severity": "major",
+      "proposed": "เลือกรัง",
+      "reason": "Canonical birth building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[select warflag]",
+      "severity": "minor",
+      "proposed": "เลือกธงรบ",
+      "reason": "Use canonical flag name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the clearingflag is finished]",
+      "severity": "minor",
+      "proposed": "วางธงแผ้วถางแล้ว",
+      "reason": "Use canonical flag name and concise completed action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the clearingflag is under attack]",
+      "severity": "major",
+      "proposed": "ธงแผ้วถางกำลังถูกโจมตี",
+      "reason": "Clear-resource flag, not erase flag.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the inn is finished]",
+      "severity": "major",
+      "proposed": "โรงเตี๊ยมสร้างเสร็จแล้ว",
+      "reason": "Canonical building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the inn is under attack]",
+      "severity": "major",
+      "proposed": "โรงเตี๊ยมกำลังถูกโจมตี",
+      "reason": "Canonical building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the market is finished]",
+      "severity": "major",
+      "proposed": "ตลาดสร้างเสร็จแล้ว",
+      "reason": "Finished means construction completed, not market closed.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the swarm is finished]",
+      "severity": "major",
+      "proposed": "รังสร้างเสร็จแล้ว",
+      "reason": "Finished construction, not insects disappeared.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the swarm is under attack]",
+      "severity": "major",
+      "proposed": "รังกำลังถูกโจมตี",
+      "reason": "Canonical building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[the warflag is finished]",
+      "severity": "minor",
+      "proposed": "วางธงรบแล้ว",
+      "reason": "Concise action and canonical flag name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[upgrade building]",
+      "severity": "minor",
+      "proposed": "เริ่ม/หยุดอัปเกรด",
+      "reason": "Keep อัปเกรด whole; ICU breaks loanword after อัป.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Worker]",
+      "severity": "minor",
+      "proposed": "คนงาน",
+      "reason": "Keep lexical unit คนงาน whole instead of คน|งาน.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[workers]",
+      "severity": "minor",
+      "proposed": "คนงาน",
+      "reason": "Keep lexical unit คนงาน whole.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fruit]",
+      "severity": "minor",
+      "proposed": "ผลไม้",
+      "reason": "Keep lexical compound ผลไม้ together as preferred break unit.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starting workers]",
+      "severity": "major",
+      "proposed": "คนงานเริ่มต้น",
+      "reason": "This is initial worker count, not a command to start workers.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starting workers: Game Rules tab.]",
+      "severity": "major",
+      "proposed": "คนงานเริ่มต้น: แท็บกฎของเกม",
+      "reason": "Setting refers to initial count in Game Rules tab; avoid a split inside แท็บ.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Classic colony building]",
+      "severity": "major",
+      "proposed": "สร้างอาณานิคมแบบคลาสสิก",
+      "reason": "Colony building is the activity, not a type of building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starting workers affects generated maps only.]",
+      "severity": "major",
+      "proposed": "จำนวนคนงานเริ่มต้นมีผลเฉพาะแผนที่ที่สร้างขึ้นเท่านั้น",
+      "reason": "Setting controls starting count, not workers starting to work.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Farm building plots]",
+      "severity": "minor",
+      "proposed": "พื้นที่สร้างอาคารของฟาร์ม",
+      "reason": "Plots are construction spaces, not agricultural crop plots.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Building sites complete immediately, skipping delivery.]",
+      "severity": "major",
+      "proposed": "ก่อสร้างเสร็จทันทีโดยข้ามการขนส่งวัสดุ",
+      "reason": "Delivery is building-material delivery, not commercial goods shipment.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Stats structural buildings]",
+      "severity": "minor",
+      "proposed": "อาคารที่ทางเข้าถูกกีดขวางเชิงโครงสร้าง",
+      "reason": "Clarify that structural obstruction blocks the building; do not imply inaccessible structure wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "severity": "major",
+      "proposed": "พื้นที่เริ่มต้นของอาณานิคมมีที่ว่างไม่พอสำหรับรัง ให้ใช้แผนที่ใหญ่ขึ้น ลดจำนวนอาณานิคม หรือทำแนวชายแดนให้แคบลง",
+      "reason": "Swarm is own birth building, not enemy swarm; march is borderland in generator context.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "severity": "minor",
+      "proposed": "จุดเริ่มต้นของแต่ละอาณานิคมวัดจากแผนที่ที่สร้างเสร็จแล้ว ได้แก่ ระยะเดินไปยังแหล่งอาหารและไม้ การฟื้นตัวของพื้นที่ แหล่งทรัพยากรและพื้นที่ก่อสร้างที่เข้าถึงได้ และระยะห่างจากคู่แข่ง แต่ละปัจจัยได้คะแนน 0 ถึง 1 เทียบกับเกณฑ์คงที่ แล้วรวมคะแนนแบบถ่วงน้ำหนัก ความเป็นธรรมคือคะแนนรวมต่ำสุดหารด้วยคะแนนรวมสูงสุด และคะแนนสุดท้ายคือคะแนนรวมต่ำสุดคูณความเป็นธรรม",
+      "reason": "Bar means fixed benchmark, not a UI bar; make scoring explanation readable and preserve formula.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Building gradients]",
+      "severity": "major",
+      "proposed": "กำลังคำนวณกราเดียนต์…",
+      "reason": "Building is a verb here: generating pathfinding gradients, not constructing terrain slopes.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Loading buildings]",
+      "severity": "major",
+      "proposed": "กำลังโหลดข้อมูลอาคาร…",
+      "reason": "Loading is reading game data, not physically transporting buildings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Share market vision]",
+      "severity": "major",
+      "proposed": "แบ่งปันการมองเห็นจากตลาด",
+      "reason": "Market vision sharing has nothing to do with a stock market.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[match tip flags]",
+      "severity": "minor",
+      "proposed": "คำแนะนำ: ธงสำรวจส่งนักสำรวจไปเปิดเผยแผนที่ ส่วนธงรบรวบรวมนักรบของคุณ",
+      "reason": "Canonical war-flag term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat buildings about]",
+      "severity": "minor",
+      "proposed": "จำนวนอาคารที่สร้างเสร็จแล้วของอาณานิคม แยกกราฟเพื่อดูอาคารแต่ละประเภท",
+      "reason": "Split refers to splitting the statistic/chart, not cutting a picture.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat buildings lost]",
+      "severity": "minor",
+      "proposed": "อาคารที่สูญเสีย",
+      "reason": "Lost means destroyed or demolished, not missing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat blocked buildings about]",
+      "severity": "major",
+      "proposed": "อาคารที่ทางเข้าถูกปิดกั้นจนยูนิตเข้าออกไม่ได้",
+      "reason": "Units are game creatures, not organizations.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat column buildings lost]",
+      "severity": "minor",
+      "proposed": "อาคารที่สูญเสีย",
+      "reason": "Destroyed/demolished buildings, not missing objects.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat view by building]",
+      "severity": "major",
+      "proposed": "แยกตามอาคาร",
+      "reason": "By building is a grouping mode, not by constructing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Building strength]",
+      "severity": "major",
+      "proposed": "ความทนทานของอาคาร",
+      "reason": "Building is a noun modifier, not the verb build strength.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "severity": "minor",
+      "proposed": "ยูนิตเพิ่มระดับได้ที่อาคารฝึกฝน และอาคารอัปเกรดได้ เมื่อปิดตัวเลือกนี้ยังซ่อมแซมได้",
+      "reason": "Canonical units and explicit reference to disabled setting.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat worker time]",
+      "severity": "minor",
+      "proposed": "คนงานใช้เวลาอย่างไร",
+      "reason": "Use gameplay worker term, not employee.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat worker time about]",
+      "severity": "major",
+      "proposed": "กิจกรรมของคนงานในแต่ละช่วงเวลา ได้แก่ ทำงานให้อาคาร ทำงานที่ธง ฝึกฝน กินอาหาร รักษาตัว รอเพราะหิวหรือบาดเจ็บแต่ไม่มีโรงเตี๊ยมหรือโรงพยาบาลว่าง หรืออยู่เฉยๆ เพราะไม่มีงาน อาณานิคมที่แข็งแรงมีคนงานส่วนใหญ่ทำงาน มีคนงานว่างน้อย และไม่มีใครต้องรอ",
+      "reason": "Working at flags is not placing flags; free inn/hospital means available capacity, not no charge.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat inn distance]",
+      "severity": "major",
+      "proposed": "ระยะห่างจากโรงเตี๊ยม",
+      "reason": "Canonical building name.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat inn distance about]",
+      "severity": "major",
+      "proposed": "ระยะห่างเฉลี่ยระหว่างคนงานที่หิวกับโรงเตี๊ยมที่กำลังเดินไปหา โดยเฉลี่ยตลอดการเดินทางและวัดเป็นช่องแผนที่ตามแนวเส้นตรง ระยะเดินทางทั้งหมดประมาณสองเท่าของค่านี้ ค่าสูงแสดงว่าโรงเตี๊ยมอยู่ไกลจากจุดทำงาน",
+      "reason": "Clarify mean remaining straight-line distance over walk, not departure from inn; canonical building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat warrior level about]",
+      "severity": "major",
+      "proposed": "ระดับโจมตีเฉลี่ยของนักรบในอาณานิคม โดยให้น้ำหนักความเร็วโจมตีและพลังโจมตีเท่ากัน ใช้มาตรา 1 ถึง 4 ตามที่เกมแสดง การฝึกที่ค่ายทหารเพิ่มค่านี้ ส่วนนักรบใหม่ที่ยังไม่ฝึกทำให้ค่าเฉลี่ยลดลง",
+      "reason": "Barracks raise it through training, not merely constructing barracks; prevent split โจม|ตี.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat warrior duties about]",
+      "severity": "major",
+      "proposed": "สัดส่วนนักรบที่ประจำธงรบ บาดเจ็บจนต้องออกจากการต่อสู้ไปโรงพยาบาล (รวมผู้ที่กำลังรักษา) และว่างจากหน้าที่",
+      "reason": "Free means unassigned, not liberated. Preserve war-flag assignment and treatment; fix เป็นก|ลุ่ม.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band swarms]",
+      "severity": "major",
+      "proposed": "รัง",
+      "reason": "Canonical birth building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band other buildings]",
+      "severity": "major",
+      "proposed": "อาคารอื่นๆ",
+      "reason": "ICU candidate อา|คา|รอื่นๆ splits Thai syllables; keep อาคาร intact.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat band war flag]",
+      "severity": "minor",
+      "proposed": "ประจำธงรบ",
+      "reason": "On flag means assigned, not physically on top of a flag.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[stat unit working workers]",
+      "severity": "major",
+      "proposed": "คนงานที่ส่งวัสดุให้อาคาร",
+      "reason": "Workers supply buildings, not procure buildings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[experiment markets-v2 help]",
+      "severity": "minor",
+      "proposed": "คนงานหยิบวัสดุจากคลังร่วมของตลาดได้ ตลาดอัปเกรดเพื่อเก็บอาหารและไม้ และต่อมาเก็บวัสดุทุกชนิดได้ การค้าระหว่างทีมยังแลกเปลี่ยนได้เฉพาะผลไม้ ใช้กับเกมใหม่ ส่วนเกมที่บันทึกไว้คงการตั้งค่าเดิม",
+      "reason": "Explicit shared market stock and save continuity; no unrelated general warehouse.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[dock flags and units]",
+      "severity": "minor",
+      "proposed": "ธงและยูนิต",
+      "reason": "Canonical unit terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Building families]",
+      "severity": "major",
+      "proposed": "ตระกูลอาคาร",
+      "reason": "Building families are groups of upgrade stages, not creating human families.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Building library]",
+      "severity": "major",
+      "proposed": "คลังอาคาร",
+      "reason": "Library of installable buildings, not a library building.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Checking building release]",
+      "severity": "major",
+      "proposed": "กำลังตรวจสอบรุ่นเผยแพร่ของอาคาร",
+      "reason": "Release is published content version, not building permit/approval.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Enter a building family ID or a link to its family page.]",
+      "severity": "minor",
+      "proposed": "ป้อน ID ตระกูลอาคารหรือลิงก์ไปยังหน้าตระกูลนั้น",
+      "reason": "Canonical upgrade family terminology; avoid malformed อาคาร segmentation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "severity": "major",
+      "proposed": "ติดตั้งอาคารเดี่ยวหรือตระกูลอาคารที่มีหลายระดับร่วมกับอาคารมาตรฐาน การเลือกมีผลเฉพาะแผนที่ที่สร้างขึ้นใหม่",
+      "reason": "Upgrade families are multi-stage building families, not a verb instructing upgrade of families.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Invalid building family ID.]",
+      "severity": "minor",
+      "proposed": "ID ตระกูลอาคารไม่ถูกต้อง",
+      "reason": "Keep canonical family/ID terminology.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[library Invalid building library response]",
+      "severity": "major",
+      "proposed": "ข้อมูลตอบกลับจากคลังอาคารไม่ถูกต้อง",
+      "reason": "Library means asset catalog, not physical library.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

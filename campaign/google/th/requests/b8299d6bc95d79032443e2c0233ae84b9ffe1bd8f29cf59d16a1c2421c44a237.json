@@ -1,0 +1,282 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Add <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+      "Missing custom AI",
+      "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.",
+      "Repeat map horizontally",
+      "Repeat map vertically",
+      "bases",
+      "Bases per colony; a base is one team of the map as drawn, its buildings and units",
+      "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
+      "Population",
+      "Food and wellbeing",
+      "Materials",
+      "Buildings",
+      "Military",
+      "Land",
+      "Score",
+      "Overview",
+      "Each colony&#x27;s figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time.",
+      "Population",
+      "How many units the colony had alive<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> workers, explorers and warriors together.",
+      "Units born",
+      "How fast swarms were producing new units. Split it to see workers, explorers and warriors separately.",
+      "Units lost",
+      "How fast the colony was losing units, whatever the cause<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> combat, starvation, injuries while clearing, or being trapped.",
+      "Population growth",
+      "Units born minus units lost. Above zero the colony was growing; below zero it was shrinking.",
+      "Causes of death",
+      "What the colony&#x27;s units died of<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> fighting, starvation, injuries while clearing resources, being trapped with no way out, or other causes.",
+      "Net conversions",
+      "Units won over from other colonies minus units lost to them. Units change sides when another colony feeds them better.",
+      "Food reserves",
+      "How much food the colony&#x27;s units were carrying inside them. Each unit is placed by how much of its food reserve is left<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> nearly empty (a quarter or less), low (up to half), half full (up to three quarters) or well fed. Units go looking for an inn as their reserve runs down, so a colony always has some that are low.",
+      "Health",
+      "How healthy the colony&#x27;s units were. Each unit is placed by how many of its hit points are left<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> critical (a quarter or less), wounded (up to half), hurt (up to three quarters) or healthy.",
+      "Units looking for food",
+      "Units that had stopped work to find an inn. Those that are also below full health are counted as weakening.",
+      "Units eating or healing",
+      "Units inside an inn eating or inside a hospital being healed, and so not working.",
+      "Food harvested",
+      "Loads of food harvested by workers from food-producing resources. Inns turn food into meals.",
+      "Food in storage",
+      "Food sitting in the colony&#x27;s buildings, ready to be served or used.",
+      "Meals served",
+      "Meals the colony&#x27;s inns served, to its own units and to visitors from other colonies.",
+      "Starvation deaths",
+      "Units that died because they could not find food in time.",
+      "Health restored",
+      "Hit points the colony&#x27;s hospitals gave back to wounded units.",
+      "Materials gathered",
+      "Loads of every material harvested by workers. Split it to see each material.",
+      "Materials in storage",
+      "Materials sitting in the colony&#x27;s buildings. Split it to see each material.",
+      "Material spending",
+      "Where delivered materials went<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> meals, new units, tower ammunition, new buildings or upgrades.",
+      "Materials delivered",
+      "Loads workers carried into buildings.",
+      "Net trade",
+      "Materials received through markets minus materials given away.",
+      "Buildings standing",
+      "Finished buildings the colony had. Split it to see each kind of building.",
+      "Building work completed",
+      "Building work completed<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> new buildings, upgrades and repairs.",
+      "Buildings lost",
+      "Buildings destroyed by enemies or demolished by the colony itself.",
+      "Buildings with no way in",
+      "Buildings whose entrances were blocked, so units could not get in or out.",
+      "Attack strength"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เพิ่ม AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> ในการตั้งค่า → AI แบบกำหนดเอง AI เหล่านั้นจะปรากฏในตัวเลือก AI ของแต่ละอาณานิคม"
+      },
+      {
+        "translatedText": "ขาด AI แบบกำหนดเอง"
+      },
+      {
+        "translatedText": "ไม่สามารถทำซ้ำแผนที่นี้ได้ โปรดใช้แผนที่เริ่มต้นที่ไม่มีสคริปต์ หรือลดจำนวนการทำซ้ำและฐานลง"
+      },
+      {
+        "translatedText": "ทำซ้ำแผนที่ในแนวนอน"
+      },
+      {
+        "translatedText": "ทำซ้ำแผนที่ในแนวตั้ง"
+      },
+      {
+        "translatedText": "ฐาน"
+      },
+      {
+        "translatedText": "ฐานต่ออาณานิคม; ฐานหนึ่งแห่งคือหนึ่งทีมบนแผนที่ตามที่วาดไว้ พร้อมสิ่งก่อสร้างและหน่วยต่างๆ"
+      },
+      {
+        "translatedText": "การแข่งขันจะจบลงเมื่อแบบจำลองมีความมั่นใจถึงระดับที่เลือกไว้ ผู้ชมสามารถดูโอกาสในการชนะที่คาดการณ์ไว้ได้ในรูปแบบสถิติ"
+      },
+      {
+        "translatedText": "ประชากร"
+      },
+      {
+        "translatedText": "อาหารและสุขภาพ"
+      },
+      {
+        "translatedText": "วัสดุ"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "ทหาร"
+      },
+      {
+        "translatedText": "ที่ดิน"
+      },
+      {
+        "translatedText": "คะแนน"
+      },
+      {
+        "translatedText": "ภาพรวม"
+      },
+      {
+        "translatedText": "ตัวเลขของแต่ละอาณานิคมตลอดทั้งแมตช์ ตัวเลขที่สูงที่สุดจะถูกไฮไลต์ ซึ่งยิ่งมากยิ่งดี คลิกที่หัวคอลัมน์เพื่อดูการเปลี่ยนแปลงเมื่อเวลาผ่านไป"
+      },
+      {
+        "translatedText": "ประชากร"
+      },
+      {
+        "translatedText": "อาณานิคมนั้นมีหน่วยที่ยังมีชีวิตอยู่กี่หน่วย <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> รวมคนงาน นักสำรวจ และนักรบเข้าด้วยกัน"
+      },
+      {
+        "translatedText": "หน่วยที่เกิดมา"
+      },
+      {
+        "translatedText": "ความเร็วในการผลิตหน่วยใหม่ของฝูงสัตว์ แยกวิเคราะห์เพื่อดูคนงาน นักสำรวจ และนักรบแยกกัน"
+      },
+      {
+        "translatedText": "หน่วยที่สูญเสีย"
+      },
+      {
+        "translatedText": "อาณานิคมสูญเสียกำลังพลอย่างรวดเร็วเพียงใด ไม่ว่าจะด้วยสาเหตุใดก็ตาม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> การสู้รบ ความอดอยาก การบาดเจ็บระหว่างการเคลียร์พื้นที่ หรือการถูกล้อม"
+      },
+      {
+        "translatedText": "การเติบโตของประชากร"
+      },
+      {
+        "translatedText": "จำนวนหน่วยที่เกิดลบด้วยจำนวนหน่วยที่สูญเสียไป หากค่าสูงกว่าศูนย์ อาณานิคมจะเติบโต หากค่าต่ำกว่าศูนย์ อาณานิคมจะหดตัวลง"
+      },
+      {
+        "translatedText": "สาเหตุการเสียชีวิต"
+      },
+      {
+        "translatedText": "สาเหตุที่หน่วยทหารของอาณานิคมเสียชีวิต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> การสู้รบ ความอดอยาก การบาดเจ็บขณะเคลียร์ทรัพยากร การถูกล้อมไม่มีทางออก หรือสาเหตุอื่นๆ"
+      },
+      {
+        "translatedText": "การแปลงสุทธิ"
+      },
+      {
+        "translatedText": "จำนวนหน่วยที่ยึดมาจากอาณานิคมอื่น ลบด้วยจำนวนหน่วยที่เสียไปให้กับอาณานิคมเหล่านั้น หน่วยจะเปลี่ยนข้างเมื่ออาณานิคมอื่นให้เสบียงอาหารที่ดีกว่า"
+      },
+      {
+        "translatedText": "แหล่งอาหารสำรอง"
+      },
+      {
+        "translatedText": "ปริมาณอาหารที่หน่วยต่างๆ ในอาณานิคมบรรทุกไว้ภายในนั้น จะถูกจัดอันดับตามปริมาณอาหารสำรองที่เหลืออยู่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> เกือบหมด (หนึ่งในสี่หรือน้อยกว่า), เหลือน้อย (ไม่เกินครึ่งหนึ่ง), เหลือครึ่งหนึ่ง (ไม่เกินสามในสี่) หรืออิ่มเต็มที่ หน่วยต่างๆ จะออกไปหาโรงแรมเมื่ออาหารสำรองเหลือน้อยลง ดังนั้นอาณานิคมจึงมักมีบางหน่วยที่อาหารเหลือน้อยอยู่เสมอ"
+      },
+      {
+        "translatedText": "สุขภาพ"
+      },
+      {
+        "translatedText": "สถานะสุขภาพของหน่วยต่างๆ ในอาณานิคม แต่ละหน่วยจะถูกจัดอันดับตามจำนวนพลังชีวิตที่เหลืออยู่ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> วิกฤต (หนึ่งในสี่หรือน้อยกว่า), บาดเจ็บ (ไม่เกินครึ่งหนึ่ง), บาดเจ็บสาหัส (ไม่เกินสามในสี่) หรือ สุขภาพดี"
+      },
+      {
+        "translatedText": "หน่วยที่กำลังมองหาอาหาร"
+      },
+      {
+        "translatedText": "หน่วยที่หยุดงานเพื่อหาที่พัก รวมถึงหน่วยที่มีสุขภาพไม่แข็งแรง จะถูกนับว่าอ่อนแอลง"
+      },
+      {
+        "translatedText": "หน่วยที่กำลังกินหรือรักษา"
+      },
+      {
+        "translatedText": "หน่วยต่างๆ ภายในโรงแรมที่กำลังรับประทานอาหาร หรือภายในโรงพยาบาลที่กำลังรักษาตัวอยู่ จึงไม่ได้ทำงาน"
+      },
+      {
+        "translatedText": "อาหารที่เก็บเกี่ยว"
+      },
+      {
+        "translatedText": "คนงานเก็บเกี่ยวอาหารจำนวนมากจากแหล่งผลิตอาหาร โรงแรมต่างๆ นำอาหารมาปรุงเป็นมื้ออาหาร"
+      },
+      {
+        "translatedText": "อาหารที่เก็บรักษาไว้"
+      },
+      {
+        "translatedText": "อาหารถูกจัดเก็บไว้ในอาคารของอาณานิคม พร้อมที่จะเสิร์ฟหรือนำไปใช้"
+      },
+      {
+        "translatedText": "อาหารที่เสิร์ฟ"
+      },
+      {
+        "translatedText": "อาหารที่โรงเตี๊ยมของอาณานิคมจัดเตรียมไว้ให้แก่หน่วยทหารของตนเองและผู้มาเยือนจากอาณานิคมอื่น ๆ"
+      },
+      {
+        "translatedText": "การเสียชีวิตจากความอดอยาก"
+      },
+      {
+        "translatedText": "หน่วยทหารที่เสียชีวิตเพราะหาอาหารไม่ทันเวลา"
+      },
+      {
+        "translatedText": "สุขภาพกลับคืนมาแล้ว"
+      },
+      {
+        "translatedText": "จำนวนแต้มพลังชีวิตที่โรงพยาบาลของอาณานิคมมอบคืนให้กับหน่วยทหารที่ได้รับบาดเจ็บ"
+      },
+      {
+        "translatedText": "วัสดุที่รวบรวม"
+      },
+      {
+        "translatedText": "กองวัสดุทุกชนิดที่คนงานเก็บเกี่ยวมา แยกดูเพื่อดูรายละเอียดของแต่ละวัสดุ"
+      },
+      {
+        "translatedText": "วัสดุที่จัดเก็บ"
+      },
+      {
+        "translatedText": "วัสดุต่างๆ ที่อยู่ในอาคารของอาณานิคม แยกออกเพื่อดูวัสดุแต่ละชนิด"
+      },
+      {
+        "translatedText": "การใช้จ่ายด้านวัสดุ"
+      },
+      {
+        "translatedText": "วัสดุที่ส่งมอบไปนั้นถูกนำไปใช้ที่ใดบ้าง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> อาหาร หน่วยรบใหม่ กระสุนสำหรับป้อมปราการ อาคารใหม่ หรือการปรับปรุงแก้ไข"
+      },
+      {
+        "translatedText": "วัสดุที่จัดส่ง"
+      },
+      {
+        "translatedText": "คนงานขนของเข้าไปในอาคาร"
+      },
+      {
+        "translatedText": "การซื้อขายสุทธิ"
+      },
+      {
+        "translatedText": "วัสดุที่ได้รับจากตลาด ลบด้วยวัสดุที่บริจาคไป"
+      },
+      {
+        "translatedText": "อาคารที่ยังคงตั้งอยู่"
+      },
+      {
+        "translatedText": "อาคารที่สร้างเสร็จแล้วของอาณานิคม แบ่งภาพออกเพื่อดูอาคารแต่ละประเภท"
+      },
+      {
+        "translatedText": "งานก่อสร้างเสร็จสมบูรณ์แล้ว"
+      },
+      {
+        "translatedText": "งานก่อสร้างที่แล้วเสร็จ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> อาคารใหม่ การปรับปรุง และการซ่อมแซม"
+      },
+      {
+        "translatedText": "อาคารที่สูญหาย"
+      },
+      {
+        "translatedText": "สิ่งก่อสร้างที่ถูกทำลายโดยศัตรูหรือถูกรื้อถอนโดยอาณานิคมเอง"
+      },
+      {
+        "translatedText": "อาคารที่ไม่มีทางเข้า"
+      },
+      {
+        "translatedText": "อาคารที่มีทางเข้าถูกปิดกั้น ทำให้หน่วยงานต่างๆ ไม่สามารถเข้าหรือออกได้"
+      },
+      {
+        "translatedText": "พลังโจมตี"
+      }
+    ]
+  }
+}

@@ -1,0 +1,809 @@
+{
+  "id": "native-general-008",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Edit opponents]",
+      "key": "[Edit opponents]",
+      "source": "Edit opponents"
+    },
+    {
+      "id": "native:[Next]",
+      "key": "[Next]",
+      "source": "Next"
+    },
+    {
+      "id": "native:[Done]",
+      "key": "[Done]",
+      "source": "Done"
+    },
+    {
+      "id": "native:[Contribution]",
+      "key": "[Contribution]",
+      "source": "Contribution"
+    },
+    {
+      "id": "native:[Choose who controls this colony]",
+      "key": "[Choose who controls this colony]",
+      "source": "Choose who controls this colony"
+    },
+    {
+      "id": "native:[Settings]",
+      "key": "[Settings]",
+      "source": "Settings"
+    },
+    {
+      "id": "native:[AI opponents]",
+      "key": "[AI opponents]",
+      "source": "AI opponents"
+    },
+    {
+      "id": "native:[Assigned %0 · Target %1]",
+      "key": "[Assigned %0 · Target %1]",
+      "source": "Assigned %0 · Target %1"
+    },
+    {
+      "id": "native:[Range: %0]",
+      "key": "[Range: %0]",
+      "source": "Range: %0"
+    },
+    {
+      "id": "native:[Player %0]",
+      "key": "[Player %0]",
+      "source": "Player %0"
+    },
+    {
+      "id": "native:[Brush %0]",
+      "key": "[Brush %0]",
+      "source": "Brush %0"
+    },
+    {
+      "id": "native:[Team %0]",
+      "key": "[Team %0]",
+      "source": "Team %0"
+    },
+    {
+      "id": "native:[Your colony]",
+      "key": "[Your colony]",
+      "source": "Your colony"
+    },
+    {
+      "id": "native:[%0 / %1 HP · %2]",
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2"
+    },
+    {
+      "id": "native:[Units: %0]",
+      "key": "[Units: %0]",
+      "source": "Units: %0"
+    },
+    {
+      "id": "native:[Need food: %0]",
+      "key": "[Need food: %0]",
+      "source": "Need food: %0"
+    },
+    {
+      "id": "native:[Need healing: %0]",
+      "key": "[Need healing: %0]",
+      "source": "Need healing: %0"
+    },
+    {
+      "id": "native:[Attack: %0]",
+      "key": "[Attack: %0]",
+      "source": "Attack: %0"
+    },
+    {
+      "id": "native:[Defense: %0]",
+      "key": "[Defense: %0]",
+      "source": "Defense: %0"
+    },
+    {
+      "id": "native:[Food: %0 / %1]",
+      "key": "[Food: %0 / %1]",
+      "source": "Food: %0 / %1"
+    },
+    {
+      "id": "native:[View team %0]",
+      "key": "[View team %0]",
+      "source": "View team %0"
+    },
+    {
+      "id": "native:[P %0/%1/%2]",
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2"
+    },
+    {
+      "id": "native:[CPU load %0]",
+      "key": "[CPU load %0]",
+      "source": "CPU %0%"
+    },
+    {
+      "id": "native:[Brush %0x%1]",
+      "key": "[Brush %0x%1]",
+      "source": "Brush %0x%1"
+    },
+    {
+      "id": "native:[Level %0]",
+      "key": "[Level %0]",
+      "source": "Level %0"
+    },
+    {
+      "id": "native:[Manage teams (%0)]",
+      "key": "[Manage teams (%0)]",
+      "source": "Manage teams (%0)"
+    },
+    {
+      "id": "native:[Team %0 / Level %1]",
+      "key": "[Team %0 / Level %1]",
+      "source": "Team %0 / Level %1"
+    },
+    {
+      "id": "native:[Files · %0]",
+      "key": "[Files · %0]",
+      "source": "Files · %0"
+    },
+    {
+      "id": "native:[Hint %0]",
+      "key": "[Hint %0]",
+      "source": "Hint %0"
+    },
+    {
+      "id": "native:[Objective %0]",
+      "key": "[Objective %0]",
+      "source": "Objective %0"
+    },
+    {
+      "id": "native:[Entry %0 of 8 · empty entries are omitted]",
+      "key": "[Entry %0 of 8 · empty entries are omitted]",
+      "source": "Entry %0 of 8 · empty entries are omitted"
+    },
+    {
+      "id": "native:[Teams %0/%1]",
+      "key": "[Teams %0/%1]",
+      "source": "Teams %0/%1"
+    },
+    {
+      "id": "native:[Elapsed time · %0]",
+      "key": "[Elapsed time · %0]",
+      "source": "Elapsed time · %0"
+    },
+    {
+      "id": "native:[Alliance and shared vision are fixed for this match.]",
+      "key": "[Alliance and shared vision are fixed for this match.]",
+      "source": "Alliance and shared vision are fixed for this match."
+    },
+    {
+      "id": "native:[Share vision]",
+      "key": "[Share vision]",
+      "source": "Share vision"
+    },
+    {
+      "id": "native:[Share food vision]",
+      "key": "[Share food vision]",
+      "source": "Share food vision"
+    },
+    {
+      "id": "native:[Chat]",
+      "key": "[Chat]",
+      "source": "Chat"
+    },
+    {
+      "id": "native:[No briefing for this match.]",
+      "key": "[No briefing for this match.]",
+      "source": "No briefing for this match."
+    },
+    {
+      "id": "native:[Chat · recipients selected in Teams]",
+      "key": "[Chat · recipients selected in Teams]",
+      "source": "Chat · recipients selected in Teams"
+    },
+    {
+      "id": "native:[Filename]",
+      "key": "[Filename]",
+      "source": "Filename"
+    },
+    {
+      "id": "native:[Reduced motion]",
+      "key": "[Reduced motion]",
+      "source": "Reduced motion"
+    },
+    {
+      "id": "native:[Send]",
+      "key": "[Send]",
+      "source": "Send"
+    },
+    {
+      "id": "native:[Close]",
+      "key": "[Close]",
+      "source": "Close"
+    },
+    {
+      "id": "native:[Forbidden]",
+      "key": "[Forbidden]",
+      "source": "Forbidden"
+    },
+    {
+      "id": "native:[Guard]",
+      "key": "[Guard]",
+      "source": "Guard"
+    },
+    {
+      "id": "native:[Clear]",
+      "key": "[Clear]",
+      "source": "Clear"
+    },
+    {
+      "id": "native:[Farm]",
+      "key": "[Farm]",
+      "source": "Farm"
+    },
+    {
+      "id": "native:[Paint]",
+      "key": "[Paint]",
+      "source": "Paint"
+    },
+    {
+      "id": "native:[Erase]",
+      "key": "[Erase]",
+      "source": "Erase"
+    },
+    {
+      "id": "native:[Paint on the map; two fingers move]",
+      "key": "[Paint on the map; two fingers move]",
+      "source": "Paint on the map; two fingers move"
+    },
+    {
+      "id": "native:[Back to tools]",
+      "key": "[Back to tools]",
+      "source": "Back to tools"
+    },
+    {
+      "id": "native:[Starvation overlay]",
+      "key": "[Starvation overlay]",
+      "source": "Starvation overlay"
+    },
+    {
+      "id": "native:[Damage overlay]",
+      "key": "[Damage overlay]",
+      "source": "Damage overlay"
+    },
+    {
+      "id": "native:[Defense overlay]",
+      "key": "[Defense overlay]",
+      "source": "Defense overlay"
+    },
+    {
+      "id": "native:[Fertility overlay]",
+      "key": "[Fertility overlay]",
+      "source": "Fertility overlay"
+    },
+    {
+      "id": "native:[Health and food bars]",
+      "key": "[Health and food bars]",
+      "source": "Health and food bars"
+    },
+    {
+      "id": "native:[Message history]",
+      "key": "[Message history]",
+      "source": "Message history"
+    },
+    {
+      "id": "native:[Show zones]",
+      "key": "[Show zones]",
+      "source": "Show zones"
+    },
+    {
+      "id": "native:[Pan]",
+      "key": "[Pan]",
+      "source": "Pan"
+    },
+    {
+      "id": "native:[Select]",
+      "key": "[Select]",
+      "source": "Select"
+    },
+    {
+      "id": "native:[Show palette]",
+      "key": "[Show palette]",
+      "source": "Show palette"
+    },
+    {
+      "id": "native:[Release to place]",
+      "key": "[Release to place]",
+      "source": "Release to place"
+    },
+    {
+      "id": "native:[Blocked placement]",
+      "key": "[Blocked placement]",
+      "source": "Blocked placement"
+    },
+    {
+      "id": "native:[File name]",
+      "key": "[File name]",
+      "source": "File name"
+    },
+    {
+      "id": "native:[Load map]",
+      "key": "[Load map]",
+      "source": "Load map"
+    },
+    {
+      "id": "native:[Save map]",
+      "key": "[Save map]",
+      "source": "Save map"
+    },
+    {
+      "id": "native:[No files in this folder]",
+      "key": "[No files in this folder]",
+      "source": "No files in this folder"
+    },
+    {
+      "id": "native:[No files saved yet]",
+      "key": "[No files saved yet]",
+      "source": "No files saved yet"
+    },
+    {
+      "id": "native:[Export]",
+      "key": "[Export]",
+      "source": "Export"
+    },
+    {
+      "id": "native:[Tap to write the mission briefing]",
+      "key": "[Tap to write the mission briefing]",
+      "source": "Tap to write the mission briefing"
+    },
+    {
+      "id": "native:[Script]",
+      "key": "[Script]",
+      "source": "Script"
+    },
+    {
+      "id": "native:[Previous]",
+      "key": "[Previous]",
+      "source": "Previous"
+    },
+    {
+      "id": "native:[Compile]",
+      "key": "[Compile]",
+      "source": "Compile"
+    },
+    {
+      "id": "native:[Tap to write this hint]",
+      "key": "[Tap to write this hint]",
+      "source": "Tap to write this hint"
+    },
+    {
+      "id": "native:[Tap to write this objective]",
+      "key": "[Tap to write this objective]",
+      "source": "Tap to write this objective"
+    },
+    {
+      "id": "native:[Mission briefing · tap to edit, swipe to scroll]",
+      "key": "[Mission briefing · tap to edit, swipe to scroll]",
+      "source": "Mission briefing · tap to edit, swipe to scroll"
+    },
+    {
+      "id": "native:[Not enough recorded history yet.]",
+      "key": "[Not enough recorded history yet.]",
+      "source": "Not enough recorded history yet."
+    },
+    {
+      "id": "native:[Select a team to show its history.]",
+      "key": "[Select a team to show its history.]",
+      "source": "Select a team to show its history."
+    },
+    {
+      "id": "native:[Back to chart]",
+      "key": "[Back to chart]",
+      "source": "Back to chart"
+    },
+    {
+      "id": "native:[Expand chart]",
+      "key": "[Expand chart]",
+      "source": "Expand chart"
+    },
+    {
+      "id": "native:[Slot]",
+      "key": "[Slot]",
+      "source": "Slot"
+    },
+    {
+      "id": "native:[Color]",
+      "key": "[Color]",
+      "source": "Color"
+    },
+    {
+      "id": "native:[Player / AI]",
+      "key": "[Player / AI]",
+      "source": "Player / AI"
+    },
+    {
+      "id": "native:[Group]",
+      "key": "[Group]",
+      "source": "Group"
+    },
+    {
+      "id": "native:[Forbid]",
+      "key": "[Forbid]",
+      "source": "Forbid"
+    },
+    {
+      "id": "native:[↓ Low]",
+      "key": "[↓ Low]",
+      "source": "↓ Low"
+    },
+    {
+      "id": "native:[= Normal]",
+      "key": "[= Normal]",
+      "source": "= Normal"
+    },
+    {
+      "id": "native:[↑ High]",
+      "key": "[↑ High]",
+      "source": "↑ High"
+    },
+    {
+      "id": "native:[Details]",
+      "key": "[Details]",
+      "source": "Details"
+    },
+    {
+      "id": "native:[Campaign name]",
+      "key": "[Campaign name]",
+      "source": "Campaign name"
+    },
+    {
+      "id": "native:[Unlocking]",
+      "key": "[Unlocking]",
+      "source": "Unlocking"
+    },
+    {
+      "id": "native:[Parameters]",
+      "key": "[Parameters]",
+      "source": "Parameters"
+    },
+    {
+      "id": "native:[Blank map]",
+      "key": "[Blank map]",
+      "source": "Blank map"
+    },
+    {
+      "id": "native:[Generated]",
+      "key": "[Generated]",
+      "source": "Generated"
+    },
+    {
+      "id": "native:[Preview]",
+      "key": "[Preview]",
+      "source": "Preview"
+    },
+    {
+      "id": "native:[Selected landscape]",
+      "key": "[Selected landscape]",
+      "source": "Selected landscape"
+    },
+    {
+      "id": "native:[Representative preview]",
+      "key": "[Representative preview]",
+      "source": "Representative preview"
+    },
+    {
+      "id": "native:[Hide parameters]",
+      "key": "[Hide parameters]",
+      "source": "Hide parameters"
+    },
+    {
+      "id": "native:[Size and parameters]",
+      "key": "[Size and parameters]",
+      "source": "Size and parameters"
+    },
+    {
+      "id": "native:[Choose a landscape]",
+      "key": "[Choose a landscape]",
+      "source": "Choose a landscape"
+    },
+    {
+      "id": "native:[%0 / Browse]",
+      "key": "[%0 / Browse]",
+      "source": "%0  /  Browse"
+    },
+    {
+      "id": "native:[%0 colonies · %1]",
+      "key": "[%0 colonies · %1]",
+      "source": "%0 colonies · %1"
+    },
+    {
+      "id": "native:[%0 · Team %1]",
+      "key": "[%0 · Team %1]",
+      "source": "%0 · Team %1"
+    },
+    {
+      "id": "native:[Colonies: %0]",
+      "key": "[Colonies: %0]",
+      "source": "Colonies: %0"
+    },
+    {
+      "id": "native:[%0 colonies · %1 AI]",
+      "key": "[%0 colonies · %1 AI]",
+      "source": "%0 colonies · %1 AI"
+    },
+    {
+      "id": "native:[%0 · %1]",
+      "key": "[%0 · %1]",
+      "source": "%0 · %1"
+    },
+    {
+      "id": "native:[Fairness: %0]",
+      "key": "[Fairness: %0]",
+      "source": "Fairness: %0"
+    },
+    {
+      "id": "native:[Colony %0]",
+      "key": "[Colony %0]",
+      "source": "Colony %0"
+    },
+    {
+      "id": "native:[Win chance: %0 · Fitness: %1]",
+      "key": "[Win chance: %0 · Fitness: %1]",
+      "source": "Win chance: %0 · Fitness: %1"
+    },
+    {
+      "id": "native:[%0 · Contribution: %1]",
+      "key": "[%0 · Contribution: %1]",
+      "source": "%0 · Contribution: %1"
+    },
+    {
+      "id": "native:[Min required level %0]",
+      "key": "[Min required level %0]",
+      "source": "Minimum required level: %0"
+    },
+    {
+      "id": "native:[Confirm %0]",
+      "key": "[Confirm %0]",
+      "source": "Ok: %0"
+    },
+    {
+      "id": "native:[%0 %1]",
+      "key": "[%0 %1]",
+      "source": "%0 %1"
+    },
+    {
+      "id": "native:[resume game]",
+      "key": "[resume game]",
+      "source": "Resume game"
+    },
+    {
+      "id": "native:[Add AI]",
+      "key": "[Add AI]",
+      "source": "Add AI"
+    },
+    {
+      "id": "native:[Experiments set by the host]",
+      "key": "[Experiments set by the host]",
+      "source": "Experiments set by the host"
+    },
+    {
+      "id": "native:[Experiments]",
+      "key": "[Experiments]",
+      "source": "Experiments"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing]",
+      "key": "[experiment guard-area-balancing]",
+      "source": "Guard-area balancing"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing help]",
+      "key": "[experiment guard-area-balancing help]",
+      "source": "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."
+    },
+    {
+      "id": "native:[experiment farm-areas]",
+      "key": "[experiment farm-areas]",
+      "source": "Farm areas"
+    },
+    {
+      "id": "native:[experiment farm-areas help]",
+      "key": "[experiment farm-areas help]",
+      "source": "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."
+    },
+    {
+      "id": "native:[List momentum]",
+      "key": "[List momentum]",
+      "source": "List momentum"
+    },
+    {
+      "id": "native:[List bounce]",
+      "key": "[List bounce]",
+      "source": "List bounce"
+    },
+    {
+      "id": "native:[lan pairing field]",
+      "key": "[lan pairing field]",
+      "source": "Host pairing string (or trusted WSS URL)"
+    },
+    {
+      "id": "native:[lan pairing connect]",
+      "key": "[lan pairing connect]",
+      "source": "Pair and connect"
+    },
+    {
+      "id": "native:[lan discovery instructions]",
+      "key": "[lan discovery instructions]",
+      "source": "Select a host, then paste its pairing string to verify its identity."
+    },
+    {
+      "id": "native:[lan discovery unavailable]",
+      "key": "[lan discovery unavailable]",
+      "source": "LAN discovery is unavailable. Check local network permission or paste a host pairing string."
+    },
+    {
+      "id": "native:[lan discovered host %0]",
+      "key": "[lan discovered host %0]",
+      "source": "Discovered host %0 — pair to view games"
+    },
+    {
+      "id": "native:[lan connection unavailable]",
+      "key": "[lan connection unavailable]",
+      "source": "Unable to reach the LAN host. Check local network permission and the host pairing string."
+    },
+    {
+      "id": "native:[lan connection verification failed %0]",
+      "key": "[lan connection verification failed %0]",
+      "source": "Unable to verify or connect to the LAN host: %0"
+    },
+    {
+      "id": "native:[lan lobby endpoint required]",
+      "key": "[lan lobby endpoint required]",
+      "source": "Use the host lobby endpoint"
+    },
+    {
+      "id": "native:[turn reconnecting]",
+      "key": "[turn reconnecting]",
+      "source": "Connection to the host lost. Reconnecting..."
+    },
+    {
+      "id": "native:[turn waiting for players]",
+      "key": "[turn waiting for players]",
+      "source": "Waiting for every player to load..."
+    },
+    {
+      "id": "native:[turn rejoining]",
+      "key": "[turn rejoining]",
+      "source": "Rejoining the game..."
+    },
+    {
+      "id": "native:[turn catching up %0]",
+      "key": "[turn catching up %0]",
+      "source": "Catching up: %0 turns behind"
+    },
+    {
+      "id": "native:[turn player reconnecting %0]",
+      "key": "[turn player reconnecting %0]",
+      "source": "%0 is reconnecting..."
+    },
+    {
+      "id": "native:[turn player lagging %0]",
+      "key": "[turn player lagging %0]",
+      "source": "%0 is lagging"
+    },
+    {
+      "id": "native:[turn player resyncing %0]",
+      "key": "[turn player resyncing %0]",
+      "source": "%0 is catching up"
+    },
+    {
+      "id": "native:[turn player not connected %0]",
+      "key": "[turn player not connected %0]",
+      "source": "%0 has not connected yet"
+    },
+    {
+      "id": "native:[lan host left]",
+      "key": "[lan host left]",
+      "source": "The host left the game."
+    },
+    {
+      "id": "native:[lan host lost]",
+      "key": "[lan host lost]",
+      "source": "The connection to the host was lost."
+    },
+    {
+      "id": "native:[lan version mismatch %0]",
+      "key": "[lan version mismatch %0]",
+      "source": "The host runs a different version of Globulation 2 (%0)."
+    },
+    {
+      "id": "native:[lan cannot host %0]",
+      "key": "[lan cannot host %0]",
+      "source": "Unable to host a LAN game: %0"
+    },
+    {
+      "id": "native:[play online]",
+      "key": "[play online]",
+      "source": "Play online"
+    },
+    {
+      "id": "native:[Use in room]",
+      "key": "[Use in room]",
+      "source": "Use in room"
+    },
+    {
+      "id": "native:[conn ai]",
+      "key": "[conn ai]",
+      "source": "AI"
+    },
+    {
+      "id": "native:[conn behind %0]",
+      "key": "[conn behind %0]",
+      "source": "Behind %0"
+    },
+    {
+      "id": "native:[conn behind explanation %0 %1]",
+      "key": "[conn behind explanation %0 %1]",
+      "source": "Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow."
+    },
+    {
+      "id": "native:[conn behind]",
+      "key": "[conn behind]",
+      "source": "Behind"
+    },
+    {
+      "id": "native:[conn card catching up]",
+      "key": "[conn card catching up]",
+      "source": "Catching up"
+    },
+    {
+      "id": "native:[conn card colony works]",
+      "key": "[conn card colony works]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running."
+    },
+    {
+      "id": "native:[conn card desync detail]",
+      "key": "[conn card desync detail]",
+      "source": "Rejoining from the match record so you see what everyone else sees. A report was sent automatically."
+    },
+    {
+      "id": "native:[conn card desync]",
+      "key": "[conn card desync]",
+      "source": "Your game fell out of sync"
+    },
+    {
+      "id": "native:[conn card grace %0]",
+      "key": "[conn card grace %0]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running. You have %0 to come back before you're removed from the match."
+    },
+    {
+      "id": "native:[conn card input paused]",
+      "key": "[conn card input paused]",
+      "source": "You are catching up · input paused"
+    },
+    {
+      "id": "native:[conn card lost]",
+      "key": "[conn card lost]",
+      "source": "Connection lost"
+    },
+    {
+      "id": "native:[conn card progress %0 %1 %2]",
+      "key": "[conn card progress %0 %1 %2]",
+      "source": "%0 % · %1 of %2 ticks"
+    },
+    {
+      "id": "native:[conn card reconnecting %0]",
+      "key": "[conn card reconnecting %0]",
+      "source": "Reconnecting to the match… attempt %0"
+    },
+    {
+      "id": "native:[conn card replaying %0]",
+      "key": "[conn card replaying %0]",
+      "source": "Replaying the %0 you missed. The screen updates when you're back to the present."
+    },
+    {
+      "id": "native:[conn card seconds left %0]",
+      "key": "[conn card seconds left %0]",
+      "source": "about %0 s left"
+    }
+  ]
+}

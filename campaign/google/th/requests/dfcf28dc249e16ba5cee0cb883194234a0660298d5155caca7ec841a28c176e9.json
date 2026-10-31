@@ -1,0 +1,322 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> months ago",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> years ago",
+      "Share online…",
+      "Mine",
+      "Waiting for the other players to leave…",
+      "The result is recorded once everyone has left the match.",
+      "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.",
+      "Verification is taking longer than usual. The result will appear in your history and on the match page.",
+      "Rematch",
+      "Join <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>&#x27;s rematch",
+      "Profile &amp; history",
+      "Leaderboard · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "No ranked players yet.",
+      "Guests aren&#x27;t ranked. Sign in to appear here.",
+      "Full leaderboard",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> is no longer linked.",
+      "This map file could not be read.",
+      "The map could not be shared with the room.",
+      "The map could not be shared with the room<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Sharing the map with the room…",
+      "Everyone in the room plays this map file; it downloads before the match.",
+      "Take an open seat to play",
+      "Every seat is taken. You can take one when it opens.",
+      "Not seated",
+      "Copied",
+      "Could not copy",
+      "Room closed",
+      "Removed from the room",
+      "Back to online",
+      "Leave match",
+      "Leave this match?",
+      "Leave this LAN game?",
+      "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.",
+      "This quick match counts as a loss for you. The others play on, and you cannot come back to it.",
+      "You leave the room&#x27;s match and it counts as a loss in your history. The others play on, and you cannot come back to it.",
+      "The others play on without you, and you cannot come back to this game.",
+      "Leave match",
+      "Keep playing",
+      "Team",
+      "Quick match · unrated",
+      "Your device can&#x27;t keep up with this match",
+      "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.",
+      "not gaining",
+      "Your opponents left the match.",
+      "Every opposing colony was defeated.",
+      "Your colony was defeated.",
+      "You left the match. It counts as a loss.",
+      "Final result after the match ends.",
+      "No pauses left",
+      "Pause game (<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> left)",
+      "Paused by <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Paused by <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · resumes in <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "Too many actions<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> some are still waiting to be sent",
+      "You have no pauses left in this match",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> has used all their pause time<span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> the game resumes",
+      "1 player · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> AI · <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span> open",
+      "Every other rule is as in Standard.",
+      "Link for browser players",
+      "Players in a browser paste this link to join.",
+      "Players in a browser paste this link to join. Their game shows code <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "Copy link",
+      "Anyone on this network can take it",
+      "Close the room?",
+      "Leaving closes the room for everyone, including the other player in it.",
+      "Leaving closes the room for everyone, including the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> other players in it.",
+      "Close room",
+      "Stay",
+      "The new map gave the seats new colours. Check yours before you start.",
+      "Copying didn&#x27;t work. Copy the invite yourself<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "Close",
+      "Touch and hold the link, then choose Copy.",
+      "The link is selected<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> press <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Ctrl+C</span> (⌘C on a Mac).",
+      "Code",
+      "under a minute",
+      "about <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> min",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> s"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> เดือนที่แล้ว"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ปีที่แล้ว"
+      },
+      {
+        "translatedText": "แชร์ออนไลน์…"
+      },
+      {
+        "translatedText": "ของฉัน"
+      },
+      {
+        "translatedText": "รอให้ผู้เล่นคนอื่นออกไปก่อน…"
+      },
+      {
+        "translatedText": "ผลการแข่งขันจะถูกบันทึกหลังจากทุกคนออกจากสนามแล้ว"
+      },
+      {
+        "translatedText": "ผู้เล่นที่การเชื่อมต่อหลุดมีเวลาสูงสุด 3 นาทีในการกลับมาเชื่อมต่อใหม่ ผลการแข่งขันจะปรากฏในประวัติของคุณและในหน้าการแข่งขัน"
+      },
+      {
+        "translatedText": "การตรวจสอบใช้เวลานานกว่าปกติ ผลลัพธ์จะปรากฏในประวัติของคุณและในหน้าการแข่งขัน"
+      },
+      {
+        "translatedText": "การแข่งขันล้างแค้น"
+      },
+      {
+        "translatedText": "เข้าร่วมการแข่งขันล้างแค้นของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ประวัติและข้อมูลเบื้องต้น"
+      },
+      {
+        "translatedText": "ตารางอันดับ · <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ยังไม่มีผู้เล่นที่ได้รับการจัดอันดับ"
+      },
+      {
+        "translatedText": "แขกจะไม่ได้รับการจัดอันดับ กรุณาเข้าสู่ระบบเพื่อแสดงตัวตนของคุณที่นี่"
+      },
+      {
+        "translatedText": "ตารางคะแนนเต็ม"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ไม่ได้เชื่อมโยงอีกต่อไปแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถอ่านไฟล์แผนที่นี้ได้"
+      },
+      {
+        "translatedText": "ไม่สามารถแชร์แผนที่ให้กับทุกคนในห้องได้"
+      },
+      {
+        "translatedText": "ไม่สามารถแชร์แผนที่กับห้องได้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "แชร์แผนที่ให้ทุกคนในห้อง…"
+      },
+      {
+        "translatedText": "ทุกคนในห้องนี้จะใช้ไฟล์แผนที่นี้ โดยไฟล์จะถูกดาวน์โหลดก่อนเริ่มการแข่งขัน"
+      },
+      {
+        "translatedText": "หาที่นั่งว่างเพื่อร่วมเล่น"
+      },
+      {
+        "translatedText": "ที่นั่งเต็มหมดแล้ว คุณสามารถเข้าไปนั่งได้เมื่อที่นั่งว่าง"
+      },
+      {
+        "translatedText": "ไม่ได้นั่ง"
+      },
+      {
+        "translatedText": "คัดลอกแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถคัดลอกได้"
+      },
+      {
+        "translatedText": "ห้องปิด"
+      },
+      {
+        "translatedText": "ถูกนำตัวออกจากห้อง"
+      },
+      {
+        "translatedText": "กลับสู่ระบบออนไลน์"
+      },
+      {
+        "translatedText": "ออกจากแมตช์"
+      },
+      {
+        "translatedText": "ออกจากแมตช์นี้?"
+      },
+      {
+        "translatedText": "ออกจากเกม LAN นี้เหรอ?"
+      },
+      {
+        "translatedText": "คุณแพ้ในการแข่งขันจัดอันดับนี้และคะแนนของคุณจะลดลง คนอื่นๆ จะเล่นต่อไป และคุณจะไม่สามารถกลับมาเล่นได้อีก"
+      },
+      {
+        "translatedText": "การแข่งขันแบบรวดเร็วนี้จะถือว่าคุณแพ้ คนอื่นจะเล่นต่อ และคุณจะไม่สามารถกลับมาเล่นใหม่ได้"
+      },
+      {
+        "translatedText": "หากคุณออกจากแมตช์ในห้องนั้น ระบบจะนับว่าเป็นการแพ้ในประวัติการเล่นของคุณ คนอื่นๆ จะเล่นต่อ และคุณจะไม่สามารถกลับเข้าไปเล่นได้อีก"
+      },
+      {
+        "translatedText": "คนอื่นๆ เล่นต่อไปโดยไม่มีคุณ และคุณไม่สามารถกลับเข้ามาในเกมนี้ได้อีก"
+      },
+      {
+        "translatedText": "ออกจากแมตช์"
+      },
+      {
+        "translatedText": "เล่นต่อไปเรื่อยๆ"
+      },
+      {
+        "translatedText": "ทีม"
+      },
+      {
+        "translatedText": "แมตช์ด่วน · ไม่มีการให้คะแนน"
+      },
+      {
+        "translatedText": "อุปกรณ์ของคุณไม่สามารถรองรับการแข่งขันนี้ได้"
+      },
+      {
+        "translatedText": "โปรแกรมจะเล่นแมตช์ซ้ำช้ากว่าเวลาจริงของแมตช์ ดังนั้นมันจะตามไม่ทัน คุณสามารถออกจากแมตช์ หรือลดการตั้งค่ากราฟิกแล้วรอต่อไปก็ได้"
+      },
+      {
+        "translatedText": "ไม่ได้รับ"
+      },
+      {
+        "translatedText": "คู่ต่อสู้ของคุณออกจากเกมไปแล้ว"
+      },
+      {
+        "translatedText": "อาณานิคมฝ่ายตรงข้ามทั้งหมดพ่ายแพ้"
+      },
+      {
+        "translatedText": "อาณานิคมของคุณพ่ายแพ้แล้ว"
+      },
+      {
+        "translatedText": "คุณออกจากเกมไปแล้ว ถือว่าเป็นการแพ้"
+      },
+      {
+        "translatedText": "ผลการแข่งขันสุดท้ายหลังจากจบเกม"
+      },
+      {
+        "translatedText": "ไม่มีช่วงหยุดพักเหลือแล้ว"
+      },
+      {
+        "translatedText": "หยุดเกมชั่วคราว (เหลือ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> )"
+      },
+      {
+        "translatedText": "หยุดชั่วคราว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "หยุดชั่วคราว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · จะเริ่มใหม่ใน <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "มีการดำเนินการมากเกินไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> บางส่วนยังรอการส่งอยู่"
+      },
+      {
+        "translatedText": "คุณไม่มีเวลาหยุดพักเหลือแล้วในแมตช์นี้"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ใช้เวลาหยุดเกมหมดแล้ว <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> เกมจะเล่นต่อ"
+      },
+      {
+        "translatedText": "ผู้เล่น 1 คน · AI <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> · เปิด <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "กฎอื่นๆ ทั้งหมดเหมือนกับในมาตรฐาน"
+      },
+      {
+        "translatedText": "ลิงก์สำหรับเล่นผ่านเบราว์เซอร์"
+      },
+      {
+        "translatedText": "ผู้เล่นที่ใช้งานผ่านเบราว์เซอร์ โปรดวางลิงก์นี้เพื่อเข้าร่วม"
+      },
+      {
+        "translatedText": "ผู้เล่นในเบราว์เซอร์สามารถวางลิงก์นี้เพื่อเข้าร่วมได้ เกมของพวกเขาจะแสดงรหัส <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "คัดลิงก์"
+      },
+      {
+        "translatedText": "ใครก็ได้ในเครือข่ายนี้สามารถนำไปใช้ได้"
+      },
+      {
+        "translatedText": "ปิดห้อง?"
+      },
+      {
+        "translatedText": "การออกจากห้องจะปิดห้องสำหรับทุกคน รวมถึงผู้เล่นคนอื่นในห้องนั้นด้วย"
+      },
+      {
+        "translatedText": "การออกจากห้องจะปิดห้องสำหรับทุกคน รวมถึงผู้เล่นอีก <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> คนในห้องนั้นด้วย"
+      },
+      {
+        "translatedText": "ปิดห้อง"
+      },
+      {
+        "translatedText": "อยู่"
+      },
+      {
+        "translatedText": "แผนผังใหม่ได้เปลี่ยนสีที่นั่งใหม่ โปรดตรวจสอบที่นั่งของคุณก่อนเริ่มเดินทาง"
+      },
+      {
+        "translatedText": "การคัดลอกไม่สำเร็จ กรุณาคัดลอกคำเชิญด้วยตนเอง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "ปิด"
+      },
+      {
+        "translatedText": "แตะค้างที่ลิงก์ จากนั้นเลือก คัดลอก"
+      },
+      {
+        "translatedText": "เลือกลิงก์แล้ว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> กด <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">Ctrl+C</span> (⌘C บน Mac)"
+      },
+      {
+        "translatedText": "รหัส"
+      },
+      {
+        "translatedText": "ไม่ถึงนาที"
+      },
+      {
+        "translatedText": "ประมาณ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> นาที"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> วินาที"
+      }
+    ]
+  }
+}

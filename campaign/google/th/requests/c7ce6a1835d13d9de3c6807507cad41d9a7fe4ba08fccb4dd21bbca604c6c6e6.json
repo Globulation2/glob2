@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Where the colony&#x27;s units were when they were killed<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> near its own buildings, near an enemy&#x27;s buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.",
+      "Working",
+      "At a flag",
+      "Idle",
+      "Training",
+      "No inn or hospital free",
+      "Swarms",
+      "Inns",
+      "Building and upgrading",
+      "Other buildings",
+      "Walking to a resource",
+      "Harvesting",
+      "Carrying it back",
+      "Delivering or waiting",
+      "Walking to an inn",
+      "No inn free",
+      "At home",
+      "At an enemy colony",
+      "In open ground",
+      "On a war flag",
+      "Seeking healing",
+      "Free",
+      "workers",
+      "workers&#x27; time",
+      "workers supplying buildings",
+      "squares",
+      "warriors",
+      "attack level",
+      "enemy warriors",
+      "strength",
+      "By place",
+      "Music set",
+      "Choose Random to select a soundtrack at each match start.",
+      "AI Library",
+      "Authoring guide",
+      "Beginner-friendly",
+      "Defensive",
+      "Discover",
+      "Download &amp; install",
+      "Downloading AI…",
+      "Expansion",
+      "Experimental",
+      "Favourite",
+      "Favourited",
+      "Favourites",
+      "Got it",
+      "How AIs work",
+      "Install selected version",
+      "Installed",
+      "Invalid AI catalogue response",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> API reference",
+      "Like",
+      "Liked",
+      "Loading AI library…",
+      "Most downloaded",
+      "Most liked",
+      "Newest",
+      "No AIs match these filters.",
+      "Not validated for this game version",
+      "Open AI Library",
+      "Open AI page",
+      "Passed compatibility checks",
+      "Recently updated",
+      "Rush",
+      "Search",
+      "Share your AI",
+      "Show more",
+      "Sign in through Online settings to like and favourite AIs.",
+      "Starter project",
+      "downloads of this version",
+      "downloads",
+      "Update available",
+      "Browse versions",
+      "Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.",
+      "Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.",
+      "Back to results",
+      "2–5 minutes",
+      "5–15 minutes",
+      "AI-generated",
+      "All music"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "หน่วยทหารของอาณานิคมอยู่บริเวณใดเมื่อถูกสังหาร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ใกล้กับอาคารของตนเอง ใกล้กับอาคารของศัตรู หรือในพื้นที่โล่งระหว่างอาณานิคม การสูญเสียที่บ้านหมายความว่าอาณานิคมถูกโจมตี การสูญเสียที่อาณานิคมของศัตรูหมายความว่าอาณานิคมเป็นฝ่ายโจมตี พื้นที่ใกล้กับทั้งสองอาณานิคมนับเป็นบ้าน"
+      },
+      {
+        "translatedText": "การทำงาน"
+      },
+      {
+        "translatedText": "ที่ธง"
+      },
+      {
+        "translatedText": "ว่าง"
+      },
+      {
+        "translatedText": "การฝึกอบรม"
+      },
+      {
+        "translatedText": "ไม่มีโรงแรมหรือโรงพยาบาลใดให้บริการฟรี"
+      },
+      {
+        "translatedText": "ฝูง"
+      },
+      {
+        "translatedText": "โรงแรม"
+      },
+      {
+        "translatedText": "การก่อสร้างและปรับปรุง"
+      },
+      {
+        "translatedText": "อาคารอื่นๆ"
+      },
+      {
+        "translatedText": "การเดินไปยังแหล่งทรัพยากร"
+      },
+      {
+        "translatedText": "การเก็บเกี่ยว"
+      },
+      {
+        "translatedText": "นำมันกลับมา"
+      },
+      {
+        "translatedText": "ส่งมอบหรือรอ"
+      },
+      {
+        "translatedText": "เดินไปยังโรงแรม"
+      },
+      {
+        "translatedText": "ไม่มีโรงแรมไหนฟรี"
+      },
+      {
+        "translatedText": "ที่บ้าน"
+      },
+      {
+        "translatedText": "ณ อาณานิคมของศัตรู"
+      },
+      {
+        "translatedText": "ในพื้นที่โล่ง"
+      },
+      {
+        "translatedText": "บนธงรบ"
+      },
+      {
+        "translatedText": "แสวงหาการเยียวยา"
+      },
+      {
+        "translatedText": "ฟรี"
+      },
+      {
+        "translatedText": "คนงาน"
+      },
+      {
+        "translatedText": "เวลาทำงานของคนงาน"
+      },
+      {
+        "translatedText": "คนงานจัดหาอาคาร"
+      },
+      {
+        "translatedText": "สี่เหลี่ยม"
+      },
+      {
+        "translatedText": "นักรบ"
+      },
+      {
+        "translatedText": "ระดับการโจมตี"
+      },
+      {
+        "translatedText": "นักรบฝ่ายศัตรู"
+      },
+      {
+        "translatedText": "ความแข็งแกร่ง"
+      },
+      {
+        "translatedText": "ตามสถานที่"
+      },
+      {
+        "translatedText": "ชุดดนตรี"
+      },
+      {
+        "translatedText": "เลือก &quot;สุ่ม&quot; เพื่อเลือกเพลงประกอบในแต่ละครั้งที่เริ่มการแข่งขัน"
+      },
+      {
+        "translatedText": "ห้องสมุด AI"
+      },
+      {
+        "translatedText": "คู่มือการเขียน"
+      },
+      {
+        "translatedText": "เหมาะสำหรับผู้เริ่มต้น"
+      },
+      {
+        "translatedText": "การป้องกัน"
+      },
+      {
+        "translatedText": "ค้นพบ"
+      },
+      {
+        "translatedText": "ดาวน์โหลดและติดตั้ง"
+      },
+      {
+        "translatedText": "กำลังดาวน์โหลด AI…"
+      },
+      {
+        "translatedText": "การขยายตัว"
+      },
+      {
+        "translatedText": "การทดลอง"
+      },
+      {
+        "translatedText": "ที่ชื่นชอบ"
+      },
+      {
+        "translatedText": "ถูกใจ"
+      },
+      {
+        "translatedText": "รายการโปรด"
+      },
+      {
+        "translatedText": "เข้าใจแล้ว"
+      },
+      {
+        "translatedText": "ปัญญาประดิษฐ์ทำงานอย่างไร"
+      },
+      {
+        "translatedText": "ติดตั้งเวอร์ชันที่เลือก"
+      },
+      {
+        "translatedText": "ติดตั้งแล้ว"
+      },
+      {
+        "translatedText": "การตอบสนองแคตตาล็อก AI ไม่ถูกต้อง"
+      },
+      {
+        "translatedText": "เอกสารอ้างอิง API <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>"
+      },
+      {
+        "translatedText": "ชอบ"
+      },
+      {
+        "translatedText": "ชอบ"
+      },
+      {
+        "translatedText": "กำลังโหลดคลังข้อมูล AI…"
+      },
+      {
+        "translatedText": "ดาวน์โหลดมากที่สุด"
+      },
+      {
+        "translatedText": "ถูกใจมากที่สุด"
+      },
+      {
+        "translatedText": "ใหม่ล่าสุด"
+      },
+      {
+        "translatedText": "ไม่มี AI ใดที่ตรงกับตัวกรองเหล่านี้"
+      },
+      {
+        "translatedText": "ไม่ได้รับการตรวจสอบความถูกต้องสำหรับเวอร์ชันเกมนี้"
+      },
+      {
+        "translatedText": "ห้องสมุด AI แบบเปิด"
+      },
+      {
+        "translatedText": "เปิดหน้า AI"
+      },
+      {
+        "translatedText": "ผ่านการตรวจสอบความเข้ากันได้แล้ว"
+      },
+      {
+        "translatedText": "อัปเดตล่าสุด"
+      },
+      {
+        "translatedText": "รีบ"
+      },
+      {
+        "translatedText": "ค้นหา"
+      },
+      {
+        "translatedText": "แบ่งปัน AI ของคุณ"
+      },
+      {
+        "translatedText": "แสดงเพิ่มเติม"
+      },
+      {
+        "translatedText": "ลงชื่อเข้าใช้ผ่านการตั้งค่าออนไลน์เพื่อกดไลค์และเพิ่ม AI ที่ชื่นชอบ"
+      },
+      {
+        "translatedText": "โครงการเริ่มต้น"
+      },
+      {
+        "translatedText": "ดาวน์โหลดเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ดาวน์โหลด"
+      },
+      {
+        "translatedText": "มีการอัปเดตแล้ว"
+      },
+      {
+        "translatedText": "เรียกดูเวอร์ชัน"
+      },
+      {
+        "translatedText": "ดาวน์โหลด AI จากนั้นเลือก AI นั้นสำหรับที่นั่งคอมพิวเตอร์ในเกมแบบเล่นในเครื่องเดียวกัน เวอร์ชันที่ติดตั้งแล้วสามารถใช้งานแบบออฟไลน์ได้ การอัปเดตจะมีผลต่อเกมในอนาคต ส่วนไฟล์บันทึกเกมจะยังคงใช้โค้ดเดิม"
+      },
+      {
+        "translatedText": "การตรวจสอบความเข้ากันได้ไม่ได้รับรองความปลอดภัยหรือความสามารถในการเล่นเกม โปรดใช้งานเฉพาะโค้ดจากผู้พัฒนาที่คุณไว้วางใจเท่านั้น"
+      },
+      {
+        "translatedText": "กลับสู่ผลลัพธ์"
+      },
+      {
+        "translatedText": "2–5 นาที"
+      },
+      {
+        "translatedText": "5–15 นาที"
+      },
+      {
+        "translatedText": "สร้างโดย AI"
+      },
+      {
+        "translatedText": "เพลงทั้งหมด"
+      }
+    ]
+  }
+}

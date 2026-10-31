@@ -1,0 +1,179 @@
+{
+  "id": "native-general-017",
+  "reviewer": "thai_brief",
+  "role": "final independent meaning reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "4fc746d50d2c5d00067593ccbca08e0e279de0d6fa3e2492340460ec1ad0f2c4",
+  "round2_review_target_sha256": "a806f8b167fa93c2e07e7f2f52dd0da14dd1349364b1267e56af44137dfd7c96",
+  "approved_keys": [
+    "native:[lesson defensive-tactics repel title]",
+    "native:[lesson defensive-tactics repel help]",
+    "native:[lesson defensive-tactics repel marker]",
+    "native:[lesson defensive-tactics counterattack hint]",
+    "native:[lesson defensive-tactics counterattack title]",
+    "native:[lesson defensive-tactics counterattack instruction]",
+    "native:[lesson defensive-tactics counterattack help]",
+    "native:[lesson defensive-tactics counterattack marker]",
+    "native:[lesson healing build compact]",
+    "native:[lesson healing heal compact]",
+    "native:[lesson walking-training build compact]",
+    "native:[lesson walking-training train compact]",
+    "native:[lesson swimming build compact]",
+    "native:[lesson swimming train compact]",
+    "native:[lesson swimming water-job compact]",
+    "native:[lesson schools build compact]",
+    "native:[lesson schools learn compact]",
+    "native:[lesson upgrades upgrade compact]",
+    "native:[lesson upgrades train compact]",
+    "native:[lesson fortifications tower compact]",
+    "native:[lesson fortifications walls compact]",
+    "native:[lesson fortifications supply compact]",
+    "native:[lesson fortifications hold compact]",
+    "native:[lesson defensive-tactics scout compact]",
+    "native:[lesson defensive-tactics counterattack compact]",
+    "native:[intro attack destination]",
+    "native:[Grassland]",
+    "native:[Kopjes]",
+    "native:[Game trails]",
+    "native:[Fish amount]",
+    "native:[scenario messages]",
+    "native:[Camp-site amount]"
+  ],
+  "fresh_reviewed_keys": [
+    "native:[lesson defensive-tactics guard marker]",
+    "native:[lesson defensive-tactics repel hint]",
+    "native:[lesson defensive-tactics repel instruction]",
+    "native:[lesson defensive-tactics counterattack hint]",
+    "native:[lesson defensive-tactics counterattack title]",
+    "native:[lesson defensive-tactics counterattack instruction]",
+    "native:[lesson defensive-tactics counterattack help]",
+    "native:[lesson defensive-tactics counterattack marker]",
+    "native:[lesson walking-training build compact]",
+    "native:[lesson walking-training train compact]",
+    "native:[lesson swimming water-job compact]",
+    "native:[lesson schools build compact]",
+    "native:[lesson upgrades upgrade compact]",
+    "native:[lesson upgrades train compact]",
+    "native:[lesson fortifications hold compact]",
+    "native:[lesson defensive-tactics scout compact]",
+    "native:[lesson defensive-tactics guard compact]",
+    "native:[lesson defensive-tactics repel compact]",
+    "native:[lesson defensive-tactics counterattack compact]"
+  ],
+  "carried_keys": [
+    "native:[lesson defensive-tactics repel title]",
+    "native:[lesson defensive-tactics repel help]",
+    "native:[lesson defensive-tactics repel marker]",
+    "native:[lesson healing build compact]",
+    "native:[lesson healing heal compact]",
+    "native:[lesson swimming build compact]",
+    "native:[lesson swimming train compact]",
+    "native:[lesson schools learn compact]",
+    "native:[lesson fortifications tower compact]",
+    "native:[lesson fortifications walls compact]",
+    "native:[lesson fortifications supply compact]",
+    "native:[intro attack destination]",
+    "native:[Grassland]",
+    "native:[Kopjes]",
+    "native:[Game trails]",
+    "native:[Fish amount]",
+    "native:[scenario messages]",
+    "native:[Camp-site amount]"
+  ],
+  "carried_subset_sha256": "23d1fc9534ed06936d489fdc5878f074441d06c4072d353bacb78869ab88f1db",
+  "carry_proof": "Every carried actual value equals previously read round2 value exactly; complete prior batch source/target coverage and SHA256 verified. Fresh review claims changed IDs only. Explicit finding keys are excluded from approval.",
+  "findings": [
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "severity": "minor",
+      "state": "open",
+      "original": "เตรียม​เขต​รักษาการณ์",
+      "proposed": "เตรียม​เขต​ป้องกัน",
+      "reason": "Actual Guard tool is ป้องกัน ([guard]). Tutorial must name the same selectable tool/zone, not รักษาการณ์. Preserve all other actual reviewed hints."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "severity": "minor",
+      "state": "open",
+      "original": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​รักษาการณ์​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "proposed": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม การบุก​เล็ก​ๆ เริ่ม​หลัง​เตรียมพร้อม เอาชนะ​หรือ​ขับไล่​ผู้​บุก​ทั้งสอง​ตัว ศัตรู​บาดเจ็บ​อาจ​ถอย นักรบ​อาจ​ไป​กิน​อาหาร​ชั่วคราว หาก​ป้องกัน​ไม่​สำเร็จ​ให้​โหลด​บันทึก​ก่อนหน้า​หรือ​เริ่มใหม่",
+      "reason": "Actual Guard tool is ป้องกัน ([guard]). Tutorial must name the same selectable tool/zone, not รักษาการณ์. Preserve all other actual reviewed hints."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "severity": "minor",
+      "state": "open",
+      "original": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​รักษาการณ์​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "proposed": "ศัตรู​กำลัง​บุก ให้​นักรบ​คุม​เขต​ป้องกัน​และ​ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "reason": "Actual Guard tool is ป้องกัน ([guard]). Tutorial must name the same selectable tool/zone, not รักษาการณ์. Preserve all other actual reviewed hints."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "severity": "major",
+      "state": "open",
+      "original": "ธง → รักษาการณ์ ระบาย 4 ช่อง รอ​นักรบ 2 ตัว​มาถึง",
+      "proposed": "ธง → ป้องกัน ระบาย 4 ช่อง รอ​นักรบ 2 ตัว​มาถึง",
+      "reason": "Actual Guard tool is ป้องกัน ([guard]). Tutorial must name the same selectable tool/zone, not รักษาการณ์. Preserve all other actual reviewed hints."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "severity": "minor",
+      "state": "open",
+      "original": "คุม​เขต​รักษาการณ์ ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "proposed": "คุม​เขต​ป้องกัน ส่ง​เสบียง​ให้​โรงเตี๊ยม",
+      "reason": "Actual Guard tool is ป้องกัน ([guard]). Tutorial must name the same selectable tool/zone, not รักษาการณ์. Preserve all other actual reviewed hints."
+    }
+  ],
+  "accepted_english": [],
+  "disagreement_decisions": [
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "previous_role": "adversarial",
+      "next_role": "editor-final",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "d10812cafb25fa76ccd85217831e17e93736821f97c1581e8e0a25d2cc688424",
+      "reason": "Fresh source/candidate check accepts actual wording for Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warri: วางธงรบทับรังศัตรู กำหนดนักรบ 3 ตัวและรัศมีไม่เกิน 4 เขตป้องกันกับธงรบใช้กำลังนักรบชุดเดียวกัน ลบช่องเขตป้องกันหากดึงนักรบค้างไว้ ส่งอาหารให้พอระหว่างเดินทางและ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "previous_role": "adversarial",
+      "next_role": "editor-final",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "8c110a6b9b068d63b42b11d2a6f1b2f838444deab4d87aa419e1f33370077a39",
+      "reason": "Fresh source/candidate check accepts actual wording for Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors: เขตป้องกันกับธงรบใช้กำลังนักรบชุดเดียวกัน ลบช่องเขตป้องกันหากดึงนักรบค้างไว้ ส่งอาหารให้พอระหว่างเดินทางและบุก"
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "previous_role": "adversarial",
+      "next_role": "editor-final",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "32e932fc709870e56934ac930962ba66ef2456869f4c9b65bdd45c9158bbf9af",
+      "reason": "Fresh source/candidate check accepts actual wording for Build → School. Assign builders for wood and algae.: สร้าง → โรงเรียน มอบหมายคนงานก่อสร้างไปเก็บไม้และสาหร่าย"
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "previous_role": "adversarial",
+      "next_role": "editor-final",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "32e932fc709870e56934ac930962ba66ef2456869f4c9b65bdd45c9158bbf9af",
+      "reason": "Fresh source/candidate check accepts actual wording for Build → School. Assign builders for wood and algae.: สร้าง → โรงเรียน มอบหมายคนงานก่อสร้างไปเก็บไม้และสาหร่าย"
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "previous_role": "recheck",
+      "next_role": "adversarial",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "f0f874aceec3601df8578fb7991778877de98f9d503a03a2a00b30bd6b81bf79",
+      "reason": "Fresh source/candidate check accepts actual wording for Keep the tower supplied against the attacker.: คอยส่งเสบียงให้หอคอยเพื่อป้องกันการโจมตีจากผู้บุกรุก"
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "previous_role": "adversarial",
+      "next_role": "editor-final",
+      "decision": "accept actual round3 value",
+      "actual_value_sha256": "f0f874aceec3601df8578fb7991778877de98f9d503a03a2a00b30bd6b81bf79",
+      "reason": "Fresh source/candidate check accepts actual wording for Keep the tower supplied against the attacker.: คอยส่งเสบียงให้หอคอยเพื่อป้องกันการโจมตีจากผู้บุกรุก"
+    }
+  ],
+  "certification": "Independent agent review, not native-human certification."
+}

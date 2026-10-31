@@ -1,0 +1,1458 @@
+{
+  "id": "online-online-007",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Invalid pagination.",
+      "key": "Invalid pagination.",
+      "source": "Invalid pagination.",
+      "target": "การแบ่งหน้าไม่ถูกต้อง",
+      "round2_target": "การแบ่งหน้าไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "การแบ่งหน้าไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid payment signature.",
+      "key": "Invalid payment signature.",
+      "source": "Invalid payment signature.",
+      "target": "ลายเซ็นการชำระเงินไม่ถูกต้อง",
+      "round2_target": "ลายเซ็นการชำระเงินไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ลายเซ็นการชำระเงินไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid provider.",
+      "key": "Invalid provider.",
+      "source": "Invalid provider.",
+      "target": "ผู้ให้บริการไม่ถูกต้อง",
+      "round2_target": "ผู้ให้บริการไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ผู้ให้บริการไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid range or payment mode.",
+      "key": "Invalid range or payment mode.",
+      "source": "Invalid range or payment mode.",
+      "target": "ช่วงข้อมูลหรือรูปแบบการชำระเงินไม่ถูกต้อง",
+      "round2_target": "ช่วงข้อมูลหรือรูปแบบการชำระเงินไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ช่วงข้อมูลหรือรูปแบบการชำระเงินไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid recovery reason.",
+      "key": "Invalid recovery reason.",
+      "source": "Invalid recovery reason.",
+      "target": "เหตุผลการกู้คืนไม่ถูกต้อง",
+      "round2_target": "เหตุผลการกู้คืนไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เหตุผลการกู้คืนไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid report cursor.",
+      "key": "Invalid report cursor.",
+      "source": "Invalid report cursor.",
+      "target": "เคอร์เซอร์รายงานไม่ถูกต้อง",
+      "round2_target": "เคอร์เซอร์รายงานไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เคอร์เซอร์รายงานไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid report identifier.",
+      "key": "Invalid report identifier.",
+      "source": "Invalid report identifier.",
+      "target": "รหัสรายงานไม่ถูกต้อง",
+      "round2_target": "รหัสรายงานไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "รหัสรายงานไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid report status.",
+      "key": "Invalid report status.",
+      "source": "Invalid report status.",
+      "target": "สถานะรายงานไม่ถูกต้อง",
+      "round2_target": "สถานะรายงานไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "สถานะรายงานไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid request body.",
+      "key": "Invalid request body.",
+      "source": "Invalid request body.",
+      "target": "เนื้อหาคำขอไม่ถูกต้อง",
+      "round2_target": "เนื้อหาคำขอไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เนื้อหาคำขอไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid request identifier.",
+      "key": "Invalid request identifier.",
+      "source": "Invalid request identifier.",
+      "target": "รหัสคำขอไม่ถูกต้อง",
+      "round2_target": "รหัสคำขอไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "รหัสคำขอไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig UV",
+      "key": "Invalid rig UV",
+      "source": "Invalid rig UV",
+      "target": "UV ของริกไม่ถูกต้อง",
+      "round2_target": "UV ของริกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "UV ของริกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig clip",
+      "key": "Invalid rig clip",
+      "source": "Invalid rig clip",
+      "target": "คลิปโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "คลิปโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "คลิปโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig dimensions",
+      "key": "Invalid rig dimensions",
+      "source": "Invalid rig dimensions",
+      "target": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig frame mapping",
+      "key": "Invalid rig frame mapping",
+      "source": "Invalid rig frame mapping",
+      "target": "การแมปเฟรมริกไม่ถูกต้อง",
+      "round2_target": "การแมปเฟรมริกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "การแมปเฟรมริกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig hierarchy",
+      "key": "Invalid rig hierarchy",
+      "source": "Invalid rig hierarchy",
+      "target": "ลำดับชั้นโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ลำดับชั้นโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ลำดับชั้นโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig index",
+      "key": "Invalid rig index",
+      "source": "Invalid rig index",
+      "target": "ดัชนีโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ดัชนีโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ดัชนีโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig influence bone",
+      "key": "Invalid rig influence bone",
+      "source": "Invalid rig influence bone",
+      "target": "กระดูกที่ส่งผลต่อน้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "กระดูกที่ส่งผลต่อน้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "กระดูกที่ส่งผลต่อน้ำหนักโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig inverse bind",
+      "key": "Invalid rig inverse bind",
+      "source": "Invalid rig inverse bind",
+      "target": "เมทริกซ์ผูกแบบผกผันของโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "เมทริกซ์ผูกแบบผกผันของโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เมทริกซ์ผูกแบบผกผันของโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig normal",
+      "key": "Invalid rig normal",
+      "source": "Invalid rig normal",
+      "target": "เวกเตอร์ตั้งฉากของโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "เวกเตอร์ตั้งฉากของโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เวกเตอร์ตั้งฉากของโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig pose",
+      "key": "Invalid rig pose",
+      "source": "Invalid rig pose",
+      "target": "ท่าทางการจัดโครงสร้างไม่ถูกต้อง",
+      "round2_target": "ท่าทางการจัดโครงสร้างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ท่าทางการจัดโครงสร้างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig radius",
+      "key": "Invalid rig radius",
+      "source": "Invalid rig radius",
+      "target": "รัศมีโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "รัศมีโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "รัศมีโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig sample",
+      "key": "Invalid rig sample",
+      "source": "Invalid rig sample",
+      "target": "ตัวอย่างโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ตัวอย่างโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ตัวอย่างโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig size",
+      "key": "Invalid rig size",
+      "source": "Invalid rig size",
+      "target": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ขนาดโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig track dimensions",
+      "key": "Invalid rig track dimensions",
+      "source": "Invalid rig track dimensions",
+      "target": "ขนาดแทร็กโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "ขนาดแทร็กโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดแทร็กโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig transform",
+      "key": "Invalid rig transform",
+      "source": "Invalid rig transform",
+      "target": "การแปลงริกไม่ถูกต้อง",
+      "round2_target": "การแปลงริกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "การแปลงริกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid rig weights",
+      "key": "Invalid rig weights",
+      "source": "Invalid rig weights",
+      "target": "น้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "round2_target": "น้ำหนักโครงกระดูกไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "น้ำหนักโครงกระดูกไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape UV",
+      "key": "Invalid shape UV",
+      "source": "Invalid shape UV",
+      "target": "UV รูปทรงไม่ถูกต้อง",
+      "round2_target": "UV รูปทรงไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "UV รูปทรงไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape clip",
+      "key": "Invalid shape clip",
+      "source": "Invalid shape clip",
+      "target": "คลิปรูปทรงไม่ถูกต้อง",
+      "round2_target": "คลิปรูปทรงไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "คลิปรูปทรงไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape dimensions",
+      "key": "Invalid shape dimensions",
+      "source": "Invalid shape dimensions",
+      "target": "ขนาดรูปร่างไม่ถูกต้อง",
+      "round2_target": "ขนาดรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape frame",
+      "key": "Invalid shape frame",
+      "source": "Invalid shape frame",
+      "target": "เฟรมรูปร่างไม่ถูกต้อง",
+      "round2_target": "เฟรมรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เฟรมรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape heading",
+      "key": "Invalid shape heading",
+      "source": "Invalid shape heading",
+      "target": "ทิศทางรูปร่างไม่ถูกต้อง",
+      "round2_target": "ทิศทางรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ทิศทางรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape index",
+      "key": "Invalid shape index",
+      "source": "Invalid shape index",
+      "target": "ดัชนีรูปร่างไม่ถูกต้อง",
+      "round2_target": "ดัชนีรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ดัชนีรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape scale",
+      "key": "Invalid shape scale",
+      "source": "Invalid shape scale",
+      "target": "มาตราส่วนรูปร่างไม่ถูกต้อง",
+      "round2_target": "มาตราส่วนรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "มาตราส่วนรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid shape size",
+      "key": "Invalid shape size",
+      "source": "Invalid shape size",
+      "target": "ขนาดรูปร่างไม่ถูกต้อง",
+      "round2_target": "ขนาดรูปร่างไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดรูปร่างไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid skin dimensions.",
+      "key": "Invalid skin dimensions.",
+      "source": "Invalid skin dimensions.",
+      "target": "ขนาดสกินไม่ถูกต้อง",
+      "round2_target": "ขนาดสกินไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ขนาดสกินไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid studio event cursor.",
+      "key": "Invalid studio event cursor.",
+      "source": "Invalid studio event cursor.",
+      "target": "เคอร์เซอร์กิจกรรมสตูดิโอไม่ถูกต้อง",
+      "round2_target": "เคอร์เซอร์กิจกรรมสตูดิโอไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เคอร์เซอร์กิจกรรมสตูดิโอไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid visibility.",
+      "key": "Invalid visibility.",
+      "source": "Invalid visibility.",
+      "target": "การมองเห็นไม่ถูกต้อง",
+      "round2_target": "การมองเห็นไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "การมองเห็นไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid webhook signature.",
+      "key": "Invalid webhook signature.",
+      "source": "Invalid webhook signature.",
+      "target": "ลายเซ็นเว็บฮุคไม่ถูกต้อง",
+      "round2_target": "ลายเซ็นเว็บฮุคไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ลายเซ็นเว็บฮุคไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid webhook.",
+      "key": "Invalid webhook.",
+      "source": "Invalid webhook.",
+      "target": "เว็บฮุคไม่ถูกต้อง",
+      "round2_target": "เว็บฮุคไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เว็บฮุคไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid {value0} camera",
+      "key": "Invalid {value0} camera",
+      "source": "Invalid {value0} camera",
+      "target": "กล้อง {value0} ไม่ถูกต้อง",
+      "round2_target": "กล้อง {value0} ไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "กล้อง {value0} ไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid {value0} dimensions",
+      "key": "Invalid {value0} dimensions",
+      "source": "Invalid {value0} dimensions",
+      "target": "มิติ {value0} ไม่ถูกต้อง",
+      "round2_target": "มิติ {value0} ไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "มิติ {value0} ไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid {value0} normal camera",
+      "key": "Invalid {value0} normal camera",
+      "source": "Invalid {value0} normal camera",
+      "target": "เมทริกซ์แปลงเวกเตอร์ตั้งฉากเข้ากล้องของ {value0} ไม่ถูกต้อง",
+      "round2_target": "เมทริกซ์แปลงเวกเตอร์ตั้งฉากเข้ากล้องของ {value0} ไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เมทริกซ์แปลงเวกเตอร์ตั้งฉากเข้ากล้องของ {value0} ไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invalid {value0} scalar",
+      "key": "Invalid {value0} scalar",
+      "source": "Invalid {value0} scalar",
+      "target": "ค่าสเกลาร์ {value0} ไม่ถูกต้อง",
+      "round2_target": "ค่าสเกลาร์ {value0} ไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ค่าสเกลาร์ {value0} ไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Invite not found",
+      "key": "Invite not found",
+      "source": "Invite not found",
+      "target": "ไม่พบคำเชิญ",
+      "round2_target": "ไม่พบคำเชิญ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ไม่พบคำเชิญ"
+    },
+    {
+      "id": "online:It copies someone else’s work",
+      "key": "It copies someone else’s work",
+      "source": "It copies someone else’s work",
+      "target": "มันลอกเลียนแบบผลงานของคนอื่น",
+      "round2_target": "มันลอกเลียนแบบผลงานของคนอื่น",
+      "changed_since_round2": false,
+      "editor_expected_target": "มันลอกเลียนแบบผลงานของคนอื่น"
+    },
+    {
+      "id": "online:It is broken or unplayable",
+      "key": "It is broken or unplayable",
+      "source": "It is broken or unplayable",
+      "target": "มันเสียหรือเล่นไม่ได้",
+      "round2_target": "มันเสียหรือเล่นไม่ได้",
+      "changed_since_round2": false,
+      "editor_expected_target": "มันเสียหรือเล่นไม่ได้"
+    },
+    {
+      "id": "online:It is offensive",
+      "key": "It is offensive",
+      "source": "It is offensive",
+      "target": "มีเนื้อหาที่น่ารังเกียจหรือไม่เหมาะสม",
+      "round2_target": "มันเป็นการดูถูก",
+      "changed_since_round2": true,
+      "editor_expected_target": "มันเป็นการดูถูก"
+    },
+    {
+      "id": "online:It may not be installed on this device. You can",
+      "key": "It may not be installed on this device. You can",
+      "source": "It may not be installed on this device. You can",
+      "target": "อาจไม่ได้ติดตั้งบนอุปกรณ์นี้ คุณสามารถ",
+      "round2_target": "อาจไม่ได้ติดตั้งบนอุปกรณ์นี้ คุณสามารถ",
+      "changed_since_round2": false,
+      "editor_expected_target": "อาจไม่ได้ติดตั้งบนอุปกรณ์นี้ คุณสามารถ"
+    },
+    {
+      "id": "online:JSON",
+      "key": "JSON",
+      "source": "JSON",
+      "target": "JSON",
+      "round2_target": "JSON",
+      "changed_since_round2": false,
+      "editor_expected_target": "JSON"
+    },
+    {
+      "id": "online:JSON controls require the set workspace.",
+      "key": "JSON controls require the set workspace.",
+      "source": "JSON controls require the set workspace.",
+      "target": "ส่วนควบคุม JSON ต้องใช้พื้นที่ทำงานของชุด",
+      "round2_target": "ส่วนควบคุม JSON ต้องใช้พื้นที่ทำงานของชุด",
+      "changed_since_round2": false,
+      "editor_expected_target": "ส่วนควบคุม JSON ต้องใช้พื้นที่ทำงานของชุด"
+    },
+    {
+      "id": "online:JSON value",
+      "key": "JSON value",
+      "source": "JSON value",
+      "target": "ค่า JSON",
+      "round2_target": "ค่า JSON",
+      "changed_since_round2": false,
+      "editor_expected_target": "ค่า JSON"
+    },
+    {
+      "id": "online:JavaScript API reference ↗",
+      "key": "JavaScript API reference ↗",
+      "source": "JavaScript API reference ↗",
+      "target": "เอกสารอ้างอิง API JavaScript ↗",
+      "round2_target": "เอกสารอ้างอิง API JavaScript ↗",
+      "changed_since_round2": false,
+      "editor_expected_target": "เอกสารอ้างอิง API JavaScript ↗"
+    },
+    {
+      "id": "online:JavaScript · {slot0}",
+      "key": "JavaScript · {slot0}",
+      "source": "JavaScript · {slot0}",
+      "target": "JavaScript · {slot0}",
+      "round2_target": "JavaScript · {slot0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "JavaScript · {slot0}"
+    },
+    {
+      "id": "online:Join",
+      "key": "Join",
+      "source": "Join",
+      "target": "เข้าร่วม",
+      "round2_target": "เข้าร่วม",
+      "changed_since_round2": false,
+      "editor_expected_target": "เข้าร่วม"
+    },
+    {
+      "id": "online:Join by code",
+      "key": "Join by code",
+      "source": "Join by code",
+      "target": "เข้าร่วมโดยใช้รหัส",
+      "round2_target": "เข้าร่วมโดยใช้รหัส",
+      "changed_since_round2": false,
+      "editor_expected_target": "เข้าร่วมโดยใช้รหัส"
+    },
+    {
+      "id": "online:Join {p0}",
+      "key": "Join {p0}",
+      "source": "Join {p0}",
+      "target": "เข้าร่วม {p0}",
+      "round2_target": "เข้าร่วม {p0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "เข้าร่วม {p0}"
+    },
+    {
+      "id": "online:Keep available and resolve",
+      "key": "Keep available and resolve",
+      "source": "Keep available and resolve",
+      "target": "คงเนื้อหาไว้และปิดเรื่อง",
+      "round2_target": "คงเนื้อหาไว้และปิดเรื่อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "คงเนื้อหาไว้และปิดเรื่อง"
+    },
+    {
+      "id": "online:Keep history",
+      "key": "Keep history",
+      "source": "Keep history",
+      "target": "เก็บประวัติไว้",
+      "round2_target": "เก็บประวัติไว้",
+      "changed_since_round2": false,
+      "editor_expected_target": "เก็บประวัติไว้"
+    },
+    {
+      "id": "online:Keep lengths (must already match)",
+      "key": "Keep lengths (must already match)",
+      "source": "Keep lengths (must already match)",
+      "target": "คงความยาวเดิม (ต้องตรงกันอยู่แล้ว)",
+      "round2_target": "รักษาระยะความยาวให้เท่ากัน (ต้องตรงกันอยู่แล้ว)",
+      "changed_since_round2": true,
+      "editor_expected_target": "รักษาระยะความยาวให้เท่ากัน (ต้องตรงกันอยู่แล้ว)"
+    },
+    {
+      "id": "online:Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "key": "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "source": "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "target": "ใช้ส่วนแสดงตัวอย่างเพื่อฟังและเปรียบเทียบ เลือกเวอร์ชันที่ส่งมอบแล้วเพื่อแก้ไขผ่านแชท",
+      "round2_target": "โปรดฟังและเปรียบเทียบข้อมูลในโหมดพรีวิว เลือกเวอร์ชันที่ส่งมอบแล้วเพื่อแก้ไขผ่านทางแชท",
+      "changed_since_round2": true,
+      "editor_expected_target": "โปรดฟังและเปรียบเทียบข้อมูลในโหมดพรีวิว เลือกเวอร์ชันที่ส่งมอบแล้วเพื่อแก้ไขผ่านทางแชท"
+    },
+    {
+      "id": "online:Keep mine as a new skin",
+      "key": "Keep mine as a new skin",
+      "source": "Keep mine as a new skin",
+      "target": "เก็บของฉันเป็นสกินใหม่",
+      "round2_target": "เก็บของฉันเป็นสกินใหม่",
+      "changed_since_round2": false,
+      "editor_expected_target": "เก็บของฉันเป็นสกินใหม่"
+    },
+    {
+      "id": "online:Keep my current account",
+      "key": "Keep my current account",
+      "source": "Keep my current account",
+      "target": "เก็บบัญชีปัจจุบันของฉันไว้",
+      "round2_target": "เก็บบัญชีปัจจุบันของฉันไว้",
+      "changed_since_round2": false,
+      "editor_expected_target": "เก็บบัญชีปัจจุบันของฉันไว้"
+    },
+    {
+      "id": "online:Keep the melody, but make calm more spacious…",
+      "key": "Keep the melody, but make calm more spacious…",
+      "source": "Keep the melody, but make calm more spacious…",
+      "target": "คงทำนองเดิมไว้ แต่ทำให้ช่วงสงบฟังโปร่งขึ้น…",
+      "round2_target": "คงทำนองเดิมไว้ แต่ทำให้ความสงบดูกว้างขวางมากขึ้น...",
+      "changed_since_round2": true,
+      "editor_expected_target": "คงทำนองเดิมไว้ แต่ทำให้ความสงบดูกว้างขวางมากขึ้น..."
+    },
+    {
+      "id": "online:Keep this family namespace. Import a fork to create a different family.",
+      "key": "Keep this family namespace. Import a fork to create a different family.",
+      "source": "Keep this family namespace. Import a fork to create a different family.",
+      "target": "คงเนมสเปซของตระกูลอาคารนี้ไว้ นำเข้าสำเนาแยกเพื่อสร้างตระกูลใหม่",
+      "round2_target": "คงเนมสเปซของตระกูลอาคารนี้ไว้ นำเข้าสำเนาแยกเพื่อสร้างตระกูลใหม่",
+      "changed_since_round2": false,
+      "editor_expected_target": "คงเนมสเปซของตระกูลอาคารนี้ไว้ นำเข้าสำเนาแยกเพื่อสร้างตระกูลใหม่"
+    },
+    {
+      "id": "online:Known-cost subtotal",
+      "key": "Known-cost subtotal",
+      "source": "Known-cost subtotal",
+      "target": "ยอดรวมย่อยต้นทุนที่ทราบ",
+      "round2_target": "ยอดรวมย่อยต้นทุนที่ทราบ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ยอดรวมย่อยต้นทุนที่ทราบ"
+    },
+    {
+      "id": "online:Ladders",
+      "key": "Ladders",
+      "source": "Ladders",
+      "target": "ประเภทตารางอันดับ",
+      "round2_target": "ประเภทตารางอันดับ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ประเภทตารางอันดับ"
+    },
+    {
+      "id": "online:Language",
+      "key": "Language",
+      "source": "Language",
+      "target": "ภาษา",
+      "round2_target": "ภาษา",
+      "changed_since_round2": false,
+      "editor_expected_target": "ภาษา"
+    },
+    {
+      "id": "online:Large",
+      "key": "Large",
+      "source": "Large",
+      "target": "ใหญ่",
+      "round2_target": "ใหญ่",
+      "changed_since_round2": false,
+      "editor_expected_target": "ใหญ่"
+    },
+    {
+      "id": "online:Last {slot0} day",
+      "key": "Last {slot0} day",
+      "source": {
+        "one": "Last {slot0} day",
+        "other": "Last {slot0} days"
+      },
+      "target": {
+        "other": "{slot0} วันที่ผ่านมา"
+      },
+      "round2_target": {
+        "other": "{slot0} วันที่ผ่านมา"
+      },
+      "changed_since_round2": false,
+      "editor_expected_target": {
+        "other": "{slot0} วันที่ผ่านมา"
+      }
+    },
+    {
+      "id": "online:Last {slot0} days",
+      "key": "Last {slot0} days",
+      "source": "Last {slot0} days",
+      "target": "{slot0} วันที่ผ่านมา",
+      "round2_target": "{slot0} วันที่ผ่านมา",
+      "changed_since_round2": false,
+      "editor_expected_target": "{slot0} วันที่ผ่านมา"
+    },
+    {
+      "id": "online:Late",
+      "key": "Late",
+      "source": "Late",
+      "target": "ช้า",
+      "round2_target": "ช้า",
+      "changed_since_round2": false,
+      "editor_expected_target": "ช้า"
+    },
+    {
+      "id": "online:Layer",
+      "key": "Layer",
+      "source": "Layer",
+      "target": "ชั้น",
+      "round2_target": "ชั้น",
+      "changed_since_round2": false,
+      "editor_expected_target": "ชั้น"
+    },
+    {
+      "id": "online:Leaderboard",
+      "key": "Leaderboard",
+      "source": "Leaderboard",
+      "target": "ตารางอันดับ",
+      "round2_target": "ตารางอันดับ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ตารางอันดับ"
+    },
+    {
+      "id": "online:Leaderboard participants",
+      "key": "Leaderboard participants",
+      "source": "Leaderboard participants",
+      "target": "ผู้เข้าร่วมตารางอันดับ",
+      "round2_target": "ผู้เข้าร่วมตารางอันดับ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ผู้เข้าร่วมตารางอันดับ"
+    },
+    {
+      "id": "online:Leaderboards",
+      "key": "Leaderboards",
+      "source": "Leaderboards",
+      "target": "ตารางอันดับ",
+      "round2_target": "ตารางอันดับ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ตารางอันดับ"
+    },
+    {
+      "id": "online:Leave the room instead.",
+      "key": "Leave the room instead.",
+      "source": "Leave the room instead.",
+      "target": "ออกจากห้องไปดีกว่า",
+      "round2_target": "ออกจากห้องไปดีกว่า",
+      "changed_since_round2": false,
+      "editor_expected_target": "ออกจากห้องไปดีกว่า"
+    },
+    {
+      "id": "online:Leave this set and discard unsaved changes?",
+      "key": "Leave this set and discard unsaved changes?",
+      "source": "Leave this set and discard unsaved changes?",
+      "target": "ออกจากชุดข้อมูลนี้และยกเลิกการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใช่หรือไม่?",
+      "round2_target": "ออกจากชุดข้อมูลนี้และยกเลิกการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใช่หรือไม่?",
+      "changed_since_round2": false,
+      "editor_expected_target": "ออกจากชุดข้อมูลนี้และยกเลิกการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใช่หรือไม่?"
+    },
+    {
+      "id": "online:Leave with unsaved changes? A recovery copy stays on this device.",
+      "key": "Leave with unsaved changes? A recovery copy stays on this device.",
+      "source": "Leave with unsaved changes? A recovery copy stays on this device.",
+      "target": "ออกโดยยังไม่บันทึกการเปลี่ยนแปลงหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "round2_target": "ออกโดยยังไม่บันทึกการเปลี่ยนแปลงหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "changed_since_round2": false,
+      "editor_expected_target": "ออกโดยยังไม่บันทึกการเปลี่ยนแปลงหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้"
+    },
+    {
+      "id": "online:Leave with unsaved edits? A recovery copy stays on this device.",
+      "key": "Leave with unsaved edits? A recovery copy stays on this device.",
+      "source": "Leave with unsaved edits? A recovery copy stays on this device.",
+      "target": "ออกโดยยังไม่บันทึกการแก้ไขหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "round2_target": "ออกโดยยังไม่บันทึกการแก้ไขหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้",
+      "changed_since_round2": false,
+      "editor_expected_target": "ออกโดยยังไม่บันทึกการแก้ไขหรือไม่? สำเนาสำหรับกู้คืนจะยังอยู่ในอุปกรณ์นี้"
+    },
+    {
+      "id": "online:Length repair",
+      "key": "Length repair",
+      "source": "Length repair",
+      "target": "การซ่อมแซมความยาว",
+      "round2_target": "การซ่อมแซมความยาว",
+      "changed_since_round2": false,
+      "editor_expected_target": "การซ่อมแซมความยาว"
+    },
+    {
+      "id": "online:Library",
+      "key": "Library",
+      "source": "Library",
+      "target": "คลัง",
+      "round2_target": "คลัง",
+      "changed_since_round2": false,
+      "editor_expected_target": "คลัง"
+    },
+    {
+      "id": "online:Licence",
+      "key": "Licence",
+      "source": "Licence",
+      "target": "สัญญาอนุญาต",
+      "round2_target": "สัญญาอนุญาต",
+      "changed_since_round2": false,
+      "editor_expected_target": "สัญญาอนุญาต"
+    },
+    {
+      "id": "online:License",
+      "key": "License",
+      "source": "License",
+      "target": "สัญญาอนุญาต",
+      "round2_target": "สัญญาอนุญาต",
+      "changed_since_round2": false,
+      "editor_expected_target": "สัญญาอนุญาต"
+    },
+    {
+      "id": "online:License for this version",
+      "key": "License for this version",
+      "source": "License for this version",
+      "target": "สัญญาอนุญาตสำหรับเวอร์ชันนี้",
+      "round2_target": "สัญญาอนุญาตสำหรับเวอร์ชันนี้",
+      "changed_since_round2": false,
+      "editor_expected_target": "สัญญาอนุญาตสำหรับเวอร์ชันนี้"
+    },
+    {
+      "id": "online:License: {slot0}",
+      "key": "License: {slot0}",
+      "source": "License: {slot0}",
+      "target": "สัญญาอนุญาต: {slot0}",
+      "round2_target": "สัญญาอนุญาต: {slot0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "สัญญาอนุญาต: {slot0}"
+    },
+    {
+      "id": "online:License: {slot0} · AI composition is disclosed.",
+      "key": "License: {slot0} · AI composition is disclosed.",
+      "source": "License: {slot0} · AI composition is disclosed.",
+      "target": "สัญญาอนุญาต: {slot0} · เปิดเผยแล้วว่าใช้ AI แต่งเพลง",
+      "round2_target": "สัญญาอนุญาต: {slot0} · เปิดเผยแล้วว่าใช้ AI แต่งเพลง",
+      "changed_since_round2": false,
+      "editor_expected_target": "สัญญาอนุญาต: {slot0} · เปิดเผยแล้วว่าใช้ AI แต่งเพลง"
+    },
+    {
+      "id": "online:Lift ban",
+      "key": "Lift ban",
+      "source": "Lift ban",
+      "target": "ยกเลิกการแบน",
+      "round2_target": "ยกเลิกการแบน",
+      "changed_since_round2": false,
+      "editor_expected_target": "ยกเลิกการแบน"
+    },
+    {
+      "id": "online:Light",
+      "key": "Light",
+      "source": "Light",
+      "target": "จาง",
+      "round2_target": "จาง",
+      "changed_since_round2": false,
+      "editor_expected_target": "จาง"
+    },
+    {
+      "id": "online:Like",
+      "key": "Like",
+      "source": "Like",
+      "target": "ถูกใจ",
+      "round2_target": "ถูกใจ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ถูกใจ"
+    },
+    {
+      "id": "online:Likes",
+      "key": "Likes",
+      "source": "Likes",
+      "target": "จำนวนถูกใจ",
+      "round2_target": "จำนวนถูกใจ",
+      "changed_since_round2": false,
+      "editor_expected_target": "จำนวนถูกใจ"
+    },
+    {
+      "id": "online:Limit must be between 1 and 100.",
+      "key": "Limit must be between 1 and 100.",
+      "source": "Limit must be between 1 and 100.",
+      "target": "จำนวนจำกัดต้องอยู่ระหว่าง 1 ถึง 100",
+      "round2_target": "จำนวนจำกัดต้องอยู่ระหว่าง 1 ถึง 100",
+      "changed_since_round2": false,
+      "editor_expected_target": "จำนวนจำกัดต้องอยู่ระหว่าง 1 ถึง 100"
+    },
+    {
+      "id": "online:Link a recoverable account first.",
+      "key": "Link a recoverable account first.",
+      "source": "Link a recoverable account first.",
+      "target": "เชื่อมโยงบัญชีที่สามารถกู้คืนได้ก่อน",
+      "round2_target": "เชื่อมโยงบัญชีที่สามารถกู้คืนได้ก่อน",
+      "changed_since_round2": false,
+      "editor_expected_target": "เชื่อมโยงบัญชีที่สามารถกู้คืนได้ก่อน"
+    },
+    {
+      "id": "online:Link an active recoverable account before purchasing.",
+      "key": "Link an active recoverable account before purchasing.",
+      "source": "Link an active recoverable account before purchasing.",
+      "target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้ก่อนซื้อ",
+      "round2_target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้ก่อนซื้อ",
+      "changed_since_round2": false,
+      "editor_expected_target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้ก่อนซื้อ"
+    },
+    {
+      "id": "online:Link an active recoverable account to sync drafts.",
+      "key": "Link an active recoverable account to sync drafts.",
+      "source": "Link an active recoverable account to sync drafts.",
+      "target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้เพื่อซิงค์ฉบับร่าง",
+      "round2_target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้เพื่อซิงค์ฉบับร่าง",
+      "changed_since_round2": false,
+      "editor_expected_target": "เชื่อมโยงบัญชีที่ยังใช้งานอยู่และกู้คืนได้เพื่อซิงค์ฉบับร่าง"
+    },
+    {
+      "id": "online:Listening note",
+      "key": "Listening note",
+      "source": "Listening note",
+      "target": "หมายเหตุการฟัง",
+      "round2_target": "หมายเหตุการฟัง",
+      "changed_since_round2": false,
+      "editor_expected_target": "หมายเหตุการฟัง"
+    },
+    {
+      "id": "online:Live AI playtest revision {value0}",
+      "key": "Live AI playtest revision {value0}",
+      "source": "Live AI playtest revision {value0}",
+      "target": "การทดสอบการเล่น AI สด การแก้ไข {value0}",
+      "round2_target": "การทดสอบการเล่น AI สด การแก้ไข {value0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "การทดสอบการเล่น AI สด การแก้ไข {value0}"
+    },
+    {
+      "id": "online:Live updates are unavailable. Refreshing saved work…",
+      "key": "Live updates are unavailable. Refreshing saved work…",
+      "source": "Live updates are unavailable. Refreshing saved work…",
+      "target": "ไม่สามารถอัปเดตข้อมูลแบบเรียลไทม์ได้ กำลังรีเฟรชงานที่บันทึกไว้…",
+      "round2_target": "ไม่สามารถอัปเดตข้อมูลแบบเรียลไทม์ได้ กำลังรีเฟรชงานที่บันทึกไว้…",
+      "changed_since_round2": false,
+      "editor_expected_target": "ไม่สามารถอัปเดตข้อมูลแบบเรียลไทม์ได้ กำลังรีเฟรชงานที่บันทึกไว้…"
+    },
+    {
+      "id": "online:Load account changes",
+      "key": "Load account changes",
+      "source": "Load account changes",
+      "target": "โหลดการเปลี่ยนแปลงบัญชี",
+      "round2_target": "โหลดการเปลี่ยนแปลงบัญชี",
+      "changed_since_round2": false,
+      "editor_expected_target": "โหลดการเปลี่ยนแปลงบัญชี"
+    },
+    {
+      "id": "online:Load earlier conversation and versions",
+      "key": "Load earlier conversation and versions",
+      "source": "Load earlier conversation and versions",
+      "target": "โหลดบทสนทนาและเวอร์ชันก่อนหน้า",
+      "round2_target": "โหลดบทสนทนาและเวอร์ชันก่อนหน้า",
+      "changed_since_round2": false,
+      "editor_expected_target": "โหลดบทสนทนาและเวอร์ชันก่อนหน้า"
+    },
+    {
+      "id": "online:Load more",
+      "key": "Load more",
+      "source": "Load more",
+      "target": "โหลดเพิ่มเติม",
+      "round2_target": "โหลดเพิ่มเติม",
+      "changed_since_round2": false,
+      "editor_expected_target": "โหลดเพิ่มเติม"
+    },
+    {
+      "id": "online:Load more drafts",
+      "key": "Load more drafts",
+      "source": "Load more drafts",
+      "target": "โหลดฉบับร่างเพิ่มเติม",
+      "round2_target": "โหลดฉบับร่างเพิ่มเติม",
+      "changed_since_round2": false,
+      "editor_expected_target": "โหลดฉบับร่างเพิ่มเติม"
+    },
+    {
+      "id": "online:Loading ",
+      "key": "Loading ",
+      "source": "Loading ",
+      "target": "กำลังโหลด ",
+      "round2_target": "กำลังโหลด ",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลด "
+    },
+    {
+      "id": "online:Loading code editor…",
+      "key": "Loading code editor…",
+      "source": "Loading code editor…",
+      "target": "กำลังโหลดโปรแกรมแก้ไขโค้ด…",
+      "round2_target": "กำลังโหลดโปรแกรมแก้ไขโค้ด…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดโปรแกรมแก้ไขโค้ด…"
+    },
+    {
+      "id": "online:Loading comparison…",
+      "key": "Loading comparison…",
+      "source": "Loading comparison…",
+      "target": "กำลังโหลดข้อมูลเปรียบเทียบ…",
+      "round2_target": "กำลังโหลดข้อมูลเปรียบเทียบ…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดข้อมูลเปรียบเทียบ…"
+    },
+    {
+      "id": "online:Loading drafts…",
+      "key": "Loading drafts…",
+      "source": "Loading drafts…",
+      "target": "กำลังโหลดฉบับร่าง…",
+      "round2_target": "กำลังโหลดฉบับร่าง…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดฉบับร่าง…"
+    },
+    {
+      "id": "online:Loading editor…",
+      "key": "Loading editor…",
+      "source": "Loading editor…",
+      "target": "กำลังโหลดตัวแก้ไข…",
+      "round2_target": "กำลังโหลดตัวแก้ไข…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดตัวแก้ไข…"
+    },
+    {
+      "id": "online:Loading engine…",
+      "key": "Loading engine…",
+      "source": "Loading engine…",
+      "target": "กำลังโหลดเอนจิน…",
+      "round2_target": "กำลังโหลดเอนจิน…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดเอนจิน…"
+    },
+    {
+      "id": "online:Loading game…",
+      "key": "Loading game…",
+      "source": "Loading game…",
+      "target": "กำลังโหลดเกม…",
+      "round2_target": "กำลังโหลดเกม…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดเกม…"
+    },
+    {
+      "id": "online:Loading map preview…",
+      "key": "Loading map preview…",
+      "source": "Loading map preview…",
+      "target": "กำลังโหลดตัวอย่างแผนที่…",
+      "round2_target": "กำลังโหลดตัวอย่างแผนที่…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดตัวอย่างแผนที่…"
+    },
+    {
+      "id": "online:Loading matches…",
+      "key": "Loading matches…",
+      "source": "Loading matches…",
+      "target": "กำลังโหลดแมตช์…",
+      "round2_target": "กำลังโหลดแมตช์…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดแมตช์…"
+    },
+    {
+      "id": "online:Loading music…",
+      "key": "Loading music…",
+      "source": "Loading music…",
+      "target": "กำลังโหลดเพลง…",
+      "round2_target": "กำลังโหลดเพลง…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดเพลง…"
+    },
+    {
+      "id": "online:Loading preview…",
+      "key": "Loading preview…",
+      "source": "Loading preview…",
+      "target": "กำลังโหลดตัวอย่าง…",
+      "round2_target": "กำลังโหลดตัวอย่าง…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดตัวอย่าง…"
+    },
+    {
+      "id": "online:Loading reports…",
+      "key": "Loading reports…",
+      "source": "Loading reports…",
+      "target": "กำลังโหลดรายงาน…",
+      "round2_target": "กำลังโหลดรายงาน…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดรายงาน…"
+    },
+    {
+      "id": "online:Loading revision comparison…",
+      "key": "Loading revision comparison…",
+      "source": "Loading revision comparison…",
+      "target": "กำลังโหลดการเปรียบเทียบการแก้ไข…",
+      "round2_target": "กำลังโหลดการเปรียบเทียบการแก้ไข…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดการเปรียบเทียบการแก้ไข…"
+    },
+    {
+      "id": "online:Loading sets…",
+      "key": "Loading sets…",
+      "source": "Loading sets…",
+      "target": "กำลังโหลดชุด…",
+      "round2_target": "กำลังโหลดชุด…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดชุด…"
+    },
+    {
+      "id": "online:Loading set…",
+      "key": "Loading set…",
+      "source": "Loading set…",
+      "target": "กำลังโหลดชุด…",
+      "round2_target": "กำลังโหลดชุด…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดชุด…"
+    },
+    {
+      "id": "online:Loading the inspected version…",
+      "key": "Loading the inspected version…",
+      "source": "Loading the inspected version…",
+      "target": "กำลังโหลดเวอร์ชันที่ตรวจสอบแล้ว…",
+      "round2_target": "กำลังโหลดเวอร์ชันที่ตรวจสอบแล้ว…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดเวอร์ชันที่ตรวจสอบแล้ว…"
+    },
+    {
+      "id": "online:Loading this version…",
+      "key": "Loading this version…",
+      "source": "Loading this version…",
+      "target": "กำลังโหลดเวอร์ชันนี้…",
+      "round2_target": "กำลังโหลดเวอร์ชันนี้…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดเวอร์ชันนี้…"
+    },
+    {
+      "id": "online:Loading your building workspace…",
+      "key": "Loading your building workspace…",
+      "source": "Loading your building workspace…",
+      "target": "กำลังโหลดพื้นที่ทำงานอาคารของคุณ…",
+      "round2_target": "กำลังโหลดพื้นที่ทำงานอาคารของคุณ…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดพื้นที่ทำงานอาคารของคุณ…"
+    },
+    {
+      "id": "online:Loading your skins…",
+      "key": "Loading your skins…",
+      "source": "Loading your skins…",
+      "target": "กำลังโหลดสกินของคุณ…",
+      "round2_target": "กำลังโหลดสกินของคุณ…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลดสกินของคุณ…"
+    },
+    {
+      "id": "online:Loading…",
+      "key": "Loading…",
+      "source": "Loading…",
+      "target": "กำลังโหลด…",
+      "round2_target": "กำลังโหลด…",
+      "changed_since_round2": false,
+      "editor_expected_target": "กำลังโหลด…"
+    },
+    {
+      "id": "online:Local accounts are not enabled on this instance.",
+      "key": "Local accounts are not enabled on this instance.",
+      "source": "Local accounts are not enabled on this instance.",
+      "target": "ระบบนี้ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "round2_target": "ระบบนี้ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ระบบนี้ไม่ได้เปิดใช้งานบัญชีภายในระบบ"
+    },
+    {
+      "id": "online:Local accounts are not enabled.",
+      "key": "Local accounts are not enabled.",
+      "source": "Local accounts are not enabled.",
+      "target": "ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "round2_target": "ไม่ได้เปิดใช้งานบัญชีภายในระบบ",
+      "changed_since_round2": false,
+      "editor_expected_target": "ไม่ได้เปิดใช้งานบัญชีภายในระบบ"
+    },
+    {
+      "id": "online:Loop continuity",
+      "key": "Loop continuity",
+      "source": "Loop continuity",
+      "target": "ความต่อเนื่องเมื่อลูปเพลง",
+      "round2_target": "ความต่อเนื่องของวงจร",
+      "changed_since_round2": true,
+      "editor_expected_target": "ความต่อเนื่องของวงจร"
+    },
+    {
+      "id": "online:Lost",
+      "key": "Lost",
+      "source": "Lost",
+      "target": "แพ้",
+      "round2_target": "แพ้",
+      "changed_since_round2": false,
+      "editor_expected_target": "แพ้"
+    },
+    {
+      "id": "online:Made",
+      "key": "Made",
+      "source": "Made",
+      "target": "สร้างด้วย",
+      "round2_target": "สร้างด้วย",
+      "changed_since_round2": false,
+      "editor_expected_target": "สร้างด้วย"
+    },
+    {
+      "id": "online:Made for your next match.",
+      "key": "Made for your next match.",
+      "source": "Made for your next match.",
+      "target": "สร้างมาเพื่อแมตช์ถัดไปของคุณ",
+      "round2_target": "สร้างมาเพื่อแมตช์ถัดไปของคุณ",
+      "changed_since_round2": false,
+      "editor_expected_target": "สร้างมาเพื่อแมตช์ถัดไปของคุณ"
+    },
+    {
+      "id": "online:Made with",
+      "key": "Made with",
+      "source": "Made with",
+      "target": "ผลิตโดย",
+      "round2_target": "ผลิตโดย",
+      "changed_since_round2": false,
+      "editor_expected_target": "ผลิตโดย"
+    },
+    {
+      "id": "online:Main",
+      "key": "Main",
+      "source": "Main",
+      "target": "หลัก",
+      "round2_target": "หลัก",
+      "changed_since_round2": false,
+      "editor_expected_target": "หลัก"
+    },
+    {
+      "id": "online:Main material",
+      "key": "Main material",
+      "source": "Main material",
+      "target": "วัสดุหลัก",
+      "round2_target": "วัสดุหลัก",
+      "changed_since_round2": false,
+      "editor_expected_target": "วัสดุหลัก"
+    },
+    {
+      "id": "online:Make public",
+      "key": "Make public",
+      "source": "Make public",
+      "target": "เปิดเผยต่อสาธารณะ",
+      "round2_target": "เปิดเผยต่อสาธารณะ",
+      "changed_since_round2": false,
+      "editor_expected_target": "เปิดเผยต่อสาธารณะ"
+    },
+    {
+      "id": "online:Malformed Authorization header.",
+      "key": "Malformed Authorization header.",
+      "source": "Malformed Authorization header.",
+      "target": "ส่วนหัว Authorization มีรูปแบบไม่ถูกต้อง",
+      "round2_target": "ส่วนหัว Authorization มีรูปแบบไม่ถูกต้อง",
+      "changed_since_round2": false,
+      "editor_expected_target": "ส่วนหัว Authorization มีรูปแบบไม่ถูกต้อง"
+    },
+    {
+      "id": "online:Manage",
+      "key": "Manage",
+      "source": "Manage",
+      "target": "จัดการ",
+      "round2_target": "จัดการ",
+      "changed_since_round2": false,
+      "editor_expected_target": "จัดการ"
+    },
+    {
+      "id": "online:Manage credits",
+      "key": "Manage credits",
+      "source": "Manage credits",
+      "target": "จัดการเครดิต",
+      "round2_target": "จัดการเครดิต",
+      "changed_since_round2": false,
+      "editor_expected_target": "จัดการเครดิต"
+    },
+    {
+      "id": "online:Manage published family",
+      "key": "Manage published family",
+      "source": "Manage published family",
+      "target": "จัดการตระกูลอาคารที่เผยแพร่แล้ว",
+      "round2_target": "จัดการตระกูลอาคารที่เผยแพร่แล้ว",
+      "changed_since_round2": false,
+      "editor_expected_target": "จัดการตระกูลอาคารที่เผยแพร่แล้ว"
+    },
+    {
+      "id": "online:Manage the credits for your in-game AI commander.",
+      "key": "Manage the credits for your in-game AI commander.",
+      "source": "Manage the credits for your in-game AI commander.",
+      "target": "จัดการเครดิตสำหรับผู้บัญชาการ AI ในเกมของคุณ",
+      "round2_target": "จัดการเครดิตสำหรับผู้บัญชาการ AI ในเกมของคุณ",
+      "changed_since_round2": false,
+      "editor_expected_target": "จัดการเครดิตสำหรับผู้บัญชาการ AI ในเกมของคุณ"
+    },
+    {
+      "id": "online:Manifest",
+      "key": "Manifest",
+      "source": "Manifest",
+      "target": "แมนิเฟสต์",
+      "round2_target": "แมนิเฟสต์",
+      "changed_since_round2": false,
+      "editor_expected_target": "แมนิเฟสต์"
+    },
+    {
+      "id": "online:Manifest JSON: {slot0}",
+      "key": "Manifest JSON: {slot0}",
+      "source": "Manifest JSON: {slot0}",
+      "target": "JSON ของ Manifest : {slot0}",
+      "round2_target": "JSON ของ Manifest : {slot0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "JSON ของ Manifest : {slot0}"
+    },
+    {
+      "id": "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "key": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "source": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "target": "หมายเลขฉบับแก้ไขในแมนิเฟสต์: {slot0} การเผยแพร่ฉบับใหม่ต้องเพิ่มหมายเลขฉบับแก้ไขในแมนิเฟสต์",
+      "round2_target": "หมายเลขฉบับแก้ไขในแมนิเฟสต์: {slot0} การเผยแพร่ฉบับใหม่ต้องเพิ่มหมายเลขฉบับแก้ไขในแมนิเฟสต์",
+      "changed_since_round2": false,
+      "editor_expected_target": "หมายเลขฉบับแก้ไขในแมนิเฟสต์: {slot0} การเผยแพร่ฉบับใหม่ต้องเพิ่มหมายเลขฉบับแก้ไขในแมนิเฟสต์"
+    },
+    {
+      "id": "online:Manual blend · Calm → Building → Combat",
+      "key": "Manual blend · Calm → Building → Combat",
+      "source": "Manual blend · Calm → Building → Combat",
+      "target": "ผสมเอง · สงบ → ก่อสร้าง → ต่อสู้",
+      "round2_target": "ผสมเอง · สงบ → ก่อสร้าง → ต่อสู้",
+      "changed_since_round2": false,
+      "editor_expected_target": "ผสมเอง · สงบ → ก่อสร้าง → ต่อสู้"
+    },
+    {
+      "id": "online:Map",
+      "key": "Map",
+      "source": "Map",
+      "target": "แผนที่",
+      "round2_target": "แผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "แผนที่"
+    },
+    {
+      "id": "online:Map Studio",
+      "key": "Map Studio",
+      "source": "Map Studio",
+      "target": "สตูดิโอแผนที่",
+      "round2_target": "สตูดิโอแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "สตูดิโอแผนที่"
+    },
+    {
+      "id": "online:Map build",
+      "key": "Map build",
+      "source": "Map build",
+      "target": "การสร้างแผนที่",
+      "round2_target": "การสร้างแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "การสร้างแผนที่"
+    },
+    {
+      "id": "online:Map build: {value0}",
+      "key": "Map build: {value0}",
+      "source": "Map build: {value0}",
+      "target": "สร้างแผนที่ : {value0}",
+      "round2_target": "สร้างแผนที่ : {value0}",
+      "changed_since_round2": false,
+      "editor_expected_target": "สร้างแผนที่ : {value0}"
+    },
+    {
+      "id": "online:Map canvas",
+      "key": "Map canvas",
+      "source": "Map canvas",
+      "target": "พื้นที่แผนที่",
+      "round2_target": "พื้นที่แผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "พื้นที่แผนที่"
+    },
+    {
+      "id": "online:Map comparison",
+      "key": "Map comparison",
+      "source": "Map comparison",
+      "target": "การเปรียบเทียบแผนที่",
+      "round2_target": "การเปรียบเทียบแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "การเปรียบเทียบแผนที่"
+    },
+    {
+      "id": "online:Map credits",
+      "key": "Map credits",
+      "source": "Map credits",
+      "target": "เครดิตแผนที่",
+      "round2_target": "เครดิตแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "เครดิตแผนที่"
+    },
+    {
+      "id": "online:Map design conversation",
+      "key": "Map design conversation",
+      "source": "Map design conversation",
+      "target": "บทสนทนาเกี่ยวกับการออกแบบแผนที่",
+      "round2_target": "บทสนทนาเกี่ยวกับการออกแบบแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "บทสนทนาเกี่ยวกับการออกแบบแผนที่"
+    },
+    {
+      "id": "online:Map designer",
+      "key": "Map designer",
+      "source": "Map designer",
+      "target": "นักออกแบบแผนที่",
+      "round2_target": "นักออกแบบแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "นักออกแบบแผนที่"
+    },
+    {
+      "id": "online:Map details",
+      "key": "Map details",
+      "source": "Map details",
+      "target": "รายละเอียดแผนที่",
+      "round2_target": "รายละเอียดแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "รายละเอียดแผนที่"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz)",
+      "key": "Map file (.map or .map.gz)",
+      "source": "Map file (.map or .map.gz)",
+      "target": "ไฟล์แผนที่ (.map หรือ .map.gz)",
+      "round2_target": "ไฟล์แผนที่ (.map หรือ .map.gz)",
+      "changed_since_round2": false,
+      "editor_expected_target": "ไฟล์แผนที่ (.map หรือ .map.gz)"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz, from the game or its map editor)",
+      "key": "Map file (.map or .map.gz, from the game or its map editor)",
+      "source": "Map file (.map or .map.gz, from the game or its map editor)",
+      "target": "ไฟล์แผนที่ (.map หรือ .map.gz จากเกมหรือโปรแกรมแก้ไขแผนที่ของเกม)",
+      "round2_target": "ไฟล์แผนที่ (.map หรือ .map.gz จากเกมหรือโปรแกรมแก้ไขแผนที่ของเกม)",
+      "changed_since_round2": false,
+      "editor_expected_target": "ไฟล์แผนที่ (.map หรือ .map.gz จากเกมหรือโปรแกรมแก้ไขแผนที่ของเกม)"
+    },
+    {
+      "id": "online:Map generator",
+      "key": "Map generator",
+      "source": "Map generator",
+      "target": "โปรแกรมสร้างแผนที่",
+      "round2_target": "โปรแกรมสร้างแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "โปรแกรมสร้างแผนที่"
+    },
+    {
+      "id": "online:Map generators",
+      "key": "Map generators",
+      "source": "Map generators",
+      "target": "เครื่องสร้างแผนที่",
+      "round2_target": "เครื่องสร้างแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "เครื่องสร้างแผนที่"
+    },
+    {
+      "id": "online:Map library",
+      "key": "Map library",
+      "source": "Map library",
+      "target": "คลังแผนที่",
+      "round2_target": "คลังแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "คลังแผนที่"
+    },
+    {
+      "id": "online:Map lists",
+      "key": "Map lists",
+      "source": "Map lists",
+      "target": "รายการแผนที่",
+      "round2_target": "รายการแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "รายการแผนที่"
+    },
+    {
+      "id": "online:Map location {value0}, {value1}",
+      "key": "Map location {value0}, {value1}",
+      "source": "Map location {value0}, {value1}",
+      "target": "ตำแหน่งบนแผนที่ {value0} , {value1}",
+      "round2_target": "ตำแหน่งบนแผนที่ {value0} , {value1}",
+      "changed_since_round2": false,
+      "editor_expected_target": "ตำแหน่งบนแผนที่ {value0} , {value1}"
+    },
+    {
+      "id": "online:Map page",
+      "key": "Map page",
+      "source": "Map page",
+      "target": "หน้าแผนที่",
+      "round2_target": "หน้าแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "หน้าแผนที่"
+    },
+    {
+      "id": "online:Map preview · validation did not pass",
+      "key": "Map preview · validation did not pass",
+      "source": "Map preview · validation did not pass",
+      "target": "แสดงตัวอย่างแผนที่ · การตรวจสอบไม่ผ่าน",
+      "round2_target": "แสดงตัวอย่างแผนที่ · การตรวจสอบไม่ผ่าน",
+      "changed_since_round2": false,
+      "editor_expected_target": "แสดงตัวอย่างแผนที่ · การตรวจสอบไม่ผ่าน"
+    },
+    {
+      "id": "online:Map projects",
+      "key": "Map projects",
+      "source": "Map projects",
+      "target": "โครงการแผนที่",
+      "round2_target": "โครงการแผนที่",
+      "changed_since_round2": false,
+      "editor_expected_target": "โครงการแผนที่"
+    }
+  ]
+}

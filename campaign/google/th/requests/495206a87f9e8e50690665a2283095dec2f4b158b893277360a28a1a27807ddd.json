@@ -1,0 +1,126 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> · needs repairs",
+      "Candidate <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> report",
+      "Validation report",
+      "Game-rendered scene and resource gallery",
+      "Native validation report",
+      "Engine import and artwork",
+      "Engine definitions and artwork",
+      "Requested size and players",
+      "Valid colony starts",
+      "Resource growth enabled",
+      "Connected walking routes",
+      "Opening economy measured",
+      "Colony <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> building space",
+      "Colony <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> starter food",
+      "Colony <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> starter timber",
+      "Colony <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span><span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> renewable food ground",
+      "Properties",
+      "Semantics",
+      "Presentation",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> source",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span> decor source",
+      "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "More filters",
+      "Clear filters",
+      "No results match these filters.",
+      "Results<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>",
+      "Game text field"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ผู้สมัคร <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> · ต้องการการซ่อมแซม"
+      },
+      {
+        "translatedText": "รายงานผู้สมัครจำนวน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span>"
+      },
+      {
+        "translatedText": "รายงานการตรวจสอบความถูกต้อง"
+      },
+      {
+        "translatedText": "ฉากที่สร้างจากเกมและแกลเลอรีทรัพยากร"
+      },
+      {
+        "translatedText": "รายงานการตรวจสอบความถูกต้องแบบดั้งเดิม"
+      },
+      {
+        "translatedText": "การนำเข้าเครื่องยนต์และงานศิลปะ"
+      },
+      {
+        "translatedText": "คำจำกัดความของเครื่องยนต์และภาพประกอบ"
+      },
+      {
+        "translatedText": "ขนาดและจำนวนผู้เล่นที่ร้องขอ"
+      },
+      {
+        "translatedText": "การเริ่มต้นอาณานิคมที่ถูกต้อง"
+      },
+      {
+        "translatedText": "การเติบโตของทรัพยากรเกิดขึ้นได้"
+      },
+      {
+        "translatedText": "เส้นทางเดินเชื่อมต่อกัน"
+      },
+      {
+        "translatedText": "การเปิดเศรษฐกิจวัดผลได้"
+      },
+      {
+        "translatedText": "โคโลนี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> พื้นที่อาคาร"
+      },
+      {
+        "translatedText": "โคโลนี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> อาหารเริ่มต้น"
+      },
+      {
+        "translatedText": "โคโลนี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> ไม้เริ่มต้น"
+      },
+      {
+        "translatedText": "โคโลนี <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{count}</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">:</span> พื้นที่ปลูกอาหารหมุนเวียน"
+      },
+      {
+        "translatedText": "คุณสมบัติ"
+      },
+      {
+        "translatedText": "ความหมาย"
+      },
+      {
+        "translatedText": "การนำเสนอ"
+      },
+      {
+        "translatedText": "แหล่งที่มา <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "แหล่งที่มาของการตกแต่ง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "แบบร่างของคุณมีการเปลี่ยนแปลงขณะที่กำลังโหลดดีไซน์ การเปลี่ยนแปลงของคุณได้รับการบันทึกไว้แล้ว ลองเปิดดีไซน์อีกครั้ง"
+      },
+      {
+        "translatedText": "ตัวกรองเพิ่มเติม"
+      },
+      {
+        "translatedText": "ล้างตัวกรอง"
+      },
+      {
+        "translatedText": "ไม่พบผลลัพธ์ที่ตรงกับตัวกรองเหล่านี้"
+      },
+      {
+        "translatedText": "ผลลัพธ์ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">{value0}</span>"
+      },
+      {
+        "translatedText": "ช่องข้อความเกม"
+      }
+    ]
+  }
+}

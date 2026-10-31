@@ -1,0 +1,969 @@
+{
+  "id": "native-settings-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Right]",
+      "key": "[settings Right]",
+      "source": "Right",
+      "target": "ขวา"
+    },
+    {
+      "id": "native:[settings Left]",
+      "key": "[settings Left]",
+      "source": "Left",
+      "target": "ซ้าย"
+    },
+    {
+      "id": "native:[settings Back]",
+      "key": "[settings Back]",
+      "source": "Back",
+      "target": "กลับ"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every minute.]",
+      "key": "[settings Save the game automatically about every minute.]",
+      "source": "Save the game automatically about every minute.",
+      "target": "เกม​จะบัน​ทึก​อัต​โน​มัติ​ทุกๆ ประมาณ​หนึ่ง​นาที"
+    },
+    {
+      "id": "native:[No other players have editable diplomatic settings in this match.]",
+      "key": "[No other players have editable diplomatic settings in this match.]",
+      "source": "No other players have editable diplomatic settings in this match.",
+      "target": "ไม่มี​ผู้​เล่น​คน​อื่น​ใน​แมตช์​นี้​ที่​สามารถ​แก้ไข​การ​ตั้ง​ค่า​ทางการ​ทูต​ได้"
+    },
+    {
+      "id": "native:[settings %0 · %1 Units]",
+      "key": "[settings %0 · %1 Units]",
+      "source": "%0 · %1 Units",
+      "target": "%0 · %1 หน่วย"
+    },
+    {
+      "id": "native:[settings Level %0]",
+      "key": "[settings Level %0]",
+      "source": "Level %0",
+      "target": "ระดับ %0"
+    },
+    {
+      "id": "native:[settings Match the desktop %0]",
+      "key": "[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)",
+      "target": "ตรง​กับ​เด​สก์ท็อป ( %0 )"
+    },
+    {
+      "id": "native:[settings Current display %0 %1 %2 %3]",
+      "key": "[settings Current display %0 %1 %2 %3]",
+      "source": "Current display: %0 × %1 · %2 · %3",
+      "target": "การ​แสดง​ผล​ปัจจุบัน : %0 × %1 · %2 · %3"
+    },
+    {
+      "id": "native:[settings Experiments]",
+      "key": "[settings Experiments]",
+      "source": "Experiments",
+      "target": "การ​ทดลอง"
+    },
+    {
+      "id": "native:[settings Custom AIs]",
+      "key": "[settings Custom AIs]",
+      "source": "Custom AIs",
+      "target": "AI แบบ​กำหนด​เอง"
+    },
+    {
+      "id": "native:[settings Try features we are still testing. They can change balance and pacing.]",
+      "key": "[settings Try features we are still testing. They can change balance and pacing.]",
+      "source": "Try features we are still testing. They can change balance and pacing.",
+      "target": "ลอง​ใช้​ฟีเจอร์​ที่​เรา​กำลัง​ทดสอบ​อยู่ ซึ่ง​อาจ​ส่ง​ผล​ต่อ​สมดุล​และ​จังหวะ​การ​เล่น"
+    },
+    {
+      "id": "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "key": "[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.",
+      "target": "การ​ทดลอง​ใช้ได้​กับ​เกม​ใหม่​ที่​คุณ​เริ่ม​หรือ​เป็น​เจ้าของ​เกม​เท่านั้น ไม่ใช่​ภารกิจ​ใน​โหมด​แคมเปญ เกม​ที่​บันทึก​ไว้​จะ​คง​เกม​ที่​เริ่ม​เล่น​ไว้​เหมือน​เดิม"
+    },
+    {
+      "id": "native:[settings No experiments in this build.]",
+      "key": "[settings No experiments in this build.]",
+      "source": "No experiments in this build.",
+      "target": "ไม่มี​การ​ทด​ลอง​ใดๆ ใน​เวอร์ชัน​นี้"
+    },
+    {
+      "id": "native:[settings Touch scrolling]",
+      "key": "[settings Touch scrolling]",
+      "source": "Touch scrolling",
+      "target": "การ​เลื่อน​ด้วย​การ​สัมผัส"
+    },
+    {
+      "id": "native:[settings List momentum]",
+      "key": "[settings List momentum]",
+      "source": "List momentum",
+      "target": "รายการ​โมเมนตัม"
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a flick.]",
+      "key": "[settings How far lists and panels keep scrolling after a flick.]",
+      "source": "How far lists and panels keep scrolling after a flick.",
+      "target": "หลัง​จาก​ปัด​นิ้ว รายการ​และ​แผง​ต่างๆ จะ​เลื่อน​ไป​ไกล​แค่​ไหน"
+    },
+    {
+      "id": "native:[settings List bounce]",
+      "key": "[settings List bounce]",
+      "source": "List bounce",
+      "target": "รายการ​ตี​กลับ"
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back.]",
+      "key": "[settings How much lists and panels stretch past their ends and spring back.]",
+      "source": "How much lists and panels stretch past their ends and spring back.",
+      "target": "รายการ​และ​แผง​ต่างๆ ยืด​เลย​ขอบ​ไป​มาก​น้อย​แค่​ไหน แล้ว​จึง​หด​กลับ​มา​มาก​น้อย​เพียง​ใด"
+    },
+    {
+      "id": "native:[settings Map momentum]",
+      "key": "[settings Map momentum]",
+      "source": "Map momentum",
+      "target": "โมเมนตัม​ของ​แผนที่"
+    },
+    {
+      "id": "native:[settings How far the map keeps panning after a flick.]",
+      "key": "[settings How far the map keeps panning after a flick.]",
+      "source": "How far the map keeps panning after a flick.",
+      "target": "แผนที่​จะ​เลื่อน​ไป​ไกล​แค่​ไหน​หลัง​จาก​ปัด​นิ้ว"
+    },
+    {
+      "id": "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "key": "[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "source": "Touch scrolling feel. 0 turns an effect off; 50 is the default.",
+      "target": "สัมผัส​การ​เลื่อน​แบบ​สัมผัส ค่า 0 คือ​การ​ปิด​เอฟเฟกต์ ค่า 50 คือ​ค่า​เริ่ม​ต้น"
+    },
+    {
+      "id": "native:[settings Artwork]",
+      "key": "[settings Artwork]",
+      "source": "Artwork",
+      "target": "งาน​ศิลปะ"
+    },
+    {
+      "id": "native:[settings Original]",
+      "key": "[settings Original]",
+      "source": "Original",
+      "target": "ต้นฉบับ"
+    },
+    {
+      "id": "native:[settings High resolution]",
+      "key": "[settings High resolution]",
+      "source": "High resolution",
+      "target": "ความ​ละเอียด​สูง"
+    },
+    {
+      "id": "native:[settings Clouds]",
+      "key": "[settings Clouds]",
+      "source": "Clouds",
+      "target": "เมฆ"
+    },
+    {
+      "id": "native:[settings Show cloud cover above the map.]",
+      "key": "[settings Show cloud cover above the map.]",
+      "source": "Show cloud cover above the map.",
+      "target": "แสดง​ปริมาณ​เมฆ​ปกคลุม​เหนือ​แผนที่"
+    },
+    {
+      "id": "native:[settings Cloud shadows]",
+      "key": "[settings Cloud shadows]",
+      "source": "Cloud shadows",
+      "target": "เงา​เมฆ"
+    },
+    {
+      "id": "native:[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "key": "[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "source": "Show cloud shadows on the ground independently of cloud cover.",
+      "target": "แสดง​เงา​เมฆ​บน​พื้น​ดิน​โดย​ไม่​ขึ้น​อยู่​กับ​ปริมาณ​เมฆ​ปกคลุม"
+    },
+    {
+      "id": "native:[settings Building particles]",
+      "key": "[settings Building particles]",
+      "source": "Building particles",
+      "target": "อนุภาค​อาคาร"
+    },
+    {
+      "id": "native:[settings Show smoke and other building particles.]",
+      "key": "[settings Show smoke and other building particles.]",
+      "source": "Show smoke and other building particles.",
+      "target": "แสดง​ภาพ​ควัน​และ​เศษ​ซาก​อา​คา​รอื่นๆ"
+    },
+    {
+      "id": "native:[settings Magic effects]",
+      "key": "[settings Magic effects]",
+      "source": "Magic effects",
+      "target": "เอฟเฟกต์​เวทมนตร์"
+    },
+    {
+      "id": "native:[settings Choose animated magic effects or a simple visible effect.]",
+      "key": "[settings Choose animated magic effects or a simple visible effect.]",
+      "source": "Choose animated magic effects or a simple visible effect.",
+      "target": "เลือก​เอฟเฟ็กต์​มายากล​แบบ​เคลื่อนไหว​หรือ​เอฟเฟ็กต์​แบบ​มอง​เห็น​ได้​ง่ายๆ"
+    },
+    {
+      "id": "native:[settings Simple]",
+      "key": "[settings Simple]",
+      "source": "Simple",
+      "target": "เรียบ​ง่าย"
+    },
+    {
+      "id": "native:[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained.",
+      "target": "ต้อง​ใช้​ตัว​เรนเด​อร์ OpenGL ตัว​เลือก​ที่​คุณ​บันทึก​ไว้​จะ​ยัง​คง​อยู่"
+    },
+    {
+      "id": "native:[settings Interface appearance]",
+      "key": "[settings Interface appearance]",
+      "source": "Interface appearance",
+      "target": "ลักษณะ​ของ​อิน​เท​อร์เฟซ"
+    },
+    {
+      "id": "native:[settings Panels]",
+      "key": "[settings Panels]",
+      "source": "Panels",
+      "target": "แผง"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque interface panels.]",
+      "key": "[settings Choose translucent or opaque interface panels.]",
+      "source": "Choose translucent or opaque interface panels.",
+      "target": "เลือก​แผง​เชื่อม​ต่อ​แบบ​โปร่งแสง​หรือ​ทึบ​แสง"
+    },
+    {
+      "id": "native:[settings Opaque]",
+      "key": "[settings Opaque]",
+      "source": "Opaque",
+      "target": "ทึบ​แสง"
+    },
+    {
+      "id": "native:[settings Translucent]",
+      "key": "[settings Translucent]",
+      "source": "Translucent",
+      "target": "โปร่งแสง"
+    },
+    {
+      "id": "native:[settings Advanced graphics]",
+      "key": "[settings Advanced graphics]",
+      "source": "Advanced graphics",
+      "target": "กราฟิก​ขั้น​สูง"
+    },
+    {
+      "id": "native:[settings Path lines]",
+      "key": "[settings Path lines]",
+      "source": "Path lines",
+      "target": "เส้น​ทาง"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque unit path lines.]",
+      "key": "[settings Choose translucent or opaque unit path lines.]",
+      "source": "Choose translucent or opaque unit path lines.",
+      "target": "เลือก​เส้น​ทาง​เดิน​ของ​ยูนิต​แบบ​โปร่งแสง​หรือ​ทึบ​แสง"
+    },
+    {
+      "id": "native:[settings Smooth progress indicators]",
+      "key": "[settings Smooth progress indicators]",
+      "source": "Smooth progress indicators",
+      "target": "ตัว​ชี้​วัด​ความ​คืบ​หน้าที่​ราบ​รื่น"
+    },
+    {
+      "id": "native:[settings Smooth the moving edges of progress indicators.]",
+      "key": "[settings Smooth the moving edges of progress indicators.]",
+      "source": "Smooth the moving edges of progress indicators.",
+      "target": "ปรับ​ขอบ​ที่​เคลื่อนไหว​ของ​ตัว​บ่ง​ชี้​ความ​คืบ​หน้า​ให้​เรียบ​ขึ้น"
+    },
+    {
+      "id": "native:[settings Decorative interface animation]",
+      "key": "[settings Decorative interface animation]",
+      "source": "Decorative interface animation",
+      "target": "แอนิเมชัน​ตกแต่ง​อิน​เท​อร์เฟซ"
+    },
+    {
+      "id": "native:[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "key": "[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "source": "Animate victory artwork. Reduced motion also disables this animation.",
+      "target": "แสดง​ภาพ​เคลื่อนไหว​ของ​ภาพ​ชัยชนะ การ​ลด​การ​เคลื่อนไหว​จะ​ปิด​ใช้​งาน​ภาพ​เคลื่อนไหว​นี้​ด้วย"
+    },
+    {
+      "id": "native:[settings Smooth unit motion]",
+      "key": "[settings Smooth unit motion]",
+      "source": "Smooth unit motion",
+      "target": "การ​เคลื่อนที่​ของ​หน่วย​ที่ราบ​รื่น"
+    },
+    {
+      "id": "native:[settings Experimental: move and animate units between game ticks.]",
+      "key": "[settings Experimental: move and animate units between game ticks.]",
+      "source": "Experimental: move and animate units between game ticks.",
+      "target": "ทดลอง : เคลื่อน​ย้าย​และ​สร้าง​แอ​นิ​เม​ชั่น​ให้​กับ​ยูนิต​ระหว่าง​รอบ​เกม"
+    },
+    {
+      "id": "native:[settings Smooth fog of war]",
+      "key": "[settings Smooth fog of war]",
+      "source": "Smooth fog of war",
+      "target": "หมอก​แห่ง​สงคราม​ที่ราบ​เรียบ"
+    },
+    {
+      "id": "native:[settings Fade the map into and out of the fog of war gradually.]",
+      "key": "[settings Fade the map into and out of the fog of war gradually.]",
+      "source": "Fade the map into and out of the fog of war gradually.",
+      "target": "ค่อยๆ เผย​แผนที่​ให้​ปรากฏ​และ​หาย​ไป​จาก​หมอก​แห่ง​สงคราม​ที​ละ​น้อย"
+    },
+    {
+      "id": "native:[settings Adaptive zoom detail]",
+      "key": "[settings Adaptive zoom detail]",
+      "source": "Adaptive zoom detail",
+      "target": "ราย​ละเอียด​การ​ซูม​แบบ​ปรับ​ได้"
+    },
+    {
+      "id": "native:[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "key": "[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "source": "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.",
+      "target": "ลด​ความ​ซับ​ซ้อน​ของ​แถบ พื้นที่ ภูมิประเทศ และ​หน่วย​ต่างๆ เมื่อ​ซูม​แผนที่​ออก และ​คง​ขนาด​เล็ก​ไว้​เมื่อ​ซูม​เข้า"
+    },
+    {
+      "id": "native:[settings Text size]",
+      "key": "[settings Text size]",
+      "source": "Text size",
+      "target": "ขนาด​ตัว​อักษร"
+    },
+    {
+      "id": "native:[settings Enlarge interface text without changing the map scale.]",
+      "key": "[settings Enlarge interface text without changing the map scale.]",
+      "source": "Enlarge interface text without changing the map scale.",
+      "target": "ขยาย​ขนาด​ข้อความ​ใน​ส่วน​ติดต่อ​ผู้​ใช้​โดย​ไม่​ต้อง​เปลี่ยน​มาตราส่วน​แผนที่"
+    },
+    {
+      "id": "native:[settings Online]",
+      "key": "[settings Online]",
+      "source": "Online",
+      "target": "ออนไลน์"
+    },
+    {
+      "id": "native:[settings Another server]",
+      "key": "[settings Another server]",
+      "source": "Another server",
+      "target": "เซิร์ฟเวอร์​อีก​เครื่อง​หนึ่ง"
+    },
+    {
+      "id": "native:[settings Check]",
+      "key": "[settings Check]",
+      "source": "Check",
+      "target": "ตรวจ​สอบ"
+    },
+    {
+      "id": "native:[settings Checking…]",
+      "key": "[settings Checking…]",
+      "source": "Checking…",
+      "target": "กำลัง​ตรวจ​สอบ…"
+    },
+    {
+      "id": "native:[settings Choose which server you play on and how you sign in to it.]",
+      "key": "[settings Choose which server you play on and how you sign in to it.]",
+      "source": "Choose which server you play on and how you sign in to it.",
+      "target": "เลือก​เซิร์ฟเวอร์​ที่​คุณ​ต้องการ​เล่น​และ​วิธี​การ​เข้า​สู่​ระบบ"
+    },
+    {
+      "id": "native:[settings Connecting…]",
+      "key": "[settings Connecting…]",
+      "source": "Connecting…",
+      "target": "กำลัง​เชื่อม​ต่อ…"
+    },
+    {
+      "id": "native:[settings Could not reach this server.]",
+      "key": "[settings Could not reach this server.]",
+      "source": "Could not reach this server.",
+      "target": "ไม่​สามารถ​เชื่อม​ต่อ​กับ​เซิร์ฟเวอร์​นี้​ได้"
+    },
+    {
+      "id": "native:[settings Display name saved.]",
+      "key": "[settings Display name saved.]",
+      "source": "Display name saved.",
+      "target": "บันทึก​ชื่อ​ที่​แสดง​เรียบร้อย​แล้ว"
+    },
+    {
+      "id": "native:[settings Display name]",
+      "key": "[settings Display name]",
+      "source": "Display name",
+      "target": "ชื่อ​ที่​แสดง"
+    },
+    {
+      "id": "native:[settings Download or delete my data]",
+      "key": "[settings Download or delete my data]",
+      "source": "Delete my account",
+      "target": "ลบ​บัญชี​ของ​ฉัน"
+    },
+    {
+      "id": "native:[settings Enter an https:// address.]",
+      "key": "[settings Enter an https:// address.]",
+      "source": "Enter an https:// address.",
+      "target": "ป้อน​ที่​อยู่ https : //"
+    },
+    {
+      "id": "native:[settings Forget]",
+      "key": "[settings Forget]",
+      "source": "Forget",
+      "target": "ลืม"
+    },
+    {
+      "id": "native:[settings Guests keep a generated name; sign in to choose one.]",
+      "key": "[settings Guests keep a generated name; sign in to choose one.]",
+      "source": "Guests keep a generated name; sign in to choose one.",
+      "target": "ผู้​เข้า​พัก​จะ​ได้​รับ​ชื่อ​ที่​สร้าง​ขึ้น​โดย​อัตโนมัติ โปรด​ลงชื่อ​เข้า​ใช้​เพื่อ​เลือก​ชื่อ​ที่​ต้องการ"
+    },
+    {
+      "id": "native:[settings Link]",
+      "key": "[settings Link]",
+      "source": "Link",
+      "target": "ลิงก์"
+    },
+    {
+      "id": "native:[settings Not a Globulation 2 server.]",
+      "key": "[settings Not a Globulation 2 server.]",
+      "source": "Not a Globulation 2 server.",
+      "target": "ไม่ใช่​เซิร์ฟเวอร์ Globulation 2"
+    },
+    {
+      "id": "native:[settings Not linked]",
+      "key": "[settings Not linked]",
+      "source": "Not linked",
+      "target": "ไม่​ได้​เชื่อม​โยง"
+    },
+    {
+      "id": "native:[settings Not signed in.]",
+      "key": "[settings Not signed in.]",
+      "source": "Not signed in.",
+      "target": "ยัง​ไม่​ได้​เข้า​สู่​ระบบ"
+    },
+    {
+      "id": "native:[settings Open]",
+      "key": "[settings Open]",
+      "source": "Open",
+      "target": "เปิด"
+    },
+    {
+      "id": "native:[settings Opens your account page on %0.]",
+      "key": "[settings Opens your account page on %0.]",
+      "source": "Opens your account page on %0, where you can delete it.",
+      "target": "เปิด​หน้า​บัญชี​ของ​คุณ​ที่ %0 ซึ่ง​คุณ​สามารถ​ลบ​ข้อมูล​ได้"
+    },
+    {
+      "id": "native:[settings Run by a community, a club or yourself. Paste its address.]",
+      "key": "[settings Run by a community, a club or yourself. Paste its address.]",
+      "source": "Run by a community, a club or yourself. Paste its address.",
+      "target": "ดำเนิน​การ​โดย​ชุมชน ชมรม หรือ​ตัว​คุณ​เอง กรุณา​ใส่​ที่​อยู่​ลง​ไป"
+    },
+    {
+      "id": "native:[settings Save]",
+      "key": "[settings Save]",
+      "source": "Save",
+      "target": "บันทึก"
+    },
+    {
+      "id": "native:[settings Server]",
+      "key": "[settings Server]",
+      "source": "Server",
+      "target": "เซิร์ฟเวอร์"
+    },
+    {
+      "id": "native:[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "key": "[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "source": "Shown in rooms, matches and the leaderboard. Change once every 30 days.",
+      "target": "แสดง​ใน​ห้อง​แข่งขัน แมตช์ และ​ตาราง​คะแนน เปลี่ยนแปลง​ทุก 30 วัน"
+    },
+    {
+      "id": "native:[settings Sign in with: %0 · queues: %1]",
+      "key": "[settings Sign in with: %0 · queues: %1]",
+      "source": "Sign in with: %0 · queues: %1",
+      "target": "เข้า​สู่​ระบบ​ด้วย : %0 · คิว : %1"
+    },
+    {
+      "id": "native:[settings Sign out on this device]",
+      "key": "[settings Sign out on this device]",
+      "source": "Sign out on this device",
+      "target": "ออก​จาก​ระบบ​บน​อุปกรณ์​นี้"
+    },
+    {
+      "id": "native:[settings Sign out]",
+      "key": "[settings Sign out]",
+      "source": "Sign out",
+      "target": "ออก​จาก​ระบบ"
+    },
+    {
+      "id": "native:[settings Switch to this server]",
+      "key": "[settings Switch to this server]",
+      "source": "Switch to this server",
+      "target": "เปลี่ยน​ไป​ใช้​เซิร์ฟเวอร์​นี้"
+    },
+    {
+      "id": "native:[settings The last sign-in method can't be unlinked.]",
+      "key": "[settings The last sign-in method can't be unlinked.]",
+      "source": "The last sign-in method can't be unlinked.",
+      "target": "ไม่​สามารถ​ยกเลิก​การ​เชื่อม​โยง​วิธี​การ​เข้า​สู่​ระบบ​ครั้ง​ล่าสุด​ได้"
+    },
+    {
+      "id": "native:[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "key": "[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "source": "The official Globulation 2 server · ranked queues, leaderboards, map catalog",
+      "target": "เซิร์ฟเวอร์​อย่าง​เป็น​ทางการ​ของ Globulation 2 · ระบบ​จัด​อันดับ​ผู้​เล่น ตาราง​คะแนน และ​แค​ต​ตา​ล็อก​แผนที่"
+    },
+    {
+      "id": "native:[settings Unlink]",
+      "key": "[settings Unlink]",
+      "source": "Unlink",
+      "target": "ยกเลิก​การ​เชื่อม​โยง"
+    },
+    {
+      "id": "native:[settings Unlinking is done on the account page.]",
+      "key": "[settings Unlinking is done on the account page.]",
+      "source": "Unlinking is done on the account page.",
+      "target": "การ​ยกเลิก​การ​เชื่อม​โยง​ทำได้​ใน​หน้า​บัญชี​ผู้​ใช้"
+    },
+    {
+      "id": "native:[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "key": "[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "source": "You'll be a new guest until you sign in again. Your account and matches stay on the server.",
+      "target": "คุณ​จะ​เป็น​ผู้​เล่น​ใหม่​จนกว่า​คุณ​จะ​เข้า​สู่​ระบบ​อีก​ครั้ง บัญชี​และ​แมตช์​ของ​คุณ​จะ​ยัง​คง​อยู่​บน​เซิร์ฟเวอร์"
+    },
+    {
+      "id": "native:[settings Your account on %0]",
+      "key": "[settings Your account on %0]",
+      "source": "Your account on %0",
+      "target": "บัญชี​ของ​คุณ​อยู่​ที่ %0"
+    },
+    {
+      "id": "native:[settings compatible with this version]",
+      "key": "[settings compatible with this version]",
+      "source": "compatible with this version",
+      "target": "ใช้​งาน​ร่วม​กับ​เวอร์ชัน​นี้​ได้"
+    },
+    {
+      "id": "native:[settings connected]",
+      "key": "[settings connected]",
+      "source": "connected",
+      "target": "เชื่อม​ต่อ"
+    },
+    {
+      "id": "native:[settings connecting…]",
+      "key": "[settings connecting…]",
+      "source": "connecting…",
+      "target": "กำลัง​เชื่อม​ต่อ…"
+    },
+    {
+      "id": "native:[settings guest]",
+      "key": "[settings guest]",
+      "source": "guest",
+      "target": "แขก"
+    },
+    {
+      "id": "native:[settings linked]",
+      "key": "[settings linked]",
+      "source": "linked",
+      "target": "เชื่อม​โยง"
+    },
+    {
+      "id": "native:[settings plays another version]",
+      "key": "[settings plays another version]",
+      "source": "plays another version",
+      "target": "เล่น​เวอร์ชัน​อื่น"
+    },
+    {
+      "id": "native:[settings trusted]",
+      "key": "[settings trusted]",
+      "source": "trusted",
+      "target": "น่า​เชื่อ​ถือ"
+    },
+    {
+      "id": "native:[settings used before]",
+      "key": "[settings used before]",
+      "source": "used before",
+      "target": "เคย​ใช้​มา​ก่อน"
+    },
+    {
+      "id": "native:[settings you were %0 there]",
+      "key": "[settings you were %0 there]",
+      "source": "you were %0 there",
+      "target": "คุณ​อยู่​ที่​นั่น %0"
+    },
+    {
+      "id": "native:[settings not connected]",
+      "key": "[settings not connected]",
+      "source": "not connected",
+      "target": "ไม่​ได้​เชื่อม​ต่อ"
+    },
+    {
+      "id": "native:[settings Open Play online to connect.]",
+      "key": "[settings Open Play online to connect.]",
+      "source": "Open Play online to connect.",
+      "target": "เปิด Open Play ออนไลน์​เพื่อ​เชื่อม​ต่อ"
+    },
+    {
+      "id": "native:[settings %0 is no longer linked.]",
+      "key": "[settings %0 is no longer linked.]",
+      "source": "%0 is no longer linked.",
+      "target": "%0 ไม่​ได้​เชื่อม​โยง​อีก​ต่อ​ไป​แล้ว"
+    },
+    {
+      "id": "native:[settings Show colony skins]",
+      "key": "[settings Show colony skins]",
+      "source": "Show colony skins",
+      "target": "แสดง​สกิน​ของ​อาณานิคม"
+    },
+    {
+      "id": "native:[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "key": "[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "source": "Turn off to use classic units, swarms and building colors on this device.",
+      "target": "ปิด​ใช้​งาน​เพื่อ​ใช้​งาน​ยูนิต​แบบ​คลาส​สิก ฝูง และ​สี​อาคาร​บน​อุปกรณ์​นี้"
+    },
+    {
+      "id": "native:[settings Hive Mind]",
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "target": "จิตใจ​รวม​หมู่"
+    },
+    {
+      "id": "native:[settings Enable commander shortcuts]",
+      "key": "[settings Enable commander shortcuts]",
+      "source": "Enable commander shortcuts",
+      "target": "เปิด​ใช้​งาน​ทาง​ลัด​ผู้​บัญชาการ"
+    },
+    {
+      "id": "native:[settings Command your colony without opening a menu.]",
+      "key": "[settings Command your colony without opening a menu.]",
+      "source": "Command your colony without opening a menu.",
+      "target": "ควบคุม​อาณานิคม​ของ​คุณ​โดย​ไม่​ต้อง​เปิด​เมนู"
+    },
+    {
+      "id": "native:[settings Allow supervision for new commands]",
+      "key": "[settings Allow supervision for new commands]",
+      "source": "Allow supervision for new commands",
+      "target": "อนุญาต​ให้​มี​การ​กำกับ​ดูแล​สำหรับ​คำ​สั่ง​ใหม่"
+    },
+    {
+      "id": "native:[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "key": "[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "source": "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.",
+      "target": "ผู้​บัญชาการ​อาจ​ดำเนิน​การ​ตาม​คำ​สั่ง​ที่​กำหนด​ไว้​แล้ว การ​ดำเนิน​การ​ตาม​คำ​สั่ง​จะ​ใช้​เครดิต ส่วน​คำ​สั่ง​ที่​ติด​ตั้ง​ไว้​แล้ว​จะ​ทำงาน​ต่อ​ไป​ได้​โดย​ไม่​ต้อง​ใช้​เครดิต"
+    },
+    {
+      "id": "native:[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "key": "[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "source": "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+      "target": "ปุ่ม​ลัด​เริ่ม​ต้น : Ctrl+Enter เพื่อ​ออก​คำ​สั่ง; Ctrl+Shift+Enter เพื่อ​หยุด​การ​ทำงาน​ของ​ผู้​บังคับ​บัญชา เปลี่ยน​ปุ่ม​ลัด​เหล่า​นี้​ได้​ใน​ส่วน​การ​ควบคุม การ์ด​คำ​สั่ง​ประจำ​จะ​มี​ปุ่ม​หยุด​ชั่วคราว​และ​ยกเลิก​แยก​ต่าง​หาก"
+    },
+    {
+      "id": "native:[settings Commander account and credits]",
+      "key": "[settings Commander account and credits]",
+      "source": "Commander account and credits",
+      "target": "บัญชี​ผู้​บัญชาการ​และ​เครดิต"
+    },
+    {
+      "id": "native:[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "key": "[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "source": "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.",
+      "target": "จัดการ​เครดิต​และ​การ​ซื้อ​ใน​เบราว์เซอร์​ของ​คุณ อนุญาต​ให้​ขอ​ความ​ช่วย​เหลือ​จาก​ผู้​บัญชาการ​ได้​ใน​การ​เล่น​จัด​อันดับ"
+    },
+    {
+      "id": "native:[settings Recording]",
+      "key": "[settings Recording]",
+      "source": "Recording",
+      "target": "การ​บันทึก"
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "key": "[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "source": "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+      "target": "บันทึก​วิดีโอ​เกม​ของ​คุณ​เป็น​ไฟล์ MP4 พร้อม​เสียง การ​บันทึก​ต้อง​ใช้ FFmpeg พร้อม​ตัว​เข้า​รหัส libx264 และ AAC"
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound.]",
+      "key": "[settings Record your games as MP4 videos with sound.]",
+      "source": "Record your games as MP4 videos with sound.",
+      "target": "บันทึก​วิดีโอ​เกม​ของ​คุณ​เป็น​ไฟล์ MP4 พร้อม​เสียง"
+    },
+    {
+      "id": "native:[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "key": "[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "source": "Recording uses the full rendered resolution at 30 FPS.",
+      "target": "การ​บันทึก​ใช้​ความ​ละเอียด​เต็ม​ที่​ที่ 30 เฟรม​ต่อ​วินาที"
+    },
+    {
+      "id": "native:[settings FFmpeg is ready.]",
+      "key": "[settings FFmpeg is ready.]",
+      "source": "FFmpeg is ready.",
+      "target": "FFmpeg พร้อม​ใช้​งาน​แล้ว"
+    },
+    {
+      "id": "native:[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "key": "[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "source": "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+      "target": "FFmpeg ไม่​พร้อม​ใช้​งาน ดัง​นั้น​การ​บันทึก​จึง​ถูก​ปิด​ใช้​งาน ติด​ตั้ง FFmpeg และ​ตรวจ​สอบ​ให้​แน่ใจ​ว่า​ได้​เพิ่ม​ลง​ใน PATH แล้ว จาก​นั้น​ตรวจ​สอบ​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[settings Check for FFmpeg again]",
+      "key": "[settings Check for FFmpeg again]",
+      "source": "Check for FFmpeg again",
+      "target": "ตรวจ​สอบ​หา FFmpeg อีก​ครั้ง"
+    },
+    {
+      "id": "native:[settings Checking for FFmpeg…]",
+      "key": "[settings Checking for FFmpeg…]",
+      "source": "Checking for FFmpeg…",
+      "target": "กำลัง​ตรวจ​สอบ​หา FFmpeg…"
+    },
+    {
+      "id": "native:[settings Hotkey: %0. It also works in menus and the editor.]",
+      "key": "[settings Hotkey: %0. It also works in menus and the editor.]",
+      "source": "Hotkey: %0. It also works in menus and the editor.",
+      "target": "ปุ่ม​ลัด : %0 ใช้​งาน​ได้​ทั้ง​ใน​เมนู​และ​ตัว​แก้ไข"
+    },
+    {
+      "id": "native:[settings Change the hotkey]",
+      "key": "[settings Change the hotkey]",
+      "source": "Change the hotkey",
+      "target": "เปลี่ยน​ปุ่ม​ลัด"
+    },
+    {
+      "id": "native:[settings Recordings are saved in %0]",
+      "key": "[settings Recordings are saved in %0]",
+      "source": "Recordings are saved in %0",
+      "target": "ไฟล์​บันทึก​จะ​ถูก​บันทึก​ไว้​ใน %0"
+    },
+    {
+      "id": "native:[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "key": "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "source": "Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+      "target": "เพิ่ม AI JavaScript ใน​การ​ตั้ง​ค่า → AI แบบ​กำหนด​เอง AI เหล่า​นั้น​จะ​ปรากฏ​ใน​ตัว​เลือก AI ของ​แต่ละ​อาณานิคม"
+    },
+    {
+      "id": "native:[settings Music set]",
+      "key": "[settings Music set]",
+      "source": "Music set",
+      "target": "ชุด​ดนตรี"
+    },
+    {
+      "id": "native:[settings Random each match]",
+      "key": "[settings Random each match]",
+      "source": "Choose Random to select a soundtrack at each match start.",
+      "target": "เลือก \"สุ่ม\" เพื่อ​เลือก​เพลง​ประกอบ​ใน​แต่ละ​ครั้ง​ที่​เริ่ม​การ​แข่งขัน"
+    },
+    {
+      "id": "native:[Sign in through Online settings to like and favourite AIs.]",
+      "key": "[Sign in through Online settings to like and favourite AIs.]",
+      "source": "Sign in through Online settings to like and favourite AIs.",
+      "target": "ลงชื่อ​เข้า​ใช้​ผ่าน​การ​ตั้ง​ค่า​ออนไลน์​เพื่อ​กด​ไลค์​และ​เพิ่ม AI ที่​ชื่น​ชอบ"
+    },
+    {
+      "id": "native:[music 2–5 minutes]",
+      "key": "[music 2–5 minutes]",
+      "source": "2–5 minutes",
+      "target": "2–5 นาที"
+    },
+    {
+      "id": "native:[music 5–15 minutes]",
+      "key": "[music 5–15 minutes]",
+      "source": "5–15 minutes",
+      "target": "5–15 นาที"
+    },
+    {
+      "id": "native:[music AI-generated]",
+      "key": "[music AI-generated]",
+      "source": "AI-generated",
+      "target": "สร้าง​โดย AI"
+    },
+    {
+      "id": "native:[music All music]",
+      "key": "[music All music]",
+      "source": "All music",
+      "target": "เพลง​ทั้งหมด"
+    },
+    {
+      "id": "native:[music All open licences]",
+      "key": "[music All open licences]",
+      "source": "All open licences",
+      "target": "ใบ​อนุญาต​แบบ​เปิด​ทั้งหมด"
+    },
+    {
+      "id": "native:[music Any duration]",
+      "key": "[music Any duration]",
+      "source": "Any duration",
+      "target": "ระยะ​เวลา​ใด​ก็ได้"
+    },
+    {
+      "id": "native:[music Audition each mood for eight seconds]",
+      "key": "[music Audition each mood for eight seconds]",
+      "source": "Audition each mood for eight seconds",
+      "target": "ลอง​ฟัง​อารมณ์​แต่ละ​แบบ​เป็น​เวลา​แปด​วินาที"
+    },
+    {
+      "id": "native:[music Back]",
+      "key": "[music Back]",
+      "source": "Back",
+      "target": "กลับ"
+    },
+    {
+      "id": "native:[music Browse]",
+      "key": "[music Browse]",
+      "source": "Browse",
+      "target": "เรียก​ดู"
+    },
+    {
+      "id": "native:[music Building]",
+      "key": "[music Building]",
+      "source": "Building",
+      "target": "อาคาร"
+    },
+    {
+      "id": "native:[music Calm]",
+      "key": "[music Calm]",
+      "source": "Calm",
+      "target": "เงียบ​สงบ"
+    },
+    {
+      "id": "native:[music Calm → Building → Combat]",
+      "key": "[music Calm → Building → Combat]",
+      "source": "Calm → Building → Combat",
+      "target": "ความ​สงบ → การ​สร้าง → การ​ต่อสู้"
+    },
+    {
+      "id": "native:[music Choose Building]",
+      "key": "[music Choose Building]",
+      "source": "Choose Building",
+      "target": "เลือก​อาคาร"
+    },
+    {
+      "id": "native:[music Choose Calm]",
+      "key": "[music Choose Calm]",
+      "source": "Choose Calm",
+      "target": "เลือก​ความ​สงบ"
+    },
+    {
+      "id": "native:[music Choose Combat]",
+      "key": "[music Choose Combat]",
+      "source": "Choose Combat",
+      "target": "เลือก​การ​ต่อสู้"
+    },
+    {
+      "id": "native:[music Choose ZIP]",
+      "key": "[music Choose ZIP]",
+      "source": "Choose ZIP",
+      "target": "เลือก​รหัส​ไปรษณีย์"
+    },
+    {
+      "id": "native:[music Choose a music file.]",
+      "key": "[music Choose a music file.]",
+      "source": "Choose a music file.",
+      "target": "เลือก​ไฟล์​เพลง"
+    },
+    {
+      "id": "native:[music Combat]",
+      "key": "[music Combat]",
+      "source": "Combat",
+      "target": "การ​ต่อสู้"
+    },
+    {
+      "id": "native:[music Could not open this music set.]",
+      "key": "[music Could not open this music set.]",
+      "source": "Could not open this music set.",
+      "target": "ไม่​สามารถ​เปิด​ชุด​เพลง​นี้​ได้"
+    },
+    {
+      "id": "native:[music Credits, downloads and reporting]",
+      "key": "[music Credits, downloads and reporting]",
+      "source": "Credits, downloads and reporting",
+      "target": "เครดิต การ​ดาวน์โหลด และ​การ​รายงาน"
+    },
+    {
+      "id": "native:[music Downloading music…]",
+      "key": "[music Downloading music…]",
+      "source": "Downloading music…",
+      "target": "กำลัง​ดาวน์โหลด​เพลง…"
+    },
+    {
+      "id": "native:[music Export recovery files]",
+      "key": "[music Export recovery files]",
+      "source": "Export recovery files",
+      "target": "ส่ง​ออก​ไฟล์​กู้​คืน"
+    },
+    {
+      "id": "native:[music Fade duration]",
+      "key": "[music Fade duration]",
+      "source": "Fade duration",
+      "target": "ระยะ​เวลา​เฟด"
+    },
+    {
+      "id": "native:[music File selection cancelled or failed.]",
+      "key": "[music File selection cancelled or failed.]",
+      "source": "File selection cancelled or failed.",
+      "target": "การ​เลือก​ไฟล์​ถูก​ยกเลิก​หรือ​ล้ม​เหลว"
+    },
+    {
+      "id": "native:[music Import ZIP]",
+      "key": "[music Import ZIP]",
+      "source": "Import ZIP",
+      "target": "นำ​เข้า​ไฟล์ ZIP"
+    },
+    {
+      "id": "native:[music Import ZIP or three tracks]",
+      "key": "[music Import ZIP or three tracks]",
+      "source": "Import ZIP or three tracks",
+      "target": "นำ​เข้า​ไฟล์ ZIP หรือ​สาม​แทร็ก"
+    },
+    {
+      "id": "native:[music Import music]",
+      "key": "[music Import music]",
+      "source": "Import music",
+      "target": "เพลง​นำ​เข้า"
+    },
+    {
+      "id": "native:[music Import three tracks]",
+      "key": "[music Import three tracks]",
+      "source": "Import three tracks",
+      "target": "นำ​เข้า​สาม​แทร็ก"
+    },
+    {
+      "id": "native:[music Includes AI-generated audio]",
+      "key": "[music Includes AI-generated audio]",
+      "source": "Includes AI-generated audio",
+      "target": "รวม​ถึง​เสียง​ที่​สร้าง​โดย AI"
+    },
+    {
+      "id": "native:[music Install]",
+      "key": "[music Install]",
+      "source": "Install",
+      "target": "ติด​ตั้ง"
+    },
+    {
+      "id": "native:[music Install selected]",
+      "key": "[music Install selected]",
+      "source": "Install selected",
+      "target": "ติด​ตั้ง​ที่​เลือก"
+    },
+    {
+      "id": "native:[music Installed]",
+      "key": "[music Installed]",
+      "source": "Installed",
+      "target": "ติด​ตั้ง​แล้ว"
+    },
+    {
+      "id": "native:[music Load more]",
+      "key": "[music Load more]",
+      "source": "Load more",
+      "target": "โหลด​เพิ่ม​เติม"
+    },
+    {
+      "id": "native:[music Loading music…]",
+      "key": "[music Loading music…]",
+      "source": "Loading music…",
+      "target": "กำลัง​โหลด​เพลง…"
+    },
+    {
+      "id": "native:[music Most downloaded]",
+      "key": "[music Most downloaded]",
+      "source": "Most downloaded",
+      "target": "ดาวน์โหลด​มาก​ที่สุด"
+    }
+  ]
+}

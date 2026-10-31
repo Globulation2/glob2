@@ -1,0 +1,95 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "35146f8837e0f69ac6650be5222fb733571e418780f3a886e4e45d8a1dc60da5",
+  "adversarial_reviewed_keys": [
+    "native:[terrain palette hint]",
+    "native:[terrain rule algae grow]",
+    "native:[editor map saved]",
+    "native:[editor map shared]",
+    "native:[editor menu import terrain]",
+    "native:[library All generators]",
+    "native:[library Downloading generator…]",
+    "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+    "native:[library Editor tool: generates terrain for the map editor.]",
+    "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+    "native:[library Generator file hash mismatch]",
+    "native:[library Generator installed. Future selections use this release.]",
+    "native:[library Generator package identity mismatch]",
+    "native:[library Generators]",
+    "native:[library Map generators]",
+    "native:[library My generators]",
+    "native:[library Playable generator]",
+    "native:[library Saving generator library…]"
+  ],
+  "findings": [
+    {
+      "id": "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "severity": "minor",
+      "proposed": "แต่ละ​ภูมิประเทศ​แสดง​เป็น​แผนที่​จริง​ตาม​ขนาด​และ​จำนวน​อาณานิคม​ด้านล่าง ซึ่ง​เปลี่ยน​ได้​ที่นี่ เลือก​แบบ​หนึ่ง​เพื่อ​เล่น​แผนที่​ที่​แสดง",
+      "reason": "Natural selection instruction and intact แผนที่ nouns."
+    },
+    {
+      "id": "native:[library Generator file hash mismatch]",
+      "severity": "minor",
+      "proposed": "แฮช​ไฟล์​ตัวสร้าง​แผนที่​ไม่​ตรงกัน",
+      "reason": "Keep hash loanword and generator noun intact."
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "severity": "major",
+      "proposed": "ติดตั้ง​ตัวสร้าง​แผนที่​แล้ว การ​เลือก​ครั้ง​ต่อไป​จะ​ใช้​รุ่น​เผยแพร่​นี้",
+      "reason": "Repair ติด|ตั้งตัว and แผน|ที่แล้ว misleading boundaries."
+    },
+    {
+      "id": "native:[library All generators]",
+      "severity": "minor",
+      "proposed": "ตัวสร้าง​แผนที่​ทั้งหมด",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Downloading generator…]",
+      "severity": "minor",
+      "proposed": "กำลัง​ดาวน์โหลด​ตัวสร้าง​แผนที่…",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Generator package identity mismatch]",
+      "severity": "minor",
+      "proposed": "ข้อมูล​ระบุ​แพ็กเกจ​ตัวสร้าง​แผนที่​ไม่​ตรงกัน",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Generators]",
+      "severity": "minor",
+      "proposed": "ตัวสร้าง​แผนที่",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Map generators]",
+      "severity": "minor",
+      "proposed": "ตัวสร้าง​แผนที่",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library My generators]",
+      "severity": "minor",
+      "proposed": "ตัวสร้าง​แผนที่​ของ​ฉัน",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "severity": "minor",
+      "proposed": "ตัวสร้าง​แผนที่​สำหรับ​เล่น",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    },
+    {
+      "id": "native:[library Saving generator library…]",
+      "severity": "minor",
+      "proposed": "กำลัง​บันทึก​คลัง​ตัวสร้าง​แผนที่…",
+      "reason": "Keep derivational generator noun ตัวสร้าง intact."
+    }
+  ],
+  "accepted_english": [],
+  "method": "Read every immutable round2 source and target with soft boundaries shown visibly before consulting prior native findings. Checked meaning, Thai idiom, terminology, and word/cluster breaks; proposed corrections require independent recheck. Agent-reviewed; not native-human-certified."
+}

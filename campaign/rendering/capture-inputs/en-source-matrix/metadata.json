@@ -1,0 +1,7 @@
+{
+  "locale": "fr",
+  "reference_locale": "en",
+  "scope": "English source text font/wrapping reference only. Harness forbids en overlays, so fr locale identity is used. This does not establish English language selection or UI switching.",
+  "full_native_catalog_sha256": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92",
+  "full_online_catalog_sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69"
+}

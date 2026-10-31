@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Switch To Area Brush 2",
+      "Switch To Area Brush 3",
+      "Switch To Area Brush 4",
+      "Switch To Area Brush 5",
+      "Switch To Area Brush 6",
+      "Switch To Area Brush 7",
+      "Switch To Area Brush 8",
+      "Switch To Building view",
+      "Switch to Flags view",
+      "Switch To Removing Areas",
+      "Switch to Team view",
+      "Switch to Terrain view",
+      "sys req",
+      "tab",
+      "Teams Editor",
+      "Teams Fixed",
+      "teams",
+      "The barracks is finished.",
+      "The barracks is under attack.",
+      "The building is finished.",
+      "The building is under attack.",
+      "Clearing flag placed.",
+      "Clearing flag is under attack.",
+      "The defense tower is finished.",
+      "The defense tower is under attack.",
+      "Exploration flag placed.",
+      "Exploration flag is under attack.",
+      "The game has not been finished.",
+      "Games",
+      "The hospital is finished.",
+      "The hospital is under attack.",
+      "The host has cancelled the game.",
+      "The Inn is finished.",
+      "The Inn is under attack.",
+      "Maps",
+      "The market is finished.",
+      "The market is under attack.",
+      "The racetrack is finished.",
+      "The racetrack is under attack.",
+      "Replays",
+      "The school is finished.",
+      "The school is under attack.",
+      "A wall section is finished.",
+      "The enemy is at your walls.",
+      "The swarm is finished.",
+      "The swarm is under attack.",
+      "The swimming pool is finished.",
+      "The swimming pool is under attack.",
+      "War flag placed.",
+      "War flag is under attack.",
+      "Time",
+      "to<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "Toggle team numbers",
+      "Toggle Draw Information",
+      "Toggle Draw Unit Paths",
+      "Toggle Menu Screen",
+      "Toggle Recording Voice",
+      "Total Attack Power",
+      "Total Defence Power",
+      "Total Hitpoints",
+      "Total prestige reached",
+      "Total",
+      "Welcome to the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "Now that you have mastered the basics, it&#x27;s time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+      "You have done well to get this far. Now let&#x27;s move on to Warriors, Barracks, and Upgrades.",
+      "You are almost finished. Only flags and attacking remain. Then you&#x27;ll know enough to try Custom Games and eventually play online against some of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>&#x27;s finest players.",
+      "Tutorial",
+      "Uncontrolled",
+      "undo",
+      "Uniform terrain",
+      "Unit editor",
+      "The default number of units assigned",
+      "units working",
+      "Units",
+      "Unlocked At Start",
+      "Unlocked By",
+      "Unnamed area",
+      "up",
+      "Start/Stop Upgrade",
+      "Upgrade Defaults"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 2"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 3"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 4"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงปัดบริเวณที่ 5"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 6"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 7"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงพื้นที่หมายเลข 8"
+      },
+      {
+        "translatedText": "เปลี่ยนไปที่มุมมองอาคาร"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้มุมมองธง"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้การลบพื้นที่"
+      },
+      {
+        "translatedText": "เปลี่ยนเป็นมุมมองทีม"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้มุมมองภูมิประเทศ"
+      },
+      {
+        "translatedText": "ความต้องการของระบบ"
+      },
+      {
+        "translatedText": "แท็บ"
+      },
+      {
+        "translatedText": "โปรแกรมแก้ไขทีม"
+      },
+      {
+        "translatedText": "ทีมคงที่"
+      },
+      {
+        "translatedText": "ทีม"
+      },
+      {
+        "translatedText": "ค่ายทหารสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "ค่ายทหารกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "อาคารสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "อาคารหลังนี้กำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "มีการปักธงเคลียร์พื้นที่แล้ว"
+      },
+      {
+        "translatedText": "ธงล้างกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "หอคอยป้องกันสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "ป้อมป้องกันกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "ปักธงสำรวจแล้ว"
+      },
+      {
+        "translatedText": "ธงสำรวจกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "เกมยังไม่จบ"
+      },
+      {
+        "translatedText": "เกมส์"
+      },
+      {
+        "translatedText": "โรงพยาบาลสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "โรงพยาบาลกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "เจ้าภาพได้ยกเลิกการแข่งขันแล้ว"
+      },
+      {
+        "translatedText": "โรงแรมสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "โรงแรมกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "แผนที่"
+      },
+      {
+        "translatedText": "ตลาดปิดตัวลงแล้ว"
+      },
+      {
+        "translatedText": "ตลาดกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "สนามแข่งรถสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "สนามแข่งรถกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "รีเพลย์"
+      },
+      {
+        "translatedText": "โรงเรียนปิดเทอมแล้ว"
+      },
+      {
+        "translatedText": "โรงเรียนกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "ส่วนหนึ่งของผนังสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "ศัตรูกำลังรุกคืบเข้ามาถึงกำแพงเมืองของคุณแล้ว"
+      },
+      {
+        "translatedText": "ฝูงแมลงได้หายไปแล้ว"
+      },
+      {
+        "translatedText": "ฝูงแมลงกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "สระว่ายน้ำสร้างเสร็จแล้ว"
+      },
+      {
+        "translatedText": "สระว่ายน้ำกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "มีการปักธงสงครามแล้ว"
+      },
+      {
+        "translatedText": "ธงรบกำลังถูกโจมตี"
+      },
+      {
+        "translatedText": "เวลา"
+      },
+      {
+        "translatedText": "ถึง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "สลับหมายเลขทีม"
+      },
+      {
+        "translatedText": "สลับข้อมูลการวาดภาพ"
+      },
+      {
+        "translatedText": "สลับการวาดเส้นทางหน่วย"
+      },
+      {
+        "translatedText": "สลับหน้าจอเมนู"
+      },
+      {
+        "translatedText": "สลับการบันทึกเสียง"
+      },
+      {
+        "translatedText": "พลังโจมตีรวม"
+      },
+      {
+        "translatedText": "อำนาจการป้องกันประเทศโดยรวม"
+      },
+      {
+        "translatedText": "พลังชีวิตรวม"
+      },
+      {
+        "translatedText": "บรรลุเกียรติยศสูงสุดแล้ว"
+      },
+      {
+        "translatedText": "ทั้งหมด"
+      },
+      {
+        "translatedText": "ยินดีต้อนรับสู่บทแนะนำเบื้องต้น <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> ! บทแนะนำนี้จะครอบคลุมทุกอย่างตั้งแต่การสร้างโรงแรม การสำรวจพื้นที่ และการกำจัดศัตรู! มีความรู้ที่เป็นประโยชน์มากมายอยู่ในนี้!"
+      },
+      {
+        "translatedText": "เมื่อคุณเชี่ยวชาญพื้นฐานแล้ว ตอนนี้ถึงเวลาทำความคุ้นเคยกับสิ่งก่อสร้างอื่นๆ เช่น สนามแข่งรถ สระว่ายน้ำ และโรงเรียนแล้ว"
+      },
+      {
+        "translatedText": "คุณทำได้ดีมากที่มาถึงจุดนี้แล้ว ต่อไปเราจะไปดูเรื่องนักรบ ค่ายทหาร และการอัปเกรดกัน"
+      },
+      {
+        "translatedText": "คุณใกล้จะจบเกมแล้ว เหลือแค่การปักธงและการโจมตีเท่านั้น จากนั้นคุณก็จะมีความรู้มากพอที่จะลองเล่นเกมแบบกำหนดเอง และในที่สุดก็จะได้เล่นออนไลน์กับผู้เล่นฝีมือเยี่ยมของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "บทช่วยสอน"
+      },
+      {
+        "translatedText": "ไม่สามารถควบคุมได้"
+      },
+      {
+        "translatedText": "เลิกทำ"
+      },
+      {
+        "translatedText": "ภูมิประเทศเรียบ"
+      },
+      {
+        "translatedText": "บรรณาธิการหน่วย"
+      },
+      {
+        "translatedText": "จำนวนหน่วยเริ่มต้นที่กำหนดไว้"
+      },
+      {
+        "translatedText": "หน่วยงานที่ทำงาน"
+      },
+      {
+        "translatedText": "หน่วย"
+      },
+      {
+        "translatedText": "ปลดล็อกเมื่อเริ่มต้น"
+      },
+      {
+        "translatedText": "ปลดล็อกโดย"
+      },
+      {
+        "translatedText": "พื้นที่ที่ไม่มีชื่อ"
+      },
+      {
+        "translatedText": "ขึ้น"
+      },
+      {
+        "translatedText": "เริ่ม/หยุดการอัปเกรด"
+      },
+      {
+        "translatedText": "อัปเกรดค่าเริ่มต้น"
+      }
+    ]
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "778cbd9f0e6c30cd93e6a81f9dea758da71d9d9855cb3d9ede2517f867787d93",
+  "edited_keys": [
+    "native:[library Loading building families]",
+    "native:[library No building families installed.]",
+    "native:[library No public building families yet]",
+    "native:[library Opening building family]",
+    "native:[intro hint no scout flag]",
+    "native:[intro hint no war flag]",
+    "native:[lesson warrior-training title]",
+    "native:[lesson warrior-training briefing]",
+    "native:[lesson warrior-training complete]",
+    "native:[lesson warrior-training produce hint]",
+    "native:[lesson warrior-training produce title]",
+    "native:[lesson warrior-training produce instruction]",
+    "native:[lesson warrior-training produce help]",
+    "native:[lesson warrior-training produce marker]",
+    "native:[lesson warrior-training build hint]",
+    "native:[lesson warrior-training build title]",
+    "native:[lesson warrior-training build instruction]",
+    "native:[lesson warrior-training build help]",
+    "native:[lesson warrior-training build marker]",
+    "native:[lesson warrior-training train hint]",
+    "native:[lesson warrior-training train title]",
+    "native:[lesson warrior-training train instruction]",
+    "native:[lesson warrior-training train help]",
+    "native:[lesson warrior-training produce compact]",
+    "native:[lesson warrior-training build compact]",
+    "native:[lesson warrior-training train compact]"
+  ],
+  "findings": [
+    {
+      "id": "native:[intro hint no scout flag]",
+      "severity": "minor",
+      "proposed": "ไม่​พบ​ธงสำรวจ​ที่​มอบหมาย​ยูนิต​ไว้ วาง​ธง​บน​หิน​ทาง​ตะวันออก​ของ​ฐาน​แล้ว​กำหนด​นักสำรวจ 1 ตัว",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[intro hint no war flag]",
+      "severity": "minor",
+      "proposed": "ไม่​พบ​ธงรบ​ที่​มอบหมาย​ยูนิต​ไว้​ใน​ฐาน​ศัตรู วาง​ธง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​แล้ว​กำหนด​นักรบ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training briefing]",
+      "severity": "minor",
+      "proposed": "สร้าง​นักรบ​ที่​รัง แล้ว​ฝึก​ที่​ค่ายฝึก",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training complete]",
+      "severity": "minor",
+      "proposed": "คุณ​กำหนด​การ​สร้าง​นักรบ​และ​ฝึก​นักรบ​แล้ว ส่ง​อาหาร​ต่อเนื่อง​ไว้ เพราะ​นักรบ​ยัง​ต้อง​กิน​อาหาร",
+      "reason": "Canonical roles and concise completion reminder.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training produce hint]",
+      "severity": "minor",
+      "proposed": "ตั้ง​รัง​ให้​สร้าง​เฉพาะ​นักรบ มอบหมาย​คนงาน​ส่ง​วัสดุ​แล้ว​รอ​นักรบ 2 ตัว ตั้ง​อัตราส่วน​คนงาน​และ​นักสำรวจ​เป็น 0 และ​นักรบ​เป็น 1 รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต​ใหม่ อัตราส่วน​กำหนด​ชนิด​ยูนิต ส่วน​คนงาน​ส่ง​วัสดุ​ทำให้​รัง​ผลิต​ได้",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training produce help]",
+      "severity": "minor",
+      "proposed": "ตั้ง​อัตราส่วน​คนงาน​และ​นักสำรวจ​เป็น 0 และ​นักรบ​เป็น 1 รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต​ใหม่ อัตราส่วน​กำหนด​ชนิด​ยูนิต ส่วน​คนงาน​ส่ง​วัสดุ​ทำให้​รัง​ผลิต​ได้",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build hint]",
+      "severity": "minor",
+      "proposed": "สร้าง​ค่ายฝึก​ใน​พื้นที่​โล่ง แล้ว​มอบหมาย​คนงาน​ก่อสร้าง หยุด​หรือ​ลด​การ​สร้าง​นักรบ​เมื่อ​มี​เพียงพอ ค่ายฝึก​สอน​ทักษะ​การต่อสู้​และ​ต้อง​มี​ที่ว่าง​รอบ​อาคาร",
+      "reason": "Keep building noun separate from following สอน verb and preserve valid actor/terrain boundaries.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build title]",
+      "severity": "minor",
+      "proposed": "สร้าง​ค่ายฝึก",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build instruction]",
+      "severity": "minor",
+      "proposed": "สร้าง​ค่ายฝึก​ใน​พื้นที่โล่ง​แล้ว​มอบหมาย​คนงานก่อสร้าง",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build help]",
+      "severity": "minor",
+      "proposed": "หยุด​หรือ​ลด​การ​สร้าง​นักรบ​เมื่อ​มี​เพียงพอ ค่ายฝึก​สอน​ทักษะ​การต่อสู้​และ​ต้อง​มี​ที่ว่าง​รอบ​อาคาร",
+      "reason": "Same semantic camp/teaches boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build marker]",
+      "severity": "minor",
+      "proposed": "สร้าง​ค่ายฝึก",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training train hint]",
+      "severity": "minor",
+      "proposed": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ นักรบ​หา​ที่​ฝึก​เอง​โดยอัตโนมัติ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เสมอ​และ​เปิด​ทางเข้า​ค่ายฝึก การ​สร้าง​ค่าย​อย่าง​เดียว​ยัง​ไม่​นับว่า​ฝึก​สำเร็จ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training train instruction]",
+      "severity": "minor",
+      "proposed": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training train help]",
+      "severity": "minor",
+      "proposed": "นักรบ​หา​ที่​ฝึก​เอง​โดยอัตโนมัติ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เสมอ​และ​เปิด​ทางเข้า​ค่ายฝึก การ​สร้าง​ค่าย​อย่าง​เดียว​ยัง​ไม่​นับว่า​ฝึก​สำเร็จ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training build compact]",
+      "severity": "minor",
+      "proposed": "สร้าง → ค่ายฝึก เว้น​ที่ว่าง​รอบ​อาคาร",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    },
+    {
+      "id": "native:[lesson warrior-training train compact]",
+      "severity": "minor",
+      "proposed": "รอ​ให้​นักรบ​ฝึก​ที่​ค่ายฝึก​จน​เสร็จ",
+      "reason": "Join the reviewed Thai lexical/gameplay term; preserve every other candidate boundary.",
+      "boundary_status": "explicit reviewed final hints; preserve verbatim"
+    }
+  ],
+  "accepted_english": [],
+  "review_basis": "Read every actual round2 target and every corresponding editor/meaning disagreement; frozen English source was read in initial independent pass. Inspected candidate word boundaries. Explicit final proposals preserve all reviewed hints.",
+  "status": "final-editor-pass-with-findings"
+}

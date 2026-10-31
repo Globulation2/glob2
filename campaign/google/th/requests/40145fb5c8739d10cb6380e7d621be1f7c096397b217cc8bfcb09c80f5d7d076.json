@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Nicowar",
+      "No AIs match these filters.",
+      "No Android app is associated with this instance.",
+      "No account needed to try it<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "No accounts match.",
+      "No actions found.",
+      "No active account.",
+      "No attempt usage evidence is available.",
+      "No building validation engine is available. Try again later.",
+      "No commander activity yet.",
+      "No comparison",
+      "No compatible engine is available for this map.",
+      "No confirmed cash events in this range and payment mode.",
+      "No content found.",
+      "No data yet.",
+      "No engine agent can check files right now.",
+      "No engine agent can validate maps right now.",
+      "No engine agents are registered.",
+      "No families found.",
+      "No game servers are online right now.",
+      "No games yet. This AI’s results will appear here after it plays.",
+      "No generators match these filters.",
+      "No iOS app is associated with this instance.",
+      "No isolated AI validator is available.",
+      "No isolated AI validator is available. Please try again later.",
+      "No isolated generator validator is available.",
+      "No isolated generator validator is available. Please try again later.",
+      "No isolated generator worker is available.",
+      "No map build has started. Waiting for the provider outcome.",
+      "No maps match these filters.",
+      "No matches yet.",
+      "No measured results are available for this version.",
+      "No music found. Try different filters, or share the first set.",
+      "No open reports.",
+      "No other relay is available; try again shortly.",
+      "No owned building family.",
+      "No owned <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> version.",
+      "No photo.",
+      "No players found. Try another name.",
+      "No queue <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>.",
+      "No queue.",
+      "No rated players in this view yet. Play a ranked match to start climbing.",
+      "No rated players yet. The first wins will put you here.",
+      "No relay accepted the match.",
+      "No reports.",
+      "No requests need attention.",
+      "No set validator is available. Your draft is saved; try checks later.",
+      "No sets found. Try another search or create the first one.",
+      "No shared maps yet. Be the first to share one.",
+      "No sign-in provider <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>.",
+      "No skin reports.",
+      "No such AI version.",
+      "No such AI.",
+      "No such account.",
+      "No such agent.",
+      "No such artifact.",
+      "No such artwork.",
+      "No such blob.",
+      "No such building family.",
+      "No such delivered map.",
+      "No such draft.",
+      "No such generator.",
+      "No such job.",
+      "No such leaderboard.",
+      "No such map.",
+      "No such match.",
+      "No such music release.",
+      "No such player.",
+      "No such proposal.",
+      "No such queue ticket.",
+      "No such release.",
+      "No such report.",
+      "No such room.",
+      "No such sign-in on this connection.",
+      "No such sign-in.",
+      "No such track.",
+      "No such upload.",
+      "No such version.",
+      "No timeline was recorded for this match.",
+      "No uncertain request."
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "นิโควาร์"
+      },
+      {
+        "translatedText": "ไม่มี AI ใดที่ตรงกับตัวกรองเหล่านี้"
+      },
+      {
+        "translatedText": "ไม่มีแอป Android ใดเชื่อมโยงกับอินสแตนซ์นี้"
+      },
+      {
+        "translatedText": "ไม่ต้องมีบัญชีผู้ใช้ก็สามารถทดลองใช้ได้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "ไม่พบข้อมูลบัญชีใดตรงกัน"
+      },
+      {
+        "translatedText": "ไม่พบการดำเนินการใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีบัญชีใช้งานอยู่"
+      },
+      {
+        "translatedText": "ไม่มีหลักฐานการพยายามใช้งานใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีเครื่องมือตรวจสอบความถูกต้องของอาคารให้บริการ โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ยังไม่มีความเคลื่อนไหวใดๆ จากผู้บัญชาการ"
+      },
+      {
+        "translatedText": "ไม่มีอะไรเทียบได้"
+      },
+      {
+        "translatedText": "ไม่มีเอนจิ้นที่เข้ากันได้กับแผนที่นี้"
+      },
+      {
+        "translatedText": "ไม่มีการยืนยันรายการธุรกรรมเงินสดในช่วงราคาและรูปแบบการชำระเงินนี้"
+      },
+      {
+        "translatedText": "ไม่พบเนื้อหา"
+      },
+      {
+        "translatedText": "ยังไม่มีข้อมูล"
+      },
+      {
+        "translatedText": "ขณะนี้ไม่มีเอเจนต์ระบบใดสามารถตรวจสอบไฟล์ได้"
+      },
+      {
+        "translatedText": "ขณะนี้ไม่มีเอเจนต์ระบบใดสามารถตรวจสอบความถูกต้องของแผนที่ได้"
+      },
+      {
+        "translatedText": "ไม่มีตัวแทนจำหน่ายเครื่องยนต์รายใดได้รับการขึ้นทะเบียน"
+      },
+      {
+        "translatedText": "ไม่พบข้อมูลครอบครัว"
+      },
+      {
+        "translatedText": "ขณะนี้ไม่มีเซิร์ฟเวอร์เกมออนไลน์ให้บริการอยู่"
+      },
+      {
+        "translatedText": "ยังไม่มีการเล่นเกมใดๆ ผลลัพธ์ของ AI นี้จะปรากฏที่นี่หลังจากที่มันเล่นเสร็จแล้ว"
+      },
+      {
+        "translatedText": "ไม่มีเครื่องกำเนิดไฟฟ้าใดตรงกับตัวกรองเหล่านี้"
+      },
+      {
+        "translatedText": "ไม่มีแอป iOS ใดที่เชื่อมโยงกับอินสแตนซ์นี้"
+      },
+      {
+        "translatedText": "ไม่มีตัวตรวจสอบความถูกต้องของ AI แบบแยกเดี่ยวให้บริการ"
+      },
+      {
+        "translatedText": "ไม่มีตัวตรวจสอบ AI แบบแยกเดี่ยวให้บริการ โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ไม่มีตัวตรวจสอบความถูกต้องของเครื่องกำเนิดไฟฟ้าแบบแยกเดี่ยวให้บริการ"
+      },
+      {
+        "translatedText": "ไม่มีตัวตรวจสอบความถูกต้องของเครื่องกำเนิดไฟฟ้าแบบแยกส่วนให้บริการ โปรดลองอีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ไม่มีพนักงานผลิตไฟฟ้าแบบแยกเดี่ยวให้บริการ"
+      },
+      {
+        "translatedText": "ยังไม่ได้เริ่มสร้างแผนที่ กำลังรอผลลัพธ์จากผู้ให้บริการ"
+      },
+      {
+        "translatedText": "ไม่มีแผนที่ใดตรงกับตัวกรองเหล่านี้"
+      },
+      {
+        "translatedText": "ยังไม่พบผลลัพธ์ที่ตรงกัน"
+      },
+      {
+        "translatedText": "ไม่มีผลการวัดใดๆ สำหรับเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ไม่พบเพลง ลองใช้ตัวกรองอื่น หรือแชร์ชุดตัวกรองแรก"
+      },
+      {
+        "translatedText": "ไม่มีรายงานที่ยังไม่ได้รับการแก้ไข"
+      },
+      {
+        "translatedText": "ไม่มีรีเลย์อื่นให้บริการ โปรดลองใหม่อีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ไม่มีครอบครัวใดเป็นเจ้าของอาคาร"
+      },
+      {
+        "translatedText": "ไม่มีเวอร์ชัน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span> ที่เป็นเจ้าของ"
+      },
+      {
+        "translatedText": "ไม่มีรูปภาพ"
+      },
+      {
+        "translatedText": "ไม่พบผู้เล่น โปรดลองใช้ชื่ออื่น"
+      },
+      {
+        "translatedText": "ไม่มีคิว <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>"
+      },
+      {
+        "translatedText": "ไม่ต้องต่อคิว"
+      },
+      {
+        "translatedText": "ยังไม่มีผู้เล่นที่มีอันดับในมุมมองนี้ เล่นแมตช์จัดอันดับเพื่อเริ่มไต่ระดับ"
+      },
+      {
+        "translatedText": "ยังไม่มีผู้เล่นที่ได้รับการจัดอันดับ การชนะครั้งแรกจะทำให้คุณได้รับการจัดอันดับที่นี่"
+      },
+      {
+        "translatedText": "ไม่มีทีมผลัดใดรับการแข่งขันนี้"
+      },
+      {
+        "translatedText": "ไม่มีรายงานใดๆ"
+      },
+      {
+        "translatedText": "ไม่มีคำขอใดที่ต้องได้รับการตอบสนอง"
+      },
+      {
+        "translatedText": "ไม่มีตัวตรวจสอบความถูกต้องที่ตั้งค่าไว้ ร่างของคุณถูกบันทึกแล้ว โปรดลองตรวจสอบอีกครั้งในภายหลัง"
+      },
+      {
+        "translatedText": "ไม่พบชุดข้อมูลใดๆ ลองค้นหาใหม่หรือสร้างชุดข้อมูลแรกขึ้นมาเอง"
+      },
+      {
+        "translatedText": "ยังไม่มีแผนที่ที่แชร์ไว้ เป็นคนแรกที่แชร์แผนที่ของคุณได้เลย"
+      },
+      {
+        "translatedText": "ไม่มีผู้ให้บริการลงชื่อเข้าใช้ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>"
+      },
+      {
+        "translatedText": "ไม่มีรายงานเกี่ยวกับผิวหนัง"
+      },
+      {
+        "translatedText": "ไม่มีเวอร์ชัน AI ดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มี AI แบบนั้น"
+      },
+      {
+        "translatedText": "ไม่มีบัญชีดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีตัวแทนดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีสิ่งประดิษฐ์เช่นนั้น"
+      },
+      {
+        "translatedText": "ไม่มีงานศิลปะประเภทนั้น"
+      },
+      {
+        "translatedText": "ไม่มีสิ่งนั้นอยู่จริง"
+      },
+      {
+        "translatedText": "ไม่มีกลุ่มอาคารแบบนั้น"
+      },
+      {
+        "translatedText": "ไม่มีแผนที่ส่งมาให้"
+      },
+      {
+        "translatedText": "ไม่มีร่างเอกสารดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีเครื่องกำเนิดไฟฟ้าแบบนั้น"
+      },
+      {
+        "translatedText": "ไม่มีงานแบบนั้น"
+      },
+      {
+        "translatedText": "ไม่มีตารางจัดอันดับดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีแผนที่แบบนั้น"
+      },
+      {
+        "translatedText": "ไม่พบข้อมูลที่ตรงกัน"
+      },
+      {
+        "translatedText": "ไม่มีการปล่อยเพลงดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีผู้เล่นคนนั้น"
+      },
+      {
+        "translatedText": "ไม่มีข้อเสนอดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีบัตรคิวแบบนั้น"
+      },
+      {
+        "translatedText": "ไม่มีการเผยแพร่ข้อมูลดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีรายงานดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีห้องแบบนั้น"
+      },
+      {
+        "translatedText": "ไม่สามารถเข้าสู่ระบบผ่านการเชื่อมต่อนี้ได้"
+      },
+      {
+        "translatedText": "ไม่มีระบบล็อกอินดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีแทร็กดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีการอัปโหลดดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีเวอร์ชันดังกล่าว"
+      },
+      {
+        "translatedText": "ไม่มีการบันทึกระยะเวลาของแมตช์นี้"
+      },
+      {
+        "translatedText": "ไม่มีคำขอที่ไม่ชัดเจน"
+      }
+    ]
+  }
+}

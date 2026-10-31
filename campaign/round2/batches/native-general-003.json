@@ -1,0 +1,969 @@
+{
+  "id": "native-general-003",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[select place clearing area]",
+      "key": "[select place clearing area]",
+      "source": "Select Place Clearing Area",
+      "target": "เลือก​วาง​พื้นที่​แผ้วถาง"
+    },
+    {
+      "id": "native:[select place farm area]",
+      "key": "[select place farm area]",
+      "source": "Select Place Farm Area",
+      "target": "เลือก​วาง​พื้นที่​ฟาร์ม"
+    },
+    {
+      "id": "native:[select place forbidden area]",
+      "key": "[select place forbidden area]",
+      "source": "Select Place Forbidden Area",
+      "target": "เลือก​วาง​เขตหวงห้าม"
+    },
+    {
+      "id": "native:[select place guard area]",
+      "key": "[select place guard area]",
+      "source": "Select Place Guard Area",
+      "target": "เลือก​วาง​เขต​ป้องกัน"
+    },
+    {
+      "id": "native:[settings]",
+      "key": "[settings]",
+      "source": "Settings",
+      "target": "การ​ตั้งค่า"
+    },
+    {
+      "id": "native:[shift %0]",
+      "key": "[shift %0]",
+      "source": "shift-%0",
+      "target": "Shift-%0"
+    },
+    {
+      "id": "native:[show areas]",
+      "key": "[show areas]",
+      "source": "Show areas",
+      "target": "แสดง​พื้นที่"
+    },
+    {
+      "id": "native:[show main menu]",
+      "key": "[show main menu]",
+      "source": "Show Main Menu",
+      "target": "แสดง​เมนูหลัก"
+    },
+    {
+      "id": "native:[skin]",
+      "key": "[skin]",
+      "source": "Display",
+      "target": "การ​แสดงผล"
+    },
+    {
+      "id": "native:[smoothing]",
+      "key": "[smoothing]",
+      "source": "Smoothing",
+      "target": "การ​ปรับ​ให้​เรียบ"
+    },
+    {
+      "id": "native:[space]",
+      "key": "[space]",
+      "source": "space",
+      "target": "Space"
+    },
+    {
+      "id": "native:[start mission]",
+      "key": "[start mission]",
+      "source": "Start Mission",
+      "target": "เริ่ม​ภารกิจ"
+    },
+    {
+      "id": "native:[start new campaign]",
+      "key": "[start new campaign]",
+      "source": "Start New Campaign",
+      "target": "เริ่ม​แคมเปญ​ใหม่"
+    },
+    {
+      "id": "native:[Start]",
+      "key": "[Start]",
+      "source": "Start",
+      "target": "เริ่ม"
+    },
+    {
+      "id": "native:[Starving Map]",
+      "key": "[Starving Map]",
+      "source": "Starving Map",
+      "target": "แผนที่​ยูนิต​อดอยาก"
+    },
+    {
+      "id": "native:[starving]",
+      "key": "[starving]",
+      "source": "starving",
+      "target": "อดอยาก"
+    },
+    {
+      "id": "native:[Statistics]",
+      "key": "[Statistics]",
+      "source": "Statistics",
+      "target": "สถิติ"
+    },
+    {
+      "id": "native:[Still (i)]",
+      "key": "[Still (i)]",
+      "source": "Still",
+      "target": "นิ่ง"
+    },
+    {
+      "id": "native:[still (w)]",
+      "key": "[still (w)]",
+      "source": "Still",
+      "target": "นิ่ง"
+    },
+    {
+      "id": "native:[still one unit working]",
+      "key": "[still one unit working]",
+      "source": "One unit still working",
+      "target": "ยังมี​ยูนิต​ทำงาน​อยู่ 1 ตัว"
+    },
+    {
+      "id": "native:[Still one]",
+      "key": "[Still one]",
+      "source": "Still one",
+      "target": "ยัง​เหลือ 1 ตัว"
+    },
+    {
+      "id": "native:[Stone]",
+      "key": "[Stone]",
+      "source": "Stone",
+      "target": "หิน"
+    },
+    {
+      "id": "native:[stone]",
+      "key": "[stone]",
+      "source": "stone",
+      "target": "หิน"
+    },
+    {
+      "id": "native:[stonewall explanation 2]",
+      "key": "[stonewall explanation 2]",
+      "source": "element",
+      "target": "แบบ​ไม่ต้อง​สั่งการ"
+    },
+    {
+      "id": "native:[stonewall explanation]",
+      "key": "[stonewall explanation]",
+      "source": "Passive defense",
+      "target": "สิ่งก่อสร้าง​ป้องกัน"
+    },
+    {
+      "id": "native:[stonewall]",
+      "key": "[stonewall]",
+      "source": "Stone Wall",
+      "target": "กำแพง​หิน"
+    },
+    {
+      "id": "native:[svr hostname]",
+      "key": "[svr hostname]",
+      "source": "Server hostname",
+      "target": "ชื่อ​โฮสต์​เซิร์ฟเวอร์"
+    },
+    {
+      "id": "native:[Swim]",
+      "key": "[Swim]",
+      "source": "Swim",
+      "target": "ว่ายน้ำ"
+    },
+    {
+      "id": "native:[swimmingpool explanation 2]",
+      "key": "[swimmingpool explanation 2]",
+      "source": "speed of your units",
+      "target": "ของ​ยูนิต"
+    },
+    {
+      "id": "native:[swimmingpool explanation]",
+      "key": "[swimmingpool explanation]",
+      "source": "Improves the swimming",
+      "target": "เพิ่ม​ความเร็ว​ว่ายน้ำ"
+    },
+    {
+      "id": "native:[swimmingpool]",
+      "key": "[swimmingpool]",
+      "source": "Swimming pool",
+      "target": "สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[switch to adding areas]",
+      "key": "[switch to adding areas]",
+      "source": "Switch To Adding Areas",
+      "target": "เปลี่ยนไป​ใช้การ​เพิ่ม​พื้นที่"
+    },
+    {
+      "id": "native:[switch to area brush 1]",
+      "key": "[switch to area brush 1]",
+      "source": "Switch To Area Brush 1",
+      "target": "เลือก​แปรง​พื้นที่ 1"
+    },
+    {
+      "id": "native:[switch to area brush 2]",
+      "key": "[switch to area brush 2]",
+      "source": "Switch To Area Brush 2",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 2"
+    },
+    {
+      "id": "native:[switch to area brush 3]",
+      "key": "[switch to area brush 3]",
+      "source": "Switch To Area Brush 3",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 3"
+    },
+    {
+      "id": "native:[switch to area brush 4]",
+      "key": "[switch to area brush 4]",
+      "source": "Switch To Area Brush 4",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 4"
+    },
+    {
+      "id": "native:[switch to area brush 5]",
+      "key": "[switch to area brush 5]",
+      "source": "Switch To Area Brush 5",
+      "target": "เลือก​แปรง​พื้นที่ 5"
+    },
+    {
+      "id": "native:[switch to area brush 6]",
+      "key": "[switch to area brush 6]",
+      "source": "Switch To Area Brush 6",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 6"
+    },
+    {
+      "id": "native:[switch to area brush 7]",
+      "key": "[switch to area brush 7]",
+      "source": "Switch To Area Brush 7",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 7"
+    },
+    {
+      "id": "native:[switch to area brush 8]",
+      "key": "[switch to area brush 8]",
+      "source": "Switch To Area Brush 8",
+      "target": "เปลี่ยนไป​ใช้​แปรง​พื้นที่​หมายเลข 8"
+    },
+    {
+      "id": "native:[switch to removing areas]",
+      "key": "[switch to removing areas]",
+      "source": "Switch To Removing Areas",
+      "target": "เปลี่ยนไป​ใช้การ​ลบ​พื้นที่"
+    },
+    {
+      "id": "native:[switch to teams view]",
+      "key": "[switch to teams view]",
+      "source": "Switch to Team view",
+      "target": "เปลี่ยนเป็น​มุมมอง​ทีม"
+    },
+    {
+      "id": "native:[sys req]",
+      "key": "[sys req]",
+      "source": "sys req",
+      "target": "SysRq"
+    },
+    {
+      "id": "native:[tab]",
+      "key": "[tab]",
+      "source": "tab",
+      "target": "Tab"
+    },
+    {
+      "id": "native:[teams editor]",
+      "key": "[teams editor]",
+      "source": "Teams Editor",
+      "target": "โปรแกรม​แก้ไข​ทีม"
+    },
+    {
+      "id": "native:[Teams Fixed]",
+      "key": "[Teams Fixed]",
+      "source": "Teams Fixed",
+      "target": "ทีม​คงที่"
+    },
+    {
+      "id": "native:[teams]",
+      "key": "[teams]",
+      "source": " teams",
+      "target": " ทีม"
+    },
+    {
+      "id": "native:[the barracks is finished]",
+      "key": "[the barracks is finished]",
+      "source": "The barracks is finished.",
+      "target": "ค่าย​ฝึก​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the barracks is under attack]",
+      "key": "[the barracks is under attack]",
+      "source": "The barracks is under attack.",
+      "target": "ค่าย​ฝึก​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the defencetower is finished]",
+      "key": "[the defencetower is finished]",
+      "source": "The defense tower is finished.",
+      "target": "หอคอย​ป้องกัน​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the defencetower is under attack]",
+      "key": "[the defencetower is under attack]",
+      "source": "The defense tower is under attack.",
+      "target": "หอคอย​ป้องกัน​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[The game has not been finished]",
+      "key": "[The game has not been finished]",
+      "source": "The game has not been finished.",
+      "target": "เกม​ยัง​ไม่​จบ"
+    },
+    {
+      "id": "native:[the games]",
+      "key": "[the games]",
+      "source": "Games",
+      "target": "เกม"
+    },
+    {
+      "id": "native:[the hospital is finished]",
+      "key": "[the hospital is finished]",
+      "source": "The hospital is finished.",
+      "target": "โรงพยาบาล​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the hospital is under attack]",
+      "key": "[the hospital is under attack]",
+      "source": "The hospital is under attack.",
+      "target": "โรงพยาบาล​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[The host has cancelled the game]",
+      "key": "[The host has cancelled the game]",
+      "source": "The host has cancelled the game.",
+      "target": "เจ้าภาพ​ได้​ยกเลิก​การแข่งขัน​แล้ว"
+    },
+    {
+      "id": "native:[the maps]",
+      "key": "[the maps]",
+      "source": "Maps",
+      "target": "แผนที่"
+    },
+    {
+      "id": "native:[the racetrack is finished]",
+      "key": "[the racetrack is finished]",
+      "source": "The racetrack is finished.",
+      "target": "สนาม​วิ่ง​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the racetrack is under attack]",
+      "key": "[the racetrack is under attack]",
+      "source": "The racetrack is under attack.",
+      "target": "สนาม​วิ่ง​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the replays]",
+      "key": "[the replays]",
+      "source": "Replays",
+      "target": "รี​เพลย์"
+    },
+    {
+      "id": "native:[the school is finished]",
+      "key": "[the school is finished]",
+      "source": "The school is finished.",
+      "target": "โรงเรียน​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the school is under attack]",
+      "key": "[the school is under attack]",
+      "source": "The school is under attack.",
+      "target": "โรงเรียน​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the stonewall is finished]",
+      "key": "[the stonewall is finished]",
+      "source": "A wall section is finished.",
+      "target": "กำแพง​ส่วนหนึ่ง​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the stonewall is under attack]",
+      "key": "[the stonewall is under attack]",
+      "source": "The enemy is at your walls.",
+      "target": "ศัตรู​กำลัง​รุกคืบ​เข้า​มาถึง​กำแพงเมือง​ของ​คุณ​แล้ว"
+    },
+    {
+      "id": "native:[the swimmingpool is finished]",
+      "key": "[the swimmingpool is finished]",
+      "source": "The swimming pool is finished.",
+      "target": "สระว่ายน้ำ​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the swimmingpool is under attack]",
+      "key": "[the swimmingpool is under attack]",
+      "source": "The swimming pool is under attack.",
+      "target": "สระว่ายน้ำ​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[time]",
+      "key": "[time]",
+      "source": "Time",
+      "target": "เวลา"
+    },
+    {
+      "id": "native:[to:]",
+      "key": "[to:]",
+      "source": "to:",
+      "target": "ถึง :"
+    },
+    {
+      "id": "native:[toggle draw accessibility aids]",
+      "key": "[toggle draw accessibility aids]",
+      "source": "Toggle team numbers",
+      "target": "เปิด/ปิด​หมายเลข​ทีม"
+    },
+    {
+      "id": "native:[toggle draw information]",
+      "key": "[toggle draw information]",
+      "source": "Toggle Draw Information",
+      "target": "เปิด/ปิด​ข้อมูล​ประกอบ"
+    },
+    {
+      "id": "native:[toggle draw unit paths]",
+      "key": "[toggle draw unit paths]",
+      "source": "Toggle Draw Unit Paths",
+      "target": "เปิด/ปิด​เส้นทาง​ยูนิต"
+    },
+    {
+      "id": "native:[toggle menu screen]",
+      "key": "[toggle menu screen]",
+      "source": "Toggle Menu Screen",
+      "target": "สลับ​หน้าจอ​เมนู"
+    },
+    {
+      "id": "native:[toggle recording voice]",
+      "key": "[toggle recording voice]",
+      "source": "Toggle Recording Voice",
+      "target": "สลับ​การบันทึกเสียง"
+    },
+    {
+      "id": "native:[Total Attack Power]",
+      "key": "[Total Attack Power]",
+      "source": "Total Attack Power",
+      "target": "พลัง​โจมตี​รวม"
+    },
+    {
+      "id": "native:[Total Defence Power]",
+      "key": "[Total Defence Power]",
+      "source": "Total Defence Power",
+      "target": "พลัง​ป้องกัน​รวม"
+    },
+    {
+      "id": "native:[Total Hitpoints]",
+      "key": "[Total Hitpoints]",
+      "source": "Total Hitpoints",
+      "target": "พลัง​ชีวิต​รวม"
+    },
+    {
+      "id": "native:[Total prestige reached]",
+      "key": "[Total prestige reached]",
+      "source": "Total prestige reached",
+      "target": "เกียรติยศ​รวม​ที่​ทำได้"
+    },
+    {
+      "id": "native:[Total]",
+      "key": "[Total]",
+      "source": "Total",
+      "target": "ทั้งหมด"
+    },
+    {
+      "id": "native:[Uncontrolled]",
+      "key": "[Uncontrolled]",
+      "source": "Uncontrolled",
+      "target": "ไม่​ได้​ควบคุม"
+    },
+    {
+      "id": "native:[undo]",
+      "key": "[undo]",
+      "source": "undo",
+      "target": "เลิก​ทำ"
+    },
+    {
+      "id": "native:[Unit editor]",
+      "key": "[Unit editor]",
+      "source": "Unit editor",
+      "target": "ตัว​แก้ไข​ยูนิต"
+    },
+    {
+      "id": "native:[units working]",
+      "key": "[units working]",
+      "source": " units working",
+      "target": " ยูนิต​ที่ทำงาน"
+    },
+    {
+      "id": "native:[Units]",
+      "key": "[Units]",
+      "source": "Units",
+      "target": "ยูนิต"
+    },
+    {
+      "id": "native:[unlocked at start]",
+      "key": "[unlocked at start]",
+      "source": "Unlocked At Start",
+      "target": "ปลดล็อก​เมื่อ​เริ่มต้น"
+    },
+    {
+      "id": "native:[unlocked by]",
+      "key": "[unlocked by]",
+      "source": "Unlocked By",
+      "target": "ปลดล็อก​โดย"
+    },
+    {
+      "id": "native:[Unnamed Area]",
+      "key": "[Unnamed Area]",
+      "source": "Unnamed area",
+      "target": "พื้นที่​ที่​ไม่​มีชื่อ"
+    },
+    {
+      "id": "native:[up]",
+      "key": "[up]",
+      "source": "up",
+      "target": "ขึ้น"
+    },
+    {
+      "id": "native:[Upgrade Defaults]",
+      "key": "[Upgrade Defaults]",
+      "source": "Upgrade Defaults",
+      "target": "ค่า​เริ่มต้น​ของ​การ​อัปเกรด"
+    },
+    {
+      "id": "native:[upgrade]",
+      "key": "[upgrade]",
+      "source": "Upgrade",
+      "target": "อัปเกรด"
+    },
+    {
+      "id": "native:[username]",
+      "key": "[username]",
+      "source": "Username",
+      "target": "ชื่อ​ผู้ใช้"
+    },
+    {
+      "id": "native:[Version]",
+      "key": "[Version]",
+      "source": "Version",
+      "target": "เวอร์ชัน"
+    },
+    {
+      "id": "native:[view history]",
+      "key": "[view history]",
+      "source": "View History",
+      "target": "ดู​ประวัติ"
+    },
+    {
+      "id": "native:[Voice volume]",
+      "key": "[Voice volume]",
+      "source": "Volume (voice)",
+      "target": "ระดับเสียง (เสียงพูด)"
+    },
+    {
+      "id": "native:[waiting for %0]",
+      "key": "[waiting for %0]",
+      "source": "Waiting for %0",
+      "target": "กำลัง​รอ %0"
+    },
+    {
+      "id": "native:[waiting for key]",
+      "key": "[waiting for key]",
+      "source": "waiting for key...",
+      "target": "รอ​การ​กดปุ่ม…"
+    },
+    {
+      "id": "native:[Walk]",
+      "key": "[Walk]",
+      "source": "Walk",
+      "target": "เดิน"
+    },
+    {
+      "id": "native:[Warning, you need to reboot the game for changes to take effect]",
+      "key": "[Warning, you need to reboot the game for changes to take effect]",
+      "source": "Warning, you need to restart the game for changes to take effect",
+      "target": "คำเตือน คุณ​ต้อง​รี​สตาร์ท​เกม​เพื่อให้​การเปลี่ยนแปลง​มีผล"
+    },
+    {
+      "id": "native:[watch again]",
+      "key": "[watch again]",
+      "source": "Watch again",
+      "target": "ดู​อีกครั้ง"
+    },
+    {
+      "id": "native:[watching:]",
+      "key": "[watching:]",
+      "source": "Watching:",
+      "target": "การ​รับ​ชม :"
+    },
+    {
+      "id": "native:[water]",
+      "key": "[water]",
+      "source": "Water",
+      "target": "น้ำ"
+    },
+    {
+      "id": "native:[Wheat]",
+      "key": "[Wheat]",
+      "source": "Wheat",
+      "target": "ข้าวสาลี"
+    },
+    {
+      "id": "native:[Won : you defeated your opponents]",
+      "key": "[Won : you defeated your opponents]",
+      "source": "Won: you defeated your opponents",
+      "target": "ชนะ : คุณ​เอาชนะ​คู่ต่อสู้​ได้"
+    },
+    {
+      "id": "native:[Won : you have the most prestige]",
+      "key": "[Won : you have the most prestige]",
+      "source": "Won: you have the most prestige",
+      "target": "ชนะ: คุณ​มี​เกียรติยศ​สูงสุด"
+    },
+    {
+      "id": "native:[Won : your ally %0 has the most prestige]",
+      "key": "[Won : your ally %0 has the most prestige]",
+      "source": "Won: your ally %0 has the most prestige",
+      "target": "ชนะ: พันธมิตร %0 ของ​คุณ​มี​เกียรติยศ​สูงสุด"
+    },
+    {
+      "id": "native:[Wood]",
+      "key": "[Wood]",
+      "source": "Wood",
+      "target": "ไม้"
+    },
+    {
+      "id": "native:[wood]",
+      "key": "[wood]",
+      "source": "wood",
+      "target": "ไม้"
+    },
+    {
+      "id": "native:[working]",
+      "key": "[working]",
+      "source": "Working",
+      "target": "การทำงาน"
+    },
+    {
+      "id": "native:[wounded]",
+      "key": "[wounded]",
+      "source": "wounded",
+      "target": "ได้รับบาดเจ็บ"
+    },
+    {
+      "id": "native:[Yes]",
+      "key": "[Yes]",
+      "source": "Yes",
+      "target": "ใช่"
+    },
+    {
+      "id": "native:[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "key": "[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "source": "The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online.",
+      "target": "เซิร์ฟเวอร์ YOG ปฏิเสธ​การ​เชื่อมต่อ​เนื่องจาก​ไคลเอนต์ Globulation 2 ของ​คุณ​ล้าสมัย โปรด​ดาวน์โหลด​เวอร์ชัน​ล่าสุด​จาก www.globulation2.org เพื่อ​เล่น​ออนไลน์"
+    },
+    {
+      "id": "native:[you have lost]",
+      "key": "[you have lost]",
+      "source": "You have lost!",
+      "target": "คุณ​แพ้​แล้ว!"
+    },
+    {
+      "id": "native:[you have won]",
+      "key": "[you have won]",
+      "source": "You have won!",
+      "target": "คุณ​ชนะ​แล้ว!"
+    },
+    {
+      "id": "native:[You where kicked from the game]",
+      "key": "[You where kicked from the game]",
+      "source": "You were kicked from the game",
+      "target": "คุณ​ถูก​ไล่​ออกจาก​เกม"
+    },
+    {
+      "id": "native:[Your %0 are under attack]",
+      "key": "[Your %0 are under attack]",
+      "source": "Your %0 is under attack",
+      "target": "%0 ของ​คุณ​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[Your unit got converted to %0's team]",
+      "key": "[Your unit got converted to %0's team]",
+      "source": "Your unit has joined %0's team",
+      "target": "ยูนิต​ของ​คุณ​เข้าร่วม​ทีม​ของ %0 แล้ว"
+    },
+    {
+      "id": "native:[game speed help]",
+      "key": "[game speed help]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "target": "ปรับ​ได้​เฉพาะ​เกม​ผู้​เล่น​คนเดียว​และ​รี​เพลย์ โหมด​หลาย​ผู้​เล่น​ใช้​ความเร็ว 1x"
+    },
+    {
+      "id": "native:[maximum game speed]",
+      "key": "[maximum game speed]",
+      "source": "Maximum",
+      "target": "สูงสุด"
+    },
+    {
+      "id": "native:[multiplayer game speed]",
+      "key": "[multiplayer game speed]",
+      "source": "Game speed: 1x (multiplayer)",
+      "target": "ความเร็ว​เกม : 1x (โหมด​ผู้​เล่น​หลาย​คน)"
+    },
+    {
+      "id": "native:[Units still inside: %0]",
+      "key": "[Units still inside: %0]",
+      "source": "Still inside: %0",
+      "target": "ยังอยู่​ข้างใน : %0"
+    },
+    {
+      "id": "native:[Units still working: %0]",
+      "key": "[Units still working: %0]",
+      "source": "Still working: %0",
+      "target": "ยัง​ทำงาน​อยู่ : %0"
+    },
+    {
+      "id": "native:[2 vs 2]",
+      "key": "[2 vs 2]",
+      "source": "2 vs 2",
+      "target": "2 ต่อ 2"
+    },
+    {
+      "id": "native:[AI strategy & counterplay]",
+      "key": "[AI strategy & counterplay]",
+      "source": "AI strategy & counterplay",
+      "target": "กลยุทธ์ AI และ​วิธี​รับมือ"
+    },
+    {
+      "id": "native:[AICastor-Profile]",
+      "key": "[AICastor-Profile]",
+      "source": "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\\n\\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\\n\\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\\n\\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\\n\\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\\n\\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+      "target": "กลยุทธ์​หลัก : ลงทุน​ใน​อาณานิคม​และ​เทคโนโลยี​ที่​มีประสิทธิภาพ​ก่อนที่จะ​โจมตี​อย่าง​จริงจัง โครงการ​ก่อสร้าง​ที่​ได้รับ​ความสำคัญ​จะ​ช่วย​สร้าง​ฐาน​ที่มั่น การพัฒนา โครงสร้างพื้นฐาน​ทางทหาร และ​เวลา​จะ​เพิ่ม​ความพร้อม​รบ\\n\\nเศรษฐกิจ​และ​การพัฒนา : ศึกษา​เรื่อง​น้ำ การ​เติบโต​ของ​แหล่ง​อาหาร อุปสรรค และ​การ​เข้าถึง​ของ​คนงาน บริหาร​จัดการ​การ​ขยายตัว​ของ​อาหาร การ​อัปเกรด และ​การป้องกัน​ควบคู่​ไป​กับ​การผลิต\\n\\nการ​โจมตี​และ​การป้องกัน : ประเมิน​พลัง​โจมตี​ของ​นักรบ​ที่​แข็งแรง​และ​เริ่ม​โจมตี​เมื่อ​ตรง​ตามเงื่อนไข​ด้าน​พลัง​หรือ​เวลา ให้ความสำคัญ​กับ​สิ่งก่อสร้าง​ที่​เคย​เห็น​และ​เข้าถึง​ได้ โดยเฉพาะ​ค่าย​ฝึก​และ​โรงเรียน และ​ย้าย​ธง​โจมตี​ไป​ยัง​เป้าหมาย​ที่​มีค่า\\n\\nเมื่อ​เปรียบเทียบ​กับ AI อื่นๆ : พิจารณา​ภูมิประเทศ​และ​คุณค่า​ของ​เป้าหมาย​อย่าง​รอบคอบ​กว่า Numbi อดทน​กว่า Warrush ยอม​ลด​แรงกดดัน​ช่วงต้น​เพื่อ​พัฒนา​ฐาน​และ​กองกำลัง​ให้​แข็งแกร่ง​กว่า\\n\\nจุดแข็ง​และ​จุดอ่อน : การวางแผน​โครงสร้างพื้นฐาน​อย่าง​กว้างขวาง​และ​เป้าหมาย​ทางทหาร​ที่​มีค่า​ทำ​ให้การ​โจมตี​มี​จุดมุ่งหมาย การ​เตรียมการ​ใช้เวลา ทำให้​คู่ต่อสู้​ที่​เร็ว​กว่า​สามารถ​แย่งชิง​ทรัพยากร​ได้​ก่อนที่​กองกำลัง​หลัก​จะ​พร้อม\\n\\nกลยุทธ์​รับมือ​ที่​ควร​ลอง : ขัดขวาง​การ​ขยาย​ฐาน​ตั้ง​แต่ต้น ปกป้อง​ค่าย​ฝึก​และ​โรงเรียน รวมถึง​เสบียงอาหาร และ​สำรอง​กำลัง​ไว้​เมื่อ​โจมตี​ที่​ตั้งถิ่นฐาน​ที่​เจริญ​แล้ว​ของ​ศัตรู"
+    },
+    {
+      "id": "native:[AICastor-Summary]",
+      "key": "[AICastor-Summary]",
+      "source": "Develops a fortified colony, then strikes at military and science buildings.",
+      "target": "พัฒนา​อาณานิคม​ให้​มี​แนว​ป้องกัน แล้ว​โจมตี​อาคาร​ทหาร​และ​วิทยาศาสตร์"
+    },
+    {
+      "id": "native:[AICortex-Profile]",
+      "key": "[AICortex-Profile]",
+      "source": "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\\n\\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\\n\\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\\n\\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\\n\\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\\n\\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\\n\\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\\n\\nScouting: Uses discovered enemy buildings and observed enemy troops.",
+      "target": "กลยุทธ์​หลัก: ปรับ​ลำดับความสำคัญ​ตาม​สถานการณ์​เพื่อ​พัฒนา​เศรษฐกิจ และ​ใช้​แรงงาน​ส่วนเกิน​ผลิต​อาหาร เทคโนโลยี และ​แรงกดดัน​ทางทหาร นโยบาย​ปกติ​ทำงาน​ตาม​กฎ ส่วน​การทดลอง​นโยบาย​ที่​เรียนรู้​ต้อง​ตั้งค่า​แยก\\n\\nเศรษฐกิจ​และ​การพัฒนา: ผลิต​คนงาน​ตาม​ความต้องการ​กำลังคน​และ​สร้าง​ยูนิต​ใหม่​ต่อเนื่อง เมื่อ​ขาดอาหาร​จะ​ลด​การ​ขยาย​ฐาน​และ​การพัฒนา​เทคโนโลยี เพิ่ม​การ​ฝึก​ว่ายน้ำ​เมื่อ​ช่วย​ให้​เข้าถึง​พื้นที่​ได้​มากขึ้น\\n\\nการ​โจมตี​และ​การป้องกัน: เตรียม​บุก​จาก​เทคโนโลยี​ศัตรู​ที่​พบ​และ​กำลัง​ที่​มี การข้าม​น้ำ​ต้อง​ใช้​นักรบ​ที่​ว่ายน้ำ​ได้ สร้าง​โรงเตี๊ยม​และ​โรงพยาบาล​แนวหน้า​หนุน​การ​รบ​ระยะยาว และ​รวมพล​ก่อน​รุก​ได้\\n\\nการบุก​ต่อเนื่อง​และ​เหตุฉุกเฉิน: บุก​ต่อ​แม้​ถูก​ก่อกวน​เล็กน้อย แทนที่จะ​เดิน​กลับ​ฐาน​ซ้ำๆ แต่​การ​โจมตี​รุนแรง​อาจ​เรียก​กำลัง​กลับ​ป้องกัน เหตุฉุกเฉิน​ช่วงต้น​อาจ​ทำให้​สร้าง​เฉพาะ​นักรบ​และ​สร้าง​โรงพยาบาล ส่วน​ภาวะ​อดอยาก​อาจ​ทำให้​บุก​ครั้ง​เล็ก​แบบ​เสี่ยง​ตาย\\n\\nเปรียบเทียบ​กับ AI อื่น: เน้น​การ​สนับสนุน​แนวหน้า​มากกว่า Warrush ส่วน Maxima วางแผนการ​เกิด การ​ฝึก และ​การ​ส่ง​กำลัง​ให้​ยั่งยืน​ตามกำลัง​ศัตรู​ที่​ประเมิน​ไว้​อย่าง​ละเอียด​กว่า\\n\\nจุดแข็ง​และ​จุดอ่อน: เชื่อม​การบุก​กับ​อาหาร การรักษา และ​เส้นทาง​ที่​เข้าถึง​ได้ อาคาร​แนวหน้า​ต้อง​ได้รับ​เสบียง​เสมอ และ​การ​สร้าง​ยูนิต​ต่อเนื่อง​อาจ​กดดัน​อาหาร​ที่​จำกัด ลำดับความสำคัญ​ยามฉุกเฉิน​ทำให้​ต้อง​เลือก​ระหว่าง​เติบโต​กับ​อยู่รอด\\n\\nวิธี​รับมือ​ที่​ควร​ลอง: แย่งชิง​โรงเตี๊ยม โรงพยาบาล และ​แหล่ง​อาหาร​แนวหน้า รวมกำลัง​ป้องกัน​รับ​การบุก การ​ก่อกวน​เล็กน้อย​อาจ​ไม่​ทำให้​ถอย\\n\\nการสำรวจ: ใช้​อาคาร​และ​กองกำลัง​ศัตรู​ที่​ค้นพบ​แล้ว"
+    },
+    {
+      "id": "native:[AICortex-Summary]",
+      "key": "[AICortex-Summary]",
+      "source": "Supports committed military pushes with forward food and healing.",
+      "target": "ส่ง​อาหาร​และ​รักษาพยาบาล​ที่​แนวหน้า​เพื่อ​หนุน​การบุก​ต่อเนื่อง"
+    },
+    {
+      "id": "native:[AINicowar-Profile]",
+      "key": "[AINicowar-Profile]",
+      "source": "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.\\n\\nOpening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.\\n\\nEconomy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.\\n\\nAttack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.\\n\\nCompared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.\\n\\nStrengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.\\n\\nCounterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training.",
+      "target": "กลยุทธ์​หลัก : ผสมผสาน​การ​เติบโต การฝึกฝน การ​อัปเกรด และ​การ​ทำสงคราม​ผ่าน​เงื่อนไข​ที่​ซ้อน​ทับกัน สามารถ​โจมตี​ไป​พร้อมกับ​การ​ขยายอาณาเขต และ​เปลี่ยน​ทิศทาง​ความพยายาม​ทางเศรษฐกิจ​ไป​สู่​การฟื้นฟู​เมื่อ​การ​จัดหา​เสบียง​ล้มเหลว\\n\\nการ​เริ่มต้น : โปรไฟล์​การ​โจมตี​แบบ​ก้าวร้าว​ที่​จัดส่ง​มา​จะ​เริ่ม​การ​เตรียมการ​ทำสงคราม​เมื่อ​มี​ยูนิต​ทั้งหมด​ห้า​ตัว และ​อนุญาต​ให้​ทำสงคราม​ได้​เมื่อ​มี​นักรบ​ห้า​ตัว โดย​นับ​รวม​นักรบ​ระดับ​ศูนย์​ด้วย มุ่ง​เป้า​ไป​ที่​ธง​รบ​สาม​ธง โดย​แต่ละ​ธง​มี​นักรบ​ห้า​ตัว ไฟล์​กลยุทธ์​ที่​กำหนด​เอง​สามารถ​เปลี่ยนแปลง​เกณฑ์​เหล่านี้​ได้\\n\\nเศรษฐกิจ​และ​การพัฒนา : ขยาย​กำลัง​การผลิต​อาหาร​และ​การ​เกิด ฝึกฝน​คนงาน พัฒนาการ​ว่ายน้ำ​และ​การ​เคลื่อนที่ และ​อัปเกรด​อาคาร ปรับ​จำนวน​คนงาน​ส่ง​อาหาร ตอบสนอง​ต่อ​ภาวะ​อดอยาก และ​แสวงหา​ผลไม้\\n\\nการ​โจมตี​และ​การป้องกัน : สุ่มตัวอย่าง​อาคาร​ของ​ศัตรู​ที่​เข้าถึง​ได้​เพื่อ​โจมตี สามารถ​ใช้​ธง​แผ้วถาง​เพื่อ​เปิด​เส้นทาง​ที่​ทรัพยากร​กีดขวาง ธง​ป้องกัน​จะ​ครอบคลุม​กลุ่ม​ยูนิต​และ​อาคาร​ที่​ถูก​คุกคาม ใน​ภายหลัง นัก​สำรวจ​โจมตี​ภาคพื้นดิน​ที่​ได้รับ​การฝึกฝน​จะ​กำหนด​เป้าหมาย​กลุ่ม​ยูนิต​ศัตรู\\n\\nเปรียบเทียบ​กับ AI อื่นๆ : มี​ความก้าวร้าว​ใน​ช่วง​เริ่มต้น​เหมือนกับ Warrush แต่​มี​การ​ดำเนิน​การต่อเนื่อง​มากกว่า ต่าง​จาก Cabino ตรง​ที่​ไม่​ให้ความสำคัญ​กับ​โรงพยาบาล​และ​โรงเตี๊ยม​เป็น​อันดับ​แรก​อย่าง​สม่ำเสมอ\\n\\nจุดแข็ง​และ​จุดอ่อน : การ​ครอบคลุม​ทาง​ยุทธวิธี​ที่​กว้างขวาง​ช่วย​สร้าง​แรงกดดัน​ใน​ช่วงต้น​เกม​ควบคู่​ไป​กับ​การพัฒนา​อย่าง​ต่อเนื่อง การ​เลือก​เป้าหมาย​แบบ​สุ่ม​อาจ​ทำให้​เสีย​ทรัพยากร​ไป​กับ​สิ่งก่อสร้าง​ที่​มี​มูลค่า​น้อยกว่า เกณฑ์​ต่างๆ ไม่​ได้​ให้​การประเมิน​กำลัง​รบ​ของ​ฝ่ายตรงข้าม​อย่าง​ละเอียด​เหมือน​ที่ Maxima กำหนด\\n\\nกลยุทธ์​รับมือ​ที่​ควร​ลอง : คาดการณ์​การ​โจมตี​ใน​ช่วงต้น​เกม ปกป้อง​อาหาร​และ​คนงาน ต่อต้าน​การ​ขยายตัว และ​เตรียมพร้อม​รับมือ​กับ​การ​โจมตี​ของ​นัก​สำรวจ​หาก​ถึง​ระดับ​การฝึกฝน​ขั้นสูง"
+    },
+    {
+      "id": "native:[AINicowar-Summary]",
+      "key": "[AINicowar-Summary]",
+      "source": "An early rush supported by farming, upgrades, defense and explorer attacks.",
+      "target": "บุก​เร็ว​โดย​มี​ฟาร์ม การ​อัปเกรด การป้องกัน และ​นัก​สำรวจ​โจมตี​คอย​สนับสนุน"
+    },
+    {
+      "id": "native:[AINone-Profile]",
+      "key": "[AINone-Profile]",
+      "source": "Core strategy: Issues no AI orders.\\n\\nStrengths: A predictable idle opponent for experiments.\\n\\nWeaknesses: Does not expand or adapt.",
+      "target": "กลยุทธ์​หลัก : ไม่​สั่งการ AI ใดๆ\\n\\nจุดแข็ง : เป็น​คู่ต่อสู้​ที่​คาดเดา​ได้​และ​อยู่​เฉย​ๆ เหมาะสำหรับ​การทดลอง\\n\\nจุดอ่อน : ไม่​ขยายตัว​หรือ​ปรับตัว"
+    },
+    {
+      "id": "native:[AINone-Summary]",
+      "key": "[AINone-Summary]",
+      "source": "An idle colony for experiments.",
+      "target": "อาณานิคม​ที่อยู่​นิ่ง​สำหรับ​การทดลอง"
+    },
+    {
+      "id": "native:[AINumbi-Profile]",
+      "key": "[AINumbi-Profile]",
+      "source": "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\\n\\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\\n\\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\\n\\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\\n\\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\\n\\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\\n\\nScouting: Its attack routine reads enemy building positions directly without a visibility check.",
+      "target": "กลยุทธ์​หลัก : สร้าง​อาหาร​และ​ประชากร​ก่อน เพิ่ม​การรักษา การพัฒนา​วิทยาศาสตร์ และ​การฝึกฝน จากนั้น​จึง​เปลี่ยนไป​สู่​การ​ทำสงคราม ขั้นตอน​กว้างๆ ของ​กลยุทธ์​นี้​จะ​ดำเนิน​ไป​ตามเวลา ไม่​ใช่​ตาม​ความคืบหน้า​ของ​ฝ่ายตรงข้าม\\n\\nเศรษฐกิจ​และ​การพัฒนา : ปรับ​ขนาด​ความต้องการ​สิ่งก่อสร้าง​ตาม​จำนวน​ประชากร​และ​ประเมิน​แหล่ง​อาหาร​ใกล้เคียง ขั้นตอน​ต่อ​ๆ ไป​จะ​เพิ่ม​การ​อัปเกรด การป้องกัน และ​การ​ขยายตัว​เพื่อ​สนับสนุน​กองทัพ​ที่​กำลัง​เติบโต\\n\\nการ​โจมตี​และ​การป้องกัน : โจมตี​เมื่อ​มี​นักรบ​ที่​แข็งแรง​เพียงพอ​หรือ​หมดเวลา วาง​ธง​รบ​บน​สิ่งก่อสร้าง​ของ​ศัตรู​ที่​สุ่ม​เลือก เมื่อ​กำลัง​รบ​ของ​ตน​ลดลง​ต่ำ​เกินไป จะ​ลบ​ธง​โจมตี​และ​เพิ่ม​เกณฑ์​สำหรับ​การ​โจมตี​อีกครั้ง\\n\\nเมื่อ​เปรียบเทียบ​กับ AI อื่นๆ : คาดเดา​ได้​ง่าย​กว่า Castor หรือ Nicowar Castor พิจารณา​ภูมิประเทศ​และ​ค่า​เป้าหมาย​อย่าง​รอบคอบ​กว่า ในขณะที่ Nicowar ใช้​แรงกดดัน​เร็ว​กว่า​มาก\\n\\nจุดแข็ง​และ​จุดอ่อน : โครงสร้างพื้นฐาน​สนับสนุน​ที่​กว้างขวาง​อาจ​ทำให้​เป็นอันตราย​หลังจาก​สร้าง​กำลัง​อย่าง​ต่อเนื่อง แต่​ตารางเวลา​อาจ​ไม่​ตรง​กับ​การต่อสู้ การ​เลือก​เป้าหมาย​ที่​ง่าย​และ​การหยุดพัก​ที่​นาน​ขึ้น​หลังจาก​ความสูญเสีย​ทำ​ให้การ​โจมตี​คาดเดา​ได้​ง่าย​ขึ้น\\n\\nกลยุทธ์​รับมือ​ที่​ควร​ลอง : ใช้​แรงกดดัน​ก่อน​ถึง​ขั้นตอน​ทางทหาร ระหว่าง​บุก​ยัง​ขยาย​แหล่ง​อาหาร​และ​ฝึกฝน​ต่อไป และ​ใช้ประโยชน์​จาก​ช่วงเวลา​หยุดพัก​หลังจาก​เอาชนะ​การ​โจมตี​ได้\\n\\nการ​สอดแนม : ขั้นตอน​การ​โจมตี​จะ​อ่าน​ตำแหน่ง​สิ่งก่อสร้าง​ของ​ศัตรู​โดยตรง​โดย​ไม่ต้อง​ตรวจสอบ​การ​มองเห็น"
+    },
+    {
+      "id": "native:[AINumbi-Summary]",
+      "key": "[AINumbi-Summary]",
+      "source": "A gradual colony builder that follows a timetable, then attacks in numbers.",
+      "target": "ค่อยๆ พัฒนา​อาณานิคม​ตามกำหนด​เวลา แล้ว​โจมตี​ด้วย​กำลัง​จำนวนมาก"
+    },
+    {
+      "id": "native:[AIEcono-Profile]",
+      "key": "[AIEcono-Profile]",
+      "source": "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\\n\\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.\\n\\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\\n\\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\\n\\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\\n\\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+      "target": "กลยุทธ์​หลัก: สร้าง​คนงาน​และ​นัก​สำรวจ ขยาย​เศรษฐกิจ และ​ใช้​อาหาร​กับ​ผลไม้​ดึง​ยูนิต​ศัตรู​มา​เข้า​ทีม ไม่​มี​การบุก​ด้วย​นักรบ​แบบ​ทั่วไป\\n\\nเศรษฐกิจ​และ​การพัฒนา: สร้าง​โรงเตี๊ยม​และ​รัง​ใกล้​แหล่ง​อาหาร เพิ่ม​การศึกษา​และ​การ​ฝึก​เคลื่อนที่ แล้ว​อัปเกรด​อาคาร ติดตาม​อาหาร​สำรอง​และ​คง​อาคาร​กับ​ธง​สำรวจ​ไว้ แม้​อาหาร​ลดลง​หรือ​เป้าหมาย​หาย​ไป\\n\\nฟาร์ม​และ​การ​ดึง​ยูนิต​เข้า​ทีม: ปกป้อง​แหล่ง​อาหาร​และ​ไม้​ที่​งอก​ใหม่​ได้​ใกล้​น้ำ ส่ง​นัก​สำรวจ​ไป​ยัง​แหล่ง​ผลไม้​และ​อาณานิคม​ศัตรู และ​ประกาศ​ว่า​มี​อาหาร​ให้​ศัตรู​รู้​ขณะ​หา​แหล่ง​ผลไม้ อาหาร​และ​ผลไม้​ที่​ดีกว่า​ช่วย​ดึง​ยูนิต​มา​เข้า​ทีม\\n\\nเปรียบเทียบ​กับ AI อื่น: เน้น​เศรษฐกิจ​เฉพาะทาง​ที่สุด Cabino และ Maxima ก็​หา​ผลไม้ แต่​สร้าง​กองทัพ​ควบคู่​กัน\\n\\nจุดแข็ง​และ​จุดอ่อน: เติบโต​ได้​ขณะที่​คู่ต่อสู้​ทุ่ม​กำลัง​ทหาร​จน​หมดแรง และ​แข่งขัน​ด้วย​การ​ดึง​ยูนิต​เข้า​ทีม​อีก​ทาง​หนึ่ง แต่​ไม่​มี​นักรบ​รับ​การบุก​ต่อเนื่อง อาหาร ผลไม้ ภูมิประเทศ และ​กฎ​ชัยชนะ​จึง​มีผล​มาก\\n\\nวิธี​รับมือ​ที่​ควร​ลอง: กดดัน​ส่วนขยาย​ที่​ป้องกัน​ไม่​ทั่วถึง ส่ง​อาหาร​และ​ผลไม้​ให้​โรงเตี๊ยม​ของ​คุณ​เสมอ​เพื่อ​รักษา​ยูนิต​ไว้ หลีกเลี่ยง​การ​รบ​ที่​ไม่​จำเป็น​จน​หมดแรง​ขณะที่​อีก​ฝ่าย​เติบโต"
+    },
+    {
+      "id": "native:[AIEcono-Summary]",
+      "key": "[AIEcono-Summary]",
+      "source": "Grows a food-rich colony and competes for converts without producing warriors.",
+      "target": "สร้าง​อาณานิคม​ที่​อุดมสมบูรณ์​ด้วย​อาหาร​และ​แข่งขัน​เพื่อ​ดึงดูด​ผู้คน​ให้​เข้าร่วม​โดย​ไม่ต้อง​ผลิต​นักรบ"
+    },
+    {
+      "id": "native:[AIWarrush-Profile]",
+      "key": "[AIWarrush-Profile]",
+      "source": "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\\n\\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\\n\\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\\n\\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\\n\\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\\n\\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\\n\\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\\n\\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.",
+      "target": "กลยุทธ์​หลัก: บุก​ก่อน​คู่ต่อสู้​พัฒนา​เศรษฐกิจ​หรือ​เทคโนโลยี​ได้​เต็มที่ หวัง​ตัดสิน​เกม​ด้วย​การ​รบ​ก่อน​ต้อง​สร้าง​ระบบ​สนับสนุน​ขนาดใหญ่\\n\\nเศรษฐกิจ​และ​การพัฒนา: เมื่อ​มี​ยูนิต​เก็บเกี่ยว​ได้​หก​ตัว จะ​ตั้ง​การผลิต​เป็น​คนงาน​สี่ นัก​สำรวจ​หนึ่ง และ​นักรบ​สาม เพิ่ม​ค่าย​ฝึก​เมื่อ​การ​ฝึก​เต็ม​ความจุ แต่​จำกัด​โรงเตี๊ยม​ใหม่ งานก่อสร้าง​ที่​เหลือ​มัก​เป็น​โรงพยาบาล​และ​อาคาร​ฝึก​เคลื่อนที่\\n\\nการ​โจมตี​และ​การป้องกัน: วาง​เขต​ป้องกัน​บน​อาคาร​ศัตรู​ที่​ค้นพบ​เพื่อให้​นักรบ​กดดัน​ต่อเนื่อง ไม่​รอ​รวมพล​เป็น​ระลอก​อย่าง​รอบคอบ แผ้วถาง​ทรัพยากร​ที่​ขวางทาง​และ​ปกป้อง​แหล่ง​ทรัพยากร​ที่​งอก​ใหม่​ได้​บางส่วน\\n\\nนโยบาย​ผลไม้: ห้าม​เก็บ​ผลไม้​เพื่อ​เลี่ยง​ผล​ลด​เกราะ​ที่​เกี่ยวกับ​ผลไม้ และ​ไม่​ใช้​กลยุทธ์​ดึง​ยูนิต​เข้า​ทีม​แบบ Econo\\n\\nเปรียบเทียบ​กับ AI อื่น: เน้น​กดดัน​ช่วงต้น​มากกว่า Numbi หรือ Castor ส่วน Nicowar ก็​เปิด​เกม​ดุดัน​แต่​ตาม​ด้วย​การ​อัปเกรด​และ​ยุทธวิธี​ที่​หลากหลาย​กว่า\\n\\nจุดแข็ง​และ​จุดอ่อน: ลงโทษ​ผู้​ที่​เริ่ม​ช้า​และ​บังคับ​ให้​ลงทุน​ป้องกัน​เร็ว แต่​การ​อัปเกรด​ที่​จำกัด​และ​ระบบ​อาหาร​ที่​ประหยัด​ทำให้​เสียหาย​มาก​เมื่อ​บุก​ไม่​คืบ ภูมิประเทศ​และ​ทางเดิน​ไกล​อาจ​ลบ​ข้อได้เปรียบ​ช่วงต้น\\n\\nวิธี​รับมือ​ที่​ควร​ลอง: ป้องกัน​โรงเตี๊ยม​และ​รัง​ตั้ง​แต่ต้น สร้าง​คนงาน​และ​กำลัง​ป้องกัน​ทดแทน พัฒนาการ​ฝึก แล้ว​โต้กลับ​เมื่อ​การบุก​เริ่ม​อ่อนแรง\\n\\nการสำรวจ: ธง​สำรวจ​ช่วงต้น​ใช้​ตำแหน่ง​เริ่มต้น​ศัตรู​โดยตรง ส่วน​การ​วาง​เขต​โจมตี​ภายหลัง​ต้อง​เห็น​พื้นที่​ก่อน"
+    },
+    {
+      "id": "native:[AIWarrush-Summary]",
+      "key": "[AIWarrush-Summary]",
+      "source": "Early warrior pressure backed by a deliberately lean support economy.",
+      "target": "แรงกดดัน​จาก​นักรบ​ใน​ช่วงแรก​ได้รับ​การ​สนับสนุน​จาก​ระบบเศรษฐกิจ​ที่​เน้น​ความประหยัด​อย่าง​จงใจ"
+    },
+    {
+      "id": "native:[AICabino-Profile]",
+      "key": "[AICabino-Profile]",
+      "source": "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.\\n\\nEconomy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.\\n\\nAttack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.\\n\\nTraining: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.\\n\\nCompared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.\\n\\nStrengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.\\n\\nCounterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.\\n\\nScouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+      "target": "กลยุทธ์​หลัก: แบ่ง​การผลิต​ยูนิต​ให้การ​ก่อสร้าง อัปเกรด ป้องกัน โจมตี และ​สำรวจ ตัว​จัดการ​แต่ละ​ส่วน​ร้องขอ​และ​จอง​ยูนิต​แยกกัน เพื่อ​พัฒนา​เศรษฐกิจ​กับ​กองทัพ​ไป​พร้อมกัน\\n\\nเศรษฐกิจ​และ​การพัฒนา: สร้าง​และ​อัปเกรด​ฐาน​ขนาดใหญ่ จัด​คนงาน​ให้​โรงเตี๊ยม​และ​หอคอย แผ้วถาง​รอบ​อาคาร​และ​ปกป้อง​ทรัพยากร​ที่​งอก​ใหม่​ได้ สำรวจ​ผลไม้​และ​ประกาศ​ว่า​มี​อาหาร​เพื่อ​ดึง​ยูนิต​เข้า​ทีม\\n\\nการ​โจมตี​และ​การป้องกัน: เลือก​ศัตรู​แล้ว​เล็ง​โรงพยาบาล​ก่อน ตาม​ด้วย​โรงเตี๊ยม​และ​ค่าย​ฝึก บุก​พร้อมกัน​ได้​สูงสุด​สี่​จุด โดยทั่วไป​ส่ง​นักรบ​แปด​ถึง​ยี่สิบ​ตัวต่อ​เป้าหมาย​ตามกำลัง​ที่​มี​และ​ศัตรู​ใกล้เคียง ใช้​ธง​ป้องกัน​แยกกัน​รอบ​อาคาร​ที่​ถูก​คุกคาม\\n\\nการ​ฝึก: ต้อง​มี​นักรบ​ที่​เหมาะสม​เพียงพอ​และ​ค่าย​ฝึก​ที่​สร้าง​เสร็จ​ก่อน​บุก แต่​ไม่​รอ​เทคโนโลยี​สูงสุด การ​อัปเกรด​และ​ฝึก​ต่อเนื่อง​ทำให้​การบุก​ภายหลัง​แข็งแกร่ง​ขึ้น\\n\\nเปรียบเทียบ​กับ AI อื่น: มุ่ง​ทำลาย​อาคาร​สนับสนุน​ชัดเจน​กว่า Nicowar กระจาย​การบุก​มากกว่า Maxima ที่​รวมพล​เป็น​ระลอก โดย​จอง​ยูนิต​เพื่อ​จัดการ​ความต้องการ​หลาย​ด้าน\\n\\nจุดแข็ง​และ​จุดอ่อน: ผสาน​การ​เติบโต การ​ฝึก การป้องกัน และ​การบุก​หลาย​จุด การ​ทำลาย​อาหาร​กับ​การรักษา​ทำให้​ทั้ง​อาณานิคม​อ่อนแอ​ได้ แต่​การ​สุ่ม​คู่ต่อสู้​และ​ลำดับ​เป้าหมาย​ตายตัว​อาจ​พลาดโอกาส และ​การบุก​หลาย​จุด​อาจ​แบ่ง​กำลัง​มากเกินไป\\n\\nวิธี​รับมือ​ที่​ควร​ลอง: ป้องกัน​โรงพยาบาล​และ​โรงเตี๊ยม ขัดขวาง​ส่วนขยาย​ที่​ป้องกัน​ไม่​ทั่วถึง​และ​รวมกำลัง​รับ​การบุก​แต่ละ​จุด ทำลาย​อาหาร​หรือ​การ​ฝึก​ก่อน​อีก​ฝ่าย​จะ​ตั้ง​แนวรบ​หลาย​ด้าน​ได้\\n\\nการสำรวจ: ตัวเลือก​เป้าหมาย​โจมตี​อ่าน​รายชื่อ​อาคาร​ศัตรู​โดย​ไม่​ตรวจการ​มองเห็น​อย่าง​ชัดเจน และ​การ​เปรียบเทียบ​เศรษฐกิจ​บางอย่าง​ใช้​สถิติ​ศัตรู​โดยตรง"
+    },
+    {
+      "id": "native:[AICabino-Summary]",
+      "key": "[AICabino-Summary]",
+      "source": "Coordinates colony growth and trained attacks, targeting healing and food first.",
+      "target": "ประสาน​การ​เติบโต​ของ​อาณานิคม​กับ​การบุก​ของ​นักรบ​ที่​ฝึก​แล้ว โดย​เล็ง​อาคาร​รักษา​และ​อาหาร​ก่อน"
+    },
+    {
+      "id": "native:[Algae]",
+      "key": "[Algae]",
+      "source": "Algae",
+      "target": "สาหร่าย"
+    },
+    {
+      "id": "native:[Beach size]",
+      "key": "[Beach size]",
+      "source": "Beach size",
+      "target": "ขนาด​ชายหาด"
+    },
+    {
+      "id": "native:[Blue]",
+      "key": "[Blue]",
+      "source": "Blue",
+      "target": "สี​ฟ้า"
+    },
+    {
+      "id": "native:[Brown]",
+      "key": "[Brown]",
+      "source": "Brown",
+      "target": "สีน้ำตาล"
+    },
+    {
+      "id": "native:[Built-in maps]",
+      "key": "[Built-in maps]",
+      "source": "Built-in maps",
+      "target": "แผนที่​ใน​ตัว"
+    },
+    {
+      "id": "native:[Closed]",
+      "key": "[Closed]",
+      "source": "Closed",
+      "target": "ปิด"
+    },
+    {
+      "id": "native:[Colonies]",
+      "key": "[Colonies]",
+      "source": "Colonies",
+      "target": "อาณานิคม"
+    },
+    {
+      "id": "native:[Colony]",
+      "key": "[Colony]",
+      "source": "Colony",
+      "target": "อาณานิคม"
+    },
+    {
+      "id": "native:[Conquest only]",
+      "key": "[Conquest only]",
+      "source": "Conquest only",
+      "target": "การ​พิชิต​เท่านั้น"
+    },
+    {
+      "id": "native:[Conquest or prestige]",
+      "key": "[Conquest or prestige]",
+      "source": "Conquest or prestige",
+      "target": "การ​พิชิต​หรือ​เกียรติยศ"
+    },
+    {
+      "id": "native:[Could not launch this map. Your setup is retained; try again.]",
+      "key": "[Could not launch this map. Your setup is retained; try again.]",
+      "source": "Could not launch this map. Your setup is retained; try again.",
+      "target": "ไม่​สามารถ​เปิด​แผนที่​นี้​ได้ การ​ตั้งค่า​ของ​คุณ​ยัง​คงอยู่ โปรด​ลอง​อีกครั้ง"
+    },
+    {
+      "id": "native:[Custom]",
+      "key": "[Custom]",
+      "source": "Custom",
+      "target": "กำหนด​เอง"
+    },
+    {
+      "id": "native:[Custom teams]",
+      "key": "[Custom teams]",
+      "source": "Custom teams",
+      "target": "ทีม​ที่​กำหนด​เอง"
+    },
+    {
+      "id": "native:[Cyan]",
+      "key": "[Cyan]",
+      "source": "Cyan",
+      "target": "สี​ฟ้า​อม​เขียว"
+    },
+    {
+      "id": "native:[Desert weight]",
+      "key": "[Desert weight]",
+      "source": "Desert weight",
+      "target": "น้ำหนัก​ทะเลทราย"
+    },
+    {
+      "id": "native:[Easy]",
+      "key": "[Easy]",
+      "source": "Easy",
+      "target": "ง่าย"
+    },
+    {
+      "id": "native:[Extra colony assignments are retained for larger maps.]",
+      "key": "[Extra colony assignments are retained for larger maps.]",
+      "source": "Extra colony assignments are retained for larger maps.",
+      "target": "การ​จัดสรร​อาณานิคม​เพิ่มเติม​จะ​ถูก​เก็บ​ไว้​สำหรับ​แผนที่​ขนาดใหญ่"
+    },
+    {
+      "id": "native:[FFA]",
+      "key": "[FFA]",
+      "source": "FFA",
+      "target": "FFA"
+    },
+    {
+      "id": "native:[Game Rules]",
+      "key": "[Game Rules]",
+      "source": "Game Rules",
+      "target": "กติกา​เกม"
+    },
+    {
+      "id": "native:[Game speed]",
+      "key": "[Game speed]",
+      "source": "Game speed",
+      "target": "ความเร็ว​ของ​เกม"
+    },
+    {
+      "id": "native:[Generate & play]",
+      "key": "[Generate & play]",
+      "source": "Generate & play",
+      "target": "สร้าง​และ​เล่น"
+    },
+    {
+      "id": "native:[Grass weight]",
+      "key": "[Grass weight]",
+      "source": "Grass weight",
+      "target": "น้ำหนัก​หญ้า"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "word": "drumlin",
+  "url": "https://coined-word.orst.go.th/func_lookup.php",
+  "request": {
+    "word": "drumlin",
+    "funcName": "lookupWord",
+    "book_id": "0",
+    "status": "lookup",
+    "loc": ""
+  },
+  "status": 200,
+  "sha256": "8c581c45647b0eff28126181b1255962b6df52f09f6f8aa4e6267cf338c1c95c",
+  "text": "ผลการค้นหา \" drumlin \" ภูมิศาสตร์ drumlin เนินดรัมลิน ปฐพีศาสตร์ drumlin ดรัมลิน"
+}

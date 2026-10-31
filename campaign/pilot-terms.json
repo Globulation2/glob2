@@ -1,0 +1,301 @@
+{
+  "locale": "th",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "reviewer": "thai_brief",
+  "purpose": "Source-based terminology pilot before bulk drafting; not a final catalog sign-off",
+  "entries": [
+    {
+      "id": "native:[Worker]",
+      "source": "Worker",
+      "proposed": "คนงาน",
+      "references": {
+        "fr": "Ouvrière",
+        "ja": "労働者",
+        "vi": "Công nhân"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Warrior]",
+      "source": "Warrior",
+      "proposed": "นักรบ",
+      "references": {
+        "fr": "Guerrière",
+        "ja": "戦士",
+        "vi": "Chiến binh"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Explorer]",
+      "source": "Explorer",
+      "proposed": "นักสำรวจ",
+      "references": {
+        "fr": "Exploratrice",
+        "ja": "偵察兵",
+        "vi": "Trinh sát"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[swarm]",
+      "source": "Swarm",
+      "proposed": "รัง",
+      "references": {
+        "fr": "Ruche",
+        "ja": "巣",
+        "vi": "Tổ"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "source": "Creates new units",
+      "proposed": "สร้างหน่วยใหม่",
+      "references": {
+        "fr": "Crée de nouvelles unités",
+        "ja": "ユニットを生み出します",
+        "vi": "Tạo đơn vị mới"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[inn]",
+      "source": "Inn",
+      "proposed": "โรงเตี๊ยม",
+      "references": {
+        "fr": "Auberge",
+        "ja": "食堂",
+        "vi": "Quán trọ"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[inn explanation]",
+      "source": "Feeds your units",
+      "proposed": "ให้อาหารหน่วยของคุณ",
+      "references": {
+        "fr": "Nourrit vos unités",
+        "ja": "ユニットに食事を提供",
+        "vi": "Cung cấp thức ăn cho đơn vị"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[market]",
+      "source": "Market",
+      "proposed": "ตลาด",
+      "references": {
+        "fr": "Marché",
+        "ja": "市場",
+        "vi": "Chợ"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[market explanation]",
+      "source": "Allows the exchange of",
+      "proposed": "ใช้แลกเปลี่ยน",
+      "references": {
+        "fr": "Permet d'échanger",
+        "ja": "他のチームと",
+        "vi": "Cho phép trao đổi trái cây"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "source": "fruits with others",
+      "proposed": "ผลไม้กับผู้อื่น",
+      "references": {
+        "fr": "des fruits avec les autres",
+        "ja": "果物を交換できます",
+        "vi": "với người khác"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[warflag]",
+      "source": "War Flag",
+      "proposed": "ธงรบ",
+      "references": {
+        "fr": "Drapeau de guerre",
+        "ja": "戦闘の旗",
+        "vi": "Cờ chiến đấu"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "source": "Attracts warriors",
+      "proposed": "ดึงดูดนักรบ",
+      "references": {
+        "fr": "Attire des guerrières",
+        "ja": "戦士を集めます",
+        "vi": "Thu hút chiến binh"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[explorationflag]",
+      "source": "Exploration Flag",
+      "proposed": "ธงสำรวจ",
+      "references": {
+        "fr": "Drapeau d'exploration",
+        "ja": "偵察の旗",
+        "vi": "Cờ thám hiểm"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[clearingflag]",
+      "source": "Clearing Flag",
+      "proposed": "ธงแผ้วถาง",
+      "references": {
+        "fr": "Drapeau de défrichage",
+        "ja": "資源除去の旗",
+        "vi": "Cờ khai quang"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Pass width]",
+      "source": "Pass width",
+      "proposed": "ความกว้างช่องเขา",
+      "references": {
+        "fr": "Largeur des cols",
+        "ja": "峠の幅",
+        "vi": "Độ rộng đèo"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Stream reach]",
+      "source": "Stream reach",
+      "proposed": "ความยาวลำธาร",
+      "references": {
+        "fr": "Longueur des ruisseaux",
+        "ja": "小川の長さ",
+        "vi": "Độ dài suối"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Sandbars]",
+      "source": "Sandbars",
+      "proposed": "สันดอนทราย",
+      "references": {
+        "fr": "Bancs de sable",
+        "ja": "砂州",
+        "vi": "Cồn cát"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[Fjord bank deposits]",
+      "source": "Fjord bank deposits",
+      "proposed": "แหล่งทรัพยากรริมฟยอร์ด",
+      "references": {
+        "fr": "Gisements sur les rives des fjords",
+        "ja": "フィヨルド岸の資源",
+        "vi": "Mỏ tài nguyên ven vịnh hẹp"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "native:[hub cant reach %0]",
+      "source": "Can't reach %0.",
+      "proposed": "เชื่อมต่อกับ %0 ไม่ได้",
+      "references": {
+        "fr": "Impossible de joindre %0.",
+        "ja": "%0に接続できません。",
+        "vi": "Không thể kết nối tới %0."
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Create account",
+      "source": "Create account",
+      "proposed": "สร้างบัญชี",
+      "references": {
+        "fr": "Créer un compte",
+        "ja": "アカウントを作成",
+        "vi": "Tạo tài khoản"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Sign in",
+      "source": "Sign in",
+      "proposed": "ลงชื่อเข้าใช้",
+      "references": {
+        "fr": "Se connecter",
+        "ja": "サインイン",
+        "vi": "Đăng nhập"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Room",
+      "source": "Room",
+      "proposed": "ห้อง",
+      "references": {
+        "fr": "Salon",
+        "ja": "部屋",
+        "vi": "Phòng"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Rooms",
+      "source": "Rooms",
+      "proposed": "ห้อง",
+      "references": {
+        "fr": "Salons",
+        "ja": "部屋",
+        "vi": "Phòng"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Upload",
+      "source": "Upload",
+      "proposed": "อัปโหลด",
+      "references": {
+        "fr": "Envoyer",
+        "ja": "アップロード",
+        "vi": "tải lên"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:Licence",
+      "source": "Licence",
+      "proposed": "สัญญาอนุญาต",
+      "references": {
+        "fr": "Licence",
+        "ja": "ライセンス契約",
+        "vi": "Hợp đồng giấy phép"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    },
+    {
+      "id": "online:License",
+      "source": "License",
+      "proposed": "สัญญาอนุญาต",
+      "references": {
+        "fr": "Licence",
+        "ja": "ライセンス契約",
+        "vi": "Hợp đồng giấy phép"
+      },
+      "status": "source-based proposal; provider draft not yet reviewed"
+    }
+  ],
+  "findings": [
+    {
+      "key": "native:[hub cant reach %0]",
+      "severity": "major if mistranslated",
+      "note": "reach here is network/server connectivity, unlike generator Stream reach. Check actual caller during draft review."
+    }
+  ]
+}

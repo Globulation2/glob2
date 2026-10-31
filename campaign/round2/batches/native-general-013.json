@@ -1,0 +1,969 @@
+{
+  "id": "native-general-013",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[stat band trapped]",
+      "key": "[stat band trapped]",
+      "source": "Trapped",
+      "target": "ติด​ทางออก"
+    },
+    {
+      "id": "native:[stat band other]",
+      "key": "[stat band other]",
+      "source": "Other",
+      "target": "อื่น"
+    },
+    {
+      "id": "native:[stat band starving]",
+      "key": "[stat band starving]",
+      "source": "Nearly empty",
+      "target": "เกือบ​ว่างเปล่า"
+    },
+    {
+      "id": "native:[stat band hungry]",
+      "key": "[stat band hungry]",
+      "source": "Low",
+      "target": "ต่ำ"
+    },
+    {
+      "id": "native:[stat band peckish]",
+      "key": "[stat band peckish]",
+      "source": "Half full",
+      "target": "เต็ม​ครึ่งหนึ่ง"
+    },
+    {
+      "id": "native:[stat band fed]",
+      "key": "[stat band fed]",
+      "source": "Well fed",
+      "target": "อิ่ม​ท้อง​ดี"
+    },
+    {
+      "id": "native:[stat band critical]",
+      "key": "[stat band critical]",
+      "source": "Critical",
+      "target": "วิกฤต"
+    },
+    {
+      "id": "native:[stat band wounded]",
+      "key": "[stat band wounded]",
+      "source": "Wounded",
+      "target": "บาดเจ็บ​หนัก"
+    },
+    {
+      "id": "native:[stat band hurt]",
+      "key": "[stat band hurt]",
+      "source": "Hurt",
+      "target": "บาดเจ็บ"
+    },
+    {
+      "id": "native:[stat band healthy]",
+      "key": "[stat band healthy]",
+      "source": "Healthy",
+      "target": "สุขภาพ​ดี"
+    },
+    {
+      "id": "native:[stat band weakening]",
+      "key": "[stat band weakening]",
+      "source": "Weakening",
+      "target": "กำลัง​อ่อนแอ"
+    },
+    {
+      "id": "native:[stat band looking]",
+      "key": "[stat band looking]",
+      "source": "Looking for an inn",
+      "target": "กำลัง​หา​โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[stat band eating]",
+      "key": "[stat band eating]",
+      "source": "Eating",
+      "target": "การ​กิน"
+    },
+    {
+      "id": "native:[stat band healing]",
+      "key": "[stat band healing]",
+      "source": "Healing",
+      "target": "การรักษา"
+    },
+    {
+      "id": "native:[stat band meals]",
+      "key": "[stat band meals]",
+      "source": "Meals",
+      "target": "อาหาร"
+    },
+    {
+      "id": "native:[stat band new units]",
+      "key": "[stat band new units]",
+      "source": "New units",
+      "target": "ยูนิต​ใหม่"
+    },
+    {
+      "id": "native:[stat band ammunition]",
+      "key": "[stat band ammunition]",
+      "source": "Ammunition",
+      "target": "กระสุน"
+    },
+    {
+      "id": "native:[stat band construction]",
+      "key": "[stat band construction]",
+      "source": "New buildings",
+      "target": "อาคาร​ใหม่"
+    },
+    {
+      "id": "native:[stat band upgrades]",
+      "key": "[stat band upgrades]",
+      "source": "Upgrades",
+      "target": "การ​อัปเกรด"
+    },
+    {
+      "id": "native:[stat band built]",
+      "key": "[stat band built]",
+      "source": "Built",
+      "target": "สร้าง​แล้ว"
+    },
+    {
+      "id": "native:[stat band upgraded]",
+      "key": "[stat band upgraded]",
+      "source": "Upgraded",
+      "target": "อัปเกรด​แล้ว"
+    },
+    {
+      "id": "native:[stat band repaired]",
+      "key": "[stat band repaired]",
+      "source": "Repaired",
+      "target": "ซ่อมแซม​แล้ว"
+    },
+    {
+      "id": "native:[stat band destroyed]",
+      "key": "[stat band destroyed]",
+      "source": "Destroyed",
+      "target": "ถูก​ทำลาย"
+    },
+    {
+      "id": "native:[stat band demolished]",
+      "key": "[stat band demolished]",
+      "source": "Demolished",
+      "target": "รื้อถอน"
+    },
+    {
+      "id": "native:[stat band melee]",
+      "key": "[stat band melee]",
+      "source": "Warriors",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[stat band magic]",
+      "key": "[stat band magic]",
+      "source": "Magic",
+      "target": "เวทมนตร์"
+    },
+    {
+      "id": "native:[stat band towers]",
+      "key": "[stat band towers]",
+      "source": "Towers",
+      "target": "หอคอย"
+    },
+    {
+      "id": "native:[stat band within 8]",
+      "key": "[stat band within 8]",
+      "source": "Within 8 squares",
+      "target": "ภายใน 8 ช่อง​สี่เหลี่ยม"
+    },
+    {
+      "id": "native:[stat band 8 to 16]",
+      "key": "[stat band 8 to 16]",
+      "source": "8 to 16 squares",
+      "target": "8 ถึง 16 ช่อง​สี่เหลี่ยม"
+    },
+    {
+      "id": "native:[stat band 16 to 32]",
+      "key": "[stat band 16 to 32]",
+      "source": "16 to 32 squares",
+      "target": "16 ถึง 32 ช่อง​สี่เหลี่ยม"
+    },
+    {
+      "id": "native:[stat unit units]",
+      "key": "[stat unit units]",
+      "source": "units",
+      "target": "ตัว"
+    },
+    {
+      "id": "native:[stat unit wheat]",
+      "key": "[stat unit wheat]",
+      "source": "food",
+      "target": "อาหาร"
+    },
+    {
+      "id": "native:[stat unit meals]",
+      "key": "[stat unit meals]",
+      "source": "meals",
+      "target": "มื้อ"
+    },
+    {
+      "id": "native:[stat unit hit points]",
+      "key": "[stat unit hit points]",
+      "source": "hit points",
+      "target": "คะแนน​พลัง​ชีวิต"
+    },
+    {
+      "id": "native:[stat unit resources]",
+      "key": "[stat unit resources]",
+      "source": "units",
+      "target": "ยูนิต"
+    },
+    {
+      "id": "native:[stat unit strength]",
+      "key": "[stat unit strength]",
+      "source": "score",
+      "target": "คะแนน"
+    },
+    {
+      "id": "native:[stat unit damage]",
+      "key": "[stat unit damage]",
+      "source": "damage",
+      "target": "ความเสียหาย"
+    },
+    {
+      "id": "native:[stat unit shots]",
+      "key": "[stat unit shots]",
+      "source": "shots",
+      "target": "ครั้ง​ยิง"
+    },
+    {
+      "id": "native:[stat unit visits]",
+      "key": "[stat unit visits]",
+      "source": "visits",
+      "target": "ครั้ง​เข้า​ฝึก"
+    },
+    {
+      "id": "native:[stat unit skills]",
+      "key": "[stat unit skills]",
+      "source": "skill levels",
+      "target": "ระดับ​ทักษะ"
+    },
+    {
+      "id": "native:[stat unit prestige]",
+      "key": "[stat unit prestige]",
+      "source": "prestige",
+      "target": "เกียรติยศ"
+    },
+    {
+      "id": "native:[stat axis percent of %0]",
+      "key": "[stat axis percent of %0]",
+      "source": "% of %0",
+      "target": "% ของ %0"
+    },
+    {
+      "id": "native:[stat axis share of all teams]",
+      "key": "[stat axis share of all teams]",
+      "source": "% of all colonies",
+      "target": "% ของ​ทุก​อาณานิคม​รวมกัน"
+    },
+    {
+      "id": "native:[stat axis percent of units]",
+      "key": "[stat axis percent of units]",
+      "source": "% of the colony's units",
+      "target": "% ของ​ยูนิต​ใน​อาณานิคม"
+    },
+    {
+      "id": "native:[stat axis %0 per minute per 100 units]",
+      "key": "[stat axis %0 per minute per 100 units]",
+      "source": "%0 per minute, per 100 units in the colony",
+      "target": "%0 ต่อ​นาที ต่อ​ยูนิต 100 ตัว​ใน​อาณานิคม"
+    },
+    {
+      "id": "native:[stat axis %0 per 100 units]",
+      "key": "[stat axis %0 per 100 units]",
+      "source": "%0 per 100 units in the colony",
+      "target": "%0 ต่อ​ยูนิต 100 ตัว​ใน​อาณานิคม"
+    },
+    {
+      "id": "native:[stat axis %0 per minute]",
+      "key": "[stat axis %0 per minute]",
+      "source": "%0 per minute",
+      "target": "%0 ต่อ​นาที"
+    },
+    {
+      "id": "native:[stat axis %0 so far]",
+      "key": "[stat axis %0 so far]",
+      "source": "%0, running total",
+      "target": "%0 ผลรวม​สะสม"
+    },
+    {
+      "id": "native:[stat axis %0 minute average]",
+      "key": "[stat axis %0 minute average]",
+      "source": "%0-minute average",
+      "target": "เฉลี่ย %0 นาที"
+    },
+    {
+      "id": "native:[stat view per minute]",
+      "key": "[stat view per minute]",
+      "source": "Per minute",
+      "target": "ต่อ​นาที"
+    },
+    {
+      "id": "native:[stat view total]",
+      "key": "[stat view total]",
+      "source": "Total",
+      "target": "ทั้งหมด"
+    },
+    {
+      "id": "native:[stat view %0 min]",
+      "key": "[stat view %0 min]",
+      "source": "%0 min",
+      "target": "%0 นาที"
+    },
+    {
+      "id": "native:[stat view split]",
+      "key": "[stat view split]",
+      "source": "Split by kind",
+      "target": "แยก​ตาม​ประเภท"
+    },
+    {
+      "id": "native:[stat view percentages]",
+      "key": "[stat view percentages]",
+      "source": "As % of total",
+      "target": "คิด​เป็น​เปอร์เซ็นต์​ของ​ทั้งหมด"
+    },
+    {
+      "id": "native:[stat view percent of units]",
+      "key": "[stat view percent of units]",
+      "source": "As % of colony",
+      "target": "คิด​เป็น​เปอร์เซ็นต์​ของ​อาณานิคม"
+    },
+    {
+      "id": "native:[stat view per 100 units]",
+      "key": "[stat view per 100 units]",
+      "source": "Relative to colony size",
+      "target": "เมื่อ​เทียบ​กับ​ขนาด​ของ​อาณานิคม"
+    },
+    {
+      "id": "native:[stat view share]",
+      "key": "[stat view share]",
+      "source": "Share of all colonies",
+      "target": "ส่วนแบ่ง​ของ​อาณานิคม​ทั้งหมด"
+    },
+    {
+      "id": "native:[stat view highlight none]",
+      "key": "[stat view highlight none]",
+      "source": "Highlight: none",
+      "target": "เน้น: ไม่​มี"
+    },
+    {
+      "id": "native:[stat column peak units]",
+      "key": "[stat column peak units]",
+      "source": "Peak units",
+      "target": "จำนวน​ยูนิต​สูงสุด"
+    },
+    {
+      "id": "native:[stat column born]",
+      "key": "[stat column born]",
+      "source": "Born",
+      "target": "เกิด"
+    },
+    {
+      "id": "native:[stat column lost]",
+      "key": "[stat column lost]",
+      "source": "Lost",
+      "target": "สูญเสีย"
+    },
+    {
+      "id": "native:[stat column wheat]",
+      "key": "[stat column wheat]",
+      "source": "Food",
+      "target": "อาหาร"
+    },
+    {
+      "id": "native:[stat column damage dealt]",
+      "key": "[stat column damage dealt]",
+      "source": "Damage dealt",
+      "target": "ความเสียหาย​ที่​ทำ"
+    },
+    {
+      "id": "native:[stat column damage taken]",
+      "key": "[stat column damage taken]",
+      "source": "Damage taken",
+      "target": "ความเสียหาย​ที่​ได้รับ"
+    },
+    {
+      "id": "native:[stat column built]",
+      "key": "[stat column built]",
+      "source": "Built",
+      "target": "สร้าง​แล้ว"
+    },
+    {
+      "id": "native:[stat column prestige]",
+      "key": "[stat column prestige]",
+      "source": "Prestige",
+      "target": "เกียรติยศ"
+    },
+    {
+      "id": "native:[stat marker wiped out]",
+      "key": "[stat marker wiped out]",
+      "source": "last unit lost",
+      "target": "สูญเสีย​ยูนิต​ตัว​สุดท้าย"
+    },
+    {
+      "id": "native:[stat marker first combat death]",
+      "key": "[stat marker first combat death]",
+      "source": "first unit killed in combat",
+      "target": "ยูนิต​ตัว​แรก​ตาย​ใน​รบ"
+    },
+    {
+      "id": "native:[stat not recorded for this match]",
+      "key": "[stat not recorded for this match]",
+      "source": "This statistic was not recorded for this match.",
+      "target": "สถิติ​นี้​ไม่​ได้​ถูก​บันทึก​ไว้​สำหรับ​การแข่งขัน​ครั้งนี้"
+    },
+    {
+      "id": "native:[results reason beyond doubt]",
+      "key": "[results reason beyond doubt]",
+      "source": "The result was no longer in doubt.",
+      "target": "ผลลัพธ์​ไม่​เป็นที่​สงสัย​อีกต่อไป​แล้ว"
+    },
+    {
+      "id": "native:[stat per minute short]",
+      "key": "[stat per minute short]",
+      "source": "/min",
+      "target": "/นาที"
+    },
+    {
+      "id": "native:[stat page colony]",
+      "key": "[stat page colony]",
+      "source": "Colony",
+      "target": "อาณานิคม"
+    },
+    {
+      "id": "native:[stat page %0 of %1]",
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "target": "%0 / %1 >"
+    },
+    {
+      "id": "native:[stat unit deaths]",
+      "key": "[stat unit deaths]",
+      "source": "deaths",
+      "target": "การตาย"
+    },
+    {
+      "id": "native:[stat unit growth]",
+      "key": "[stat unit growth]",
+      "source": "growth",
+      "target": "การเจริญเติบโต"
+    },
+    {
+      "id": "native:[stat view by unit type]",
+      "key": "[stat view by unit type]",
+      "source": "By unit type",
+      "target": "ตาม​ชนิด​ยูนิต"
+    },
+    {
+      "id": "native:[stat view by state]",
+      "key": "[stat view by state]",
+      "source": "By state",
+      "target": "ตาม​สถานะ"
+    },
+    {
+      "id": "native:[stat view by resource]",
+      "key": "[stat view by resource]",
+      "source": "By material",
+      "target": "โดย​วัสดุ"
+    },
+    {
+      "id": "native:[stat view by work]",
+      "key": "[stat view by work]",
+      "source": "By kind of work",
+      "target": "ตาม​ลักษณะ​งาน"
+    },
+    {
+      "id": "native:[stat view by cause]",
+      "key": "[stat view by cause]",
+      "source": "By cause",
+      "target": "โดย​สาเหตุ"
+    },
+    {
+      "id": "native:[stat view by weapon]",
+      "key": "[stat view by weapon]",
+      "source": "By weapon",
+      "target": "โดย​อาวุธ"
+    },
+    {
+      "id": "native:[stat view by distance]",
+      "key": "[stat view by distance]",
+      "source": "By distance",
+      "target": "โดย​ระยะทาง"
+    },
+    {
+      "id": "native:[stat nothing to show]",
+      "key": "[stat nothing to show]",
+      "source": "Nothing to show: this did not happen in this match.",
+      "target": "ไม่​มี​อะไร​ให้​แสดง : เหตุการณ์​นี้​ไม่​ได้​เกิดขึ้น​ใน​แมตช์​นี้"
+    },
+    {
+      "id": "native:[stat %0 nothing]",
+      "key": "[stat %0 nothing]",
+      "source": "%0 (none)",
+      "target": "%0 (ไม่​มี)"
+    },
+    {
+      "id": "native:[Match]",
+      "key": "[Match]",
+      "source": "Match",
+      "target": "แมตช์"
+    },
+    {
+      "id": "native:[Time limit]",
+      "key": "[Time limit]",
+      "source": "Time limit",
+      "target": "เวลา​จำกัด"
+    },
+    {
+      "id": "native:[Alliances can change]",
+      "key": "[Alliances can change]",
+      "source": "Alliances can change",
+      "target": "พันธมิตร​สามารถ​เปลี่ยนแปลง​ได้"
+    },
+    {
+      "id": "native:[Starting unit level]",
+      "key": "[Starting unit level]",
+      "source": "Starting unit level",
+      "target": "ระดับ​ยูนิต​เริ่มต้น"
+    },
+    {
+      "id": "native:[Starting stockpile]",
+      "key": "[Starting stockpile]",
+      "source": "Starting stockpile",
+      "target": "สต็อก​เริ่มต้น"
+    },
+    {
+      "id": "native:[Regrowth]",
+      "key": "[Regrowth]",
+      "source": "Regrowth",
+      "target": "การ​งอก​ใหม่"
+    },
+    {
+      "id": "native:[Wounded units retreat]",
+      "key": "[Wounded units retreat]",
+      "source": "Wounded units retreat",
+      "target": "ยูนิต​บาดเจ็บ​ถอยกลับ"
+    },
+    {
+      "id": "native:[Units can die]",
+      "key": "[Units can die]",
+      "source": "Units can die",
+      "target": "ยูนิต​ตาย​ได้"
+    },
+    {
+      "id": "native:[Upgrades]",
+      "key": "[Upgrades]",
+      "source": "Upgrades",
+      "target": "การ​อัปเกรด"
+    },
+    {
+      "id": "native:[No stockpile]",
+      "key": "[No stockpile]",
+      "source": "None",
+      "target": "ไม่​มี"
+    },
+    {
+      "id": "native:[No glass cannon]",
+      "key": "[No glass cannon]",
+      "source": "Off",
+      "target": "ปิด"
+    },
+    {
+      "id": "native:[How quickly harvested resources grow back and spread.]",
+      "key": "[How quickly harvested resources grow back and spread.]",
+      "source": "How quickly harvested resources grow back and spread.",
+      "target": "ทรัพยากร​ที่​เก็บเกี่ยว​ไป​แล้​วจะ​งอก​กลับมา​และ​แพร่กระจาย​ได้​เร็ว​แค่​ไหน"
+    },
+    {
+      "id": "native:[Units must eat to keep working.]",
+      "key": "[Units must eat to keep working.]",
+      "source": "Units must eat to keep working.",
+      "target": "ยูนิต​ต้อง​กิน​อาหาร​เพื่อ​ทำงานต่อ"
+    },
+    {
+      "id": "native:[Summary]",
+      "key": "[Summary]",
+      "source": "Summary",
+      "target": "สรุป"
+    },
+    {
+      "id": "native:[All rules]",
+      "key": "[All rules]",
+      "source": "All rules",
+      "target": "กฎ​ทั้งหมด"
+    },
+    {
+      "id": "native:[Show all rules]",
+      "key": "[Show all rules]",
+      "source": "Show all rules",
+      "target": "แสดง​กฎ​ทั้งหมด"
+    },
+    {
+      "id": "native:[Choose a ruleset]",
+      "key": "[Choose a ruleset]",
+      "source": "Choose a ruleset",
+      "target": "เลือก​ชุด​กฎ"
+    },
+    {
+      "id": "native:[Reset to %0]",
+      "key": "[Reset to %0]",
+      "source": "Reset to %0",
+      "target": "รีเซ็ต​เป็น %0"
+    },
+    {
+      "id": "native:[ruleset one change %0]",
+      "key": "[ruleset one change %0]",
+      "source": "%0 + 1 change",
+      "target": "%0 + เปลี่ยน 1 ค่า"
+    },
+    {
+      "id": "native:[ruleset changes %0 %1]",
+      "key": "[ruleset changes %0 %1]",
+      "source": "%0 + %1 changes",
+      "target": "%0 + เปลี่ยน %1 ค่า"
+    },
+    {
+      "id": "native:[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "key": "[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "source": "This match cannot end. Turn on prestige victory or set a time limit.",
+      "target": "แมตช์​นี้​จบ​ไม่​ได้ เปิด​ชัยชนะ​ด้วย​เกียรติยศ​หรือ​ตั้งเวลา​จำกัด"
+    },
+    {
+      "id": "native:[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "key": "[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "source": "Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.",
+      "target": "เกียรติยศ​มัก​เริ่ม​เกิด​หลัง 13 ถึง 28 นาที ดังนั้น​เวลา​จำกัด 30 นาที​จึง​มัก​จบ​เสมอ"
+    },
+    {
+      "id": "native:[Blitz]",
+      "key": "[Blitz]",
+      "source": "Blitz",
+      "target": "บลิทซ์"
+    },
+    {
+      "id": "native:[ruleset blitz description]",
+      "key": "[ruleset blitz description]",
+      "source": "Fast start, early finish",
+      "target": "เริ่ม​เร็ว จบ​เร็ว"
+    },
+    {
+      "id": "native:[Gentle]",
+      "key": "[Gentle]",
+      "source": "Gentle",
+      "target": "ผ่อนปรน"
+    },
+    {
+      "id": "native:[ruleset gentle description]",
+      "key": "[ruleset gentle description]",
+      "source": "Forgiving rules for a first match",
+      "target": "กฎ​กติกา​ที่​ผ่อนปรน​สำหรับ​การแข่งขัน​นัด​แรก"
+    },
+    {
+      "id": "native:[Sandbox]",
+      "key": "[Sandbox]",
+      "source": "Sandbox",
+      "target": "แซนด์​บ็อกซ์"
+    },
+    {
+      "id": "native:[ruleset sandbox description]",
+      "key": "[ruleset sandbox description]",
+      "source": "No fighting, no starving, build anything",
+      "target": "ไม่​มี​การ​รบ​หรือ​อดอยาก สร้าง​ได้​ทุกอย่าง"
+    },
+    {
+      "id": "native:[Bloodbath]",
+      "key": "[Bloodbath]",
+      "source": "Bloodbath",
+      "target": "การนองเลือด"
+    },
+    {
+      "id": "native:[ruleset bloodbath description]",
+      "key": "[ruleset bloodbath description]",
+      "source": "Fragile, fearless armies",
+      "target": "กองทัพ​ที่​เปราะบาง​แต่​ไร้​ความกลัว"
+    },
+    {
+      "id": "native:[Siege]",
+      "key": "[Siege]",
+      "source": "Siege",
+      "target": "การ​ปิดล้อม"
+    },
+    {
+      "id": "native:[ruleset siege description]",
+      "key": "[ruleset siege description]",
+      "source": "Fortress walls and long wars",
+      "target": "กำแพง​ป้อมปราการ​และ​สงคราม​อัน​ยาวนาน"
+    },
+    {
+      "id": "native:[Lean years]",
+      "key": "[Lean years]",
+      "source": "Lean years",
+      "target": "ยุค​ขาดแคลน"
+    },
+    {
+      "id": "native:[ruleset lean years description]",
+      "key": "[ruleset lean years description]",
+      "source": "Resources barely come back",
+      "target": "ทรัพยากร​แทบจะ​ไม่​กลับคืน​มา​เลย"
+    },
+    {
+      "id": "native:[Gold rush]",
+      "key": "[Gold rush]",
+      "source": "Gold rush",
+      "target": "ยุค​ตื่น​ทอง"
+    },
+    {
+      "id": "native:[ruleset gold rush description]",
+      "key": "[ruleset gold rush description]",
+      "source": "What's on the map is all there is",
+      "target": "สิ่ง​ที่​ปรากฏ​อยู่​บน​แผนที่​คือ​ทั้งหมด​ที่​มี​อยู่"
+    },
+    {
+      "id": "native:[Elite ranks]",
+      "key": "[Elite ranks]",
+      "source": "Elite ranks",
+      "target": "อันดับ​ชั้นยอด"
+    },
+    {
+      "id": "native:[ruleset elite ranks description]",
+      "key": "[ruleset elite ranks description]",
+      "source": "Start trained, train no further",
+      "target": "เริ่ม​พร้อม​ทักษะ ฝึก​เพิ่ม​ไม่​ได้"
+    },
+    {
+      "id": "native:[Shifting alliances]",
+      "key": "[Shifting alliances]",
+      "source": "Shifting alliances",
+      "target": "การเปลี่ยนแปลง​พันธมิตร"
+    },
+    {
+      "id": "native:[ruleset shifting alliances description]",
+      "key": "[ruleset shifting alliances description]",
+      "source": "Teams can change in a 60-minute race",
+      "target": "เปลี่ยน​ทีม​ได้​ใน​แมตช์ 60 นาที"
+    },
+    {
+      "id": "native:[Changed from %0: %1]",
+      "key": "[Changed from %0: %1]",
+      "source": "Changed from %0: %1",
+      "target": "เปลี่ยน​จาก %0 : %1"
+    },
+    {
+      "id": "native:[Combat is off, so the rules below have no effect.]",
+      "key": "[Combat is off, so the rules below have no effect.]",
+      "source": "Combat is off, so the rules below have no effect.",
+      "target": "การต่อสู้​ถูก​ปิด ดังนั้น​กฎ​ด้านล่าง​จึง​ไม่​มีผลบังคับใช้"
+    },
+    {
+      "id": "native:[%0 more rules are at their Standard values.]",
+      "key": "[%0 more rules are at their Standard values.]",
+      "source": "%0 more rules are at their Standard values.",
+      "target": "กฎ​อีก %0 ข้อ​มีค่า​ตาม​มาตรฐาน"
+    },
+    {
+      "id": "native:[Each team starts with extra resources in its shared pool.]",
+      "key": "[Each team starts with extra resources in its shared pool.]",
+      "source": "Each team starts with extra materials in its shared pool.",
+      "target": "แต่ละ​ทีม​เริ่ม​พร้อม​วัสดุ​เพิ่มเติม​ใน​กองกลาง"
+    },
+    {
+      "id": "native:[Units hit harder but have less HP and armor.]",
+      "key": "[Units hit harder but have less HP and armor.]",
+      "source": "Units hit harder but have less HP and armor.",
+      "target": "ยูนิต​โจมตี​แรง​ขึ้น​แต่​มี HP และ​เกราะ​น้อยลง"
+    },
+    {
+      "id": "native:[Teams can attack each other. Turn off for a peaceful match.]",
+      "key": "[Teams can attack each other. Turn off for a peaceful match.]",
+      "source": "Teams can attack each other. Turn off for a peaceful match.",
+      "target": "ทีม​ต่างๆ สามารถ​โจมตี​กัน​ได้ หาก​ต้องการ​เล่น​แบบ​สงบสุข ให้​ปิด​โหมด​นี้"
+    },
+    {
+      "id": "native:[Hurt units go back to heal instead of fighting to the death.]",
+      "key": "[Hurt units go back to heal instead of fighting to the death.]",
+      "source": "Hurt units go back to heal instead of fighting to the death.",
+      "target": "ยูนิต​บาดเจ็บ​กลับ​ไป​รักษา แทน​การสู้​จนตาย"
+    },
+    {
+      "id": "native:[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "key": "[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "source": "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+      "target": "ยูนิต​ตาย​เมื่อ HP หมด ปิด​เพื่อให้ HP ลด​ได้​ต่ำสุด​เพียง 1"
+    },
+    {
+      "id": "native:[stat group work]",
+      "key": "[stat group work]",
+      "source": "Workers' time",
+      "target": "เวลา​ของ​คนงาน"
+    },
+    {
+      "id": "native:[stat work by job]",
+      "key": "[stat work by job]",
+      "source": "What workers were working on",
+      "target": "คนงาน​กำลัง​ทำงาน​อะไร​อยู่"
+    },
+    {
+      "id": "native:[stat work by job about]",
+      "key": "[stat work by job about]",
+      "source": "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.",
+      "target": "จำนวน​คนงาน​ที่​ส่ง​วัสดุ​ให้​อาคาร​แต่ละ​ชนิด: รัง​เพื่อ​สร้าง​ยูนิต โรงเตี๊ยม​เพื่อ​ทำ​มื้อ​อาหาร พื้นที่​ก่อสร้าง​หรือ​อัปเกรด และ​อาคาร​อื่น เช่น หอคอย โรงเรียน และ​ค่าย​ฝึก"
+    },
+    {
+      "id": "native:[stat haul distance]",
+      "key": "[stat haul distance]",
+      "source": "Distance to resources",
+      "target": "ระยะทาง​ไป​ยัง​แหล่ง​ทรัพยากร"
+    },
+    {
+      "id": "native:[stat haul distance about]",
+      "key": "[stat haul distance about]",
+      "source": "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.",
+      "target": "โดยเฉลี่ย​แล้ว คนงาน​เก็บเกี่ยว​ผลผลิต​อยู่​ห่าง​จาก​อาคาร​ที่​พวกเขา​กำลัง​จัดหา​ผลผลิต​ให้​เท่าใด โดย​แสดง​เป็น​ช่อง​สี่เหลี่ยม​บน​แผนที่​ใน​แนว​เส้นตรง"
+    },
+    {
+      "id": "native:[stat hauling]",
+      "key": "[stat hauling]",
+      "source": "Fetching and carrying",
+      "target": "การ​หยิบ​และ​ขนส่ง"
+    },
+    {
+      "id": "native:[stat hauling about]",
+      "key": "[stat hauling about]",
+      "source": "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.",
+      "target": "คนงาน​ส่ง​วัสดุ​แบ่ง​ตาม​กิจกรรม: เดิน​ไปหา​แหล่ง​ทรัพยากร เก็บเกี่ยว ขน​กลับ และ​ส่ง​ของ​หรือ​รอ​ทรัพยากร​ที่​เข้าถึง​ได้ ส่วนใหญ่​เป็นการ​เดิน ยิ่ง​ทรัพยากร​ใกล้​ก็​ยิ่ง​ทำงาน​ได้​มาก"
+    },
+    {
+      "id": "native:[stat eating time]",
+      "key": "[stat eating time]",
+      "source": "Workers going to eat",
+      "target": "คนงาน​ที่​ไป​กิน​อาหาร"
+    },
+    {
+      "id": "native:[stat eating time about]",
+      "key": "[stat eating time about]",
+      "source": "How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food.",
+      "target": "คนงาน​ที่​หยุดงาน​ไป​กิน​อาหาร ทั้ง​กำลัง​เดิน​ไป​โรงเตี๊ยม กิน​อยู่​ข้างใน หรือ​หิว​แต่​ไม่​มี​โรงเตี๊ยม​ว่าง หาก​มี​คนงาน​หา​โรงเตี๊ยม​ไม่​ได้ แสดงว่า​จำนวน​ยูนิต​เกิน​ความจุ​โรงเตี๊ยม​หรือ​อาหาร​ที่​มี"
+    },
+    {
+      "id": "native:[stat intruders]",
+      "key": "[stat intruders]",
+      "source": "Enemy warriors at home",
+      "target": "นักรบ​ศัตรู​ใกล้​ฐาน"
+    },
+    {
+      "id": "native:[stat intruders about]",
+      "key": "[stat intruders about]",
+      "source": "How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders.",
+      "target": "มี​ทหาร​ฝ่าย​ศัตรู​จำนวน​เท่าใด​ที่อยู่​ภายใน​ระยะ 16 ช่อง​จาก​อาคาร​ของ​อาณานิคม ในกรณีที่​อาณานิคม​สอง​แห่ง​อยู่​ใกล้​กัน แต่ละ​แห่ง​จะ​นับ​จำนวน​ผู้​ป้องกัน​ของ​อีก​ฝ่าย​หนึ่ง​ด้วย"
+    },
+    {
+      "id": "native:[stat home defence]",
+      "key": "[stat home defence]",
+      "source": "Home defence strength margin",
+      "target": "ส่วน​ต่าง​กำลัง​ป้องกัน​ฐาน"
+    },
+    {
+      "id": "native:[stat home defence about]",
+      "key": "[stat home defence about]",
+      "source": "The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home.",
+      "target": "ความ​แข็งแกร่ง​ของ​นักรบ​ของ​อาณานิคม​ที่อยู่​ใกล้​กับ​สิ่งก่อสร้าง ลบ​ด้วย​ความ​แข็งแกร่ง​ของ​นักรบ​ฝ่าย​ศัตรู โดย​นับ​รวม​นักรบ​แต่ละคน​และ​ระดับ​การ​โจมตี​ของ​พวกเขา หาก​ค่า​ต่ำกว่า​ศูนย์ อาณานิคม​จะ​เสียเปรียบ​อย่าง​มาก​เมื่อ​อยู่​ใน​พื้นที่​ของ​ตนเอง"
+    },
+    {
+      "id": "native:[stat combat death places]",
+      "key": "[stat combat death places]",
+      "source": "Where units fell in combat",
+      "target": "จุด​ที่​ยูนิต​ตาย​ใน​รบ"
+    },
+    {
+      "id": "native:[stat combat death places about]",
+      "key": "[stat combat death places about]",
+      "source": "Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.",
+      "target": "จุด​ที่​ยูนิต​ของ​อาณานิคม​ถูก​ฆ่า: ใกล้​อาคาร​ฝ่าย​ตน ใกล้​อาคาร​ศัตรู หรือ​พื้น​ที่โล่ง​ระหว่าง​อาณานิคม การ​สูญเสีย​ใกล้​ฐาน​หมายถึง​ถูก​บุก ส่วน​การ​สูญ​เสียที่​ฐาน​ศัตรู​หมายถึง​เป็น​ฝ่าย​บุก พื้นที่​ใกล้​ทั้งสองฝ่าย​นับ​เป็น​ฝ่าย​ตน"
+    },
+    {
+      "id": "native:[stat band working]",
+      "key": "[stat band working]",
+      "source": "Working",
+      "target": "การทำงาน"
+    },
+    {
+      "id": "native:[stat band idle]",
+      "key": "[stat band idle]",
+      "source": "Idle",
+      "target": "ว่าง"
+    },
+    {
+      "id": "native:[stat band training]",
+      "key": "[stat band training]",
+      "source": "Training",
+      "target": "การ​ฝึก"
+    },
+    {
+      "id": "native:[stat band unserved]",
+      "key": "[stat band unserved]",
+      "source": "No inn or hospital free",
+      "target": "ไม่​มี​โรงเตี๊ยม​หรือ​โรงพยาบาล​ว่าง"
+    },
+    {
+      "id": "native:[stat band inns]",
+      "key": "[stat band inns]",
+      "source": "Inns",
+      "target": "โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[stat band sites]",
+      "key": "[stat band sites]",
+      "source": "Building and upgrading",
+      "target": "ก่อสร้าง​และ​อัปเกรด"
+    },
+    {
+      "id": "native:[stat band to resource]",
+      "key": "[stat band to resource]",
+      "source": "Walking to a resource",
+      "target": "การ​เดิน​ไป​ยัง​แหล่ง​ทรัพยากร"
+    },
+    {
+      "id": "native:[stat band harvesting]",
+      "key": "[stat band harvesting]",
+      "source": "Harvesting",
+      "target": "การ​เก็บเกี่ยว"
+    },
+    {
+      "id": "native:[stat band carrying]",
+      "key": "[stat band carrying]",
+      "source": "Carrying it back",
+      "target": "นำ​มัน​กลับมา"
+    },
+    {
+      "id": "native:[stat band delivering]",
+      "key": "[stat band delivering]",
+      "source": "Delivering or waiting",
+      "target": "ส่งมอบ​หรือ​รอ"
+    },
+    {
+      "id": "native:[stat band walking to inn]",
+      "key": "[stat band walking to inn]",
+      "source": "Walking to an inn",
+      "target": "เดิน​ไป​โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[stat band no inn]",
+      "key": "[stat band no inn]",
+      "source": "No inn free",
+      "target": "ไม่​มี​โรงเตี๊ยม​ว่าง"
+    },
+    {
+      "id": "native:[stat band at home]",
+      "key": "[stat band at home]",
+      "source": "At home",
+      "target": "ใกล้​ฐาน"
+    }
+  ]
+}

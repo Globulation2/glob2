@@ -1,0 +1,710 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "12bc5cea632c2e797ae529b5e9f727f7974cfae7a85617451b1a34e48fc14e55",
+  "edited_keys": [
+    "native:[room lan badge]",
+    "native:[room lan list hint %0]",
+    "native:[room leave]",
+    "native:[room match label]",
+    "native:[room member joined %0]",
+    "native:[room member left %0]",
+    "native:[room member ready %0]",
+    "native:[room needs two seats]",
+    "native:[room no map]",
+    "native:[room not ready]",
+    "native:[room open for a person]",
+    "native:[room open seat detail]",
+    "native:[room open seat]",
+    "native:[room person]",
+    "native:[room preparing map]",
+    "native:[room public]",
+    "native:[room ready?]",
+    "native:[room ready]",
+    "native:[room remove from room]",
+    "native:[room rule off]",
+    "native:[room rule on]",
+    "native:[room rules changed]",
+    "native:[room rules]",
+    "native:[room say something]",
+    "native:[room seat hint]",
+    "native:[room seat options]",
+    "native:[room seats summary %0 %1 %2]",
+    "native:[room seats]",
+    "native:[room seed]",
+    "native:[room send]",
+    "native:[room set by host]",
+    "native:[room share text %0]",
+    "native:[room share]",
+    "native:[room size]",
+    "native:[room starting match]",
+    "native:[room take seat]",
+    "native:[room team %0]",
+    "native:[room update required]",
+    "native:[room uploaded map]",
+    "native:[room waiting for %0]",
+    "native:[room waiting for you]",
+    "native:[room match over]",
+    "native:[room waiting for host]",
+    "native:[room waiting for players %0]",
+    "native:[room who can find it]",
+    "native:[room you created]",
+    "native:[room you joined %0]",
+    "native:[room you were removed]",
+    "native:[room you]",
+    "native:[trust invited to room %0]",
+    "native:[trust join as guest]",
+    "native:[trust not official]",
+    "native:[trust remember]",
+    "native:[trust separate identity %0]",
+    "native:[trust title]",
+    "native:[trust what it sees]",
+    "native:[hub code]",
+    "native:[results draw]",
+    "native:[qm 2 vs 2]",
+    "native:[qm 1 vs 1]",
+    "native:[qm ping about]",
+    "native:[qm ranked]",
+    "native:[qm casual %0]",
+    "native:[qm rated]",
+    "native:[qm unrated]",
+    "native:[qm solo queue]",
+    "native:[qm ai joins after %0]",
+    "native:[qm fair maps %0]",
+    "native:[qm cooldown %0]",
+    "native:[qm sign in to play ranked]",
+    "native:[online update required]",
+    "native:[online server behind]",
+    "native:[online version mismatch]",
+    "native:[qm already searching]",
+    "native:[online connection problem]",
+    "native:[qm find match]",
+    "native:[qm opponents rated %0 to %1]",
+    "native:[qm region %0]",
+    "native:[qm searching]",
+    "native:[qm measuring relays]",
+    "native:[qm joining queue]",
+    "native:[qm waiting for a person]",
+    "native:[qm ai in %0 rated]",
+    "native:[qm ai in %0]",
+    "native:[qm ai after %0]",
+    "native:[qm allow ai short]",
+    "native:[qm allow ai]",
+    "native:[qm cancel]",
+    "native:[qm cancel search]",
+    "native:[qm usual wait %0]",
+    "native:[qm widening]",
+    "native:[qm ais are rated]",
+    "native:[qm opponent declined]",
+    "native:[qm %0 did not accept]",
+    "native:[qm start failed]",
+    "native:[qm you declined]",
+    "native:[qm you did not answer]",
+    "native:[qm search ended]",
+    "native:[qm try again]",
+    "native:[online connecting]",
+    "native:[qm no queues]",
+    "native:[qm quick match]",
+    "native:[qm phone searching note]",
+    "native:[qm phone intro]",
+    "native:[qm online]",
+    "native:[qm keeps running note]",
+    "native:[qm ai]",
+    "native:[qm provisional]",
+    "native:[qm accepted]",
+    "native:[qm declined]",
+    "native:[qm waiting]",
+    "native:[qm ai badge]",
+    "native:[qm match found]",
+    "native:[qm playing an ai]",
+    "native:[qm vs]",
+    "native:[qm ai explanation rated]",
+    "native:[qm ai explanation]",
+    "native:[qm casual explanation]",
+    "native:[qm accepted button]",
+    "native:[qm accept]",
+    "native:[qm decline]",
+    "native:[qm both must accept]",
+    "native:[qm accept explanation]",
+    "native:[qm starting in %0]",
+    "native:[qm preparing match]",
+    "native:[qm match assigned %0 %1]",
+    "native:[online jan]",
+    "native:[online feb]",
+    "native:[online mar]",
+    "native:[online apr]",
+    "native:[online may]",
+    "native:[online jun]",
+    "native:[online jul]",
+    "native:[online aug]",
+    "native:[online sep]",
+    "native:[online oct]",
+    "native:[online nov]",
+    "native:[online dec]",
+    "native:[profile win letter]",
+    "native:[profile loss letter]",
+    "native:[profile draw letter]",
+    "native:[profile history unavailable]",
+    "native:[profile downloading replay]",
+    "native:[profile no replay]",
+    "native:[profile room with %0]",
+    "native:[profile with %0 vs %1]",
+    "native:[profile vs %0]",
+    "native:[profile room]",
+    "native:[profile casual]",
+    "native:[profile ai filled]",
+    "native:[profile provisional %0 games]",
+    "native:[profile unrated]",
+    "native:[profile checking]",
+    "native:[profile %0 min]",
+    "native:[profile match page]",
+    "native:[profile replay]",
+    "native:[profile win rate last %0]",
+    "native:[profile %0 w %1 l %2 d]",
+    "native:[profile typical game]",
+    "native:[profile median length]"
+  ],
+  "findings": [
+    {
+      "id": "native:[room lan badge]",
+      "severity": "major",
+      "proposed": "เครือข่ายท้องถิ่น · ไม่คิดเรตติ้ง",
+      "reason": "Unrated means no rating impact, not not-yet-ranked.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room leave]",
+      "severity": "minor",
+      "proposed": "ออก",
+      "reason": "Complete standalone action label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room member joined %0]",
+      "severity": "critical",
+      "proposed": "%0 เข้าร่วมแล้ว",
+      "reason": "Source player name joined event, not a count of people.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room member left %0]",
+      "severity": "critical",
+      "proposed": "%0 ออกแล้ว",
+      "reason": "Player left event, not an amount remaining.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room open for a person]",
+      "severity": "major",
+      "proposed": "เปิดรับผู้เล่น",
+      "reason": "Open human-controller seat, not a public exhibition.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room open seat detail]",
+      "severity": "major",
+      "proposed": "ผู้ที่มีคำเชิญเข้ามานั่งได้",
+      "reason": "Taking a game seat, not attending an event.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room person]",
+      "severity": "minor",
+      "proposed": "ผู้เล่น",
+      "reason": "Human player role in seat settings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room ready]",
+      "severity": "major",
+      "proposed": "✓ พร้อม",
+      "reason": "Ready to start game, not ready for shipping.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room rule on]",
+      "severity": "critical",
+      "proposed": "เปิด",
+      "reason": "On toggle state, not spatial on top.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room say something]",
+      "severity": "minor",
+      "proposed": "พิมพ์ข้อความ…",
+      "reason": "Neutral chat prompt without unsolicited casual particle.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room seats summary %0 %1 %2]",
+      "severity": "minor",
+      "proposed": "ผู้เล่น %0 คน · AI %1 · ว่าง %2 ที่",
+      "reason": "Concise seat summary and explicit open seats.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room seed]",
+      "severity": "major",
+      "proposed": "ซีด",
+      "reason": "Map random seed, not plant seed.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room starting match]",
+      "severity": "minor",
+      "proposed": "กำลังเริ่มแมตช์…",
+      "reason": "Canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room take seat]",
+      "severity": "minor",
+      "proposed": "นั่งที่นี่",
+      "reason": "Action to take an open seat rather than invitation to sit politely.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room match over]",
+      "severity": "minor",
+      "proposed": "แมตช์จบแล้ว กดพร้อมเพื่อเล่นรอบใหม่!",
+      "reason": "Ready up refers to pressing Ready, not just preparing mentally.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[room you were removed]",
+      "severity": "major",
+      "proposed": "โฮสต์นำคุณออกจากห้องแล้ว",
+      "reason": "Network room host, not homeowner.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[trust join as guest]",
+      "severity": "minor",
+      "proposed": "เข้าร่วมเป็นผู้เยี่ยมชม",
+      "reason": "Consistent software guest term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[trust separate identity %0]",
+      "severity": "critical",
+      "proposed": "คุณจะเข้าร่วมที่นั่นเป็นผู้เยี่ยมชม บัญชี เรตติ้ง และประวัติของคุณบน %0 ยังคงอยู่ที่เดิม",
+      "reason": "Restore server/account separation: %0 modifies account origin, not a guest reception phrase.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[trust what it sees]",
+      "severity": "major",
+      "proposed": "เซิร์ฟเวอร์เห็นชื่อที่แสดง ที่อยู่การเชื่อมต่อ และเกมที่คุณเล่นบนเซิร์ฟเวอร์นั้น",
+      "reason": "Games played on that server, not on a network connection object.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[results draw]",
+      "severity": "critical",
+      "proposed": "เสมอ",
+      "reason": "Match tie, not a painting action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm ping about]",
+      "severity": "major",
+      "proposed": "ปิงประมาณ",
+      "reason": "Approximate ping, not topic about ping.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm casual %0]",
+      "severity": "major",
+      "proposed": "ทั่วไป %0",
+      "reason": "Casual game mode, not casual clothing.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm unrated]",
+      "severity": "major",
+      "proposed": "ไม่คิดเรตติ้ง",
+      "reason": "Match does not affect ratings.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm cooldown %0]",
+      "severity": "major",
+      "proposed": "คุณปฏิเสธแมตช์ ค้นหาใหม่ได้อีก %0",
+      "reason": "Declined game, not search result; %0 is a duration, not a place/date.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm sign in to play ranked]",
+      "severity": "major",
+      "proposed": "คิวจัดอันดับใช้ได้เฉพาะบัญชีที่ลงชื่อเข้าใช้ โปรดลงชื่อเข้าใช้ก่อน",
+      "reason": "Ranked queues, not merely sorted queues.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm already searching]",
+      "severity": "major",
+      "proposed": "คุณกำลังหาคู่แข่งหรืออยู่ในแมตช์แล้ว",
+      "reason": "In a match means playing game, not a matching status.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm find match]",
+      "severity": "major",
+      "proposed": "หาคู่แข่ง",
+      "reason": "Find a game opponent, not a matching object.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm measuring relays]",
+      "severity": "major",
+      "proposed": "กำลังทดสอบรีเลย์",
+      "reason": "Network latency measurements, not distance-measuring relay hardware.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm waiting for a person]",
+      "severity": "minor",
+      "proposed": "กำลังรอผู้เล่น: ปิดคู่ต่อสู้ AI อยู่",
+      "reason": "Clear human-opponent wait state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm ai in %0]",
+      "severity": "minor",
+      "proposed": "หากไม่พบผู้เล่น AI จะเข้าร่วมในอีก %0",
+      "reason": "Preserve future interval.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm allow ai short]",
+      "severity": "major",
+      "proposed": "อนุญาต AI",
+      "reason": "Remove duplicated allow verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm widening]",
+      "severity": "minor",
+      "proposed": "ขยายช่วงค้นหาขณะรอ",
+      "reason": "Explicit rating/search range, not an unspecified object growing wider.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm ais are rated]",
+      "severity": "major",
+      "proposed": "(คิดเรตติ้ง: AI ก็มีเรตติ้ง)",
+      "reason": "AI ratings and ranked effect, not generic act of assigning scores.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm opponent declined]",
+      "severity": "critical",
+      "proposed": "คู่แข่งไม่ตอบรับ คุณกลับไปอยู่หน้าคิวแล้ว",
+      "reason": "Preserve front-of-queue priority; draft says merely queue again, implying lost position.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm start failed]",
+      "severity": "minor",
+      "proposed": "เริ่มแมตช์ไม่ได้ กำลังหาคู่แข่งใหม่",
+      "reason": "Canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm no queues]",
+      "severity": "minor",
+      "proposed": "เซิร์ฟเวอร์นี้ไม่มีคิวหาคู่แข่งด่วน",
+      "reason": "Canonical quick-match term and explicit queue absence.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm quick match]",
+      "severity": "minor",
+      "proposed": "หาคู่แข่งด่วน",
+      "reason": "Language-brief canonical action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm waiting]",
+      "severity": "major",
+      "proposed": "กำลังรอ…",
+      "reason": "Waiting state, not a relative clause.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm match found]",
+      "severity": "minor",
+      "proposed": "พบแมตช์แล้ว",
+      "reason": "Game found, canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm vs]",
+      "severity": "minor",
+      "proposed": "ปะทะ",
+      "reason": "Opponent versus, not compare.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm ai explanation]",
+      "severity": "major",
+      "proposed": "ไม่มีใครกำลังหาคู่แข่ง คุณจะเล่นกับ AI ที่มีเรตติ้งใกล้คุณที่สุด แมตช์นี้ไม่คิดเรตติ้ง",
+      "reason": "Preserve rating metric and explicit no-rating effect.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm casual explanation]",
+      "severity": "minor",
+      "proposed": "แมตช์เริ่มทันที เกมทั่วไปไม่คิดเรตติ้ง",
+      "reason": "Canonical match/rating terms.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm accepted button]",
+      "severity": "minor",
+      "proposed": "ตอบรับแล้ว",
+      "reason": "Completed accepted state; distinguish from Accept action.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm accept]",
+      "severity": "minor",
+      "proposed": "ตอบรับ",
+      "reason": "Invitation/match acceptance, natural game UI wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm both must accept]",
+      "severity": "minor",
+      "proposed": "ทั้งสองฝ่ายต้องตอบรับ",
+      "reason": "Consistent match-acceptance term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm accept explanation]",
+      "severity": "major",
+      "proposed": "ผู้เล่นทั้งสองต้องตอบรับ หากปฏิเสธหรือปล่อยให้หมดเวลา คุณจะไปอยู่ท้ายคิว",
+      "reason": "Explicit back-of-queue consequence omitted by provider.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm starting in %0]",
+      "severity": "major",
+      "proposed": "เริ่มในอีก %0…",
+      "reason": "Countdown duration, not starting at a location.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm preparing match]",
+      "severity": "minor",
+      "proposed": "กำลังเตรียมแมตช์…",
+      "reason": "Canonical concise state.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[qm match assigned %0 %1]",
+      "severity": "critical",
+      "proposed": "แมตช์ %0 พร้อมบน %1 แล้ว แต่เกมรุ่นนี้ยังเชื่อมต่อแมตช์ออนไลน์ไม่ได้",
+      "reason": "%1 is server/relay host, not a date.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile win letter]",
+      "severity": "major",
+      "proposed": "ช",
+      "reason": "Compact Win initial in Thai, not phonetic transliteration of W.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile loss letter]",
+      "severity": "major",
+      "proposed": "พ",
+      "reason": "Compact Loss initial in Thai.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile downloading replay]",
+      "severity": "major",
+      "proposed": "กำลังดาวน์โหลดรีเพลย์…",
+      "reason": "Replay is simulation recording, not a video file.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile no replay]",
+      "severity": "major",
+      "proposed": "ไม่มีรีเพลย์สำหรับแมตช์นี้",
+      "reason": "Simulation replay, not a video clip.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile with %0 vs %1]",
+      "severity": "major",
+      "proposed": "ร่วมกับ %0 ปะทะ %1",
+      "reason": "Teammate and opposing team roles, not neutral comparison.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile vs %0]",
+      "severity": "minor",
+      "proposed": "ปะทะ %0",
+      "reason": "Versus opponent.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile casual]",
+      "severity": "minor",
+      "proposed": "ทั่วไป",
+      "reason": "Casual game mode.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile ai filled]",
+      "severity": "major",
+      "proposed": "เติมที่ว่างด้วย AI",
+      "reason": "AI-filled matchmaking seats, not AI full of something.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile unrated]",
+      "severity": "major",
+      "proposed": "ไม่คิดเรตติ้ง",
+      "reason": "Unrated match impact.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile match page]",
+      "severity": "major",
+      "proposed": "หน้าแมตช์",
+      "reason": "Match details, not matchmaking page.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile replay]",
+      "severity": "minor",
+      "proposed": "รีเพลย์",
+      "reason": "Replay as artifact/action label consistently.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile win rate last %0]",
+      "severity": "major",
+      "proposed": "อัตราชนะช่วง %0 ล่าสุด",
+      "reason": "Win-rate window, not a single most recent win.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile median length]",
+      "severity": "major",
+      "proposed": "มัธยฐานเวลาเกมของคุณ",
+      "reason": "Median, not arithmetic mean; preserve statistical definition.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online jan]",
+      "severity": "minor",
+      "proposed": "ม.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online feb]",
+      "severity": "minor",
+      "proposed": "ก.พ.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online mar]",
+      "severity": "minor",
+      "proposed": "มี.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online apr]",
+      "severity": "minor",
+      "proposed": "เม.ย.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online may]",
+      "severity": "major",
+      "proposed": "พ.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online jun]",
+      "severity": "major",
+      "proposed": "มิ.ย.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online jul]",
+      "severity": "minor",
+      "proposed": "ก.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online aug]",
+      "severity": "minor",
+      "proposed": "ส.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online sep]",
+      "severity": "minor",
+      "proposed": "ก.ย.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online oct]",
+      "severity": "minor",
+      "proposed": "ต.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online nov]",
+      "severity": "minor",
+      "proposed": "พ.ย.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[online dec]",
+      "severity": "minor",
+      "proposed": "ธ.ค.",
+      "reason": "Month abbreviation: use consistent Thai abbreviated month names; May is a month, not modal verb.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[profile %0 w %1 l %2 d]",
+      "severity": "major",
+      "proposed": "%0 ชนะ · %1 แพ้ · %2 เสมอ",
+      "reason": "Translate match outcome labels rather than leave W/L/draw English.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[qm ai]",
+      "reason": "AI is an established technical acronym."
+    },
+    {
+      "id": "native:[qm ai badge]",
+      "reason": "AI is an established technical acronym."
+    },
+    {
+      "id": "native:[profile draw letter]",
+      "reason": "The en dash is a language-neutral compact draw marker, not English prose."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

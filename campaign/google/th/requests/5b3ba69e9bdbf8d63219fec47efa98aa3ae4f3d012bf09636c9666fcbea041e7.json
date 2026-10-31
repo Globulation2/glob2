@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Do you want to save before quitting?",
+      "Save game",
+      "Save Map",
+      "Reroll terrain look",
+      "Save Replay",
+      "Save Script",
+      "Save",
+      "level of your workers",
+      "Improves the building",
+      "School",
+      "Script Areas",
+      "scroll lock",
+      "Scroll Wheel Enabled",
+      "Secondary",
+      "seeking a job",
+      "seeking",
+      "Select Barracks",
+      "Select Clearing Flag",
+      "Select Construct Barracks",
+      "Select Construct Defense Tower",
+      "Select Construct Hospital",
+      "Select Construct Inn",
+      "Select Construct Market",
+      "Select Construct Racetrack",
+      "Select Construct School",
+      "Select Construct Stone Wall",
+      "Select Construct Swarm",
+      "Select Construct Swimming Pool",
+      "Select Delete Tool",
+      "Select Exploration Flag",
+      "Select Hospital",
+      "Select Inn",
+      "Select Market",
+      "Select Place Clearing Area",
+      "Select Place Farm Area",
+      "Select Place Clearing Flag",
+      "Select Place Exploration Flag",
+      "Select Place Forbidden Area",
+      "Select Place Guard Area",
+      "Select Place War Flag",
+      "Select Racetrack",
+      "Select School",
+      "Select Swarm",
+      "Select Swimming Pool",
+      "Select Defense Tower",
+      "Select Wall",
+      "Select War Flag",
+      "Settings",
+      "shift-<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "Enter<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> send a chat message",
+      "V<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> hold to speak",
+      "Show areas",
+      "Show flags",
+      "Show Main Menu",
+      "Display",
+      "Smoothing",
+      "space",
+      "Start Mission",
+      "Start New Campaign",
+      "Start",
+      "Starving Map",
+      "starving",
+      "Statistics",
+      "Still",
+      "Still",
+      "One unit still working",
+      "Still one",
+      "Stone",
+      "stone",
+      "element",
+      "Passive defense",
+      "Stone Wall",
+      "Server hostname",
+      "Swamp",
+      "Swim",
+      "speed of your units",
+      "Improves the swimming",
+      "Swimming pool",
+      "Switch To Adding Areas",
+      "Switch To Area Brush 1"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "คุณต้องการบันทึกข้อมูลก่อนออกจากโปรแกรมหรือไม่?"
+      },
+      {
+        "translatedText": "บันทึกเกม"
+      },
+      {
+        "translatedText": "บันทึกแผนที่"
+      },
+      {
+        "translatedText": "สุ่มลักษณะภูมิประเทศใหม่"
+      },
+      {
+        "translatedText": "บันทึกการเล่นซ้ำ"
+      },
+      {
+        "translatedText": "บันทึกสคริปต์"
+      },
+      {
+        "translatedText": "บันทึก"
+      },
+      {
+        "translatedText": "ระดับของพนักงานของคุณ"
+      },
+      {
+        "translatedText": "ปรับปรุงอาคาร"
+      },
+      {
+        "translatedText": "โรงเรียน"
+      },
+      {
+        "translatedText": "พื้นที่สคริปต์"
+      },
+      {
+        "translatedText": "ล็อกการเลื่อน"
+      },
+      {
+        "translatedText": "เปิดใช้งานล้อเลื่อน"
+      },
+      {
+        "translatedText": "มัธยมศึกษา"
+      },
+      {
+        "translatedText": "กำลังหางาน"
+      },
+      {
+        "translatedText": "กำลังมองหา"
+      },
+      {
+        "translatedText": "เลือกค่ายทหาร"
+      },
+      {
+        "translatedText": "เลือกธงล้างข้อมูล"
+      },
+      {
+        "translatedText": "เลือกสร้างค่ายทหาร"
+      },
+      {
+        "translatedText": "เลือกสร้างหอคอยป้องกัน"
+      },
+      {
+        "translatedText": "เลือกสร้างโรงพยาบาล"
+      },
+      {
+        "translatedText": "เลือก Construct Inn"
+      },
+      {
+        "translatedText": "เลือกตลาดก่อสร้าง"
+      },
+      {
+        "translatedText": "เลือกสร้างสนามแข่งรถ"
+      },
+      {
+        "translatedText": "เลือกโรงเรียนก่อสร้าง"
+      },
+      {
+        "translatedText": "เลือกสร้างกำแพงหิน"
+      },
+      {
+        "translatedText": "เลือกสร้างฝูง"
+      },
+      {
+        "translatedText": "เลือกสร้างสระว่ายน้ำ"
+      },
+      {
+        "translatedText": "เลือกเครื่องมือลบ"
+      },
+      {
+        "translatedText": "เลือกธงสำรวจ"
+      },
+      {
+        "translatedText": "โรงพยาบาลเลือก"
+      },
+      {
+        "translatedText": "เลือกโรงแรม"
+      },
+      {
+        "translatedText": "ตลาดที่เลือก"
+      },
+      {
+        "translatedText": "เลือกพื้นที่เคลียร์สถานที่"
+      },
+      {
+        "translatedText": "พื้นที่ฟาร์ม Select Place"
+      },
+      {
+        "translatedText": "เลือกสถานที่สำหรับล้างธง"
+      },
+      {
+        "translatedText": "เลือกสถานที่สำรวจธง"
+      },
+      {
+        "translatedText": "เลือกสถานที่ต้องห้าม"
+      },
+      {
+        "translatedText": "เลือกพื้นที่รักษาความปลอดภัย"
+      },
+      {
+        "translatedText": "เลือกสถานที่สำหรับธงสงคราม"
+      },
+      {
+        "translatedText": "เลือกสนามแข่งรถ"
+      },
+      {
+        "translatedText": "เลือกโรงเรียน"
+      },
+      {
+        "translatedText": "เลือกฝูง"
+      },
+      {
+        "translatedText": "เลือกสระว่ายน้ำ"
+      },
+      {
+        "translatedText": "เลือกหอคอยป้องกัน"
+      },
+      {
+        "translatedText": "เลือกกำแพง"
+      },
+      {
+        "translatedText": "เลือกธงสงคราม"
+      },
+      {
+        "translatedText": "การตั้งค่า"
+      },
+      {
+        "translatedText": "เลื่อน - <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "ป้อน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ส่งข้อความแชท"
+      },
+      {
+        "translatedText": "V <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> กดค้างไว้เพื่อพูด"
+      },
+      {
+        "translatedText": "แสดงพื้นที่"
+      },
+      {
+        "translatedText": "แสดงธง"
+      },
+      {
+        "translatedText": "แสดงเมนูหลัก"
+      },
+      {
+        "translatedText": "แสดง"
+      },
+      {
+        "translatedText": "การปรับให้เรียบ"
+      },
+      {
+        "translatedText": "ช่องว่าง"
+      },
+      {
+        "translatedText": "เริ่มภารกิจ"
+      },
+      {
+        "translatedText": "เริ่มแคมเปญใหม่"
+      },
+      {
+        "translatedText": "เริ่ม"
+      },
+      {
+        "translatedText": "แผนที่แห่งความอดอยาก"
+      },
+      {
+        "translatedText": "อดอยาก"
+      },
+      {
+        "translatedText": "สถิติ"
+      },
+      {
+        "translatedText": "นิ่ง"
+      },
+      {
+        "translatedText": "นิ่ง"
+      },
+      {
+        "translatedText": "ยังมีเครื่องหนึ่งที่ยังใช้งานได้อยู่"
+      },
+      {
+        "translatedText": "ยังคงอยู่หนึ่ง"
+      },
+      {
+        "translatedText": "หิน"
+      },
+      {
+        "translatedText": "หิน"
+      },
+      {
+        "translatedText": "องค์ประกอบ"
+      },
+      {
+        "translatedText": "การป้องกันแบบตั้งรับ"
+      },
+      {
+        "translatedText": "กำแพงหิน"
+      },
+      {
+        "translatedText": "ชื่อโฮสต์เซิร์ฟเวอร์"
+      },
+      {
+        "translatedText": "ปลัก"
+      },
+      {
+        "translatedText": "ว่ายน้ำ"
+      },
+      {
+        "translatedText": "ความเร็วของหน่วยของคุณ"
+      },
+      {
+        "translatedText": "ช่วยพัฒนาทักษะการว่ายน้ำ"
+      },
+      {
+        "translatedText": "สระว่ายน้ำ"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้การเพิ่มพื้นที่"
+      },
+      {
+        "translatedText": "เปลี่ยนไปใช้แปรงบริเวณที่ 1"
+      }
+    ]
+  }
+}

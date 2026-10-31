@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "Scout the enemy base",
+      "Place an Exploration Flag at the enemy base; assign 1 explorer.",
+      "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "Scout the enemy base",
+      "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "Prepare a guard zone",
+      "Paint a guard zone in the marked area and let 2 warriors reach it.",
+      "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "Prepare a guard zone",
+      "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "Repel the practice attack",
+      "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+      "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "Repel the practice attack",
+      "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "Direct a focused counterattack",
+      "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+      "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "Direct a focused counterattack",
+      "Build → Hospital. Leave access; assign builders.",
+      "Let the wounded worker heal at the Hospital.",
+      "Build → Racetrack. Leave space around its edges.",
+      "Let a worker finish Racetrack training.",
+      "Build → Swimming Pool, west of the pond.",
+      "Let a worker learn to swim.",
+      "Build → School. Assign builders for wood and algae.",
+      "Build → School. Assign builders for wood and algae.",
+      "Let a worker finish School training.",
+      "Select Racetrack → Upgrade. Assign skilled builders.",
+      "Let a worker train at the upgraded Racetrack.",
+      "Swarm → warriors only. Supply wheat for 2 warriors.",
+      "Build → Training Camp. Leave space around its edges.",
+      "Let a warrior finish Training Camp practice.",
+      "Build → Tower. Place in the marked area.",
+      "Build 2 walls. Keep the tower’s west lane open.",
+      "Select tower → suppliers. Wait for 2 stone.",
+      "Keep the tower supplied against the attacker.",
+      "Flags → Exploration. Place at the enemy; assign 1 explorer.",
+      "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+      "Hold the guard zone. Keep Inns supplied.",
+      "War Flag → enemy Swarm. Request 3 warriors; radius ≤4.",
+      "Attack here",
+      "Grassland",
+      "Kopjes",
+      "Game trails",
+      "Fish amount",
+      "Messages ▸",
+      "Camp-site amount",
+      "(provisional)",
+      "(<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>)",
+      "/ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>",
+      "Building credits",
+      "COMPOSITION COMPLETE",
+      "Edit &amp; release settings",
+      "Follow latest",
+      "I can share these recordings and artwork under the selected licence.",
+      "Loading…",
+      "My releases and uploads",
+      "Pane widths",
+      "Projects",
+      "Publish",
+      "Reference images",
+      "Review &amp; publish",
+      "Review release settings",
+      "Send",
+      "Settings &amp; references",
+      "Terrain credits",
+      "Undo",
+      "Your next match will use the default colony.",
+      "checks",
+      "credits",
+      "diverged",
+      "likes",
+      "on <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>",
+      "refused orders",
+      "seconds",
+      "this version",
+      "to confirm",
+      "·"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "วางธงสำรวจที่ฐานทัพศัตรู; มอบหมายนักสำรวจ 1 นาย ธงจะร้องขอหน่วยโดยอัตโนมัติ นักสำรวจจะเปิดเผยความเคลื่อนไหวปัจจุบันผ่านหมอกแห่งสงคราม และอาจหยุดพักเพื่อรับประทานอาหาร"
+      },
+      {
+        "translatedText": "สอดแนมฐานทัพศัตรู"
+      },
+      {
+        "translatedText": "ปักธงสำรวจที่ฐานทัพศัตรู และส่งนักสำรวจ 1 คนไปประจำการ"
+      },
+      {
+        "translatedText": "ธงจะร้องขอหน่วยต่างๆ โดยอัตโนมัติ นักสำรวจจะเปิดเผยกิจกรรมปัจจุบันผ่านหมอกแห่งสงคราม และอาจหยุดพักเพื่อรับประทานอาหาร"
+      },
+      {
+        "translatedText": "สอดแนมฐานทัพศัตรู"
+      },
+      {
+        "translatedText": "วาดเขตป้องกันในพื้นที่ที่ทำเครื่องหมายไว้ และปล่อยให้ทหาร 2 นายเข้าไปถึง เปิดธง เลือก &quot;ป้องกัน&quot; และวาดอย่างน้อย 4 ช่องภายในพื้นที่นั้น เขตป้องกันจะดึงดูดทหารที่ว่างอยู่ เขตต้องห้ามจะปิดกั้นการเดินทาง การเคลียร์เขตจะต้องใช้ทรัพยากร"
+      },
+      {
+        "translatedText": "จัดเตรียมเขตเฝ้าระวัง"
+      },
+      {
+        "translatedText": "วาดเส้นเขตป้องกันในพื้นที่ที่ทำเครื่องหมายไว้ และปล่อยให้ทหาร 2 นายเข้าไปถึงที่นั่น"
+      },
+      {
+        "translatedText": "เปิดธง เลือก &quot;พิทักษ์&quot; และระบายสีอย่างน้อย 4 ช่องภายในพื้นที่นั้น เขตพิทักษ์จะดึงดูดนักรบที่ไม่ได้ใช้งาน เขตต้องห้ามจะปิดกั้นการเดินทาง การเคลียร์เขตจะต้องใช้ทรัพยากร"
+      },
+      {
+        "translatedText": "จัดเตรียมเขตเฝ้าระวัง"
+      },
+      {
+        "translatedText": "ศัตรูกำลังโจมตี จงรักษาแนวป้องกันและจัดหาเสบียงให้โรงแรม การโจมตีเล็กๆ จะเริ่มขึ้นหลังจากที่คุณเตรียมการเสร็จแล้ว จงเอาชนะหรือขับไล่ผู้บุกรุกทั้งสองฝ่าย ศัตรูที่บาดเจ็บอาจล่าถอย นักรบอาจออกไปหาอาหารชั่วคราว หากการป้องกันล้มเหลว ให้ใช้ไฟล์บันทึกเกมก่อนหน้าหรือเริ่มใหม่"
+      },
+      {
+        "translatedText": "ขับไล่การโจมตีฝึกซ้อม"
+      },
+      {
+        "translatedText": "ศัตรูกำลังโจมตี จงรักษาแนวป้องกันและจัดหาเสบียงให้แก่โรงแรมอยู่เสมอ"
+      },
+      {
+        "translatedText": "การโจมตีขนาดเล็กจะเริ่มขึ้นหลังจากที่คุณเตรียมการเสร็จแล้ว เอาชนะหรือขับไล่ผู้บุกรุกทั้งสองฝ่าย ศัตรูที่บาดเจ็บอาจล่าถอย นักรบอาจออกไปหาอาหารชั่วคราว หากการป้องกันล้มเหลว ให้ใช้ไฟล์บันทึกก่อนหน้าหรือเริ่มใหม่"
+      },
+      {
+        "translatedText": "ขับไล่การโจมตีฝึกซ้อม"
+      },
+      {
+        "translatedText": "วางธงรบเหนือฝูงศัตรู ร้องขอทหาร 3 นาย และใช้รัศมี 4 หรือเล็กกว่านั้น เขตป้องกันและธงรบจะแย่งชิงทหารกัน หากเขตป้องกันขัดขวางกองทัพของคุณ ให้ลบออก เตรียมอาหารให้เพียงพอในขณะที่ทหารเดินทางและโจมตี"
+      },
+      {
+        "translatedText": "ทำการโต้กลับอย่างมีเป้าหมาย"
+      },
+      {
+        "translatedText": "วางธงรบไว้เหนือฝูงศัตรู ร้องขอทหาร 3 นาย และใช้รัศมี 4 หรือเล็กกว่านั้น"
+      },
+      {
+        "translatedText": "เขตป้องกันและธงรบต่างแย่งชิงกำลังพล หากเขตป้องกันใดขัดขวางการเคลื่อนทัพของคุณ ให้กำจัดทิ้งไป คอยจัดหาเสบียงอาหารให้เพียงพอในขณะที่กำลังพลเดินทางและโจมตี"
+      },
+      {
+        "translatedText": "ทำการโต้กลับอย่างมีเป้าหมาย"
+      },
+      {
+        "translatedText": "สร้าง → โรงพยาบาล อนุญาตการเข้าถึง และมอบหมายผู้สร้าง"
+      },
+      {
+        "translatedText": "ให้คนงานที่ได้รับบาดเจ็บพักรักษาตัวที่โรงพยาบาล"
+      },
+      {
+        "translatedText": "สร้าง → สนามแข่งรถ เว้นพื้นที่รอบขอบสนามไว้"
+      },
+      {
+        "translatedText": "ให้พนักงานฝึกอบรมในสนามแข่งรถเสร็จสิ้น"
+      },
+      {
+        "translatedText": "สร้าง → สระว่ายน้ำ ทางทิศตะวันตกของสระน้ำ"
+      },
+      {
+        "translatedText": "ให้คนงานเรียนว่ายน้ำ"
+      },
+      {
+        "translatedText": "สร้าง → โรงเรียน มอบหมายผู้สร้างสำหรับงานไม้และสาหร่าย"
+      },
+      {
+        "translatedText": "สร้าง → โรงเรียน มอบหมายผู้สร้างสำหรับงานไม้และสาหร่าย"
+      },
+      {
+        "translatedText": "ให้คนงานเรียนจบหลักสูตรการศึกษา"
+      },
+      {
+        "translatedText": "เลือกสนามแข่งรถ → อัปเกรด มอบหมายช่างฝีมือที่มีความเชี่ยวชาญ"
+      },
+      {
+        "translatedText": "ให้พนักงานฝึกฝนที่สนามแข่งรถที่ได้รับการปรับปรุงใหม่"
+      },
+      {
+        "translatedText": "ฝูง → เฉพาะนักรบเท่านั้น จัดหาข้าวสาลีสำหรับนักรบ 2 นาย"
+      },
+      {
+        "translatedText": "สร้าง → ค่ายฝึกซ้อม เว้นพื้นที่รอบๆ ขอบค่ายไว้"
+      },
+      {
+        "translatedText": "ปล่อยให้นักรบฝึกซ้อมในค่ายฝึกให้เสร็จสิ้น"
+      },
+      {
+        "translatedText": "สร้าง → หอคอย วางในพื้นที่ที่ทำเครื่องหมายไว้"
+      },
+      {
+        "translatedText": "สร้างกำแพง 2 ด้าน รักษาทางเข้าด้านตะวันตกของหอคอยให้เปิดอยู่เสมอ"
+      },
+      {
+        "translatedText": "เลือกหอคอย → ซัพพลายเออร์ รอ 2 หิน"
+      },
+      {
+        "translatedText": "คอยส่งเสบียงให้หอคอยเพื่อป้องกันการโจมตีจากผู้บุกรุก"
+      },
+      {
+        "translatedText": "ธง → การสำรวจ วางธงไว้ที่ฝั่งศัตรู มอบหมายนักสำรวจ 1 คน"
+      },
+      {
+        "translatedText": "ธง → ยาม ทาสี 4 ช่อง; ปล่อยให้ทหาร 2 นายมาถึง"
+      },
+      {
+        "translatedText": "รักษาแนวป้องกันไว้ จัดหาเสบียงให้โรงแรมอย่างสม่ำเสมอ"
+      },
+      {
+        "translatedText": "ธงสงคราม → ฝูงศัตรู ร้องขอทหาร 3 นาย รัศมี ≤4"
+      },
+      {
+        "translatedText": "โจมตีตรงนี้"
+      },
+      {
+        "translatedText": "ทุ่งหญ้า"
+      },
+      {
+        "translatedText": "คอปเจส"
+      },
+      {
+        "translatedText": "เส้นทางสัตว์ป่า"
+      },
+      {
+        "translatedText": "ปริมาณปลา"
+      },
+      {
+        "translatedText": "ข้อความ ▸"
+      },
+      {
+        "translatedText": "จำนวนพื้นที่ตั้งแคมป์"
+      },
+      {
+        "translatedText": "(เบื้องต้น)"
+      },
+      {
+        "translatedText": "( <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span> )"
+      },
+      {
+        "translatedText": "/ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{slot0}</span>"
+      },
+      {
+        "translatedText": "เครดิตการสร้าง"
+      },
+      {
+        "translatedText": "องค์ประกอบเสร็จสมบูรณ์"
+      },
+      {
+        "translatedText": "แก้ไขและตั้งค่าการเผยแพร่"
+      },
+      {
+        "translatedText": "ติดตามข่าวสารล่าสุด"
+      },
+      {
+        "translatedText": "ฉันสามารถแบ่งปันบันทึกเสียงและผลงานศิลปะเหล่านี้ได้ภายใต้ใบอนุญาตที่เลือกไว้"
+      },
+      {
+        "translatedText": "กำลังโหลด…"
+      },
+      {
+        "translatedText": "ผลงานและการอัปโหลดของฉัน"
+      },
+      {
+        "translatedText": "ความกว้างของบานหน้าต่าง"
+      },
+      {
+        "translatedText": "โครงการต่างๆ"
+      },
+      {
+        "translatedText": "เผยแพร่"
+      },
+      {
+        "translatedText": "ภาพอ้างอิง"
+      },
+      {
+        "translatedText": "ตรวจสอบและเผยแพร่"
+      },
+      {
+        "translatedText": "ตรวจสอบการตั้งค่าการเผยแพร่"
+      },
+      {
+        "translatedText": "ส่ง"
+      },
+      {
+        "translatedText": "การตั้งค่าและข้อมูลอ้างอิง"
+      },
+      {
+        "translatedText": "เครดิตภูมิประเทศ"
+      },
+      {
+        "translatedText": "เลิกทำ"
+      },
+      {
+        "translatedText": "การแข่งขันครั้งต่อไปของคุณจะใช้โคโลนีเริ่มต้น"
+      },
+      {
+        "translatedText": "เช็ค"
+      },
+      {
+        "translatedText": "เครดิต"
+      },
+      {
+        "translatedText": "แตกต่างกัน"
+      },
+      {
+        "translatedText": "ไลค์"
+      },
+      {
+        "translatedText": "บน <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">{p0}</span>"
+      },
+      {
+        "translatedText": "ปฏิเสธคำสั่ง"
+      },
+      {
+        "translatedText": "วินาที"
+      },
+      {
+        "translatedText": "เวอร์ชันนี้"
+      },
+      {
+        "translatedText": "เพื่อยืนยัน"
+      },
+      {
+        "translatedText": "·"
+      }
+    ]
+  }
+}

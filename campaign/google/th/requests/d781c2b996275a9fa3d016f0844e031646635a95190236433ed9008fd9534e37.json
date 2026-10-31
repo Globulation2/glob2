@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "A<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Allies",
+      "C<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Send chat messages to",
+      "fV<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Show vision for Inn buildings (to steal units)",
+      "mV<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Show vision for Markets buildings (to exchange fruits)",
+      "V<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> Show vision for all buildings",
+      "Add map",
+      "Add Shortcut",
+      "AI Descriptions",
+      "AI",
+      "AI",
+      "Builds and trains while keeping growth tied to food supply.",
+      "Castor",
+      "Gathered warrior waves with food and healing support.",
+      "Scouts, builds its food supply and gathers warrior waves.",
+      "Maxima",
+      "Cortex",
+      "Builds up its population, trains warriors, then attacks.",
+      "Nicowar",
+      "None - Doesn&#x27;t do anything.",
+      "None",
+      "A forgiving opponent that still expands and attacks.",
+      "Numbi",
+      "Expands and competes for converts without producing warriors.",
+      "Econo",
+      "Fast attacks that test your early defenses.",
+      "Warrush",
+      "A strong builder that fields trained attacking forces.",
+      "Cabino",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>",
+      "A controller using an embedded <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> source module.",
+      "Algae",
+      "algae",
+      "Alliances",
+      "alt-<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "and",
+      "any explorer",
+      "starving",
+      "hungry",
+      "ok",
+      "wounded",
+      "Armour",
+      "Assigned",
+      "Att. speed",
+      "Att. str.",
+      "Attack",
+      "Audio",
+      "Auto save",
+      "Available local games",
+      "away<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "Back",
+      "backspace",
+      "level of your warriors",
+      "Improves the fighting",
+      "Barracks",
+      "beach size",
+      "break",
+      "Briefing",
+      "Construct <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> Level <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>",
+      "Build",
+      "Building Defaults",
+      "Building Settings",
+      "construction site",
+      "Shift + Drag = Box",
+      "Ctrl + Drag = Line",
+      "Buildings",
+      "Bullets",
+      "Campaign Editor",
+      "Campaign",
+      "Can&#x27;t connect, can&#x27;t find host",
+      "Can&#x27;t host game, port <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> in use",
+      "Can&#x27;t join game, game has started",
+      "Can&#x27;t join game, game is full",
+      "Cancel destroy",
+      "Cancel repair",
+      "Cancel upgrade",
+      "Cancel",
+      "caps lock",
+      "Carrying<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>",
+      "Change Area Name",
+      "Cherry"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "A <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> พันธมิตร"
+      },
+      {
+        "translatedText": "C <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ส่งข้อความแชทไปยัง"
+      },
+      {
+        "translatedText": "fV <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> แสดงวิสัยทัศน์สำหรับอาคารโรงแรม (เพื่อขโมยหน่วย)"
+      },
+      {
+        "translatedText": "mV <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> แสดงวิสัยทัศน์สำหรับอาคารตลาด (เพื่อแลกเปลี่ยนผลไม้)"
+      },
+      {
+        "translatedText": "V <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> แสดงวิสัยทัศน์สำหรับอาคารทุกหลัง"
+      },
+      {
+        "translatedText": "เพิ่มแผนที่"
+      },
+      {
+        "translatedText": "เพิ่มทางลัด"
+      },
+      {
+        "translatedText": "คำอธิบาย AI"
+      },
+      {
+        "translatedText": "AI"
+      },
+      {
+        "translatedText": "AI"
+      },
+      {
+        "translatedText": "สร้างและฝึกอบรมควบคู่ไปกับการเชื่อมโยงการเติบโตกับปริมาณอาหาร"
+      },
+      {
+        "translatedText": "คาสเตอร์"
+      },
+      {
+        "translatedText": "เหล่านักรบได้รวมตัวกันพร้อมเสบียงอาหารและการสนับสนุนด้านการรักษาพยาบาล"
+      },
+      {
+        "translatedText": "หน่วยสอดแนมจะสะสมเสบียงอาหารและรวบรวมกำลังรบ"
+      },
+      {
+        "translatedText": "แม็กซิมา"
+      },
+      {
+        "translatedText": "คอร์เทกซ์"
+      },
+      {
+        "translatedText": "เพิ่มจำนวนประชากร ฝึกฝนนักรบ แล้วจึงโจมตี"
+      },
+      {
+        "translatedText": "นิโควาร์"
+      },
+      {
+        "translatedText": "ไม่มี - ไม่ได้ทำอะไรเลย"
+      },
+      {
+        "translatedText": "ไม่มี"
+      },
+      {
+        "translatedText": "คู่ต่อสู้ที่ใจดีแต่ยังคงขยายอำนาจและโจมตีต่อไป"
+      },
+      {
+        "translatedText": "นัมบี"
+      },
+      {
+        "translatedText": "ขยายอาณาเขตและแข่งขันเพื่อดึงดูดผู้คนให้เข้าร่วมโดยไม่สร้างนักรบขึ้นมา"
+      },
+      {
+        "translatedText": "อีโคโน"
+      },
+      {
+        "translatedText": "การโจมตีเร็วที่ทดสอบการป้องกันในช่วงต้นเกมของคุณ"
+      },
+      {
+        "translatedText": "วอร์รัช"
+      },
+      {
+        "translatedText": "ผู้สร้างที่แข็งแกร่งซึ่งมีกองกำลังโจมตีที่ได้รับการฝึกฝนมาอย่างดี"
+      },
+      {
+        "translatedText": "คาบิโน"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span>"
+      },
+      {
+        "translatedText": "ตัวควบคุมที่ใช้โมดูลซอร์สโค้ด <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">JavaScript</span> แบบฝังตัว"
+      },
+      {
+        "translatedText": "สาหร่าย"
+      },
+      {
+        "translatedText": "สาหร่าย"
+      },
+      {
+        "translatedText": "พันธมิตร"
+      },
+      {
+        "translatedText": "alt- <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "และ"
+      },
+      {
+        "translatedText": "นักสำรวจใดๆ"
+      },
+      {
+        "translatedText": "อดอยาก"
+      },
+      {
+        "translatedText": "หิว"
+      },
+      {
+        "translatedText": "ตกลง"
+      },
+      {
+        "translatedText": "ได้รับบาดเจ็บ"
+      },
+      {
+        "translatedText": "เกราะ"
+      },
+      {
+        "translatedText": "มอบหมาย"
+      },
+      {
+        "translatedText": "ความเร็ว Att."
+      },
+      {
+        "translatedText": "Att. str."
+      },
+      {
+        "translatedText": "จู่โจม"
+      },
+      {
+        "translatedText": "เสียง"
+      },
+      {
+        "translatedText": "บันทึกอัตโนมัติ"
+      },
+      {
+        "translatedText": "เกมท้องถิ่นที่มีให้เลือก"
+      },
+      {
+        "translatedText": "ห่างออกไป <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "กลับ"
+      },
+      {
+        "translatedText": "ลบ"
+      },
+      {
+        "translatedText": "ระดับของนักรบของคุณ"
+      },
+      {
+        "translatedText": "ปรับปรุงการต่อสู้"
+      },
+      {
+        "translatedText": "ค่ายทหาร"
+      },
+      {
+        "translatedText": "ขนาดชายหาด"
+      },
+      {
+        "translatedText": "หยุดพัก"
+      },
+      {
+        "translatedText": "การบรรยายสรุป"
+      },
+      {
+        "translatedText": "สร้าง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ระดับ <span id=\"g2p1\" class=\"notranslate\" translate=\"no\">%1</span>"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "ค่าเริ่มต้นของอาคาร"
+      },
+      {
+        "translatedText": "การตั้งค่าอาคาร"
+      },
+      {
+        "translatedText": "สถานที่ก่อสร้าง"
+      },
+      {
+        "translatedText": "Shift + ลาก = กล่อง"
+      },
+      {
+        "translatedText": "Ctrl + ลาก = เส้น"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "กระสุน"
+      },
+      {
+        "translatedText": "บรรณาธิการแคมเปญ"
+      },
+      {
+        "translatedText": "แคมเปญ"
+      },
+      {
+        "translatedText": "เชื่อมต่อไม่ได้ หาโฮสต์ไม่เจอ"
+      },
+      {
+        "translatedText": "ไม่สามารถสร้างเกมได้ พอร์ต <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> กำลังถูกใช้งานอยู่"
+      },
+      {
+        "translatedText": "ไม่สามารถเข้าร่วมเกมได้ เกมเริ่มไปแล้ว"
+      },
+      {
+        "translatedText": "เข้าร่วมเกมไม่ได้ เกมเต็มแล้ว"
+      },
+      {
+        "translatedText": "ยกเลิกการทำลาย"
+      },
+      {
+        "translatedText": "ยกเลิกการซ่อมแซม"
+      },
+      {
+        "translatedText": "ยกเลิกการอัปเกรด"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "ตัวพิมพ์ใหญ่ล็อค"
+      },
+      {
+        "translatedText": "การพกพา <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span>"
+      },
+      {
+        "translatedText": "เปลี่ยนชื่อพื้นที่"
+      },
+      {
+        "translatedText": "เชอร์รี่"
+      }
+    ]
+  }
+}

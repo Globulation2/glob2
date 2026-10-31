@@ -1,0 +1,122 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Clearing Flag",
+      "Exploration Flag",
+      "Explorer",
+      "Feeds your units",
+      "Inn",
+      "fruits with others",
+      "Allows the exchange of",
+      "Market",
+      "Creates new units",
+      "Swarm",
+      "Attracts warriors",
+      "War Flag",
+      "Warrior",
+      "Worker",
+      "Pass width",
+      "Sandbars",
+      "Fjord bank deposits",
+      "Stream reach",
+      "Can&#x27;t reach <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>.",
+      "Create account",
+      "Licence",
+      "License",
+      "Room",
+      "Rooms",
+      "Sign in",
+      "Upload"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ธงเคลียร์"
+      },
+      {
+        "translatedText": "ธงสำรวจ"
+      },
+      {
+        "translatedText": "นักสำรวจ"
+      },
+      {
+        "translatedText": "ป้อนอาหารให้หน่วยของคุณ"
+      },
+      {
+        "translatedText": "โรงแรม"
+      },
+      {
+        "translatedText": "ผลไม้กับอย่างอื่น"
+      },
+      {
+        "translatedText": "อนุญาตให้แลกเปลี่ยน"
+      },
+      {
+        "translatedText": "ตลาด"
+      },
+      {
+        "translatedText": "สร้างหน่วยใหม่"
+      },
+      {
+        "translatedText": "ฝูง"
+      },
+      {
+        "translatedText": "ดึงดูดนักรบ"
+      },
+      {
+        "translatedText": "ธงสงคราม"
+      },
+      {
+        "translatedText": "นักรบ"
+      },
+      {
+        "translatedText": "คนงาน"
+      },
+      {
+        "translatedText": "ความกว้างของทางผ่าน"
+      },
+      {
+        "translatedText": "สันทราย"
+      },
+      {
+        "translatedText": "เงินฝากธนาคารฟยอร์ด"
+      },
+      {
+        "translatedText": "การเข้าถึงของลำธาร"
+      },
+      {
+        "translatedText": "ไม่สามารถเข้าถึง <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ได้"
+      },
+      {
+        "translatedText": "สร้างบัญชี"
+      },
+      {
+        "translatedText": "ใบอนุญาต"
+      },
+      {
+        "translatedText": "ใบอนุญาต"
+      },
+      {
+        "translatedText": "ห้อง"
+      },
+      {
+        "translatedText": "ห้องพัก"
+      },
+      {
+        "translatedText": "เข้าสู่ระบบ"
+      },
+      {
+        "translatedText": "อัปโหลด"
+      }
+    ]
+  }
+}

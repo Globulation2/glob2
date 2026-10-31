@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "The home oasis is too small; raise Home oasis size.",
+      "Braided river",
+      "Braid width",
+      "Bar size",
+      "Extra riffles",
+      "Moraine hummocks",
+      "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.",
+      "The map is too narrow across for a braid; use a bigger map.",
+      "Drumlin field",
+      "Drumlin spacing",
+      "Drumlin length",
+      "Water gap",
+      "Esker loops",
+      "The eskers could not join every drumlin; use a smaller water gap or a bigger map.",
+      "Continents",
+      "Continent",
+      "North America",
+      "South America",
+      "Africa",
+      "Europe",
+      "Asia",
+      "Oceania",
+      "Orientation",
+      "Turn to fit",
+      "Upright",
+      "Mountain ranges",
+      "Great rivers",
+      "Islets",
+      "Oases",
+      "The world atlas has no such continent.",
+      "The map is too small to hold a continent.",
+      "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.",
+      "Savannah",
+      "Watering holes",
+      "Dry patches",
+      "Sparse",
+      "Normal",
+      "Many",
+      "Rice terraces",
+      "Unoccupied hills",
+      "Hill radius",
+      "Contour band width",
+      "Stairs per hill",
+      "Valley river",
+      "Hills",
+      "Hillsides",
+      "Terraces per slope",
+      "Waviness",
+      "Stair spacing",
+      "Locust",
+      "Plantations",
+      "Plot size",
+      "Farm width",
+      "Islands per colony",
+      "Outpost inns",
+      "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.",
+      "Sierpiński Gardens",
+      "Hilbert River",
+      "Maximum nesting",
+      "Minimum terminal district side",
+      "Major crossing pairs",
+      "Maximum fold depth",
+      "Minimum land spacing",
+      "Optional local crossings per parent",
+      "Optional major shortcuts",
+      "Lava shield",
+      "Lava tongues",
+      "Long tongues",
+      "Crater rim width",
+      "Honeycomb isle",
+      "Blocks per colony",
+      "Rubble",
+      "Outline gaps",
+      "Craters per colony",
+      "Wheat fields",
+      "Bridges",
+      "Karst towers",
+      "Tower spacing",
+      "Tower density",
+      "Paddy depth"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "พื้นที่พักผ่อนส่วนตัวภายในบ้านมีขนาดเล็กเกินไป โปรดเพิ่มขนาดพื้นที่พักผ่อนส่วนตัวภายในบ้าน"
+      },
+      {
+        "translatedText": "แม่น้ำที่แตกแขนง"
+      },
+      {
+        "translatedText": "ความกว้างของถักเปีย"
+      },
+      {
+        "translatedText": "ขนาดแท่ง"
+      },
+      {
+        "translatedText": "ร่องพิเศษ"
+      },
+      {
+        "translatedText": "เนินโมเรน"
+      },
+      {
+        "translatedText": "แผนผังที่ถักทอเป็นเกลียวทำให้เหลือพื้นที่ระเบียงสำหรับบ้านน้อยเกินไป ควรใช้แผนผังที่ใหญ่กว่าหรือแผนผังที่ถักทอเป็นเกลียวที่แคบกว่า"
+      },
+      {
+        "translatedText": "แผนที่แคบเกินไปสำหรับถักเปีย ควรใช้แผนที่ที่ใหญ่กว่านี้"
+      },
+      {
+        "translatedText": "ทุ่งดรัมลิน"
+      },
+      {
+        "translatedText": "ระยะห่างของดรัมลิน"
+      },
+      {
+        "translatedText": "ความยาวของดรัมลิน"
+      },
+      {
+        "translatedText": "ช่องน้ำ"
+      },
+      {
+        "translatedText": "วงโค้งเอสเกอร์"
+      },
+      {
+        "translatedText": "สันดอนทรายไม่สามารถเชื่อมต่อกับเนินดินรูปทรงกลมทุกแห่งได้ ต้องใช้ช่องน้ำที่เล็กกว่าหรือแผนที่ที่ใหญ่กว่า"
+      },
+      {
+        "translatedText": "ทวีปต่างๆ"
+      },
+      {
+        "translatedText": "ทวีป"
+      },
+      {
+        "translatedText": "อเมริกาเหนือ"
+      },
+      {
+        "translatedText": "อเมริกาใต้"
+      },
+      {
+        "translatedText": "แอฟริกา"
+      },
+      {
+        "translatedText": "ยุโรป"
+      },
+      {
+        "translatedText": "เอเชีย"
+      },
+      {
+        "translatedText": "โอเชียเนีย"
+      },
+      {
+        "translatedText": "ปฐมนิเทศ"
+      },
+      {
+        "translatedText": "หมุนเพื่อปรับให้พอดี"
+      },
+      {
+        "translatedText": "ตั้งตรง"
+      },
+      {
+        "translatedText": "เทือกเขา"
+      },
+      {
+        "translatedText": "แม่น้ำสายใหญ่"
+      },
+      {
+        "translatedText": "เกาะเล็ก ๆ"
+      },
+      {
+        "translatedText": "โอเอซิส"
+      },
+      {
+        "translatedText": "ในแผนที่โลกไม่มีทวีปดังกล่าว"
+      },
+      {
+        "translatedText": "แผนที่เล็กเกินไปที่จะแสดงทวีปได้"
+      },
+      {
+        "translatedText": "ทวีปนี้ไม่มีพื้นที่เพียงพอสำหรับอาณานิคมจำนวนมากขนาดนี้ในแผนที่ขนาดนี้ ควรใช้แผนที่ขนาดใหญ่กว่าหรือลดจำนวนอาณานิคมลง"
+      },
+      {
+        "translatedText": "ซาวันนาห์"
+      },
+      {
+        "translatedText": "แหล่งน้ำ"
+      },
+      {
+        "translatedText": "บริเวณแห้งแล้ง"
+      },
+      {
+        "translatedText": "เบาบาง"
+      },
+      {
+        "translatedText": "ปกติ"
+      },
+      {
+        "translatedText": "มากมาย"
+      },
+      {
+        "translatedText": "นาขั้นบันได"
+      },
+      {
+        "translatedText": "เนินเขาร้าง"
+      },
+      {
+        "translatedText": "รัศมีเนินเขา"
+      },
+      {
+        "translatedText": "ความกว้างของแถบคอนทัวร์"
+      },
+      {
+        "translatedText": "บันไดต่อเนินเขา"
+      },
+      {
+        "translatedText": "แม่น้ำหุบเขา"
+      },
+      {
+        "translatedText": "เนินเขา"
+      },
+      {
+        "translatedText": "เนินเขา"
+      },
+      {
+        "translatedText": "ระเบียงต่อเนิน"
+      },
+      {
+        "translatedText": "ความโค้ง"
+      },
+      {
+        "translatedText": "ระยะห่างระหว่างบันได"
+      },
+      {
+        "translatedText": "ตั๊กแตน"
+      },
+      {
+        "translatedText": "ไร่"
+      },
+      {
+        "translatedText": "ขนาดแปลง"
+      },
+      {
+        "translatedText": "ความกว้างของฟาร์ม"
+      },
+      {
+        "translatedText": "เกาะต่ออาณานิคม"
+      },
+      {
+        "translatedText": "โรงแรมด่านหน้า"
+      },
+      {
+        "translatedText": "เกาะมีขนาดเล็กเกินไปสำหรับพื้นที่บนแผนที่ ควรใช้แผนที่ขนาดใหญ่กว่า พื้นที่บนแผนที่เล็กกว่า หรือจำนวนอาณานิคมน้อยกว่า"
+      },
+      {
+        "translatedText": "สวนเซียร์ปินสกี"
+      },
+      {
+        "translatedText": "แม่น้ำฮิลเบิร์ต"
+      },
+      {
+        "translatedText": "การซ้อนสูงสุด"
+      },
+      {
+        "translatedText": "เขตเทอร์มินัลขั้นต่ำฝั่ง"
+      },
+      {
+        "translatedText": "คู่ทางแยกหลัก"
+      },
+      {
+        "translatedText": "ความลึกของการพับสูงสุด"
+      },
+      {
+        "translatedText": "ระยะห่างขั้นต่ำของที่ดิน"
+      },
+      {
+        "translatedText": "ทางข้ามท้องถิ่นเพิ่มเติมสำหรับแต่ละผู้ปกครอง"
+      },
+      {
+        "translatedText": "ทางลัดหลักเสริม"
+      },
+      {
+        "translatedText": "โล่ลาวา"
+      },
+      {
+        "translatedText": "ลิ้นลาวา"
+      },
+      {
+        "translatedText": "ลิ้นยาว"
+      },
+      {
+        "translatedText": "ความกว้างของขอบปล่องภูเขาไฟ"
+      },
+      {
+        "translatedText": "เกาะรังผึ้ง"
+      },
+      {
+        "translatedText": "บล็อกต่ออาณานิคม"
+      },
+      {
+        "translatedText": "ซากปรักหักพัง"
+      },
+      {
+        "translatedText": "ระบุช่องว่าง"
+      },
+      {
+        "translatedText": "จำนวนหลุมอุกกาบาตต่ออาณานิคม"
+      },
+      {
+        "translatedText": "ทุ่งข้าวสาลี"
+      },
+      {
+        "translatedText": "สะพาน"
+      },
+      {
+        "translatedText": "หอคอยหินปูน"
+      },
+      {
+        "translatedText": "ระยะห่างระหว่างเสา"
+      },
+      {
+        "translatedText": "ความหนาแน่นของหอคอย"
+      },
+      {
+        "translatedText": "ความลึกของนาข้าว"
+      }
+    ]
+  }
+}

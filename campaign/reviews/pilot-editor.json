@@ -1,0 +1,579 @@
+{
+  "reviewer": "cloud_adapter",
+  "role": "independent Thai editor",
+  "independence": "Reviewed current nonblank Google draft against frozen source, language brief, FR/JA/VI reference catalogs and HUD usage before reading any meaning-review findings. Did not read pilot-google-review.json.",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "native": "b03446492ba7b1b1a7809b8082227dd19495a5f0f01ec72d8b27da750346f541",
+    "online": "6ee5c16b8dc846c3eee124cca88fe97a843f38dd6646fc740690b3406b9d8d0e"
+  },
+  "edited_keys": [
+    "native:[%0 has left the game]",
+    "native:[%0 level %1]",
+    "native:[%0 units can't access building]",
+    "native:[%0 units can't access flag]",
+    "native:[%0 units can't access fruit]",
+    "native:[%0 units can't access resource]",
+    "native:[%0 units not available]",
+    "native:[%0 units too far from building]",
+    "native:[%0 units too far from flag]",
+    "native:[%0 units too far from fruit]",
+    "native:[%0 units too far from resource]",
+    "native:[%0 units too low level]",
+    "native:[%0% Uploaded]",
+    "native:[%0's team unit got converted to your team]",
+    "native:[clearingflag]",
+    "native:[explorationflag]",
+    "native:[Explorer]",
+    "native:[music set]",
+    "native:[random music set]",
+    "native:[playing music set %0]",
+    "native:[music set failed]",
+    "native:[inn explanation]",
+    "native:[inn]",
+    "native:[market explanation 2]",
+    "native:[market explanation]",
+    "native:[market]",
+    "native:[swarm explanation]",
+    "native:[swarm]",
+    "native:[warflag explanation]",
+    "native:[warflag]",
+    "native:[Warrior]",
+    "native:[Worker]",
+    "native:[Pass width]",
+    "native:[Sandbars]",
+    "native:[Fjord bank deposits]",
+    "native:[Stream reach]",
+    "native:[hub cant reach %0]",
+    "native:[start recording]",
+    "native:[stop recording]",
+    "native:[finalizing recording]",
+    "native:[settings Edge scrolling]",
+    "native:[settings Edge scrolling in fullscreen]",
+    "native:[settings Edge scrolling in windowed mode]",
+    "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+    "native:[hub finish in browser, game continues]",
+    "native:[hub browser did not open]",
+    "native:[hub compare code %0]",
+    "native:[hub code copied]",
+    "native:[settings Finish in your browser. The game continues by itself.]",
+    "online:Create account",
+    "online:Licence",
+    "online:License",
+    "online:Room",
+    "online:Rooms",
+    "online:Sign in",
+    "online:Upload"
+  ],
+  "entries": [
+    {
+      "id": "native:[%0 has left the game]",
+      "source": "%0 has quit the game.",
+      "observed_target": "%0 ออกจากเกมแล้ว",
+      "proposal": "%0 ออกจากเกมแล้ว",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[%0 level %1]",
+      "source": "%0 Level %1",
+      "observed_target": "ระดับ %0 %1",
+      "proposal": "%0 ระดับ %1",
+      "decision": "change",
+      "severity": "major",
+      "reason": "%0 names the object and %1 its level; Thai must not label %0 itself as the level. FR/JA/VI agree on object followed by level."
+    },
+    {
+      "id": "native:[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "observed_target": "%0 หน่วยไม่สามารถเข้าอาคารได้",
+      "proposal": "ยูนิต %0 ตัวเข้าอาคารไม่ได้",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Use the same explicit unit noun and count order as the other assignment explanations."
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "observed_target": "หน่วย %0 ไม่สามารถเข้าถึงธงได้",
+      "proposal": "ยูนิต %0 ตัวเข้าถึงธงไม่ได้",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "%0 is a count of units, not a unit identifier; normalize the count construction."
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "observed_target": "%0 หน่วยไม่สามารถเข้าถึงผลไม้ได้",
+      "proposal": "ยูนิต %0 ตัวเข้าถึงผลไม้ไม่ได้",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Use consistent concise unit-count phrasing."
+    },
+    {
+      "id": "native:[%0 units can't access resource]",
+      "source": "%0 units can't access needed materials",
+      "observed_target": "หน่วยงาน %0 แห่งไม่สามารถเข้าถึงวัสดุที่จำเป็นได้",
+      "proposal": "ยูนิต %0 ตัวเข้าถึงวัสดุที่ต้องใช้ไม่ได้",
+      "decision": "change",
+      "severity": "major",
+      "reason": "หน่วยงาน means an agency/organization and แห่ง is its classifier. The HUD describes game units blocked from required resources."
+    },
+    {
+      "id": "native:[%0 units not available]",
+      "source": "%0 units not available",
+      "observed_target": "ไม่มีสินค้า %0 ชิ้น",
+      "proposal": "ยูนิต %0 ตัวไม่พร้อมใช้งาน",
+      "decision": "change",
+      "severity": "major",
+      "reason": "สินค้า means goods. This is a shortage/unavailability of assignable game units, as confirmed by HUD code and JA."
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "source": "%0 units too far from building",
+      "observed_target": "อยู่ห่างจากอาคารมากเกินไป %0 หน่วย",
+      "proposal": "ยูนิต %0 ตัวอยู่ไกลจากอาคารเกินไป",
+      "decision": "change",
+      "severity": "major",
+      "reason": "%0 counts units; it is not a distance measurement. Make the counted subject explicit."
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "observed_target": "อยู่ห่างจากธง %0 หน่วย",
+      "proposal": "ยูนิต %0 ตัวอยู่ไกลจากธงเกินไป",
+      "decision": "change",
+      "severity": "major",
+      "reason": "The draft loses too far and reads as a distance. Restore excessive distance and explicit unit count."
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit",
+      "observed_target": "อยู่ห่างจากผลไม้มากเกินไป %0 หน่วย",
+      "proposal": "ยูนิต %0 ตัวอยู่ไกลจากผลไม้เกินไป",
+      "decision": "change",
+      "severity": "major",
+      "reason": "%0 counts affected units, not units of distance."
+    },
+    {
+      "id": "native:[%0 units too far from resource]",
+      "source": "%0 units too far from needed materials",
+      "observed_target": "อยู่ห่างจากวัสดุที่ต้องการมากเกินไป %0 หน่วย",
+      "proposal": "ยูนิต %0 ตัวอยู่ไกลจากวัสดุที่ต้องใช้เกินไป",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Make affected units the subject and align needed-material terminology."
+    },
+    {
+      "id": "native:[%0 units too low level]",
+      "source": "%0 units too low level",
+      "observed_target": "%0 หน่วย ต่ำเกินไป",
+      "proposal": "ยูนิต %0 ตัวมีระดับต่ำเกินไป",
+      "decision": "change",
+      "severity": "major",
+      "reason": "The missing ระดับ drops the reason that units lack required training/level."
+    },
+    {
+      "id": "native:[%0% Uploaded]",
+      "source": "%0% uploaded",
+      "observed_target": "อัปโหลด %0 %",
+      "proposal": "อัปโหลดแล้ว %0%",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Keep the percentage sign attached to its value and use completed-progress phrasing."
+    },
+    {
+      "id": "native:[%0's team unit got converted to your team]",
+      "source": "A unit from %0's team has joined your team",
+      "observed_target": "สมาชิกจากทีมของ %0 ได้เข้าร่วมทีมของคุณแล้ว",
+      "proposal": "ยูนิตจากทีมของ %0 เข้าร่วมทีมของคุณแล้ว",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Use consistent game-unit terminology rather than human team member; preserve completed conversion."
+    },
+    {
+      "id": "native:[clearingflag]",
+      "source": "Clearing Flag",
+      "observed_target": "ธงเคลียร์",
+      "proposal": "ธงแผ้วถาง",
+      "decision": "change",
+      "severity": "major",
+      "reason": "เคลียร์ is vague and can mean dismiss/reset; the flag assigns resource clearing. Apply the brief."
+    },
+    {
+      "id": "native:[explorationflag]",
+      "source": "Exploration Flag",
+      "observed_target": "ธงสำรวจ",
+      "proposal": "ธงสำรวจ",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[Explorer]",
+      "source": "Explorer",
+      "observed_target": "นักสำรวจ",
+      "proposal": "นักสำรวจ",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[music set]",
+      "source": "Music set",
+      "observed_target": "ชุดดนตรี",
+      "proposal": "ชุดเพลง",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Align with the existing music-set load error; a set contains songs rather than abstract music."
+    },
+    {
+      "id": "native:[random music set]",
+      "source": "Random each match",
+      "observed_target": "สุ่มเลือกแต่ละแมตช์",
+      "proposal": "สุ่มทุกแมตช์",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Shorter idiomatic option label while retaining each-match timing."
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "source": "Playing: %0",
+      "observed_target": "กำลังเล่น: %0",
+      "proposal": "กำลังเล่น: %0",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[music set failed]",
+      "source": "Could not load this music set.",
+      "observed_target": "ไม่สามารถโหลดชุดเพลงนี้ได้",
+      "proposal": "ไม่สามารถโหลดชุดเพลงนี้ได้",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[inn explanation]",
+      "source": "Feeds your units",
+      "observed_target": "ป้อนอาหารให้หน่วยของคุณ",
+      "proposal": "ให้อาหารยูนิตของคุณ",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Concise description of feeding, not physically spoon-feeding or accommodation."
+    },
+    {
+      "id": "native:[inn]",
+      "source": "Inn",
+      "observed_target": "โรงแรม",
+      "proposal": "โรงเตี๊ยม",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Apply agreed building name. โรงแรม means hotel and obscures this game building."
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "source": "fruits with others",
+      "observed_target": "ผลไม้กับอย่างอื่น",
+      "proposal": "กับผู้อื่น",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Others refers to other players/teams, not other things; pair this row with the first row."
+    },
+    {
+      "id": "native:[market explanation]",
+      "source": "Allows the exchange of",
+      "observed_target": "อนุญาตให้แลกเปลี่ยน",
+      "proposal": "ใช้แลกเปลี่ยนผลไม้",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Translate the two-row explanation as a coherent whole: ใช้แลกเปลี่ยนผลไม้ / กับผู้อื่น."
+    },
+    {
+      "id": "native:[market]",
+      "source": "Market",
+      "observed_target": "ตลาด",
+      "proposal": "ตลาด",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "source": "Creates new units",
+      "observed_target": "สร้างหน่วยใหม่",
+      "proposal": "สร้างยูนิตใหม่",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Use consistent unit terminology."
+    },
+    {
+      "id": "native:[swarm]",
+      "source": "Swarm",
+      "observed_target": "ฝูง",
+      "proposal": "รัง",
+      "decision": "change",
+      "severity": "major",
+      "reason": "This is a birth-producing building, supported by FR Ruche, JA 巣, VI Tổ; ฝูง denotes a moving group."
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "source": "Attracts warriors",
+      "observed_target": "ดึงดูดนักรบ",
+      "proposal": "ดึงดูดนักรบ",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[warflag]",
+      "source": "War Flag",
+      "observed_target": "ธงสงคราม",
+      "proposal": "ธงรบ",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Apply concise agreed terminology."
+    },
+    {
+      "id": "native:[Warrior]",
+      "source": "Warrior",
+      "observed_target": "นักรบ",
+      "proposal": "นักรบ",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[Worker]",
+      "source": "Worker",
+      "observed_target": "คนงาน",
+      "proposal": "คนงาน",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[Pass width]",
+      "source": "Pass width",
+      "observed_target": "ความกว้างของทางผ่าน",
+      "proposal": "ความกว้างช่องเขา",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Terrain pass is a mountain route, not a generic passage."
+    },
+    {
+      "id": "native:[Sandbars]",
+      "source": "Sandbars",
+      "observed_target": "สันทราย",
+      "proposal": "สันดอนทราย",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Use the sediment-bar terrain term, distinct from dunes or generic sand ridges."
+    },
+    {
+      "id": "native:[Fjord bank deposits]",
+      "source": "Fjord bank deposits",
+      "observed_target": "เงินฝากธนาคารฟยอร์ด",
+      "proposal": "แหล่งทรัพยากรริมฝั่งฟยอร์ด",
+      "decision": "change",
+      "severity": "major",
+      "reason": "เงินฝากธนาคาร is a financial bank deposit. These are resource deposits on fjord banks."
+    },
+    {
+      "id": "native:[Stream reach]",
+      "source": "Stream reach",
+      "observed_target": "การเข้าถึงของลำธาร",
+      "proposal": "ความยาวลำธาร",
+      "decision": "change",
+      "severity": "major",
+      "reason": "The generator controls stream length, not access to a stream."
+    },
+    {
+      "id": "native:[hub cant reach %0]",
+      "source": "Can't reach %0.",
+      "observed_target": "ไม่สามารถเข้าถึง %0 ได้",
+      "proposal": "ไม่สามารถเข้าถึง %0 ได้",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[start recording]",
+      "source": "Start recording",
+      "observed_target": "เริ่มบันทึก",
+      "proposal": "เริ่มบันทึก",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "native:[stop recording]",
+      "source": "Stop recording",
+      "observed_target": "หยุดการบันทึก",
+      "proposal": "หยุดบันทึก",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Match the parallel เริ่มบันทึก action with concise verb form."
+    },
+    {
+      "id": "native:[finalizing recording]",
+      "source": "Finalizing recording…",
+      "observed_target": "กำลังดำเนินการบันทึกขั้นสุดท้าย…",
+      "proposal": "กำลังจัดทำไฟล์บันทึกให้เสร็จ…",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Avoid the calque ดำเนินการบันทึกขั้นสุดท้าย; the application is completing the recorded file."
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "observed_target": "การเลื่อนขอบ",
+      "proposal": "เลื่อนแผนที่ที่ขอบจอ",
+      "decision": "change",
+      "severity": "major",
+      "reason": "การเลื่อนขอบ reads as moving an edge. The setting scrolls the map when the pointer reaches an edge."
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen",
+      "observed_target": "การเลื่อนขอบในโหมดเต็มหน้าจอ",
+      "proposal": "เลื่อนที่ขอบจอเมื่อเต็มหน้าจอ",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Make the trigger and mode clear in a compact setting label."
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode",
+      "observed_target": "การเลื่อนขอบในโหมดหน้าต่าง",
+      "proposal": "เลื่อนที่ขอบจอในโหมดหน้าต่าง",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Use the same trigger terminology as the full-screen setting."
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "observed_target": "เลื่อนแผนที่เกมและแผนที่แก้ไขเมื่อเมาส์ไปถึงขอบหน้าต่าง",
+      "proposal": "เลื่อนแผนที่ในเกมและตัวแก้ไขเมื่อเมาส์ถึงขอบหน้าต่าง",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Editor maps means maps in the map editor; แผนที่แก้ไข is not an application context."
+    },
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "observed_target": "เข้าสู่ระบบให้เสร็จสิ้นในเบราว์เซอร์ของคุณ เกมจะเล่นต่อโดยอัตโนมัติเมื่อคุณทำเสร็จแล้ว",
+      "proposal": "ลงชื่อเข้าใช้ให้เสร็จในเบราว์เซอร์ เกมจะดำเนินการต่อโดยอัตโนมัติเมื่อเสร็จแล้ว",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Apply sign-in terminology and avoid suggesting that a paused match plays itself."
+    },
+    {
+      "id": "native:[hub browser did not open]",
+      "source": "Your browser did not open. Open the sign-in page to continue.",
+      "observed_target": "เบราว์เซอร์ของคุณเปิดไม่ขึ้น โปรดเปิดหน้าเข้าสู่ระบบเพื่อดำเนินการต่อ",
+      "proposal": "เบราว์เซอร์ไม่เปิดขึ้น โปรดเปิดหน้าลงชื่อเข้าใช้เพื่อดำเนินการต่อ",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Consistent sign-in terminology; this reports that browser launch did not occur, not necessarily that it is impossible."
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "observed_target": "ถ้าหน้าเว็บถาม ให้ตรวจสอบว่าแสดง %0 ไม่",
+      "proposal": "หากหน้าเว็บขอให้ตรวจสอบ ให้ดูว่าแสดงรหัส %0 ตรงกัน",
+      "decision": "change",
+      "severity": "major",
+      "reason": "The trailing ไม่ in the draft introduces negation/incompleteness. This is a security code comparison instruction."
+    },
+    {
+      "id": "native:[hub code copied]",
+      "source": "Code copied",
+      "observed_target": "คัดลอกโค้ดแล้ว",
+      "proposal": "คัดลอกรหัสแล้ว",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "This is an authentication code, not program source code."
+    },
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "observed_target": "จบเกมในเบราว์เซอร์ของคุณ เกมจะเล่นต่อเองโดยอัตโนมัติ",
+      "proposal": "ดำเนินการให้เสร็จในเบราว์เซอร์ เกมจะดำเนินการต่อโดยอัตโนมัติ",
+      "decision": "change",
+      "severity": "major",
+      "reason": "จบเกม says finish/end the game. The source asks the player to finish the browser authentication step."
+    },
+    {
+      "id": "online:Create account",
+      "source": "Create account",
+      "observed_target": "สร้างบัญชี",
+      "proposal": "สร้างบัญชี",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "online:Licence",
+      "source": "Licence",
+      "observed_target": "ใบอนุญาต",
+      "proposal": "สัญญาอนุญาต",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Use the agreed content/software licence term, distinct from an administrative permit."
+    },
+    {
+      "id": "online:License",
+      "source": "License",
+      "observed_target": "ใบอนุญาต",
+      "proposal": "สัญญาอนุญาต",
+      "decision": "change",
+      "severity": "major",
+      "reason": "Keep the alternate English spelling aligned with Licence."
+    },
+    {
+      "id": "online:Room",
+      "source": "Room",
+      "observed_target": "ห้อง",
+      "proposal": "ห้อง",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    },
+    {
+      "id": "online:Rooms",
+      "source": "Rooms",
+      "observed_target": "ห้องพัก",
+      "proposal": "ห้อง",
+      "decision": "change",
+      "severity": "major",
+      "reason": "ห้องพัก implies lodging; these are multiplayer game rooms. Thai does not require a plural suffix."
+    },
+    {
+      "id": "online:Sign in",
+      "source": "Sign in",
+      "observed_target": "เข้าสู่ระบบ",
+      "proposal": "ลงชื่อเข้าใช้",
+      "decision": "change",
+      "severity": "minor",
+      "reason": "Apply language-brief terminology consistently across native and online surfaces."
+    },
+    {
+      "id": "online:Upload",
+      "source": "Upload",
+      "observed_target": "อัปโหลด",
+      "proposal": "อัปโหลด",
+      "decision": "retain",
+      "severity": null,
+      "reason": "Retain: correct concise Thai, preserves source meaning and required tokens, and agrees with the language brief."
+    }
+  ],
+  "summary": {
+    "reviewed": 56,
+    "changes": 42
+  },
+  "status": "independent-first-pass-proposals; parent must integrate and recheck; no release approval"
+}

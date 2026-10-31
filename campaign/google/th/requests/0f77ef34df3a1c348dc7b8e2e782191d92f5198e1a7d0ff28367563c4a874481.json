@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "A score for the combined fighting power of the colony&#x27;s warriors<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> how hard and how fast they hit.",
+      "Defence strength",
+      "A score for the combined firepower of the colony&#x27;s defence towers.",
+      "Total hit points",
+      "The hit points of all the colony&#x27;s units and buildings added together.",
+      "Damage dealt",
+      "Damage the colony did to enemy units and buildings. Split it to see warriors, magic and towers.",
+      "Damage taken",
+      "Damage enemies did to the colony&#x27;s units and buildings.",
+      "Damage balance",
+      "Damage dealt minus damage taken. Above zero the colony was winning its fights.",
+      "Units killed in combat",
+      "Units of this colony killed by enemies. Split it to see workers, explorers and warriors separately.",
+      "Shots that hit",
+      "The share of shots fired by the colony&#x27;s towers and explorers that hit their target.",
+      "Training",
+      "Visits by units to schools, barracks, racetracks and swimming pools to learn a skill.",
+      "Skills gained",
+      "Skill levels the colony&#x27;s units gained through training.",
+      "Resource growth near the colony",
+      "How much material stock grew in resources within 32 squares of the colony&#x27;s buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.",
+      "Resource growth across the map",
+      "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+      "Units unable to move",
+      "Units boxed in with no free square to step onto.",
+      "Resources cleared",
+      "Resources removed by workers in clearing areas to make room.",
+      "Prestige",
+      "The colony&#x27;s prestige, earned by top-level buildings. A match with a prestige goal ends when it is reached.",
+      "Combat",
+      "Starvation",
+      "Clearing injuries",
+      "Trapped",
+      "Other",
+      "Nearly empty",
+      "Low",
+      "Half full",
+      "Well fed",
+      "Critical",
+      "Wounded",
+      "Hurt",
+      "Healthy",
+      "Weakening",
+      "Looking for an inn",
+      "Eating",
+      "Healing",
+      "Meals",
+      "New units",
+      "Ammunition",
+      "New buildings",
+      "Upgrades",
+      "Built",
+      "Upgraded",
+      "Repaired",
+      "Destroyed",
+      "Demolished",
+      "Warriors",
+      "Magic",
+      "Towers",
+      "Within 8 squares",
+      "8 to 16 squares",
+      "16 to 32 squares",
+      "units",
+      "food",
+      "meals",
+      "hit points",
+      "units",
+      "buildings",
+      "score",
+      "damage",
+      "shots",
+      "visits",
+      "skill levels",
+      "prestige",
+      "% of <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>",
+      "% of all colonies",
+      "% of the colony&#x27;s units",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> per minute, per 100 units in the colony",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> per 100 units in the colony",
+      "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> per minute"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "คะแนนสำหรับพลังการต่อสู้รวมของเหล่านักรบในอาณานิคม <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> ว่าพวกเขาโจมตีได้รุนแรงและรวดเร็วแค่ไหน"
+      },
+      {
+        "translatedText": "ความแข็งแกร่งด้านการป้องกัน"
+      },
+      {
+        "translatedText": "คะแนนที่ได้จากการรวมพลังยิงของหอคอยป้องกันของอาณานิคม"
+      },
+      {
+        "translatedText": "คะแนนพลังชีวิตรวม"
+      },
+      {
+        "translatedText": "ผลรวมของพลังชีวิตของหน่วยรบและสิ่งก่อสร้างทั้งหมดในอาณานิคม"
+      },
+      {
+        "translatedText": "ความเสียหายที่เกิดขึ้น"
+      },
+      {
+        "translatedText": "ความเสียหายที่อาณานิคมสร้างให้กับหน่วยและสิ่งก่อสร้างของศัตรู แยกดูเพื่อดูรายละเอียดเกี่ยวกับนักรบ เวทมนตร์ และหอคอย"
+      },
+      {
+        "translatedText": "ความเสียหายที่เกิดขึ้น"
+      },
+      {
+        "translatedText": "ความเสียหายที่ศัตรูก่อขึ้นต่อหน่วยทหารและสิ่งก่อสร้างของอาณานิคม"
+      },
+      {
+        "translatedText": "สมดุลความเสียหาย"
+      },
+      {
+        "translatedText": "ความเสียหายที่ทำได้ลบด้วยความเสียหายที่ได้รับ หากค่ามากกว่าศูนย์ แสดงว่าอาณานิคมกำลังได้เปรียบในการต่อสู้"
+      },
+      {
+        "translatedText": "หน่วยที่เสียชีวิตในการรบ"
+      },
+      {
+        "translatedText": "หน่วยต่างๆ ในอาณานิคมนี้ถูกศัตรูสังหาร แยกดูรายละเอียดได้ที่นี่ คือ คนงาน นักสำรวจ และนักรบ"
+      },
+      {
+        "translatedText": "การยิงที่โดน"
+      },
+      {
+        "translatedText": "สัดส่วนของกระสุนที่ยิงจากหอคอยและนักสำรวจของอาณานิคมที่เข้าเป้าหมาย"
+      },
+      {
+        "translatedText": "การฝึกอบรม"
+      },
+      {
+        "translatedText": "หน่วยต่างๆ จะไปเยี่ยมชมโรงเรียน ค่ายทหาร สนามแข่งรถ และสระว่ายน้ำ เพื่อเรียนรู้ทักษะต่างๆ"
+      },
+      {
+        "translatedText": "ทักษะที่ได้รับ"
+      },
+      {
+        "translatedText": "ระดับทักษะที่หน่วยต่างๆ ในอาณานิคมได้รับจากการฝึกฝน"
+      },
+      {
+        "translatedText": "การเพิ่มจำนวนของทรัพยากรใกล้กับอาณานิคม"
+      },
+      {
+        "translatedText": "ปริมาณทรัพยากรที่เพิ่มขึ้นในรัศมี 32 ช่องจากอาคารของอาณานิคม วัดจากคะแนนการเติบโต ไม่ใช่ปริมาณที่เก็บเกี่ยวได้ แบ่งข้อมูลเพื่อดูว่าทรัพยากรเหล่านั้นเติบโตใกล้บ้านมากแค่ไหน"
+      },
+      {
+        "translatedText": "การเติบโตของทรัพยากรทั่วทั้งแผนที่"
+      },
+      {
+        "translatedText": "ปริมาณทรัพยากรที่เพิ่มขึ้นในทุกพื้นที่บนแผนที่ วัดจากคะแนนการเพิ่มขึ้น ไม่ใช่ปริมาณที่เก็บเกี่ยวได้ วิธีการนี้ใช้ได้กับทุกอาณานิคม"
+      },
+      {
+        "translatedText": "หน่วยที่ไม่สามารถเคลื่อนที่ได้"
+      },
+      {
+        "translatedText": "หน่วยต่างๆ ถูกล้อมกรอบไว้โดยไม่มีพื้นที่ว่างให้เหยียบย่าง"
+      },
+      {
+        "translatedText": "ทรัพยากรได้รับการเคลียร์แล้ว"
+      },
+      {
+        "translatedText": "ทรัพยากรที่คนงานขนย้ายออกไปในระหว่างการเคลียร์พื้นที่เพื่อเตรียมพื้นที่ใหม่"
+      },
+      {
+        "translatedText": "เกียรติยศ"
+      },
+      {
+        "translatedText": "ชื่อเสียงของอาณานิคมได้มาจากการสร้างสิ่งก่อสร้างระดับสูงสุด การแข่งขันที่มีเป้าหมายด้านชื่อเสียงจะจบลงเมื่อบรรลุเป้าหมายนั้น"
+      },
+      {
+        "translatedText": "การต่อสู้"
+      },
+      {
+        "translatedText": "ความอดอยาก"
+      },
+      {
+        "translatedText": "การเคลียร์อาการบาดเจ็บ"
+      },
+      {
+        "translatedText": "ติดกับดัก"
+      },
+      {
+        "translatedText": "อื่น"
+      },
+      {
+        "translatedText": "เกือบว่างเปล่า"
+      },
+      {
+        "translatedText": "ต่ำ"
+      },
+      {
+        "translatedText": "เต็มครึ่งหนึ่ง"
+      },
+      {
+        "translatedText": "อิ่มท้องดี"
+      },
+      {
+        "translatedText": "วิกฤต"
+      },
+      {
+        "translatedText": "บาดเจ็บ"
+      },
+      {
+        "translatedText": "เจ็บ"
+      },
+      {
+        "translatedText": "สุขภาพดี"
+      },
+      {
+        "translatedText": "การอ่อนตัวลง"
+      },
+      {
+        "translatedText": "กำลังมองหาโรงแรมขนาดเล็กอยู่"
+      },
+      {
+        "translatedText": "การกิน"
+      },
+      {
+        "translatedText": "การรักษา"
+      },
+      {
+        "translatedText": "อาหาร"
+      },
+      {
+        "translatedText": "หน่วยใหม่"
+      },
+      {
+        "translatedText": "กระสุน"
+      },
+      {
+        "translatedText": "อาคารใหม่"
+      },
+      {
+        "translatedText": "การอัปเกรด"
+      },
+      {
+        "translatedText": "สร้าง"
+      },
+      {
+        "translatedText": "อัปเกรดแล้ว"
+      },
+      {
+        "translatedText": "ซ่อมแซมแล้ว"
+      },
+      {
+        "translatedText": "ถูกทำลาย"
+      },
+      {
+        "translatedText": "รื้อถอน"
+      },
+      {
+        "translatedText": "นักรบ"
+      },
+      {
+        "translatedText": "เวทมนตร์"
+      },
+      {
+        "translatedText": "หอคอย"
+      },
+      {
+        "translatedText": "ภายใน 8 ช่องสี่เหลี่ยม"
+      },
+      {
+        "translatedText": "8 ถึง 16 ช่องสี่เหลี่ยม"
+      },
+      {
+        "translatedText": "16 ถึง 32 ช่องสี่เหลี่ยม"
+      },
+      {
+        "translatedText": "หน่วย"
+      },
+      {
+        "translatedText": "อาหาร"
+      },
+      {
+        "translatedText": "อาหาร"
+      },
+      {
+        "translatedText": "คะแนนพลังชีวิต"
+      },
+      {
+        "translatedText": "หน่วย"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "คะแนน"
+      },
+      {
+        "translatedText": "ความเสียหาย"
+      },
+      {
+        "translatedText": "ช็อต"
+      },
+      {
+        "translatedText": "การเยี่ยมชม"
+      },
+      {
+        "translatedText": "ระดับทักษะ"
+      },
+      {
+        "translatedText": "เกียรติยศ"
+      },
+      {
+        "translatedText": "% ของ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span>"
+      },
+      {
+        "translatedText": "เปอร์เซ็นต์ของอาณานิคมทั้งหมด"
+      },
+      {
+        "translatedText": "เปอร์เซ็นต์ของหน่วยในอาณานิคม"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ต่อนาที ต่อ 100 หน่วยในอาณานิคม"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ต่อ 100 หน่วยในอาณานิคม"
+      },
+      {
+        "translatedText": "<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">%0</span> ต่อนาที"
+      }
+    ]
+  }
+}

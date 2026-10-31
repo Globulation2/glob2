@@ -1,0 +1,18 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "7f5189ea785f3ebc0b36e3083f822a66e59684fec15a769812e2572a875c34bd",
+  "source_file_sha256": {
+    "macos:NSLocalNetworkUsageDescription": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896"
+  },
+  "target_sha256": "14882598830eb95cdd1b7a28f016f48d0c90646104364f41695e69508a27c377",
+  "reviewed_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "approved_keys": [
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "findings": [],
+  "rationale": "Freshly read selected exact phrase against English. แบบหลายผู้เล่น naturally describes multiplayer mode; both discovery and joining of hosted games remain explicit. Apple เครือข่ายในพื้นที่ terminology matches approved iOS text. Official Globulation 2 brand retained.",
+  "status": "approved",
+  "review_basis": "Agent editorial review of actual reconciled final text, not native-human certification."
+}

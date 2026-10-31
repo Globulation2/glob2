@@ -1,0 +1,338 @@
+{
+  "identity": {
+    "project": "bradley-personal-20261027",
+    "locale": "th",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a"
+  },
+  "request": {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "th",
+    "mimeType": "text/html",
+    "contents": [
+      "Starting workers affects generated maps only.",
+      "Unavailable",
+      "Use selection",
+      "Quick clash on premade maps<span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> only speed changes (2x).",
+      "Generate a preview to explore this world.",
+      "More workers jump-start colony growth. Changes the generated map.",
+      "No warriors",
+      "Add key to sequence",
+      "Add shortcut",
+      "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "Adjust music and voice volume.",
+      "Adjust the pace of play.",
+      "Advanced binding",
+      "Artwork &amp; effects",
+      "Audio",
+      "Bind Escape",
+      "Building",
+      "Building defaults",
+      "Cancel",
+      "Changes saved automatically",
+      "Changes you make during play update these defaults for future games.",
+      "Changing the renderer requires a restart.",
+      "Choose a binding to change it, or add another shortcut for an action.",
+      "Choose a window or fill the screen.",
+      "Choose how the game looks on your screen.",
+      "Completed",
+      "Construction",
+      "Controls",
+      "Could not change display mode. The previous mode was restored.",
+      "Could not save",
+      "Current display",
+      "Default",
+      "Display",
+      "Display &amp; graphics",
+      "Display the <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span> cursor.",
+      "Done",
+      "Edit shortcut",
+      "Multiply the operating system display scale for menus, text and the sidebar.",
+      "Flags",
+      "Full",
+      "Fullscreen",
+      "Game",
+      "Game speed",
+      "Gameplay",
+      "Graphics detail",
+      "Interface scale",
+      "Keep",
+      "Keep this display mode?",
+      "Keep your volume levels while silencing audio.",
+      "Key",
+      "Keyboard shortcuts",
+      "Keys form a sequence in order. Each key can trigger on press or release.",
+      "Language",
+      "Language &amp; player",
+      "Language used throughout the interface.",
+      "Level",
+      "Map editor",
+      "Match the desktop",
+      "Missing font",
+      "Music volume",
+      "Mute audio",
+      "Name shown to other players.",
+      "Off",
+      "On",
+      "OpenGL is not available in this build.",
+      "Player name",
+      "Press",
+      "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+      "Radius",
+      "Reduced",
+      "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+      "Release",
+      "Remember assignments between games",
+      "Remove key",
+      "Remove shortcut",
+      "Renderer",
+      "Replace conflicting bindings",
+      "Replace shortcuts in this context with the defaults? This saves immediately.",
+      "Resolution",
+      "Restore default shortcuts"
+    ]
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "การเริ่มการทำงานของคนงานจะมีผลเฉพาะกับแผนที่ที่สร้างขึ้นเท่านั้น"
+      },
+      {
+        "translatedText": "ไม่พร้อมใช้งาน"
+      },
+      {
+        "translatedText": "ใช้การเลือก"
+      },
+      {
+        "translatedText": "ปะทะกันอย่างรวดเร็วบนแผนที่ที่สร้างไว้ล่วงหน้า <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">:</span> เปลี่ยนเฉพาะความเร็ว (2 เท่า)"
+      },
+      {
+        "translatedText": "สร้างตัวอย่างเพื่อสำรวจโลกใบนี้"
+      },
+      {
+        "translatedText": "การเพิ่มจำนวนคนงานจะช่วยเร่งการเติบโตของอาณานิคม และเปลี่ยนแปลงแผนที่ที่สร้างขึ้น"
+      },
+      {
+        "translatedText": "ไม่มีนักรบ"
+      },
+      {
+        "translatedText": "เพิ่มคีย์ลงในลำดับ"
+      },
+      {
+        "translatedText": "เพิ่มทางลัด"
+      },
+      {
+        "translatedText": "ปรับหน่วยที่กำหนดไว้ด้วยวงล้อ เมื่อปิดเครื่อง ให้กดปุ่ม Ctrl ค้างไว้ ปุ่ม Shift ใช้ปรับรัศมีของธง นอกจากนี้ยังใช้ควบคุมการป้อนข้อมูลด้วยวงล้อในเมนูอื่นๆ ด้วย"
+      },
+      {
+        "translatedText": "ปรับระดับเสียงเพลงและเสียงพูด"
+      },
+      {
+        "translatedText": "ปรับจังหวะการเล่นให้เหมาะสม"
+      },
+      {
+        "translatedText": "การเข้าเล่มขั้นสูง"
+      },
+      {
+        "translatedText": "งานศิลปะและเอฟเฟกต์"
+      },
+      {
+        "translatedText": "เสียง"
+      },
+      {
+        "translatedText": "ผูกหนี"
+      },
+      {
+        "translatedText": "อาคาร"
+      },
+      {
+        "translatedText": "ค่าเริ่มต้นของอาคาร"
+      },
+      {
+        "translatedText": "ยกเลิก"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงถูกบันทึกโดยอัตโนมัติ"
+      },
+      {
+        "translatedText": "การเปลี่ยนแปลงที่คุณทำระหว่างการเล่นจะอัปเดตค่าเริ่มต้นเหล่านี้สำหรับการเล่นเกมในอนาคต"
+      },
+      {
+        "translatedText": "การเปลี่ยนตัวแสดงผลจำเป็นต้องรีสตาร์ทเครื่อง"
+      },
+      {
+        "translatedText": "เลือกปุ่มลัดเพื่อเปลี่ยน หรือเพิ่มปุ่มลัดอื่นสำหรับการกระทำนั้น"
+      },
+      {
+        "translatedText": "เลือกหน้าต่างหรือแสดงผลเต็มหน้าจอ"
+      },
+      {
+        "translatedText": "เลือกวิธีการแสดงผลเกมบนหน้าจอของคุณ"
+      },
+      {
+        "translatedText": "สมบูรณ์"
+      },
+      {
+        "translatedText": "การก่อสร้าง"
+      },
+      {
+        "translatedText": "การควบคุม"
+      },
+      {
+        "translatedText": "ไม่สามารถเปลี่ยนโหมดการแสดงผลได้ ระบบได้คืนค่าโหมดก่อนหน้าแล้ว"
+      },
+      {
+        "translatedText": "ไม่สามารถบันทึกได้"
+      },
+      {
+        "translatedText": "การแสดงผลปัจจุบัน"
+      },
+      {
+        "translatedText": "ค่าเริ่มต้น"
+      },
+      {
+        "translatedText": "แสดง"
+      },
+      {
+        "translatedText": "การแสดงผลและกราฟิก"
+      },
+      {
+        "translatedText": "แสดงเคอร์เซอร์สำหรับ <span id=\"g2p0\" class=\"notranslate\" translate=\"no\">Globulation 2</span>"
+      },
+      {
+        "translatedText": "เสร็จแล้ว"
+      },
+      {
+        "translatedText": "แก้ไขทางลัด"
+      },
+      {
+        "translatedText": "คูณขนาดการแสดงผลของระบบปฏิบัติการสำหรับเมนู ข้อความ และแถบด้านข้าง"
+      },
+      {
+        "translatedText": "ธง"
+      },
+      {
+        "translatedText": "เต็ม"
+      },
+      {
+        "translatedText": "เต็มหน้าจอ"
+      },
+      {
+        "translatedText": "เกม"
+      },
+      {
+        "translatedText": "ความเร็วของเกม"
+      },
+      {
+        "translatedText": "เกมเพลย์"
+      },
+      {
+        "translatedText": "รายละเอียดกราฟิก"
+      },
+      {
+        "translatedText": "มาตราส่วนอินเทอร์เฟซ"
+      },
+      {
+        "translatedText": "เก็บ"
+      },
+      {
+        "translatedText": "ต้องการคงโหมดการแสดงผลนี้ไว้หรือไม่?"
+      },
+      {
+        "translatedText": "รักษาระดับเสียงของคุณไว้ในขณะที่ปิดเสียง"
+      },
+      {
+        "translatedText": "สำคัญ"
+      },
+      {
+        "translatedText": "แป้นพิมพ์ลัด"
+      },
+      {
+        "translatedText": "ปุ่มต่างๆ เรียงลำดับกัน แต่ละปุ่มสามารถทำงานได้เมื่อกดหรือปล่อย"
+      },
+      {
+        "translatedText": "ภาษา"
+      },
+      {
+        "translatedText": "ภาษาและผู้เล่น"
+      },
+      {
+        "translatedText": "ภาษาที่ใช้ตลอดทั้งอินเทอร์เฟซ"
+      },
+      {
+        "translatedText": "ระดับ"
+      },
+      {
+        "translatedText": "โปรแกรมแก้ไขแผนที่"
+      },
+      {
+        "translatedText": "เข้ากับเดสก์ท็อป"
+      },
+      {
+        "translatedText": "แบบอักษรหายไป"
+      },
+      {
+        "translatedText": "ระดับเสียงเพลง"
+      },
+      {
+        "translatedText": "ปิดเสียง"
+      },
+      {
+        "translatedText": "ชื่อจะปรากฏให้ผู้เล่นคนอื่นเห็น"
+      },
+      {
+        "translatedText": "ปิด"
+      },
+      {
+        "translatedText": "บน"
+      },
+      {
+        "translatedText": "OpenGL ไม่พร้อมใช้งานในเวอร์ชันนี้"
+      },
+      {
+        "translatedText": "ชื่อผู้เล่น"
+      },
+      {
+        "translatedText": "กด"
+      },
+      {
+        "translatedText": "กดปุ่มใดปุ่มหนึ่ง ปุ่ม Escape จะยกเลิกการจับภาพ ใช้ฟังก์ชัน Bind Escape เพื่อกำหนดปุ่ม Escape ให้กับผู้ใช้งาน"
+      },
+      {
+        "translatedText": "รัศมี"
+      },
+      {
+        "translatedText": "ลดลง"
+      },
+      {
+        "translatedText": "การลดรายละเอียดจะปิดใช้งานเมฆและเงาของเมฆ ลดความซับซ้อนของเอฟเฟกต์เวทมนตร์ และลดความโปร่งใส"
+      },
+      {
+        "translatedText": "ปล่อย"
+      },
+      {
+        "translatedText": "อย่าลืมภารกิจที่ต้องทำระหว่างเกม"
+      },
+      {
+        "translatedText": "ถอดกุญแจออก"
+      },
+      {
+        "translatedText": "ลบทางลัด"
+      },
+      {
+        "translatedText": "เรนเดอร์"
+      },
+      {
+        "translatedText": "แทนที่การผูกข้อมูลที่ขัดแย้งกัน"
+      },
+      {
+        "translatedText": "ต้องการแทนที่ปุ่มลัดในบริบทนี้ด้วยค่าเริ่มต้นหรือไม่? การดำเนินการนี้จะบันทึกทันที"
+      },
+      {
+        "translatedText": "ปณิธาน"
+      },
+      {
+        "translatedText": "คืนค่าทางลัดเริ่มต้น"
+      }
+    ]
+  }
+}

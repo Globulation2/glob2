@@ -1,0 +1,546 @@
+{
+  "editor": "cloud_adapter",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "10310d5850271ced65f501b7dd3397f4564d688484176869de63075b1599637d",
+  "edited_keys": [
+    "native:[Edit opponents]",
+    "native:[Next]",
+    "native:[Done]",
+    "native:[Contribution]",
+    "native:[Choose who controls this colony]",
+    "native:[Settings]",
+    "native:[AI opponents]",
+    "native:[Assigned %0 · Target %1]",
+    "native:[Range: %0]",
+    "native:[Player %0]",
+    "native:[Brush %0]",
+    "native:[Team %0]",
+    "native:[Your colony]",
+    "native:[%0 / %1 HP · %2]",
+    "native:[Units: %0]",
+    "native:[Need food: %0]",
+    "native:[Need healing: %0]",
+    "native:[Attack: %0]",
+    "native:[Defense: %0]",
+    "native:[Food: %0 / %1]",
+    "native:[View team %0]",
+    "native:[P %0/%1/%2]",
+    "native:[CPU load %0]",
+    "native:[Brush %0x%1]",
+    "native:[Level %0]",
+    "native:[Manage teams (%0)]",
+    "native:[Team %0 / Level %1]",
+    "native:[Files · %0]",
+    "native:[Hint %0]",
+    "native:[Objective %0]",
+    "native:[Entry %0 of 8 · empty entries are omitted]",
+    "native:[Teams %0/%1]",
+    "native:[Elapsed time · %0]",
+    "native:[Alliance and shared vision are fixed for this match.]",
+    "native:[Share vision]",
+    "native:[Share food vision]",
+    "native:[Chat]",
+    "native:[No briefing for this match.]",
+    "native:[Chat · recipients selected in Teams]",
+    "native:[Filename]",
+    "native:[Reduced motion]",
+    "native:[Send]",
+    "native:[Close]",
+    "native:[Forbidden]",
+    "native:[Guard]",
+    "native:[Clear]",
+    "native:[Farm]",
+    "native:[Paint]",
+    "native:[Erase]",
+    "native:[Paint on the map; two fingers move]",
+    "native:[Back to tools]",
+    "native:[Starvation overlay]",
+    "native:[Damage overlay]",
+    "native:[Defense overlay]",
+    "native:[Fertility overlay]",
+    "native:[Health and food bars]",
+    "native:[Message history]",
+    "native:[Show zones]",
+    "native:[Pan]",
+    "native:[Select]",
+    "native:[Show palette]",
+    "native:[Release to place]",
+    "native:[Blocked placement]",
+    "native:[File name]",
+    "native:[Load map]",
+    "native:[Save map]",
+    "native:[No files in this folder]",
+    "native:[No files saved yet]",
+    "native:[Export]",
+    "native:[Tap to write the mission briefing]",
+    "native:[Script]",
+    "native:[Previous]",
+    "native:[Compile]",
+    "native:[Tap to write this hint]",
+    "native:[Tap to write this objective]",
+    "native:[Mission briefing · tap to edit, swipe to scroll]",
+    "native:[Not enough recorded history yet.]",
+    "native:[Select a team to show its history.]",
+    "native:[Back to chart]",
+    "native:[Expand chart]",
+    "native:[Slot]",
+    "native:[Color]",
+    "native:[Player / AI]",
+    "native:[Group]",
+    "native:[Forbid]",
+    "native:[↓ Low]",
+    "native:[= Normal]",
+    "native:[↑ High]",
+    "native:[Details]",
+    "native:[Campaign name]",
+    "native:[Unlocking]",
+    "native:[Parameters]",
+    "native:[Blank map]",
+    "native:[Generated]",
+    "native:[Preview]",
+    "native:[Selected landscape]",
+    "native:[Representative preview]",
+    "native:[Hide parameters]",
+    "native:[Size and parameters]",
+    "native:[Choose a landscape]",
+    "native:[%0 / Browse]",
+    "native:[%0 colonies · %1]",
+    "native:[%0 · Team %1]",
+    "native:[Colonies: %0]",
+    "native:[%0 colonies · %1 AI]",
+    "native:[%0 · %1]",
+    "native:[Fairness: %0]",
+    "native:[Colony %0]",
+    "native:[Win chance: %0 · Fitness: %1]",
+    "native:[%0 · Contribution: %1]",
+    "native:[Min required level %0]",
+    "native:[Confirm %0]",
+    "native:[%0 %1]",
+    "native:[resume game]",
+    "native:[Add AI]",
+    "native:[Experiments set by the host]",
+    "native:[Experiments]",
+    "native:[experiment guard-area-balancing]",
+    "native:[experiment guard-area-balancing help]",
+    "native:[experiment farm-areas]",
+    "native:[experiment farm-areas help]",
+    "native:[List momentum]",
+    "native:[List bounce]",
+    "native:[lan pairing field]",
+    "native:[lan pairing connect]",
+    "native:[lan discovery instructions]",
+    "native:[lan discovery unavailable]",
+    "native:[lan discovered host %0]",
+    "native:[lan connection unavailable]",
+    "native:[lan connection verification failed %0]",
+    "native:[lan lobby endpoint required]",
+    "native:[turn reconnecting]",
+    "native:[turn waiting for players]",
+    "native:[turn rejoining]",
+    "native:[turn catching up %0]",
+    "native:[turn player reconnecting %0]",
+    "native:[turn player lagging %0]",
+    "native:[turn player resyncing %0]",
+    "native:[turn player not connected %0]",
+    "native:[lan host left]",
+    "native:[lan host lost]",
+    "native:[lan version mismatch %0]",
+    "native:[lan cannot host %0]",
+    "native:[play online]",
+    "native:[Use in room]",
+    "native:[conn ai]",
+    "native:[conn behind %0]",
+    "native:[conn behind explanation %0 %1]",
+    "native:[conn behind]",
+    "native:[conn card catching up]",
+    "native:[conn card colony works]",
+    "native:[conn card desync detail]",
+    "native:[conn card desync]",
+    "native:[conn card grace %0]",
+    "native:[conn card input paused]",
+    "native:[conn card lost]",
+    "native:[conn card progress %0 %1 %2]",
+    "native:[conn card reconnecting %0]",
+    "native:[conn card replaying %0]",
+    "native:[conn card seconds left %0]"
+  ],
+  "findings": [
+    {
+      "id": "native:[Contribution]",
+      "severity": "minor",
+      "proposed": "ส่วนต่อคะแนน",
+      "reason": "Contribution in model/chart context, not a creative work.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Assigned %0 · Target %1]",
+      "severity": "minor",
+      "proposed": "มอบหมาย %0 · เป้าหมาย %1",
+      "reason": "Concise coherent staffing status.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Range: %0]",
+      "severity": "major",
+      "proposed": "ระยะ: %0",
+      "reason": "Gameplay reach/range, not a numerical interval.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Units: %0]",
+      "severity": "minor",
+      "proposed": "ยูนิต: %0",
+      "reason": "Canonical unit term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[P %0/%1/%2]",
+      "severity": "minor",
+      "proposed": "P %0/%1/%2",
+      "reason": "Keep compact production-ratio notation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[CPU load %0]",
+      "severity": "minor",
+      "proposed": "CPU %0%",
+      "reason": "Keep acronym and attached percent for compact performance label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Hint %0]",
+      "severity": "minor",
+      "proposed": "คำแนะนำ %0",
+      "reason": "Canonical hint term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Objective %0]",
+      "severity": "minor",
+      "proposed": "เป้าหมาย %0",
+      "reason": "Canonical objective term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Entry %0 of 8 · empty entries are omitted]",
+      "severity": "minor",
+      "proposed": "รายการ %0 จาก 8 · ไม่แสดงรายการว่าง",
+      "reason": "Omitted entries, not whitespace characters.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Alliance and shared vision are fixed for this match.]",
+      "severity": "major",
+      "proposed": "พันธมิตรและการมองเห็นร่วมกันเปลี่ยนไม่ได้ในแมตช์นี้",
+      "reason": "Fixed means immutable during match; vision is shared map visibility.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Share vision]",
+      "severity": "major",
+      "proposed": "แบ่งปันการมองเห็น",
+      "reason": "Gameplay visibility, not strategic vision.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Share food vision]",
+      "severity": "major",
+      "proposed": "แบ่งปันการมองเห็นจากอาคารอาหาร",
+      "reason": "Visibility of food buildings enables conversion, not a food policy vision.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Chat · recipients selected in Teams]",
+      "severity": "major",
+      "proposed": "แชท · เลือกผู้รับในหน้าทีม",
+      "reason": "Teams is in-game team screen, not Microsoft Teams.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Reduced motion]",
+      "severity": "minor",
+      "proposed": "ลดการเคลื่อนไหว",
+      "reason": "Accessibility preference label.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Clear]",
+      "severity": "major",
+      "proposed": "แผ้วถาง",
+      "reason": "Clear resources zone, not adjective clear/obvious.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Paint]",
+      "severity": "major",
+      "proposed": "วาด",
+      "reason": "Map paint-tool action, not noun paint/color.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Paint on the map; two fingers move]",
+      "severity": "major",
+      "proposed": "วาดบนแผนที่ ใช้สองนิ้วเลื่อน",
+      "reason": "Two fingers move the map, not merely move two fingers.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Starvation overlay]",
+      "severity": "minor",
+      "proposed": "ชั้นข้อมูลความอดอยาก",
+      "reason": "Consistent overlay wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Damage overlay]",
+      "severity": "minor",
+      "proposed": "ชั้นข้อมูลความเสียหาย",
+      "reason": "Consistent overlay wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Defense overlay]",
+      "severity": "minor",
+      "proposed": "ชั้นข้อมูลการป้องกัน",
+      "reason": "Consistent overlay wording.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Fertility overlay]",
+      "severity": "major",
+      "proposed": "ชั้นข้อมูลความอุดมสมบูรณ์",
+      "reason": "Terrain fertility, not reproductive fertility.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Health and food bars]",
+      "severity": "critical",
+      "proposed": "แถบพลังชีวิตและอาหาร",
+      "reason": "HUD bars, not healthy snack bars.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Pan]",
+      "severity": "critical",
+      "proposed": "เลื่อน",
+      "reason": "Map pan action, not cooking pan.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Show palette]",
+      "severity": "minor",
+      "proposed": "แสดงแผงเลือก",
+      "reason": "Palette is a tool/type selector.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Release to place]",
+      "severity": "major",
+      "proposed": "ปล่อยเพื่อวาง",
+      "reason": "Release touch/mouse to place object, not release to a destination.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Blocked placement]",
+      "severity": "minor",
+      "proposed": "วางตรงนี้ไม่ได้",
+      "reason": "Concise invalid-placement feedback.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Compile]",
+      "severity": "major",
+      "proposed": "คอมไพล์",
+      "reason": "Compile a script, not collect/gather.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Tap to write this objective]",
+      "severity": "minor",
+      "proposed": "แตะเพื่อเขียนเป้าหมายนี้",
+      "reason": "Canonical objective term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Not enough recorded history yet.]",
+      "severity": "major",
+      "proposed": "ยังมีประวัติที่บันทึกไม่เพียงพอ",
+      "reason": "Game telemetry history, not historical documents.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Slot]",
+      "severity": "minor",
+      "proposed": "ช่อง",
+      "reason": "UI slot, not gambling-machine slot.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Selected landscape]",
+      "severity": "minor",
+      "proposed": "ภูมิประเทศที่เลือก",
+      "reason": "Canonical landscape term.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Representative preview]",
+      "severity": "major",
+      "proposed": "ตัวอย่างโดยประมาณ",
+      "reason": "Representative preview is illustrative rather than guaranteed exact final map.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[%0 colonies · %1]",
+      "severity": "minor",
+      "proposed": "อาณานิคม %0 แห่ง · %1",
+      "reason": "Canonical colony term and coherent count.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[Win chance: %0 · Fitness: %1]",
+      "severity": "critical",
+      "proposed": "โอกาสชนะ: %0 · ความเหมาะสม: %1",
+      "reason": "Model fitness, not physical fitness.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[%0 · Contribution: %1]",
+      "severity": "critical",
+      "proposed": "%0 · ส่วนต่อคะแนน: %1",
+      "reason": "Model contribution, not monetary donation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing help]",
+      "severity": "major",
+      "proposed": "นักรบที่ว่างจะกระจายตามเขตป้องกันที่วาดไว้ แทนที่จะไปรวมที่เขตใกล้สุด เขตใหญ่จะได้นักรบมากกว่า และเขตที่มีมากเกินไปจะแบ่งไปเขตอื่น",
+      "reason": "Free means unassigned; painted guard zones, not generic painted regions or liberated warriors.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[experiment farm-areas help]",
+      "severity": "minor",
+      "proposed": "เพิ่มพื้นที่ฟาร์มในแปรงโซน คนงานในฟาร์มจะเก็บจากช่องที่สุกที่สุดของแปลงที่เชื่อมกัน และเหลือเมล็ดไว้หนึ่งหน่วยทุกช่อง เพื่อให้แปลงงอกใหม่แทนการเก็บจนโล่งจากขอบ ไม้ที่งอกเข้าฟาร์มจะถูกแผ้วถาง",
+      "reason": "Clarify connected-field harvest rule and distinguish wood resources from whole forest.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[List momentum]",
+      "severity": "major",
+      "proposed": "แรงเฉื่อยขณะเลื่อนรายการ",
+      "reason": "List momentum is inertia while scrolling, not a list of momenta.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[List bounce]",
+      "severity": "major",
+      "proposed": "แรงเด้งของรายการ",
+      "reason": "Scroll-list overscroll bounce, not a list of bounces.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[turn catching up %0]",
+      "severity": "major",
+      "proposed": "กำลังตามให้ทัน: ตามหลัง %0 เทิร์น",
+      "reason": "Preserve turn unit omitted by provider.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[turn player lagging %0]",
+      "severity": "major",
+      "proposed": "เกมของ %0 ตามหลัง",
+      "reason": "Lagging is game state delay, not player being the abstract delay.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[turn player resyncing %0]",
+      "severity": "minor",
+      "proposed": "%0 กำลังตามให้ทัน",
+      "reason": "Ongoing catch-up, not already caught up.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[lan host left]",
+      "severity": "major",
+      "proposed": "โฮสต์ออกจากเกมแล้ว",
+      "reason": "Network host, not television presenter.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn behind %0]",
+      "severity": "major",
+      "proposed": "ตามหลัง %0",
+      "reason": "Time delay, not spatial behind/backstage.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn behind explanation %0 %1]",
+      "severity": "major",
+      "proposed": "ตามหลัง: ระยะเวลาที่เกมของผู้เล่นช้ากว่านาฬิกาแมตช์ รวมดีเลย์ที่ตั้งไว้ ต่ำกว่า %0 ถือว่าปกติ ตั้งแต่ %1 จะทำเครื่องหมายว่าช้า",
+      "reason": "Technical simulation/input delay, not subjective slowness of player reactions; canonical match.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn behind]",
+      "severity": "major",
+      "proposed": "ตามหลัง",
+      "reason": "Temporal lag, not physical backside.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn card catching up]",
+      "severity": "major",
+      "proposed": "กำลังตามให้ทัน",
+      "reason": "Replaying simulation to current match time, not monitoring progress.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn card colony works]",
+      "severity": "minor",
+      "proposed": "อาณานิคมยังทำงานเองต่อไป ยูนิตทำงานจนเสร็จและอาคารยังทำงาน",
+      "reason": "Canonical units and concise autonomous-colony explanation.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn card grace %0]",
+      "severity": "major",
+      "proposed": "อาณานิคมยังทำงานเองต่อไป ยูนิตทำงานจนเสร็จและอาคารยังทำงาน คุณมีเวลา %0 กลับมาก่อนถูกนำออกจากแมตช์",
+      "reason": "Removal from match is disconnection policy, not elimination/defeat by opponents.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn card input paused]",
+      "severity": "minor",
+      "proposed": "กำลังตามให้ทัน · พักรับคำสั่งชั่วคราว",
+      "reason": "Game inputs paused while replaying; concise user-facing meaning.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    },
+    {
+      "id": "native:[conn card progress %0 %1 %2]",
+      "severity": "critical",
+      "proposed": "%0% · %1 จาก %2 ทิก",
+      "reason": "Ticks are simulation steps, not check marks; attach percentage sign.",
+      "boundary_status": "plain Thai proposal; regenerate candidate boundaries and review before approval"
+    }
+  ],
+  "accepted_english": [
+    {
+      "id": "native:[%0 / %1 HP · %2]",
+      "reason": "Format skeleton contains only placeholders, separators and the standard HP abbreviation."
+    },
+    {
+      "id": "native:[%0 · %1]",
+      "reason": "Pure placeholder/separator format skeleton; no English prose to translate."
+    },
+    {
+      "id": "native:[%0 %1]",
+      "reason": "Pure placeholder format skeleton; exact spacing contract retained."
+    },
+    {
+      "id": "native:[conn ai]",
+      "reason": "AI is the established technical acronym."
+    }
+  ],
+  "review_basis": "Every source and actual target in this immutable batch read independently; meaning findings not consulted. Plain Thai corrections await boundary regeneration/recheck.",
+  "status": "independent-editorial-proposals; not final sign-off"
+}

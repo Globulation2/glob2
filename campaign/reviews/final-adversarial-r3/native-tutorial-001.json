@@ -1,0 +1,45 @@
+{
+  "adversarial_reviewer": "thai_rendering",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "target_sha256": "4f8124dc07fd541c9d90174384338e309ba2b1e83d0912ddf4b546fdca4a7992",
+  "approved_keys": [
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[tutorial]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial complete]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]"
+  ],
+  "fresh_reviewed_keys": [
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[tutorial complete]"
+  ],
+  "carried_keys": [
+    "native:[tutorial text 1]",
+    "native:[tutorial]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]"
+  ],
+  "carried_subset_sha256": "ca2e6bdc9813273e4173253d3cb5e8f5f9dbe53c493c0b06404b6ed23fea9b5a",
+  "findings": [],
+  "accepted_english": [],
+  "carry_proof": {
+    "round2_batch_sha256": "d70e57cabaaf8da4fe1109429fdd405d926760b64f538a461cb7fe6a4da09418",
+    "round2_review_sha256": "c49749fffeae2f60caa52310d755cfa8d89abe565a8b32bc1b3eb1dfa10ee2eb"
+  },
+  "method": "Fresh independent adversarial recheck of every changed actual round3 target against English, gameplay and terminology. Remaining values carried only after exact equality proof against this reviewer’s fully read round2 batch; no fresh-read claim for carried text. Agent-reviewed, not native-human-certified."
+}

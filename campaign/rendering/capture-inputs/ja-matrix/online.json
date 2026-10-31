@@ -1,0 +1,10 @@
+{
+  "Sign in": "サインイン",
+  "Sign out": "サインアウト",
+  "Play": "ゲーム開始",
+  "Custom content credits": "独自コンテンツの作者一覧",
+  "Source identity": "情報源の身元",
+  "{slot0} teams": "{slot0} チーム",
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": "プロバイダーの結果の照合が必要です。予約済みの{value0}クレジットは保持され、新しいリクエストは一時停止しています。手動編集とエクスポートは引き続き利用できます。",
+  "Good under {value0}, fair under {value1}, poor from {value2}.": "{value0}未満は良好、{value1}未満は普通、{value2}以上は不良。"
+}

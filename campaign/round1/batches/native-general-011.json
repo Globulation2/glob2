@@ -1,0 +1,969 @@
+{
+  "id": "native-general-011",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[profile best map]",
+      "key": "[profile best map]",
+      "source": "Best map",
+      "target": "แผนที่​ที่​ดี​ที่สุด"
+    },
+    {
+      "id": "native:[profile %0 w %1 l]",
+      "key": "[profile %0 w %1 l]",
+      "source": "%0 W · %1 L",
+      "target": "%0 เปียก · %1 แห้ง"
+    },
+    {
+      "id": "native:[profile no rated games]",
+      "key": "[profile no rated games]",
+      "source": "Play a ranked match to get a rating.",
+      "target": "เล่น​แมตช์​จัด​อันดับ​เพื่อ​รับ​เรต​ติ้ง"
+    },
+    {
+      "id": "native:[profile all]",
+      "key": "[profile all]",
+      "source": "All",
+      "target": "ทั้งหมด"
+    },
+    {
+      "id": "native:[profile rooms]",
+      "key": "[profile rooms]",
+      "source": "Rooms",
+      "target": "ห้อง​พัก"
+    },
+    {
+      "id": "native:[profile vs ai]",
+      "key": "[profile vs ai]",
+      "source": "vs AI",
+      "target": "เทียบ​กับ AI"
+    },
+    {
+      "id": "native:[profile matches]",
+      "key": "[profile matches]",
+      "source": "Matches",
+      "target": "การ​แข่งขัน"
+    },
+    {
+      "id": "native:[online loading]",
+      "key": "[online loading]",
+      "source": "Loading…",
+      "target": "กำลัง​โหลด…"
+    },
+    {
+      "id": "native:[profile no matches]",
+      "key": "[profile no matches]",
+      "source": "No matches yet.",
+      "target": "ยัง​ไม่​พบ​ผลลัพธ์​ที่​ตรง​กัน"
+    },
+    {
+      "id": "native:[online load more]",
+      "key": "[online load more]",
+      "source": "Load more",
+      "target": "โหลด​เพิ่ม​เติม"
+    },
+    {
+      "id": "native:[profile title]",
+      "key": "[profile title]",
+      "source": "Profile",
+      "target": "ประวัติ​โดย​ย่อ"
+    },
+    {
+      "id": "native:[profile guest]",
+      "key": "[profile guest]",
+      "source": "guest",
+      "target": "แขก"
+    },
+    {
+      "id": "native:[profile playing since %0]",
+      "key": "[profile playing since %0]",
+      "source": "playing since %0",
+      "target": "เล่น​มา​ตั้งแต่ %0"
+    },
+    {
+      "id": "native:[profile full profile web]",
+      "key": "[profile full profile web]",
+      "source": "Full profile on the web",
+      "target": "ดู​ข้อมูล​โปรไฟล์​ฉบับ​เต็ม​ได้​ทาง​เว็บไซต์"
+    },
+    {
+      "id": "native:[profile replays note]",
+      "key": "[profile replays note]",
+      "source": "Replays are downloaded from the server when you open them; ones you saved locally stay in Load game → Replays.",
+      "target": "ไฟล์​รี​เพล​ย์​จะ​ถูก​ดาวน์โหลด​จาก​เซิร์ฟเวอร์​เมื่อ​คุณ​เปิด​ดู ส่วน​ไฟล์​ที่​คุณ​บันทึก​ไว้​ใน​เครื่อง​จะ​ยัง​คง​อยู่​ใน​เมนู โหลด​เกม → รี​เพล​ย์"
+    },
+    {
+      "id": "native:[profile web profile]",
+      "key": "[profile web profile]",
+      "source": "Web profile",
+      "target": "โปรไฟล์​บน​เว็บ"
+    },
+    {
+      "id": "native:[maps most played]",
+      "key": "[maps most played]",
+      "source": "Most played",
+      "target": "เล่น​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[maps most liked]",
+      "key": "[maps most liked]",
+      "source": "Most liked",
+      "target": "ถูกใจ​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[maps newest]",
+      "key": "[maps newest]",
+      "source": "Newest",
+      "target": "ใหม่​ล่าสุด"
+    },
+    {
+      "id": "native:[maps most downloaded]",
+      "key": "[maps most downloaded]",
+      "source": "Most downloaded",
+      "target": "ดาวน์โหลด​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[maps any size]",
+      "key": "[maps any size]",
+      "source": "Any size",
+      "target": "ทุกข​นาด"
+    },
+    {
+      "id": "native:[maps up to 128]",
+      "key": "[maps up to 128]",
+      "source": "Up to 128 × 128",
+      "target": "ขนาด​สูงสุด 128 × 128 พิกเซล"
+    },
+    {
+      "id": "native:[maps 256]",
+      "key": "[maps 256]",
+      "source": "256 × 256",
+      "target": "256 × 256"
+    },
+    {
+      "id": "native:[maps 512 and larger]",
+      "key": "[maps 512 and larger]",
+      "source": "512 and larger",
+      "target": "512 และ​ใหญ่​กว่า"
+    },
+    {
+      "id": "native:[maps report broken]",
+      "key": "[maps report broken]",
+      "source": "It does not work",
+      "target": "มัน​ใช้​ไม่​ได้​ผล"
+    },
+    {
+      "id": "native:[maps report offensive]",
+      "key": "[maps report offensive]",
+      "source": "Offensive",
+      "target": "ก้าวร้าว"
+    },
+    {
+      "id": "native:[maps report copyright]",
+      "key": "[maps report copyright]",
+      "source": "Someone else's work",
+      "target": "ผล​งาน​ของ​คน​อื่น"
+    },
+    {
+      "id": "native:[maps report other]",
+      "key": "[maps report other]",
+      "source": "Something else",
+      "target": "อย่าง​อื่น"
+    },
+    {
+      "id": "native:[maps public]",
+      "key": "[maps public]",
+      "source": "Public",
+      "target": "สาธารณะ"
+    },
+    {
+      "id": "native:[maps unlisted]",
+      "key": "[maps unlisted]",
+      "source": "Unlisted",
+      "target": "ไม่​ได้​ระบุ​รายการ"
+    },
+    {
+      "id": "native:[maps private]",
+      "key": "[maps private]",
+      "source": "Private",
+      "target": "ส่วน​ตัว"
+    },
+    {
+      "id": "native:[maps cannot read file]",
+      "key": "[maps cannot read file]",
+      "source": "The map file could not be read.",
+      "target": "ไม่​สามารถ​อ่าน​ไฟล์​แผนที่​ได้"
+    },
+    {
+      "id": "native:[maps file too large]",
+      "key": "[maps file too large]",
+      "source": "The map file is too large to share.",
+      "target": "ไฟล์​แผนที่​มี​ขนาด​ใหญ่​เกิน​กว่า​จะ​แชร์​ได้"
+    },
+    {
+      "id": "native:[maps saved for next room]",
+      "key": "[maps saved for next room]",
+      "source": "The map is downloaded; it will be used when you open a room.",
+      "target": "แผนที่​ถูก​ดาวน์โหลด​เรียบร้อย​แล้ว และ​จะ​ถูก​ใช้​เมื่อ​คุณ​เปิด​ห้อง"
+    },
+    {
+      "id": "native:[maps download failed]",
+      "key": "[maps download failed]",
+      "source": "The map could not be downloaded.",
+      "target": "ไม่​สามารถ​ดาวน์โหลด​แผนที่​ได้"
+    },
+    {
+      "id": "native:[maps %0 colonies]",
+      "key": "[maps %0 colonies]",
+      "source": "%0 colonies",
+      "target": "%0 อาณานิคม"
+    },
+    {
+      "id": "native:[maps version %0]",
+      "key": "[maps version %0]",
+      "source": "version %0",
+      "target": "เวอร์ชัน %0"
+    },
+    {
+      "id": "native:[maps updated %0]",
+      "key": "[maps updated %0]",
+      "source": "updated %0",
+      "target": "อัปเดต %0"
+    },
+    {
+      "id": "native:[maps downloading]",
+      "key": "[maps downloading]",
+      "source": "Downloading the map…",
+      "target": "กำลัง​ดาวน์โหลด​แผนที่…"
+    },
+    {
+      "id": "native:[maps like needs account]",
+      "key": "[maps like needs account]",
+      "source": "Liking maps needs a signed-in account.",
+      "target": "กา​รกดไลค์​แผนที่​จำเป็น​ต้อง​เข้า​สู่​ระบบ​บัญชี​ก่อน"
+    },
+    {
+      "id": "native:[maps report sent]",
+      "key": "[maps report sent]",
+      "source": "Thank you; the moderators will look at it.",
+      "target": "ขอบคุณ​ค่ะ ผู้​ดูแล​ระบบ​จะ​ตรวจ​สอบ​ดู​ค่ะ"
+    },
+    {
+      "id": "native:[maps select a map]",
+      "key": "[maps select a map]",
+      "source": "Select a map to see its details.",
+      "target": "เลือก​แผนที่​เพื่อ​ดู​ราย​ละเอียด"
+    },
+    {
+      "id": "native:[maps by %0]",
+      "key": "[maps by %0]",
+      "source": "by %0",
+      "target": "โดย %0"
+    },
+    {
+      "id": "native:[maps stats %0 %1 %2]",
+      "key": "[maps stats %0 %1 %2]",
+      "source": "▶ %0 plays · ⬇ %1 downloads · ♥ %2",
+      "target": "▶ %0 ที่​เล่น · ⬇ %1 ที่​ดาวน์โหลด · ♥ %2"
+    },
+    {
+      "id": "native:[maps use in room]",
+      "key": "[maps use in room]",
+      "source": "Use in a room",
+      "target": "ใช้​ใน​ห้อง"
+    },
+    {
+      "id": "native:[maps liked]",
+      "key": "[maps liked]",
+      "source": "Liked",
+      "target": "ชอบ"
+    },
+    {
+      "id": "native:[maps like]",
+      "key": "[maps like]",
+      "source": "Like",
+      "target": "ชอบ"
+    },
+    {
+      "id": "native:[maps reported]",
+      "key": "[maps reported]",
+      "source": "Reported",
+      "target": "รายงาน"
+    },
+    {
+      "id": "native:[maps report]",
+      "key": "[maps report]",
+      "source": "Report…",
+      "target": "รายงาน…"
+    },
+    {
+      "id": "native:[maps report why]",
+      "key": "[maps report why]",
+      "source": "What is wrong with this map?",
+      "target": "แผนที่​นี้​มี​อะไร​ผิด​ปกติ?"
+    },
+    {
+      "id": "native:[maps search placeholder]",
+      "key": "[maps search placeholder]",
+      "source": "Search maps or authors",
+      "target": "ค้นหา​แผนที่​หรือ​ผู้​เขียน"
+    },
+    {
+      "id": "native:[maps none found]",
+      "key": "[maps none found]",
+      "source": "No maps match.",
+      "target": "ไม่มี​แผนที่​ใด​ตรง​กัน"
+    },
+    {
+      "id": "native:[maps catalog empty]",
+      "key": "[maps catalog empty]",
+      "source": "No maps have been shared on this server yet.",
+      "target": "ยัง​ไม่มี​การ​แชร์​แผน​ที่​ใดๆ บน​เซิร์ฟเวอร์​นี้"
+    },
+    {
+      "id": "native:[maps clear filters]",
+      "key": "[maps clear filters]",
+      "source": "Clear filters",
+      "target": "ล้าง​ตัว​กรอง"
+    },
+    {
+      "id": "native:[maps any colonies]",
+      "key": "[maps any colonies]",
+      "source": "Any colonies",
+      "target": "อาณานิคม​ใด ๆ"
+    },
+    {
+      "id": "native:[maps checking]",
+      "key": "[maps checking]",
+      "source": "Checking…",
+      "target": "กำลัง​ตรวจ​สอบ…"
+    },
+    {
+      "id": "native:[maps no version yet]",
+      "key": "[maps no version yet]",
+      "source": "No version has been uploaded yet.",
+      "target": "ยัง​ไม่มี​การ​อัป​โหลด​เวอร์​ชัน​ใดๆ"
+    },
+    {
+      "id": "native:[maps rejected]",
+      "key": "[maps rejected]",
+      "source": "Rejected",
+      "target": "ถูก​ปฏิเสธ"
+    },
+    {
+      "id": "native:[maps did not load %0]",
+      "key": "[maps did not load %0]",
+      "source": "The map did not load: %0",
+      "target": "แผนที่​โหลด​ไม่​สำเร็จ : %0"
+    },
+    {
+      "id": "native:[maps unknown reason]",
+      "key": "[maps unknown reason]",
+      "source": "no reason was given",
+      "target": "ไม่มี​การ​ระบุ​เหตุผล"
+    },
+    {
+      "id": "native:[maps fix and upload again]",
+      "key": "[maps fix and upload again]",
+      "source": "fix it in the editor, then upload again",
+      "target": "แก้ไข​ใน​โปรแกรม​แก้ไข แล้ว​อัป​โหลด​อีก​ครั้ง"
+    },
+    {
+      "id": "native:[maps uploaded just now]",
+      "key": "[maps uploaded just now]",
+      "source": "uploaded just now",
+      "target": "เพิ่ง​อัป​โหลด​เสร็จ​เมื่อ​สัก​ครู่"
+    },
+    {
+      "id": "native:[maps loading on server]",
+      "key": "[maps loading on server]",
+      "source": "loading it on the server",
+      "target": "กำลัง​โหลด​ลง​บน​เซิร์ฟเวอร์"
+    },
+    {
+      "id": "native:[maps %0 plays]",
+      "key": "[maps %0 plays]",
+      "source": "%0 plays",
+      "target": "%0 ที่​เล่น"
+    },
+    {
+      "id": "native:[maps hidden]",
+      "key": "[maps hidden]",
+      "source": "Hidden",
+      "target": "ที่​ซ่อน​อยู่"
+    },
+    {
+      "id": "native:[maps upload again]",
+      "key": "[maps upload again]",
+      "source": "Upload again…",
+      "target": "อัป​โหลด​อีก​ครั้ง…"
+    },
+    {
+      "id": "native:[maps delete]",
+      "key": "[maps delete]",
+      "source": "Delete",
+      "target": "ลบ"
+    },
+    {
+      "id": "native:[maps update]",
+      "key": "[maps update]",
+      "source": "Update…",
+      "target": "อัปเดต…"
+    },
+    {
+      "id": "native:[maps upload a map]",
+      "key": "[maps upload a map]",
+      "source": "Upload a map…",
+      "target": "อัป​โหลด​แผนที่…"
+    },
+    {
+      "id": "native:[maps upload hint]",
+      "key": "[maps upload hint]",
+      "source": ".map files from your maps folder or the editor",
+      "target": "ไฟล์​แผนที่​จาก​โฟลเดอร์​แผนที่​ของ​คุณ​หรือ​จาก​โปรแกรม​แก้ไข"
+    },
+    {
+      "id": "native:[maps no maps yet]",
+      "key": "[maps no maps yet]",
+      "source": "You have not shared any maps yet.",
+      "target": "คุณ​ยัง​ไม่​ได้​แชร์​แผน​ที่​ใดๆ เลย"
+    },
+    {
+      "id": "native:[maps my maps]",
+      "key": "[maps my maps]",
+      "source": "My maps",
+      "target": "แผนที่​ของ​ฉัน"
+    },
+    {
+      "id": "native:[maps my maps %0]",
+      "key": "[maps my maps %0]",
+      "source": "My maps (%0)",
+      "target": "แผนที่​ของ​ฉัน ( %0 )"
+    },
+    {
+      "id": "native:[maps browse]",
+      "key": "[maps browse]",
+      "source": "Browse",
+      "target": "เรียก​ดู"
+    },
+    {
+      "id": "native:[maps title]",
+      "key": "[maps title]",
+      "source": "Maps",
+      "target": "แผนที่"
+    },
+    {
+      "id": "native:[maps browse note %0]",
+      "key": "[maps browse note %0]",
+      "source": "%0 catalog · only maps that load in this version are shown",
+      "target": "แค​ต​ตา​ล็อก %0 · แสดง​เฉพาะ​แผนที่​ที่​โหลด​ได้​ใน​เวอร์ชัน​นี้​เท่านั้น"
+    },
+    {
+      "id": "native:[maps visibility note]",
+      "key": "[maps visibility note]",
+      "source": "Public maps appear in Browse. Unlisted maps work in your rooms and through their link. Private maps only in your own rooms.",
+      "target": "แผนที่​สาธารณะ​จะ​ปรากฏ​ใน​เมนู​เรียก​ดู แผนที่​ที่​ไม่​แสดง​ใน​รายการ​จะ​ใช้​งาน​ได้​ใน​ห้อง​ของ​คุณ​และ​ผ่าน​ลิงก์​ที่​เชื่อม​โยง แผนที่​ส่วน​ตัว​จะ​ใช้​งาน​ได้​เฉพาะ​ใน​ห้อง​ของ​คุณ​เท่านั้น"
+    },
+    {
+      "id": "native:[maps use %0]",
+      "key": "[maps use %0]",
+      "source": "Use %0",
+      "target": "ใช้ %0"
+    },
+    {
+      "id": "native:[maps %0 kb]",
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "target": "%0 KB"
+    },
+    {
+      "id": "native:[maps field title]",
+      "key": "[maps field title]",
+      "source": "Title",
+      "target": "ชื่อ"
+    },
+    {
+      "id": "native:[maps field description]",
+      "key": "[maps field description]",
+      "source": "Description",
+      "target": "คำ​อธิบาย"
+    },
+    {
+      "id": "native:[maps who can use it]",
+      "key": "[maps who can use it]",
+      "source": "Who can use it",
+      "target": "ใคร​สามารถ​ใช้​งาน​ได้​บ้าง"
+    },
+    {
+      "id": "native:[maps guests unlisted]",
+      "key": "[maps guests unlisted]",
+      "source": "Guests can share unlisted and private maps; sign in to publish to Browse.",
+      "target": "แขก​สามารถ​แชร์​แผนที่​ที่​ไม่​แสดง​ต่อ​สาธารณะ​และ​แผนที่​ส่วน​ตัว​ได้ ลงชื่อ​เข้า​ใช้​เพื่อ​เผย​แพร่​หรือ​เรียก​ดู​แผนที่"
+    },
+    {
+      "id": "native:[maps visibility help]",
+      "key": "[maps visibility help]",
+      "source": "Unlisted maps work in your rooms and through their link; public maps also appear in Browse.",
+      "target": "แผนที่​ที่​ไม่​ได้​แสดง​ใน​รายการ​จะ​ใช้​งาน​ได้​ใน​ห้อง​ของ​คุณ​และ​ผ่าน​ลิงก์​ที่​เชื่อม​โยง ส่วน​แผนที่​สาธารณะ​จะ​ปรากฏ​ใน​ส่วน​เรียก​ดู​ด้วย"
+    },
+    {
+      "id": "native:[maps new version of %0]",
+      "key": "[maps new version of %0]",
+      "source": "Upload this file as a new version of %0.",
+      "target": "อัป​โหลด​ไฟล์​นี้​เป็น​เวอร์ชัน​ใหม่​ของ %0"
+    },
+    {
+      "id": "native:[maps upload]",
+      "key": "[maps upload]",
+      "source": "Upload",
+      "target": "อัป​โหลด"
+    },
+    {
+      "id": "native:[maps uploading]",
+      "key": "[maps uploading]",
+      "source": "Uploading…",
+      "target": "กำลัง​อัป​โหลด…"
+    },
+    {
+      "id": "native:[maps checking detail]",
+      "key": "[maps checking detail]",
+      "source": "The server is loading the map and drawing its preview. Until then the map cannot be used.",
+      "target": "ขณะ​นี้​เซิร์ฟเวอร์​กำลัง​โหลด​แผนที่​และ​แสดง​ตัวอย่าง​อยู่ ระหว่าง​นี้​จึง​จะ​ไม่​สามารถ​ใช้​งาน​แผนที่​ได้"
+    },
+    {
+      "id": "native:[maps ready]",
+      "key": "[maps ready]",
+      "source": "Ready",
+      "target": "พร้อม"
+    },
+    {
+      "id": "native:[maps ready public]",
+      "key": "[maps ready public]",
+      "source": "The map is ready and listed in Browse.",
+      "target": "แผนที่​พร้อม​ใช้​งาน​และ​แสดง​อยู่​ใน​ส่วน \"เรียก​ดู\" แล้ว"
+    },
+    {
+      "id": "native:[maps ready unlisted]",
+      "key": "[maps ready unlisted]",
+      "source": "The map is ready. Unlisted maps work in your rooms and through their link.",
+      "target": "แผนที่​พร้อม​ใช้​งาน​แล้ว แผนที่​ที่​ไม่​ได้​แสดง​รายการ​สามารถ​ใช้​งาน​ได้​ใน​ห้อง​ของ​คุณ​และ​ผ่าน​ลิงก์​ที่​เชื่อม​โยง​ไว้"
+    },
+    {
+      "id": "native:[maps ready private]",
+      "key": "[maps ready private]",
+      "source": "The map is ready. Private maps work only in your own rooms.",
+      "target": "แผนที่​พร้อม​แล้ว แผนที่​ส่วน​ตัว​ใช้​งาน​ได้​เฉพาะ​ใน​ห้อง​ของ​คุณ​เท่านั้น"
+    },
+    {
+      "id": "native:[maps upload failed]",
+      "key": "[maps upload failed]",
+      "source": "The upload failed",
+      "target": "การ​อัป​โหลด​ล้ม​เหลว"
+    },
+    {
+      "id": "native:[maps server read %0 %1]",
+      "key": "[maps server read %0 %1]",
+      "source": "The server read it as %0 with %1 colonies.",
+      "target": "เซิร์ฟเวอร์​อ่าน​ค่า​เป็น %0 โดย​มี​โค​โลนี %1"
+    },
+    {
+      "id": "native:[maps continue in background]",
+      "key": "[maps continue in background]",
+      "source": "Close",
+      "target": "ปิด"
+    },
+    {
+      "id": "native:[maps upload note]",
+      "key": "[maps upload note]",
+      "source": "The server loads every upload before it can be used.",
+      "target": "เซิร์ฟเวอร์​จะ​โหลด​ไฟล์​ที่​อัป​โหลด​ทั้งหมด​ก่อน​ที่​จะ​สามารถ​ใช้​งาน​ได้"
+    },
+    {
+      "id": "native:[online just now]",
+      "key": "[online just now]",
+      "source": "just now",
+      "target": "เมื่อ​สัก​ครู่​นี้​เอง"
+    },
+    {
+      "id": "native:[online today %0]",
+      "key": "[online today %0]",
+      "source": "today %0",
+      "target": "วัน​นี้ %0"
+    },
+    {
+      "id": "native:[online yesterday]",
+      "key": "[online yesterday]",
+      "source": "yesterday",
+      "target": "เมื่อ​วาน"
+    },
+    {
+      "id": "native:[online sun]",
+      "key": "[online sun]",
+      "source": "Sun",
+      "target": "ดวง​อาทิตย์"
+    },
+    {
+      "id": "native:[online mon]",
+      "key": "[online mon]",
+      "source": "Mon",
+      "target": "จันทร์"
+    },
+    {
+      "id": "native:[online tue]",
+      "key": "[online tue]",
+      "source": "Tue",
+      "target": "อังคาร"
+    },
+    {
+      "id": "native:[online wed]",
+      "key": "[online wed]",
+      "source": "Wed",
+      "target": "วัน​พุธ"
+    },
+    {
+      "id": "native:[online thu]",
+      "key": "[online thu]",
+      "source": "Thu",
+      "target": "พฤหัสบดี"
+    },
+    {
+      "id": "native:[online fri]",
+      "key": "[online fri]",
+      "source": "Fri",
+      "target": "ศุกร์"
+    },
+    {
+      "id": "native:[online sat]",
+      "key": "[online sat]",
+      "source": "Sat",
+      "target": "นั่ง"
+    },
+    {
+      "id": "native:[online %0 weeks ago]",
+      "key": "[online %0 weeks ago]",
+      "source": "%0 weeks ago",
+      "target": "%0 สัปดาห์​ที่​แล้ว"
+    },
+    {
+      "id": "native:[online %0 months ago]",
+      "key": "[online %0 months ago]",
+      "source": "%0 months ago",
+      "target": "%0 เดือน​ที่​แล้ว"
+    },
+    {
+      "id": "native:[online %0 years ago]",
+      "key": "[online %0 years ago]",
+      "source": "%0 years ago",
+      "target": "%0 ปี​ที่​แล้ว"
+    },
+    {
+      "id": "native:[maps share online]",
+      "key": "[maps share online]",
+      "source": "Share online…",
+      "target": "แชร์​ออนไลน์…"
+    },
+    {
+      "id": "native:[maps mine]",
+      "key": "[maps mine]",
+      "source": "Mine",
+      "target": "ของ​ฉัน"
+    },
+    {
+      "id": "native:[results waiting for players]",
+      "key": "[results waiting for players]",
+      "source": "Waiting for the other players to leave…",
+      "target": "รอ​ให้​ผู้​เล่น​คน​อื่น​ออก​ไป​ก่อน…"
+    },
+    {
+      "id": "native:[results waiting detail]",
+      "key": "[results waiting detail]",
+      "source": "The result is recorded once everyone has left the match.",
+      "target": "ผล​การ​แข่งขัน​จะ​ถูก​บันทึก​หลัง​จาก​ทุก​คน​ออก​จาก​สนาม​แล้ว"
+    },
+    {
+      "id": "native:[results waiting slow]",
+      "key": "[results waiting slow]",
+      "source": "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.",
+      "target": "ผู้​เล่น​ที่​การ​เชื่อม​ต่อ​หลุด​มี​เวลา​สูงสุด 3 นาที​ใน​การก​ลับ​มา​เชื่อม​ต่อ​ใหม่ ผล​การ​แข่งขัน​จะ​ปรากฏ​ใน​ประวัติ​ของ​คุณ​และ​ใน​หน้า​การ​แข่งขัน"
+    },
+    {
+      "id": "native:[results verifying slow]",
+      "key": "[results verifying slow]",
+      "source": "Verification is taking longer than usual. The result will appear in your history and on the match page.",
+      "target": "การ​ตรวจ​สอบ​ใช้​เวลา​นาน​กว่า​ปกติ ผลลัพธ์​จะ​ปรากฏ​ใน​ประวัติ​ของ​คุณ​และ​ใน​หน้า​การ​แข่งขัน"
+    },
+    {
+      "id": "native:[results rematch]",
+      "key": "[results rematch]",
+      "source": "Rematch",
+      "target": "การ​แข่งขัน​ล้าง​แค้น"
+    },
+    {
+      "id": "native:[results join rematch %0]",
+      "key": "[results join rematch %0]",
+      "source": "Join %0's rematch",
+      "target": "เข้า​ร่วม​การ​แข่งขัน​ล้าง​แค้น​ของ %0"
+    },
+    {
+      "id": "native:[hub profile history]",
+      "key": "[hub profile history]",
+      "source": "Profile & history",
+      "target": "ประวัติ​และ​ข้อมูล​เบื้อง​ต้น"
+    },
+    {
+      "id": "native:[hub leaderboard %0]",
+      "key": "[hub leaderboard %0]",
+      "source": "Leaderboard · %0",
+      "target": "ตาราง​อันดับ · %0"
+    },
+    {
+      "id": "native:[hub leaderboard empty]",
+      "key": "[hub leaderboard empty]",
+      "source": "No ranked players yet.",
+      "target": "ยัง​ไม่มี​ผู้​เล่น​ที่​ได้​รับ​การ​จัด​อันดับ"
+    },
+    {
+      "id": "native:[hub guests not ranked]",
+      "key": "[hub guests not ranked]",
+      "source": "Guests aren't ranked. Sign in to appear here.",
+      "target": "แขก​จะ​ไม่​ได้​รับ​การ​จัด​อันดับ กรุณา​เข้า​สู่​ระบบ​เพื่อ​แสดง​ตัว​ตน​ของ​คุณ​ที่​นี่"
+    },
+    {
+      "id": "native:[hub full leaderboard]",
+      "key": "[hub full leaderboard]",
+      "source": "Full leaderboard",
+      "target": "ตาราง​คะแนน​เต็ม"
+    },
+    {
+      "id": "native:[room uploading map]",
+      "key": "[room uploading map]",
+      "source": "Sharing the map with the room…",
+      "target": "แชร์​แผนที่​ให้​ทุก​คนใน​ห้อง…"
+    },
+    {
+      "id": "native:[room take a seat to play]",
+      "key": "[room take a seat to play]",
+      "source": "Take an open seat to play",
+      "target": "หา​ที่​นั่ง​ว่าง​เพื่อ​ร่วม​เล่น"
+    },
+    {
+      "id": "native:[room waiting for a seat]",
+      "key": "[room waiting for a seat]",
+      "source": "Every seat is taken. You can take one when it opens.",
+      "target": "ที่​นั่ง​เต็ม​หมด​แล้ว คุณ​สามารถ​เข้าไป​นั่ง​ได้​เมื่อ​ที่​นั่ง​ว่าง"
+    },
+    {
+      "id": "native:[room not seated]",
+      "key": "[room not seated]",
+      "source": "Not seated",
+      "target": "ไม่​ได้​นั่ง"
+    },
+    {
+      "id": "native:[room copied]",
+      "key": "[room copied]",
+      "source": "Copied",
+      "target": "คัด​ลอก​แล้ว"
+    },
+    {
+      "id": "native:[room copy failed]",
+      "key": "[room copy failed]",
+      "source": "Could not copy",
+      "target": "ไม่​สามารถ​คัด​ลอก​ได้"
+    },
+    {
+      "id": "native:[room closed title]",
+      "key": "[room closed title]",
+      "source": "Room closed",
+      "target": "ห้อง​ปิด"
+    },
+    {
+      "id": "native:[room removed title]",
+      "key": "[room removed title]",
+      "source": "Removed from the room",
+      "target": "ถูก​นำ​ตัว​ออก​จาก​ห้อง"
+    },
+    {
+      "id": "native:[room back to online]",
+      "key": "[room back to online]",
+      "source": "Back to online",
+      "target": "กลับ​สู่​ระบบ​ออนไลน์"
+    },
+    {
+      "id": "native:[leave match]",
+      "key": "[leave match]",
+      "source": "Leave match",
+      "target": "ออก​จาก​แมตช์"
+    },
+    {
+      "id": "native:[leave match title]",
+      "key": "[leave match title]",
+      "source": "Leave this match?",
+      "target": "ออก​จาก​แมตช์​นี้?"
+    },
+    {
+      "id": "native:[leave lan title]",
+      "key": "[leave lan title]",
+      "source": "Leave this LAN game?",
+      "target": "ออก​จาก​เกม LAN นี้​เห​รอ?"
+    },
+    {
+      "id": "native:[leave rated body]",
+      "key": "[leave rated body]",
+      "source": "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.",
+      "target": "คุณ​แพ้​ใน​การ​แข่งขัน​จัด​อันดับ​นี้​และ​คะแนน​ของ​คุณ​จะ​ลด​ลง คน​อื่นๆ จะ​เล่น​ต่อ​ไป และ​คุณ​จะ​ไม่​สามารถ​กลับ​มา​เล่น​ได้​อีก"
+    },
+    {
+      "id": "native:[leave casual body]",
+      "key": "[leave casual body]",
+      "source": "This quick match counts as a loss for you. The others play on, and you cannot come back to it.",
+      "target": "การ​แข่งขัน​แบบ​รวดเร็ว​นี้​จะ​ถือว่า​คุณ​แพ้ คน​อื่น​จะ​เล่น​ต่อ และ​คุณ​จะ​ไม่​สามารถ​กลับ​มา​เล่น​ใหม่​ได้"
+    },
+    {
+      "id": "native:[leave room body]",
+      "key": "[leave room body]",
+      "source": "You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.",
+      "target": "หาก​คุณ​ออก​จาก​แมตช์​ใน​ห้อง​นั้น ระบบ​จะ​นับ​ว่า​เป็นการ​แพ้​ใน​ประวัติการ​เล่น​ของ​คุณ คน​อื่นๆ จะ​เล่น​ต่อ และ​คุณ​จะ​ไม่​สามารถ​กลับ​เข้าไป​เล่น​ได้​อีก"
+    },
+    {
+      "id": "native:[leave lan body]",
+      "key": "[leave lan body]",
+      "source": "The others play on without you, and you cannot come back to this game.",
+      "target": "คน​อื่นๆ เล่น​ต่อ​ไป​โดย​ไม่มี​คุณ และ​คุณ​ไม่​สามารถ​กลับ​เข้า​มา​ใน​เกม​นี้​ได้​อีก"
+    },
+    {
+      "id": "native:[leave match confirm]",
+      "key": "[leave match confirm]",
+      "source": "Leave match",
+      "target": "ออก​จาก​แมตช์"
+    },
+    {
+      "id": "native:[keep playing]",
+      "key": "[keep playing]",
+      "source": "Keep playing",
+      "target": "เล่น​ต่อ​ไป​เรื่อยๆ"
+    },
+    {
+      "id": "native:[results team]",
+      "key": "[results team]",
+      "source": "Team",
+      "target": "ทีม"
+    },
+    {
+      "id": "native:[results quick unrated]",
+      "key": "[results quick unrated]",
+      "source": "Quick match · unrated",
+      "target": "แมตช์​ด่วน · ไม่มี​การ​ให้​คะแนน"
+    },
+    {
+      "id": "native:[conn card cannot keep up]",
+      "key": "[conn card cannot keep up]",
+      "source": "Your device can't keep up with this match",
+      "target": "อุปกรณ์​ของ​คุณ​ไม่​สามารถ​รองรับ​การ​แข่งขัน​นี้​ได้"
+    },
+    {
+      "id": "native:[conn card cannot keep up body]",
+      "key": "[conn card cannot keep up body]",
+      "source": "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.",
+      "target": "โปรแกรม​จะ​เล่น​แมตช์​ซ้ำ​ช้า​กว่า​เวลา​จริง​ของ​แมตช์ ดัง​นั้น​มัน​จะ​ตาม​ไม่ทัน คุณ​สามารถ​ออก​จาก​แมตช์ หรือ​ลด​การ​ตั้ง​ค่า​กราฟิก​แล้ว​รอ​ต่อ​ไป​ก็ได้"
+    },
+    {
+      "id": "native:[conn card not gaining]",
+      "key": "[conn card not gaining]",
+      "source": "not gaining",
+      "target": "ไม่​ได้​รับ"
+    },
+    {
+      "id": "native:[results reason opponents left]",
+      "key": "[results reason opponents left]",
+      "source": "Your opponents left the match.",
+      "target": "คู่​ต่อสู้​ของ​คุณ​ออก​จาก​เกม​ไป​แล้ว"
+    },
+    {
+      "id": "native:[results reason victory]",
+      "key": "[results reason victory]",
+      "source": "Every opposing colony was defeated.",
+      "target": "อาณานิคม​ฝ่าย​ตรง​ข้าม​ทั้งหมด​พ่าย​แพ้"
+    },
+    {
+      "id": "native:[results reason defeat]",
+      "key": "[results reason defeat]",
+      "source": "Your colony was defeated.",
+      "target": "อาณานิคม​ของ​คุณ​พ่าย​แพ้​แล้ว"
+    },
+    {
+      "id": "native:[results reason you left]",
+      "key": "[results reason you left]",
+      "source": "You left the match. It counts as a loss.",
+      "target": "คุณ​ออก​จาก​เกม​ไป​แล้ว ถือว่า​เป็นการ​แพ้"
+    },
+    {
+      "id": "native:[results final after end]",
+      "key": "[results final after end]",
+      "source": "Final result after the match ends.",
+      "target": "ผล​การ​แข่งขัน​สุดท้าย​หลัง​จาก​จบ​เกม"
+    },
+    {
+      "id": "native:[pause none left]",
+      "key": "[pause none left]",
+      "source": "No pauses left",
+      "target": "ไม่มี​ช่วง​หยุด​พัก​เหลือ​แล้ว"
+    },
+    {
+      "id": "native:[pause game left %0]",
+      "key": "[pause game left %0]",
+      "source": "Pause game (%0 left)",
+      "target": "หยุด​เกม​ชั่วคราว (เหลือ %0 )"
+    },
+    {
+      "id": "native:[pause by %0]",
+      "key": "[pause by %0]",
+      "source": "Paused by %0",
+      "target": "หยุด​ชั่วคราว %0"
+    },
+    {
+      "id": "native:[pause by %0 resumes in %1]",
+      "key": "[pause by %0 resumes in %1]",
+      "source": "Paused by %0 · resumes in %1",
+      "target": "หยุด​ชั่วคราว %0 · จะ​เริ่ม​ใหม่​ใน %1"
+    },
+    {
+      "id": "native:[turn too many actions]",
+      "key": "[turn too many actions]",
+      "source": "Too many actions: some are still waiting to be sent",
+      "target": "มี​การ​ดำเนิน​การ​มาก​เกิน​ไป : บาง​ส่วน​ยัง​รอ​การ​ส่ง​อยู่"
+    },
+    {
+      "id": "native:[turn no pauses left]",
+      "key": "[turn no pauses left]",
+      "source": "You have no pauses left in this match",
+      "target": "คุณ​ไม่มี​เวลา​หยุด​พัก​เหลือ​แล้ว​ใน​แมตช์​นี้"
+    },
+    {
+      "id": "native:[turn pause time used %0]",
+      "key": "[turn pause time used %0]",
+      "source": "%0 has used all their pause time: the game resumes",
+      "target": "%0 ใช้​เวลา​หยุด​เกม​หมด​แล้ว : เกม​จะ​เล่น​ต่อ"
+    },
+    {
+      "id": "native:[room seats one person %0 %1]",
+      "key": "[room seats one person %0 %1]",
+      "source": "1 player · %0 AI · %1 open",
+      "target": "ผู้​เล่น 1 คน · AI %0 · เปิด %1"
+    },
+    {
+      "id": "native:[room rules otherwise standard]",
+      "key": "[room rules otherwise standard]",
+      "source": "Every other rule is as in Standard.",
+      "target": "กฎ​อื่นๆ ทั้งหมด​เหมือน​กับ​ใน​มาตรฐาน"
+    },
+    {
+      "id": "native:[room browser link]",
+      "key": "[room browser link]",
+      "source": "Link for browser players",
+      "target": "ลิงก์​สำหรับ​เล่น​ผ่าน​เบราว์เซอร์"
+    }
+  ]
+}
