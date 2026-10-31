@@ -267,6 +267,11 @@ the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the
 whole catalog was displayed.
 
+Tutorial captures also click the actual guidance controls to record the collapsed
+control and re-expanded instructions. Those UI actions and draws must leave the
+simulation checksum unchanged; offscreen phone presentation does not establish
+mobile-platform or physical-touch hardware coverage.
+
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
 and captures, and verify the compiled source identity before accepting evidence;

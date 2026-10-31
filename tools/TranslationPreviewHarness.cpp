@@ -4,6 +4,7 @@
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include "tutorial/TutorialModel.h"
+#include "tutorial/TutorialGuidance.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
@@ -53,6 +54,7 @@ struct TranslationPreviewAccess
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
+    static Tutorial::Guidance *guidance(GameGUI &gui) { return gui.tutorialGuidance.get(); }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -526,6 +528,44 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["tutorial_capture_dialog_free"] = true;
         }
         capture(captureKind);
+        if (tutorial) {
+            auto *card = TranslationPreviewAccess::guidance(gui);
+            require(card != nullptr, "Actual tutorial guidance card available");
+            const auto before = gui.game.checkSum();
+            auto toggleGuidance = [&] {
+                card->host().layoutIfNeeded();
+                const auto bounds = card->host().bounds("intro/collapse");
+                require(bounds.w > 0 && bounds.h > 0, "Actual guidance collapse control available");
+                SDL_Event event{};
+                if (GAGCore::phonePresentationRequested()) {
+                    event.type = SDL_EVENT_FINGER_DOWN;
+                    event.tfinger.x = float(bounds.x + bounds.w / 2) / globals.gfx->getW();
+                    event.tfinger.y = float(bounds.y + bounds.h / 2) / globals.gfx->getH();
+                    require(card->handle(event), "Guidance collapse finger down handled");
+                    event.type = SDL_EVENT_FINGER_UP;
+                } else {
+                    event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+                    event.button.button = SDL_BUTTON_LEFT;
+                    event.button.x = bounds.x + bounds.w / 2;
+                    event.button.y = bounds.y + bounds.h / 2;
+                    require(card->handle(event), "Guidance collapse mouse down handled");
+                    event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+                }
+                require(card->handle(event), "Guidance collapse release handled");
+                card->update(SDL_GetTicks());
+                require(before == gui.game.checkSum(), "Guidance toggle preserves simulation checksum");
+            };
+            toggleGuidance();
+            require(card->host().find("intro/instruction") == nullptr, "Collapsed guidance hides instruction");
+            capture(captureKind + "-collapsed");
+            toggleGuidance();
+            require(card->host().find("intro/instruction") != nullptr, "Expanded guidance restores instruction");
+            capture(captureKind + "-expanded");
+            result["guidance_toggle_probe"] = {{"control", "intro/collapse"},
+                {"input", GAGCore::phonePresentationRequested() ? "finger" : "mouse"},
+                {"checksum_before_ui", before}, {"checksum_after_ui", gui.game.checkSum()},
+                {"limits", "Uses actual guidance hit bounds and public event handling; does not represent physical input hardware."}};
+        }
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
