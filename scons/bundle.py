@@ -60,6 +60,9 @@ def createBundle(target, source, env) :
     run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']
+    for localization in sorted(Path(plistFile).parent.glob('*.lproj')):
+        if localization.is_dir():
+            shutil.copytree(localization, Path(bundleDir)/'Contents/Resources'/localization.name)
     run('cp %s %s/Contents/Info.plist' % (plistFile, bundleDir) )
     run('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
     run('/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
@@ -83,7 +86,11 @@ def createBundleMessage(target, source, env) :
 
 def bundleEmitter(target, source, env):
     target = env.Dir(env['BUNDLE_NAME']+".app")
-    source = env['BUNDLE_BINARIES']
+    source = list(env.Flatten(env['BUNDLE_BINARIES']))
+    source.append(env.File(env['BUNDLE_PLIST']))
+    # Localized permission wording must invalidate an existing bundle too.
+    for localization in sorted(Path(env['BUNDLE_PLIST']).parent.glob('*.lproj')):
+        source.extend(env.File(str(path)) for path in sorted(localization.rglob('*')) if path.is_file())
     return target, source
 
 def generate(env) :

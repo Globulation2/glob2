@@ -31,6 +31,26 @@ compatibility must be checked with the shared replay-verification workflow befor
 shipping a mobile client.
 
 
+## Focused iOS localization qualification
+
+The existing `ci-macos.yml` manual workflow offers `ios_localization=true` and
+`locale=th` for a committed revision. This selects an unsigned simulator build
+and lifecycle smoke rather than the normal macOS native job. Workflow calls and
+ordinary manual runs retain native coverage. The job validates the existing
+pinned Xcode, reuses content-validated simulator dependencies, checks the actual
+Thai catalog/font/notices and localized permission-purpose string in the built
+bundle, and retains app symbols, logs, hashes and screenshots as an artifact.
+It uses no Apple signing credentials or release operations.
+
+The fixture marks the initial hand choice and introduction as offered and forces
+Thai through `SDL_PREFERRED_LOCALES` plus the simulator language defaults. It
+leaves the saved game language unset, so startup exercises locale selection.
+Review the actual screenshots before accepting visual quality. This fixture
+establishes simulator startup, background/resume and fresh-process relaunch;
+it does not establish the OS permission popup, Thai IME interaction or physical
+device behavior. The helper only shuts down and deletes its recorded private
+simulator. Build and platform failures retain their actual diagnostics.
+
 ## Mobile design review gallery
 
 The offline gallery captures production screen classes at ten logical viewport

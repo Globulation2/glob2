@@ -30,7 +30,12 @@ for (const locale of locales) {
     await expect(page.locator('#hero-title')).toHaveText(heading);
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+    const instanceResponse = await page.request.get('/api/v1/instance');
+    expect(instanceResponse.ok()).toBe(true);
+    const instance = (await instanceResponse.json()) as { features?: string[] };
+    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(
+      9 + Number(instance.features?.includes('skins.designer') ?? false),
+    );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(

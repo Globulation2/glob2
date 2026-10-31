@@ -48,6 +48,7 @@ const TYPES: Record<string, string> = {
   '.wasm': 'application/wasm',
   '.json': 'application/json',
   '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
   '.png': 'image/png',
   '.webp': 'image/webp',
   '.mp4': 'video/mp4',
