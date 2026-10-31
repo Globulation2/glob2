@@ -61,6 +61,10 @@ static void tiledCapture(bool hd = false)
         frames << "GLOB2_HIGHRES 1\n";
         for (int variant = 0; variant < 16; ++variant)
             frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+        // Catalogue grass, sand and ice draw from their own 8x8-block banks.
+        for (const char *bank : {"terrain-grass", "terrain-sand", "terrain-ice"})
+            for (int variant = 0; variant < 256; ++variant)
+                frames << bank << variant << " 32 32 4 grass.webp -\n";
         frames.close();
         hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
     }

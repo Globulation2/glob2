@@ -1243,9 +1243,18 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		const auto c = catalog();
+		// Animated materials stay on one layout: every layout multiplies by the phases.
+		std::set<std::string> single;
 		for (const auto &material : c.materials)
 		{
 			const auto id = c.find(material.key);
+			if (c.materials[id].variantBlocks == 1)
+			{
+				CHECK(c.materials[id].animationFrames > 1);
+				CHECK(c.materials[id].variantGrid > 0);
+				single.insert(material.key);
+				continue;
+			}
 			REQUIRE(c.materials[id].variantBlocks == 4);
 			const int grid = c.materials[id].variantGrid;
 			const unsigned cells = unsigned(grid * grid);
@@ -1269,6 +1278,7 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(seen.size() == 4);
 			CHECK(changed > 600);
 		}
+		CHECK(single == std::set<std::string>{"water", "deep_water", "lava", "ember_field"});
 		for (unsigned seed : {0u, 1u, 42u})
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)

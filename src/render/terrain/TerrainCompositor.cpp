@@ -197,6 +197,11 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 }
 void Compositor::prepare(bool hd, int time)
 {
+    // The complete catalogue is for one-shot callers: wait for deferred HD
+    // windows, then read the published frames.
+    prepareSelected(hd, time, nullptr);
+    if (!hd) return;
+    GAGCore::Sprite::finishHighResolution();
     prepareSelected(hd, time, nullptr);
 }
 void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes)

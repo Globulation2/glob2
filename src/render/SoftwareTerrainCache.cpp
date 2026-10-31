@@ -720,10 +720,20 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         PERF_SCOPE_TIME(TerrainMaterials);
 	// CPU and device composition can rebuild complete pages beyond the
 	// viewport, so prepare every cell in those pages before collecting jobs.
-	compositor.prepareVisible(nextGPU, time, map,
-		chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
-		(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-		(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	const auto prepareMaterials = [&] {
+		compositor.prepareVisible(nextGPU, time, map,
+			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
+			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	};
+	prepareMaterials();
+	// A capture is drawn once, so it waits for streamed HD rather than
+	// keeping the native fallback that interactive frames replace later.
+	if (tiledCapture && nextGPU)
+	{
+		GAGCore::Sprite::finishHighResolution();
+		prepareMaterials();
+	}
     }
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
@@ -1144,10 +1154,18 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 {
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
-	compositor.prepareVisible(gpu, time, map,
-		chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
-		(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-		(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	const auto prepareMaterials = [&] {
+		compositor.prepareVisible(gpu, time, map,
+			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
+			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	};
+	prepareMaterials();
+	if (tiledCapture && gpu)
+	{
+		GAGCore::Sprite::finishHighResolution();
+		prepareMaterials();
+	}
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy, compositor.scale(), tiledCapture);
 	if (mode == FallbackMode::EmergencyTiles || !plan.pageFits)

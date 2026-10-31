@@ -5,8 +5,10 @@ Companion to [terrain materials](terrain-materials.md).
 ## Material production
 
 All 29 built-in materials, including grass, sand, road, ice and regular water,
-are produced by `tools/artwork/terrain_synth.py`. Each material has four
-interchangeable 8×8 layouts: 256 variants per animation phase, stored as
+are produced by `tools/artwork/terrain_synth.py`. Static materials have four
+interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
+layout and water and deep water one 4×4 layout, keeping their animated banks
+at 256 frames each. Frames are stored as
 `data/gfx/terrain-<name>N.png` at 32×32 RGBA and
 `data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
 in `datasrc/gfx/<name>/provenance.json`. The shared tile code in
@@ -57,7 +59,8 @@ whole block. Shading and domain warps sample the whole block, including its
 wrapped boundary, before it is sliced. One affine luma transform, computed from
 the pooled native statistics, gives every frame the same tone.
 
-All built-in recipes declare `periodic=True`, `grid=8` and `blocks=4`:
+All built-in recipes declare `periodic=True` and a `grid`; static recipes use
+`grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
 grounds such as gravel, flower meadow and marsh as well as the legacy bindings.
@@ -147,9 +150,9 @@ tussock bogs:
 
 The photographs are only looked at; nothing from them is read into an output.
 
-Lava and ember field are animated: four phases per variant, frame
-`variant + 256 * phase` (frames 0–1023), catalogued with `animation_frames 4`,
-`animation_stride 256` and `animation_ticks 8`. The crust layout is shared by the
+Lava and ember field are animated: one 8×8 layout with four phases, frame
+`variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,
+`animation_stride 64` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
 ### Positional variants
@@ -168,7 +171,7 @@ carry custom art still load in older clients.
 
 #### Interchangeable blocks
 
-Every built-in material uses four interchangeable 8×8 blocks with
+Every static built-in material uses four interchangeable 8×8 blocks with
 `"variant_blocks": 4` alongside `"variant_grid": 8`. Each layout has 64 cells,
 so the material contains 256 variants in block-major, row-major order:
 `cell + 64 * block`. The renderer hashes the canonical map block coordinates
@@ -202,24 +205,24 @@ judge repetition in mixed-block previews.
 
 Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
-Water and deep water use the same four 8×8 layouts with sixteen phases
-(`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 1024×1024
+Water and deep water use one 4×4 layout with sixteen phases
+(`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
 periodic fields from plane waves whose wave numbers and animation cycles are
-integers. Wavelengths and loop speed retain the earlier wave scale; odd warp
-harmonics prevent the larger canvas from merely repeating four-cell quadrants.
+integers (`WAVE_GRID` sets the block size; wave numbers scale with it).
 Every cell animates locally on the shared clock, so swell crests roll toward the
 lower right and finer cross chop breaks them into moving glints. Deep water
 reads the same geometry with its darker palette and less chop.
 
-Both materials declare `"variant_block_group": "ocean"`. This replaces the
-material-specific block-selection salt with a common group salt, so the same
-map position and seed select the same layout at either depth. Combined with
-shared wave geometry and timing, crests continue across the shallow/deep blend.
-Dark water remains static. All three waters and marsh pools are opaque and use
+Both depths read the same wave geometry and timing on the same position grid,
+so crests continue across the shallow/deep blend. Animated materials stay on a
+single layout because every layout multiplies by the phase count: four 8×8
+layouts at sixteen phases would be 4096 frames per water, which doubled frame
+time and kept HD fallback visible in measurement. `"variant_block_group"`
+remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
 the ordinary material composition path.
 
-Each sixteen-phase material has 4096 native and 4096 HD frames, indexed as
-`cell + 64 * block + 256 * phase`; its catalog animation stride is 256. Animated
+Each sixteen-phase water has 256 native and 256 HD frames, indexed as
+`cell + 16 * phase`; its catalog animation stride is 16. Animated
 materials crossfade on every visual tick and recompose the terrain pages that
 show them at that cadence; see
 [Caches and compatibility](terrain-rendering.md#caches-and-compatibility) for the
@@ -231,7 +234,11 @@ The source bank's full frame count does not determine the active decoded pixel
 set. These terrain banks retain CPU source images and upload a standalone source
 texture only if it is drawn directly; composed pages own their drawing textures.
 HD sprite frames load individually when requested, without preparing unused
-source mip chains. Visible terrain
+source mip chains. Only materials with more than one layout defer their HD
+frames this way (`Sprite::deferHighResolution`); single-layout materials,
+including the animated ones, load HD with their sprite. Loading every block
+material eagerly instead cost about 3 s of load time and 800 MB of memory on
+a 256×256 map. Visible terrain
 preparation gathers the material/variant combinations needed by the viewport,
 including its composition boundary coverage, and prepares those combinations.
 `Compositor::prepareVisible` derives this set from a scene and visible cell

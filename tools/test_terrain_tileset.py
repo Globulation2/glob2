@@ -46,7 +46,11 @@ class TerrainTileset(unittest.TestCase):
         self.assertEqual(len(validate(self.document)), expected)
 
     def test_interchangeable_blocks_require_complete_periodic_grids(self):
-        for material in self.document["materials"]:
+        # Animated materials stay on one layout: blocks multiply by phases.
+        blocked = [m for m in self.document["materials"] if "variant_blocks" in m]
+        self.assertEqual({m["key"] for m in self.document["materials"] if "variant_blocks" not in m},
+                         {"water", "deep_water", "lava", "ember_field"})
+        for material in blocked:
             self.assertEqual(material["variant_blocks"], 4)
             self.assertEqual(material["variant_grid"], 8)
             self.assertEqual(len(material["variants"]), 256)

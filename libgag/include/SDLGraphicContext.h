@@ -1002,6 +1002,8 @@ namespace GAGCore
         static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
+        // Blocks until every requested HD frame, deferred windows included, is published.
+        static void finishHighResolution();
 		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

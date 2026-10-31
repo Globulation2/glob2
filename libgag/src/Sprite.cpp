@@ -656,6 +656,10 @@ namespace GAGCore
         // Explicit synchronous reloads refresh assets even when the preference is unchanged.
         requestedHighResolutionGeneration = 0;
         requestHighResolution(enabled);
+        finishHighResolution();
+    }
+    void Sprite::finishHighResolution()
+    {
         while (!pollHighResolution(4)) {
             Toolkit::assets().poll();
 #ifndef __EMSCRIPTEN__
